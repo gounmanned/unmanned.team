@@ -126,18 +126,18 @@
     fill:none;
     stroke:var(--gray-line);
     stroke-width:1;
+    stroke-opacity:0.45;
+    animation:ringGlow 7.5s ease-in-out infinite;
+  }
+  .radar-ring.r2{animation-delay:-2.5s;}
+  .radar-ring.r3{animation-delay:-5s;}
+  @keyframes ringGlow{
+    0%, 100%{stroke:var(--gray-line);stroke-opacity:0.4;stroke-width:1;filter:none;}
+    50%{stroke:rgba(224,18,128,0.5);stroke-opacity:0.75;stroke-width:1.15;filter:drop-shadow(0 0 4px rgba(224,18,128,0.28));}
   }
   .radar-tick{
     stroke:var(--gray-line);
     stroke-width:1;
-  }
-  .radar-sweep{
-    transform-origin:400px 400px;
-    animation:sweep 7s linear infinite;
-  }
-  @keyframes sweep{
-    from{transform:rotate(0deg);}
-    to{transform:rotate(360deg);}
   }
 
   .eyebrow{
@@ -274,7 +274,7 @@
   }
 
   @media (prefers-reduced-motion: reduce){
-    .radar-sweep, .status-dot, .scroll-cue .line{animation:none;}
+    .status-dot, .scroll-cue .line, .radar-ring{animation:none;}
   }
 </style>
 </head>
@@ -301,26 +301,17 @@
   <section class="hero">
     <div class="radar" aria-hidden="true">
       <svg viewBox="0 0 800 800">
-        <circle class="radar-ring" cx="400" cy="400" r="120"></circle>
-        <circle class="radar-ring" cx="400" cy="400" r="240"></circle>
-        <circle class="radar-ring" cx="400" cy="400" r="360"></circle>
+        <circle class="radar-ring r1" cx="400" cy="400" r="120"></circle>
+        <circle class="radar-ring r2" cx="400" cy="400" r="240"></circle>
+        <circle class="radar-ring r3" cx="400" cy="400" r="360"></circle>
         <line class="radar-tick" x1="400" y1="20" x2="400" y2="780"></line>
         <line class="radar-tick" x1="20" y1="400" x2="780" y2="400"></line>
-        <g class="radar-sweep">
-          <defs>
-            <linearGradient id="sweepGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stop-color="#E01280" stop-opacity="0"></stop>
-              <stop offset="100%" stop-color="#E01280" stop-opacity="0.35"></stop>
-            </linearGradient>
-          </defs>
-          <path d="M 400 400 L 400 40 A 360 360 0 0 1 486 55 Z" fill="url(#sweepGrad)"></path>
-        </g>
       </svg>
     </div>
 
     <h1 class="wordmark">UNMANNED</h1>
     <div class="tagline-row">
-      <span class="tagline">Autonomous. Security. Capabilities.</span>
+      <span class="tagline">Autonomous Security Capabilities</span>
     </div>
 
   </section>
@@ -333,9 +324,9 @@
   <section class="brief">
     <div class="brief-label mono"><img src="https://cdn.unmanned.team/img/point.png" alt="" class="brief-icon">Our view</div>
     <div class="brief-content">
-      <h2>Security should defend itself.</h2>
+      <h2>Digital security should protect itself.</h2>
       <p>Most security still runs on people: watching dashboards, triaging alerts, deciding what to fix and when. That model moves at the speed of headcount, not the speed of the threat. We think it should run the other way — built into systems from the start, with autonomous capabilities that keep testing, adapting, and closing gaps on their own.</p>
-      <p>People still matter. Judgment, context, and accountability aren't things you automate away. But they should be augmenting the system, not standing in for it. Unmanned builds for a future where defense doesn't wait on someone to notice first.</p>
+      <p>People still matter. Judgment, context, and accountability aren't things you automate away. But they should be augmenting the system, not standing in front of it. Unmanned builds for a future where defense doesn't wait on someone to notice first.</p>
     </div>
   </section>
 

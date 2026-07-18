@@ -4,6 +4,8 @@
   --gray-line:#dcdcdc;
   --gray-mid:#8a8a8a;
   --gray-soft:#f4f4f4;
+  --gray-panel:#eeeeee;
+  --gray-hover:#e4e4e4;
   --pink:#E01280;
 }
 
@@ -13,11 +15,13 @@
   scrollbar-width: thin; /* Firefox */
   scrollbar-color: #ccc transparent; /* Firefox */
 }
+
 html {
   scroll-behavior: smooth;
   overflow-x:hidden;
   max-width:100%;
 }
+
 body {
   font-family: -apple-system, Arial, sans-serif;
   background-color: var(--background-1);
@@ -27,6 +31,7 @@ body {
   overflow-x:hidden;
   max-width:100%;
 }
+
 main {
   display: flex;
   flex-direction: column;
@@ -35,6 +40,7 @@ main {
   padding-bottom: 32px;
   box-sizing: border-box;
 }
+
 button {
   background-color: transparent;
   font-weight: 500;
@@ -49,15 +55,19 @@ button {
   transform: translateY(0);
   box-shadow: 0 1px 2px rgba(0,0,0,0.15);
 }
+
 button:active {
   transform: translateY(-1px);
 }
+
 input:focus {
   box-shadow: 0 4px 24px var(--brand);
 }
+
 ol, ul {
   list-style: none;
 }
+
 hr {
   width: 95%;
   border: none;
@@ -67,33 +77,40 @@ hr {
   margin-right: auto;
   opacity: 0.2;
 }
+
 table {
   width: 100%;
   border-spacing: 0 3px;
   border-collapse: separate;
 }
+
 table th {
   text-align: left;
 }
+
 table tbody tr {
   background-color: white;
   border-radius: 12px;
 }
+
 table tbody tr:hover {
   background-color: var(--background-1);
 }
+
 table td {
   font-size: 14px;
   padding: 5px 6px;
   cursor: pointer;
   border-bottom: 1px solid var(--border-soft);
 }
+
 table td img {
   border: 1px solid var(--background-2);
   box-shadow: 0 4px 12px rgba(0,0,0,0.06);
   border-radius: 50%;
   height: 30px;
 }
+
 /** scrollbars **/
 *::-webkit-scrollbar {
   display: none;

@@ -14,8 +14,8 @@ class SiteHeader extends HTMLElement {
           left: 0; right: 0;
           height: 52px;
           z-index: 10;
-          background: var(--chrome-base);
-          border-bottom: 1px solid var(--chrome-border);
+          background: var(--gray-panel);
+          border-bottom: 1px solid var(--gray-line);
         }
         .header-container {
           display: flex;
@@ -38,11 +38,11 @@ class SiteHeader extends HTMLElement {
         .company-name {
           font-size: 0.95rem;
           font-weight: 600;
-          color: var(--text, #1e293b);
+          color: var(--ink, #1e293b);
         }
         .tagline {
           font-size: 0.9rem;
-          color: var(--muted, #6b7280);
+          color: var(--gray-mid, #6b7280);
           margin-left: 6px;
         }
         nav {
@@ -55,15 +55,15 @@ class SiteHeader extends HTMLElement {
           font-weight: 500;
           cursor: pointer;
           white-space: nowrap;
-          color: var(--text, #1e293b);
+          color: var(--ink, #1e293b);
           border: 1px solid #d1d5db;
           border-radius: 6px;
           padding: 4px 10px;
           transition: color 0.15s, border-color 0.15s;
         }
         ::slotted(h4:hover) {
-          color: var(--brand, #e01280);
-          border-color: var(--brand, #e01280);
+          color: var(--pink, #e01280);
+          border-color: var(--pink, #e01280);
         }
         @media (max-width: 768px) {
           nav { display: none; }
@@ -115,7 +115,7 @@ class SiteSpinner extends HTMLElement {
                 width: 60px;
                 height: 60px;
                 border: 6px solid #ccc;
-                border-top: 6px solid var(--brand, #e01280);
+                border-top: 6px solid var(--pink, #e01280);
                 border-radius: 50%;
                 animation: spin 1s linear infinite;
                 display: flex;
@@ -123,7 +123,7 @@ class SiteSpinner extends HTMLElement {
                 justify-content: center;
             }
             .spinner.success {
-                border: 6px solid var(--brand, #e01280);
+                border: 6px solid var(--pink, #e01280);
                 animation: none;
             }
             .checkmark {
@@ -143,7 +143,7 @@ class SiteSpinner extends HTMLElement {
 
             <div id="spinner" class="spinner-overlay">
                 <div class="spinner">
-                    <svg class="checkmark" viewBox="0 0 24 24" fill="none" stroke="var(--brand, #e01280)" stroke-width="3">
+                    <svg class="checkmark" viewBox="0 0 24 24" fill="none" stroke="var(--pink, #e01280)" stroke-width="3">
                     <polyline points="20 6 9 17 4 12"></polyline>
                     </svg>
                 </div>
@@ -339,7 +339,7 @@ class SiteSidebar extends HTMLElement {
                 display: flex;
                 justify-content: center;
                 flex-direction: column;
-                background-color: var(--background-1, #FAF9F6);
+                background-color: var(--white, #FAF9F6);
                 box-shadow: 0 0 5px rgba(224, 18, 128, 0.5), 0 0 40px rgba(224, 18, 128, 0.2);
                 z-index: 1001;
                 transform: translateX(100%);
@@ -408,7 +408,7 @@ class SiteRollup extends HTMLElement {
                     height: 90%;
                     display: flex;
                     flex-direction: column;
-                    background-color: var(--background-2, #fff);
+                    background-color: var(--gray-soft, #fff);
                     box-shadow: 0 0 5px rgba(224, 18, 128, 0.5), 0 0 40px rgba(224, 18, 128, 0.2);
                     z-index: 1000;
                     visibility: hidden;
@@ -470,7 +470,7 @@ class SiteWatermark extends HTMLElement {
                     justify-content: center;
                     text-align: center;
                     gap: 20px;
-                    background: var(--background-2, #fff);
+                    background: var(--gray-soft, #fff);
                     opacity: 1;
                     visibility: visible;
                 }

@@ -72,7 +72,7 @@ class SiteHeader extends HTMLElement {
 
       <div class="header-container">
         <div class="logo-area">
-          <img src="${this.getAttribute('logo') ?? 'https://cdn.pinkduckcompany.com/img/logo.svg'}">
+          <img src="${this.getAttribute('logo') ?? 'https://cdn.unmanned.team/img/logo.png'}">
           <span class="company-name"></span>
           <span class="tagline"></span>
         </div>

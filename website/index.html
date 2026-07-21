@@ -4,27 +4,45 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Unmanned, Inc</title>
-<meta name="description" content="Autonomous security capabilities">
+<meta name="description" content="Autonomous offensive security. Attack paths found, chained, and proven — on autopilot.">
 <link rel="apple-touch-icon" href="https://cdn.unmanned.team/img/logo.png">
 <link rel="icon" type="image/png" href="https://cdn.unmanned.team/img/logo.png">
-<meta property="og:title" content="Unmanned, Inc" />
-<meta property="og:description" content="Autonomous security capabilities" />
+<meta property="og:title" content="Vex — Unmanned, Inc" />
+<meta property="og:description" content="Autonomous offensive security. Attack paths found, chained, and proven — on autopilot." />
 <meta property="og:url" content="https://unmanned.team" />
 <meta property="og:type" content="website" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Hedvig+Letters+Serif&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.unmanned.team/css/global.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&family=Hedvig+Letters+Serif&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://cdn.unmanned.team/css/global.css">
 <style>
+  html{
+    overflow-x:hidden;
+  }
   body{
     background:var(--white);
     color:var(--ink);
     font-family:'Inter',sans-serif;
+    overflow-x:hidden;
   }
 
   .mono{
     font-family:'JetBrains Mono',monospace;
     letter-spacing:0.04em;
+  }
+
+  /* ---------- CLASSIFICATION BAR ---------- */
+  .classbar{
+    position:fixed;
+    top:0;left:0;right:0;
+    z-index:60;
+    background:#0b0c0d;
+    color:#87878c;
+    font-family:'JetBrains Mono',monospace;
+    font-size:9.5px;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    text-align:center;
+    padding:6px 0;
   }
 
   /* ---------- HUD FRAME ---------- */
@@ -41,15 +59,15 @@
     border-color:var(--ink);
     opacity:0.55;
   }
-  .corner.tl{top:20px;left:20px;border-top:1.5px solid;border-left:1.5px solid;}
-  .corner.tr{top:20px;right:20px;border-top:1.5px solid;border-right:1.5px solid;}
+  .corner.tl{top:46px;left:20px;border-top:1.5px solid;border-left:1.5px solid;}
+  .corner.tr{top:46px;right:20px;border-top:1.5px solid;border-right:1.5px solid;}
   .corner.bl{bottom:20px;left:20px;border-bottom:1.5px solid;border-left:1.5px solid;}
   .corner.br{bottom:20px;right:20px;border-bottom:1.5px solid;border-right:1.5px solid;}
 
   /* ---------- TOP BAR ---------- */
   .topbar{
     position:fixed;
-    top:0; left:0; right:0;
+    top:26px; left:0; right:0;
     display:flex;
     justify-content:space-between;
     align-items:center;
@@ -64,11 +82,14 @@
     font-weight:600;
     font-size:13px;
     letter-spacing:0.14em;
-  }
-  .topbar .coords{
-    color:var(--gray-mid);
     display:flex;
-    gap:28px;
+    align-items:center;
+    gap:10px;
+  }
+  .topbar .brand .logo-dot{
+    width:9px;height:9px;border-radius:50%;
+    background:var(--pink);
+    flex-shrink:0;
   }
   .status{
     display:flex;
@@ -81,6 +102,7 @@
     background:var(--pink);
     box-shadow:0 0 0 0 rgba(224,18,128,0.5);
     animation:pulse 2.2s infinite;
+    flex-shrink:0;
   }
   @keyframes pulse{
     0%{box-shadow:0 0 0 0 rgba(224,18,128,0.45);}
@@ -89,13 +111,14 @@
   }
 
   @media (max-width:700px){
-    .topbar{padding:22px 20px;font-size:9.5px;}
-    .topbar .coords{gap:14px;}
+    .topbar{padding:16px 20px;top:24px;}
+    .topbar .brand{font-size:11px;letter-spacing:0.1em;}
     .corner{width:18px;height:18px;}
-    .corner.tl,.corner.tr{top:12px;}
+    .corner.tl,.corner.tr{top:64px;}
     .corner.bl,.corner.br{bottom:12px;}
     .corner.tl,.corner.bl{left:12px;}
     .corner.tr,.corner.br{right:12px;}
+    .classbar{font-size:8.5px;}
   }
 
   /* ---------- HERO ---------- */
@@ -107,7 +130,7 @@
     align-items:center;
     justify-content:center;
     text-align:center;
-    padding:120px 24px 80px;
+    padding:140px 24px 80px;
   }
 
   .radar{
@@ -146,17 +169,20 @@
     text-transform:uppercase;
     color:var(--gray-mid);
     margin-bottom:26px;
+    display:flex;
+    align-items:center;
+    gap:11px;
   }
-  .eyebrow span{color:var(--ink);}
+  .eyebrow span.ink{color:var(--ink);}
 
   h1.wordmark{
     position:relative;
     z-index:2;
     font-family:'Space Grotesk',sans-serif;
     font-weight:700;
-    font-size:clamp(56px, 12vw, 168px);
+    font-size:clamp(72px, 15vw, 200px);
     letter-spacing:-0.02em;
-    line-height:0.92;
+    line-height:0.9;
     color:var(--ink);
   }
 
@@ -169,10 +195,11 @@
     margin-top:30px;
   }
   .tagline{
-    font-size:clamp(24px, 3vw, 30px);
-    letter-spacing:0.02em;
+    font-size:clamp(24px, 3vw, 36px);
+    letter-spacing:0.01em;
     color:var(--ink);
     font-weight:400;
+    max-width:640px;
   }
 
   .scroll-cue{
@@ -200,7 +227,51 @@
     100%{opacity:0.15;}
   }
 
-  /* ---------- DIVIDER ---------- */
+  @media (max-width:700px){
+    .hero{
+      padding:120px 20px 64px;
+      min-height:100vh;
+    }
+    .radar{
+      width:150vw;
+      height:150vw;
+      max-width:640px;
+      max-height:640px;
+    }
+    .eyebrow{
+      font-size:9.5px;
+      letter-spacing:0.14em;
+      gap:8px;
+      margin-bottom:18px;
+      text-align:center;
+      justify-content:center;
+      flex-wrap:wrap;
+    }
+    h1.wordmark{
+      font-size:clamp(56px, 22vw, 120px);
+    }
+    .tagline-row{
+      margin-top:18px;
+    }
+    .tagline{
+      font-size:20px;
+    }
+    .scroll-cue{
+      bottom:28px;
+    }
+    .scroll-cue .line{
+      height:22px;
+    }
+  }
+
+  @media (max-width:400px){
+    h1.wordmark{
+      font-size:clamp(48px, 20vw, 88px);
+    }
+    .eyebrow{
+      font-size:8.5px;
+    }
+  }
   .divider{
     position:relative;
     border-top:1px solid var(--gray-line);
@@ -229,14 +300,8 @@
     color:var(--gray-mid);
     display:flex;
     align-items:center;
-    gap:10px;
+    gap:11px;
     margin-bottom:26px;
-  }
-  .brief-icon{
-    width:16px;
-    height:16px;
-    object-fit:contain;
-    flex-shrink:0;
   }
 
   .brief-content h2{
@@ -247,12 +312,175 @@
     letter-spacing:-0.01em;
     margin-bottom:26px;
   }
+  .brief-content h2 u{text-decoration-color:var(--pink);text-underline-offset:3px;}
   .brief-content p{
     font-size:16px;
     line-height:1.75;
     color:#2b2b2b;
   }
   .brief-content p + p{margin-top:18px;}
+
+  /* ---------- DARK FRAME — shared by philosophy + contact (full-bleed) ---------- */
+  .dark-frame{
+    --db-ink:#f3f3f0;
+    --db-mid:#87878c;
+    background:#0b0c0d;
+    color:var(--db-ink);
+    position:relative;
+    padding:150px 24px 160px;
+    text-align:center;
+    overflow:hidden;
+  }
+  .dark-frame .eyebrow-row{
+    position:relative;z-index:2;
+    font-size:11px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--db-mid);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:11px;
+    margin-bottom:44px;
+  }
+  .dark-frame .body-wrap{position:relative;z-index:2;}
+  @media (max-width:700px){
+    .dark-frame{padding:100px 20px 116px;}
+  }
+
+  /* philosophy: pull-quote */
+  .dark-frame blockquote{
+    max-width:680px;
+    margin:0 auto 26px;
+    font-family:'Hedvig Letters Serif', serif;
+    font-style:italic;
+    font-weight:400;
+    font-size:clamp(28px, 4.4vw, 48px);
+    line-height:1.32;
+    letter-spacing:-0.01em;
+    color:var(--db-ink);
+  }
+  .dark-frame blockquote em{color:var(--pink);font-style:italic;}
+
+  /* contact: radar echo + CTA */
+  .radar-echo{
+    position:absolute;
+    top:50%;left:50%;
+    transform:translate(-50%,-50%);
+    width:min(780px, 140vw);
+    height:min(780px, 140vw);
+    opacity:0.6;
+    pointer-events:none;
+    z-index:1;
+  }
+  .radar-echo svg{width:100%;height:100%;}
+  .contact-statement{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:500;
+    font-size:clamp(28px, 4vw, 42px);
+    letter-spacing:-0.01em;
+    line-height:1.28;
+    margin:0 0 44px;
+    color:var(--db-ink);
+  }
+  .contact-cta{
+    display:inline-flex;
+    align-items:baseline;
+    gap:10px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:clamp(18px, 2.6vw, 24px);
+    letter-spacing:0.02em;
+    color:var(--db-ink);
+    text-decoration:none;
+    border-bottom:1px solid var(--pink);
+    padding-bottom:6px;
+    transition:opacity 0.2s ease;
+  }
+  .contact-cta:hover{opacity:0.65;}
+  .contact-cta .arrow{color:var(--pink);}
+
+  a:focus-visible,
+  .contact-cta:focus-visible{
+    outline:1.5px solid var(--pink);
+    outline-offset:4px;
+  }
+
+  /* ---------- SOLUTION (overnight outcome) ---------- */
+  .brief.wide{max-width:860px;}
+  .outcome{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:32px;
+    margin-top:70px;
+    flex-wrap:wrap;
+  }
+  .outcome-state{
+    text-align:center;
+  }
+  .outcome-time{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700;
+    font-size:clamp(38px, 6vw, 58px);
+    letter-spacing:-0.015em;
+    line-height:1;
+    color:var(--ink);
+  }
+  .outcome-state.dim .outcome-time{color:var(--gray-mid);}
+  .outcome-caption{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10.5px;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:var(--gray-mid);
+    margin-top:12px;
+  }
+  .outcome-track{
+    position:relative;
+    width:140px;
+    height:1px;
+    background:var(--gray-line);
+    flex-shrink:0;
+    overflow:visible;
+  }
+  .outcome-track::after{
+    content:'';
+    position:absolute;
+    top:50%;left:0;
+    width:6px;height:6px;
+    margin-top:-3px;
+    border-radius:50%;
+    background:var(--pink);
+    box-shadow:0 0 8px rgba(224,18,128,0.55);
+    animation:travel 2.6s ease-in-out infinite;
+  }
+  @keyframes travel{
+    0%{left:0%;opacity:0;}
+    12%{opacity:1;}
+    88%{opacity:1;}
+    100%{left:calc(100% - 6px);opacity:0;}
+  }
+  @media (max-width:700px){
+    .outcome{gap:22px;margin-top:52px;}
+    .outcome-track{
+      width:1px;height:56px;
+    }
+    .outcome-track::after{
+      top:0;left:50%;margin-left:-3px;margin-top:0;
+      animation-name:travel-vert;
+    }
+    @keyframes travel-vert{
+      0%{top:0%;opacity:0;}
+      12%{opacity:1;}
+      88%{opacity:1;}
+      100%{top:calc(100% - 6px);opacity:0;}
+    }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .outcome-track::after{animation:none;opacity:1;}
+  }
+
+
 
   /* ---------- FOOTER ---------- */
   footer{
@@ -278,6 +506,8 @@
 </head>
 <body>
 
+  <div class="classbar">UNMANNED, INC · AUTONOMOUS SECURITY CAPABILITY· PUBLIC RELEASE</div>
+
   <div class="hud-frame">
     <div class="corner tl"></div>
     <div class="corner tr"></div>
@@ -286,13 +516,10 @@
   </div>
 
   <div class="topbar">
-    <div class="brand">UNMANNED</div>
-    <div class="coords mono">
-      <span>42.5259°N · 71.0956°W</span>
-    </div>
+    <div class="brand"><span class="logo-dot"></span> UNMANNED, INC</div>
     <div class="status mono">
       <span class="status-dot"></span>
-      <span>ACTIVE</span>
+      <span>AVAILABLE</span>
     </div>
   </div>
 
@@ -307,43 +534,101 @@
       </svg>
     </div>
 
-    <h1 class="wordmark">UNMANNED</h1>
+    <div class="eyebrow mono"><span class="status-dot"></span><span class="ink">Autonomous Security Capability</span></div>
+
+    <h1 class="wordmark">VEX</h1>
     <div class="tagline-row">
-      <span class="tagline">Autonomous Security Capabilities</span>
+      <span class="tagline">Stay ahead.</span>
     </div>
 
   </section>
 
   <div class="divider mono">
     <span>REC · 00:00:00</span>
-    <span>AUTOPILOT</span>
+    <span>AUTOPILOT ENGAGED</span>
   </div>
 
   <section class="brief">
-    <div class="brief-label mono"><img src="https://cdn.unmanned.team/img/logo.png" alt="" class="brief-icon">Who we are</div>
+    <div class="brief-label mono"><span class="status-dot"></span>The problem</div>
     <div class="brief-content">
-      <h2>We are operators</h2>
+      <h2>You <u>can't trust</u> what you <u>can't test</u>.</h2>
       <p>
-        Cybersecurity is broken.
-        It's one of the few products you can buy, without proof that it works.
-        Governments, businesses, and even individuals share in that uncertainty.
-        If you buy a physical deadbolt, you can rattle it. 
-        You can flip the pin and know you're protected. 
-        It's testable.
-        Digital security should be the same.
-        Our team has spent decades inside the U.S. government and enterprises building security programs.
-        And we're automating what we've learned.
+        Security is one of the only things you can buy without knowing if it works.
+        Economists call this a credence good — a product whose quality can't be verified,
+        even after purchase. A deadbolt, you can rattle. You can flip the pin and know
+        you're protected. It's testable. Digital security doesn't carry the same assurance.
       </p>
+      <p>
+        Our team has spent decades building security programs inside the U.S. government and the enterprise. 
+        Vex is those lessons, automated and running around the clock.
+      </p>
+    </div>
+  </section>
+
+  <div class="divider mono">
+    <span>REC · 00:00:01</span>
+    <span>TARGET IDENTIFIED</span>
+  </div>
+
+  <section class="dark-frame philosophy">
+    <div class="body-wrap">
+      <div class="eyebrow-row mono"><span class="status-dot"></span>Our philosophy</div>
+      <blockquote>Patching software doesn't <em>prove you're secure</em>.</blockquote>
+    </div>
+  </section>
+
+  <div class="divider mono">
+    <span>REC · 00:00:02</span>
+    <span>TARGET ISOLATED</span>
+  </div>
+
+  <section class="brief wide">
+    <div class="brief-label mono"><span class="status-dot"></span>The solution</div>
+    <div class="brief-content">
+      <h2>Wake up <u>ahead</u>.</h2>
+      <p>
+        Plug Vex into your environment and it has a working understanding in five minutes.
+        From there, it never stops looking — finding what's newly exploitable anyone else.
+      </p>
+    </div>
+    <div class="outcome">
+      <div class="outcome-state dim">
+        <div class="outcome-time">11:58 PM</div>
+        <div class="outcome-caption mono">Someone adds an integration</div>
+      </div>
+      <div class="outcome-track" aria-hidden="true"></div>
+      <div class="outcome-state">
+        <div class="outcome-time">6:00 AM</div>
+        <div class="outcome-caption mono">You know what's exploitable</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider mono">
+    <span>REC · 00:00:03</span>
+    <span>COMMS ESTABLISHED</span>
+  </div>
+
+  <section class="dark-frame contact">
+    <div class="radar-echo" aria-hidden="true">
+      <svg viewBox="0 0 800 800">
+        <circle class="radar-ring r1" cx="400" cy="400" r="140"></circle>
+        <circle class="radar-ring r2" cx="400" cy="400" r="260"></circle>
+        <circle class="radar-ring r3" cx="400" cy="400" r="380"></circle>
+      </svg>
+    </div>
+    <div class="body-wrap">
+      <div class="eyebrow-row mono"><span class="status-dot"></span>Get in touch</div>
+      <p class="contact-statement">Stay ahead of the breach.</p>
+      <a class="contact-cta" href="https://calendar.proton.me/bookings#pXTDC4ZCLfkabsdpxXddfQAYiGLPsvV9Kr2wnGEW0Xk=" target="_blank">Schedule now <span class="arrow">→</span></a>
     </div>
   </section>
 
   <footer class="mono">
     <span class="fmark">UNMANNED</span>
     <span>© 2026 UNMANNED, INC.</span>
-    <span>MANAGED SERVICES</span>
+    <span>AUTONOMOUS SECURITY</span>
   </footer>
 
 </body>
 </html>
-
-

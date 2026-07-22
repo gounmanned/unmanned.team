@@ -13,22 +13,78 @@
 <meta property="og:type" content="website" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&family=Hedvig+Letters+Serif&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://cdn.unmanned.team/css/global.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&family=Hedvig+Letters+Serif&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.unmanned.team/css/global.css">
 <style>
-  html{
-    overflow-x:hidden;
-  }
+  html{ overflow-x:hidden; }
   body{
     background:var(--white);
     color:var(--ink);
     font-family:'Inter',sans-serif;
-    overflow-x:hidden;
   }
 
   .mono{
     font-family:'JetBrains Mono',monospace;
     letter-spacing:0.04em;
   }
+
+  /* ---------- SHARED STATUS DOT ---------- */
+  .status-dot{
+    width:6px;height:6px;border-radius:50%;
+    background:var(--pink);
+    box-shadow:0 0 0 0 rgba(224,18,128,0.5);
+    animation:pulse 2.2s infinite;
+    flex-shrink:0;
+    display:inline-block;
+  }
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(224,18,128,0.45);}
+    70%{box-shadow:0 0 0 8px rgba(224,18,128,0);}
+    100%{box-shadow:0 0 0 0 rgba(224,18,128,0);}
+  }
+
+  /* ---------- SHARED EYEBROW LABEL ---------- */
+  .eyebrow-label{
+    font-size:11px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--gray-mid);
+    display:flex;
+    align-items:center;
+    gap:11px;
+  }
+
+  /* ---------- SHARED CORNER MARK ----------
+     One rule set, reused wherever a HUD-style bracket frame is needed.
+     Callers set --corner-size (default 28px) and provide their own
+     top/right/bottom/left offsets via a context class, since the
+     hud-frame corners are viewport-fixed while the vex-explainer
+     corners are relative to their own box. */
+  .corner{
+    position:absolute;
+    width:var(--corner-size, 28px);
+    height:var(--corner-size, 28px);
+    border-color:var(--ink);
+    opacity:0.55;
+  }
+  .corner.tl{border-top:1.5px solid;border-left:1.5px solid;}
+  .corner.tr{border-top:1.5px solid;border-right:1.5px solid;}
+  .corner.bl{border-bottom:1.5px solid;border-left:1.5px solid;}
+  .corner.br{border-bottom:1.5px solid;border-right:1.5px solid;}
+
+  /* fixed frame around the whole viewport */
+  .hud-frame{ position:fixed; inset:0; pointer-events:none; z-index:40; }
+  .hud-frame .corner.tl{top:46px;left:20px;}
+  .hud-frame .corner.tr{top:46px;right:20px;}
+  .hud-frame .corner.bl{bottom:20px;left:20px;}
+  .hud-frame .corner.br{bottom:20px;right:20px;}
+
+  /* small frame around the "What is Vex" box */
+  .vex-explainer .corner{ --corner-size:20px; }
+  .vex-explainer .corner.tl{top:0;left:0;}
+  .vex-explainer .corner.tr{top:0;right:0;}
+  .vex-explainer .corner.bl{bottom:0;left:0;}
+  .vex-explainer .corner.br{bottom:0;right:0;}
 
   /* ---------- CLASSIFICATION BAR ---------- */
   .classbar{
@@ -44,25 +100,6 @@
     text-align:center;
     padding:6px 0;
   }
-
-  /* ---------- HUD FRAME ---------- */
-  .hud-frame{
-    position:fixed;
-    inset:0;
-    pointer-events:none;
-    z-index:40;
-  }
-  .corner{
-    position:absolute;
-    width:28px;
-    height:28px;
-    border-color:var(--ink);
-    opacity:0.55;
-  }
-  .corner.tl{top:46px;left:20px;border-top:1.5px solid;border-left:1.5px solid;}
-  .corner.tr{top:46px;right:20px;border-top:1.5px solid;border-right:1.5px solid;}
-  .corner.bl{bottom:20px;left:20px;border-bottom:1.5px solid;border-left:1.5px solid;}
-  .corner.br{bottom:20px;right:20px;border-bottom:1.5px solid;border-right:1.5px solid;}
 
   /* ---------- TOP BAR ---------- */
   .topbar{
@@ -86,38 +123,16 @@
     align-items:center;
     gap:10px;
   }
-  .topbar .brand .logo-dot{
-    width:9px;height:9px;border-radius:50%;
-    background:var(--pink);
-    flex-shrink:0;
-  }
-  .status{
-    display:flex;
-    align-items:center;
-    gap:8px;
-    color:var(--ink);
-  }
-  .status-dot{
-    width:6px;height:6px;border-radius:50%;
-    background:var(--pink);
-    box-shadow:0 0 0 0 rgba(224,18,128,0.5);
-    animation:pulse 2.2s infinite;
-    flex-shrink:0;
-  }
-  @keyframes pulse{
-    0%{box-shadow:0 0 0 0 rgba(224,18,128,0.45);}
-    70%{box-shadow:0 0 0 8px rgba(224,18,128,0);}
-    100%{box-shadow:0 0 0 0 rgba(224,18,128,0);}
-  }
+  .status{ display:flex; align-items:center; gap:8px; color:var(--ink); }
 
   @media (max-width:700px){
     .topbar{padding:16px 20px;top:24px;}
     .topbar .brand{font-size:11px;letter-spacing:0.1em;}
-    .corner{width:18px;height:18px;}
-    .corner.tl,.corner.tr{top:64px;}
-    .corner.bl,.corner.br{bottom:12px;}
-    .corner.tl,.corner.bl{left:12px;}
-    .corner.tr,.corner.br{right:12px;}
+    .hud-frame .corner{width:18px;height:18px;}
+    .hud-frame .corner.tl,.hud-frame .corner.tr{top:64px;}
+    .hud-frame .corner.bl,.hud-frame .corner.br{bottom:12px;}
+    .hud-frame .corner.tl,.hud-frame .corner.bl{left:12px;}
+    .hud-frame .corner.tr,.hud-frame .corner.br{right:12px;}
     .classbar{font-size:8.5px;}
   }
 
@@ -133,16 +148,17 @@
     padding:140px 24px 80px;
   }
 
-  .radar{
+  /* radar rings — reused via <use> from the #radar-rings symbol defined once in body */
+  .radar, .radar-echo{
     position:absolute;
     top:50%;left:50%;
     transform:translate(-50%,-50%);
-    width:min(880px, 130vw);
-    height:min(880px, 130vw);
     pointer-events:none;
-    z-index:0;
   }
-  .radar svg{width:100%;height:100%;}
+  .radar{ width:min(880px, 130vw); height:min(880px, 130vw); z-index:0; }
+  .radar-echo{ width:min(780px, 140vw); height:min(780px, 140vw); opacity:0.6; z-index:1; }
+  .radar svg, .radar-echo svg{ width:100%; height:100%; }
+
   .radar-ring{
     fill:none;
     stroke:var(--gray-line);
@@ -156,22 +172,12 @@
     0%, 100%{stroke:var(--gray-line);stroke-opacity:0.4;stroke-width:1;filter:none;}
     50%{stroke:rgba(224,18,128,0.5);stroke-opacity:0.75;stroke-width:1.15;filter:drop-shadow(0 0 4px rgba(224,18,128,0.28));}
   }
-  .radar-tick{
-    stroke:var(--gray-line);
-    stroke-width:1;
-  }
+  .radar-tick{ stroke:var(--gray-line); stroke-width:1; }
 
   .eyebrow{
     position:relative;
     z-index:2;
-    font-size:11px;
-    letter-spacing:0.22em;
-    text-transform:uppercase;
-    color:var(--gray-mid);
     margin-bottom:26px;
-    display:flex;
-    align-items:center;
-    gap:11px;
   }
   .eyebrow span.ink{color:var(--ink);}
 
@@ -202,42 +208,9 @@
     max-width:640px;
   }
 
-  .scroll-cue{
-    position:absolute;
-    bottom:56px;
-    left:50%;
-    transform:translateX(-50%);
-    font-size:10px;
-    color:var(--gray-mid);
-    letter-spacing:0.18em;
-    text-transform:uppercase;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap:10px;
-  }
-  .scroll-cue .line{
-    width:1px;height:34px;
-    background:linear-gradient(var(--gray-mid), transparent);
-    animation:drop 2s ease-in-out infinite;
-  }
-  @keyframes drop{
-    0%{opacity:0.15;}
-    50%{opacity:1;}
-    100%{opacity:0.15;}
-  }
-
   @media (max-width:700px){
-    .hero{
-      padding:120px 20px 64px;
-      min-height:100vh;
-    }
-    .radar{
-      width:150vw;
-      height:150vw;
-      max-width:640px;
-      max-height:640px;
-    }
+    .hero{ padding:120px 20px 64px; min-height:100vh; }
+    .radar{ width:150vw; height:150vw; max-width:640px; max-height:640px; }
     .eyebrow{
       font-size:9.5px;
       letter-spacing:0.14em;
@@ -248,26 +221,14 @@
       flex-wrap:wrap;
     }
     h1.wordmark{ font-size:clamp(72px, 32vw, 180px); }
-    .tagline-row{
-      margin-top:18px;
-    }
-    .tagline{
-      font-size:20px;
-    }
-    .scroll-cue{
-      bottom:28px;
-    }
-    .scroll-cue .line{
-      height:22px;
-    }
+    .tagline-row{ margin-top:18px; }
+    .tagline{ font-size:20px; }
   }
-
   @media (max-width:400px){
     h1.wordmark{ font-size:clamp(64px, 30vw, 140px); }
-    .eyebrow{
-      font-size:8.5px;
-    }
+    .eyebrow{ font-size:8.5px; }
   }
+
   .divider{
     position:relative;
     border-top:1px solid var(--gray-line);
@@ -285,38 +246,24 @@
     max-width:760px;
     margin:0 auto;
   }
-  @media (max-width:820px){
-    .brief{padding:100px 24px 130px;}
-  }
+  .brief.wide{ max-width:920px; }
+  @media (max-width:820px){ .brief{padding:100px 24px 130px;} }
 
-  .brief-label{
-    font-size:11px;
-    letter-spacing:0.18em;
-    text-transform:uppercase;
-    color:var(--gray-mid);
-    display:flex;
-    align-items:center;
-    gap:11px;
-    margin-bottom:26px;
-  }
+  .brief-label{ margin-bottom:26px; }
 
   .brief-content h2{
     font-family:'Space Grotesk',sans-serif;
     font-weight:500;
-    font-size:clamp(32px, 3.4vw, 38px); 
+    font-size:clamp(32px, 3.4vw, 38px);
     line-height:1.2;
     letter-spacing:-0.01em;
     margin-bottom:26px;
   }
-  .brief-content h2 u{text-decoration-color:var(--pink);text-underline-offset:3px;}
-  .brief-content p{
-    font-size:16px;
-    line-height:1.75;
-    color:#2b2b2b;
-  }
-  .brief-content p + p{margin-top:18px;}
+  .brief-content h2 u{ text-decoration-color:var(--pink); text-underline-offset:3px; }
+  .brief-content p{ font-size:16px; line-height:1.75; color:#2b2b2b; }
+  .brief-content p + p{ margin-top:18px; }
 
-  /* ---------- DARK FRAME — shared by philosophy + contact (full-bleed) ---------- */
+  /* ---------- DARK FRAME — shared by philosophy + contact ---------- */
   .dark-frame{
     --db-ink:#f3f3f0;
     --db-mid:#87878c;
@@ -327,24 +274,11 @@
     text-align:center;
     overflow:hidden;
   }
-  .dark-frame .eyebrow-row{
-    position:relative;z-index:2;
-    font-size:11px;
-    letter-spacing:0.18em;
-    text-transform:uppercase;
-    color:var(--db-mid);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:11px;
-    margin-bottom:44px;
-  }
-  .dark-frame .body-wrap{position:relative;z-index:2;}
-  @media (max-width:700px){
-    .dark-frame{padding:100px 20px 116px;}
-  }
+  .dark-frame .eyebrow-row{ justify-content:center; margin-bottom:44px; }
+  .dark-frame .eyebrow-row.mono{ color:var(--db-mid); }
+  .dark-frame .body-wrap{ position:relative; z-index:2; }
+  @media (max-width:700px){ .dark-frame{padding:100px 20px 116px;} }
 
-  /* philosophy: pull-quote */
   .dark-frame blockquote{
     max-width:680px;
     margin:0 auto 26px;
@@ -356,20 +290,8 @@
     letter-spacing:-0.01em;
     color:var(--db-ink);
   }
-  .dark-frame blockquote em{color:var(--pink);font-style:italic;}
+  .dark-frame blockquote em{ color:var(--pink); font-style:italic; }
 
-  /* contact: radar echo + CTA */
-  .radar-echo{
-    position:absolute;
-    top:50%;left:50%;
-    transform:translate(-50%,-50%);
-    width:min(780px, 140vw);
-    height:min(780px, 140vw);
-    opacity:0.6;
-    pointer-events:none;
-    z-index:1;
-  }
-  .radar-echo svg{width:100%;height:100%;}
   .contact-statement{
     font-family:'Space Grotesk',sans-serif;
     font-weight:500;
@@ -392,54 +314,65 @@
     padding-bottom:6px;
     transition:opacity 0.2s ease;
   }
-  .contact-cta:hover{opacity:0.65;}
-  .contact-cta .arrow{color:var(--pink);}
+  .contact-cta:hover{ opacity:0.65; }
+  .contact-cta .arrow{ color:var(--pink); }
 
-  a:focus-visible,
-  .contact-cta:focus-visible{
+  a:focus-visible, .contact-cta:focus-visible{
     outline:1.5px solid var(--pink);
     outline-offset:4px;
   }
 
-  /* ---------- SOLUTION (overnight outcome) ---------- */
-  .brief.wide{max-width:860px;}
-  .outcome{
+  /* ---------- SOLUTION (overnight timeline) ---------- */
+  .outcome-flow{
     display:flex;
-    align-items:center;
+    align-items:flex-start;
     justify-content:center;
-    gap:32px;
-    margin-top:70px;
-    flex-wrap:wrap;
+    margin-top:72px;
+    flex-wrap:nowrap;
   }
-  .outcome-state{
-    text-align:center;
-  }
-  .outcome-time{
+  .outcome-node{ text-align:center; width:118px; flex-shrink:0; }
+  .outcome-node .outcome-time{
     font-family:'Space Grotesk',sans-serif;
     font-weight:700;
-    font-size:clamp(38px, 6vw, 58px);
-    letter-spacing:-0.015em;
+    font-size:clamp(15px, 1.7vw, 21px);
+    letter-spacing:-0.01em;
     line-height:1;
-    color:var(--ink);
+    color:var(--gray-mid);
+    transition:color 0.2s ease;
   }
-  .outcome-state.dim .outcome-time{color:var(--gray-mid);}
-  .outcome-caption{
+  .outcome-node .outcome-caption{
     font-family:'JetBrains Mono',monospace;
-    font-size:10.5px;
-    letter-spacing:0.12em;
+    font-size:9.5px;
+    line-height:1.5;
+    letter-spacing:0.06em;
     text-transform:uppercase;
     color:var(--gray-mid);
-    margin-top:12px;
+    margin-top:10px;
   }
-  .outcome-track{
+  /* explicit "lit" state instead of nth-child position math, so the
+     escalating-intensity effect survives adding/removing steps later */
+  .outcome-node.lit .outcome-time{ color:var(--ink); }
+  .outcome-node.lit .outcome-caption{ color:var(--gray-mid); }
+  .outcome-node.final .outcome-time{
+    color:var(--pink);
+    text-shadow:0 0 14px rgba(224,18,128,0.35);
+  }
+  .outcome-node.final .outcome-caption{ color:var(--ink); }
+
+  .outcome-connector{
     position:relative;
-    width:140px;
+    flex:1 1 auto;
+    min-width:28px;
+    max-width:60px;
     height:1px;
     background:var(--gray-line);
-    flex-shrink:0;
+    margin-top:11px;
     overflow:visible;
+    /* horizontal by default: the traveling dot moves along translateX */
+    --dx: calc(100% - 6px);
+    --dy: 0px;
   }
-  .outcome-track::after{
+  .outcome-connector::after{
     content:'';
     position:absolute;
     top:50%;left:0;
@@ -448,35 +381,98 @@
     border-radius:50%;
     background:var(--pink);
     box-shadow:0 0 8px rgba(224,18,128,0.55);
-    animation:travel 2.6s ease-in-out infinite;
+    animation:travel 3.2s ease-in-out infinite;
+    animation-delay:calc((var(--seg) - 1) * 0.8s);
+    opacity:0;
   }
+  /* single keyframe reused for both axes — the connector sets --dx/--dy */
   @keyframes travel{
-    0%{left:0%;opacity:0;}
-    12%{opacity:1;}
-    88%{opacity:1;}
-    100%{left:calc(100% - 6px);opacity:0;}
+    0%{ transform:translate(0,0); opacity:0; }
+    4%{ opacity:1; }
+    22%{ opacity:1; }
+    28%{ opacity:0; }
+    100%{ transform:translate(var(--dx), var(--dy)); opacity:0; }
   }
-  @media (max-width:700px){
-    .outcome{gap:22px;margin-top:52px;}
-    .outcome-track{
-      width:1px;height:56px;
+
+  @media (max-width:820px){
+    .outcome-flow{ flex-direction:column; align-items:center; margin-top:56px; gap:0; }
+    .outcome-node{ width:auto; max-width:280px; }
+    .outcome-connector{
+      width:1px;
+      height:36px;
+      min-width:0;
+      max-width:none;
+      margin:6px 0;
+      /* vertical on small screens: same keyframe, different translate target */
+      --dx: 0px;
+      --dy: calc(100% - 6px);
     }
-    .outcome-track::after{
-      top:0;left:50%;margin-left:-3px;margin-top:0;
-      animation-name:travel-vert;
-    }
-    @keyframes travel-vert{
-      0%{top:0%;opacity:0;}
-      12%{opacity:1;}
-      88%{opacity:1;}
-      100%{top:calc(100% - 6px);opacity:0;}
-    }
+    .outcome-connector::after{ top:0;left:50%; margin-left:-3px; margin-top:0; }
   }
+
   @media (prefers-reduced-motion: reduce){
-    .outcome-track::after{animation:none;opacity:1;}
+    .status-dot, .radar-ring, .outcome-connector::after{ animation:none; opacity:0.9; }
   }
 
+  /* ---------- WHAT IS VEX ---------- */
+  .vex-explainer{
+    position:relative;
+    max-width:700px;
+    margin:88px auto 0;
+    padding:52px 44px 48px;
+    text-align:center;
+  }
+  .vex-explainer-label{ justify-content:center; margin-bottom:26px; }
+  .vex-explainer-comps{
+    display:flex;
+    margin-bottom:38px;
+    border-top:1px solid var(--gray-line);
+    border-bottom:1px solid var(--gray-line);
+  }
+  .vex-explainer-comps .comp-item{
+    flex:1;
+    padding:22px 16px;
+    border-left:1px solid var(--gray-line);
+  }
+  .vex-explainer-comps .comp-item:first-child{ border-left:none; }
+  .vex-explainer-comps .comp-index{
+    display:block;
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    letter-spacing:0.14em;
+    color:var(--pink);
+    margin-bottom:10px;
+    opacity:0.85;
+  }
+  .vex-explainer-comps .comp-text{
+    display:block;
+    font-size:13px;
+    line-height:1.55;
+    color:var(--gray-mid);
+  }
+  .vex-explainer-final{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:500;
+    font-size:clamp(19px, 2.4vw, 25px);
+    line-height:1.5;
+    letter-spacing:-0.005em;
+    color:var(--ink);
+    text-wrap:balance;
+  }
+  .vex-explainer-final em{ color:var(--pink); font-style:normal; font-weight:600; }
 
+  @media (max-width:700px){
+    .vex-explainer{ margin-top:60px; padding:36px 20px 32px; }
+    .vex-explainer-comps{ flex-direction:column; }
+    .vex-explainer-comps .comp-item{
+      border-left:none;
+      border-top:1px solid var(--gray-line);
+      padding:16px 4px;
+      text-align:left;
+    }
+    .vex-explainer-comps .comp-item:first-child{ border-top:none; }
+    .vex-explainer-final{ font-size:18px; }
+  }
 
   /* ---------- FOOTER ---------- */
   footer{
@@ -490,17 +486,24 @@
     text-transform:uppercase;
     letter-spacing:0.08em;
   }
-  footer .fmark{color:var(--ink);font-weight:500;}
+  footer .fmark{ color:var(--ink); font-weight:500; }
   @media (max-width:700px){
-    footer{padding:22px 20px 36px;flex-direction:column;gap:10px;text-align:center;}
-  }
-
-  @media (prefers-reduced-motion: reduce){
-    .status-dot, .scroll-cue .line, .radar-ring{animation:none;}
+    footer{ padding:22px 20px 36px; flex-direction:column; gap:10px; text-align:center; }
   }
 </style>
 </head>
 <body>
+
+  <!-- Radar rings defined once, reused by both the hero and contact sections via <use> -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <g id="radar-rings">
+        <circle class="radar-ring r1" cx="400" cy="400" r="120"></circle>
+        <circle class="radar-ring r2" cx="400" cy="400" r="240"></circle>
+        <circle class="radar-ring r3" cx="400" cy="400" r="360"></circle>
+      </g>
+    </defs>
+  </svg>
 
   <div class="classbar">UNMANNED, INC · AUTONOMOUS SECURITY CAPABILITY· PUBLIC RELEASE</div>
 
@@ -522,21 +525,18 @@
   <section class="hero">
     <div class="radar" aria-hidden="true">
       <svg viewBox="0 0 800 800">
-        <circle class="radar-ring r1" cx="400" cy="400" r="120"></circle>
-        <circle class="radar-ring r2" cx="400" cy="400" r="240"></circle>
-        <circle class="radar-ring r3" cx="400" cy="400" r="360"></circle>
+        <use href="#radar-rings"></use>
         <line class="radar-tick" x1="400" y1="20" x2="400" y2="780"></line>
         <line class="radar-tick" x1="20" y1="400" x2="780" y2="400"></line>
       </svg>
     </div>
 
-    <div class="eyebrow mono"><span class="status-dot"></span><span class="ink">Autonomous Security Capability</span></div>
+    <div class="eyebrow eyebrow-label mono"><span class="status-dot"></span><span class="ink">Autonomous Security Capability</span></div>
 
     <h1 class="wordmark">VEX</h1>
     <div class="tagline-row">
       <span class="tagline">Stay ahead.</span>
     </div>
-
   </section>
 
   <div class="divider mono">
@@ -545,7 +545,7 @@
   </div>
 
   <section class="brief">
-    <div class="brief-label mono"><span class="status-dot"></span>The problem</div>
+    <div class="brief-label eyebrow-label mono"><span class="status-dot"></span>The problem</div>
     <div class="brief-content">
       <h2>You <u>can't trust</u> what you <u>can't test</u>.</h2>
       <p>
@@ -555,7 +555,7 @@
         you're protected. It's testable. Digital security doesn't carry the same assurance.
       </p>
       <p>
-        Our team has spent decades building security programs inside the U.S. government and the enterprise. 
+        Our team has spent decades building security programs inside the U.S. government and the enterprise.
         Vex represents those lessons, automated and running around the clock.
       </p>
     </div>
@@ -568,7 +568,7 @@
 
   <section class="dark-frame philosophy">
     <div class="body-wrap">
-      <div class="eyebrow-row mono"><span class="status-dot"></span>Our philosophy</div>
+      <div class="eyebrow-row eyebrow-label mono"><span class="status-dot"></span>Our philosophy</div>
       <blockquote>Patching software doesn't <em>prove you're secure</em>.</blockquote>
     </div>
   </section>
@@ -579,7 +579,7 @@
   </div>
 
   <section class="brief wide">
-    <div class="brief-label mono"><span class="status-dot"></span>The solution</div>
+    <div class="brief-label eyebrow-label mono"><span class="status-dot"></span>The solution</div>
     <div class="brief-content">
       <h2>Wake up <u>ahead</u>.</h2>
       <p>
@@ -587,16 +587,55 @@
         From there, it never stops looking — finding what's newly exploitable before anyone else.
       </p>
     </div>
-    <div class="outcome">
-      <div class="outcome-state dim">
+
+    <div class="outcome-flow">
+      <div class="outcome-node">
         <div class="outcome-time">11:58 PM</div>
         <div class="outcome-caption mono">Someone adds an integration</div>
       </div>
-      <div class="outcome-track" aria-hidden="true"></div>
-      <div class="outcome-state">
-        <div class="outcome-time">6:00 AM</div>
-        <div class="outcome-caption mono">You know what's exploitable</div>
+      <div class="outcome-connector" style="--seg:1"></div>
+      <div class="outcome-node lit">
+        <div class="outcome-time">11:59 PM</div>
+        <div class="outcome-caption mono">Vex collects new signal</div>
       </div>
+      <div class="outcome-connector" style="--seg:2"></div>
+      <div class="outcome-node lit">
+        <div class="outcome-time">12:02 AM</div>
+        <div class="outcome-caption mono">Signal correlation begins</div>
+      </div>
+      <div class="outcome-connector" style="--seg:3"></div>
+      <div class="outcome-node lit">
+        <div class="outcome-time">12:03 AM</div>
+        <div class="outcome-caption mono">New attack path generated</div>
+      </div>
+      <div class="outcome-connector" style="--seg:4"></div>
+      <div class="outcome-node final">
+        <div class="outcome-time">12:05 AM</div>
+        <div class="outcome-caption mono">Escalating critical path</div>
+      </div>
+    </div>
+
+    <div class="vex-explainer">
+      <div class="corner tl"></div>
+      <div class="corner tr"></div>
+      <div class="corner bl"></div>
+      <div class="corner br"></div>
+      <div class="vex-explainer-label eyebrow-label mono"><span class="status-dot"></span>What is Vex</div>
+      <div class="vex-explainer-comps">
+        <div class="comp-item">
+          <span class="comp-index">01</span>
+          <span class="comp-text">Vex thinks like a red team.</span>
+        </div>
+        <div class="comp-item">
+          <span class="comp-index">02</span>
+          <span class="comp-text">Vex analyzes like a SOC.</span>
+        </div>
+        <div class="comp-item">
+          <span class="comp-index">03</span>
+          <span class="comp-text">Vex tracks like a monitor.</span>
+        </div>
+      </div>
+      <p class="vex-explainer-final">But really, Vex is your <em>countermeasure against the attacker who never sleeps</em> — proving out real attack paths the moment they open up, every night, with no human required to kick it off.</p>
     </div>
   </section>
 
@@ -608,15 +647,13 @@
   <section class="dark-frame contact">
     <div class="radar-echo" aria-hidden="true">
       <svg viewBox="0 0 800 800">
-        <circle class="radar-ring r1" cx="400" cy="400" r="140"></circle>
-        <circle class="radar-ring r2" cx="400" cy="400" r="260"></circle>
-        <circle class="radar-ring r3" cx="400" cy="400" r="380"></circle>
+        <use href="#radar-rings"></use>
       </svg>
     </div>
     <div class="body-wrap">
-      <div class="eyebrow-row mono"><span class="status-dot"></span>Get in touch</div>
+      <div class="eyebrow-row eyebrow-label mono"><span class="status-dot"></span>Get in touch</div>
       <p class="contact-statement">Stay ahead of the breach.</p>
-      <a class="contact-cta" href="https://calendar.proton.me/bookings#pXTDC4ZCLfkabsdpxXddfQAYiGLPsvV9Kr2wnGEW0Xk=" target="_blank">Schedule now <span class="arrow">→</span></a>
+      <a class="contact-cta" href="https://calendar.proton.me/bookings#pXTDC4ZCLfkabsdpxXddfQAYiGLPsvV9Kr2wnGEW0Xk=" target="_blank" rel="noopener noreferrer">Schedule now <span class="arrow">→</span></a>
     </div>
   </section>
 

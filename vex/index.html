@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+  <link rel="apple-touch-icon" href="https://cdn.unmanned.team/img/logo.png">
+  <link rel="icon" type="image/png" href="https://cdn.unmanned.team/img/logo.png">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.unmanned.team/css/global.css">
+  <link rel="stylesheet" href="static/css/index.css?v=0.00d">
+  <title>Vex</title>
+</head>
+<body>
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <g id="radar-rings">
+        <circle class="radar-ring r1" cx="400" cy="400" r="120" fill="none" stroke="currentColor"></circle>
+        <circle class="radar-ring r2" cx="400" cy="400" r="240" fill="none" stroke="currentColor"></circle>
+        <circle class="radar-ring r3" cx="400" cy="400" r="360" fill="none" stroke="currentColor"></circle>
+      </g>
+    </defs>
+  </svg>
+
+  <site-spinner></site-spinner>
+  <site-overlay></site-overlay>
+   
+  <site-header>
+    <h4 id="open-managed-screen">&#x1F464; Accounts</h4>
+  </site-header>
+
+  <main class="container">
+      <div class="new-message">
+        <div class="textbox-container">
+          <textarea id="signal-value" class="modern-textbox" placeholder="Create a signal here or by sending an email to security@vex.unmanned.team."></textarea>
+          <button class="submit-button" id="signal-create">
+            <span class="material-symbols-outlined">send</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="filter-header">
+        <div class="filter-card" data-filter="OA">
+            <img src="static/img/status/OA.svg" class="filter-icon">
+            <div class="filter-count">0</div>
+            <div class="filter-label">Open</div>
+        </div>
+        <div class="filter-card" data-filter="OB">
+            <img src="static/img/status/OB.svg" class="filter-icon">
+            <div class="filter-count">0</div>
+            <div class="filter-label">Blocked</div>
+        </div>
+        <div class="filter-card" data-filter="CF">
+            <img src="static/img/status/CF.svg" class="filter-icon">
+            <div class="filter-count">0</div>
+            <div class="filter-label">False positive</div>
+        </div>
+        <div class="filter-card" data-filter="CR">
+            <img src="static/img/status/CR.svg" class="filter-icon">
+            <div class="filter-count">0</div>
+            <div class="filter-label">Accepted Risk</div>
+        </div>
+        <div class="filter-card" data-filter="CV">
+            <img src="static/img/status/CV.svg" class="filter-icon">
+            <div class="filter-count">0</div>
+            <div class="filter-label">Auto-closed</div>
+        </div>
+        <div class="filter-card" data-filter="CH">
+            <img src="static/img/status/CH.svg" class="filter-icon">
+            <div class="filter-count">0</div>
+            <div class="filter-label">Resolved</div>
+        </div>
+      </div>
+
+      <div class="signal-table-wrap" id="signal-table-wrap">
+        <table id="signal-table">
+          <tbody></tbody>
+        </table>
+
+        <div class="signal-radar-watermark">
+          <div class="signal-radar" aria-hidden="true">
+            <svg viewBox="0 0 800 800"><use href="#radar-rings"></use></svg>
+          </div>
+          <div class="corner tl signal-radar-corner"></div>
+          <div class="corner tr signal-radar-corner"></div>
+          <div class="corner bl signal-radar-corner"></div>
+          <div class="corner br signal-radar-corner"></div>
+          <span class="material-symbols-outlined">radar</span>
+          <p>No signals collected</p>
+        </div>
+      </div>
+
+      <div class="links">
+        <div class="view-toggle">
+          <button class="toggle-btn active" id="toggle">
+            <span class="knob"></span>
+            <span class="label" id="toggle-label">This month</span>
+          </button>
+        </div>
+
+        <a id="open-monitor-screen">Monitors</a>
+      </div>
+  </main>
+
+  <!-- Managed -->
+
+  <site-rollup id="managed-screen">
+    <div class="managed-banner">
+      <div class="managed-col--identity">
+        <img src="https://cdn.unmanned.team/img/logo.png" class="managed-logo">
+        <div class="managed-info">
+          <div class="managed-name">Meet Vex</div>
+          <p class="managed-desc">Autonomous Red Team Engine</p>
+        </div>
+        <div class="managed-contacts">
+          <span class="managed-contact"><span class="material-symbols-outlined">sms</span>(724) 213-3230</span>
+          <span class="managed-contact"><span class="material-symbols-outlined">mail</span>security@vex.unmanned.team</span>
+        </div>
+      </div>
+      <div class="managed-col--kpis">
+        <div class="managed-kpi">
+          <span class="managed-kpi-label">Open</span>
+          <div class="managed-kpi-value">
+            <span class="managed-kpi-n--top" id="managed-kpi-opened">-</span>
+          </div>
+          <span class="managed-kpi-unit">all signals</span>
+        </div>
+        <div class="managed-kpi">
+          <span class="managed-kpi-label">Critical</span>
+          <div class="managed-kpi-value">
+            <span class="managed-kpi-n--top" id="managed-kpi-critical">-</span>
+          </div>
+          <span class="managed-kpi-unit">must resolve</span>
+        </div>
+        <div class="managed-kpi">
+          <span class="managed-kpi-label">Updated</span>
+          <div class="managed-kpi-value">
+            <span class="managed-kpi-n--top" id="managed-kpi-updated">-</span>
+            <span class="managed-kpi-n--bot">%</span>
+          </div>
+          <span class="managed-kpi-unit">touched today</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="managed-body">
+      <div class="managed-left">
+        <div class="managed-accounts-wrap">
+          <ul id="managed-accounts"></ul>
+          <div class="managed-accounts-watermark">
+            <span class="material-symbols-outlined">person_add</span>
+            Invite customers
+          </div>
+        </div>
+        <div class="managed-invite" id="managed-invite">
+          <div class="managed-invite-row">
+            <input id="managed-invite-input" type="text" placeholder="Invite  account by email">
+            <button id="managed-invite-btn">
+              <span class="material-symbols-outlined">person_add</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="managed-right" id="managed-right">
+        <div class="managed-intro-watermark">
+          <div class="managed-intro-radar" aria-hidden="true">
+            <svg viewBox="0 0 800 800"><use href="#radar-rings"></use></svg>
+          </div>
+          <div class="corner tl managed-intro-corner"></div>
+          <div class="corner tr managed-intro-corner"></div>
+          <div class="corner bl managed-intro-corner"></div>
+          <div class="corner br managed-intro-corner"></div>
+          <div class="managed-intro-label"><span class="status-dot"></span>WHAT IS VEX</div>
+          <p class="managed-intro-text">
+            Vex <em>runs like a continuous, multi-tenant red team</em>, collecting security signals.
+            An alarm triggers if they can chain together to create an incident.
+            Your job is to close signals before that happens.
+          </p>
+        </div>
+      </div>
+    </div>
+  </site-rollup>  
+
+  <!-- Rollups -->
+
+  <site-rollup id="monitor-screen">
+      <site-watermark logo="https://cdn.unmanned.team/img/logo.png" title="Monitors"></site-watermark>
+
+      <div class="monitor-intro">
+          <span class="material-symbols-outlined">radar</span>
+          <p>Vex collects security signals from every connected service and maps them into probable breach scenarios.</p>
+      </div>
+      <div id="monitor-callout" class="monitor-callout"></div>
+      <div id="monitor-list" class="monitor-list"></div>
+  </site-rollup>
+
+  <!--Sidebars-->
+
+  <site-sidebar id="signal-sidebar">
+    <div id="severity-banner" class="severity-banner" data-severity="">
+      <span class="material-symbols-outlined banner-icon"></span>
+      <span class="banner-text"></span>
+    </div>
+
+    <div class="container">
+      <ol id="updates" class="email-thread"></ol>
+    </div>
+
+    <div class="sidebar-actions">
+      <div class="info-row">
+        <div class="avatar-container">
+          <img id="chat" src="https://cdn.unmanned.team/img/logo.png" class="avatar">
+        </div>
+        <div class="text">
+          <div class="name">You are the human in the loop</div>
+          <div class="description">
+            Either tap Note - to leave a comment - or Reply, to notify everyone on the thread.
+          </div>
+        </div>
+      </div>
+
+      <form id="reply-form">
+        <div class="button-row">
+          <div class="field-group">
+            <label>Status</label>
+            <select id="signal-status">
+                <optgroup label="Close">
+                    <option id="CH" value="CH">Resolved</option>
+                    <option id="CF" value="CF">False positive</option>
+                    <option id="CR" value="CR">Accepted risk</option>
+                    <option id="CS" value="CV">Auto-closed</option>
+                </optgroup>
+                <optgroup label="Open">
+                    <option id="OA" value="OA">Open</option>
+                    <option id="OB" value="OB">Blocked</option>
+                </optgroup>
+            </select>
+          </div>
+
+          <div class="field-group">
+            <label>Severity</label>
+            <select id="signal-severity">
+              <option value="1">Critical</option>
+              <option value="2">High</option>
+              <option value="3">Medium</option>
+              <option value="4">Low</option>
+              <option value="5">Info</option>
+            </select>
+          </div>
+
+          <div class="field-group field-group--delete">
+            <button type="button" id="signal-delete" class="delete-btn">
+              <span class="material-symbols-outlined">delete</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="new-message">
+          <div class="textbox-container">
+            <textarea id="response" class="modern-textbox" placeholder="Update this signal"></textarea>
+          </div>
+          <div class="reply-actions">
+            <button type="button" class="reply-btn reply-btn--note" id="signal-note">
+              <span class="material-symbols-outlined">sticky_note_2</span> Add note
+            </button>
+            <button type="button" class="reply-btn reply-btn--send" id="signal-reply">
+              <span class="material-symbols-outlined">send</span> Reply
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </site-sidebar>
+
+  <!-- Modals -->
+
+  <site-modal id="signal-modal">
+    <h3>Add details</h3>
+    <input id="new-signal-name" type="text" placeholder="Add a unique title" max="99"/>
+
+    <select id="new-signal-severity">
+      <option data-severity="1">Critical</option>
+      <option data-severity="2">High</option>
+      <option data-severity="3">Medium</option>
+      <option data-severity="4">Low</option>
+      <option data-severity="5">Info</option>
+    </select>
+
+    <button id="signal-create-2">Create</button>
+  </site-modal>
+
+</body>
+
+<script src="https://cdn.unmanned.team/js/components.js"></script>
+<script src="https://cdn.unmanned.team/js/cognito.js"></script>
+<script src="static/js/api.js?v=0.00b"></script>
+<script src="static/js/workspace.js?v=0.00c"></script>
+<script src="static/js/table.js?v=0.00b"></script>
+<script src="static/js/sidebar.js?v=0.00a"></script>
+<script src="static/js/screens/signal.js?v=0.00d"></script>
+<script src="static/js/screens/managed.js?v=0.00d"></script>
+<script src="static/js/screens/monitors.js?v=0.00a"></script>
+
+<script>
+  window.onload = async() => {
+    const workspace = new Workspace();
+    await workspace.render(Cognito.code());
+  }
+</script>
+</html>

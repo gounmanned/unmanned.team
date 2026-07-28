@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Google Workspace</title>
+    <link rel="icon" href="https://cdn.pinkduckcompany.com/img/logo.png" type="image/png" />
+    <link rel="apple-touch-icon" href="https://cdn.pinkduckcompany.com/img/logo.png" />
+    <link rel="stylesheet" href="https://cdn.pinkduckcompany.com/css/global.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <style>
+        body {
+            margin: 0;
+            padding: 2rem;
+            background-color: #f8fafc;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 3rem 4rem;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--brand);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        h2 {
+            font-size: 1.3rem;
+            color: var(--brand);
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        p {
+            line-height: 1.6;
+        }
+
+        ul,
+        ol {
+            margin: 1rem 0 1rem 1.5rem;
+            padding-left: 1.5rem;
+        }
+
+        ul {
+            list-style-type: disc;
+        }
+
+        ol {
+            list-style-type: decimal;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        ol li::marker {
+            font-weight: bold;
+            color: var(--brand);
+        }
+
+        ul li::marker {
+            color: var(--brand);
+        }
+
+        pre {
+            background: #f3f3f3;
+            padding: 1rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 0.9rem;
+        }
+
+        code {
+            background: #f3f3f3;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        a {
+            color: var(--brand);
+            text-decoration: none;
+        }
+
+        @media (max-width: 768px) {
+            body {
+            padding: 1rem;
+            }
+            
+            .container {
+            padding: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Google Workspace</h1>
+        <p>This guide walks you through creating a service account in Google Cloud Platform (GCP) with domain-wide delegation. The resulting JSON credentials file will allow API access to:</p>
+        <ul>
+            <li>Google Workspace Alert Center</li>
+            <li>Google Admin Directory Users</li>
+        </ul>
+
+        <h2>Prerequisites</h2>
+        <ul>
+            <li>You have a <strong>Super Admin</strong> account with an email address of admin@your-domain.com</li>
+            <li>You have a <strong>Google Cloud Project</strong></li>
+            <li>
+                <a href="https://console.developers.google.com/apis/library/admin.googleapis.com" target="_blank">Admin SDK API</a> is enabled 
+            </li>
+        </ul>
+
+        <h2>Step 1: Create a Service Account</h2>
+        <ol>
+            <li>Go to <a href="https://console.cloud.google.com/iam-admin/serviceaccounts" target="_blank">Google Cloud Console</a>.</li>
+            <li>Choose or create a project.</li>
+            <li>Click <strong>"Create Service Account"</strong>.</li>
+            <li>Set a name like <code>security-monitor</code> and click <strong>"Create and Continue"</strong>.</li>
+            <li>Click <strong>Done</strong>.</li>
+        </ol>
+
+        <h2>Step 2: Disable organization policy</h2>
+        <ol>
+            <li>From inside your console, go "back" one directory to your organization</li>
+            <li>Go to Organization Policies</li>
+            <li>Search for a policy called ``iam.disableServiceAccountKeyCreation``</li>
+            <li>Click Manage Policy</li>
+            <li>Change from enforced to not enforced</li>
+            <li>Save</li>
+        </ol>
+
+        <h2>Step 3: Create a JSON Credentials File</h2>
+        <ol>
+            <li>In the <strong>Service Accounts</strong> list, click your service account.</li>
+            <li>Go to the <strong>"Keys"</strong> tab.</li>
+            <li>Click <strong>"Add Key" → "Create new key"</strong>.</li>
+            <li>Select <strong>JSON</strong>, then click <strong>Create</strong>.</li>
+            <li>Download and save the generated <code>.json</code> file securely.</li>
+        </ol>
+
+        <h2>Step 4: Enable Domain-Wide Delegation</h2>
+        <ol>
+            <li>Still in the service account, click <strong>"Show Domain-wide Delegation"</strong>.</li>
+            <li>Copy the <strong>Client ID</strong> shown.</li>
+        </ol>
+
+        <h2>Step 5: Grant Scopes in Admin Console</h2>
+        <ol>
+            <li>Visit <a href="https://admin.google.com/ac/owl/domainwidedelegation" target="_blank">Admin Console → Security → API Controls</a>.</li>
+            <li>Click <strong>"Manage Domain-Wide Delegation"</strong>.</li>
+            <li>Click <strong>"Add new"</strong>.</li>
+            <li>Paste the <strong>Client ID</strong>.</li>
+            <li>Add the following scopes:</li>
+        </ol>
+        <pre>
+    https://www.googleapis.com/auth/apps.alerts
+    https://www.googleapis.com/auth/drive.readonly
+    https://www.googleapis.com/auth/admin.directory.user.readonly
+    https://www.googleapis.com/auth/admin.directory.device.chromeos.readonly
+        </pre>
+        <ol start="6">
+            <li>Save</li>
+            <li>Go back to Sam and paste the JSON contents into the monitor and Save.</li>
+        </ol>
+  </div>
+</body>
+</html>

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cloudflare</title>
+    <link rel="icon" href="https://cdn.pinkduckcompany.com/img/logo.png" type="image/png" />
+    <link rel="apple-touch-icon" href="https://cdn.pinkduckcompany.com/img/logo.png" />
+    <link rel="stylesheet" href="https://cdn.pinkduckcompany.com/css/global.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <style>
+        body {
+            margin: 0;
+            padding: 2rem;
+            background-color: #f8fafc;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 3rem 4rem;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--brand);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        h2 {
+            font-size: 1.3rem;
+            color: var(--brand);
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        p {
+            line-height: 1.6;
+        }
+
+        ul,
+        ol {
+            margin: 1rem 0 1rem 1.5rem;
+            padding-left: 1.5rem;
+        }
+
+        ul {
+            list-style-type: disc;
+        }
+
+        ol {
+            list-style-type: decimal;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        ol li::marker {
+            font-weight: bold;
+            color: var(--brand);
+        }
+
+        ul li::marker {
+            color: var(--brand);
+        }
+
+        pre {
+            background: #f3f3f3;
+            padding: 1rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 0.9rem;
+        }
+
+        code {
+            background: #f3f3f3;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        a {
+            color: var(--brand);
+            text-decoration: none;
+        }
+
+        .important-note {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 0 4px 4px 0;
+        }
+
+        @media (max-width: 768px) {
+            body {
+            padding: 1rem;
+            }
+            
+            .container {
+            padding: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Cloudflare</h1>
+        <p>This guide walks you through creating a Cloudflare API token with the necessary permissions to monitor security events across all your zones.</p>
+
+        <h2>Prerequisites</h2>
+        <ul>
+            <li>You have access to your <strong>Cloudflare account</strong> with domains configured.</li>
+            <li>Your account has <strong>Admin</strong> or <strong>Super Administrator</strong> privileges.</li>
+        </ul>
+
+        <h2>Step 1: Access API Token Management</h2>
+        <ol>
+            <li>Log into your <a href="https://dash.cloudflare.com" target="_blank">Cloudflare Dashboard</a>.</li>
+            <li>Navigate to the <strong>Manage Account -> Account API tokens</strong> section</li>
+            <li>Under <strong>"Create token"</strong>, click <strong>"Get started"</strong>.</li>
+            <li>Set the <strong>Token name</strong> to <code>Security Monitor</code>.</li>
+        </ol>
+
+        <h2>Step 2: Configure Account policy</h2>
+        <ol>
+            <li>Select "Entire Account" under Edit Policy</li>
+            <li>Check READ for all options under "DNS & Zones", "App Security", "Analytics & Logs", "Account & Billing"</li>
+        </ol>
+
+        <h2>Step 3: Configure Domain policy</h2>
+        <ol>
+            <li>Click to add another policy (+ policy)</li>
+            <li>Select "All domains" under Edit Policy</li>
+            <li>Check READ for all options under "DNS & Zones", "App Security", "Analytics & Logs"</li>
+        </ol>
+
+        <h2>Step 4: Create Token</h2>
+        <ol>
+            <li>Click <strong>Review</strong> and finish creating your token.</li>
+            <li>Click <strong>"Create Token"</strong>.</li>
+        </ol>
+
+        <h2>Step 5: Upload Token to Sam</h2>
+        <ol>
+            <li>Create a new text file and name it <code>cloudflare.json</code>.</li>
+            <li>Using the token from Step 4, create a JSON object with this structure:</li>
+        </ol>
+        <pre>
+{
+    "account_id": "your_cloudflare_account_id",
+    "api_token": "your-api-token-here"
+}
+        </pre>
+        <ol start="3">
+            <li>Save this in Sam</li>
+        </ol>
+    </div>
+</body>
+</html>

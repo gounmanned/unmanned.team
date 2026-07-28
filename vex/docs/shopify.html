@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shopify</title>
+    <link rel="icon" href="https://cdn.pinkduckcompany.com/img/logo.png" type="image/png" />
+    <link rel="apple-touch-icon" href="https://cdn.pinkduckcompany.com/img/logo.png" />
+    <link rel="stylesheet" href="https://cdn.pinkduckcompany.com/css/global.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <style>
+        body {
+            margin: 0;
+            padding: 2rem;
+            background-color: #f8fafc;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 3rem 4rem;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--brand);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        h2 {
+            font-size: 1.3rem;
+            color: var(--brand);
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        p {
+            line-height: 1.6;
+        }
+
+        ul,
+        ol {
+            margin: 1rem 0 1rem 1.5rem;
+            padding-left: 1.5rem;
+        }
+
+        ul {
+            list-style-type: disc;
+        }
+
+        ol {
+            list-style-type: decimal;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        ol li::marker {
+            font-weight: bold;
+            color: var(--brand);
+        }
+
+        ul li::marker {
+            color: var(--brand);
+        }
+
+        pre {
+            background: #f3f3f3;
+            padding: 1rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 0.9rem;
+        }
+
+        code {
+            background: #f3f3f3;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        a {
+            color: var(--brand);
+            text-decoration: none;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+            
+            .container {
+                padding: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Shopify</h1>
+        <p>This guide walks you through creating a custom app with an API access token for your Shopify store. The resulting credentials will allow us to monitor events and detect security-relevant activity in your store.</p>
+
+        <h2>Prerequisites</h2>
+        <ul>
+            <li>You have <strong>admin access</strong> to your Shopify store</li>
+            <li>You know your store's name (e.g., <code>your-store-name.myshopify.com</code>)</li>
+        </ul>
+
+        <h2>Step 1: Enable Custom App Development</h2>
+        <ol>
+            <li>Log into your Shopify admin panel.</li>
+            <li>Go to <strong>Settings</strong> (bottom left).</li>
+            <li>Click <strong>Apps and sales channels</strong>.</li>
+            <li>Click <strong>Develop apps</strong>.</li>
+            <li>If prompted, click <strong>Allow custom app development</strong> and confirm.</li>
+        </ol>
+
+        <h2>Step 2: Create a Custom App</h2>
+        <ol>
+            <li>Click <strong>Create an app</strong>.</li>
+            <li>Enter an app name like <code>Security Monitor</code>.</li>
+            <li>Select yourself as the app developer.</li>
+            <li>Click <strong>Create app</strong>.</li>
+        </ol>
+
+        <h2>Step 3: Configure API Scopes</h2>
+        <ol>
+            <li>Click on the <strong>Configuration</strong> tab.</li>
+            <li>Under <strong>Admin API integration</strong>, click <strong>Configure</strong>.</li>
+            <li>In the <strong>Admin API access scopes</strong> section, select the following scopes:</li>
+        </ol>
+        <pre>read_products
+read_orders
+read_customers
+read_content</pre>
+        <ol start="4">
+            <li>Click <strong>Save</strong>.</li>
+        </ol>
+
+        <h2>Step 4: Install the App</h2>
+        <ol>
+            <li>Click on the <strong>API credentials</strong> tab.</li>
+            <li>Click <strong>Install app</strong>.</li>
+            <li>Click <strong>Install</strong> to confirm.</li>
+        </ol>
+
+        <h2>Step 5: Reveal and Copy Your Access Token</h2>
+        <ol>
+            <li>Under <strong>Admin API access token</strong>, click <strong>Reveal token once</strong>.</li>
+            <li>Copy the access token that appears.</li>
+            <li>The token will look like:</li>
+        </ol>
+        <pre>shpat_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</pre>
+
+        <h2>Step 6: Prepare Your Credentials</h2>
+        <p>You'll need to provide both your store name and access token in JSON format:</p>
+        <pre>{
+  "shop_name": "your-store-name",
+  "access_token": "shpat_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+}</pre>
+        <p>Replace <code>your-store-name</code> with your store name (without <code>.myshopify.com</code>).</p>
+
+        <h2>What Is Monitored</h2>
+        <p>With these credentials, we will monitor your Shopify store for:</p>
+        <ul>
+            <li>Mass deletion events (products, collections, customers)</li>
+            <li>Suspicious app activity</li>
+            <li>Customer data modifications</li>
+            <li>Unusual order patterns</li>
+            <li>Critical resource changes</li>
+        </ul>
+    </div>
+</body>
+</html>

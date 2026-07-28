@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Level.io</title>
+    <link rel="icon" href="https://cdn.pinkduckcompany.com/img/logo.png" type="image/png" />
+    <link rel="apple-touch-icon" href="https://cdn.pinkduckcompany.com/img/logo.png" />
+    <link rel="stylesheet" href="https://cdn.pinkduckcompany.com/css/global.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <style>
+        body {
+            margin: 0;
+            padding: 2rem;
+            background-color: #f8fafc;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 3rem 4rem;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--brand);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        h2 {
+            font-size: 1.3rem;
+            color: var(--brand);
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        p {
+            line-height: 1.6;
+        }
+
+        ul,
+        ol {
+            margin: 1rem 0 1rem 1.5rem;
+            padding-left: 1.5rem;
+        }
+
+        ul {
+            list-style-type: disc;
+        }
+
+        ol {
+            list-style-type: decimal;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        ol li::marker {
+            font-weight: bold;
+            color: var(--brand);
+        }
+
+        ul li::marker {
+            color: var(--brand);
+        }
+
+        pre {
+            background: #f3f3f3;
+            padding: 1rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 0.9rem;
+        }
+
+        code {
+            background: #f3f3f3;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        a {
+            color: var(--brand);
+            text-decoration: none;
+        }
+
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 6px;
+            padding: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .info {
+            background: #e3f2fd;
+            border: 1px solid #90caf9;
+            border-radius: 6px;
+            padding: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        @media (max-width: 768px) {
+            body {
+            padding: 1rem;
+            }
+            
+            .container {
+            padding: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Level.io</h1>
+        <p>This guide walks you through setting up a Level.io integration to receive real-time alerts from your devices.</p>
+
+        <h2>Prerequisites</h2>
+        <ul>
+            <li>You have a <strong>Level.io</strong> account with administrative access.</li>
+            <li>Each device you manage is labeled with the email address of the owner</li>
+        </ul>
+
+        <h2>Step 1: Create an API Key</h2>
+        <ol>
+            <li>Log into your <a href="https://app.level.io" target="_blank">Level.io dashboard</a>.</li>
+            <li>Navigate to <strong>Settings → API Keys</strong>.</li>
+            <li>Click <strong>"Create API Key"</strong>.</li>
+            <li>Set a descriptive name like <code>security-monitor</code>.</li>
+            <li>Copy and securely save the generated API key.</li>
+        </ol>
+
+        <h2>Step 2: Create a Webhook</h2>
+        <ol>
+            <li>In your Level dashboard, navigate to <strong>Settings → Webhooks</strong>.</li>
+            <li>Click <strong>"Create webhook"</strong>.</li>
+            <li>Configure your webhook settings:</li>
+            <ul>
+                <li><strong>URL:</strong> https://9vy0x0o0cc.execute-api.us-east-2.amazonaws.com/public/{my-domain.com}</li>
+                <li><strong>Secret:</strong> Generate a secure secret key for signature validation</li>
+                <li><strong>Event types:</strong> Select 'new alerts' and 'device updates'</li>
+                <li><strong>Status:</strong> Enable the webhook</li>
+            </ul>
+            <li>Click <strong>"Create"</strong>.</li>
+        </ol>
+
+        <h2>Step 3: Create Configuration JSON</h2>
+        <p>After creating both the API key and webhook, create a JSON configuration object with your credentials:</p>
+        <pre>
+{
+  "secret": "your-webhook-secret-here",
+  "token": "your-api-key-here"
+}</pre>
+</div>
+</body>
+</html>

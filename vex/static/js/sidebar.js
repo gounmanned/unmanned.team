@@ -31,6 +31,8 @@ class SignalSidebar extends Sidebar {
     const banner = document.getElementById("severity-banner");
     banner.dataset.severity = signal.severity;
     banner.innerHTML = `<img class="banner-icon" src="static/img/severity/${signal.severity}.svg"/><span>${meta.label}</span>`;
+    
+    this.add(signal);
 
     updates.sort((a, b) => new Date(a.updated) - new Date(b.updated)).forEach((update, _) => {
       this.add(update);

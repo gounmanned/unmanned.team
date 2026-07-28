@@ -89,7 +89,7 @@ table th {
 }
 
 table tbody tr {
-  background-color: white;
+  background-color: var(--gray-soft);
   border-radius: 12px;
 }
 

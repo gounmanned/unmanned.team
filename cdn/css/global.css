@@ -89,13 +89,14 @@ table th {
 }
 
 table tbody tr {
-  background-color: var(--gray-panel);
+  background-color: white;
   border-radius: 12px;
   transition: background-color 0.15s ease;
+  border-bottom: 1px solid var(--gray-line);
 }
 
 table tbody tr:hover {
-  background-color: var(--gray-hover);
+  background-color: #FAF9F6;
 }
 
 table td {

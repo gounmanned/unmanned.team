@@ -361,18 +361,20 @@ tr.closed {
   border-bottom: 1px solid var(--gray-line);
 }
 
-#signal-sidebar .sidebar-actions .avatar-container {
+#signal-sidebar .sidebar-actions .avatar-container .avatar--icon {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 4px;
-  max-width: 90px;
-  cursor: pointer;
-  transition: transform 0.25s;
+  justify-content: center;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: var(--background)
 }
 
-#signal-sidebar .sidebar-actions .avatar-container:hover { transform: scale(1.04); }
-#signal-sidebar .sidebar-actions .avatar-container .avatar { height: 54px; }
+#signal-sidebar .sidebar-actions .avatar-container .avatar--icon .material-symbols-outlined {
+  font-size: 26px;
+  color: var(--gray-mid);
+}
 
 #signal-sidebar .sidebar-actions .text {
   flex: 1;

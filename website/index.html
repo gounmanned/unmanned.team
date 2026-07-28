@@ -79,12 +79,12 @@
   .hud-frame .corner.bl{bottom:20px;left:20px;}
   .hud-frame .corner.br{bottom:20px;right:20px;}
 
-  /* small frame around the "What is Vex" box */
-  .vex-explainer .corner{ --corner-size:20px; }
-  .vex-explainer .corner.tl{top:0;left:0;}
-  .vex-explainer .corner.tr{top:0;right:0;}
-  .vex-explainer .corner.bl{bottom:0;left:0;}
-  .vex-explainer .corner.br{bottom:0;right:0;}
+  /* small frame around HUD-style callout boxes (What is Vex / No Dashboard) */
+  .hud-box .corner{ --corner-size:20px; }
+  .hud-box .corner.tl{top:0;left:0;}
+  .hud-box .corner.tr{top:0;right:0;}
+  .hud-box .corner.bl{bottom:0;left:0;}
+  .hud-box .corner.br{bottom:0;right:0;}
 
   /* ---------- CLASSIFICATION BAR ---------- */
   .classbar{
@@ -262,6 +262,12 @@
   .brief-content h2 u{ text-decoration-color:var(--pink); text-underline-offset:3px; }
   .brief-content p{ font-size:16px; line-height:1.75; color:#2b2b2b; }
   .brief-content p + p{ margin-top:18px; }
+  .brief-content p.footnote{
+    font-size:12.5px;
+    line-height:1.6;
+    color:var(--gray-mid);
+    margin-top:26px;
+  }
 
   /* ---------- DARK FRAME — shared by philosophy + contact ---------- */
   .dark-frame{
@@ -474,6 +480,45 @@
     .vex-explainer-final{ font-size:18px; }
   }
 
+  /* ---------- NO DASHBOARD INCLUDED ---------- */
+  .no-dashboard{
+    position:relative;
+    max-width:920px;
+    margin:160px auto auto;
+    padding-left:28px;
+    border-left:2px solid var(--pink);
+    text-align:left;
+  }
+  .no-dashboard h3{
+    font-family:'Hedvig Letters Serif', serif;
+    font-style:italic;
+    font-weight:400;
+    font-size:clamp(26px, 3.2vw, 34px);
+    letter-spacing:-0.005em;
+    line-height:1.25;
+    margin-bottom:16px;
+    color:var(--ink);
+  }
+  .no-dashboard p{
+    font-size:15px;
+    line-height:1.75;
+    color:#2b2b2b;
+    max-width:none;
+  }
+  .no-dashboard p.footnote{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11.5px;
+    letter-spacing:0.02em;
+    color:var(--gray-mid);
+    margin-top:24px;
+    padding-top:14px;
+    border-top:1px dashed var(--gray-line);
+    display:inline-block;
+  }
+  @media (max-width:700px){
+    .no-dashboard{ margin-top:64px; padding-left:18px; }
+  }
+
   /* ---------- FOOTER ---------- */
   footer{
     border-top:1px solid var(--gray-line);
@@ -615,7 +660,7 @@
       </div>
     </div>
 
-    <div class="vex-explainer">
+    <div class="vex-explainer hud-box">
       <div class="corner tl"></div>
       <div class="corner tr"></div>
       <div class="corner bl"></div>
@@ -636,6 +681,18 @@
         </div>
       </div>
       <p class="vex-explainer-final">Vex is your <em>countermeasure against the attacker who never sleeps</em> — proving out real attack paths shortly after they open up, every night, with no human required to manage it.</p>
+    </div>
+
+    <div class="no-dashboard">
+      <h3>No dashboard included.</h3>
+      <p>
+        Vex is a headless application. 
+        There's no console to babysit, no queue of alerts waiting on someone to log in. 
+        AI does the testing -- probing, chaining, and validating attack paths around the clock.
+        Our human red team verifies every recommendation and calls you when there's one worth your time.
+        The cell phone is our user experience.
+      </p>
+      <p class="footnote mono">* OK, we do have a dashboard if you absolutely need one.</p>
     </div>
   </section>
 

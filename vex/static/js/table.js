@@ -14,7 +14,6 @@ class Table {
     }
 
     add(row, signal) {
-        row.querySelector("td.status img").src = `static/img/status/${signal.status}.svg`;
         row.querySelector("td.severity img").src = `static/img/severity/${signal.severity}.svg`;
         row.dataset.status = signal.status;
         row.dataset.severity = signal.severity;

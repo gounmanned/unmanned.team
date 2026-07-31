@@ -352,50 +352,6 @@ tr.closed {
   border-top: 1px solid var(--gray-line);
 }
 
-#signal-sidebar .sidebar-actions .info-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 14px 18px;
-  background: var(--gray-panel);
-  border-bottom: 1px solid var(--gray-line);
-}
-
-#signal-sidebar .sidebar-actions .avatar-container .avatar--icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 54px;
-  height: 54px;
-  border-radius: 50%;
-  background: var(--background)
-}
-
-#signal-sidebar .sidebar-actions .avatar-container .avatar--icon .material-symbols-outlined {
-  font-size: 26px;
-  color: var(--gray-mid);
-}
-
-#signal-sidebar .sidebar-actions .text {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-#signal-sidebar .sidebar-actions .name {
-  font-size: 12.5px;
-  font-weight: 600;
-  line-height: 1.2;
-  color: var(--ink);
-}
-
-#signal-sidebar .sidebar-actions .description {
-  font-size: 11.5px;
-  line-height: 1.45;
-  color: var(--text-strong);
-}
-
 #signal-sidebar .button-row {
   display: flex;
   align-items: flex-end;

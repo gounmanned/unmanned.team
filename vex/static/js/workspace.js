@@ -25,6 +25,7 @@ class Workspace {
                 this.rollups = {
                     managed: new ManagedScreen(state),
                     monitor: new MonitorScreen(state),
+                    asset: new AssetScreen(state),
                 };
 
                 this.listen();
@@ -85,4 +86,16 @@ class Workspace {
             timer = setTimeout(() => fn(...args), delay);
         };
     }
+
+    static status(s) {
+        const labels = {
+            OA: 'Open',
+            OB: 'Blocked',
+            CF: 'False Positive',
+            CR: 'Accepted Risk',
+            CV: 'Auto-Closed',
+            CH: 'Resolved',
+        };
+        return labels[s] || s;
+    }    
 }

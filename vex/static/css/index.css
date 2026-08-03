@@ -1415,6 +1415,13 @@ tr.closed {
   gap: 7px;
 }
 
+#asset-screen .asset-source img {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+  display: block;
+}
+
 #asset-screen .copy-btn {
   opacity: 0;
   border: none;

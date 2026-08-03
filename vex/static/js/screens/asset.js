@@ -22,7 +22,6 @@ class AssetScreen {
         this.query = '';
         this.sort = { key: 'updated', dir: 'desc' };
         this.labels = { domain: 'domains', identity: 'identities', other: 'other assets' };
-
         this.listen();
     }
 
@@ -61,7 +60,7 @@ class AssetScreen {
         document.getElementById('asset-empty-label').textContent = this.query
             ? `No ${this.labels[this.scope]} match "${this.query}"`
             : `No ${this.labels[this.scope]} found`;
-
+        
         this.tbody.innerHTML = rows.map(a => `
             <tr data-id="${a.id ?? a.name}">
                 <td class="asset-value">
@@ -70,7 +69,7 @@ class AssetScreen {
                         <span class="material-symbols-outlined">content_copy</span>
                     </button>
                 </td>
-                <td class="asset-source">${a.source || '—'}</td>
+                <td class="asset-source"><img src="static/img/source/${a.source}.png" alt="" title="${a.source}"></td>
                 <td class="asset-seen">${a.updated ? new Date(a.updated).toLocaleDateString() : '—'}</td>
             </tr>
         `).join('');

@@ -210,13 +210,15 @@ class ManagedScreen {
         };
 
         const now = new Date();
-        const startOfDay = new Date(now);
-        startOfDay.setHours(0, 0, 0, 0);
+        const midnight = new Date(now);
+        midnight.setHours(0, 0, 0, 0);
         const pct = (n, d) => d ? (n / d) * 100 : NaN;
-        const updated = signals.filter(s => new Date(s.updated) >= startOfDay);
+        const updated = signals.filter(s => new Date(s.updated) >= midnight);
+        const created = signals.filter(s => new Date(s.created) >= midnight);
 
+        set('#managed-kpi-created', created.length);
         set('#managed-kpi-opened', signals.length);
-        set('#managed-kpi-updated', pct(updated.length, signals.length));
+        set('#managed-kpi-updated', updated.length);
         set('#managed-kpi-critical',  signals.filter(s => s.severity == 1).length);
     }, 50);
 

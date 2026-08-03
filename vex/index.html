@@ -9,7 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.unmanned.team/css/global.css">
-  <link rel="stylesheet" href="static/css/index.css?v=0.00k">
+  <link rel="stylesheet" href="static/css/index.css?v=0.00l">
   <title>Vex</title>
 </head>
 <body>
@@ -110,14 +110,16 @@
   <site-rollup id="managed-screen">
     <div class="managed-banner">
       <div class="managed-col--identity">
-        <img src="https://cdn.unmanned.team/img/logo.png" class="managed-logo">
+        <div class="managed-logo-wrap">
+          <img src="https://cdn.unmanned.team/img/logo.png" class="managed-logo">
+        </div>
         <div class="managed-info">
           <div class="managed-name">Meet Vex</div>
-          <p class="managed-desc">Autonomous Red Team Engine</p>
+          <p class="managed-desc">Adversarial Exposure Validation</p>
         </div>
         <div class="managed-contacts">
-          <span class="managed-contact"><span class="material-symbols-outlined">sms</span>(724) 213-3230</span>
           <span class="managed-contact"><span class="material-symbols-outlined">mail</span>security@vex.unmanned.team</span>
+          <p class="managed-contact-desc">Contact Vex with any questions about your account</p>
         </div>
       </div>
       <div class="managed-col--kpis">
@@ -129,19 +131,26 @@
           <span class="managed-kpi-unit">all signals</span>
         </div>
         <div class="managed-kpi">
-          <span class="managed-kpi-label">Critical</span>
+          <span class="managed-kpi-label">New</span>
           <div class="managed-kpi-value">
-            <span class="managed-kpi-n--top" id="managed-kpi-critical">-</span>
+            <span class="managed-kpi-n--top" id="managed-kpi-created">-</span>
           </div>
-          <span class="managed-kpi-unit">must resolve</span>
+          <span class="managed-kpi-unit">signals today</span>
         </div>
         <div class="managed-kpi">
           <span class="managed-kpi-label">Updated</span>
           <div class="managed-kpi-value">
             <span class="managed-kpi-n--top" id="managed-kpi-updated">-</span>
-            <span class="managed-kpi-n--bot">%</span>
+            <span class="managed-kpi-n--bot"></span>
           </div>
           <span class="managed-kpi-unit">touched today</span>
+        </div>
+        <div class="managed-kpi">
+          <span class="managed-kpi-label">Critical</span>
+          <div class="managed-kpi-value">
+            <span class="managed-kpi-n--top" id="managed-kpi-critical">-</span>
+          </div>
+          <span class="managed-kpi-unit">must resolve</span>
         </div>
       </div>
     </div>
@@ -191,7 +200,7 @@
 
     <div class="monitor-intro">
       <span class="material-symbols-outlined">inventory_2</span>
-      <p>Vex maps every asset discovered across your monitors into a single inventory.</p>
+      <p>Vex maps every discovered asset into a single inventory.</p>
     </div>
 
     <div class="asset-toolbar">
@@ -248,7 +257,7 @@
 
     <div class="monitor-intro">
         <span class="material-symbols-outlined">radar</span>
-        <p>Vex collects security signals from every connected service and maps them into probable breach scenarios.</p>
+        <p>Vex collects security signals and maps them into probable breach scenarios.</p>
     </div>
 
     <div id="monitor-callout" class="monitor-callout"></div>
@@ -368,8 +377,8 @@
 <script src="static/js/workspace.js?v=0.00e"></script>
 <script src="static/js/table.js?v=0.00d"></script>
 <script src="static/js/sidebar.js?v=0.00b"></script>
-<script src="static/js/screens/signal.js?v=0.00f"></script>
-<script src="static/js/screens/managed.js?v=0.00d"></script>
+<script src="static/js/screens/signal.js?v=0.00g"></script>
+<script src="static/js/screens/managed.js?v=0.00e"></script>
 <script src="static/js/screens/monitors.js?v=0.00b"></script>
 <script src="static/js/screens/asset.js?v=0.00d"></script>
 

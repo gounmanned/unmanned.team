@@ -865,11 +865,43 @@ tr.closed {
 #managed-screen .managed-name { font-size: 13px; font-weight: 700; color: var(--ink); }
 #managed-screen .managed-desc { margin: 0; font-size: 11px; color: var(--text-muted); }
 
+#managed-screen .managed-logo-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+#managed-screen .managed-logo-wrap::before {
+  content: '';
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(224,18,128,0.45) 0%, rgba(224,18,128,0.12) 55%, rgba(224,18,128,0) 75%);
+  z-index: 0;
+}
+
+#managed-screen .managed-logo {
+  position: relative;
+  z-index: 1;
+  width: 75px; height: auto; object-fit: contain;
+}
+
 #managed-screen .managed-contacts {
-  display: flex; flex-direction: column; gap: 5px;
+  display: flex; flex-direction: column; gap: 4px;
   margin-left: auto; padding-left: 16px;
+  max-width: 210px;
   align-self: center;
   position: relative;
+}
+
+#managed-screen .managed-contact-desc {
+  margin: 0;
+  font-size: 10px;
+  line-height: 1.4;
+  color: var(--text-muted);
 }
 
 #managed-screen .managed-contacts::before {
@@ -890,7 +922,7 @@ tr.closed {
 
 #managed-screen .managed-col--kpis {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   align-items: stretch;
 }
 

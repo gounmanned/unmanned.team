@@ -63,13 +63,13 @@ class AssetScreen {
         
         this.tbody.innerHTML = rows.map(a => `
             <tr data-id="${a.id ?? a.name}">
+                <td class="asset-source"><img src="static/img/source/${a.source}.png" alt="" title="${a.source}"></td>
                 <td class="asset-value">
                     ${a.name}
                     <button class="copy-btn" data-copy="${a.name}" type="button" aria-label="Copy value">
                         <span class="material-symbols-outlined">content_copy</span>
                     </button>
                 </td>
-                <td class="asset-source"><img src="static/img/source/${a.source}.png" alt="" title="${a.source}"></td>
                 <td class="asset-seen">${a.updated ? new Date(a.updated).toLocaleDateString() : '—'}</td>
             </tr>
         `).join('');

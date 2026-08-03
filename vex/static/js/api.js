@@ -34,6 +34,34 @@ class SignalApi extends Gateway {
     }  
 }
 
+class MonitorApi extends Gateway {
+    constructor(){
+        super();
+    }
+
+    async list() {
+        return await this.call("GET", `monitor`);
+    }
+    
+    async connect(name, blob) {
+        await this.call("POST", `monitor/${name}`, JSON.parse(blob));
+    }
+
+    async disconnect(key) {
+        await this.call("DELETE", `monitor/${key}`);
+    }
+}
+
+class AssetApi extends Gateway {
+    constructor(){
+        super();
+    }
+
+    async list() {
+        return await this.call("GET", `asset`);
+    }
+}
+
 class ManagedApi extends Gateway {
     constructor(){
         super();
@@ -66,24 +94,6 @@ class ManagedApi extends Gateway {
 
     async invite(email) {
         await this.call('POST', 'managed/invite', {to: email});
-    }
-}
-
-class MonitorApi extends Gateway {
-    constructor(){
-        super();
-    }
-
-    async list() {
-        return await this.call("GET", `monitor`);
-    }
-    
-    async connect(name, blob) {
-        await this.call("POST", `monitor/${name}`, JSON.parse(blob));
-    }
-
-    async disconnect(key) {
-        await this.call("DELETE", `monitor/${key}`);
     }
 }
 

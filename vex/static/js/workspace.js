@@ -25,6 +25,7 @@ class Workspace {
                 this.rollups = {
                     managed: new ManagedScreen(state),
                     monitor: new MonitorScreen(state),
+                    asset: new AssetScreen(state),
                 };
 
                 this.listen();
@@ -84,5 +85,5 @@ class Workspace {
             clearTimeout(timer);
             timer = setTimeout(() => fn(...args), delay);
         };
-    }
+    } 
 }

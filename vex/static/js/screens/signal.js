@@ -60,11 +60,11 @@ class TenantScreen {
 
             row.innerHTML = `
                 <td><img src="${Workspace.avatar(signal.source)}"/></td>
-                <td class="status"><img src="static/img/status/${signal.status}.svg"/></td>
                 <td class="severity"><img src="static/img/severity/${signal.severity}.svg"/></td>
-                <td>${signal.account}</td>
-                <td>#${signal.id}</td>
                 <td>${signal.name.substring(0, 99)}</td>
+                <td>#${signal.id}</td>
+                <td>${signal.account}</td>
+                <td>${signal.created}</td>
             `;
 
             row.addEventListener('click', async (e) => {
@@ -89,7 +89,7 @@ class TenantScreen {
                 const filter = document.querySelector('.filter-card.active')?.dataset.filter;
 
                 document.querySelectorAll('#signal-table tbody tr').forEach(row => {
-                    const status = row.querySelector('.status img').src.split('/').pop().replace('.svg', '');
+                    const status = row.dataset.status;
                     row.style.display = !filter || status === filter ? '' : 'none';
                 });
             });
@@ -102,11 +102,13 @@ class TenantScreen {
         document.getElementById('signal-create-2').addEventListener('click', async () => {
             const blob = document.getElementById("signal-value");
             const name = document.getElementById("new-signal-name");
+            const asset = document.getElementById("new-signal-asset");
             const severity = document.getElementById("new-signal-severity");
 
             const signal = {
                 name: name.value,
                 source: this.state.user.email,
+                asset: asset.value.toLowerCase().trim(),
                 severity: parseInt(severity.options[severity.selectedIndex].dataset.severity),
             };
 
@@ -121,6 +123,7 @@ class TenantScreen {
             }).finally(() => {
                 blob.value = "";
                 name.value = "";
+                asset.value = "";
             });
 
             document.dispatchEvent(new CustomEvent('page:reload'));
@@ -142,12 +145,7 @@ class TenantScreen {
             });
         });
 
-        document.getElementById('signal-reply').addEventListener('click', async (e) => {
-            e.preventDefault();
-            document.getElementById('signal-note').click();
-        });
-       
-        document.getElementById('signal-note').addEventListener('click', async (e) => {
+        document.getElementById('signal-update').addEventListener('click', async (e) => {
             e.preventDefault();
 
             await SiteSpinner.withLoading(async() => {

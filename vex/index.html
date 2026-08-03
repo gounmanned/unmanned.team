@@ -9,7 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.unmanned.team/css/global.css">
-  <link rel="stylesheet" href="static/css/index.css?v=0.00e">
+  <link rel="stylesheet" href="static/css/index.css?v=0.00j">
   <title>Vex</title>
 </head>
 <body>
@@ -74,7 +74,7 @@
         </div>
       </div>
 
-      <div class="signal-table-wrap" id="signal-table-wrap">
+      <div class="table-wrap" id="signal-table-wrap">
         <table id="signal-table">
           <tbody></tbody>
         </table>
@@ -100,6 +100,7 @@
           </button>
         </div>
 
+        <a id="open-asset-screen">Assets</a>
         <a id="open-monitor-screen">Monitors</a>
       </div>
   </main>
@@ -156,7 +157,7 @@
         </div>
         <div class="managed-invite" id="managed-invite">
           <div class="managed-invite-row">
-            <input id="managed-invite-input" type="text" placeholder="Invite  account by email">
+            <input id="managed-invite-input" type="text" placeholder="Invite account by email">
             <button id="managed-invite-btn">
               <span class="material-symbols-outlined">person_add</span>
             </button>
@@ -185,6 +186,63 @@
 
   <!-- Rollups -->
 
+  <site-rollup id="asset-screen">
+    <site-watermark logo="https://cdn.unmanned.team/img/logo.png" title="Assets"></site-watermark>
+
+    <div class="monitor-intro">
+      <span class="material-symbols-outlined">inventory_2</span>
+      <p>Vex maps every asset discovered across your monitors into a single inventory.</p>
+    </div>
+
+    <div class="asset-toolbar">
+      <div class="scope-toggle" id="asset-scope-toggle" data-scope="domain">
+        <div class="thumb"></div>
+        <button class="scope-btn" data-scope="domain" type="button">
+          <span class="material-symbols-outlined">domain</span>
+          Domains <span class="count" id="asset-count-domain">0</span>
+        </button>
+        <button class="scope-btn" data-scope="identity" type="button">
+          <span class="material-symbols-outlined">alternate_email</span>
+          Identities <span class="count" id="asset-count-identity">0</span>
+        </button>
+        <button class="scope-btn" data-scope="other" type="button">
+          <span class="material-symbols-outlined">device_unknown</span>
+          Other <span class="count" id="asset-count-other">0</span>
+        </button>
+      </div>
+
+      <div class="asset-search">
+        <span class="material-symbols-outlined">search</span>
+        <input type="text" id="asset-search" placeholder="Search value or source…">
+      </div>
+    </div>
+
+    <div class="table-wrap" id="asset-table-wrap">
+      <table id="asset-table">
+        <thead>
+          <tr>
+            <th class="sortable" data-sort="value">Value <span class="material-symbols-outlined sort-arrow">unfold_more</span></th>
+            <th class="sortable" data-sort="source">Source <span class="material-symbols-outlined sort-arrow">unfold_more</span></th>
+            <th class="sortable" data-sort="updated">Last seen <span class="material-symbols-outlined sort-arrow">unfold_more</span></th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+
+      <div class="signal-radar-watermark">
+        <div class="signal-radar" aria-hidden="true">
+          <svg viewBox="0 0 800 800"><use href="#radar-rings"></use></svg>
+        </div>
+        <div class="corner tl signal-radar-corner"></div>
+        <div class="corner tr signal-radar-corner"></div>
+        <div class="corner bl signal-radar-corner"></div>
+        <div class="corner br signal-radar-corner"></div>
+        <span class="material-symbols-outlined">inventory_2</span>
+        <p id="asset-empty-label">No assets found</p>
+      </div>
+    </div>
+  </site-rollup>
+
   <site-rollup id="monitor-screen">
       <site-watermark logo="https://cdn.unmanned.team/img/logo.png" title="Monitors"></site-watermark>
 
@@ -209,20 +267,6 @@
     </div>
 
     <div class="sidebar-actions">
-      <div class="info-row">
-        <div class="avatar-container">
-          <div class="avatar avatar--icon">
-            <span class="material-symbols-outlined">supervisor_account</span>
-          </div>
-        </div>
-        <div class="text">
-          <div class="name">You are the human in the loop</div>
-          <div class="description">
-            Either tap Note - to leave a comment - or Reply, to notify everyone on the thread.
-          </div>
-        </div>
-      </div>
-
       <form id="reply-form">
         <div class="button-row">
           <div class="field-group">
@@ -232,7 +276,7 @@
                     <option id="CH" value="CH">Resolved</option>
                     <option id="CF" value="CF">False positive</option>
                     <option id="CR" value="CR">Accepted risk</option>
-                    <option id="CS" value="CV">Auto-closed</option>
+                    <option id="CV" value="CV">Auto-closed</option>
                 </optgroup>
                 <optgroup label="Open">
                     <option id="OA" value="OA">Open</option>
@@ -264,11 +308,8 @@
             <textarea id="response" class="modern-textbox" placeholder="Update this signal"></textarea>
           </div>
           <div class="reply-actions">
-            <button type="button" class="reply-btn reply-btn--note" id="signal-note">
-              <span class="material-symbols-outlined">sticky_note_2</span> Add note
-            </button>
-            <button type="button" class="reply-btn reply-btn--send" id="signal-reply">
-              <span class="material-symbols-outlined">send</span> Reply
+            <button type="button" class="reply-btn reply-btn--send" id="signal-update">
+              <span class="material-symbols-outlined">send</span> Update
             </button>
           </div>
         </div>
@@ -279,8 +320,9 @@
   <!-- Modals -->
 
   <site-modal id="signal-modal">
-    <h3>Add details</h3>
+    <h3>Create signal</h3>
     <input id="new-signal-name" type="text" placeholder="Add a unique title" max="99"/>
+    <input id="new-signal-asset" type="text" placeholder="Enter the asset associated to this signal" max="99"/>
 
     <select id="new-signal-severity">
       <option data-severity="1">Critical</option>
@@ -297,13 +339,14 @@
 
 <script src="https://cdn.unmanned.team/js/components.js"></script>
 <script src="https://cdn.unmanned.team/js/cognito.js"></script>
-<script src="static/js/api.js?v=0.00b"></script>
-<script src="static/js/workspace.js?v=0.00c"></script>
-<script src="static/js/table.js?v=0.00b"></script>
+<script src="static/js/api.js?v=0.00c"></script>
+<script src="static/js/workspace.js?v=0.00e"></script>
+<script src="static/js/table.js?v=0.00d"></script>
 <script src="static/js/sidebar.js?v=0.00b"></script>
-<script src="static/js/screens/signal.js?v=0.00d"></script>
+<script src="static/js/screens/signal.js?v=0.00f"></script>
 <script src="static/js/screens/managed.js?v=0.00d"></script>
 <script src="static/js/screens/monitors.js?v=0.00a"></script>
+<script src="static/js/screens/asset.js?v=0.00d"></script>
 
 <script>
   window.onload = async() => {

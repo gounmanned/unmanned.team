@@ -9,7 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.unmanned.team/css/global.css">
-  <link rel="stylesheet" href="static/css/index.css?v=0.00j">
+  <link rel="stylesheet" href="static/css/index.css?v=0.00k">
   <title>Vex</title>
 </head>
 <body>
@@ -244,14 +244,39 @@
   </site-rollup>
 
   <site-rollup id="monitor-screen">
-      <site-watermark logo="https://cdn.unmanned.team/img/logo.png" title="Monitors"></site-watermark>
+    <site-watermark logo="https://cdn.unmanned.team/img/logo.png" title="Monitors"></site-watermark>
 
-      <div class="monitor-intro">
-          <span class="material-symbols-outlined">radar</span>
-          <p>Vex collects security signals from every connected service and maps them into probable breach scenarios.</p>
-      </div>
-      <div id="monitor-callout" class="monitor-callout"></div>
-      <div id="monitor-list" class="monitor-list"></div>
+    <div class="monitor-intro">
+        <span class="material-symbols-outlined">radar</span>
+        <p>Vex collects security signals from every connected service and maps them into probable breach scenarios.</p>
+    </div>
+
+    <div id="monitor-callout" class="monitor-callout"></div>
+
+    <div class="table-wrap" id="monitor-table-wrap">
+        <table id="monitor-table">
+            <thead>
+                <tr>
+                    <th>Source</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="monitor-list"></tbody>
+        </table>
+
+        <div class="signal-radar-watermark">
+            <div class="signal-radar" aria-hidden="true">
+                <svg viewBox="0 0 800 800"><use href="#radar-rings"></use></svg>
+            </div>
+            <div class="corner tl signal-radar-corner"></div>
+            <div class="corner tr signal-radar-corner"></div>
+            <div class="corner bl signal-radar-corner"></div>
+            <div class="corner br signal-radar-corner"></div>
+            <span class="material-symbols-outlined">radar</span>
+            <p id="monitor-empty-label">No monitors found</p>
+        </div>
+    </div>
   </site-rollup>
 
   <!--Sidebars-->
@@ -345,7 +370,7 @@
 <script src="static/js/sidebar.js?v=0.00b"></script>
 <script src="static/js/screens/signal.js?v=0.00f"></script>
 <script src="static/js/screens/managed.js?v=0.00d"></script>
-<script src="static/js/screens/monitors.js?v=0.00a"></script>
+<script src="static/js/screens/monitors.js?v=0.00b"></script>
 <script src="static/js/screens/asset.js?v=0.00d"></script>
 
 <script>

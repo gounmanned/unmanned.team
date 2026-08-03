@@ -3,7 +3,8 @@ class MonitorScreen {
         this.state = state;
         this.api = new MonitorApi();
         this.screen = document.getElementById('monitor-screen');
-        this.list = document.getElementById('monitor-list');
+        this.wrap = document.getElementById('monitor-table-wrap');
+        this.tbody = document.getElementById('monitor-list');
         this.watermark = this.screen.querySelector('site-watermark');
         this.expanded = null;
 
@@ -20,7 +21,8 @@ class MonitorScreen {
             aws:        { name: 'AWS' },
         };
 
-        this.render();
+        this._renderCallout();
+        this._renderTable();
         this.listen();
     }
 
@@ -29,7 +31,8 @@ class MonitorScreen {
         this.watermark.show("Scan for signals");
         Object.values(this.available).forEach(s => { s.active = false; });
         this.expanded = null;
-        this.render();
+        this._renderCallout();
+        this._renderTable();
     }
 
     async reload() {
@@ -38,14 +41,12 @@ class MonitorScreen {
         this.watermark.hide();
     }
 
-    render() {
-        this._renderCallout();
-        this._renderList();
-    }
-
     add(monitor) {
         const name = monitor.split("/")[2];
-        if (this.available[name]) { this.available[name].active = true; this.render(); }
+        if (this.available[name]) {
+            this.available[name].active = true;
+            this._renderTable();
+        }
     }
 
     _sorted() {
@@ -61,25 +62,38 @@ class MonitorScreen {
         `;
     }
 
-    _renderList() {
-        this.list.innerHTML = this._sorted().map(([key, s]) => this._row(key, s)).join('');
+    _renderTable() {
+        const rows = this._sorted();
+        this.wrap.classList.toggle('empty', rows.length === 0);
+        this.tbody.innerHTML = rows.map(([key, s]) => this._row(key, s)).join('');
     }
 
     _row(key, s) {
         const open = this.expanded === key;
-        return `
-            <div class="monitor-row ${open ? 'expanded' : ''} ${s.active ? 'connected' : ''}">
-                <div class="monitor-row-main">
-                    <div class="monitor-row-icon"><img src="static/img/source/${key}.png"></div>
-                    <div class="monitor-row-body">
-                        <span class="monitor-row-title">${s.name}</span>
-                        ${s.active ? `<span class="monitor-row-status"><span class="monitor-status-dot"></span>Connected</span>` : ''}
-                    </div>
+        const main = `
+            <tr class="monitor-table-row ${s.active ? 'connected' : ''} ${open ? 'expanded' : ''}" data-key="${key}">
+                <td>
+                    <span class="monitor-table-name">
+                        <span class="monitor-row-icon"><img src="static/img/source/${key}.png"></span>
+                        ${s.name}
+                    </span>
+                </td>
+                <td>
+                    ${s.active
+                        ? `<span class="monitor-row-status"><span class="monitor-status-dot"></span>Connected</span>`
+                        : `<span class="monitor-table-status-muted">Not connected</span>`}
+                </td>
+                <td class="monitor-table-action">
                     ${s.active
                         ? `<button class="monitor-action ghost" data-disconnect="${key}">Disconnect</button>`
                         : `<button class="monitor-action" data-connect="${key}">${open ? 'Cancel' : 'Connect'}</button>`}
-                </div>
-                ${open ? `
+                </td>
+            </tr>
+        `;
+
+        const config = open ? `
+            <tr class="monitor-config-row" data-key="${key}">
+                <td colspan="3">
                     <div class="monitor-row-form">
                         <textarea data-key="${key}" rows="3" placeholder="Enter your API key, credentials, or configuration data here…"></textarea>
                         <div class="monitor-row-form-actions">
@@ -87,9 +101,11 @@ class MonitorScreen {
                             <button class="monitor-action primary" data-submit="${key}">Connect</button>
                         </div>
                     </div>
-                ` : ''}
-            </div>
-        `;
+                </td>
+            </tr>
+        ` : '';
+
+        return main + config;
     }
 
     get emailAddress() {
@@ -100,28 +116,35 @@ class MonitorScreen {
     }
 
     listen() {
-        this.screen.addEventListener('click', ev => {
+        this.tbody.addEventListener('click', ev => {
             const connect = ev.target.closest('[data-connect]');
             if (connect) {
-                const key = connect.dataset.connect;
-                this.expanded = this.expanded === key ? null : key;
-                return this.render();
+                this.expanded = this.expanded === connect.dataset.connect ? null : connect.dataset.connect;
+                return this._renderTable();
             }
+
             const disconnect = ev.target.closest('[data-disconnect]');
             if (disconnect) {
                 const key = disconnect.dataset.disconnect;
                 this.api.disconnect(key);
                 this.available[key].active = false;
-                return this.render();
+                return this._renderTable();
             }
+
             const submit = ev.target.closest('[data-submit]');
             if (submit) {
                 const key = submit.dataset.submit;
-                const value = this.list.querySelector(`textarea[data-key="${key}"]`).value;
+                const value = this.tbody.querySelector(`textarea[data-key="${key}"]`).value;
                 this.api.connect(key, value);
                 this.available[key].active = true;
                 this.expanded = null;
-                this.render();
+                return this._renderTable();
+            }
+
+            const row = ev.target.closest('.monitor-table-row:not(.connected)');
+            if (row) {
+                this.expanded = this.expanded === row.dataset.key ? null : row.dataset.key;
+                this._renderTable();
             }
         });
     }

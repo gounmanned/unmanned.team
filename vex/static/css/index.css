@@ -1280,6 +1280,7 @@ tr.closed {
   margin-bottom: 10px;
   flex-shrink: 0;
 }
+
 #asset-screen .scope-toggle {
   position: relative;
   display: flex;
@@ -1296,13 +1297,14 @@ tr.closed {
   top: 3px;
   bottom: 3px;
   left: 3px;
-  width: calc(50% - 4px);
+  width: calc(33.333% - 4px);
   background: var(--gray-panel);
   border: 1px solid var(--gray-line);
   border-radius: 4px;
   transition: transform 0.2s cubic-bezier(.4,0,.2,1);
 }
-#asset-screen .scope-toggle[data-scope="identity"] .thumb { transform: translateX(calc(100% + 3px)); }
+#asset-screen .scope-toggle[data-scope="identity"] .thumb { transform: translateX(calc(100% + 2px)); }
+#asset-screen .scope-toggle[data-scope="other"] .thumb { transform: translateX(calc(200% + 4px)); }
 
 #asset-screen .scope-btn {
   position: relative;
@@ -1331,11 +1333,13 @@ tr.closed {
 }
 
 #asset-screen .scope-toggle[data-scope="domain"] .scope-btn[data-scope="domain"],
-#asset-screen .scope-toggle[data-scope="identity"] .scope-btn[data-scope="identity"] {
+#asset-screen .scope-toggle[data-scope="identity"] .scope-btn[data-scope="identity"],
+#asset-screen .scope-toggle[data-scope="other"] .scope-btn[data-scope="other"] {
   color: var(--ink, #111827);
 }
 #asset-screen .scope-toggle[data-scope="domain"] .scope-btn[data-scope="domain"] .material-symbols-outlined,
-#asset-screen .scope-toggle[data-scope="identity"] .scope-btn[data-scope="identity"] .material-symbols-outlined {
+#asset-screen .scope-toggle[data-scope="identity"] .scope-btn[data-scope="identity"] .material-symbols-outlined,
+#asset-screen .scope-toggle[data-scope="other"] .scope-btn[data-scope="other"] .material-symbols-outlined {
   color: var(--pink);
 }
 
@@ -1348,7 +1352,8 @@ tr.closed {
   border-radius: 6px;
 }
 #asset-screen .scope-toggle[data-scope="domain"] .scope-btn[data-scope="domain"] .count,
-#asset-screen .scope-toggle[data-scope="identity"] .scope-btn[data-scope="identity"] .count {
+#asset-screen .scope-toggle[data-scope="identity"] .scope-btn[data-scope="identity"] .count,
+#asset-screen .scope-toggle[data-scope="other"] .scope-btn[data-scope="other"] .count {
   color: var(--pink);
   background: rgba(224,18,128,0.1);
 }

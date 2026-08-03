@@ -1,5 +1,11 @@
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
-const classify = name => EMAIL_RE.test(name) ? 'identity' : 'domain';
+const DOMAIN_RE = /^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,}$/i;
+
+function classify(name) {
+    if (EMAIL_RE.test(name)) return 'identity';
+    if (DOMAIN_RE.test(name)) return 'domain';
+    return 'other';
+}
 
 class AssetScreen {
     constructor(state) {
@@ -14,7 +20,8 @@ class AssetScreen {
         this.assets = [];
         this.scope = 'domain';
         this.query = '';
-        this.sort = { key: 'lastSeen', dir: 'desc' };
+        this.sort = { key: 'updated', dir: 'desc' };
+        this.labels = { domain: 'domains', identity: 'identities', other: 'other assets' };
 
         this.listen();
     }
@@ -35,8 +42,10 @@ class AssetScreen {
     }
 
     render() {
-        document.getElementById('asset-count-domain').textContent = this.assets.filter(a => a.type === 'domain').length;
-        document.getElementById('asset-count-identity').textContent = this.assets.filter(a => a.type === 'identity').length;
+        Object.keys(this.labels).forEach(type => {
+            const el = document.getElementById(`asset-count-${type}`);
+            if (el) el.textContent = this.assets.filter(a => a.type === type).length;
+        });
 
         const rows = this.assets
             .filter(a => a.type === this.scope)
@@ -46,12 +55,12 @@ class AssetScreen {
                 const bv = this.sort.key === 'value' ? b.name : (b[this.sort.key] || '');
                 const cmp = String(av).localeCompare(String(bv));
                 return this.sort.dir === 'asc' ? cmp : -cmp;
-            });
+            })
 
         this.wrap.classList.toggle('empty', rows.length === 0);
         document.getElementById('asset-empty-label').textContent = this.query
-            ? `No ${this.scope}s match "${this.query}"`
-            : `No ${this.scope}s found`;
+            ? `No ${this.labels[this.scope]} match "${this.query}"`
+            : `No ${this.labels[this.scope]} found`;
 
         this.tbody.innerHTML = rows.map(a => `
             <tr data-id="${a.id ?? a.name}">
@@ -100,7 +109,7 @@ class AssetScreen {
                 const icon = btn.querySelector('.material-symbols-outlined');
                 btn.classList.add('copied');
                 icon.textContent = 'check';
-                
+
                 setTimeout(() => {
                     btn.classList.remove('copied');
                     icon.textContent = 'content_copy';

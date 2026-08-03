@@ -205,6 +205,10 @@
           <span class="material-symbols-outlined">alternate_email</span>
           Identities <span class="count" id="asset-count-identity">0</span>
         </button>
+        <button class="scope-btn" data-scope="other" type="button">
+          <span class="material-symbols-outlined">device_unknown</span>
+          Other <span class="count" id="asset-count-other">0</span>
+        </button>
       </div>
 
       <div class="asset-search">
@@ -219,7 +223,7 @@
           <tr>
             <th class="sortable" data-sort="value">Value <span class="material-symbols-outlined sort-arrow">unfold_more</span></th>
             <th class="sortable" data-sort="source">Source <span class="material-symbols-outlined sort-arrow">unfold_more</span></th>
-            <th class="sortable" data-sort="lastSeen">Last seen <span class="material-symbols-outlined sort-arrow">unfold_more</span></th>
+            <th class="sortable" data-sort="updated">Last seen <span class="material-symbols-outlined sort-arrow">unfold_more</span></th>
           </tr>
         </thead>
         <tbody></tbody>
@@ -318,7 +322,7 @@
   <site-modal id="signal-modal">
     <h3>Create signal</h3>
     <input id="new-signal-name" type="text" placeholder="Add a unique title" max="99"/>
-    <input id="new-signal-asset" type="text" placeholder="Enter the domain or email associated to this signal" max="99"/>
+    <input id="new-signal-asset" type="text" placeholder="Enter the asset associated to this signal" max="99"/>
 
     <select id="new-signal-severity">
       <option data-severity="1">Critical</option>
@@ -342,7 +346,7 @@
 <script src="static/js/screens/signal.js?v=0.00f"></script>
 <script src="static/js/screens/managed.js?v=0.00d"></script>
 <script src="static/js/screens/monitors.js?v=0.00a"></script>
-<script src="static/js/screens/asset.js?v=0.00c"></script>
+<script src="static/js/screens/asset.js?v=0.00d"></script>
 
 <script>
   window.onload = async() => {

@@ -1,13 +1,13 @@
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
-const DOMAIN_RE = /^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,}$/i;
-
-function classify(name) {
-    if (EMAIL_RE.test(name)) return 'identity';
-    if (DOMAIN_RE.test(name)) return 'domain';
-    return 'other';
-}
-
 class AssetScreen {
+    static EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
+    static DOMAIN_RE = /^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,}$/i;
+
+    static classify(name) {
+        if (AssetScreen.EMAIL_RE.test(name)) return 'identity';
+        if (AssetScreen.DOMAIN_RE.test(name)) return 'domain';
+        return 'other';
+    }
+
     constructor(state) {
         this.state = state;
         this.api = new AssetApi();
@@ -36,7 +36,7 @@ class AssetScreen {
     }
 
     async reload() {
-        this.assets = (await this.api.list()).map(a => ({ ...a, type: classify(a.name) }));
+        this.assets = (await this.api.list()).map(a => ({ ...a, type: AssetScreen.classify(a.name) }));
         this.watermark.hide();
         this.render();
     }

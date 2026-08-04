@@ -400,6 +400,9 @@ class SiteRollup extends HTMLElement {
 
         this.shadowRoot.innerHTML = `
             <style>
+                :host {
+                    display: contents;
+                }
                 .rollup {
                     position: fixed;
                     bottom: 0;
@@ -413,6 +416,7 @@ class SiteRollup extends HTMLElement {
                     z-index: 1000;
                     visibility: hidden;
                     transform: translateY(100%);
+                    overflow: hidden;
                 }
                 .rollup.open {
                     visibility: visible;

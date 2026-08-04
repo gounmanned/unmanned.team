@@ -10,10 +10,10 @@
 }
 
 main {
-  height: calc(100vh - 77px);
+  height: calc(100vh - 77px - var(--header-offset, 0px));
+  margin-top: calc(52px + var(--header-offset, 0px));
   display: flex;
   flex-direction: column;
-  margin-top: 52px;
   box-sizing: border-box;
 }
 
@@ -57,6 +57,46 @@ site-rollup {
 }
 
 @keyframes spin { to { transform: rotate(360deg); } }
+
+/* ─────────────────────────────────────────────────────────────────────────────
+DELEGATION BANNER
+─────────────────────────────────────────────────────────────────────────────*/
+
+body:has(.delegation-notice.visible) {
+  --header-offset: 35px;
+}
+
+.delegation-notice {
+  background-color: var(--pink);
+  padding: 0 16px;
+  height: 35px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 11;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  min-width: 100vw;
+  font-size: 14px;
+  color: white;
+  font-weight: 500;
+  box-sizing: border-box;
+}
+
+.delegation-notice.visible {
+  display: flex;
+}
+
+.close-btn {
+  position: absolute;
+  right: 16px;
+  cursor: pointer;
+  font-size: 18px;
+  color: white;
+}
 
 /* ─────────────────────────────────────────────────────────────────────────────
    TABLE

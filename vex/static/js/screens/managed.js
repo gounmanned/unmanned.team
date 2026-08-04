@@ -174,6 +174,8 @@ class ManagedScreen {
 
         right.querySelector('.managed-enter-btn').addEventListener('click', () => {
             this.state.delegate = domain;
+            document.querySelector('.delegation-notice').firstChild.textContent = domain;
+            document.querySelector('.delegation-notice').classList.add('visible');
             document.dispatchEvent(new CustomEvent('page:reset'));
             document.querySelector('site-overlay')?.click();
         });

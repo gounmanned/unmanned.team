@@ -28,8 +28,9 @@ class Workspace {
                     asset: new AssetScreen(state),
                 };
 
+                await this.reset(state);
+                await this.reload(state);
                 this.listen();
-                await this.show("managed");
 
                 setInterval(() => this.reload(state), 60000)                
                 document.addEventListener('page:reload', () => this.reload(state));

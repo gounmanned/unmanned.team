@@ -190,5 +190,12 @@ class TenantScreen {
                 await this.reload();
             });
         });
+
+        document.getElementById('delegation-notice').addEventListener('click', () => {
+            this.state.delegate = null;
+            document.dispatchEvent(new CustomEvent('page:reset'));
+            document.querySelector('site-overlay').click();
+            document.querySelector('.delegation-notice').classList.remove('visible');
+        });
     }
 }

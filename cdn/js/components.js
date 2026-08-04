@@ -438,6 +438,7 @@ class SiteRollup extends HTMLElement {
     
     show() {
         this._rollup.classList.add('open');
+        document.body.style.overflow = 'hidden';
 
         this.dispatchEvent(new CustomEvent('window-click', {
             bubbles: true,
@@ -447,6 +448,7 @@ class SiteRollup extends HTMLElement {
 
     hide() {
         this._rollup.classList.remove('open');
+        document.body.style.overflow = '';
     }
 }
 

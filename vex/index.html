@@ -105,7 +105,8 @@
           </button>
         </div>
 
-        <a id="open-asset-screen">Assets</a>
+        <a id="open-breach-screen">Breach</a>
+        <a id="open-asset-screen">Inventory</a>
         <a id="open-monitor-screen">Monitors</a>
       </div>
   </main>
@@ -293,6 +294,43 @@
     </div>
   </site-rollup>
 
+  <site-rollup id="breach-screen">
+      <site-watermark logo="https://cdn.unmanned.team/img/logo.png" title="Breach"></site-watermark>
+
+      <div class="breach-intro">
+          <span class="material-symbols-outlined">emergency_home</span>
+          <p>Vex chains signals together into the most probable breach scenario.</p>
+      </div>
+
+      <div class="breach-body">
+          <div class="breach-left" id="breach-left">
+              <ul class="breach-signal-list" id="breach-signal-list"></ul>
+              <div class="breach-left-watermark">
+                  <span class="material-symbols-outlined">link_off</span>
+                  <p>No signal chain found</p>
+              </div>
+          </div>
+
+          <div class="breach-right">
+              <div class="breach-scroll">
+                  <div class="breach-detail-empty" id="breach-detail-empty">
+                      <div class="breach-radar" aria-hidden="true">
+                          <svg viewBox="0 0 800 800"><use href="#radar-rings"></use></svg>
+                      </div>
+                      <span class="material-symbols-outlined">travel_explore</span>
+                      <p>No breach scenario modeled yet</p>
+                  </div>
+
+                  <div class="breach-detail-content" id="breach-detail-content">
+                      <h1 class="breach-title" id="breach-title"></h1>
+                      <div class="breach-timestamp" id="breach-timestamp"></div>
+                      <div class="breach-narrative" id="breach-narrative"></div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </site-rollup>
+
   <!--Sidebars-->
 
   <site-sidebar id="signal-sidebar">
@@ -378,7 +416,7 @@
 
 <script src="https://cdn.unmanned.team/js/components.js"></script>
 <script src="https://cdn.unmanned.team/js/cognito.js"></script>
-<script src="static/js/api.js?v=0.00c"></script>
+<script src="static/js/api.js?v=0.00e"></script>
 <script src="static/js/workspace.js?v=0.00f"></script>
 <script src="static/js/table.js?v=0.00d"></script>
 <script src="static/js/sidebar.js?v=0.00b"></script>
@@ -386,6 +424,7 @@
 <script src="static/js/screens/managed.js?v=0.00f"></script>
 <script src="static/js/screens/monitors.js?v=0.00b"></script>
 <script src="static/js/screens/asset.js?v=0.00d"></script>
+<script src="static/js/screens/breach.js?v=0.00"></script>
 
 <script>
   window.onload = async() => {

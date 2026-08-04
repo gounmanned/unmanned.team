@@ -62,6 +62,16 @@ class AssetApi extends Gateway {
     }
 }
 
+class BreachApi extends Gateway {
+    constructor(){
+        super();
+    }
+
+    async list() {
+        return await this.call("GET", `breach`);
+    }
+}
+
 class ManagedApi extends Gateway {
     constructor(){
         super();

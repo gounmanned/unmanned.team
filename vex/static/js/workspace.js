@@ -26,6 +26,7 @@ class Workspace {
                     managed: new ManagedScreen(state),
                     monitor: new MonitorScreen(state),
                     asset: new AssetScreen(state),
+                    breach: new BreachScreen(state),
                 };
 
                 await this.reset(state);

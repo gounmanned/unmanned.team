@@ -9,7 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.unmanned.team/css/global.css">
-  <link rel="stylesheet" href="static/css/index.css?v=0.00m">
+  <link rel="stylesheet" href="static/css/index.css?v=0.00n">
   <title>Vex</title>
 </head>
 <body>
@@ -39,7 +39,7 @@
   <main class="container">
       <div class="new-message">
         <div class="textbox-container">
-          <textarea id="signal-value" class="modern-textbox" placeholder="Create a signal here or by sending an email to security@vex.unmanned.team."></textarea>
+          <textarea id="signal-value" class="modern-textbox" placeholder="Create a signal here or by connecting monitors."></textarea>
           <button class="submit-button" id="signal-create">
             <span class="material-symbols-outlined">send</span>
           </button>
@@ -106,7 +106,7 @@
         </div>
 
         <a id="open-breach-screen">Breach</a>
-        <a id="open-asset-screen">Inventory</a>
+        <a id="open-inventory-screen">Inventory</a>
         <a id="open-monitor-screen">Monitors</a>
       </div>
   </main>
@@ -201,7 +201,7 @@
 
   <!-- Rollups -->
 
-  <site-rollup id="asset-screen">
+  <site-rollup id="inventory-screen">
     <site-watermark logo="https://cdn.unmanned.team/img/logo.png" title="Assets"></site-watermark>
 
     <div class="monitor-intro">
@@ -307,7 +307,7 @@
               <ul class="breach-signal-list" id="breach-signal-list"></ul>
               <div class="breach-left-watermark">
                   <span class="material-symbols-outlined">link_off</span>
-                  <p>No signal chain found</p>
+                  <p>No signal chain</p>
               </div>
           </div>
 
@@ -318,7 +318,7 @@
                           <svg viewBox="0 0 800 800"><use href="#radar-rings"></use></svg>
                       </div>
                       <span class="material-symbols-outlined">travel_explore</span>
-                      <p>No breach scenario modeled yet</p>
+                      <p>No breach scenario</p>
                   </div>
 
                   <div class="breach-detail-content" id="breach-detail-content">
@@ -417,13 +417,13 @@
 <script src="https://cdn.unmanned.team/js/components.js"></script>
 <script src="https://cdn.unmanned.team/js/cognito.js"></script>
 <script src="static/js/api.js?v=0.00e"></script>
-<script src="static/js/workspace.js?v=0.00f"></script>
+<script src="static/js/workspace.js?v=0.00g"></script>
 <script src="static/js/table.js?v=0.00d"></script>
 <script src="static/js/sidebar.js?v=0.00b"></script>
-<script src="static/js/screens/signal.js?v=0.00h"></script>
+<script src="static/js/screens/signal.js?v=0.00i"></script>
 <script src="static/js/screens/managed.js?v=0.00f"></script>
 <script src="static/js/screens/monitors.js?v=0.00b"></script>
-<script src="static/js/screens/asset.js?v=0.00d"></script>
+<script src="static/js/screens/inventory.js?v=0.00"></script>
 <script src="static/js/screens/breach.js?v=0.00"></script>
 
 <script>

@@ -34,6 +34,22 @@ class TenantScreen {
         }, 1000);
     }
 
+    strength(value) {
+        const lit = Math.min(value, 10);
+        const maxed = value >= 10;
+
+        const bars = Array.from({ length: 10 }, (_, i) =>
+            `<span class="strength-bar${i < lit ? ' lit' : ''}"></span>`
+        ).join('');
+
+        return `
+            <div class="strength-meter${maxed ? ' maxed' : ''}">
+            <span class="strength-bars">${bars}</span>
+            <span class="strength-value">${value}${maxed ? '+' : ''}</span>
+            </div>
+        `;
+    }
+
     listen() {
         document.addEventListener('signal:account', (ev) => {
             const upsert = (row, signal) => {
@@ -63,6 +79,7 @@ class TenantScreen {
                 <td class="severity"><img src="static/img/severity/${signal.severity}.svg"/></td>
                 <td>${signal.name.substring(0, 99)}</td>
                 <td>#${signal.id}</td>
+                <td class="strength">${this.strength(signal.metadata?.strength ?? 0)}</td>
                 <td>${signal.account}</td>
                 <td>${signal.created}</td>
             `;

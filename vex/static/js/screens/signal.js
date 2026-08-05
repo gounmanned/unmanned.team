@@ -63,6 +63,7 @@ class TenantScreen {
                 <td class="severity"><img src="static/img/severity/${signal.severity}.svg"/></td>
                 <td>${signal.name.substring(0, 99)}</td>
                 <td>#${signal.id}</td>
+                <td class="strength">#${signal.metadata?.strength}</td>
                 <td>${signal.account}</td>
                 <td>${signal.created}</td>
             `;

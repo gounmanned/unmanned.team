@@ -25,7 +25,7 @@ class Workspace {
                 this.rollups = {
                     managed: new ManagedScreen(state),
                     monitor: new MonitorScreen(state),
-                    asset: new AssetScreen(state),
+                    inventory: new InventoryScreen(state),
                     breach: new BreachScreen(state),
                 };
 

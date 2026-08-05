@@ -1,17 +1,17 @@
-class AssetScreen {
+class InventoryScreen {
     static EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
     static DOMAIN_RE = /^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,}$/i;
 
     static classify(name) {
-        if (AssetScreen.EMAIL_RE.test(name)) return 'identity';
-        if (AssetScreen.DOMAIN_RE.test(name)) return 'domain';
+        if (InventoryScreen.EMAIL_RE.test(name)) return 'identity';
+        if (InventoryScreen.DOMAIN_RE.test(name)) return 'domain';
         return 'other';
     }
 
     constructor(state) {
         this.state = state;
         this.api = new AssetApi();
-        this.watermark = document.querySelector('#asset-screen site-watermark');
+        this.watermark = document.querySelector('#inventory-screen site-watermark');
         this.wrap = document.getElementById('asset-table-wrap');
         this.tbody = document.querySelector('#asset-table tbody');
         this.toggle = document.getElementById('asset-scope-toggle');
@@ -35,7 +35,7 @@ class AssetScreen {
     }
 
     async reload() {
-        this.assets = (await this.api.list()).map(a => ({ ...a, type: AssetScreen.classify(a.name) }));
+        this.assets = (await this.api.list()).map(a => ({ ...a, type: InventoryScreen.classify(a.name) }));
         this.watermark.hide();
         this.render();
     }
@@ -69,6 +69,9 @@ class AssetScreen {
                     <button class="copy-btn" data-copy="${a.name}" type="button" aria-label="Copy value">
                         <span class="material-symbols-outlined">content_copy</span>
                     </button>
+                </td>
+                <td class="asset-signals">
+                    ${this.state.signals[this.state.account()].filter(s => s.asset == a.name).length}
                 </td>
                 <td class="asset-seen">${a.updated ? new Date(a.updated).toLocaleDateString() : '—'}</td>
             </tr>

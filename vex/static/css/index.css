@@ -1320,14 +1320,14 @@ tr.closed {
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
-   ASSET SCREEN
+   INVENTORY SCREEN
 ───────────────────────────────────────────────────────────────────────────── */
 
-#asset-screen .table-wrap {
+#inventory-screen .table-wrap {
   padding: 0 16px;
 }
 
-#asset-screen .asset-toolbar {
+#inventory-screen .asset-toolbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1337,7 +1337,7 @@ tr.closed {
   flex-shrink: 0;
 }
 
-#asset-screen .scope-toggle {
+#inventory-screen .scope-toggle {
   position: relative;
   display: flex;
   background: white;
@@ -1348,7 +1348,7 @@ tr.closed {
   flex-shrink: 0;
 }
 
-#asset-screen .scope-toggle .thumb {
+#inventory-screen .scope-toggle .thumb {
   position: absolute;
   top: 3px;
   bottom: 3px;
@@ -1359,10 +1359,10 @@ tr.closed {
   border-radius: 4px;
   transition: transform 0.2s cubic-bezier(.4,0,.2,1);
 }
-#asset-screen .scope-toggle[data-scope="identity"] .thumb { transform: translateX(calc(100% + 2px)); }
-#asset-screen .scope-toggle[data-scope="other"] .thumb { transform: translateX(calc(200% + 4px)); }
+#inventory-screen .scope-toggle[data-scope="identity"] .thumb { transform: translateX(calc(100% + 2px)); }
+#inventory-screen .scope-toggle[data-scope="other"] .thumb { transform: translateX(calc(200% + 4px)); }
 
-#asset-screen .scope-btn {
+#inventory-screen .scope-btn {
   position: relative;
   z-index: 1;
   flex: 1;
@@ -1382,24 +1382,24 @@ tr.closed {
   white-space: nowrap;
   transition: color 0.15s;
 }
-#asset-screen .scope-btn .material-symbols-outlined {
+#inventory-screen .scope-btn .material-symbols-outlined {
   font-size: 15px;
   color: var(--text-faint);
   transition: color 0.15s;
 }
 
-#asset-screen .scope-toggle[data-scope="domain"] .scope-btn[data-scope="domain"],
-#asset-screen .scope-toggle[data-scope="identity"] .scope-btn[data-scope="identity"],
-#asset-screen .scope-toggle[data-scope="other"] .scope-btn[data-scope="other"] {
+#inventory-screen .scope-toggle[data-scope="domain"] .scope-btn[data-scope="domain"],
+#inventory-screen .scope-toggle[data-scope="identity"] .scope-btn[data-scope="identity"],
+#inventory-screen .scope-toggle[data-scope="other"] .scope-btn[data-scope="other"] {
   color: var(--ink, #111827);
 }
-#asset-screen .scope-toggle[data-scope="domain"] .scope-btn[data-scope="domain"] .material-symbols-outlined,
-#asset-screen .scope-toggle[data-scope="identity"] .scope-btn[data-scope="identity"] .material-symbols-outlined,
-#asset-screen .scope-toggle[data-scope="other"] .scope-btn[data-scope="other"] .material-symbols-outlined {
+#inventory-screen .scope-toggle[data-scope="domain"] .scope-btn[data-scope="domain"] .material-symbols-outlined,
+#inventory-screen .scope-toggle[data-scope="identity"] .scope-btn[data-scope="identity"] .material-symbols-outlined,
+#inventory-screen .scope-toggle[data-scope="other"] .scope-btn[data-scope="other"] .material-symbols-outlined {
   color: var(--pink);
 }
 
-#asset-screen .scope-btn .count {
+#inventory-screen .scope-btn .count {
   font-family: 'JetBrains Mono', monospace;
   font-size: 10.5px;
   color: var(--text-muted);
@@ -1407,19 +1407,19 @@ tr.closed {
   padding: 1px 6px;
   border-radius: 6px;
 }
-#asset-screen .scope-toggle[data-scope="domain"] .scope-btn[data-scope="domain"] .count,
-#asset-screen .scope-toggle[data-scope="identity"] .scope-btn[data-scope="identity"] .count,
-#asset-screen .scope-toggle[data-scope="other"] .scope-btn[data-scope="other"] .count {
+#inventory-screen .scope-toggle[data-scope="domain"] .scope-btn[data-scope="domain"] .count,
+#inventory-screen .scope-toggle[data-scope="identity"] .scope-btn[data-scope="identity"] .count,
+#inventory-screen .scope-toggle[data-scope="other"] .scope-btn[data-scope="other"] .count {
   color: var(--pink);
   background: rgba(224,18,128,0.1);
 }
 
-#asset-screen .asset-search {
+#inventory-screen .asset-search {
   position: relative;
   flex: 1;
   max-width: 280px;
 }
-#asset-screen .asset-search .material-symbols-outlined {
+#inventory-screen .asset-search .material-symbols-outlined {
   position: absolute;
   left: 11px;
   top: 50%;
@@ -1427,7 +1427,7 @@ tr.closed {
   font-size: 16px;
   color: var(--text-faint);
 }
-#asset-screen .asset-search input {
+#inventory-screen .asset-search input {
   width: 100%;
   height: 34px;
   box-sizing: border-box;
@@ -1441,12 +1441,12 @@ tr.closed {
   outline: none;
   transition: border-color 0.15s;
 }
-#asset-screen .asset-search input:focus { border-color: var(--pink); }
-#asset-screen .asset-search input::placeholder { color: var(--text-faint); }
+#inventory-screen .asset-search input:focus { border-color: var(--pink); }
+#inventory-screen .asset-search input::placeholder { color: var(--text-faint); }
 
-#asset-screen #asset-table { width: 100%; border-collapse: collapse; }
+#inventory-screen #asset-table { width: 100%; border-collapse: collapse; }
 
-#asset-screen #asset-table thead th {
+#inventory-screen #asset-table thead th {
   text-align: left;
   padding: 9px 12px;
   font-size: 10.5px;
@@ -1459,26 +1459,32 @@ tr.closed {
   user-select: none;
   white-space: nowrap;
 }
-#asset-screen #asset-table thead th.sortable { cursor: pointer; }
-#asset-screen #asset-table thead th.sortable:hover { color: var(--text-strong); }
-#asset-screen #asset-table thead th .sort-arrow { font-size: 13px; vertical-align: -3px; opacity: 0.5; }
+#inventory-screen #asset-table thead th.sortable { cursor: pointer; }
+#inventory-screen #asset-table thead th.sortable:hover { color: var(--text-strong); }
+#inventory-screen #asset-table thead th .sort-arrow { font-size: 13px; vertical-align: -3px; opacity: 0.5; }
 
-#asset-screen #asset-table tbody tr:hover { background: var(--gray-hover); }
+#inventory-screen #asset-table tbody tr:hover { background: var(--gray-hover); }
 
-#asset-screen .asset-value {
+#inventory-screen .asset-value {
   display: inline-flex;
   align-items: center;
   gap: 7px;
 }
 
-#asset-screen .asset-source img {
+#inventory-screen .asset-source img {
   width: 16px;
   height: 16px;
   object-fit: contain;
   display: block;
 }
 
-#asset-screen .copy-btn {
+#inventory-screen .asset-signals {
+  background-color: var(--pink);
+  border-radius: 50%;
+  color: white;
+}
+
+#inventory-screen .copy-btn {
   opacity: 0;
   border: none;
   background: none;
@@ -1489,10 +1495,10 @@ tr.closed {
   cursor: pointer;
   transition: opacity 0.12s, color 0.12s;
 }
-#asset-screen #asset-table tbody tr:hover .copy-btn { opacity: 1; }
-#asset-screen .copy-btn:hover { color: var(--pink); }
-#asset-screen .copy-btn.copied { opacity: 1; color: #059669; }
-#asset-screen .copy-btn .material-symbols-outlined { font-size: 14px; }
+#inventory-screen #asset-table tbody tr:hover .copy-btn { opacity: 1; }
+#inventory-screen .copy-btn:hover { color: var(--pink); }
+#inventory-screen .copy-btn.copied { opacity: 1; color: #059669; }
+#inventory-screen .copy-btn .material-symbols-outlined { font-size: 14px; }
 
 /* ─────────────────────────────────────────────────────────────────────────────
    BREACH SCREEN

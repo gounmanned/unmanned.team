@@ -320,6 +320,60 @@ tr.closed {
   .signal-radar .radar-ring { animation: none; opacity: 0.9; }
 }
 
+/* ── strength ──────────────────────────────────────────────────────── */
+
+td.strength {
+  white-space: nowrap;
+}
+
+.strength-meter {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.strength-bars {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 12px;
+}
+
+.strength-bar {
+  width: 3px;
+  height: 40%;
+  border-radius: 1px;
+  background: var(--gray-line);
+  transition: background 0.15s, height 0.15s;
+}
+
+.strength-bar:nth-child(1) { height: 20%; }
+.strength-bar:nth-child(2) { height: 30%; }
+.strength-bar:nth-child(3) { height: 40%; }
+.strength-bar:nth-child(4) { height: 50%; }
+.strength-bar:nth-child(5) { height: 60%; }
+.strength-bar:nth-child(6) { height: 70%; }
+.strength-bar:nth-child(7) { height: 80%; }
+.strength-bar:nth-child(8) { height: 90%; }
+.strength-bar:nth-child(9) { height: 95%; }
+.strength-bar:nth-child(10) { height: 100%; }
+
+.strength-bar.lit {
+  background: var(--pink);
+}
+
+.strength-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.strength-meter.maxed .strength-value {
+  color: var(--pink);
+}
+
 /* ─────────────────────────────────────────────────────────────────────────────
    SIGNAL SIDEBAR
 ───────────────────────────────────────────────────────────────────────────── */

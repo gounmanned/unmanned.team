@@ -314,7 +314,7 @@
   @media (max-width:700px){ .dark-frame{padding:100px 20px 116px;} }
 
   .dark-frame blockquote{
-    max-width:680px;
+    max-width:920px;
     margin:0 auto 26px;
     font-family:'Hedvig Letters Serif', serif;
     font-style:italic;
@@ -325,6 +325,64 @@
     color:var(--db-ink);
   }
   .dark-frame blockquote em{ color:var(--pink); font-style:italic; }
+
+  /* ---------- PHILOSOPHY: LEAD (left-aligned inside a centered section) ---------- */
+  .philosophy-lead{
+    max-width:520px;
+    margin:0 auto 40px;
+    text-align:left;
+    font-size:15.5px;
+    line-height:1.75;
+    color:var(--db-mid);
+  }
+
+  /* ---------- PHILOSOPHY: CHOKE-POINT VISUAL ----------
+     A grid of risk boxes. One is highlighted (the choke point). When
+     it resolves, a scattered set of other boxes fade out with it —
+     the risks that only existed because of it. */
+  .choke-visual{
+    margin-top:56px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+  .risk-grid{
+    --cv-cell:30px;
+    display:grid;
+    grid-template-columns:repeat(6, var(--cv-cell));
+    gap:5px;
+  }
+  .risk-cell{
+    width:var(--cv-cell);
+    height:var(--cv-cell);
+    border-radius:2px;
+    background:rgba(224,18,128,0.12);
+    border:1px solid rgba(224,18,128,0.32);
+  }
+  .risk-cell.choke{
+    background:var(--pink);
+    border-color:var(--pink);
+    box-shadow:0 0 10px rgba(224,18,128,0.55);
+  }
+  .risk-cell.clears{
+    animation:riskClear 5s ease-in-out infinite;
+  }
+  @keyframes riskClear{
+    0%, 42%{ opacity:1; filter:brightness(1); }
+    48%{ filter:brightness(1.8); }
+    55%, 92%{ opacity:0.15; filter:brightness(1); }
+    100%{ opacity:1; }
+  }
+  .choke-visual-caption{
+    margin-top:20px;
+    font-size:10px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--db-mid);
+  }
+  @media (max-width:700px){
+    .risk-grid{ --cv-cell:24px; gap:4px; }
+  }
 
   .contact-statement{
     font-family:'Space Grotesk',sans-serif;
@@ -449,6 +507,7 @@
     .status-dot, .radar-ring, .outcome-connector::after{ animation:none; opacity:0.9; }
     .wordmark-frame .corner{ animation:none; opacity:0.65; transform:scale(1); }
     .scan-sweep::after{ animation:none; display:none; }
+    .risk-cell.clears{ animation:none; opacity:0.15; }
   }
 
   /* ---------- WHAT IS VEX ---------- */
@@ -640,8 +699,50 @@
   <section class="dark-frame philosophy">
     <div class="scan-sweep" aria-hidden="true"></div>
     <div class="body-wrap">
-      <div class="eyebrow-row eyebrow-label mono"><span class="status-dot"></span>Our philosophy</div>
-      <blockquote>Patching software doesn't <em>prove you're secure</em>.</blockquote>
+      <div class="eyebrow-row eyebrow-label mono"><span class="status-dot"></span>Our approach</div>
+
+      <blockquote>Everyone has <em>choke points</em>.</blockquote>
+
+      <p class="philosophy-lead">
+        Every business runs on a handful of single points of failure — an over-permissioned
+        identity, a forgotten admin console, a trust relationship nobody remembers granting.
+        You don't need a hundred fixes. You need the one an attacker would actually use.
+      </p>
+
+      <div class="choke-visual">
+        <!-- a grid of risk boxes; solving the highlighted one (.choke) clears
+             every other box that only existed because of it (.clears) -->
+        <div class="risk-grid" aria-hidden="true">
+          <div class="risk-cell"></div>
+          <div class="risk-cell clears"></div>
+          <div class="risk-cell"></div>
+          <div class="risk-cell"></div>
+          <div class="risk-cell"></div>
+          <div class="risk-cell"></div>
+
+          <div class="risk-cell"></div>
+          <div class="risk-cell clears"></div>
+          <div class="risk-cell"></div>
+          <div class="risk-cell clears choke"></div>
+          <div class="risk-cell"></div>
+          <div class="risk-cell"></div>
+
+          <div class="risk-cell"></div>
+          <div class="risk-cell"></div>
+          <div class="risk-cell clears"></div>
+          <div class="risk-cell"></div>
+          <div class="risk-cell clears"></div>
+          <div class="risk-cell"></div>
+
+          <div class="risk-cell"></div>
+          <div class="risk-cell"></div>
+          <div class="risk-cell clears"></div>
+          <div class="risk-cell"></div>
+          <div class="risk-cell clears"></div>
+          <div class="risk-cell"></div>
+        </div>
+        <p class="choke-visual-caption mono">One fix. Six risks resolved.</p>
+      </div>
     </div>
   </section>
 

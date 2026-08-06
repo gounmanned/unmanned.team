@@ -149,32 +149,7 @@
     padding:6px 0;
   }
 
-  /* ---------- TOP BAR ---------- */
-  .topbar{
-    position:fixed;
-    top:26px; left:0; right:0;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:34px 56px;
-    z-index:50;
-    font-size:11px;
-    text-transform:uppercase;
-    color:var(--ink);
-  }
-  .topbar .brand{
-    font-family:'Space Grotesk',sans-serif;
-    font-weight:600;
-    font-size:13px;
-    letter-spacing:0.14em;
-    display:flex;
-    align-items:center;
-    gap:10px;
-  }
-  .status{ display:flex; align-items:center; gap:8px; color:var(--ink); }
-
   @media (max-width:700px){
-    .topbar{display: none;}
     .hud-frame .corner{width:18px;height:18px;}
     .hud-frame .corner.tl,.hud-frame .corner.tr{top:64px;}
     .hud-frame .corner.bl,.hud-frame .corner.br{bottom:12px;}
@@ -615,14 +590,6 @@
     <div class="corner br"></div>
   </div>
 
-  <div class="topbar">
-    <div class="brand"><span class="logo-dot"></span> UNMANNED, INC</div>
-    <div class="status mono">
-      <span class="status-dot"></span>
-      <span>AVAILABLE</span>
-    </div>
-  </div>
-
   <section class="hero">
     <div class="radar" aria-hidden="true">
       <svg viewBox="0 0 800 800">
@@ -658,7 +625,7 @@
         But you have a nagging feeling an attacker could still get in.
         Trust that feeling.
         Detection and response tell you what happened after an incident.
-        You need a countermeasure that prevents the attack in the first place.
+        You need to stop the attack in the first place.
       </p>
       <p>
         Our team has spent decades building security programs inside the U.S. government and the enterprise.
@@ -698,7 +665,7 @@
     <div class="outcome-flow">
       <div class="outcome-node">
         <div class="outcome-time">11:58 PM</div>
-        <div class="outcome-caption mono">DNS records change</div>
+        <div class="outcome-caption mono">Your DNS records change</div>
       </div>
       <div class="outcome-connector" style="--seg:1"></div>
       <div class="outcome-node lit">

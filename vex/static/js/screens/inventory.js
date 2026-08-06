@@ -59,7 +59,7 @@ class InventoryScreen {
         this.wrap.classList.toggle('empty', rows.length === 0);
         document.getElementById('asset-empty-label').textContent = this.query
             ? `No ${this.labels[this.scope]} match "${this.query}"`
-            : `No ${this.labels[this.scope]} found`;
+            : `No ${this.labels[this.scope]}`;
         
         this.tbody.innerHTML = rows.map(a => `
             <tr data-id="${a.id ?? a.name}">

@@ -46,13 +46,13 @@ class SignalSidebar extends Sidebar {
     message.dataset.key = update.key;
     message.className = "";
 
-    const user = update.user || this.signal.source;
+    const source = update.source || this.signal.source;
     message.innerHTML = `
         <div class="message-row">
-            <div class="avatar"><img class="message-avatar" src="${Workspace.avatar(user)}" /></div>
+            <div class="avatar"><img class="message-avatar" src="${Workspace.avatar(source)}" /></div>
             <div class="message-content">
                 <div class="header">
-                    <div class="sender">${user}</div>
+                    <div class="sender">${source}</div>
                     <div class="timestamp">${update.updated}</div>
                 </div>
                 <div class="body">${update.value}</div>

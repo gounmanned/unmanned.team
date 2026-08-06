@@ -778,7 +778,10 @@ td.strength {
 }
 .monitor-callout-address:hover { color: var(--pink); }
 
-#monitor-screen .table-wrap { padding: 0 16px; }
+#monitor-screen .table-wrap {
+  padding: 0 16px;
+  overflow-y: auto;
+}
 
 #monitor-screen #monitor-table { width: 100%; border-collapse: collapse; }
 
@@ -1379,6 +1382,7 @@ td.strength {
 
 #inventory-screen .table-wrap {
   padding: 0 16px;
+  overflow-y: auto;
 }
 
 #inventory-screen .asset-toolbar {

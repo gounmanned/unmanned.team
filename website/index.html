@@ -57,9 +57,7 @@
   /* ---------- SHARED CORNER MARK ----------
      One rule set, reused wherever a HUD-style bracket frame is needed.
      Callers set --corner-size (default 28px) and provide their own
-     top/right/bottom/left offsets via a context class, since the
-     hud-frame corners are viewport-fixed while the vex-explainer
-     corners are relative to their own box. */
+     top/right/bottom/left offsets via a context class. */
   .corner{
     position:absolute;
     width:var(--corner-size, 28px);
@@ -85,6 +83,56 @@
   .hud-box .corner.tr{top:0;right:0;}
   .hud-box .corner.bl{bottom:0;left:0;}
   .hud-box .corner.br{bottom:0;right:0;}
+
+  /* ---------- WORDMARK RETICLE ----------
+     Lock-on brackets that snap onto the VEX wordmark once on load —
+     a targeting cue, not a decoration: it's the same bracket language
+     as .hud-frame and .hud-box, scaled to frame the one word on the
+     page worth locking onto. */
+  .wordmark-frame{
+    position:relative;
+    display:inline-block;
+  }
+  .wordmark-frame .corner{
+    --corner-size:22px;
+    border-color:var(--pink);
+    opacity:0;
+    transform:scale(1.5);
+    animation:lockOn 0.9s cubic-bezier(0.2,0.7,0.2,1) 0.5s forwards;
+  }
+  .wordmark-frame .corner.tl{top:-14px;left:-18px;}
+  .wordmark-frame .corner.tr{top:-14px;right:-18px;animation-delay:0.58s;}
+  .wordmark-frame .corner.bl{bottom:-10px;left:-18px;animation-delay:0.66s;}
+  .wordmark-frame .corner.br{bottom:-10px;right:-18px;animation-delay:0.74s;}
+  @keyframes lockOn{
+    0%{opacity:0;transform:scale(1.5);}
+    60%{opacity:0.9;}
+    100%{opacity:0.75;transform:scale(1);}
+  }
+
+  /* ---------- SCANLINE ----------
+     One slow pass per dark section on load — reinforces "sensor
+     sweep" without looping forever and pulling focus from copy. */
+  .scan-sweep{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    overflow:hidden;
+    z-index:1;
+  }
+  .scan-sweep::after{
+    content:'';
+    position:absolute;
+    left:0;right:0;
+    height:120px;
+    top:-120px;
+    background:linear-gradient(to bottom, rgba(224,18,128,0) 0%, rgba(224,18,128,0.06) 50%, rgba(224,18,128,0) 100%);
+    animation:sweep 2.6s cubic-bezier(0.4,0,0.2,1) 1;
+  }
+  @keyframes sweep{
+    0%{ top:-120px; }
+    100%{ top:100%; }
+  }
 
   /* ---------- CLASSIFICATION BAR ---------- */
   .classbar{
@@ -196,6 +244,7 @@
     position:relative;
     z-index:2;
     display:flex;
+    flex-direction:column;
     align-items:center;
     gap:14px;
     margin-top:30px;
@@ -206,6 +255,11 @@
     color:var(--ink);
     font-weight:400;
     max-width:640px;
+  }
+  .tagline-meta{
+    font-size:10.5px;
+    letter-spacing:0.18em;
+    color:var(--gray-mid);
   }
 
   @media (max-width:700px){
@@ -221,6 +275,11 @@
       flex-wrap:wrap;
     }
     h1.wordmark{ font-size:clamp(80px, 38vw, 220px); }
+    .wordmark-frame .corner{ --corner-size:16px; }
+    .wordmark-frame .corner.tl,.wordmark-frame .corner.tr{top:-10px;}
+    .wordmark-frame .corner.bl,.wordmark-frame .corner.br{bottom:-6px;}
+    .wordmark-frame .corner.tl,.wordmark-frame .corner.bl{left:-10px;}
+    .wordmark-frame .corner.tr,.wordmark-frame .corner.br{right:-10px;}
     .tagline-row{ margin-top:18px; }
     .tagline{ font-size:24px; }
   }
@@ -321,7 +380,8 @@
     transition:opacity 0.2s ease;
   }
   .contact-cta:hover{ opacity:0.65; }
-  .contact-cta .arrow{ color:var(--pink); }
+  .contact-cta .arrow{ color:var(--pink); transition:transform 0.2s ease; display:inline-block; }
+  .contact-cta:hover .arrow{ transform:translateX(3px); }
 
   a:focus-visible, .contact-cta:focus-visible{
     outline:1.5px solid var(--pink);
@@ -418,6 +478,8 @@
 
   @media (prefers-reduced-motion: reduce){
     .status-dot, .radar-ring, .outcome-connector::after{ animation:none; opacity:0.9; }
+    .wordmark-frame .corner{ animation:none; opacity:0.65; transform:scale(1); }
+    .scan-sweep::after{ animation:none; display:none; }
   }
 
   /* ---------- WHAT IS VEX ---------- */
@@ -576,9 +638,16 @@
       </svg>
     </div>
 
-    <h1 class="wordmark">VEX</h1>
+    <div class="wordmark-frame">
+      <div class="corner tl"></div>
+      <div class="corner tr"></div>
+      <div class="corner bl"></div>
+      <div class="corner br"></div>
+      <h1 class="wordmark">VEX</h1>
+    </div>
     <div class="tagline-row">
       <span class="tagline">Prevent the breach</span>
+      <span class="tagline-meta mono">AUTONOMOUS OFFENSIVE SECURITY</span>
     </div>
   </section>
 
@@ -590,13 +659,13 @@
   <section class="brief">
     <div class="brief-label eyebrow-label mono"><span class="status-dot"></span>The problem</div>
     <div class="brief-content">
-      <h2>You're <u>not secure</u>. You <u>don't know</u> why.</h2>
+      <h2>You're <u>not secure</u> and <u>don't know</u> why.</h2>
       <p>
-        You've bought firewalls, endpoint tools, maybe a pentest once a year.
-        None of it tells you what's actually reachable right now.
-        Attackers don't test your controls on a schedule.
-        They probe constantly, looking for the one path you missed.
-        Most companies find out which path that was after the breach.
+        You've bought firewalls, endpoint tools, an AI SOC.
+        But you have a nagging feeling an attacker could still get in.
+        Trust that feeling.
+        Detection and response tell you what happened after an incident.
+        You need a countermeasure that prevents the attack in the first place.
       </p>
       <p>
         Our team has spent decades building security programs inside the U.S. government and the enterprise.
@@ -611,6 +680,7 @@
   </div>
 
   <section class="dark-frame philosophy">
+    <div class="scan-sweep" aria-hidden="true"></div>
     <div class="body-wrap">
       <div class="eyebrow-row eyebrow-label mono"><span class="status-dot"></span>Our philosophy</div>
       <blockquote>Patching software doesn't <em>prove you're secure</em>.</blockquote>
@@ -627,7 +697,7 @@
     <div class="brief-content">
       <h2>Wake up <u>ahead</u>.</h2>
       <p>
-        Vex continuously authenticates into your environment, collects signals across identities, SaaS, cloud and endpoints -- and generates probable breach scenarios.
+        Vex continuously authenticates into your environment, collects signals across identities, SaaS, cloud and endpoints and generates probable breach scenarios.
         First analysis ready in just five minutes.
       </p>
     </div>
@@ -676,22 +746,22 @@
         </div>
         <div class="comp-item">
           <span class="comp-index">03</span>
-          <span class="comp-text">Vex runs like an AI.</span>
+          <span class="comp-text">Vex runs like an AI agent.</span>
         </div>
       </div>
-      <p class="vex-explainer-final">Vex is your <em>countermeasure against the attacker who never sleeps</em> — real breach scenarios shortly after they open up, every night, with no human required to manage it.</p>
+      <p class="vex-explainer-final">Vex is your <em>countermeasure against the attacker who never sleeps</em>, generating breach scenarios shortly after they open up. No human required.</p>
     </div>
 
     <div class="no-dashboard">
       <h3>Dashboard not included.</h3>
       <p>
         Vex is headless. 
-        There's no console to babysit, no queue of alerts waiting on someone to log in. 
-        AI does the testing -- probing, chaining, and validating scenarios around the clock.
-        Our human red team verifies every scenario and calls you when there's one worth your time.
-        Your phone number is our user experience.
+        There's no console to babysit, no queue of alerts waiting on someone else to triage.
+        AI scopes your environment, discovers issues, prioritizes findings, validates their role in a breach, and mobilizes a solution.
+        The result?
+        An always-on red team that tells you how an attacker would break in. 
       </p>
-      <p class="footnote mono">We have a dashboard if you <b>really</b> need it.</p>
+      <p class="footnote mono">OK, we have a dashboard if you <b>really</b> need it.</p>
     </div>
   </section>
 
@@ -701,6 +771,7 @@
   </div>
 
   <section class="dark-frame contact">
+    <div class="scan-sweep" aria-hidden="true"></div>
     <div class="radar-echo" aria-hidden="true">
       <svg viewBox="0 0 800 800">
         <use href="#radar-rings"></use>

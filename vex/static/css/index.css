@@ -968,16 +968,7 @@ td.strength {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-}
-
-#managed-screen .managed-logo-wrap::before {
-  content: '';
-  position: absolute;
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(224,18,128,0.45) 0%, rgba(224,18,128,0.12) 55%, rgba(224,18,128,0) 75%);
-  z-index: 0;
+  padding: 8px;
 }
 
 #managed-screen .managed-logo {
@@ -985,6 +976,20 @@ td.strength {
   z-index: 1;
   width: 75px; height: auto; object-fit: contain;
 }
+
+#managed-screen .managed-logo-wrap .corner {
+  --corner-size: 14px;
+  position: absolute;
+  width: var(--corner-size);
+  height: var(--corner-size);
+  border-color: var(--pink);
+  opacity: 0.6;
+  z-index: 2;
+}
+#managed-screen .managed-logo-wrap .corner.tl { top: -4px; left: -4px; border-top: 1.5px solid; border-left: 1.5px solid; }
+#managed-screen .managed-logo-wrap .corner.tr { top: -4px; right: -4px; border-top: 1.5px solid; border-right: 1.5px solid; }
+#managed-screen .managed-logo-wrap .corner.bl { bottom: -4px; left: -4px; border-bottom: 1.5px solid; border-left: 1.5px solid; }
+#managed-screen .managed-logo-wrap .corner.br { bottom: -4px; right: -4px; border-bottom: 1.5px solid; border-right: 1.5px solid; }
 
 #managed-screen .managed-contacts {
   display: flex; flex-direction: column; gap: 4px;

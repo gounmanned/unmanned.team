@@ -963,17 +963,14 @@ td.strength {
 #managed-screen .managed-desc { margin: 0; font-size: 11px; color: var(--text-muted); }
 
 #managed-screen .managed-logo-wrap {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  overflow: hidden;
 }
-
 #managed-screen .managed-logo {
-  position: relative;
-  z-index: 1;
-  width: 75px; height: auto; object-fit: contain;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 #managed-screen .managed-logo-wrap .corner {

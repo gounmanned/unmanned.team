@@ -968,7 +968,6 @@ td.strength {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  padding: 8px;
 }
 
 #managed-screen .managed-logo {
@@ -978,18 +977,13 @@ td.strength {
 }
 
 #managed-screen .managed-logo-wrap .corner {
-  --corner-size: 14px;
-  position: absolute;
-  width: var(--corner-size);
-  height: var(--corner-size);
-  border-color: var(--pink);
+  --corner-size: 10px;
   opacity: 0.6;
-  z-index: 2;
 }
-#managed-screen .managed-logo-wrap .corner.tl { top: -4px; left: -4px; border-top: 1.5px solid; border-left: 1.5px solid; }
-#managed-screen .managed-logo-wrap .corner.tr { top: -4px; right: -4px; border-top: 1.5px solid; border-right: 1.5px solid; }
-#managed-screen .managed-logo-wrap .corner.bl { bottom: -4px; left: -4px; border-bottom: 1.5px solid; border-left: 1.5px solid; }
-#managed-screen .managed-logo-wrap .corner.br { bottom: -4px; right: -4px; border-bottom: 1.5px solid; border-right: 1.5px solid; }
+#managed-screen .managed-logo-wrap .corner.tl { top: -1px; left: -1px; }
+#managed-screen .managed-logo-wrap .corner.tr { top: -1px; right: -1px; }
+#managed-screen .managed-logo-wrap .corner.bl { bottom: -1px; left: -1px; }
+#managed-screen .managed-logo-wrap .corner.br { bottom: -1px; right: -1px; }
 
 #managed-screen .managed-contacts {
   display: flex; flex-direction: column; gap: 4px;

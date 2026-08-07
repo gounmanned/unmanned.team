@@ -71,7 +71,7 @@ class InventoryScreen {
                     </button>
                 </td>
                 <td class="asset-signals">
-                    <span class="signal-count">${Object.values(this.state.signals[this.state.account()]).filter(s => s.asset == a.name).length}</span>
+                    ${Object.values(this.state.signals[this.state.account()]).filter(s => s.asset == a.name).length}
                 </td>
                 <td class="asset-seen">${a.updated ? new Date(a.updated).toLocaleDateString() : '—'}</td>
             </tr>

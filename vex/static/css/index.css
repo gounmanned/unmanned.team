@@ -1524,11 +1524,6 @@ td.strength {
   display: block;
 }
 
-#inventory-screen .signal-count:not(:empty):not([data-zero]) {
-  color: var(--pink);
-  background: rgba(224,18,128,0.1);
-}
-
 #inventory-screen .copy-btn {
   opacity: 0;
   border: none;

@@ -20,7 +20,6 @@ class InventoryScreen {
         this.assets = [];
         this.scope = 'domain';
         this.query = '';
-        this.sort = { key: 'updated', dir: 'desc' };
         this.labels = { domain: 'domains', identity: 'identities', other: 'other assets' };
         this.listen();
     }
@@ -46,15 +45,12 @@ class InventoryScreen {
             if (el) el.textContent = this.assets.filter(a => a.type === type).length;
         });
 
+        const signalsForAccount = Object.values(this.state.signals[this.state.account()]);
+
         const rows = this.assets
             .filter(a => a.type === this.scope)
             .filter(a => !this.query || a.name.toLowerCase().includes(this.query) || (a.source || '').toLowerCase().includes(this.query))
-            .sort((a, b) => {
-                const av = this.sort.key === 'value' ? a.name : (a[this.sort.key] || '');
-                const bv = this.sort.key === 'value' ? b.name : (b[this.sort.key] || '');
-                const cmp = String(av).localeCompare(String(bv));
-                return this.sort.dir === 'asc' ? cmp : -cmp;
-            })
+            .map(a => ({ ...a, signals: signalsForAccount.filter(s => s.asset == a.name).length }));
 
         this.wrap.classList.toggle('empty', rows.length === 0);
         document.getElementById('asset-empty-label').textContent = this.query
@@ -91,16 +87,6 @@ class InventoryScreen {
         this.search.addEventListener('input', ev => {
             this.query = ev.target.value.trim().toLowerCase();
             this.render();
-        });
-
-        document.querySelectorAll('#asset-table thead th.sortable').forEach(th => {
-            th.addEventListener('click', () => {
-                const key = th.dataset.sort;
-                this.sort = this.sort.key === key
-                    ? { key, dir: this.sort.dir === 'asc' ? 'desc' : 'asc' }
-                    : { key, dir: 'asc' };
-                this.render();
-            });
         });
 
         this.tbody.addEventListener('click', ev => {

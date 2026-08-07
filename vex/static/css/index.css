@@ -1507,8 +1507,6 @@ td.strength {
   user-select: none;
   white-space: nowrap;
 }
-#inventory-screen #asset-table thead th.sortable { cursor: pointer; }
-#inventory-screen #asset-table thead th.sortable:hover { color: var(--text-strong); }
 #inventory-screen #asset-table thead th .sort-arrow { font-size: 13px; vertical-align: -3px; opacity: 0.5; }
 
 #inventory-screen #asset-table tbody tr:hover { background: var(--gray-hover); }
@@ -1524,10 +1522,6 @@ td.strength {
   height: 16px;
   object-fit: contain;
   display: block;
-}
-
-#inventory-screen .asset-signals {
-  text-align: center;
 }
 
 #inventory-screen .signal-count:not(:empty):not([data-zero]) {

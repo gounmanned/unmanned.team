@@ -18,10 +18,9 @@ class SignalSidebar extends Sidebar {
         document.getElementById("signal-severity").value = signal.severity;
         document.getElementById("signal-status").value = signal.status;
 
-        const label = Workspace.SEVERITY[signal.severity] ?? Workspace.SEVERITY[5];
         const banner = document.getElementById("severity-banner");
         banner.dataset.severity = signal.severity;
-        banner.innerHTML = `<span>${label}</span>`;
+        banner.innerHTML = `<span>${Workspace.SEVERITY[signal.severity]}</span>`;
         this.add(signal);
 
         updates.sort((a, b) => new Date(a.updated) - new Date(b.updated)).forEach((update, _) => {

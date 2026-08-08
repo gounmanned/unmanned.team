@@ -22,6 +22,7 @@ class Workspace {
         3: 'Medium',
         4: 'Low',
         5: 'Info',
+        6: 'Support',
     };
 
     async render(code) {

@@ -246,6 +246,20 @@ tr.closed {
   background: var(--pink);
 }
 
+.links-contact {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text-muted);
+  letter-spacing: 0.1px;
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: text;
+}
+
 /* ─────────────────────────────────────────────────────────────────────────────
    SIGNAL TABLE
 ───────────────────────────────────────────────────────────────────────────── */
@@ -334,11 +348,12 @@ tr.closed {
   white-space: nowrap;
 }
 
-.severity-chip[data-severity="1"] { background: rgba(220,38,38,0.1);  color: #dc2626; } /* Critical */
-.severity-chip[data-severity="2"] { background: rgba(234,88,12,0.1);  color: #ea580c; } /* High */
-.severity-chip[data-severity="3"] { background: rgba(202,138,4,0.1);  color: #ca8a04; } /* Medium */
-.severity-chip[data-severity="4"] { background: rgba(37,99,235,0.1);  color: #2563eb; } /* Low */
+.severity-chip[data-severity="1"] { background: rgba(220,38,38,0.1); color: #dc2626; } /* Critical */
+.severity-chip[data-severity="2"] { background: rgba(249,115,22,0.1); color: #f97316; } /* High */
+.severity-chip[data-severity="3"] { background: rgba(234,179,8,0.1);  color: #b45309; } /* Medium */
+.severity-chip[data-severity="4"] { background: rgba(59,130,246,0.1); color: #3b82f6; } /* Low */
 .severity-chip[data-severity="5"] { background: var(--gray-soft);     color: var(--text-strong); } /* Info */
+.severity-chip[data-severity="6"] { background: rgba(13,148,136,0.1); color: #0d9488; } /* Support */
 
 /* ── strength ──────────────────────────────────────────────────────── */
 
@@ -607,10 +622,11 @@ td.strength {
 }
 
 #signal-sidebar .severity-banner[data-severity="1"] { background: #dc2626; } /* Critical */
-#signal-sidebar .severity-banner[data-severity="2"] { background: #ea580c; } /* High */
-#signal-sidebar .severity-banner[data-severity="3"] { background: #ca8a04; } /* Medium */
-#signal-sidebar .severity-banner[data-severity="4"] { background: #2563eb; } /* Low */
+#signal-sidebar .severity-banner[data-severity="2"] { background: #f97316; } /* High */
+#signal-sidebar .severity-banner[data-severity="3"] { background: #b45309; } /* Medium */
+#signal-sidebar .severity-banner[data-severity="4"] { background: #3b82f6; } /* Low */
 #signal-sidebar .severity-banner[data-severity="5"] { background: var(--text-strong); } /* Info */
+#signal-sidebar .severity-banner[data-severity="6"] { background: #0d9488; } /* Support */
 
 /* ─────────────────────────────────────────────────────────────────────────────
    FILTER ROW

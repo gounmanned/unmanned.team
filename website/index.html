@@ -196,13 +196,6 @@
   }
   .radar-tick{ stroke:var(--gray-line); stroke-width:1; }
 
-  .eyebrow{
-    position:relative;
-    z-index:2;
-    margin-bottom:26px;
-  }
-  .eyebrow span.ink{color:var(--ink);}
-
   h1.wordmark{
     position:relative;
     z-index:2;
@@ -234,15 +227,6 @@
   @media (max-width:700px){
     .hero{ padding:120px 20px 64px; min-height:100vh; }
     .radar{ width:150vw; height:150vw; max-width:640px; max-height:640px; }
-    .eyebrow{
-      font-size:9.5px;
-      letter-spacing:0.14em;
-      gap:8px;
-      margin-bottom:18px;
-      text-align:center;
-      justify-content:center;
-      flex-wrap:wrap;
-    }
     h1.wordmark{ font-size:clamp(80px, 38vw, 220px); }
     .wordmark-frame .corner{ --corner-size:16px; }
     .wordmark-frame .corner.tl,.wordmark-frame .corner.tr{top:-10px;}
@@ -254,7 +238,6 @@
   }
   @media (max-width:400px){
     h1.wordmark{ font-size:clamp(72px, 36vw, 170px); }
-    .eyebrow{ font-size:8.5px; }
   }
 
   .divider{
@@ -290,12 +273,6 @@
   .brief-content h2 u{ text-decoration-color:var(--pink); text-underline-offset:3px; }
   .brief-content p{ font-size:16px; line-height:1.75; color:#2b2b2b; }
   .brief-content p + p{ margin-top:18px; }
-  .brief-content p.footnote{
-    font-size:12.5px;
-    line-height:1.6;
-    color:var(--gray-mid);
-    margin-top:26px;
-  }
 
   /* ---------- DARK FRAME — shared by philosophy + contact ---------- */
   .dark-frame{
@@ -518,7 +495,6 @@
     padding:52px 44px 48px;
     text-align:center;
   }
-  .vex-explainer-label{ justify-content:center; margin-bottom:26px; }
   .vex-explainer-comps{
     display:flex;
     margin-bottom:38px;
@@ -568,45 +544,6 @@
     }
     .vex-explainer-comps .comp-item:first-child{ border-top:none; }
     .vex-explainer-final{ font-size:18px; }
-  }
-
-  /* ---------- NO DASHBOARD INCLUDED ---------- */
-  .no-dashboard{
-    position:relative;
-    max-width:920px;
-    margin:160px auto auto;
-    padding-left:28px;
-    border-left:2px solid var(--pink);
-    text-align:left;
-  }
-  .no-dashboard h3{
-    font-family:'Hedvig Letters Serif', serif;
-    font-style:italic;
-    font-weight:400;
-    font-size:clamp(26px, 3.2vw, 34px);
-    letter-spacing:-0.005em;
-    line-height:1.25;
-    margin-bottom:16px;
-    color:var(--ink);
-  }
-  .no-dashboard p{
-    font-size:15px;
-    line-height:1.75;
-    color:#2b2b2b;
-    max-width:none;
-  }
-  .no-dashboard p.footnote{
-    font-family:'JetBrains Mono',monospace;
-    font-size:11.5px;
-    letter-spacing:0.02em;
-    color:var(--gray-mid);
-    margin-top:24px;
-    padding-top:14px;
-    border-top:1px dashed var(--gray-line);
-    display:inline-block;
-  }
-  @media (max-width:700px){
-    .no-dashboard{ margin-top:64px; padding-left:18px; }
   }
 
   /* ---------- FOOTER ---------- */
@@ -701,7 +638,7 @@
     <div class="body-wrap">
       <div class="eyebrow-row eyebrow-label mono"><span class="status-dot"></span>Our approach</div>
 
-      <blockquote>Everyone has <em>choke points</em>.</blockquote>
+      <blockquote>Eliminate <em>choke points</em>.</blockquote>
 
       <p class="philosophy-lead">
         Every business runs on rotating single points of failure — an over-permissioned
@@ -754,7 +691,7 @@
   <section class="brief wide">
     <div class="brief-label eyebrow-label mono"><span class="status-dot"></span>The solution</div>
     <div class="brief-content">
-      <h2>Wake up <u>ahead</u>.</h2>
+      <h2><u>Hack yourself</u> first.</h2>
       <p>
         Vex continuously authenticates into your environment, collects signals across identities, SaaS, cloud and endpoints and generates probable breach scenarios.
         First analysis ready in just five minutes.
@@ -793,7 +730,8 @@
       <div class="corner tr"></div>
       <div class="corner bl"></div>
       <div class="corner br"></div>
-      <div class="vex-explainer-label eyebrow-label mono"><span class="status-dot"></span>What is Vex</div>
+      <p class="vex-explainer-final">Vex is your <em>countermeasure against the attacker who never sleeps</em>, generating breach scenarios shortly after they open up. No human required.</p>
+      <br><br>
       <div class="vex-explainer-comps">
         <div class="comp-item">
           <span class="comp-index">01</span>
@@ -808,19 +746,6 @@
           <span class="comp-text">Vex runs like an AI agent.</span>
         </div>
       </div>
-      <p class="vex-explainer-final">Vex is your <em>countermeasure against the attacker who never sleeps</em>, generating breach scenarios shortly after they open up. No human required.</p>
-    </div>
-
-    <div class="no-dashboard">
-      <h3>Dashboard not included.</h3>
-      <p>
-        Vex is headless. 
-        There's no console to babysit, no queue of alerts waiting on someone else to triage.
-        AI scopes your environment, discovers issues, prioritizes findings, validates their role in a breach, and mobilizes a solution.
-        The result?
-        An always-on red team that tells you how an attacker would break in. 
-      </p>
-      <p class="footnote mono">There's a dashboard if you <b>really</b> need it.</p>
     </div>
   </section>
 

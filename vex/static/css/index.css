@@ -1012,37 +1012,6 @@ td.strength {
   width: 75px; height: auto; object-fit: contain;
 }
 
-#managed-screen .managed-contacts {
-  display: flex; flex-direction: column; gap: 4px;
-  margin-left: auto; padding-left: 16px;
-  max-width: 210px;
-  align-self: center;
-  position: relative;
-}
-
-#managed-screen .managed-contact-desc {
-  margin: 0;
-  font-size: 10px;
-  line-height: 1.4;
-  color: var(--text-muted);
-}
-
-#managed-screen .managed-contacts::before {
-  content: '';
-  position: absolute; left: 0;
-  top: 4px; bottom: 4px;
-  width: 1px; background: var(--gray-line);
-}
-
-#managed-screen .managed-contact {
-  display: flex; align-items: center; gap: 6px;
-  font-size: 11px; font-weight: 500; color: var(--text-strong);
-}
-
-#managed-screen .managed-contact .material-symbols-outlined {
-  font-size: 13px; color: var(--pink); display: inline-flex;
-}
-
 #managed-screen .managed-col--kpis {
   display: grid;
   grid-template-columns: repeat(4, 1fr);

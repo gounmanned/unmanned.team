@@ -16,6 +16,14 @@ class AppState {
 }
 
 class Workspace {
+    static SEVERITY = {
+        1: 'Critical',
+        2: 'High',
+        3: 'Medium',
+        4: 'Low',
+        5: 'Info',
+    };
+
     async render(code) {
         Auth.init(code)
             .then(async user => await SiteSpinner.withLoading(async () => {
@@ -87,5 +95,5 @@ class Workspace {
             clearTimeout(timer);
             timer = setTimeout(() => fn(...args), delay);
         };
-    } 
+    }
 }

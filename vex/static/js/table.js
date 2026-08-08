@@ -14,14 +14,14 @@ class Table {
     }
 
     add(row, signal) {
-        row.querySelector("td.severity img").src = `static/img/severity/${signal.severity}.svg`;
+        const label = Workspace.SEVERITY[signal.severity];
+        row.querySelector("td.severity").innerHTML = `<span class="severity-chip" data-severity="${signal.severity}">${label}</span>`;
         row.dataset.status = signal.status;
         row.dataset.severity = signal.severity;
         row.dataset.updated = signal.updated;
 
         const closed = signal.status.startsWith("C");
         row.classList.toggle("closed", closed);
-        
         if (closed) {
             this.body.appendChild(row);
             return;

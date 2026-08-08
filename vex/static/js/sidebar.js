@@ -1,68 +1,58 @@
 class Sidebar {
-  constructor(id){ this.id = id; }
-  _open(){ document.getElementById(this.id).show(); }
-  close(){ document.getElementById(this.id).hide(); }
-  set(key){ this.key = key; }
+    constructor(id){ this.id = id; }
+    _open(){ document.getElementById(this.id).show(); }
+    close(){ document.getElementById(this.id).hide(); }
+    set(key){ this.key = key; }
 }
 
 class SignalSidebar extends Sidebar {
+    constructor(id){
+        super(id);
+    }
 
-  static SEVERITY = {
-      1: { label: "Critical" },
-      2: { label: "High" },
-      3: { label: "Medium" },
-      4: { label: "Low" },
-      5: { label: "Info" },
-  };
+    open(signal, updates) {
+        this._open();
+        this.signal = signal;
 
-  constructor(id){
-    super(id);
-  }
+        document.getElementById("updates").innerHTML = "";
+        document.getElementById("signal-severity").value = signal.severity;
+        document.getElementById("signal-status").value = signal.status;
 
-  open(signal, updates) {
-    this._open();
-    this.signal = signal;
+        const label = Workspace.SEVERITY[signal.severity] ?? Workspace.SEVERITY[5];
+        const banner = document.getElementById("severity-banner");
+        banner.dataset.severity = signal.severity;
+        banner.innerHTML = `<span>${label}</span>`;
+        this.add(signal);
 
-    document.getElementById("updates").innerHTML = "";
-    document.getElementById("signal-severity").value = signal.severity;
-    document.getElementById("signal-status").value = signal.status;
+        updates.sort((a, b) => new Date(a.updated) - new Date(b.updated)).forEach((update, _) => {
+            this.add(update);
+        });
+    }
 
-    const meta = SignalSidebar.SEVERITY[signal.severity];
-    const banner = document.getElementById("severity-banner");
-    banner.dataset.severity = signal.severity;
-    banner.innerHTML = `<img class="banner-icon" src="static/img/severity/${signal.severity}.svg"/><span>${meta.label}</span>`;
-    
-    this.add(signal);
+    add(update){
+        if (document.querySelector(`#updates li[data-key="${update.key}"]`)) return;
 
-    updates.sort((a, b) => new Date(a.updated) - new Date(b.updated)).forEach((update, _) => {
-      this.add(update);
-    });
-  }
+        const message = document.createElement("li");
+        message.dataset.key = update.key;
+        message.className = "";
 
-  add(update){
-    if (document.querySelector(`#updates li[data-key="${update.key}"]`)) return;
-
-    const message = document.createElement("li");
-    message.dataset.key = update.key;
-    message.className = "";
-
-    const source = update.source || this.signal.source;
-    message.innerHTML = `
-        <div class="message-row">
-            <div class="avatar"><img class="message-avatar" src="${Workspace.avatar(source)}" /></div>
-            <div class="message-content">
-                <div class="header">
-                    <div class="sender">${source}</div>
-                    <div class="timestamp">${update.updated}</div>
+        const source = update.source || this.signal.source;
+        message.innerHTML = `
+            <div class="message-row">
+                <div class="avatar"><img class="message-avatar" src="${Workspace.avatar(source)}" /></div>
+                <div class="message-content">
+                    <div class="header">
+                        <div class="sender">${source}</div>
+                        <div class="timestamp">${update.updated}</div>
+                    </div>
+                    <div class="body">${update.value}</div>
                 </div>
-                <div class="body">${update.value}</div>
             </div>
-        </div>
-    `;
+        `;
 
-    document.getElementById("updates").appendChild(message);
-    document.getElementById("response").value = "";
-    const last = document.getElementById("updates").querySelector('li:last-child');
-    last.scrollIntoView({ behavior: 'smooth' });
-  }
+        document.getElementById("updates").appendChild(message);
+        document.getElementById("response").value = "";
+        const last = document.getElementById("updates").querySelector('li:last-child');
+        last.scrollIntoView({ behavior: 'smooth' });
+    }
 }

@@ -76,7 +76,7 @@ class TenantScreen {
 
             row.innerHTML = `
                 <td><img src="${Workspace.avatar(signal.source)}"/></td>
-                <td class="severity"><img src="static/img/severity/${signal.severity}.svg"/></td>
+                <td class="severity"></td>
                 <td>${signal.name.substring(0, 99)}</td>
                 <td>#${signal.id}</td>
                 <td class="strength">${this.strength(signal.metadata?.strength ?? 0)}</td>

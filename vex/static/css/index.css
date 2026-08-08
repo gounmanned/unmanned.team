@@ -320,6 +320,26 @@ tr.closed {
   .signal-radar .radar-ring { animation: none; opacity: 0.9; }
 }
 
+/* ── severity ──────────────────────────────────────────────────────── */
+
+.severity-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 9px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.severity-chip[data-severity="1"] { background: rgba(220,38,38,0.1);  color: #dc2626; } /* Critical */
+.severity-chip[data-severity="2"] { background: rgba(234,88,12,0.1);  color: #ea580c; } /* High */
+.severity-chip[data-severity="3"] { background: rgba(202,138,4,0.1);  color: #ca8a04; } /* Medium */
+.severity-chip[data-severity="4"] { background: rgba(37,99,235,0.1);  color: #2563eb; } /* Low */
+.severity-chip[data-severity="5"] { background: var(--gray-soft);     color: var(--text-strong); } /* Info */
+
 /* ── strength ──────────────────────────────────────────────────────── */
 
 td.strength {

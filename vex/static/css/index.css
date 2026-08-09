@@ -9,9 +9,9 @@
   --text-strong: #6b7280;  /* account names, list labels */
   --sev-1: #DC2626; /* Critical */
   --sev-2: #F97316; /* High */
-  --sev-3: #B45309; /* Medium */
+  --sev-3: #EAB308; /* Medium */
   --sev-4: #3B82F6; /* Low */
-  --sev-5: #78716C; /* Info */
+  --sev-5: #6B7280; /* Info */
   --sev-6: #0D9488; /* Support */
 }
 

@@ -22,20 +22,15 @@ class Table {
 
         const closed = signal.status.startsWith("C");
         row.classList.toggle("closed", closed);
+
         if (closed) {
             this.body.appendChild(row);
             return;
         }
 
-        const rows = [...this.body.children];
-        const before = rows.find(existing =>
-            new Date(existing.dataset.updated) < new Date(signal.updated)
-        );
+        const openRows = [...this.body.children].filter(r => !r.classList.contains("closed"));
+        const anchor = openRows.find(r => new Date(r.dataset.updated) < new Date(signal.updated));
 
-        if (before) {
-            this.body.insertBefore(row, before);
-        } else {
-            this.body.appendChild(row);
-        }
+        this.body.insertBefore(row, anchor ?? this.body.querySelector(".closed") ?? null);
     }
 }

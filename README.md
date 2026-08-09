@@ -3,7 +3,7 @@
 </p>
 
 <h1 align="center">Vex</h1>
-<p align="center"><b>Autonomous Offensive SOC</b></p>
+<p align="center"><b>Autonomous Offensive Security</b></p>
 
 <p align="center">
   <a href="#quickstart">Quickstart</a> •

@@ -2,6 +2,7 @@ class ManagedScreen {
     constructor(state) {
         this.state = state;
         this.api = new ManagedApi();
+        this.endpoint = new EndpointMonitor();
         this.screen = document.getElementById('managed-screen');
         this.list = document.getElementById('managed-accounts');
         this.members = new Map();
@@ -20,6 +21,7 @@ class ManagedScreen {
             .filter(t => t.status.startsWith('O'));
 
         this._renderMetrics(signals);
+        await this.endpoint.reload();
     }
 
     async load() {
@@ -34,8 +36,49 @@ class ManagedScreen {
         });
 
         this._updateEmptyState();
+        this._updateScope(pending?.length ?? 0);
     }
-    
+
+    _updateScope(pendingCount = 0) {
+        document.getElementById('managed-scope-count').textContent = this.members.size;
+    }
+
+    _renderMetrics = Workspace.debounce((signals) => {
+        const set = (id, v) => {
+            const el = this.screen.querySelector(id);
+            if (el) el.textContent = isFinite(v) ? Math.round(v) : '—';
+        };
+
+        const now = new Date();
+        const midnight = new Date(now);
+        midnight.setHours(0, 0, 0, 0);
+        const created = signals.filter(s => new Date(s.created) >= midnight);
+
+        set('#managed-kpi-opened', signals.length);
+
+        const deltaEl = document.getElementById('managed-signals-delta');
+        if (deltaEl) {
+            deltaEl.innerHTML = `<strong>+${created.length}</strong> today`;
+            deltaEl.classList.toggle('zero', created.length === 0);
+        }
+
+        this._renderSeverityBar(signals);
+    }, 50);
+
+    _renderSeverityBar(signals) {
+        const row = document.getElementById('managed-signals-sev-row');
+        if (!row) return;
+
+        const counts = [1, 2, 3, 4, 5, 6].map(sev => signals.filter(s => Number(s.severity) === sev).length);
+
+        row.innerHTML = counts.map((n, i) => `
+            <span class="severity-chip signals-sev-chip${n === 0 ? ' zero' : ''}" data-severity="${i + 1}">
+                <span class="signals-sev-count">${n}</span>
+                <span class="signals-sev-label">${Workspace.SEVERITY[i + 1]}</span>
+            </span>
+        `).join('');
+    }
+
     _updateEmptyState() {
         const wrap = document.querySelector('.managed-accounts-wrap');
         if (wrap) wrap.classList.toggle('empty', this.members.size === 0);
@@ -200,30 +243,6 @@ class ManagedScreen {
         }
     }
 
-    _renderMetrics = Workspace.debounce((signals) => {
-        document.querySelectorAll('[id^="managed-kpi-"]').forEach(el => el.classList.add('loading'));
-
-        const set = (id, v) => {
-            const el = this.screen.querySelector(id);
-            if (el) {
-                el.textContent = isFinite(v) ? Math.round(v) : '—';
-                el.classList.remove('loading');
-            }
-        };
-
-        const now = new Date();
-        const midnight = new Date(now);
-        midnight.setHours(0, 0, 0, 0);
-        const pct = (n, d) => d ? (n / d) * 100 : NaN;
-        const updated = signals.filter(s => new Date(s.updated) >= midnight);
-        const created = signals.filter(s => new Date(s.created) >= midnight);
-
-        set('#managed-kpi-created', created.length);
-        set('#managed-kpi-opened', signals.length);
-        set('#managed-kpi-updated', updated.length);
-        set('#managed-kpi-critical',  signals.filter(s => s.severity == 1).length);
-    }, 50);
-
     listen() {
         document.addEventListener("signal:managed", (ev) => {
             this.state.track(ev.signal);
@@ -250,5 +269,34 @@ class ManagedScreen {
                 input.value = '';
             });
         });
+    }
+}
+
+class EndpointMonitor {
+    constructor() {
+        this.api = new MonitorApi();
+        this.key = 'level';
+
+        this.box = document.getElementById('endpoint-monitor-box');
+        this.iconFallback = document.getElementById('endpoint-icon-fallback');
+        this.logo = document.getElementById('endpoint-logo');
+        this.stateEl = document.getElementById('endpoint-kpi-state');
+        this.descEl = document.getElementById('endpoint-desc');
+    }
+
+    async reload() {
+        const monitors = await this.api.list();
+        const connected = monitors.some(m => m.split('/')[2] === this.key);
+        this._render(connected);
+    }
+
+    _render(connected) {
+        this.box.classList.toggle('connected', connected);
+        this.iconFallback.hidden = connected;
+        this.logo.hidden = !connected;
+        this.stateEl.textContent = connected ? 'Connected' : 'Disconnected';
+        this.descEl.textContent = connected
+            ? 'All managed accounts inherit Level.io'
+            : 'Connect Level.io to your root account';
     }
 }

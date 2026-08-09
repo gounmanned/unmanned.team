@@ -9,7 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.unmanned.team/css/global.css">
-  <link rel="stylesheet" href="static/css/index.css?v=0.00s">
+  <link rel="stylesheet" href="static/css/index.css?v=0.00q">
   <title>Vex</title>
 </head>
 <body>
@@ -105,7 +105,7 @@
           </button>
         </div>
 
-        <span class="links-contact">security@vex.unmanned.team for support</span>
+        <span class="links-contact">go@unmanned.team for support</span>
 
         <a id="open-breach-screen">Breach</a>
         <a id="open-inventory-screen">Inventory</a>
@@ -117,45 +117,43 @@
 
   <site-rollup id="managed-screen">
     <div class="managed-banner">
+      <div class="managed-banner-scan"></div>
+
       <div class="managed-col--identity">
-        <div class="managed-logo-wrap">
-          <img src="https://cdn.unmanned.team/img/logo.png" class="managed-logo">
+        <div class="hud-corner tl"></div><div class="hud-corner tr"></div><div class="hud-corner bl"></div><div class="hud-corner br"></div>
+        <div class="col-eyebrow">My Customers</div>
+        <div class="scope-headline">
+          <span class="scope-count" id="managed-scope-count">0</span>
+          <span class="scope-label">managed accounts</span>
         </div>
-        <div class="managed-info">
-          <div class="managed-name">Meet Vex</div>
-          <p class="managed-desc">Prevent the breach</p>
-        </div>
+        <p class="scope-caption" id="managed-scope-caption"><span class="material-symbols-outlined">south</span>Enter any account below</p>
       </div>
-      <div class="managed-col--kpis">
-        <div class="managed-kpi">
-          <span class="managed-kpi-label">Open</span>
-          <div class="managed-kpi-value">
-            <span class="managed-kpi-n--top" id="managed-kpi-opened">-</span>
+
+      <div class="managed-col--endpoint" id="endpoint-monitor-box">
+        <div class="hud-corner tl"></div><div class="hud-corner tr"></div><div class="hud-corner bl"></div><div class="hud-corner br"></div>
+        <div class="col-eyebrow">Global Network</div>
+        <div class="endpoint-header">
+          <span class="endpoint-icon-wrap">
+            <span class="material-symbols-outlined" id="endpoint-icon-fallback">sensors_off</span>
+            <img src="static/img/source/level.png" class="endpoint-logo" id="endpoint-logo" hidden alt="Level.io">
+          </span>
+          <div class="endpoint-title-row">
+            <span class="endpoint-name">Endpoint Monitor</span>
+            <span class="endpoint-state" id="endpoint-kpi-state">Not connected</span>
           </div>
-          <span class="managed-kpi-unit">signals</span>
         </div>
-        <div class="managed-kpi">
-          <span class="managed-kpi-label">New</span>
-          <div class="managed-kpi-value">
-            <span class="managed-kpi-n--top" id="managed-kpi-created">-</span>
-          </div>
-          <span class="managed-kpi-unit">today</span>
+        <p class="endpoint-desc" id="endpoint-desc">Connect Level.io to your root account and every account under management is covered.</p>
+      </div>
+
+      <div class="managed-col--signals">
+        <div class="hud-corner tl"></div><div class="hud-corner tr"></div><div class="hud-corner bl"></div><div class="hud-corner br"></div>
+        <div class="col-eyebrow">Active Signals</div>
+        <div class="signals-headline">
+          <span class="signals-count" id="managed-kpi-opened">0</span>
+          <span class="signals-label">open</span>
+          <span class="signals-delta" id="managed-signals-delta"></span>
         </div>
-        <div class="managed-kpi">
-          <span class="managed-kpi-label">Updated</span>
-          <div class="managed-kpi-value">
-            <span class="managed-kpi-n--top" id="managed-kpi-updated">-</span>
-            <span class="managed-kpi-n--bot"></span>
-          </div>
-          <span class="managed-kpi-unit">today</span>
-        </div>
-        <div class="managed-kpi">
-          <span class="managed-kpi-label">Critical</span>
-          <div class="managed-kpi-value">
-            <span class="managed-kpi-n--top" id="managed-kpi-critical">-</span>
-          </div>
-          <span class="managed-kpi-unit">must fix</span>
-        </div>
+        <div class="signals-sev-row" id="managed-signals-sev-row"></div>
       </div>
     </div>
 
@@ -195,7 +193,7 @@
         </div>
       </div>
     </div>
-  </site-rollup>  
+  </site-rollup>
 
   <!-- Rollups -->
 
@@ -418,13 +416,13 @@
 <script src="https://cdn.unmanned.team/js/components.js"></script>
 <script src="https://cdn.unmanned.team/js/cognito.js"></script>
 <script src="static/js/api.js?v=0.00e"></script>
-<script src="static/js/workspace.js?v=0.00j"></script>
+<script src="static/js/workspace.js?v=0.00k"></script>
 <script src="static/js/table.js?v=0.00f"></script>
 <script src="static/js/sidebar.js?v=0.00c"></script>
 <script src="static/js/screens/signal.js?v=0.00l"></script>
-<script src="static/js/screens/managed.js?v=0.00f"></script>
+<script src="static/js/screens/managed.js?v=0.00i"></script>
 <script src="static/js/screens/monitors.js?v=0.00b"></script>
-<script src="static/js/screens/inventory.js?v=0.00b"></script>
+<script src="static/js/screens/inventory.js?v=0.00c"></script>
 <script src="static/js/screens/breach.js?v=0.00"></script>
 
 <script>

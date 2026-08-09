@@ -29,12 +29,10 @@ There is no build step, no bundler, and no framework. You edit files, you refres
 
 > ### 🦆 Light clients, heavy backends
 >
-> At Unmanned, we don't think most products need React, a bundler, a state management library, and a 400MB `node_modules` folder to render a dashboard.
+> At Unmanned, we don't think every product needs React, a bundler, a state management library, and a 400MB `node_modules` folder to render a dashboard.
 >
 > Every dependency you add is code you didn't write, running with the same trust as code you did — and every framework abstraction is a place where a real problem can hide behind a virtual one. So Vex's frontend is built with **plain HTML, CSS, and JavaScript**, structured like a *light client*: the browser renders state and calls an API, and the backend does the compute work.
 >
-> Minimal dependencies isn't a purity test. It's a smaller attack surface, a smaller footprint, and a codebase any engineer can read top-to-bottom in an afternoon.
-
 ---
 
 ## Quickstart

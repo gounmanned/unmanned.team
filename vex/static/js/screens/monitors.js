@@ -57,7 +57,7 @@ class MonitorScreen {
 
     _renderCallout() {
         document.getElementById('monitor-callout').innerHTML = `
-            <p class="monitor-callout-text">Every Vex account has a unique mailbox that accepts signals. We recommend you forward alerts from routers, outage monitors, DMARC rua locations, and other applications that send email notifications.</p>
+            <p class="monitor-callout-text">Every Vex account has a unique mailbox that accepts signals. Forward alerts from routers, DMARC rua, and other services that send email notifications.</p>
             <p class="monitor-callout-address">${this.emailAddress}</p>
         `;
     }

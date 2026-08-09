@@ -49,7 +49,7 @@ class Workspace {
             .catch(err => {
                 console.error(err);
             }).finally(() => {
-                document.querySelector('site-header').setCompany("Unmanned", "Welcome to Vex");
+                document.querySelector('site-header').setCompany("Vex", "Prevent the breach");
             });
     }
 

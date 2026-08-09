@@ -14,9 +14,13 @@
 
 ---
 
+## About Vex
+
+Vex runs like an always-on red team, collecting security signals. A breach scenario is generated if they can combine into a probable attack. Your job is to close signals before that happens.
+
 ## What is this?
 
-This repo contains the **frontend client for Vex**, an autonomous offensive security product. It's the exact code that powers [vex.unmanned.team](https://vex.unmanned.team) — open-sourced so anyone can clone it, point it at their own account, restyle it, and ship it as their own white-labeled product.
+This is the exact code that powers [vex.unmanned.team](https://vex.unmanned.team) — open-sourced so anyone can clone it, point it at their own account, restyle it, and ship it as their own white-labeled product.
 
 There is no build step, no bundler, and no framework. You edit files, you refresh the page.
 

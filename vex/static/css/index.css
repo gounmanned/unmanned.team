@@ -1662,17 +1662,17 @@ td.strength {
 #managed-screen .managed-account-item.pending { opacity: 0.4; pointer-events: none; }
 
 #managed-screen .managed-account-badge {
-  width: 17px; height: 17px;
+  width: 24px; height: 24px;
   padding: 0;
   flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
-  border-radius: 9px;
+  border-radius: 12px;
   background: var(--gray-line);
-  font-size: 9.5px; font-weight: 700; color: var(--gray-mid);
+  font-size: 11px; font-weight: 700; color: var(--gray-mid);
   transition: background 0.15s, color 0.15s;
 }
 
-#managed-screen .managed-badge-icon { width: 18px; height: 18px; object-fit: contain; }
+#managed-screen .managed-badge-icon { width: 20px; height: 20px; object-fit: contain; }
 
 #managed-screen .managed-account-name {
   flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;

@@ -39,6 +39,68 @@ site-rollup {
   visibility: hidden;
 }
 
+/* ── shared "corner" frame (used by every radar watermark below) ─────────
+   NOTE: previously scoped as `#managed-screen .corner`, which meant the
+   corner divs on the signal-table / inventory / monitor watermarks
+   (outside #managed-screen) never matched and rendered unstyled. Made
+   global so all `.corner.tl/.tr/.bl/.br` instances pick it up. Each
+   watermark still sets its own --corner-size / offsets in its own section. */
+
+.corner {
+  position: absolute;
+  width: var(--corner-size);
+  height: var(--corner-size);
+  border-color: var(--gray-line);
+  opacity: 0.7;
+}
+.corner.tl { border-top: 1.5px solid; border-left: 1.5px solid; }
+.corner.tr { border-top: 1.5px solid; border-right: 1.5px solid; }
+.corner.bl { border-bottom: 1.5px solid; border-left: 1.5px solid; }
+.corner.br { border-bottom: 1.5px solid; border-right: 1.5px solid; }
+
+/* ── shared radar-ring animation (used by the signal-table, breach, and
+   managed watermarks — sizing/padding/offsets differ per section, so
+   those stay local, but the ring/svg mechanics were byte-identical
+   three times over and are consolidated here) ───────────────────────── */
+
+@keyframes managed-ring-glow {
+  0%, 100% { stroke: var(--gray-line); stroke-opacity: 0.4; }
+  50%      { stroke: rgba(224,18,128,0.45); stroke-opacity: 0.7; filter: drop-shadow(0 0 4px rgba(224,18,128,0.25)); }
+}
+
+.signal-radar svg,
+#breach-screen .breach-radar svg,
+#managed-screen .managed-intro-radar svg {
+  width: 100%;
+  height: 100%;
+}
+
+.signal-radar .radar-ring,
+#breach-screen .breach-radar .radar-ring,
+#managed-screen .managed-intro-radar .radar-ring {
+  fill: none;
+  stroke: var(--gray-line);
+  stroke-width: 1;
+  stroke-opacity: 0.5;
+  animation: managed-ring-glow 7.5s ease-in-out infinite;
+}
+.signal-radar .radar-ring.r2,
+#breach-screen .breach-radar .radar-ring.r2,
+#managed-screen .managed-intro-radar .radar-ring.r2 { animation-delay: -2.5s; }
+.signal-radar .radar-ring.r3,
+#breach-screen .breach-radar .radar-ring.r3,
+#managed-screen .managed-intro-radar .radar-ring.r3 { animation-delay: -5s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .signal-radar .radar-ring,
+  #breach-screen .breach-radar .radar-ring,
+  #managed-screen .managed-intro-radar .radar-ring,
+  #managed-screen .status-dot {
+    animation: none;
+    opacity: 0.9;
+  }
+}
+
 /* ─────────────────────────────────────────────────────────────────────────────
    SPINNER
 ───────────────────────────────────────────────────────────────────────────── */
@@ -65,8 +127,8 @@ site-rollup {
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* ─────────────────────────────────────────────────────────────────────────────
-DELEGATION BANNER
-─────────────────────────────────────────────────────────────────────────────*/
+   DELEGATION BANNER
+───────────────────────────────────────────────────────────────────────────── */
 
 body:has(.delegation-notice.visible) {
   --header-offset: 35px;
@@ -294,6 +356,7 @@ tr.closed {
 .table-wrap.empty > table { display: none; }
 .table-wrap.empty .signal-radar-watermark { display: flex; }
 
+/* ring/svg mechanics live in GLOBAL — this is just this watermark's size */
 .signal-radar {
   position: absolute;
   top: 50%; left: 50%;
@@ -303,30 +366,22 @@ tr.closed {
   z-index: 0;
   color: var(--gray-line, #d1d5db);
 }
-.signal-radar svg { width: 100%; height: 100%; }
 
-.signal-radar .radar-ring {
-  fill: none;
-  stroke: var(--gray-line);
-  stroke-width: 1;
-  stroke-opacity: 0.5;
-  animation: managed-ring-glow 7.5s ease-in-out infinite;
-}
-.signal-radar .radar-ring.r2 { animation-delay: -2.5s; }
-.signal-radar .radar-ring.r3 { animation-delay: -5s; }
 .signal-radar-corner { --corner-size: 20px; z-index: 1; opacity: 0.6; }
 .signal-radar-corner.tl { top: 8px; left: 8px; }
 .signal-radar-corner.tr { top: 8px; right: 8px; }
 .signal-radar-corner.bl { bottom: 8px; left: 8px; }
 .signal-radar-corner.br { bottom: 8px; right: 8px; }
 
-.signal-radar-watermark .material-symbols-outlined {
+.signal-radar-watermark .material-symbols-outlined,
+#breach-screen .breach-detail-empty .material-symbols-outlined {
   position: relative; z-index: 2;
   font-size: 28px;
   color: var(--text-faint, #c4c4c4);
 }
 
-.signal-radar-watermark p {
+.signal-radar-watermark p,
+#breach-screen .breach-detail-empty p {
   position: relative; z-index: 2;
   margin: 0;
   font-family: 'JetBrains Mono', monospace;
@@ -334,10 +389,6 @@ tr.closed {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--text-muted, #9ca3af);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .signal-radar .radar-ring { animation: none; opacity: 0.9; }
 }
 
 /* ── severity ──────────────────────────────────────────────────────── */
@@ -619,12 +670,9 @@ td.strength {
 
 #signal-sidebar .severity-banner .banner-icon {
   font-size: 16px;
-}
-
-#signal-sidebar .severity-banner .banner-icon {
-    width: 16px;
-    height: 16px;
-    filter: brightness(0) invert(1);
+  width: 16px;
+  height: 16px;
+  filter: brightness(0) invert(1);
 }
 
 #signal-sidebar .severity-banner[data-severity="1"] { background: var(--sev-1) } /* Critical */
@@ -820,7 +868,9 @@ td.strength {
 }
 .monitor-callout-address:hover { color: var(--pink); }
 
-#monitor-screen .table-wrap {
+/* shared with #inventory-screen .table-wrap below */
+#monitor-screen .table-wrap,
+#inventory-screen .table-wrap {
   padding: 0 16px;
   overflow-y: auto;
 }
@@ -946,11 +996,6 @@ td.strength {
 /* ─────────────────────────────────────────────────────────────────────────────
    INVENTORY SCREEN
 ───────────────────────────────────────────────────────────────────────────── */
-
-#inventory-screen .table-wrap {
-  padding: 0 16px;
-  overflow-y: auto;
-}
 
 #inventory-screen .asset-toolbar {
   display: flex;
@@ -1283,7 +1328,10 @@ td.strength {
   padding: 40px 20px;
   overflow: hidden;
 }
-#breach-screen .breach-detail-empty .breach-radar {
+
+/* ring/svg mechanics + icon/p text live in GLOBAL and SIGNAL TABLE — this
+   is just this watermark's size */
+#breach-screen .breach-radar {
   position: absolute;
   top: 50%; left: 50%;
   transform: translate(-50%, -50%);
@@ -1291,30 +1339,6 @@ td.strength {
   height: min(420px, 85%);
   z-index: 0;
   color: var(--gray-line, #d1d5db);
-}
-#breach-screen .breach-detail-empty .breach-radar svg { width: 100%; height: 100%; }
-#breach-screen .breach-detail-empty .radar-ring {
-  fill: none;
-  stroke: var(--gray-line);
-  stroke-width: 1;
-  stroke-opacity: 0.5;
-  animation: managed-ring-glow 7.5s ease-in-out infinite;
-}
-#breach-screen .breach-detail-empty .radar-ring.r2 { animation-delay: -2.5s; }
-#breach-screen .breach-detail-empty .radar-ring.r3 { animation-delay: -5s; }
-#breach-screen .breach-detail-empty .material-symbols-outlined {
-  position: relative; z-index: 2;
-  font-size: 28px;
-  color: var(--text-faint, #c4c4c4);
-}
-#breach-screen .breach-detail-empty p {
-  position: relative; z-index: 2;
-  margin: 0;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-muted, #9ca3af);
 }
 
 #breach-screen .breach-detail-content {
@@ -1404,6 +1428,19 @@ td.strength {
 
 #managed-screen {
   --corner-size: 20px;
+  --hud-bg-0: #1b1f29;
+  --hud-bg-1: #22262f;
+  --hud-bg-2: #2a2f3b;
+  --hud-line: rgba(255,255,255,0.07);
+  --hud-line-bright: rgba(255,255,255,0.15);
+  --hud-text: #eef0f4;
+  --hud-text-dim: #8a90a0;
+  --hud-text-faint: #5b6172;
+  --pink-glow: rgba(224,18,128,0.32);
+  --cyan: #2fd6c4;
+  --cyan-glow: rgba(47,214,196,0.28);
+  --amber: #f2a53c;
+  --amber-glow: rgba(242,165,60,0.26);
 }
 
 #managed-screen .status-dot {
@@ -1420,39 +1457,6 @@ td.strength {
   0%   { box-shadow: 0 0 0 0 rgba(224,18,128,0.45); }
   70%  { box-shadow: 0 0 8px rgba(224,18,128,0); }
   100% { box-shadow: 0 0 0 0 rgba(224,18,128,0); }
-}
-
-#managed-screen .corner {
-  position: absolute;
-  width: var(--corner-size);
-  height: var(--corner-size);
-  border-color: var(--gray-line);
-  opacity: 0.7;
-}
-#managed-screen .corner.tl { border-top: 1.5px solid; border-left: 1.5px solid; }
-#managed-screen .corner.tr { border-top: 1.5px solid; border-right: 1.5px solid; }
-#managed-screen .corner.bl { border-bottom: 1.5px solid; border-left: 1.5px solid; }
-#managed-screen .corner.br { border-bottom: 1.5px solid; border-right: 1.5px solid; }
-
-@media (prefers-reduced-motion: reduce) {
-  #managed-screen .status-dot,
-  #managed-screen .managed-intro-radar .radar-ring { animation: none; opacity: 0.9; }
-}
-
-#managed-screen {
-  --hud-bg-0: #1b1f29;
-  --hud-bg-1: #22262f;
-  --hud-bg-2: #2a2f3b;
-  --hud-line: rgba(255,255,255,0.07);
-  --hud-line-bright: rgba(255,255,255,0.15);
-  --hud-text: #eef0f4;
-  --hud-text-dim: #8a90a0;
-  --hud-text-faint: #5b6172;
-  --pink-glow: rgba(224,18,128,0.32);
-  --cyan: #2fd6c4;
-  --cyan-glow: rgba(47,214,196,0.28);
-  --amber: #f2a53c;
-  --amber-glow: rgba(242,165,60,0.26);
 }
 
 #managed-screen .managed-banner {
@@ -1501,6 +1505,10 @@ td.strength {
 @keyframes hud-scan {
   0%   { transform: translateY(0%); }
   100% { transform: translateY(340%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #managed-screen .managed-banner-scan::after { animation: none; }
 }
 
 #managed-screen .managed-banner .col-eyebrow {
@@ -1591,11 +1599,6 @@ td.strength {
 #managed-screen .managed-signal-box[data-severity="4"] { --box-color: var(--sev-4); }
 #managed-screen .managed-signal-box[data-severity="5"] { --box-color: var(--sev-5); }
 #managed-screen .managed-signal-box[data-severity="6"] { --box-color: var(--sev-6); }
-
-
-@media (prefers-reduced-motion: reduce) {
-  #managed-screen .managed-banner-scan::after { animation: none; }
-}
 
 /* ── BODY / SIDEBAR ──────────────────────────────────────────────────────── */
 
@@ -1730,6 +1733,7 @@ td.strength {
   overflow: hidden;
 }
 
+/* ring/svg mechanics live in GLOBAL — this is just this watermark's size */
 #managed-screen .managed-intro-radar {
   position: absolute;
   top: 50%; left: 50%;
@@ -1739,22 +1743,6 @@ td.strength {
   pointer-events: none;
   z-index: 0;
   color: var(--gray-line, #d1d5db);
-}
-#managed-screen .managed-intro-radar svg { width: 100%; height: 100%; }
-
-#managed-screen .managed-intro-radar .radar-ring {
-  fill: none;
-  stroke: var(--gray-line);
-  stroke-width: 1;
-  stroke-opacity: 0.5;
-  animation: managed-ring-glow 7.5s ease-in-out infinite;
-}
-#managed-screen .managed-intro-radar .radar-ring.r2 { animation-delay: -2.5s; }
-#managed-screen .managed-intro-radar .radar-ring.r3 { animation-delay: -5s; }
-
-@keyframes managed-ring-glow {
-  0%, 100% { stroke: var(--gray-line); stroke-opacity: 0.4; }
-  50%      { stroke: rgba(224,18,128,0.45); stroke-opacity: 0.7; filter: drop-shadow(0 0 4px rgba(224,18,128,0.25)); }
 }
 
 #managed-screen .managed-intro-corner { --corner-size: 22px; z-index: 1; }

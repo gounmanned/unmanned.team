@@ -85,11 +85,8 @@ Vex is designed to be forked and rebranded. You can modify **any** frontend sour
 A typical white-label flow:
 
 1. Fork/clone this repo
-2. Swap branding in `static/img/` and `static/css/`
-3. Edit or restructure screens in `static/js/screens/`
-4. Adjust orchestration in `workspace.js` as needed
-5. Leave `api.js` alone
-6. Deploy `vex/` as a static site on your own infrastructure
+2. Swap branding in `static/css/`
+3. Deploy `vex/` as a static site on your own infrastructure
 
 Because Vex is a light client, deployment is just serving static files — any static host works.
 

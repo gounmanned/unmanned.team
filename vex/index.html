@@ -9,7 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.unmanned.team/css/global.css">
-  <link rel="stylesheet" href="static/css/index.css?v=0.00q">
+  <link rel="stylesheet" href="static/css/index.css?v=0.00r">
   <title>Vex</title>
 </head>
 <body>
@@ -119,43 +119,10 @@
     <div class="managed-banner">
       <div class="managed-banner-scan"></div>
 
-      <div class="managed-col--identity">
-        <div class="hud-corner tl"></div><div class="hud-corner tr"></div><div class="hud-corner bl"></div><div class="hud-corner br"></div>
-        <div class="col-eyebrow">My Customers</div>
-        <div class="scope-headline">
-          <span class="scope-count" id="managed-scope-count">0</span>
-          <span class="scope-label">managed accounts</span>
-        </div>
-        <p class="scope-caption" id="managed-scope-caption"><span class="material-symbols-outlined">south</span>Enter any account below</p>
+      <div class="managed-signals-panel">
+        <div class="managed-signals-row" id="managed-signals-row"></div>
       </div>
-
-      <div class="managed-col--endpoint" id="endpoint-monitor-box">
-        <div class="hud-corner tl"></div><div class="hud-corner tr"></div><div class="hud-corner bl"></div><div class="hud-corner br"></div>
-        <div class="col-eyebrow">Global Network</div>
-        <div class="endpoint-header">
-          <span class="endpoint-icon-wrap">
-            <span class="material-symbols-outlined" id="endpoint-icon-fallback">sensors_off</span>
-            <img src="static/img/source/level.png" class="endpoint-logo" id="endpoint-logo" hidden alt="Level.io">
-          </span>
-          <div class="endpoint-title-row">
-            <span class="endpoint-name">Endpoint Monitor</span>
-            <span class="endpoint-state" id="endpoint-kpi-state">Not connected</span>
-          </div>
-        </div>
-        <p class="endpoint-desc" id="endpoint-desc">Connect Level.io to your root account and every account under management is covered.</p>
-      </div>
-
-      <div class="managed-col--signals">
-        <div class="hud-corner tl"></div><div class="hud-corner tr"></div><div class="hud-corner bl"></div><div class="hud-corner br"></div>
-        <div class="col-eyebrow">Active Signals</div>
-        <div class="signals-headline">
-          <span class="signals-count" id="managed-kpi-opened">0</span>
-          <span class="signals-label">open</span>
-          <span class="signals-delta" id="managed-signals-delta"></span>
-        </div>
-        <div class="signals-sev-row" id="managed-signals-sev-row"></div>
-      </div>
-    </div>
+    </div>  
 
     <div class="managed-body">
       <div class="managed-left">

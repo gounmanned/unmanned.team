@@ -16,7 +16,7 @@
 
 ## What is this?
 
-This repo contains the **frontend client for Vex**, [unmanned.team](https://unmanned.team)'s autonomous offensive security product. It's the exact code that powers [vex.unmanned.team](https://vex.unmanned.team) — open-sourced so anyone can clone it, point it at their own account, restyle it, and ship it as their own white-labeled product.
+This repo contains the **frontend client for Vex**, an autonomous offensive security product. It's the exact code that powers [vex.unmanned.team](https://vex.unmanned.team) — open-sourced so anyone can clone it, point it at their own account, restyle it, and ship it as their own white-labeled product.
 
 There is no build step, no bundler, and no framework. You edit files, you refresh the page.
 
@@ -43,7 +43,7 @@ Clone the repo, then run the Vex frontend against the **production backend** usi
 
 ```bash
 git clone https://github.com/gounmanned/unmanned.team.git
-cd vex/vex
+cd unmanned.team/vex
 python -m http.server 8080
 ```
 

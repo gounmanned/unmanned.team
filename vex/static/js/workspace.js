@@ -38,8 +38,8 @@ class Workspace {
                     breach: new BreachScreen(state),
                 };
 
-                await this.reset(state);
-                await this.reload(state);
+                this.reset(state);
+                this.reload(state);
                 this.listen();
 
                 setInterval(() => this.reload(state), 60000)                

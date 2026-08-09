@@ -26,7 +26,7 @@ class InventoryScreen {
 
     async reset() {
         this.api.set("account", this.state.account());
-        this.watermark.show("Collecting assets");
+        this.watermark.show("Asset inventory");
         this.assets = [];
         this.query = '';
         this.search.value = '';

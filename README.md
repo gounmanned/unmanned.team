@@ -31,9 +31,9 @@ There is no build step, no bundler, and no framework. You edit files, you refres
 >
 > At Unmanned, we don't think most products need React, a bundler, a state management library, and a 400MB `node_modules` folder to render a dashboard.
 >
-> Every dependency you add is code you didn't write, running with the same trust as code you did — and every framework abstraction is a place where a real problem can hide behind a virtual one. So Vex's frontend is built with **plain HTML, CSS, and JavaScript**, structured like a *light client*: the browser renders state and calls an API, and the backend does the actual work of keeping your security, performance, and reliability guarantees intact.
+> Every dependency you add is code you didn't write, running with the same trust as code you did — and every framework abstraction is a place where a real problem can hide behind a virtual one. So Vex's frontend is built with **plain HTML, CSS, and JavaScript**, structured like a *light client*: the browser renders state and calls an API, and the backend does the compute work.
 >
-> Minimal dependencies isn't a purity test. It's a smaller attack surface, a smaller footprint, and a codebase any engineer can read top-to-bottom in an afternoon — which is exactly what you want from software that's part of your security stack.
+> Minimal dependencies isn't a purity test. It's a smaller attack surface, a smaller footprint, and a codebase any engineer can read top-to-bottom in an afternoon.
 
 ---
 
@@ -42,12 +42,12 @@ There is no build step, no bundler, and no framework. You edit files, you refres
 Clone the repo, then run the Vex frontend against the **production backend** using your normal account:
 
 ```bash
-git clone https://github.com/unmanned-team/vex.git
+git clone https://github.com/gounmanned/unmanned.team.git
 cd vex/vex
 python -m http.server 8080
 ```
 
-Then open [http://localhost:8080](http://localhost:8080) and log in with your normal Vex credentials. You're now running your own local copy of the Vex client, talking to the same backend as everyone else — free to modify however you like.
+Then open [http://localhost:8080](http://localhost:8080) and log in with your normal Vex credentials. You're now running your own local copy of the Vex client, talking to the same backend as everyone else.
 
 ---
 
@@ -97,7 +97,7 @@ Because Vex is a light client, deployment is just serving static files — any s
 
 ## Contributing
 
-Issues and PRs are welcome. Since the app is intentionally dependency-light, contributions that add frameworks, bundlers, or build tooling are unlikely to be accepted — see [Philosophy](#philosophy).
+Issues and PRs are welcome. Since the app is intentionally dependency-light, contributions that add frameworks bundlers, or build tooling are unlikely to be accepted.
 
 ---
 

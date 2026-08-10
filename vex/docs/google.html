@@ -36,7 +36,7 @@
         h2 {
             font-size: 1.3rem;
             color: var(--brand);
-            margin-top: 2.5rem;
+            margin-top: 0.75rem;
             margin-bottom: 1rem;
         }
 
@@ -97,25 +97,37 @@
             text-decoration: none;
         }
 
+        .duty-section {
+            margin-top: 2.5rem;
+        }
+
         .duty-banner {
-            display: inline-block;
-            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 0.8rem;
             font-weight: 700;
-            letter-spacing: 0.04em;
+            letter-spacing: 0.05em;
             text-transform: uppercase;
-            padding: 0.3rem 0.75rem;
-            border-radius: 999px;
-            margin-bottom: 0.5rem;
+            padding: 0.75rem 1.1rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+        }
+
+        .duty-banner .material-symbols-outlined {
+            font-size: 1.2rem;
         }
 
         .duty-msp {
             background: #eef2ff;
             color: #4338ca;
+            border-left: 5px solid #4338ca;
         }
 
         .duty-customer {
             background: #ecfdf5;
             color: #047857;
+            border-left: 5px solid #047857;
         }
 
         .callout {
@@ -150,82 +162,94 @@
             <li>Google Workspace Alert Center</li>
             <li>Google Admin Directory Users</li>
         </ul>
-        <p>The setup has two parts. <strong>Part 1</strong> is done once, ever, by us &mdash; it creates a single service account and Client ID that every client delegates to. <strong>Part 2</strong> is done once per client, by their Super Admin &mdash; it's a short delegation step in their own Admin Console. Once Part 1 exists, onboarding a new client is just Part 2.</p>
+        <p>The setup has two parts. <strong>Part 1</strong> is done once, ever, by the MSP &mdash; it creates a single service account and Client ID that every client delegates to. <strong>Part 2</strong> is done once per client, by their Super Admin &mdash; it's a short delegation step in their own Admin Console. Once Part 1 exists, onboarding a new client is just Part 2.</p>
 
         <div class="callout">
-            <p><strong>Never send a client the JSON key.</strong> Only the Client ID and the scope list below get shared with customers. The JSON key stays in Vex and in our secrets manager.</p>
+            <p><strong>Never send a client the JSON key.</strong> Only the Client ID and the scope list below get shared with customers. The JSON key stays in Vex and in the MSP's secrets manager.</p>
         </div>
 
-        <h2><span class="duty-banner duty-msp">MSP duty &mdash; do once</span><br />Part 1: Create the Service Account &amp; Client ID</h2>
-        <p>This happens one time in our own GCP project. It is not repeated per client.</p>
+        <div class="duty-section">
+            <div class="duty-banner duty-msp">
+                <span class="material-symbols-outlined">build_circle</span>
+                MSP Duty &mdash; Internal, One-Time Setup
+            </div>
+            <h2>Part 1: Create the Service Account &amp; Client ID</h2>
+            <p>This happens one time in the MSP's own GCP project. It is not repeated per client.</p>
 
-        <h3>1. Create a Google Cloud project</h3>
-        <ol>
-            <li>Go to <a href="https://console.cloud.google.com/iam-admin/serviceaccounts" target="_blank">Google Cloud Console</a>.</li>
-            <li>Create a new project (e.g. <code>pink-duck-monitor</code>), or choose the existing one we use for this.</li>
-        </ol>
+            <h3>1. Create a Google Cloud project</h3>
+            <ol>
+                <li>Go to <a href="https://console.cloud.google.com/iam-admin/serviceaccounts" target="_blank">Google Cloud Console</a>.</li>
+                <li>Create a new project (e.g. <code>msp-security-monitor</code>), or choose the existing one used for this purpose.</li>
+            </ol>
 
-        <h3>2. Enable the required APIs</h3>
-        <ol>
-            <li>In the project, go to <strong>APIs &amp; Services &rarr; Library</strong>.</li>
-            <li>Enable the <a href="https://console.developers.google.com/apis/library/admin.googleapis.com" target="_blank">Admin SDK API</a>.</li>
-            <li>Also enable the <strong>Google Workspace Alert Center API</strong>.</li>
-        </ol>
+            <h3>2. Enable the required APIs</h3>
+            <ol>
+                <li>In the project, go to <strong>APIs &amp; Services &rarr; Library</strong>.</li>
+                <li>Enable the <a href="https://console.developers.google.com/apis/library/admin.googleapis.com" target="_blank">Admin SDK API</a>.</li>
+                <li>Also enable the <strong>Google Workspace Alert Center API</strong>.</li>
+            </ol>
 
-        <h3>3. Create the service account</h3>
-        <ol>
-            <li>Go to <strong>IAM &amp; Admin &rarr; Service Accounts &rarr; Create Service Account</strong>.</li>
-            <li>Set a name like <code>security-monitor</code> and click <strong>"Create and Continue"</strong>.</li>
-            <li>Click <strong>Done</strong>. No project-level IAM roles are needed.</li>
-        </ol>
+            <h3>3. Create the service account</h3>
+            <ol>
+                <li>Go to <strong>IAM &amp; Admin &rarr; Service Accounts &rarr; Create Service Account</strong>.</li>
+                <li>Set a name like <code>security-monitor</code> and click <strong>"Create and Continue"</strong>.</li>
+                <li>Click <strong>Done</strong>. No project-level IAM roles are needed.</li>
+            </ol>
 
-        <h3>4. Allow key creation (only if blocked)</h3>
-        <p>Some orgs enforce a policy that blocks downloadable service account keys. If key creation fails:</p>
-        <ol>
-            <li>From the console, go "back" one directory to the organization.</li>
-            <li>Go to <strong>Organization Policies</strong>.</li>
-            <li>Search for <code>iam.disableServiceAccountKeyCreation</code>.</li>
-            <li>Click <strong>Manage Policy</strong>, change from enforced to not enforced, and <strong>Save</strong>.</li>
-        </ol>
+            <h3>4. Allow key creation (only if blocked)</h3>
+            <p>Some orgs enforce a policy that blocks downloadable service account keys. If key creation fails:</p>
+            <ol>
+                <li>From the console, go "back" one directory to the organization.</li>
+                <li>Go to <strong>Organization Policies</strong>.</li>
+                <li>Search for <code>iam.disableServiceAccountKeyCreation</code>.</li>
+                <li>Click <strong>Manage Policy</strong>, change from enforced to not enforced, and <strong>Save</strong>.</li>
+            </ol>
 
-        <h3>5. Generate the JSON key</h3>
-        <ol>
-            <li>Open the service account, go to the <strong>Keys</strong> tab.</li>
-            <li>Click <strong>"Add Key" &rarr; "Create new key"</strong>.</li>
-            <li>Select <strong>JSON</strong>, click <strong>Create</strong>.</li>
-            <li>Save the downloaded <code>.json</code> file directly into our secrets manager. This one file authenticates against every client we onboard, so it never lives in a shared drive, repo, or local Downloads folder.</li>
-        </ol>
+            <h3>5. Generate the JSON key</h3>
+            <ol>
+                <li>Open the service account, go to the <strong>Keys</strong> tab.</li>
+                <li>Click <strong>"Add Key" &rarr; "Create new key"</strong>.</li>
+                <li>Select <strong>JSON</strong>, click <strong>Create</strong>.</li>
+                <li>Save the downloaded <code>.json</code> file directly into the MSP's secrets manager. This one file authenticates against every client the MSP onboards, so it never lives in a shared drive, repo, or local Downloads folder.</li>
+            </ol>
 
-        <h3>6. Enable domain-wide delegation and copy the Client ID</h3>
-        <ol>
-            <li>Still in the service account, click <strong>"Show Domain-wide Delegation"</strong> and enable it.</li>
-            <li>Copy the numeric <strong>Client ID</strong> shown. This is the ID every client will paste into their own Admin Console in Part 2.</li>
-        </ol>
+            <h3>6. Enable domain-wide delegation and copy the Client ID</h3>
+            <ol>
+                <li>Still in the service account, click <strong>"Show Domain-wide Delegation"</strong> and enable it.</li>
+                <li>Copy the numeric <strong>Client ID</strong> shown. This is the ID every client will paste into their own Admin Console in Part 2.</li>
+            </ol>
 
-        <h3>7. Load the key into Vex</h3>
-        <ol>
-            <li>Go to Vex and paste the JSON key contents into the monitor, then Save.</li>
-        </ol>
+            <h3>7. Load the key into Vex</h3>
+            <ol>
+                <li>Go to Vex and paste the JSON key contents into the monitor, then Save.</li>
+            </ol>
+        </div>
 
-        <h2><span class="duty-banner duty-customer">Customer duty &mdash; repeat per client</span><br />Part 2: Grant Delegation (Client's Super Admin)</h2>
-        <p>Send the client's Super Admin (<code>admin@their-domain.com</code>) the Client ID from Step 6 above, plus the scope list below, and have them do the following in their own Workspace:</p>
-        <ol>
-            <li>Visit <a href="https://admin.google.com/ac/owl/domainwidedelegation" target="_blank">Admin Console &rarr; Security &rarr; API Controls</a>.</li>
-            <li>Click <strong>"Manage Domain-Wide Delegation"</strong>.</li>
-            <li>Click <strong>"Add new"</strong>.</li>
-            <li>Paste our <strong>Client ID</strong>.</li>
-            <li>Add the following scopes:</li>
-        </ol>
-        <pre>
+        <div class="duty-section">
+            <div class="duty-banner duty-customer">
+                <span class="material-symbols-outlined">groups</span>
+                Customer Duty &mdash; Repeat for Every Client
+            </div>
+            <h2>Part 2: Grant Delegation (Client's Super Admin)</h2>
+            <p>Send the client's Super Admin (<code>admin@their-domain.com</code>) the Client ID from Step 6 above, plus the scope list below, and have them do the following in their own Workspace:</p>
+            <ol>
+                <li>Visit <a href="https://admin.google.com/ac/owl/domainwidedelegation" target="_blank">Admin Console &rarr; Security &rarr; API Controls</a>.</li>
+                <li>Click <strong>"Manage Domain-Wide Delegation"</strong>.</li>
+                <li>Click <strong>"Add new"</strong>.</li>
+                <li>Paste the MSP's <strong>Client ID</strong>.</li>
+                <li>Add the following scopes:</li>
+            </ol>
+            <pre>
     https://www.googleapis.com/auth/apps.alerts
     https://www.googleapis.com/auth/drive.readonly
     https://www.googleapis.com/auth/admin.directory.user.readonly
     https://www.googleapis.com/auth/admin.directory.device.chromeos.readonly
-        </pre>
-        <ol start="6">
-            <li>Click <strong>Save</strong>.</li>
-        </ol>
-        <p>That's the entire client-side lift. They never create a GCP project, service account, or key &mdash; they're only ever authorizing our existing Client ID to access their domain.</p>
+            </pre>
+            <ol start="6">
+                <li>Click <strong>Save</strong>.</li>
+            </ol>
+            <p>That's the entire client-side lift. They never create a GCP project, service account, or key &mdash; they're only ever authorizing the MSP's existing Client ID to access their domain.</p>
+        </div>
     </div>
 </body>
 </html>

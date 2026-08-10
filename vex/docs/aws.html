@@ -117,7 +117,7 @@
 <body>
     <div class="container">
         <h1>Amazon Web Services</h1>
-        <p>This guide walks you through deploying a read-only IAM role in your AWS account using CloudFormation. This role allows Sam to securely connect to your AWS environment to monitor security findings, inventory resources, and perform other read-only operations.</p>
+        <p>This guide walks you through deploying a read-only IAM role in your AWS account using CloudFormation. This role allows Vex to securely connect to your AWS environment to monitor security findings, inventory resources, and perform other read-only operations.</p>
         <ul>
             <li>AWS Security Hub findings</li>
             <li>GuardDuty alerts</li>
@@ -128,7 +128,7 @@
         </ul>
 
         <div class="note">
-            Sam is granted <strong>read-only access only</strong>. It cannot modify, delete, or create any resources in your account. Secret values and encryption keys are explicitly denied.
+            Vex is granted <strong>read-only access only</strong>. It cannot modify, delete, or create any resources in your account. Secret values and encryption keys are explicitly denied.
         </div>
 
         <h2>Prerequisites</h2>
@@ -145,22 +145,22 @@ AWSTemplateFormatVersion: '2010-09-09'
 Description: Read-Only Cross-Account Access Role
 
 Parameters:
-  SamAccountId:
+  VexAccountId:
     Type: String
     Default: 709699555057
     Description: Pink Duck AWS Account ID
 
 Resources:
-  Sam:
+  Vex:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: Sam
+      RoleName: Vex
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
           - Effect: Allow
             Principal:
-              AWS: !Sub 'arn:aws:iam::${SamAccountId}:root'
+              AWS: !Sub 'arn:aws:iam::${VexAccountId}:root'
             Action: sts:AssumeRole
             Condition:
               StringEquals:
@@ -171,8 +171,8 @@ Resources:
 
 Outputs:
   RoleArn:
-    Value: !GetAtt Sam.Arn
-    Description: Paste this Role ARN into Sam
+    Value: !GetAtt Vex.Arn
+    Description: Paste this Role ARN into Vex
 </pre>
 
         <h2>Step 2: Open CloudFormation</h2>
@@ -185,15 +185,15 @@ Outputs:
         <h2>Step 3: Upload the Template</h2>
         <ol>
             <li>Under <strong>Specify template</strong>, select <strong>"Upload a template file"</strong>.</li>
-            <li>Save the template you copied in Step 1 as a file named <code>sam-role.yml</code> on your computer.</li>
-            <li>Click <strong>"Choose file"</strong> and select <code>sam-role.yml</code>.</li>
+            <li>Save the template you copied in Step 1 as a file named <code>vex-role.yml</code> on your computer.</li>
+            <li>Click <strong>"Choose file"</strong> and select <code>vex-role.yml</code>.</li>
             <li>Click <strong>"Next"</strong>.</li>
         </ol>
 
         <h2>Step 4: Configure the Stack</h2>
         <ol>
             <li>Set the <strong>Stack name</strong> to <code>monitor</code>.</li>
-            <li>Leave the <strong>SamAccountId</strong> parameter as-is — it is pre-filled with Pink Duck's account ID.</li>
+            <li>Leave the <strong>VexAccountId</strong> parameter as-is — it is pre-filled with Pink Duck's account ID.</li>
             <li>Click <strong>"Next"</strong>.</li>
             <li>Click <strong>"Next"</strong> again on the Configure stack options page (no changes needed).</li>
             <li>On the Review page, scroll to the bottom and check the box acknowledging that CloudFormation may create IAM resources.</li>
@@ -203,18 +203,18 @@ Outputs:
         <h2>Step 5: Retrieve the Outputs</h2>
         <ol>
             <li>Wait for the stack status to show <strong>CREATE_COMPLETE</strong> (usually under one minute).</li>
-            <li>Click the stack name <code>sam</code> to open it.</li>
+            <li>Click the stack name <code>Vex</code> to open it.</li>
             <li>Click the <strong>"Outputs"</strong> tab.</li>
             <li>You will see:
                 <ul>
-                    <li><strong>RoleArn</strong> — e.g. <code>arn:aws:iam::123456789012:role/Sam</code></li>
+                    <li><strong>RoleArn</strong> — e.g. <code>arn:aws:iam::123456789012:role/Vex</code></li>
                 </ul>
             </li>
         </ol>
 
-        <h2>Step 6: Connect to Sam</h2>
+        <h2>Step 6: Connect to Vex</h2>
         <ol>
-            <li>Log into your <a href="https://app.pinkduckcompany.com" target="_blank">Sam dashboard</a>.</li>
+            <li>Log into your <a href="https://vex.umanned.team" target="_blank">Vex dashboard</a>.</li>
             <li>Go to <strong>Monitors &gt; AWS</strong>.</li>
             <li>Paste both values in the following format and click <strong>Save</strong>:</li>
         </ol>

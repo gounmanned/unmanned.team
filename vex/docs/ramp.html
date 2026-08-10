@@ -108,12 +108,12 @@
 <body>
     <div class="container">
         <h1>Ramp</h1>
-        <p>This guide walks you through creating a Ramp developer app, copying your OAuth 2.0 credentials, and storing them so Sam can monitor your account for security issues. Sam will periodically check for new or modified cards and alert you to anything suspicious.</p>
+        <p>This guide walks you through creating a Ramp developer app, copying your OAuth 2.0 credentials, and storing them so Vex can monitor your account for security issues. Vex will periodically check for new or modified cards and alert you to anything suspicious.</p>
 
         <h2>Prerequisites</h2>
         <ul>
             <li>You have access to your <strong>Ramp account</strong> with Admin or Business Owner permissions.</li>
-            <li>Each Ramp card should be named after a customer domain, such as <strong>example.com</strong>, so Sam can associate activity with the correct account.</li>
+            <li>Each Ramp card should be named after a customer domain, such as <strong>example.com</strong>, so Vex can associate activity with the correct account.</li>
         </ul>
 
         <hr class="step-divider" />
@@ -127,7 +127,7 @@
         <hr class="step-divider" />
         <h2>Step 2: Configure Your App</h2>
         <ol>
-            <li>In the <strong>Create new app</strong> modal, set the <strong>App name</strong> to <code>Sam Security Monitor</code>.</li>
+            <li>In the <strong>Create new app</strong> modal, set the <strong>App name</strong> to <code>Vex Security Monitor</code>.</li>
             <li>Click <strong>"Create app"</strong>.</li>
             <li>On your new app's detail page, locate the <strong>Grant types</strong> section.</li>
             <li>Click <strong>"Add new grant type"</strong> and select <strong>Client Credentials</strong>.</li>
@@ -149,10 +149,10 @@
         </ol>
 
         <hr class="step-divider" />
-        <h2>Step 4: Save to Sam</h2>
-        <p>Inside Sam, add your credentials in the following JSON format:</p>
+        <h2>Step 4: Save to Vex</h2>
+        <p>Inside Vex, add your credentials in the following JSON format:</p>
         <pre>{"client_id": "$CLIENT_ID", "client_secret": "$CLIENT_SECRET"}</pre>
-        <p>Once registered, Sam will run periodic security checks on your Ramp account, including monitoring for new cards, card setting changes, and cards issued to unknown users.</p>
+        <p>Once registered, Vex will run periodic security checks on your Ramp account, including monitoring for new cards, card setting changes, and cards issued to unknown users.</p>
     </div>
 </body>
 </html>

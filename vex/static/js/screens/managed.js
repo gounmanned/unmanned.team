@@ -49,7 +49,7 @@ class ManagedScreen {
         const todayCounts = [1, 2, 3, 4, 5, 6].map(sev => created.filter(s => Number(s.severity) === sev).length);
 
         row.innerHTML = counts.map((n, i) => {
-            const deltaHtml = todayCounts[i] ? `<span class="box-delta">+${todayCounts[i]} new</span>` : '';
+            const deltaHtml = todayCounts[i] ? `<span class="box-delta">+${todayCounts[i]} today</span>` : '';
             return `
                 <div class="managed-signal-box${n === 0 ? ' zero' : ''}" data-severity="${i + 1}">
                     <span class="box-top">

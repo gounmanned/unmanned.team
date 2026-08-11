@@ -60,6 +60,9 @@ class InventoryScreen {
         this.tbody.innerHTML = rows.map(a => `
             <tr data-id="${a.id ?? a.name}">
                 <td class="asset-source"><img src="static/img/source/${a.source}.png" alt="" title="${a.source}"></td>
+                <td class="asset-source">
+                    ${a.metadata?.platform ? `<img src="static/img/source/${a.metadata.platform}.png" alt="" title="${a.metadata.platform}">` : '—'}
+                </td>
                 <td class="asset-value">
                     ${a.name}
                     <button class="copy-btn" data-copy="${a.name}" type="button" aria-label="Copy value">

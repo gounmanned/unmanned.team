@@ -19,6 +19,7 @@ class MonitorScreen {
             quickbooks: { name: 'Quickbooks' },
             ramp:       { name: 'Ramp' },
             aws:        { name: 'AWS' },
+            github:     { name: 'Github' },
         };
 
         this._renderCallout();

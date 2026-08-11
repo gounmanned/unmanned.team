@@ -50,6 +50,7 @@ class Workspace {
                 console.error(err);
             }).finally(() => {
                 document.querySelector('site-header').setCompany("Vex", "Prevent the breach");
+                Workspace.toast("Vex is currently running unauthenticated techniques against your assets.");
             });
     }
 
@@ -96,5 +97,16 @@ class Workspace {
             clearTimeout(timer);
             timer = setTimeout(() => fn(...args), delay);
         };
+    }
+
+    static toast(text, duration = 6500) {
+        const el = document.getElementById('toast');
+
+        requestAnimationFrame(() => el.classList.add('open'));
+        el.querySelector("#toast-text").textContent = text;
+
+        setTimeout(() => {
+            el.classList.remove('open');
+        }, duration);
     }
 }

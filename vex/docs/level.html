@@ -139,25 +139,10 @@
             <li>Copy and securely save the generated API key.</li>
         </ol>
 
-        <h2>Step 2: Create a Webhook</h2>
-        <ol>
-            <li>In your Level dashboard, navigate to <strong>Settings → Webhooks</strong>.</li>
-            <li>Click <strong>"Create webhook"</strong>.</li>
-            <li>Configure your webhook settings:</li>
-            <ul>
-                <li><strong>URL:</strong> https://9vy0x0o0cc.execute-api.us-east-2.amazonaws.com/public/{my-domain.com}</li>
-                <li><strong>Secret:</strong> Generate a secure secret key for signature validation</li>
-                <li><strong>Event types:</strong> Select 'new alerts' and 'device updates'</li>
-                <li><strong>Status:</strong> Enable the webhook</li>
-            </ul>
-            <li>Click <strong>"Create"</strong>.</li>
-        </ol>
-
-        <h2>Step 3: Create Configuration JSON</h2>
-        <p>After creating both the API key and webhook, create a JSON configuration object with your credentials:</p>
+        <h2>Step 2: Create Configuration JSON</h2>
+        <p>Create a JSON object in this format:</p>
         <pre>
 {
-  "secret": "your-webhook-secret-here",
   "token": "your-api-key-here"
 }</pre>
 </div>

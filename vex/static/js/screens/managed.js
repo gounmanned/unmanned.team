@@ -105,9 +105,14 @@ class ManagedScreen {
     }
 
     async _selectAccount(domain) {
-        const account = this.members.get(domain);
-        const signals = Object.values(this.state.signals[domain] ?? {}).filter(t => t.status.startsWith('O'));
         const right = document.getElementById('managed-right');
+        const account = this.members.get(domain);
+        const signals = Object.values(this.state.signals[domain] ?? {})
+            .filter(t => t.status.startsWith('O'))
+            .sort((a, b) => b.created.localeCompare(a.created));
+
+        const midnight = new Date();
+        midnight.setHours(0, 0, 0, 0);
 
         right.innerHTML = `
             <div class="managed-detail">
@@ -164,6 +169,7 @@ class ManagedScreen {
                                 <li class="managed-row-item">
                                     <img class="managed-row-avatar managed-row-avatar--square" src="${Workspace.avatar(t.source)}"/>
                                     <span class="managed-row-label">${t.name}</span>
+                                    ${new Date(t.created) >= midnight ? '<span class="managed-row-tag">Today</span>' : ''}
                                 </li>
                             `).join('') : `<li class="managed-row-empty">No open signal</li>`}
                         </ul>

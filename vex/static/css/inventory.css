@@ -147,18 +147,27 @@
   display: block;
 }
 
-#inventory-screen .copy-btn {
-  opacity: 0;
-  border: none;
-  background: none;
-  padding: 2px;
-  border-radius: 4px;
-  display: inline-flex;
-  color: var(--text-faint);
-  cursor: pointer;
-  transition: opacity 0.12s, color 0.12s;
+#inventory-screen .star-btn {
+    border: none;
+    background: none;
+    padding: 3px;
+    border-radius: 5px;
+    display: inline-flex;
+    color: var(--text-faint);
+    cursor: pointer;
+    transition: color 0.12s, background 0.12s, transform 0.12s;
 }
-#inventory-screen #asset-table tbody tr:hover .copy-btn { opacity: 1; }
-#inventory-screen .copy-btn:hover { color: var(--pink); }
-#inventory-screen .copy-btn.copied { opacity: 1; color: #059669; }
-#inventory-screen .copy-btn .material-symbols-outlined { font-size: 14px; }
+#inventory-screen .star-btn:hover { color: #f59e0b; }
+#inventory-screen .star-btn.active {
+    color: #f59e0b;
+    background: rgba(245,158,11,0.15);
+}
+#inventory-screen .star-btn .material-symbols-outlined {
+    font-size: 16px;
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+#inventory-screen .star-btn.active .material-symbols-outlined {
+    font-size: 18px;
+    font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+    filter: drop-shadow(0 0 3px rgba(245,158,11,0.5));
+}

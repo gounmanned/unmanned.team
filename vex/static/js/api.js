@@ -60,6 +60,11 @@ class AssetApi extends Gateway {
     async list() {
         return await this.call("GET", `asset`);
     }
+
+    async update(name, key, val) {
+        const patch = {key: key, value: val};
+        return await this.call("PATCH", `asset/${name}`, patch);
+    }
 }
 
 class BreachApi extends Gateway {

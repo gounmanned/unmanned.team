@@ -59,15 +59,17 @@ class InventoryScreen {
         
         this.tbody.innerHTML = rows.map(a => `
             <tr data-id="${a.id ?? a.name}">
+                <td class="asset-priority">
+                    <button class="star-btn ${a.metadata?.priority === '1' ? 'active' : ''}" type="button" aria-label="Toggle priority">
+                        <span class="material-symbols-outlined">star</span>
+                    </button>
+                </td>
                 <td class="asset-source"><img src="static/img/source/${a.source}.png" alt="" title="${a.source}"></td>
                 <td class="asset-source">
                     ${a.metadata?.platform ? `<img src="static/img/source/${a.metadata.platform}.png" alt="" title="${a.metadata.platform}">` : '—'}
                 </td>
                 <td class="asset-value">
                     ${a.name}
-                    <button class="copy-btn" data-copy="${a.name}" type="button" aria-label="Copy value">
-                        <span class="material-symbols-outlined">content_copy</span>
-                    </button>
                 </td>
                 <td class="asset-signals">
                     ${a.signals}
@@ -93,19 +95,16 @@ class InventoryScreen {
         });
 
         this.tbody.addEventListener('click', ev => {
-            const btn = ev.target.closest('.copy-btn');
-            if (!btn) return;
-
-            navigator.clipboard.writeText(btn.dataset.copy).then(() => {
-                const icon = btn.querySelector('.material-symbols-outlined');
-                btn.classList.add('copied');
-                icon.textContent = 'check';
-
-                setTimeout(() => {
-                    btn.classList.remove('copied');
-                    icon.textContent = 'content_copy';
-                }, 1200);
-            });
+            const star = ev.target.closest('.star-btn');
+            if (star) {
+                const id = star.closest('tr').dataset.id;
+                const next = !star.classList.contains('active');
+                SiteSpinner.withLoading(async () => {
+                    await this.api.update(id, 'priority', next ? '1' : '0');
+                    star.classList.toggle('active', next);
+                });
+                return;
+            }
         });
     }
 }

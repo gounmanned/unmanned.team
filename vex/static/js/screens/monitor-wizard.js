@@ -121,14 +121,7 @@ class MonitorWizard {
         this.queue = [...this.selected];
         this.monitorIndex = 0;
 
-        await SiteSpinner.withLoading(async () => {
-            try {
-                this.sessionId = await this.automation.startSession();
-            } catch {
-                this.sessionId = null;
-            }
-            await this._enterMonitor();
-        });
+        await SiteSpinner.withLoading(() => this._enterMonitor());
     }
 
     async _enterMonitor() {

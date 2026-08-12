@@ -99,7 +99,7 @@ class Workspace {
         };
     }
 
-    static toast(text, duration = 6500) {
+    static toast(text, duration = 5000) {
         const el = document.getElementById('toast');
 
         requestAnimationFrame(() => el.classList.add('open'));

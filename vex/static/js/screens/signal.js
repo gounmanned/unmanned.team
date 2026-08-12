@@ -169,9 +169,7 @@ class TenantScreen {
                 const signal = this.sidebar.signal;
                 const body = document.getElementById("response").value;
                 const update = await this.api.update(signal.id, body);
-
                 this.sidebar.add(update);
-                document.querySelector('site-overlay').click();
             });
         });
 

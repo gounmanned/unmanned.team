@@ -22,6 +22,9 @@ class MonitorScreen {
             github:     { name: 'Github' },
         };
 
+        this.wizard = new MonitorWizard(this.api, this.available, () => this.reload());
+        document.getElementById('open-monitor-wizard').addEventListener('click', () => this.wizard.open());
+
         this._renderCallout();
         this._renderTable();
         this.listen();

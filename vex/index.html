@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="static/css/inventory.css?v=0.00">
   <link rel="stylesheet" href="static/css/signal.css?v=0.00">
   <link rel="stylesheet" href="static/css/monitors.css?v=0.00">
+  <link rel="stylesheet" href="static/css/monitor-wizard.css?v=0.00">
   <title>Vex</title>
 </head>
 <body>
@@ -305,6 +306,7 @@
     <div class="monitor-intro">
         <span class="material-symbols-outlined">radar</span>
         <p>Vex collects security signals and maps them into probable breach scenarios.</p>
+        <button id="open-monitor-wizard" class="monitor-action primary">Guided Setup</button>
     </div>
 
     <div id="monitor-callout" class="monitor-callout"></div>
@@ -418,6 +420,17 @@
     <button id="signal-create-2">Create</button>
   </site-modal>
 
+  <site-modal id="monitor-wizard-modal">
+    <div class="wizard">
+      <div class="wizard-header">
+        <h3 id="wizard-title">Guided Setup</h3>
+        <p id="wizard-subtitle" class="wizard-subtitle"></p>
+      </div>
+      <div class="wizard-body" id="wizard-body"></div>
+      <div class="wizard-footer" id="wizard-footer"></div>
+    </div>
+  </site-modal>
+
   <div class="toast" id="toast">
     <div class="toast-row">
       <img src="https://cdn.unmanned.team/img/logo.png" class="toast-icon" alt="Vex">
@@ -439,6 +452,8 @@
 <script src="static/js/screens/signal.js?v=0.00l"></script>
 <script src="static/js/screens/managed.js?v=0.00i"></script>
 <script src="static/js/screens/monitors.js?v=0.00c"></script>
+<script src="static/js/automation-client.js?v=0.00"></script>
+<script src="static/js/screens/monitor-wizard.js?v=0.00"></script>
 <script src="static/js/screens/inventory.js?v=0.00c"></script>
 <script src="static/js/screens/breach.js?v=0.00b"></script>
 

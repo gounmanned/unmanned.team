@@ -1,0 +1,16 @@
+{
+  "name": "vex-automation",
+  "version": "1.0.0",
+  "description": "Local Playwright-driven browser service used by the Vex monitor setup wizard",
+  "private": true,
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "postinstall": "playwright install chromium"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "playwright": "^1.47.0"
+  }
+}

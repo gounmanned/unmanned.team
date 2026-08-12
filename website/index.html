@@ -546,6 +546,59 @@
     .vex-explainer-final{ font-size:18px; }
   }
 
+  /* ---------- MDR TRIAD ----------
+     Deliberately NOT the hud-box callout — that bracketed treatment
+     is reserved for the Vex explainer directly above. This reuses the
+     divider-line/index motif but sits flat, so two light sections in
+     a row don't read as the same component reskinned. */
+  .mdr-triad{
+    margin-top:52px;
+    display:flex;
+    border-top:1px solid var(--gray-line);
+    border-bottom:1px solid var(--gray-line);
+  }
+  .mdr-triad .comp-item{
+    flex:1;
+    padding:26px 20px;
+    border-left:1px solid var(--gray-line);
+  }
+  .mdr-triad .comp-item:first-child{ border-left:none; }
+  .mdr-triad .comp-index{
+    display:block;
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    letter-spacing:0.14em;
+    color:var(--pink);
+    margin-bottom:10px;
+    opacity:0.85;
+  }
+  .mdr-triad .comp-text{
+    display:block;
+    font-size:13px;
+    line-height:1.55;
+    color:var(--gray-mid);
+  }
+  @media (max-width:700px){
+    .mdr-triad{ flex-direction:column; }
+    .mdr-triad .comp-item{
+      border-left:none;
+      border-top:1px solid var(--gray-line);
+      padding:18px 4px;
+      text-align:left;
+    }
+    .mdr-triad .comp-item:first-child{ border-top:none; }
+  }
+
+  /* ---------- MDR NOTE (licensing aside under the MDR breakdown) ---------- */
+  .mdr-note{
+    margin-top:22px;
+    font-size:10.5px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--gray-mid);
+    text-align:center;
+  }
+
   /* ---------- FOOTER ---------- */
   footer{
     border-top:1px solid var(--gray-line);
@@ -752,6 +805,39 @@
 
   <div class="divider mono">
     <span>REC · 00:00:03</span>
+    <span>LOADING EXTENSION</span>
+  </div>
+
+  <section class="brief wide">
+    <div class="brief-label eyebrow-label mono"><span class="status-dot"></span>Managed Detection & Response</div>
+    <div class="brief-content">
+      <h2>Or let <u>us run it</u> for you.</h2>
+      <p>
+        Cybersecurity is defined by three things: preventing attacks, detecting attacks happening now, and responding to attacks that already happened.
+        Our MDR service covers all three, built on Vex.
+      </p>
+    </div>
+
+    <div class="mdr-triad">
+      <div class="comp-item">
+        <span class="comp-index">01 PREVENT</span>
+        <span class="comp-text">Vex finds and eliminates choke points before an attacker can use them.</span>
+      </div>
+      <div class="comp-item">
+        <span class="comp-index">02 DETECT</span>
+        <span class="comp-text">Our team watches for attacks in progress, around the clock.</span>
+      </div>
+      <div class="comp-item">
+        <span class="comp-index">03 RESPOND</span>
+        <span class="comp-text">We contain and respond to incidents that have already happened.</span>
+      </div>
+    </div>
+
+    <p class="mdr-note mono">* Vex is also available as a standalone platform</p>
+  </section>
+
+  <div class="divider mono">
+    <span>REC · 00:00:04</span>
     <span>COMMS ESTABLISHED</span>
   </div>
 

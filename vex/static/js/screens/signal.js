@@ -124,6 +124,7 @@ class TenantScreen {
 
             const signal = {
                 name: name.value,
+                value: blob.value,
                 source: this.state.user.email,
                 asset: asset.value.toLowerCase().trim(),
                 severity: parseInt(severity.options[severity.selectedIndex].dataset.severity),
@@ -135,8 +136,7 @@ class TenantScreen {
             }
 
             await SiteSpinner.withLoading(async() => {
-                const update = await this.api.create(signal);
-                await this.api.update(update.id, blob.value, signal.source);
+                await this.api.create(signal);
             }).finally(() => {
                 blob.value = "";
                 name.value = "";

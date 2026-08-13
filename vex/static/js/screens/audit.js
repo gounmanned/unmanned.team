@@ -20,7 +20,7 @@ class AuditScreen {
         this.logs = [];
         this.query = '';
         this.filter.value = '';
-        this.watermark.show("Loading logs");
+        this.watermark.show("24-hour audit");
         this.render();
     }
 

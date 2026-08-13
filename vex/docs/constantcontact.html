@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Constant Contact</title>
+    <link rel="icon" href="https://cdn.unmanned.team/img/logo.png" type="image/png" />
+    <link rel="apple-touch-icon" href="https://cdn.unmanned.team/img/logo.png" />
+    <link rel="stylesheet" href="https://cdn.unmanned.team/css/global.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <style>
+        body {
+            margin: 0;
+            padding: 2rem;
+            background-color: #f8fafc;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 3rem 4rem;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--brand);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        h2 {
+            font-size: 1.3rem;
+            color: var(--brand);
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        p {
+            line-height: 1.6;
+        }
+
+        ul,
+        ol {
+            margin: 1rem 0 1rem 1.5rem;
+            padding-left: 1.5rem;
+        }
+
+        ul {
+            list-style-type: disc;
+        }
+
+        ol {
+            list-style-type: decimal;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        ol li::marker {
+            font-weight: bold;
+            color: var(--brand);
+        }
+
+        ul li::marker {
+            color: var(--brand);
+        }
+
+        pre {
+            background: #f3f3f3;
+            padding: 1rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 0.9rem;
+        }
+
+        code {
+            background: #f3f3f3;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        a {
+            color: var(--brand);
+            text-decoration: none;
+        }
+
+        .note {
+            background: #fff7ed;
+            border-left: 4px solid #f59e0b;
+            padding: 0.75rem 1rem;
+            border-radius: 4px;
+            margin: 1rem 0;
+            font-size: 0.95rem;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .container {
+                padding: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Constant Contact</h1>
+        <p>
+            This guide walks you through registering an application with Constant Contact and completing the OAuth2 authorization flow.
+            The resulting credentials will allow us to monitor security events and detect suspicious activity in your Constant Contact account.
+        </p>
+
+        <h2>Prerequisites</h2>
+        <ul>
+            <li>You have <strong>admin access</strong> to your Constant Contact account</li>
+            <li>You can access the <strong>Constant Contact Developer Portal</strong></li>
+        </ul>
+
+        <h2>Step 1: Create an Application</h2>
+        <ol>
+            <li>Log in to the <a href="https://v3.developer.constantcontact.com/">Constant Contact V3 API Developer Portal</a> (sign up for a developer account first if you don't already have one).</li>
+            <li>From the <strong>My Applications</strong> tab, click <strong>New Application</strong>.</li>
+            <li>Fill in the app details:</li>
+        </ol>
+        <ul>
+            <li>App name: <code>Vex</code></li>
+            <li>OAuth2 flows: <code>Authorization Code Flow</code></li>
+            <li>Refresh token type: <code>Rotating Refresh Tokens</code> (recommended)</li>
+        </ul>
+        <ol start="4">
+            <li>Click <strong>Create</strong>.</li>
+        </ol>
+
+        <h2>Step 2: Get Your API Key and Client Secret</h2>
+        <ol>
+            <li>Click <strong>Edit</strong> next to your new application.</li>
+            <li>Copy the <strong>API Key</strong> shown in the Details view — this is your <code>client_id</code>.</li>
+            <li>Click <strong>Generate Client Secret</strong> and copy it immediately. The secret is only shown once.</li>
+            <li>Set a <strong>Redirect URI</strong> for your application (a placeholder such as <code>https://localhost:8888</code> works if you don't have a callback endpoint).</li>
+            <li>Click <strong>Save</strong>.</li>
+        </ol>
+
+        <h2>Step 3: Authorize the Application</h2>
+        <ol>
+            <li>Build an authorization request URL using your <code>client_id</code> and <code>redirect_uri</code>:</li>
+        </ol>
+        <pre>https://authz.constantcontact.com/oauth2/default/v1/authorize?
+client_id={client_id}&redirect_uri={redirect_uri}&response_type=code&
+scope=account_read contact_data campaign_data offline_access&state={random_string}</pre>
+        <ol start="2">
+            <li>Open the URL in a browser, log in, and grant Vex access to your account.</li>
+            <li>You'll be redirected to your redirect URI with a <code>code</code> query parameter. Copy it — authorization codes expire after 5 minutes and can only be used once.</li>
+        </ol>
+
+        <h2>Step 4: Exchange the Code for an Access Token</h2>
+        <ol>
+            <li>Make a POST request to the token endpoint:</li>
+        </ol>
+        <pre>POST https://authz.constantcontact.com/oauth2/default/v1/token
+Authorization: Basic base64(client_id:client_secret)
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=authorization_code&code={code}&redirect_uri={redirect_uri}</pre>
+        <ol start="2">
+            <li>The response includes an <code>access_token</code> and a <code>refresh_token</code>.</li>
+        </ol>
+        <div class="note">
+            Access tokens expire after 24 hours. Because the authorization request included the <code>offline_access</code> scope, you'll also receive a <code>refresh_token</code> to renew access without re-authorizing.
+        </div>
+
+        <h2>Step 5: Save to Vex</h2>
+        <p>Inside Vex, add the Constant Contact credentials in the following JSON format:</p>
+        <pre>{
+  "token": "your_access_token",
+  "refresh_token": "your_refresh_token"
+}</pre>
+        <p>Replace the values with your actual tokens from Step 4.</p>
+    </div>
+</body>
+</html>

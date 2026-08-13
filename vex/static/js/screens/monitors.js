@@ -20,6 +20,7 @@ class MonitorScreen {
             ramp:       { name: 'Ramp' },
             aws:        { name: 'AWS' },
             github:     { name: 'Github' },
+            constantcontact: {name: 'Constant Contact'},
         };
 
         this._renderCallout();

@@ -36,6 +36,7 @@ class Workspace {
                     monitor: new MonitorScreen(state),
                     inventory: new InventoryScreen(state),
                     breach: new BreachScreen(state),
+                    audit: new AuditScreen(state),
                 };
 
                 this.reset(state);

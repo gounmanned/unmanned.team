@@ -10,6 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.unmanned.team/css/global.css">
   <link rel="stylesheet" href="static/css/index.css?v=0.01a">
+  <link rel="stylesheet" href="static/css/audit.css?v=0.00">
   <link rel="stylesheet" href="static/css/breach.css?v=0.00a">
   <link rel="stylesheet" href="static/css/managed.css?v=0.00a">
   <link rel="stylesheet" href="static/css/inventory.css?v=0.00b">
@@ -114,6 +115,7 @@
 
         <a id="open-breach-screen">Breach</a>
         <a id="open-inventory-screen">Inventory</a>
+        <a id="open-audit-screen">Audit</a>
         <a id="open-monitor-screen">Monitors</a>
       </div>
   </main>
@@ -168,6 +170,42 @@
   </site-rollup>
 
   <!-- Rollups -->
+
+  <site-rollup id="audit-screen">
+    <site-watermark logo="https://cdn.unmanned.team/img/logo.png" title="Audit"></site-watermark>
+
+    <div class="monitor-intro">
+      <span class="material-symbols-outlined">terminal</span>
+      <p>Vex maintains 90 days of audit history. Search the last 24 hours below.</p>
+    </div>
+
+    <div class="audit-terminal" id="audit-terminal">
+      <div class="audit-terminal-header">
+        <div class="audit-search">
+          <span class="material-symbols-outlined">search</span>
+          <input type="text" id="audit-filter" placeholder="grep logs…" autocomplete="off">
+        </div>
+      </div>
+
+      <div class="audit-terminal-body" id="audit-terminal-body">
+        <ul id="audit-list"></ul>
+
+        <div class="signal-radar-watermark" id="audit-empty">
+          <div class="signal-radar" aria-hidden="true">
+            <svg viewBox="0 0 800 800"><use href="#radar-rings"></use></svg>
+          </div>
+          <div class="corner tl signal-radar-corner"></div>
+          <div class="corner tr signal-radar-corner"></div>
+          <div class="corner bl signal-radar-corner"></div>
+          <div class="corner br signal-radar-corner"></div>
+          <span class="material-symbols-outlined">terminal</span>
+          <p id="audit-empty-label">No logs recorded</p>
+        </div>
+      </div>
+
+      <div class="audit-terminal-footer" id="audit-terminal-footer"></div>
+    </div>
+  </site-rollup>
 
   <site-rollup id="breach-screen">
     <site-watermark logo="https://cdn.unmanned.team/img/logo.png" title="Breach"></site-watermark>
@@ -434,11 +472,12 @@
 
 <script src="https://cdn.unmanned.team/js/components.js"></script>
 <script src="https://cdn.unmanned.team/js/cognito.js"></script>
-<script src="static/js/api.js?v=0.00f"></script>
-<script src="static/js/workspace.js?v=0.01"></script>
+<script src="static/js/api.js?v=0.00g"></script>
+<script src="static/js/workspace.js?v=0.01a"></script>
 <script src="static/js/table.js?v=0.00g"></script>
 <script src="static/js/sidebar.js?v=0.00c"></script>
 <script src="static/js/screens/signal.js?v=0.00n"></script>
+<script src="static/js/screens/audit.js?v=0.00a"></script>
 <script src="static/js/screens/managed.js?v=0.00k"></script>
 <script src="static/js/screens/monitors.js?v=0.00d"></script>
 <script src="static/js/screens/inventory.js?v=0.00e"></script>

@@ -112,6 +112,16 @@ class ManagedApi extends Gateway {
     }
 }
 
+class AuditApi extends Gateway {
+    constructor(){
+        super();
+    }
+
+    async messages() {
+        return this.call("GET", "audit");
+    }
+}
+
 class Auth {
     static async init(code) {
         const backend = "us.unmanned.team";

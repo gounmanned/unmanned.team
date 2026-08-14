@@ -221,12 +221,12 @@ class ManagedScreen {
         const value = document.getElementById('managed-overview-value');
 
         column.classList.add('loading');
-        const overview = await this.api.overview(domain);
+        const account = await this.api.overview(domain);
         column.classList.remove('loading');
         if (!document.getElementById('managed-overview-col')) return;
 
-        if (overview) {
-            value.textContent = overview.value;
+        if (account) {
+            value.textContent = account.metadata?.overview;
             const d = new Date(overview.created);
             created.textContent = `${d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} at ${d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}`;
         }

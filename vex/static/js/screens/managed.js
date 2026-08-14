@@ -227,7 +227,7 @@ class ManagedScreen {
 
         if (account) {
             value.textContent = account.metadata?.overview;
-            const d = new Date(overview.created);
+            const d = new Date(account.created);
             created.textContent = `${d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} at ${d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}`;
         }
     }

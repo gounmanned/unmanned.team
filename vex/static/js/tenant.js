@@ -2,7 +2,6 @@ class TenantScreen {
     constructor(state) {
         this.state = state;
         this.api = new SignalApi();
-        this.sidebar = new SignalSidebar();
         this.table = new Table('signal-table');
         this.month = new Date();
         this.listen();
@@ -87,9 +86,12 @@ class TenantScreen {
             row.addEventListener('click', async (e) => {
                 e.stopPropagation();
 
-                await SiteSpinner.withLoading(async() => {
+                await SiteSpinner.withLoading(async () => {
                     const updates = await this.api.get(signal.id);
-                    this.sidebar.render(this.state.signals[signal.account][signal.id], updates);
+                    this.sidebar ??= new SignalSidebar(this.state);
+                    this.sidebar.reset();
+                    this.sidebar.reload(this.state.signals[signal.account][signal.id], updates);
+                    document.getElementById('signal-sidebar').show();
                 });
             });
 

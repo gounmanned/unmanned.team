@@ -85,37 +85,6 @@
 #backup-sidebar .crumb-active { color: var(--text-body); font-weight: 600; }
 #backup-sidebar .crumb-sep { color: var(--gray-line); }
 
-/* ── Search ──────────────────────────────────────────────────────────────── */
-
-#backup-sidebar .backups-search {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-shrink: 0;
-  padding: 0 14px;
-  height: 34px;
-  border-bottom: 1px solid var(--gray-line);
-  background: var(--gray-soft);
-}
-
-#backup-sidebar .backups-search .material-symbols-outlined {
-  font-size: 15px;
-  color: var(--text-muted);
-}
-
-#backup-sidebar .backups-search input {
-  flex: 1;
-  height: 100%;
-  border: none;
-  background: transparent;
-  font-size: 12px;
-  font-family: 'JetBrains Mono', monospace;
-  color: var(--text-body);
-  outline: none;
-}
-
-#backup-sidebar .backups-search input::placeholder { color: var(--text-faint); }
-
 /* ── File list ───────────────────────────────────────────────────────────── */
 
 #backup-sidebar .container {

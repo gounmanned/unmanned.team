@@ -1,11 +1,10 @@
 class BackupSidebar {
     constructor(state) {
         this.state = state;
-        this.api = new FileApi('backup/');
+        this.api = new FileApi();
         this.list = document.getElementById('file-list');
         this.wrap = document.getElementById('file-list-wrap');
         this.pathStack = [];
-        this.listen();
     }
 
     async reset() {
@@ -38,15 +37,6 @@ class BackupSidebar {
             el.addEventListener('click', () => {
                 this.pathStack = this.pathStack.slice(0, parseInt(el.dataset.depth));
                 this.reload();
-            });
-        });
-    }
-
-    listen() {
-        document.getElementById('file-filter').addEventListener('input', (e) => {
-            const term = e.target.value.toLowerCase();
-            this.list.querySelectorAll('.entry').forEach(entry => {
-                entry.style.display = entry.textContent.toLowerCase().includes(term) ? 'flex' : 'none';
             });
         });
     }

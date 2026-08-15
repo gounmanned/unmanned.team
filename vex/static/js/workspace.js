@@ -40,7 +40,6 @@ class Workspace {
                 };
 
                 this.sidebars = {
-                    signal: new SignalSidebar(state),
                     backup: new BackupSidebar(state),
                 }
 
@@ -64,7 +63,7 @@ class Workspace {
         Object.keys(this.rollups).forEach(name => {
             document.getElementById(`open-${name}-rollup`).addEventListener("click", () => {
                 SiteSpinner.withLoading(async () => {
-                    document.getElementById(`${name}-rollup`).show();
+                    document.getElementById(`${name}-screen`).show();
                     const rollup = this.rollups[name];
                     await rollup.reset();
                     await rollup.reload();

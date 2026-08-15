@@ -2,7 +2,7 @@ class TenantScreen {
     constructor(state) {
         this.state = state;
         this.api = new SignalApi();
-        this.sidebar = new SignalSidebar('signal-sidebar');
+        this.sidebar = new SignalSidebar();
         this.table = new Table('signal-table');
         this.month = new Date();
         this.listen();
@@ -21,7 +21,7 @@ class TenantScreen {
         document.querySelectorAll('[data-filter] .filter-count').forEach(i => i.textContent = 0);
     }
 
-    updateFilter(status){
+    refresh(status){
         const count = document.querySelector(`[data-filter="${status}"] .filter-count`);
         if (!count) return;
 
@@ -54,8 +54,8 @@ class TenantScreen {
         document.addEventListener('signal:account', (ev) => {
             const upsert = (row, signal) => {
                 if (signal.status !== row.dataset.status) {
-                    this.updateFilter(signal.status);
-                    this.updateFilter(row.dataset.status);
+                    this.refresh(signal.status);
+                    this.refresh(row.dataset.status);
                 }
 
                 this.table.add(row, signal);
@@ -142,52 +142,6 @@ class TenantScreen {
                 asset.value = "";
             });
 
-            document.dispatchEvent(new CustomEvent('page:reload'));
-            document.querySelector('site-overlay').click();
-        });
-
-        document.getElementById('signal-delete').addEventListener('click', async (e) => {
-            e.preventDefault();
-
-            await SiteSpinner.withLoading(async() => {
-                const signal = this.sidebar.signal;
-
-                delete this.state.signals[signal.account][signal.id];
-                await this.api.delete(signal.id);
-
-                document.querySelectorAll('#signal-status option').forEach(o => this.updateFilter(o.id));
-                document.dispatchEvent(new CustomEvent('page:reset'));
-                document.querySelector('site-overlay').click();
-            });
-        });
-
-        document.getElementById('signal-update').addEventListener('click', async (e) => {
-            e.preventDefault();
-
-            await SiteSpinner.withLoading(async() => {
-                const signal = this.sidebar.signal;
-                const body = document.getElementById("response").value;
-                const update = await this.api.update(signal.id, body);
-                this.sidebar.add(update);
-            });
-        });
-
-        document.getElementById('signal-status').addEventListener('change', async (ev) => {
-            await SiteSpinner.withLoading(async() => {
-                const status = ev.target.selectedOptions[0].id;
-                await this.api.patch(this.sidebar.signal.key, {status: status});
-
-                document.querySelectorAll('#signal-status option').forEach(o => this.updateFilter(o.id));
-                document.dispatchEvent(new CustomEvent('page:reload'));
-                document.querySelector('site-overlay').click();
-            });
-        });
-
-        document.getElementById('signal-severity').addEventListener('change', async (ev) => {
-            const severity = ev.target.selectedOptions[0];
-            const signal = await this.api.patch(this.sidebar.signal.key, {severity: parseInt(severity.value)});
-            
-            this.state.signals[signal.account][signal.id] = signal;           
             document.dispatchEvent(new CustomEvent('page:reload'));
             document.querySelector('site-overlay').click();
         });

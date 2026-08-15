@@ -8,8 +8,8 @@ class BackupSidebar {
         this.listen();
     }
 
-    async reset(account) {
-        this.api.set('account', account);
+    async reset() {
+        this.api.set('account', this.state.account());
         this.pathStack = [];
         await this.reload();
     }

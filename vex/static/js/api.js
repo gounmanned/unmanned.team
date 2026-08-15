@@ -122,6 +122,21 @@ class AuditApi extends Gateway {
     }
 }
 
+class FileApi extends Gateway {
+    constructor(root){
+        super();
+        this.root = root;
+    }
+
+    async list() {
+        return await this.call("GET", `file/${this.root}`);
+    }
+
+    async get(name) {
+        return await this.download(`file/${this.root}?name=${name}`);
+    }
+}
+
 class Auth {
     static async init(code) {
         const backend = "us.unmanned.team";

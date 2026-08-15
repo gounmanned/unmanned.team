@@ -1,20 +1,15 @@
-class Sidebar {
-    constructor(id){ this.id = id; }
-    _open(){ document.getElementById(this.id).show(); }
-    close(){ document.getElementById(this.id).hide(); }
-    set(key){ this.key = key; }
-}
-
-class SignalSidebar extends Sidebar {
-    constructor(id){
-        super(id);
+class SignalSidebar {
+    constructor(state) {
+        this.state = state;
     }
 
-    open(signal, updates) {
-        this._open();
+    reset(){
+        document.getElementById("updates").innerHTML = "";
+    }
+
+    reload(signal, updates) {
         this.signal = signal;
 
-        document.getElementById("updates").innerHTML = "";
         document.getElementById("signal-severity").value = signal.severity;
         document.getElementById("signal-status").value = signal.status;
 

@@ -16,6 +16,7 @@
   <link rel="stylesheet" href="static/css/inventory.css?v=0.00c">
   <link rel="stylesheet" href="static/css/signal.css?v=0.00">
   <link rel="stylesheet" href="static/css/monitors.css?v=0.00">
+  <link rel="stylesheet" href="static/css/backups.css?v=0.00">
   <title>Vex</title>
 </head>
 <body>
@@ -116,6 +117,7 @@
         <a id="open-breach-screen">Breach</a>
         <a id="open-inventory-screen">Inventory</a>
         <a id="open-audit-screen">Audit</a>
+        <a id="open-backup-sidebar">Backups</a>
         <a id="open-monitor-screen">Monitors</a>
       </div>
   </main>
@@ -439,6 +441,42 @@
     </div>
   </site-sidebar>
 
+  <site-sidebar id="backup-sidebar">
+    <div class="backups-banner">
+      <div class="backups-banner-scan"></div>
+      <div class="backups-banner-row">
+        <span class="material-symbols-outlined backups-banner-icon">satellite_alt</span>
+        <div class="backups-banner-text">
+          <div class="backups-banner-title">Cold storage</div>
+          <div class="backups-banner-desc">Daily differential backups sync at 17:00 UTC</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="file-breadcrumb" id="file-breadcrumb"></div>
+
+    <div class="backups-search">
+      <span class="material-symbols-outlined">search</span>
+      <input type="text" id="file-filter" placeholder="Locate a specific file…" autocomplete="off">
+    </div>
+
+    <div class="container" id="file-list-wrap">
+      <ul id="file-list" class="hacker-list"></ul>
+
+      <div class="signal-radar-watermark" id="file-empty">
+        <div class="signal-radar" aria-hidden="true">
+          <svg viewBox="0 0 800 800"><use href="#radar-rings"></use></svg>
+        </div>
+        <div class="corner tl signal-radar-corner"></div>
+        <div class="corner tr signal-radar-corner"></div>
+        <div class="corner bl signal-radar-corner"></div>
+        <div class="corner br signal-radar-corner"></div>
+        <span class="material-symbols-outlined">inventory_2</span>
+        <p id="file-empty-label">No backups found</p>
+      </div>
+    </div>
+  </site-sidebar>
+
   <!-- Modals -->
 
   <site-modal id="signal-modal">
@@ -472,11 +510,12 @@
 
 <script src="https://cdn.unmanned.team/js/components.js"></script>
 <script src="https://cdn.unmanned.team/js/cognito.js"></script>
-<script src="static/js/api.js?v=0.00g"></script>
-<script src="static/js/workspace.js?v=0.01a"></script>
+<script src="static/js/api.js?v=0.00h"></script>
+<script src="static/js/workspace.js?v=0.01b"></script>
 <script src="static/js/table.js?v=0.00g"></script>
-<script src="static/js/sidebar.js?v=0.00c"></script>
-<script src="static/js/screens/signal.js?v=0.00n"></script>
+<script src="static/js/sidebars/signal.js?v=0.00a"></script>
+<script src="static/js/sidebars/backup.js?v=0.00a"></script>
+<script src="static/js/screens/signal.js?v=0.00o"></script>
 <script src="static/js/screens/audit.js?v=0.00a"></script>
 <script src="static/js/screens/managed.js?v=0.01"></script>
 <script src="static/js/screens/monitors.js?v=0.00d"></script>

@@ -39,6 +39,11 @@ class Workspace {
                     audit: new AuditScreen(state),
                 };
 
+                this.sidebars = {
+                    signal: new SignalSidebar(state),
+                    backup: new BackupSidebar(state),
+                }
+
                 this.reset(state);
                 this.reload(state);
                 this.listen();
@@ -58,9 +63,25 @@ class Workspace {
     listen() {
         Object.keys(this.rollups).forEach(name => {
             document.getElementById(`open-${name}-screen`).addEventListener("click", () => {
-                SiteSpinner.withLoading(async() => this.show(name));
+                SiteSpinner.withLoading(async () => {
+                    document.getElementById(`${name}-screen`).show();
+                    const rollup = this.rollups[name];
+                    await rollup.reset();
+                    await rollup.reload();
+                });
             });
         });
+
+        Object.keys(this.sidebars).forEach(name => {
+            document.getElementById(`open-${name}-sidebar`).addEventListener("click", () => {
+                SiteSpinner.withLoading(async () => {
+                    document.getElementById(`${name}-sidebar`).show();
+                    const sidebar = this.sidebars[name];
+                    await sidebar.reset();
+                    await sidebar.reload();
+                });
+            });
+        });      
     }
 
     async reload(state) {
@@ -73,13 +94,6 @@ class Workspace {
             await this.tenant.reset();
             await this.tenant.reload();
         });
-    }
-
-    async show(name) {
-        document.getElementById(`${name}-screen`).show();
-        const screen = this.rollups[name];
-        await screen.reset();
-        await screen.reload();
     }
 
     static avatar(s) {

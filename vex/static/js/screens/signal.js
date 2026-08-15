@@ -89,8 +89,7 @@ class TenantScreen {
 
                 await SiteSpinner.withLoading(async() => {
                     const updates = await this.api.get(signal.id);
-                    this.sidebar.set(signal.id);
-                    this.sidebar.open(this.state.signals[signal.account][signal.id], updates);
+                    this.sidebar.render(this.state.signals[signal.account][signal.id], updates);
                 });
             });
 
@@ -176,7 +175,7 @@ class TenantScreen {
         document.getElementById('signal-status').addEventListener('change', async (ev) => {
             await SiteSpinner.withLoading(async() => {
                 const status = ev.target.selectedOptions[0].id;
-                await this.api.patch(this.sidebar.key, {status: status});
+                await this.api.patch(this.sidebar.signal.key, {status: status});
 
                 document.querySelectorAll('#signal-status option').forEach(o => this.updateFilter(o.id));
                 document.dispatchEvent(new CustomEvent('page:reload'));
@@ -186,7 +185,7 @@ class TenantScreen {
 
         document.getElementById('signal-severity').addEventListener('change', async (ev) => {
             const severity = ev.target.selectedOptions[0];
-            const signal = await this.api.patch(this.sidebar.key, {severity: parseInt(severity.value)});
+            const signal = await this.api.patch(this.sidebar.signal.key, {severity: parseInt(severity.value)});
             
             this.state.signals[signal.account][signal.id] = signal;           
             document.dispatchEvent(new CustomEvent('page:reload'));

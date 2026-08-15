@@ -1,4 +1,4 @@
-class MonitorScreen {
+class MonitorRollup {
     constructor(state) {
         this.state = state;
         this.api = new MonitorApi();

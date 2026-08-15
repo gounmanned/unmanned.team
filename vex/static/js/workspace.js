@@ -32,11 +32,11 @@ class Workspace {
                 this.tenant = new TenantScreen(state);
 
                 this.rollups = {
-                    managed: new ManagedScreen(state),
-                    monitor: new MonitorScreen(state),
-                    inventory: new InventoryScreen(state),
-                    breach: new BreachScreen(state),
-                    audit: new AuditScreen(state),
+                    managed: new ManagedRollup(state),
+                    monitor: new MonitorRollup(state),
+                    inventory: new InventoryRollup(state),
+                    breach: new BreachRollup(state),
+                    audit: new AuditRollup(state),
                 };
 
                 this.sidebars = {
@@ -62,9 +62,9 @@ class Workspace {
 
     listen() {
         Object.keys(this.rollups).forEach(name => {
-            document.getElementById(`open-${name}-screen`).addEventListener("click", () => {
+            document.getElementById(`open-${name}-rollup`).addEventListener("click", () => {
                 SiteSpinner.withLoading(async () => {
-                    document.getElementById(`${name}-screen`).show();
+                    document.getElementById(`${name}-rollup`).show();
                     const rollup = this.rollups[name];
                     await rollup.reset();
                     await rollup.reload();

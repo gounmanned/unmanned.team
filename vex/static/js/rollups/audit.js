@@ -1,4 +1,4 @@
-class AuditScreen {
+class AuditRollup {
     constructor(state) {
         this.state = state;
         this.api = new AuditApi();

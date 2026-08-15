@@ -1,4 +1,4 @@
-class BreachScreen {
+class BreachRollup {
     static DAYS = 7;
 
     constructor(state) {
@@ -27,7 +27,7 @@ class BreachScreen {
         this.signalFoundEl = document.getElementById('breach-signal-found');
 
         this.breaches = [];
-        this.selectedIndex = BreachScreen.DAYS - 1;
+        this.selectedIndex = BreachRollup.DAYS - 1;
         this.listen();
     }
 
@@ -35,7 +35,7 @@ class BreachScreen {
         this.api.set("account", this.state.account());
         this.watermark.show("Generated scenario");
         this.breaches = [];
-        this.selectedIndex = BreachScreen.DAYS - 1;
+        this.selectedIndex = BreachRollup.DAYS - 1;
         this.render();
     }
 
@@ -46,7 +46,7 @@ class BreachScreen {
     }
 
     render() {
-        this.week = BreachScreen._buildWeek(this.breaches);
+        this.week = BreachRollup._buildWeek(this.breaches);
         this._renderRail();
         this._renderDetail();
     }
@@ -65,10 +65,10 @@ class BreachScreen {
     _renderRail() {
         const first = this.week.find(d => d.breach)?.date;
         const last = this.week[this.week.length - 1].date;
-        this.rangeEl.textContent = first ? `${BreachScreen._formatShort(first)} – ${BreachScreen._formatShort(last)}` : '';
+        this.rangeEl.textContent = first ? `${BreachRollup._formatShort(first)} – ${BreachRollup._formatShort(last)}` : '';
 
         this.railEl.innerHTML = this.week.map((slot, i) => {
-            const isToday = i === BreachScreen.DAYS - 1;
+            const isToday = i === BreachRollup.DAYS - 1;
             const isSelected = i === this.selectedIndex;
             const empty = !slot.breach;
             const signal = slot.breach ? this._signalFor(slot.breach) : null;
@@ -82,12 +82,12 @@ class BreachScreen {
 
             return `
                 <button type="button" class="${classes}" data-index="${i}" ${empty ? 'disabled' : ''}
-                    aria-pressed="${isSelected}" aria-label="${BreachScreen._formatFull(labelDate)}${empty ? ', no scenario' : ''}">
+                    aria-pressed="${isSelected}" aria-label="${BreachRollup._formatFull(labelDate)}${empty ? ', no scenario' : ''}">
                     <span class="breach-day-node">
                         ${empty ? '' : labelDate.getDate()}
                         ${signal ? `<span class="breach-day-dot" data-severity="${signal.severity}"></span>` : ''}
                     </span>
-                    <span class="breach-day-label">${BreachScreen._monthShort(labelDate)}</span>
+                    <span class="breach-day-label">${BreachRollup._monthShort(labelDate)}</span>
                 </button>
             `;
         }).join('');
@@ -103,8 +103,8 @@ class BreachScreen {
         const signal = this._signalFor(breach);
 
         this.titleEl.textContent = breach.name;
-        this.timestampEl.textContent = BreachScreen._formatFull(new Date(breach.created));
-        this.narrativeEl.innerHTML = BreachScreen._narrative(breach.value);
+        this.timestampEl.textContent = BreachRollup._formatFull(new Date(breach.created));
+        this.narrativeEl.innerHTML = BreachRollup._narrative(breach.value);
 
         if (signal) this._renderSignal(signal);
     }
@@ -120,15 +120,15 @@ class BreachScreen {
         this.severityBadgeEl.setAttribute('data-severity', signal.severity);
 
         this.signalIdEl.textContent = `Signal ${signal.id}`;
-        this.statAssetEl.innerHTML = BreachScreen._breakable(signal.asset);
-        this.statSourceEl.textContent = BreachScreen._capitalize(signal.source);
+        this.statAssetEl.innerHTML = BreachRollup._breakable(signal.asset);
+        this.statSourceEl.textContent = BreachRollup._capitalize(signal.source);
 
         const strength = signal.metadata?.strength ?? 0;
         const STRENGTH_SCALE = 10;
         this.strengthFillEl.style.width = `${Math.min(100, (strength / STRENGTH_SCALE) * 100)}%`;
         this.strengthCountEl.textContent = `${strength}× in scenarios`;
 
-        this.signalFoundEl.innerHTML = `Signal first seen <b>${BreachScreen._formatFull(new Date(signal.created))}</b>`;
+        this.signalFoundEl.innerHTML = `Signal first seen <b>${BreachRollup._formatFull(new Date(signal.created))}</b>`;
     }
 
     _signalFor(breach) {
@@ -137,19 +137,19 @@ class BreachScreen {
 
     static _buildWeek(breaches) {
         const slots = [];
-        for (let i = BreachScreen.DAYS - 1; i >= 0; i--) {
-            const date = BreachScreen._daysAgo(i);
-            const breach = breaches.find(b => BreachScreen._isSameDay(new Date(b.created), date)) || null;
+        for (let i = BreachRollup.DAYS - 1; i >= 0; i--) {
+            const date = BreachRollup._daysAgo(i);
+            const breach = breaches.find(b => BreachRollup._isSameDay(new Date(b.created), date)) || null;
             slots.push({ date, breach });
         }
         return slots;
     }
 
     static _narrative(raw) {
-        return BreachScreen._splitParagraphs(raw).map((p, i) => `
+        return BreachRollup._splitParagraphs(raw).map((p, i) => `
             <div class="breach-narrative-step ${/choke point/i.test(p) ? 'is-choke' : ''}">
                 <span class="breach-narrative-index">${i + 1}</span>
-                <p class="breach-narrative-text">${BreachScreen._esc(p)}</p>
+                <p class="breach-narrative-text">${BreachRollup._esc(p)}</p>
             </div>
         `).join('');
     }
@@ -170,7 +170,7 @@ class BreachScreen {
     }
 
     static _breakable(s) {
-        return BreachScreen._esc(s).replace(/([.\-@])/g, '$1<wbr>');
+        return BreachRollup._esc(s).replace(/([.\-@])/g, '$1<wbr>');
     }
 
     static _daysAgo(n) {

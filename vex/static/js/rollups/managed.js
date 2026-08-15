@@ -1,4 +1,4 @@
-class ManagedScreen {
+class ManagedRollup {
     constructor(state) {
         this.state = state;
         this.api = new ManagedApi();

@@ -1,10 +1,10 @@
-class InventoryScreen {
+class InventoryRollup {
     static EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
     static DOMAIN_RE = /^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,}$/i;
 
     static classify(name) {
-        if (InventoryScreen.EMAIL_RE.test(name)) return 'identity';
-        if (InventoryScreen.DOMAIN_RE.test(name)) return 'domain';
+        if (InventoryRollup.EMAIL_RE.test(name)) return 'identity';
+        if (InventoryRollup.DOMAIN_RE.test(name)) return 'domain';
         return 'other';
     }
 
@@ -34,7 +34,7 @@ class InventoryScreen {
     }
 
     async reload() {
-        this.assets = (await this.api.list()).map(a => ({ ...a, type: InventoryScreen.classify(a.name) }));
+        this.assets = (await this.api.list()).map(a => ({ ...a, type: InventoryRollup.classify(a.name) }));
         this.watermark.hide();
         this.render();
     }

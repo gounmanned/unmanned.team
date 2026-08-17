@@ -135,7 +135,7 @@ class TenantScreen {
                 });
             });
         });
-        
+
         document.getElementById('signal-create').addEventListener('click', () => {
             document.getElementById("signal-modal").show();
         });

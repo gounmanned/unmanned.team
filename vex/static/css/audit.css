@@ -1,0 +1,125 @@
+#audit-screen .audit-terminal {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  border: 1px solid var(--gray-line);
+  border-radius: 10px;
+  background: white;
+  overflow: hidden;
+}
+
+#audit-screen .audit-terminal-header {
+  display: flex;
+  align-items: center;
+  padding: 0;
+  border-bottom: 1px solid var(--gray-line);
+  background: var(--gray-panel);
+}
+
+#audit-screen .audit-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 14px;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+}
+
+#audit-screen .audit-search .material-symbols-outlined {
+  font-size: 16px;
+  color: var(--pink);
+}
+
+#audit-screen .audit-search input {
+  border: none;
+  outline: none;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12.5px;
+  color: var(--ink);
+  width: 100%;
+  background: transparent;
+}
+
+#audit-screen .audit-search input::placeholder { color: var(--text-faint); }
+
+#audit-screen .audit-terminal-body {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 4px 0;
+}
+
+#audit-screen .audit-terminal-body .signal-radar-watermark { display: none; }
+#audit-screen .audit-terminal-body.empty #audit-list { display: none; }
+#audit-screen .audit-terminal-body.empty .signal-radar-watermark { display: flex; }
+
+#audit-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+#audit-screen .audit-entry {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 6px 16px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  border-bottom: 1px dashed var(--gray-line);
+  transition: background 0.1s;
+}
+
+#audit-screen .audit-entry:hover { background: var(--gray-panel); }
+
+#audit-screen .audit-entry .audit-prompt {
+  color: var(--pink);
+  flex: 0 0 auto;
+}
+
+#audit-screen .audit-entry .audit-time {
+  flex: 0 0 auto;
+  color: var(--text-faint);
+  white-space: nowrap;
+}
+
+#audit-screen .audit-entry .audit-group {
+  flex: 0 0 auto;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  background: var(--gray-panel);
+  color: var(--text-strong);
+  border: 1px solid var(--gray-line);
+}
+
+#audit-screen .audit-entry .audit-message {
+  color: var(--text-body);
+  word-break: break-word;
+}
+
+#audit-screen .audit-entry .audit-message mark {
+  background: rgba(224,18,128,0.16);
+  color: var(--ink);
+  border-radius: 2px;
+  padding: 0 1px;
+}
+
+#audit-screen .audit-terminal-footer {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-top: 1px solid var(--gray-line);
+  background: var(--gray-panel);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11.5px;
+  color: var(--text-muted);
+}

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Square</title>
+    <link rel="icon" href="https://cdn.unmanned.team/img/logo.png" type="image/png" />
+    <link rel="apple-touch-icon" href="https://cdn.unmanned.team/img/logo.png" />
+    <link rel="stylesheet" href="https://cdn.unmanned.team/css/global.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <style>
+        body {
+            margin: 0;
+            padding: 2rem;
+            background-color: #f8fafc;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 3rem 4rem;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--brand);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        h2 {
+            font-size: 1.3rem;
+            color: var(--brand);
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        p {
+            line-height: 1.6;
+        }
+
+        ul, ol {
+            margin: 1rem 0 1rem 1.5rem;
+            padding-left: 1.5rem;
+        }
+
+        ul { list-style-type: disc; }
+        ol { list-style-type: decimal; }
+
+        li { margin-bottom: 0.5rem; }
+
+        ol li::marker {
+            font-weight: bold;
+            color: var(--brand);
+        }
+
+        ul li::marker { color: var(--brand); }
+
+        pre {
+            background: #f3f3f3;
+            padding: 1rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        code {
+            background: #f3f3f3;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+        }
+
+        a { color: var(--brand); text-decoration: none; }
+
+        .important-note {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .step-divider {
+            border: none;
+            border-top: 1px solid #e5e7eb;
+            margin: 2.5rem 0 0;
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            .container { padding: 2rem; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Square</h1>
+        <p>This guide walks you through locating your Square personal access token and registering it with Vex. Vex will periodically query Square for security-relevant events including team member changes, disputes, card activity, and bank account changes.</p>
+
+        <h2>Prerequisites</h2>
+        <ul>
+            <li>You have access to your <strong>Square account</strong> and can log into the <a href="https://developer.squareup.com" target="_blank">Square Developer Console</a>.</li>
+        </ul>
+
+        <hr class="step-divider" />
+        <h2>Step 1: Open the Developer Console</h2>
+        <ol>
+            <li>Go to <a href="https://developer.squareup.com" target="_blank">developer.squareup.com</a> and sign in.</li>
+            <li>In the top navigation, click <strong>Applications</strong> and select your existing application, or click <strong>"Create your first application"</strong> if you don't have one yet.</li>
+            <li>Set the application name to <code>Vex Security Monitor</code> and click <strong>"Save"</strong>.</li>
+        </ol>
+
+        <hr class="step-divider" />
+        <h2>Step 2: Copy Your Personal Access Token</h2>
+        <ol>
+            <li>On your application's detail page, click <strong>Credentials</strong> in the left sidebar.</li>
+            <li>Make sure the environment toggle at the top is set to <strong>Production</strong>.</li>
+            <li>Under <strong>Personal Access Token</strong>, click <strong>"Show"</strong> and copy the token.</li>
+        </ol>
+
+        <div class="important-note">
+            <strong>Note:</strong> This is a personal access token tied to your Square account. Treat it like a password &mdash; do not share it or commit it to version control.
+        </div>
+
+        <hr class="step-divider" />
+        <h2>Step 3: Save to Vex</h2>
+        <p>Inside Vex, add your credentials in the following JSON format:</p>
+        <pre>{"token": "$TOKEN"}</pre>
+        <p>Replace the token with your actual access token from the previous step.</p>
+        <p>Once registered, Vex will periodically check your Square account for security events, including new team members, disputes, card changes, and bank account activity.</p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ramp</title>
+    <link rel="icon" href="https://cdn.unmanned.team/img/logo.png" type="image/png" />
+    <link rel="apple-touch-icon" href="https://cdn.unmanned.team/img/logo.png" />
+    <link rel="stylesheet" href="https://cdn.unmanned.team/css/global.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <style>
+        body {
+            margin: 0;
+            padding: 2rem;
+            background-color: #f8fafc;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 3rem 4rem;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--brand);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        h2 {
+            font-size: 1.3rem;
+            color: var(--brand);
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        p {
+            line-height: 1.6;
+        }
+
+        ul, ol {
+            margin: 1rem 0 1rem 1.5rem;
+            padding-left: 1.5rem;
+        }
+
+        ul { list-style-type: disc; }
+        ol { list-style-type: decimal; }
+
+        li { margin-bottom: 0.5rem; }
+
+        ol li::marker {
+            font-weight: bold;
+            color: var(--brand);
+        }
+
+        ul li::marker { color: var(--brand); }
+
+        pre {
+            background: #f3f3f3;
+            padding: 1rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        code {
+            background: #f3f3f3;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+        }
+
+        a { color: var(--brand); text-decoration: none; }
+
+        .important-note {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .step-divider {
+            border: none;
+            border-top: 1px solid #e5e7eb;
+            margin: 2.5rem 0 0;
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            .container { padding: 2rem; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Ramp</h1>
+        <p>This guide walks you through creating a Ramp developer app, copying your OAuth 2.0 credentials, and storing them so Vex can monitor your account for security issues. Vex will periodically check for new or modified cards and alert you to anything suspicious.</p>
+
+        <h2>Prerequisites</h2>
+        <ul>
+            <li>You have access to your <strong>Ramp account</strong> with Admin or Business Owner permissions.</li>
+            <li>Each Ramp card should be named after a customer domain, such as <strong>example.com</strong>, so Vex can associate activity with the correct account.</li>
+        </ul>
+
+        <hr class="step-divider" />
+        <h2>Step 1: Access the Developer Console</h2>
+        <ol>
+            <li>Log into your <a href="https://app.ramp.com" target="_blank">Ramp Dashboard</a>.</li>
+            <li>Navigate to <strong>Settings &rarr; Developer</strong> in the left sidebar.</li>
+            <li>Under <strong>My apps</strong>, click <strong>"Create new app"</strong>.</li>
+        </ol>
+
+        <hr class="step-divider" />
+        <h2>Step 2: Configure Your App</h2>
+        <ol>
+            <li>In the <strong>Create new app</strong> modal, set the <strong>App name</strong> to <code>Vex Security Monitor</code>.</li>
+            <li>Click <strong>"Create app"</strong>.</li>
+            <li>On your new app's detail page, locate the <strong>Grant types</strong> section.</li>
+            <li>Click <strong>"Add new grant type"</strong> and select <strong>Client Credentials</strong>.</li>
+            <li>Under <strong>Scopes</strong>, click <strong>"Configure allowed scopes"</strong> and enable the following:</li>
+        </ol>
+
+        <pre><code>cards:read</code></pre>
+
+        <ol start="6">
+            <li>Click <strong>"Save"</strong> to apply the scope configuration.</li>
+        </ol>
+
+        <hr class="step-divider" />
+        <h2>Step 3: Copy Your Credentials</h2>
+        <ol>
+            <li>On your app detail page, locate the <strong>Client ID</strong> and <strong>Client Secret</strong> fields.</li>
+            <li><strong>Important:</strong> Copy both values immediately &mdash; the Client Secret will not be shown again after you navigate away.</li>
+            <li>Store both values securely before proceeding.</li>
+        </ol>
+
+        <hr class="step-divider" />
+        <h2>Step 4: Save to Vex</h2>
+        <p>Inside Vex, add your credentials in the following JSON format:</p>
+        <pre>{"client_id": "$CLIENT_ID", "client_secret": "$CLIENT_SECRET"}</pre>
+        <p>Once registered, Vex will run periodic security checks on your Ramp account, including monitoring for new cards, card setting changes, and cards issued to unknown users.</p>
+    </div>
+</body>
+</html>

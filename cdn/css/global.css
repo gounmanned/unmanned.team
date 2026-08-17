@@ -1,0 +1,124 @@
+:root{
+  --white:#ffffff;
+  --ink:#0a0a0a;
+  --gray-line:#dcdcdc;
+  --gray-mid:#8a8a8a;
+  --gray-soft:#f4f4f4;
+  --gray-panel:#eeeeee;
+  --gray-hover:#e4e4e4;
+  --pink:#E01280;
+  --background: #FAF9F6;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: #ccc transparent; /* Firefox */
+}
+
+html {
+  scroll-behavior: smooth;
+  overflow-x:hidden;
+  max-width:100%;
+}
+
+body {
+  font-family: -apple-system, Arial, sans-serif;
+  background-color: var(--background);
+  color: var(--text);
+  font-size: 16px;
+  line-height: 1.5;
+  overflow-x:hidden;
+  max-width:100%;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding-top: 80px;
+  padding-bottom: 32px;
+  box-sizing: border-box;
+}
+
+button {
+  background-color: transparent;
+  font-weight: 500;
+  border-radius: 6px;
+  cursor: pointer;
+  padding: 14px 28px;
+  font-size: 16px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.25);
+  color: inherit;
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+}
+
+button:active {
+  transform: translateY(-1px);
+}
+
+ol, ul {
+  list-style: none;
+}
+
+hr {
+  width: 95%;
+  border: none;
+  border-top: 1px solid var(--gray-line);
+  margin: 100px 0;
+  margin-left: auto;
+  margin-right: auto;
+  opacity: 0.2;
+}
+
+table {
+  width: 100%;
+  border-spacing: 0 3px;
+  border-collapse: separate;
+}
+
+table th {
+  text-align: left;
+}
+
+table tbody tr {
+  background-color: white;
+  border-radius: 12px;
+  transition: background-color 0.15s ease;
+}
+
+table tbody tr:hover {
+  background-color: var(--gray-hover);
+}
+
+table td {
+  font-size: 14px;
+  padding: 5px 6px;
+  cursor: pointer;
+}
+
+table td img {
+  border: 1px solid var(--gray-line);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  border-radius: 50%;
+  height: 30px;
+}
+
+/** scrollbars **/
+*::-webkit-scrollbar {
+  display: none;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 1px;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: #999;
+}

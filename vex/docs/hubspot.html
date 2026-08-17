@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HubSpot</title>
+    <link rel="icon" href="https://cdn.unmanned.team/img/logo.png" type="image/png" />
+    <link rel="apple-touch-icon" href="https://cdn.unmanned.team/img/logo.png" />
+    <link rel="stylesheet" href="https://cdn.unmanned.team/css/global.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <style>
+        body {
+            margin: 0;
+            padding: 2rem;
+            background-color: #f8fafc;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 3rem 4rem;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--brand);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        h2 {
+            font-size: 1.3rem;
+            color: var(--brand);
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        p {
+            line-height: 1.6;
+        }
+
+        ul,
+        ol {
+            margin: 1rem 0 1rem 1.5rem;
+            padding-left: 1.5rem;
+        }
+
+        ul {
+            list-style-type: disc;
+        }
+
+        ol {
+            list-style-type: decimal;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        ol li::marker {
+            font-weight: bold;
+            color: var(--brand);
+        }
+
+        ul li::marker {
+            color: var(--brand);
+        }
+
+        pre {
+            background: #f3f3f3;
+            padding: 1rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 0.9rem;
+        }
+
+        code {
+            background: #f3f3f3;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        a {
+            color: var(--brand);
+            text-decoration: none;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+            
+            .container {
+                padding: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>HubSpot</h1>
+        <p>
+            This guide walks you through creating a private app with API access for your HubSpot account.
+            The resulting credentials will allow us to monitor security events and detect suspicious activity in your HubSpot portal.
+        </p>
+
+        <h2>Prerequisites</h2>
+        <ul>
+            <li>You have <strong>admin access</strong> to your HubSpot account</li>
+            <li>You can access the HubSpot Settings menu</li>
+        </ul>
+
+        <h2>Step 1: Create Private App</h2>
+        <ol>
+            <li>Log into your HubSpot account.</li>
+            <li>Navigate to <strong>Settings</strong> → <strong>Integrations</strong> → <strong>Connected Apps</strong>.</li>
+            <li>Look for the <strong>Private Apps</strong> section or <strong>Legacy Apps</strong> tab (HubSpot has moved private apps to the legacy section).</li>
+            <li>Click <strong>Create a private app</strong>.</li>
+            <li>Fill in the app details:</li>
+        </ol>
+        <ul>
+            <li>App name: <code>Vex</code></li>
+            <li>Description: <code>Security monitoring</code></li>
+        </ul>
+
+        <h2>Step 2: Configure Scopes</h2>
+        <ol>
+            <li>Navigate to the <strong>Scopes</strong> tab in your private app.</li>
+            <li>Add the following two scopes:</li>
+        </ol>
+        <pre>account-info.security.read
+settings.security.security_health.read</pre>
+        <ol start="3">
+            <li>Click <strong>Create app</strong>.</li>
+        </ol>
+
+        <h2>Step 3: Get Access Token</h2>
+        <ol>
+            <li>Once the app is created, navigate to the <strong>Auth</strong> tab.</li>
+            <li>Copy the <strong>Access token</strong>.</li>
+            <li>Verify the token starts with <code>pat-</code> (this confirms it's a private app token).</li>
+            <li>The token will look like:</li>
+        </ol>
+        <pre>pat-na1-12345678-abcd-1234-efgh-123456789abc</pre>
+
+        <h2>Step 4: Save to Vex</h2>
+        <p>Inside Vex, add the HubSpot credentials in the following JSON format:</p>
+        <pre>{
+  "token": "pat-na1-12345678-abcd-1234-efgh-123456789abc"
+}</pre>
+        <p>Replace the token with your actual access token from Step 3.</p>
+
+        <h2>What Is Monitored</h2>
+        <p>With these credentials, we will monitor your HubSpot account for:</p>
+        <ul>
+            <li>Data export activities (who downloaded customer data)</li>
+            <li>User management changes (admin additions, removals, invitations)</li>
+            <li>Integration installations and changes</li>
+            <li>API access token activities</li>
+            <li>Permission and role modifications</li>
+        </ul>
+    </div>
+</body>
+</html>

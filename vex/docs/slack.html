@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Slack</title>
+    <link rel="icon" href="https://cdn.unmanned.team/img/logo.png" type="image/png" />
+    <link rel="apple-touch-icon" href="https://cdn.unmanned.team/img/logo.png" />
+    <link rel="stylesheet" href="https://cdn.unmanned.team/css/global.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <style>
+        body {
+            margin: 0;
+            padding: 2rem;
+            background-color: #f8fafc;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 3rem 4rem;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--brand);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        h2 {
+            font-size: 1.3rem;
+            color: var(--brand);
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        p {
+            line-height: 1.6;
+        }
+
+        ul,
+        ol {
+            margin: 1rem 0 1rem 1.5rem;
+            padding-left: 1.5rem;
+        }
+
+        ul {
+            list-style-type: disc;
+        }
+
+        ol {
+            list-style-type: decimal;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        ol li::marker {
+            font-weight: bold;
+            color: var(--brand);
+        }
+
+        ul li::marker {
+            color: var(--brand);
+        }
+
+        pre {
+            background: #f3f3f3;
+            padding: 1rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 0.9rem;
+        }
+
+        code {
+            background: #f3f3f3;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        a {
+            color: var(--brand);
+            text-decoration: none;
+        }
+
+        .important-note {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 0 4px 4px 0;
+        }
+
+        @media (max-width: 768px) {
+            body {
+            padding: 1rem;
+            }
+            
+            .container {
+            padding: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Slack</h1>
+        <p>This guide walks you through creating a Slack incoming webhook so Vex can send events to a channel of your choice.</p>
+
+        <div class="important-note">
+            <strong>Notification integration:</strong> Slack is a <strong>notification integration</strong>, not a security monitor. It doesn't scan or find issues on its own — it delivers events (alerts, status changes, connection updates, etc.) from your other security monitors into Slack in real time. Set up a security monitor separately to generate the events this integration will notify you about.
+        </div>
+
+        <h2>Prerequisites</h2>
+        <ul>
+            <li>You have access to your <strong>Slack workspace</strong> with permission to add apps.</li>
+            <li>You've identified the <strong>channel</strong> you want notifications sent to.</li>
+        </ul>
+
+        <h2>Step 1: Create a Slack App</h2>
+        <ol>
+            <li>Go to <a href="https://api.slack.com/apps" target="_blank">api.slack.com/apps</a> and log into your workspace.</li>
+            <li>Click <strong>"Create New App"</strong>.</li>
+            <li>Choose <strong>"From scratch"</strong>.</li>
+            <li>Set the <strong>App Name</strong> to <code>Vex Notifications</code> and select your workspace.</li>
+            <li>Click <strong>"Create App"</strong>.</li>
+        </ol>
+
+        <h2>Step 2: Enable Incoming Webhooks</h2>
+        <ol>
+            <li>From your app's settings page, select <strong>"Incoming Webhooks"</strong> under Features.</li>
+            <li>Toggle <strong>"Activate Incoming Webhooks"</strong> to on.</li>
+            <li>Click <strong>"Add New Webhook to Workspace"</strong> at the bottom of the page.</li>
+        </ol>
+
+        <h2>Step 3: Choose a Channel</h2>
+        <ol>
+            <li>Select the channel you want Vex to post notifications to.</li>
+            <li>Click <strong>"Allow"</strong>.</li>
+        </ol>
+
+        <h2>Step 4: Copy the Webhook URL</h2>
+        <ol>
+            <li>Back on the "Incoming Webhooks" page, find the webhook listed under <strong>"Webhook URLs for Your Workspace"</strong>.</li>
+            <li>Click <strong>"Copy"</strong> to copy the URL. It will look like:</li>
+        </ol>
+
+        <div class="important-note">
+            <strong>Treat this URL as a secret.</strong> Anyone who has it can post messages to your channel. Don't commit it to source control or share it outside your team.
+        </div>
+
+        <h2>Step 5: Upload Webhook to Vex</h2>
+        <ol>
+            <li>Create a new text file and name it <code>slack.json</code>.</li>
+            <li>Using the URL from Step 4, create a JSON object with this structure:</li>
+        </ol>
+        <pre>
+{
+    "webhook": "https://hooks.slack.com/services/your-webhook-path-here"
+}
+        </pre>
+        <ol start="3">
+            <li>Save this in Vex</li>
+        </ol>
+    </div>
+</body>
+</html>

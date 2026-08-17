@@ -1,0 +1,173 @@
+#inventory-screen .asset-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 12px 16px;
+  margin-bottom: 10px;
+  flex-shrink: 0;
+}
+
+#inventory-screen .scope-toggle {
+  position: relative;
+  display: flex;
+  background: white;
+  border: 1px solid var(--gray-line);
+  border-radius: 6px;
+  padding: 3px;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+#inventory-screen .scope-toggle .thumb {
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  left: 3px;
+  width: calc(33.333% - 4px);
+  background: var(--gray-panel);
+  border: 1px solid var(--gray-line);
+  border-radius: 4px;
+  transition: transform 0.2s cubic-bezier(.4,0,.2,1);
+}
+#inventory-screen .scope-toggle[data-scope="identity"] .thumb { transform: translateX(calc(100% + 2px)); }
+#inventory-screen .scope-toggle[data-scope="other"] .thumb { transform: translateX(calc(200% + 4px)); }
+
+#inventory-screen .scope-btn {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 7px 16px;
+  border: none;
+  background: none;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-radius: 4px;
+  white-space: nowrap;
+  transition: color 0.15s;
+}
+#inventory-screen .scope-btn .material-symbols-outlined {
+  font-size: 15px;
+  color: var(--text-faint);
+  transition: color 0.15s;
+}
+
+#inventory-screen .scope-toggle[data-scope="domain"] .scope-btn[data-scope="domain"],
+#inventory-screen .scope-toggle[data-scope="identity"] .scope-btn[data-scope="identity"],
+#inventory-screen .scope-toggle[data-scope="other"] .scope-btn[data-scope="other"] {
+  color: var(--ink, #111827);
+}
+#inventory-screen .scope-toggle[data-scope="domain"] .scope-btn[data-scope="domain"] .material-symbols-outlined,
+#inventory-screen .scope-toggle[data-scope="identity"] .scope-btn[data-scope="identity"] .material-symbols-outlined,
+#inventory-screen .scope-toggle[data-scope="other"] .scope-btn[data-scope="other"] .material-symbols-outlined {
+  color: var(--pink);
+}
+
+#inventory-screen .scope-btn .count {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  color: var(--text-muted);
+  background: var(--gray-soft);
+  padding: 1px 6px;
+  border-radius: 6px;
+}
+#inventory-screen .scope-toggle[data-scope="domain"] .scope-btn[data-scope="domain"] .count,
+#inventory-screen .scope-toggle[data-scope="identity"] .scope-btn[data-scope="identity"] .count,
+#inventory-screen .scope-toggle[data-scope="other"] .scope-btn[data-scope="other"] .count {
+  color: var(--pink);
+  background: rgba(224,18,128,0.1);
+}
+
+#inventory-screen .asset-search {
+  position: relative;
+  flex: 1;
+  max-width: 280px;
+}
+#inventory-screen .asset-search .material-symbols-outlined {
+  position: absolute;
+  left: 11px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+  color: var(--text-faint);
+}
+#inventory-screen .asset-search input {
+  width: 100%;
+  height: 34px;
+  box-sizing: border-box;
+  background: white;
+  border: 1px solid var(--gray-line);
+  border-radius: 8px;
+  padding: 0 12px 0 34px;
+  font-family: inherit;
+  font-size: 12.5px;
+  color: var(--ink, #111827);
+  outline: none;
+  transition: border-color 0.15s;
+}
+#inventory-screen .asset-search input:focus { border-color: var(--pink); }
+#inventory-screen .asset-search input::placeholder { color: var(--text-faint); }
+
+#inventory-screen #asset-table { width: 100%; border-collapse: collapse; }
+
+#inventory-screen #asset-table thead th {
+  text-align: left;
+  padding: 9px 12px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  background: var(--gray-panel);
+  border-bottom: 1px solid var(--gray-line);
+  user-select: none;
+  white-space: nowrap;
+}
+#inventory-screen #asset-table thead th .sort-arrow { font-size: 13px; vertical-align: -3px; opacity: 0.5; }
+
+#inventory-screen #asset-table tbody tr:hover { background: var(--gray-hover); }
+
+#inventory-screen .asset-value {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+#inventory-screen .asset-source img {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  display: block;
+}
+
+#inventory-screen .star-btn {
+    border: none;
+    background: none;
+    padding: 3px;
+    border-radius: 5px;
+    display: inline-flex;
+    color: var(--text-faint);
+    cursor: pointer;
+    transition: color 0.12s, background 0.12s, transform 0.12s;
+}
+#inventory-screen .star-btn:hover { color: #f59e0b; }
+#inventory-screen .star-btn.active {
+    color: #f59e0b;
+    background: rgba(245,158,11,0.15);
+}
+#inventory-screen .star-btn .material-symbols-outlined {
+    font-size: 16px;
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+#inventory-screen .star-btn.active .material-symbols-outlined {
+    font-size: 18px;
+    font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+    filter: drop-shadow(0 0 3px rgba(245,158,11,0.5));
+}

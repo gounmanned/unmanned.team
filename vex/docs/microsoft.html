@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Microsoft 365</title>
+    <link rel="icon" href="https://cdn.unmanned.team/img/logo.png" type="image/png" />
+    <link rel="apple-touch-icon" href="https://cdn.unmanned.team/img/logo.png" />
+    <link rel="stylesheet" href="https://cdn.unmanned.team/css/global.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <style>
+        body {
+            margin: 0;
+            padding: 2rem;
+            background-color: #f8fafc;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 3rem 4rem;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--brand);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        h2 {
+            font-size: 1.3rem;
+            color: var(--brand);
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        p {
+            line-height: 1.6;
+        }
+
+        ul,
+        ol {
+            margin: 1rem 0 1rem 1.5rem;
+            padding-left: 1.5rem;
+        }
+
+        ul {
+            list-style-type: disc;
+        }
+
+        ol {
+            list-style-type: decimal;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        ol li::marker {
+            font-weight: bold;
+            color: var(--brand);
+        }
+
+        ul li::marker {
+            color: var(--brand);
+        }
+
+        pre {
+            background: #f3f3f3;
+            padding: 1rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 0.9rem;
+        }
+
+        code {
+            background: #f3f3f3;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        a {
+            color: var(--brand);
+            text-decoration: none;
+        }
+
+        .important-note {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 0 4px 4px 0;
+        }
+
+        @media (max-width: 768px) {
+            body {
+            padding: 1rem;
+            }
+            
+            .container {
+            padding: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Microsoft 365</h1>
+        <p>This guide walks you through creating an Azure application registration with the necessary permissions to access Microsoft Defender for Business alerts. The resulting credentials (Tenant ID, Client ID, and Client Secret) will allow API access to:</p>
+        <ul>
+            <li>Microsoft Defender for Business alerts</li>
+            <li>Microsoft Graph Security API</li>
+        </ul>
+
+        <h2>Prerequisites</h2>
+        <ul>
+            <li>You have a <strong>Global Administrator</strong> or <strong>Application Administrator</strong> role in your Microsoft 365 tenant.</li>
+        </ul>
+
+        <h2>Step 1: Register an Application</h2>
+        <ol>
+            <li>Go to <a href="https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationsListBlade" target="_blank">Azure Portal → App registrations</a>.</li>
+            <li>Click <strong>"New registration"</strong>.</li>
+            <li>Set a name like <code>Security Monitor</code>.</li>
+            <li>Under <strong>"Supported account types"</strong>, select <strong>"Single tenant only"</strong>.</li>
+            <li>Leave <strong>"Redirect URI"</strong> blank.</li>
+            <li>Click <strong>"Register"</strong>.</li>
+        </ol>
+
+        <h2>Step 2: Note Your Application Details</h2>
+        <ol>
+            <li>On the app's <strong>Overview</strong> page, copy and save:</li>
+            <li><strong>Application (client) ID</strong> - You'll need this as your <code>Client ID</code>.</li>
+            <li><strong>Directory (tenant) ID</strong> - You'll need this as your <code>Tenant ID</code>.</li>
+        </ol>
+
+        <h2>Step 3: Create a Client Secret</h2>
+        <ol>
+            <li>Go to <strong>"Certificates & secrets"</strong> in the left menu.</li>
+            <li>Under <strong>"Client secrets"</strong>, click <strong>"New client secret"</strong>.</li>
+            <li>Add a description like <code>Security Monitor</code>.</li>
+            <li>Set expiration (recommended: 24 months).</li>
+            <li>Click <strong>"Add"</strong>.</li>
+            <li><strong>Important:</strong> Copy the <strong>Value</strong> immediately - this is your <code>Client Secret</code> and won't be shown again.</li>
+        </ol>
+
+        <h2>Step 4: Configure API Permissions</h2>
+        <ol>
+            <li>Go to <strong>"API permissions"</strong> in the left menu.</li>
+            <li>Click <strong>"Add a permission"</strong>.</li>
+            <li>Select <strong>"Microsoft Graph"</strong>.</li>
+            <li>Choose <strong>"Application permissions"</strong> (not Delegated).</li>
+            <li>Search for and add these permissions:</li>
+        </ol>
+        <pre>
+User.Read.All
+Group.Read.All
+Device.Read.All
+ServiceMessage.Read.All
+AuditLog.Read.All
+Organization.Read.All
+SecurityAlert.ReadWrite.All
+Sites.Read.All
+Files.Read.All
+Policy.Read.All
+    </pre>
+        <ol start="6">
+            <li>Click <strong>"Add permissions"</strong>.</li>
+            <li><strong>Important:</strong> Click <strong>"Grant admin consent for [Your Organization]"</strong>.</li>
+            <li>Confirm by clicking <strong>"Yes"</strong>.</li>
+        </ol>
+
+        <h2>Step 5: Connect Vex</h2>
+        <ol>
+            <li>Using the values from the previous steps, create a JSON object with this structure:</li>
+        </ol>
+        <pre>
+{
+    "tenant_id": "your-directory-tenant-id-here",
+    "client_id": "your-application-client-id-here", 
+    "client_secret": "your-client-secret-value-here"
+}
+        </pre>
+        <ol start="3">
+            <li>Replace the placeholder values with your actual credentials:</li>
+            <li><strong>tenant_id:</strong> The Directory (tenant) ID from Step 2</li>
+            <li><strong>client_id:</strong> The Application (client) ID from Step 2</li>
+            <li><strong>client_secret:</strong> The secret value from Step 3</li>
+            <li>Paste this JSON in the credentials input inside Vex.</li>
+            <li>Click Connect.</li>
+        </ol>
+  </div>
+</body>
+</html>

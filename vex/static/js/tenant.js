@@ -2,6 +2,7 @@ class TenantScreen {
     constructor(state) {
         this.state = state;
         this.api = new SignalApi();
+        this.breach = new BreachApi();
         this.table = new Table('signal-table');
         this.month = new Date();
         this.listen();
@@ -15,8 +16,10 @@ class TenantScreen {
 
     async reset() {
         this.api.set("account", this.state.account());
+        this.breach.set("account", this.state.account());
         this.table.clear();
         this.table.watermark(true);
+        this.breachScenario();
         document.querySelectorAll('[data-filter] .filter-count').forEach(i => i.textContent = 0);
     }
 
@@ -49,6 +52,26 @@ class TenantScreen {
         `;
     }
 
+    async breachScenario() {
+        this.breaches = await this.breach.list();
+
+        const today = new Date().toDateString();
+        const card = document.querySelector('.breach-today-card');
+        const breach = this.breaches?.find(b => new Date(b.created).toDateString() === today);
+
+        if (!breach) {
+            card.dataset.state = 'empty';
+            return;
+        }
+
+        card.dataset.state = 'active';
+
+        document.getElementById('breach-today-name').textContent = breach.name ?? '';
+        document.getElementById('breach-today-asset').textContent = this.state.signals[this.state.account()][breach.id].asset ?? '—';
+        document.getElementById('breach-today-created').textContent = new Date(breach.created)
+            .toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+    }
+  
     listen() {
         document.addEventListener('signal:account', (ev) => {
             const upsert = (row, signal) => {
@@ -111,10 +134,6 @@ class TenantScreen {
                     row.style.display = !filter || status === filter ? '' : 'none';
                 });
             });
-        });
-
-        document.getElementById('signal-create').addEventListener('click', () => {
-            document.getElementById("signal-modal").show();
         });
 
         document.getElementById('signal-create-2').addEventListener('click', async () => {

@@ -135,6 +135,10 @@ class TenantScreen {
                 });
             });
         });
+        
+        document.getElementById('signal-create').addEventListener('click', () => {
+            document.getElementById("signal-modal").show();
+        });
 
         document.getElementById('signal-create-2').addEventListener('click', async () => {
             const blob = document.getElementById("signal-value");

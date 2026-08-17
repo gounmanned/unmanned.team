@@ -1,25 +1,3 @@
-#breach-screen .breach-radar svg {
-  width: 100%;
-  height: 100%;
-}
-
-#breach-screen .breach-radar .radar-ring {
-  fill: none;
-  stroke: var(--gray-line);
-  stroke-width: 1;
-  stroke-opacity: 0.5;
-  animation: managed-ring-glow 7.5s ease-in-out infinite; /* keyframe lives in managed-screen.css */
-}
-#breach-screen .breach-radar .radar-ring.r2 { animation-delay: -2.5s; }
-#breach-screen .breach-radar .radar-ring.r3 { animation-delay: -5s; }
-
-@media (prefers-reduced-motion: reduce) {
-  #breach-screen .breach-radar .radar-ring {
-    animation: none;
-    opacity: 0.9;
-  }
-}
-
 .signal-radar-watermark {
   display: none;
   position: absolute;

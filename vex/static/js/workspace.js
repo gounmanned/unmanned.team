@@ -117,9 +117,6 @@ class Workspace {
 
         requestAnimationFrame(() => el.classList.add('open'));
         el.querySelector("#toast-text").textContent = text;
-
-        setTimeout(() => {
-            el.classList.remove('open');
-        }, duration);
+        setTimeout(() => { el.classList.remove('open') }, duration);
     }
 }

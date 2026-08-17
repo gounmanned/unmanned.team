@@ -23,6 +23,26 @@ class TenantScreen {
         document.querySelectorAll('[data-filter] .filter-count').forEach(i => i.textContent = 0);
     }
 
+    async breachScenario() {
+        this.breaches = await this.breach.list();
+
+        const today = new Date().toDateString();
+        const card = document.querySelector('.breach-today-card');
+        const breach = this.breaches?.find(b => new Date(b.created).toDateString() === today);
+
+        if (!breach) {
+            card.dataset.state = 'empty';
+            return;
+        }
+
+        card.dataset.state = 'active';
+
+        document.getElementById('breach-today-name').textContent = breach.name ?? '';
+        document.getElementById('breach-today-asset').textContent = this.state.signals[this.state.account()][breach.id].asset ?? '—';
+        document.getElementById('breach-today-created').textContent = new Date(breach.created)
+            .toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+    }
+
     refresh(status){
         const count = document.querySelector(`[data-filter="${status}"] .filter-count`);
         if (!count) return;
@@ -50,26 +70,6 @@ class TenantScreen {
             <span class="strength-value">${value}${maxed ? '+' : ''}</span>
             </div>
         `;
-    }
-
-    async breachScenario() {
-        this.breaches = await this.breach.list();
-
-        const today = new Date().toDateString();
-        const card = document.querySelector('.breach-today-card');
-        const breach = this.breaches?.find(b => new Date(b.created).toDateString() === today);
-
-        if (!breach) {
-            card.dataset.state = 'empty';
-            return;
-        }
-
-        card.dataset.state = 'active';
-
-        document.getElementById('breach-today-name').textContent = breach.name ?? '';
-        document.getElementById('breach-today-asset').textContent = this.state.signals[this.state.account()][breach.id].asset ?? '—';
-        document.getElementById('breach-today-created').textContent = new Date(breach.created)
-            .toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
     }
   
     listen() {

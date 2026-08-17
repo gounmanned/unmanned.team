@@ -71,7 +71,7 @@ class TenantScreen {
             </div>
         `;
     }
-  
+
     listen() {
         document.addEventListener('signal:account', (ev) => {
             const upsert = (row, signal) => {

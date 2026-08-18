@@ -119,9 +119,9 @@ class BreachRollup {
         this.severityBadgeEl.textContent = severityLabel;
         this.severityBadgeEl.setAttribute('data-severity', signal.severity);
 
-        this.signalIdEl.textContent = `Signal ${signal.id}`;
-        this.statAssetEl.innerHTML = BreachRollup._breakable(signal.asset);
-        this.statSourceEl.textContent = BreachRollup._capitalize(signal.source);
+        this.signalIdEl.textContent = `#${signal.id}`;
+        this.statAssetEl.innerHTML = signal.asset;
+        this.statSourceEl.textContent = signal.source;
 
         const strength = signal.metadata?.strength ?? 0;
         const STRENGTH_SCALE = 10;
@@ -159,18 +159,10 @@ class BreachRollup {
         return raw.split(/\r?\n\s*\r?\n/).map(p => p.trim()).filter(Boolean);
     }
 
-    static _capitalize(s) {
-        return s ? s.charAt(0).toUpperCase() + s.slice(1) : '';
-    }
-
     static _esc(s) {
         const div = document.createElement('div');
         div.textContent = s ?? '';
         return div.innerHTML;
-    }
-
-    static _breakable(s) {
-        return BreachRollup._esc(s).replace(/([.\-@])/g, '$1<wbr>');
     }
 
     static _daysAgo(n) {

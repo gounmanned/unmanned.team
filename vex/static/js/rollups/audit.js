@@ -1,7 +1,7 @@
 class AuditRollup {
     constructor(state) {
         this.state = state;
-        this.api = new AuditApi();
+        this.api = new Api(state);
         this.screen = document.getElementById('audit-screen');
         this.watermark = this.screen.querySelector('site-watermark');
         this.body = document.getElementById('audit-terminal-body');
@@ -16,7 +16,7 @@ class AuditRollup {
     }
 
     async reset() {
-        this.api.set("account", this.state.account());
+        this.api.reset();
         this.logs = [];
         this.query = '';
         this.filter.value = '';
@@ -25,7 +25,7 @@ class AuditRollup {
     }
 
     async reload() {
-        const stream = await this.api.messages() || [];
+        const stream = await this.api.audit.messages() || [];
         this.logs = stream.map(log => {
             const [group, ...rest] = log.message.split(' | ');
             return { timestamp: log.timestamp, group, message: rest.join(' | ') };

@@ -1,8 +1,7 @@
 class TenantScreen {
     constructor(state) {
         this.state = state;
-        this.api = new SignalApi();
-        this.breach = new BreachApi();
+        this.api = new Api(state);
         this.table = new Table('signal-table');
         this.month = new Date();
         this.listen();
@@ -10,13 +9,12 @@ class TenantScreen {
 
     async reload() {
         const filter = this.month ? `date=${this.month.toISOString().slice(0, 7)}` : "";
-        await this.api.list(filter, new CustomEvent("signal:account"));
-        await this.api.list(`status=O`, new CustomEvent("signal:account"));
+        await this.api.signals.list(filter, new CustomEvent("signal:account"));
+        await this.api.signals.list(`status=O`, new CustomEvent("signal:account"));
     }
 
     async reset() {
-        this.api.set("account", this.state.account());
-        this.breach.set("account", this.state.account());
+        this.api.reset();
         this.table.clear();
         this.table.watermark(true);
         this.breachScenario();
@@ -24,7 +22,7 @@ class TenantScreen {
     }
 
     async breachScenario() {
-        this.breaches = await this.breach.list();
+        this.breaches = await this.api.breach.list();
 
         const today = new Date().toDateString();
         const card = document.querySelector('.breach-today-card');
@@ -110,7 +108,7 @@ class TenantScreen {
                 e.stopPropagation();
 
                 await SiteSpinner.withLoading(async () => {
-                    const updates = await this.api.get(signal.id);
+                    const updates = await this.api.signals.get(signal.id);
                     this.sidebar ??= new SignalSidebar(this.state);
                     this.sidebar.reset();
                     this.sidebar.reload(this.state.signals[signal.account][signal.id], updates);
@@ -160,7 +158,7 @@ class TenantScreen {
             }
 
             await SiteSpinner.withLoading(async() => {
-                await this.api.create(signal);
+                await this.api.signals.create(signal);
             }).finally(() => {
                 blob.value = "";
                 name.value = "";

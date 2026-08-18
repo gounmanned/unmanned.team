@@ -1,7 +1,7 @@
 class ManagedRollup {
     constructor(state) {
         this.state = state;
-        this.api = new ManagedApi();
+        this.api = new Api(state);
         this.screen = document.getElementById('managed-screen');
         this.list = document.getElementById('managed-accounts');
         this.members = new Map();
@@ -13,7 +13,7 @@ class ManagedRollup {
     async reload() {
         this._resetBadges();
         await this.load();
-        this.api.list(new CustomEvent("signal:managed"));
+        this.api.managed.list(new CustomEvent("signal:managed"));
 
         const signals = Object.values(this.state.signals)
             .flatMap(a => Object.values(a))
@@ -23,12 +23,12 @@ class ManagedRollup {
     }
 
     async load() {
-        const grants = await this.api.grants(this.state.user.email);
+        const grants = await this.api.managed.grants(this.state.user.email);
         Object.entries(grants).forEach(([domain, members]) => {
             this._add(domain, members);
         });
 
-        const pending = await this.api.grants("pending");
+        const pending = await this.api.managed.grants("pending");
         (pending ?? []).forEach((domain) => {
             this._add(domain, [], false);
         });
@@ -189,7 +189,7 @@ class ManagedRollup {
             if (!btn) return;
 
             const email = btn.dataset.email;
-            await SiteSpinner.withLoading(() => this.api.unassign(domain, email));
+            await SiteSpinner.withLoading(() => this.api.managed.unassign(domain, email));
             this.members.set(domain, account.filter(m => m !== email));
             this._selectAccount(domain);
         });
@@ -199,7 +199,7 @@ class ManagedRollup {
             const email = input.value.trim();
             if (!email) return;
 
-            await SiteSpinner.withLoading(() => this.api.assign(domain, email));
+            await SiteSpinner.withLoading(() => this.api.managed.assign(domain, email));
             account.push(email);
             this._selectAccount(domain);
         });
@@ -221,7 +221,7 @@ class ManagedRollup {
         const value = document.getElementById('managed-overview-value');
 
         column.classList.add('loading');
-        const account = await this.api.overview(domain);
+        const account = await this.api.managed.overview(domain);
         column.classList.remove('loading');
         if (!document.getElementById('managed-overview-col')) return;
 
@@ -252,7 +252,7 @@ class ManagedRollup {
             if (!email) return;
 
             await SiteSpinner.withLoading(async() => {
-                await this.api.invite(email);
+                await this.api.managed.invite(email);
                 await this.load();
             }).finally(() => {
                 input.value = '';

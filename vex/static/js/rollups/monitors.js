@@ -1,7 +1,7 @@
 class MonitorRollup {
     constructor(state) {
         this.state = state;
-        this.api = new MonitorApi();
+        this.api = new Api(state);
         this.screen = document.getElementById('monitor-screen');
         this.wrap = document.getElementById('monitor-table-wrap');
         this.list = document.getElementById('monitor-list');
@@ -32,7 +32,7 @@ class MonitorRollup {
     }
 
     async reset() {
-        this.api.set("account", this.state.account());
+        this.api.reset();
         this.watermark.show("Scan for signals");
         Object.values(this.available).forEach(s => { s.instances = []; });
         this.pickerOpen = false;
@@ -42,7 +42,7 @@ class MonitorRollup {
     }
 
     async reload() {
-        const monitors = await this.api.list();
+        const monitors = await this.api.monitors.list();
         monitors.forEach(monitor => this.add(monitor));
         this.watermark.hide();
     }
@@ -176,7 +176,7 @@ class MonitorRollup {
             if (disconnect) {
                 const [key, idxStr] = disconnect.dataset.disconnect.split('/');
                 const idx = parseInt(idxStr, 10);
-                this.api.disconnect(`${key}/${idx}`);
+                this.api.monitors.disconnect(`${key}/${idx}`);
                 this.available[key].instances = this.available[key].instances.filter(i => i !== idx);
                 return this._render();
             }
@@ -190,7 +190,7 @@ class MonitorRollup {
                     return;
                 }
                 const idx = this._nextIndex(key);
-                this.api.connect(`${key}/${idx}`, value);
+                this.api.monitors.connect(`${key}/${idx}`, value);
                 this.available[key].instances.push(idx);
                 this.available[key].instances.sort((a, b) => a - b);
                 this.pickerOpen = false;

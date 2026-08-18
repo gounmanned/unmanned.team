@@ -10,7 +10,7 @@ class InventoryRollup {
 
     constructor(state) {
         this.state = state;
-        this.api = new AssetApi();
+        this.api = new Api(state);
         this.watermark = document.querySelector('#inventory-screen site-watermark');
         this.wrap = document.getElementById('asset-table-wrap');
         this.tbody = document.querySelector('#asset-table tbody');
@@ -25,7 +25,7 @@ class InventoryRollup {
     }
 
     async reset() {
-        this.api.set("account", this.state.account());
+        this.api.reset();
         this.watermark.show("Asset inventory");
         this.assets = [];
         this.query = '';
@@ -34,7 +34,7 @@ class InventoryRollup {
     }
 
     async reload() {
-        this.assets = (await this.api.list()).map(a => ({ ...a, type: InventoryRollup.classify(a.name) }));
+        this.assets = (await this.api.inventory.list()).map(a => ({ ...a, type: InventoryRollup.classify(a.name) }));
         this.watermark.hide();
         this.render();
     }
@@ -100,7 +100,7 @@ class InventoryRollup {
                 const id = star.closest('tr').dataset.id;
                 const next = !star.classList.contains('active');
                 SiteSpinner.withLoading(async () => {
-                    await this.api.update(id, 'priority', next ? '1' : '0');
+                    await this.api.inventory.update(id, 'priority', next ? '1' : '0');
                     star.classList.toggle('active', next);
                 });
                 return;

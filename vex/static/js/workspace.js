@@ -15,6 +15,29 @@ class AppState {
     }
 }
 
+class Api {
+    constructor(state) {
+        this.state = state;
+        this.signals = new SignalApi(state);
+        this.breach = new BreachApi(state);
+        this.inventory = new AssetApi(state);
+        this.managed = new ManagedApi(state);
+        this.audit = new AuditApi(state);
+        this.file = new FileApi(state);
+        this.monitors = new MonitorApi(state);
+    }
+
+    reset(){
+        this.signals.set("account", this.state.account());
+        this.breach.set("account", this.state.account());
+        this.inventory.set("account", this.state.account());
+        this.managed.set("account", this.state.account());
+        this.audit.set("account", this.state.account());
+        this.file.set("account", this.state.account());
+        this.monitors.set("account", this.state.account());
+    }
+}
+
 class Workspace {
     static SEVERITY = {
         1: 'Critical',
@@ -117,9 +140,6 @@ class Workspace {
 
         requestAnimationFrame(() => el.classList.add('open'));
         el.querySelector("#toast-text").textContent = text;
-
-        setTimeout(() => {
-            el.classList.remove('open');
-        }, duration);
+        setTimeout(() => { el.classList.remove('open') }, duration);
     }
 }

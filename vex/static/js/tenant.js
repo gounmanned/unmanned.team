@@ -1,7 +1,7 @@
 class TenantScreen {
     constructor(state) {
         this.state = state;
-        this.api = new SignalApi();
+        this.api = new Api(state);
         this.table = new Table('signal-table');
         this.month = new Date();
         this.listen();
@@ -9,15 +9,36 @@ class TenantScreen {
 
     async reload() {
         const filter = this.month ? `date=${this.month.toISOString().slice(0, 7)}` : "";
-        await this.api.list(filter, new CustomEvent("signal:account"));
-        await this.api.list(`status=O`, new CustomEvent("signal:account"));
+        await this.api.signals.list(filter, new CustomEvent("signal:account"));
+        await this.api.signals.list(`status=O`, new CustomEvent("signal:account"));
     }
 
     async reset() {
-        this.api.set("account", this.state.account());
+        this.api.reset();
         this.table.clear();
         this.table.watermark(true);
+        this.scenario();
         document.querySelectorAll('[data-filter] .filter-count').forEach(i => i.textContent = 0);
+    }
+
+    async scenario() {
+        this.breaches = await this.api.breach.list();
+
+        const today = new Date().toDateString();
+        const card = document.querySelector('.breach-today-card');
+        const breach = this.breaches?.find(b => new Date(b.created).toDateString() === today);
+
+        if (!breach) {
+            card.dataset.state = 'empty';
+            return;
+        }
+
+        card.dataset.state = 'active';
+
+        document.getElementById('breach-today-name').textContent = breach.name ?? '';
+        document.getElementById('breach-today-asset').textContent = this.state.signals[this.state.account()][breach.id].asset ?? '—';
+        document.getElementById('breach-today-created').textContent = new Date(breach.created)
+            .toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
     }
 
     refresh(status){
@@ -87,7 +108,7 @@ class TenantScreen {
                 e.stopPropagation();
 
                 await SiteSpinner.withLoading(async () => {
-                    const updates = await this.api.get(signal.id);
+                    const updates = await this.api.signals.get(signal.id);
                     this.sidebar ??= new SignalSidebar(this.state);
                     this.sidebar.reset();
                     this.sidebar.reload(this.state.signals[signal.account][signal.id], updates);
@@ -137,7 +158,7 @@ class TenantScreen {
             }
 
             await SiteSpinner.withLoading(async() => {
-                await this.api.create(signal);
+                await this.api.signals.create(signal);
             }).finally(() => {
                 blob.value = "";
                 name.value = "";

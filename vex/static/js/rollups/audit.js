@@ -20,7 +20,7 @@ class AuditRollup {
         this.logs = [];
         this.query = '';
         this.filter.value = '';
-        this.watermark.show("24-hour audit");
+        this.watermark.show("Unlimited audit trail");
         this.render();
     }
 

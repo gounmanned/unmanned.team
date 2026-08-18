@@ -17,11 +17,11 @@ class TenantScreen {
         this.api.reset();
         this.table.clear();
         this.table.watermark(true);
-        this.breachScenario();
+        this.scenario();
         document.querySelectorAll('[data-filter] .filter-count').forEach(i => i.textContent = 0);
     }
 
-    async breachScenario() {
+    async scenario() {
         this.breaches = await this.api.breach.list();
 
         const today = new Date().toDateString();

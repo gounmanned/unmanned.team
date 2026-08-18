@@ -189,12 +189,18 @@ class MonitorRollup {
                     this.list.querySelector('[data-cred-error]').hidden = false;
                     return;
                 }
+
                 const idx = this._nextIndex(key);
-                this.api.monitors.connect(`${key}/${idx}`, value);
-                this.available[key].instances.push(idx);
-                this.available[key].instances.sort((a, b) => a - b);
-                this.pickerOpen = false;
-                this.connectingKey = null;
+
+                this.api.monitors.connect(`${key}/${idx}`, value).then(() => {
+                    this.available[key].instances.push(idx);
+                    this.available[key].instances.sort((a, b) => a - b);
+                    this.pickerOpen = false;
+                    this.connectingKey = null;
+                }).catch(() => {
+                    alert("Invalid JSON. Verify your quotes are correct.");
+                });
+
                 return this._render();
             }
         });

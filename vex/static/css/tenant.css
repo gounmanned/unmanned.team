@@ -3,56 +3,38 @@
 ───────────────────────────────────────────────────────────────── */
 
 .top-panel {
-  display: flex;
+  display: grid;
+  grid-template-columns: 39fr 18fr 18fr 18fr;
   align-items: stretch;
   gap: 14px;
 }
 
-.top-panel .new-message {
-  flex: 0 0 75%;
-  max-width: 75%;
+.top-panel .new-message,
+.top-panel .inventory-card,
+.top-panel .monitors-card,
+.top-panel .breach-today-card {
+  min-width: 0;
 }
 
+/** shared card shell **/
+
+.inventory-card,
+.monitors-card,
 .breach-today-card {
   cursor: pointer;
-  flex: 0 0 calc(25% - 14px);
-  max-width: calc(25% - 14px);
   position: relative;
   margin: 10px 0 5px;
-  padding: 10px 30px 10px 14px;
+  padding: 10px 14px;
   box-sizing: border-box;
   border-radius: 8px;
   border: 1px solid var(--gray-line);
   display: flex;
-  align-items: center;
+  flex-direction: column;
   height: 96px;
 }
 
-.breach-today-empty,
-.breach-today-content {
-  width: 100%;
-}
-
-.breach-today-empty {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 12px;
-  color: var(--text-muted);
-}
-
-.breach-today-empty .material-symbols-outlined {
-  font-size: 18px;
-  color: #16a34a;
-}
-
-.breach-today-content {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.breach-today-label {
+.monitor-label {
+  flex: 0 0 auto;
   font-size: 9.5px;
   font-weight: 600;
   letter-spacing: 0.5px;
@@ -60,24 +42,44 @@
   text-transform: uppercase;
 }
 
-.breach-today-name {
-  font-size: 13.5px;
-  font-weight: 600;
+.monitor-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+}
+
+.monitor-value,
+.monitor-value--text {
+  line-height: 29px;
+}
+
+.monitor-value {
+  font-size: 24px;
+  font-weight: 700;
   color: var(--ink);
-  line-height: 1.2;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.monitor-value--text {
+  font-size: 13.5px;
+  font-family: inherit;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  max-width: calc(100% - 18px);
 }
 
-.breach-today-meta-row {
+.monitor-breakdown {
   display: flex;
   align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
+  gap: 8px;
+  min-height: 14px;
 }
 
-.breach-today-meta {
+.monitor-breakdown-item {
   display: flex;
   align-items: center;
   gap: 3px;
@@ -86,25 +88,73 @@
   color: var(--text-strong);
 }
 
-.breach-today-meta .material-symbols-outlined {
+.monitor-breakdown-item .monitor-breakdown-count {
+  font-weight: 600;
+}
+
+.monitor-breakdown-item .material-symbols-outlined {
   font-size: 12px;
   color: var(--text-muted);
 }
 
+.monitor-breakdown-item--warning,
+.monitor-breakdown-item--connected {
+  font-family: inherit;
+}
+
+.monitor-breakdown-item--warning {
+  color: #b45309;
+}
+
+.monitor-breakdown-item--warning .material-symbols-outlined,
+.monitor-breakdown-item--connected .material-symbols-outlined {
+  font-size: 13px;
+}
+
+.monitor-breakdown-item--warning .material-symbols-outlined {
+  color: #b45309;
+}
+
+.monitor-arrow,
 .breach-today-arrow {
   position: absolute;
-  right: 8px;
+  right: 10px;
   top: 50%;
   transform: translateY(-50%);
   font-size: 20px;
   color: var(--text-faint);
-  display: none;
   transition: transform 0.15s, color 0.15s;
 }
 
+.breach-today-arrow {
+  display: none;
+}
+
+.inventory-card:hover .monitor-arrow,
+.monitors-card:hover .monitor-arrow,
 .breach-today-card:hover .breach-today-arrow {
   transform: translateY(-50%) translateX(2px);
   color: var(--pink);
+}
+
+/** breach card empty state **/
+
+.breach-today-empty {
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.breach-today-empty .material-symbols-outlined {
+  font-size: 15px;
+  color: #16a34a;
+}
+
+.breach-today-empty p {
+  margin: 0;
 }
 
 .breach-today-card[data-state="empty"] .breach-today-content { display: none; }
@@ -112,9 +162,7 @@
 .breach-today-card[data-state="active"] .breach-today-arrow { display: block; }
 
 @media (max-width: 720px) {
-  .top-panel { flex-direction: column; height: auto; }
-  .top-panel .new-message,
-  .breach-today-card { flex: 0 0 100%; max-width: 100%; }
+  .top-panel { grid-template-columns: 1fr; height: auto; }
 }
 
 /* ─────────────────────────────────────────────────────────────────
@@ -139,7 +187,6 @@
 .table-wrap.empty > table { display: none; }
 .table-wrap.empty .signal-radar-watermark { display: flex; }
 
-/* ring/svg mechanics live in GLOBAL — this is just this watermark's size */
 .signal-radar {
   position: absolute;
   top: 50%; left: 50%;

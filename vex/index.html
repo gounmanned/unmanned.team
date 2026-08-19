@@ -49,99 +49,127 @@
   </site-header>
 
   <main class="container">
-      <div class="top-panel">
-        <div class="new-message">
-          <div class="textbox-container">
-            <textarea id="signal-value" class="modern-textbox" placeholder="Create a signal here or by connecting monitors."></textarea>
-            <button class="submit-button" id="signal-create">
-              <span class="material-symbols-outlined">send</span>
-            </button>
-          </div>
-        </div>
-
-        <div class="breach-today-card" id="open-breach-rollup" data-state="empty">
-          <div class="breach-today-empty" id="breach-today-empty">
-            <span class="material-symbols-outlined">verified_user</span>
-            <p>No breach scenario today</p>
-          </div>
-
-          <div class="breach-today-content" id="breach-today-content">
-            <div class="breach-today-label">Today's breach</div>
-            <div class="breach-today-name" id="breach-today-name"></div>
-            <div class="breach-today-meta-row">
-              <span class="breach-today-meta"><span class="material-symbols-outlined">person_pin_circle</span><span id="breach-today-asset"></span></span>
-              <span class="breach-today-meta"><span class="material-symbols-outlined">schedule</span><span id="breach-today-created"></span></span>
-            </div>
-          </div>
-
-          <span class="material-symbols-outlined breach-today-arrow">chevron_right</span>
-        </div>
-      </div>
-
-      <div class="filter-header">
-        <div class="filter-card" data-filter="OA">
-            <img src="static/img/status/OA.svg" class="filter-icon">
-            <div class="filter-count">0</div>
-            <div class="filter-label">Open</div>
-        </div>
-        <div class="filter-card" data-filter="OB">
-            <img src="static/img/status/OB.svg" class="filter-icon">
-            <div class="filter-count">0</div>
-            <div class="filter-label">Blocked</div>
-        </div>
-        <div class="filter-card" data-filter="CF">
-            <img src="static/img/status/CF.svg" class="filter-icon">
-            <div class="filter-count">0</div>
-            <div class="filter-label">False positive</div>
-        </div>
-        <div class="filter-card" data-filter="CR">
-            <img src="static/img/status/CR.svg" class="filter-icon">
-            <div class="filter-count">0</div>
-            <div class="filter-label">Accepted Risk</div>
-        </div>
-        <div class="filter-card" data-filter="CV">
-            <img src="static/img/status/CV.svg" class="filter-icon">
-            <div class="filter-count">0</div>
-            <div class="filter-label">Auto-closed</div>
-        </div>
-        <div class="filter-card" data-filter="CH">
-            <img src="static/img/status/CH.svg" class="filter-icon">
-            <div class="filter-count">0</div>
-            <div class="filter-label">Resolved</div>
-        </div>
-      </div>
-
-      <div class="table-wrap" id="signal-table-wrap">
-        <table id="signal-table">
-          <tbody></tbody>
-        </table>
-
-        <div class="signal-radar-watermark">
-          <div class="signal-radar" aria-hidden="true">
-            <svg viewBox="0 0 800 800"><use href="#radar-rings"></use></svg>
-          </div>
-          <div class="corner tl signal-radar-corner"></div>
-          <div class="corner tr signal-radar-corner"></div>
-          <div class="corner bl signal-radar-corner"></div>
-          <div class="corner br signal-radar-corner"></div>
-          <span class="material-symbols-outlined">radar</span>
-          <p>No signals collected</p>
-        </div>
-      </div>
-
-      <div class="links">
-        <div class="view-toggle">
-          <button class="toggle-btn active" id="toggle">
-            <span class="knob"></span>
-            <span class="label" id="toggle-label">This month</span>
+    <div class="top-panel">
+      <div class="new-message">
+        <div class="textbox-container">
+          <textarea id="signal-value" class="modern-textbox" placeholder="Create a signal here or by connecting monitors."></textarea>
+          <button class="submit-button" id="signal-create">
+            <span class="material-symbols-outlined">send</span>
           </button>
         </div>
-
-        <a id="open-audit-rollup">Audit</a>
-        <a id="open-backup-sidebar">Backups</a>
-        <a id="open-inventory-rollup">Inventory</a>
-        <a id="open-monitor-rollup">Monitors</a>
       </div>
+
+      <div class="monitors-card" id="open-monitor-rollup">
+        <div class="monitor-label">Connected monitors</div>
+        <div class="monitor-body">
+          <div class="monitor-value" id="monitors-count">—</div>
+          <div class="monitor-breakdown">
+            <span class="monitor-breakdown-item monitor-breakdown-item--warning" id="monitors-warning" style="display:none;">
+              <span class="material-symbols-outlined">warning</span>
+              <span>Connect Microsoft 365 or Google Workspace</span>
+            </span>
+            <span class="monitor-breakdown-item monitor-breakdown-item--connected" id="monitors-connected" style="display:none;">
+              <span class="material-symbols-outlined">check_circle</span>
+              <span id="monitors-connected-text"></span>
+            </span>
+          </div>
+        </div>
+        <span class="material-symbols-outlined monitor-arrow">chevron_right</span>
+      </div>
+
+      <div class="inventory-card" id="open-inventory-rollup">
+        <div class="monitor-label">Total assets</div>
+        <div class="monitor-body">
+          <div class="monitor-value" id="monitor-count">—</div>
+          <div class="monitor-breakdown">
+            <span class="monitor-breakdown-item"><span class="monitor-breakdown-count" id="monitor-users">0</span> users</span>
+            <span class="monitor-breakdown-item"><span class="monitor-breakdown-count" id="monitor-domains">0</span> domains</span>
+          </div>
+        </div>
+        <span class="material-symbols-outlined monitor-arrow">chevron_right</span>
+      </div>
+
+      <div class="breach-today-card" id="open-breach-rollup" data-state="empty">
+        <div class="monitor-label">Todays breach</div>
+
+        <div class="monitor-body breach-today-empty" id="breach-today-empty">
+          <span class="material-symbols-outlined">verified_user</span>
+          <p>No breach scenario today</p>
+        </div>
+
+        <div class="monitor-body breach-today-content" id="breach-today-content">
+          <div class="monitor-value monitor-value--text" id="breach-today-name"></div>
+          <div class="monitor-breakdown">
+            <span class="monitor-breakdown-item"><span class="material-symbols-outlined">person_pin_circle</span><span id="breach-today-asset"></span></span>
+          </div>
+        </div>
+
+        <span class="material-symbols-outlined breach-today-arrow">chevron_right</span>
+      </div>
+    </div>
+
+    <div class="filter-header">
+      <div class="filter-card" data-filter="OA">
+          <img src="static/img/status/OA.svg" class="filter-icon">
+          <div class="filter-count">0</div>
+          <div class="filter-label">Open</div>
+      </div>
+      <div class="filter-card" data-filter="OB">
+          <img src="static/img/status/OB.svg" class="filter-icon">
+          <div class="filter-count">0</div>
+          <div class="filter-label">Blocked</div>
+      </div>
+      <div class="filter-card" data-filter="CF">
+          <img src="static/img/status/CF.svg" class="filter-icon">
+          <div class="filter-count">0</div>
+          <div class="filter-label">False positive</div>
+      </div>
+      <div class="filter-card" data-filter="CR">
+          <img src="static/img/status/CR.svg" class="filter-icon">
+          <div class="filter-count">0</div>
+          <div class="filter-label">Accepted Risk</div>
+      </div>
+      <div class="filter-card" data-filter="CV">
+          <img src="static/img/status/CV.svg" class="filter-icon">
+          <div class="filter-count">0</div>
+          <div class="filter-label">Auto-closed</div>
+      </div>
+      <div class="filter-card" data-filter="CH">
+          <img src="static/img/status/CH.svg" class="filter-icon">
+          <div class="filter-count">0</div>
+          <div class="filter-label">Resolved</div>
+      </div>
+    </div>
+
+    <div class="table-wrap" id="signal-table-wrap">
+      <table id="signal-table">
+        <tbody></tbody>
+      </table>
+
+      <div class="signal-radar-watermark">
+        <div class="signal-radar" aria-hidden="true">
+          <svg viewBox="0 0 800 800"><use href="#radar-rings"></use></svg>
+        </div>
+        <div class="corner tl signal-radar-corner"></div>
+        <div class="corner tr signal-radar-corner"></div>
+        <div class="corner bl signal-radar-corner"></div>
+        <div class="corner br signal-radar-corner"></div>
+        <span class="material-symbols-outlined">radar</span>
+        <p>No signals collected</p>
+      </div>
+    </div>
+
+    <div class="links">
+      <div class="view-toggle">
+        <button class="toggle-btn active" id="toggle">
+          <span class="knob"></span>
+          <span class="label" id="toggle-label">This month</span>
+        </button>
+      </div>
+
+      <a id="open-audit-rollup">Audit</a>
+      <a id="open-backup-sidebar">Backups</a>
+    </div>
   </main>
 
   <!-- Managed -->

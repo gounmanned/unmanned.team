@@ -17,28 +17,50 @@ class TenantScreen {
         this.api.reset();
         this.table.clear();
         this.table.watermark(true);
-        this.scenario();
+        this.panel();
         document.querySelectorAll('[data-filter] .filter-count').forEach(i => i.textContent = 0);
     }
 
-    async scenario() {
-        this.breaches = await this.api.breach.list();
+    async panel() {
+        const inventory = async () => {
+            const assets = await this.api.inventory.list();
+            const users = assets.filter(a => a.metadata?.group === 'identity').length ?? 0;
+            const domains = assets.filter(a => a.metadata?.group === 'domain').length ?? 0;
 
-        const today = new Date().toDateString();
-        const card = document.querySelector('.breach-today-card');
-        const breach = this.breaches?.find(b => new Date(b.created).toDateString() === today);
+            document.getElementById('monitor-count').textContent = assets?.length ?? 0;
+            document.getElementById('monitor-users').textContent = users;
+            document.getElementById('monitor-domains').textContent = domains;
+        };
 
-        if (!breach) {
-            card.dataset.state = 'empty';
-            return;
-        }
+        const monitors = async () => {
+            const monitors = await this.api.monitors.list();
+            const google = monitors.some(m => /google/i.test(m));
+            const microsoft = monitors.some(m => /microsoft/i.test(m));
 
-        card.dataset.state = 'active';
+            document.getElementById('monitors-count').textContent = monitors?.length ?? 0;
+            document.getElementById('monitors-warning').style.display = google || microsoft ? 'none' : 'flex';
+            document.getElementById('monitors-connected').style.display = google || microsoft ? 'flex' : 'none';
+            document.getElementById('monitors-connected-text').textContent = google ? 'Google Workspace connected' : 'Microsoft 365 connected';
+        };
 
-        document.getElementById('breach-today-name').textContent = breach.name ?? '';
-        document.getElementById('breach-today-asset').textContent = this.state.signals[this.state.account()][breach.id].asset ?? '—';
-        document.getElementById('breach-today-created').textContent = new Date(breach.created)
-            .toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+        const scenario = async () => {
+            this.breaches = await this.api.breach.list();
+
+            const today = new Date().toDateString();
+            const card = document.querySelector('.breach-today-card');
+            const breach = this.breaches?.find(b => new Date(b.created).toDateString() === today);
+
+            if (!breach) {
+                card.dataset.state = 'empty';
+                return;
+            }
+
+            card.dataset.state = 'active';
+            document.getElementById('breach-today-name').textContent = breach.name ?? '';
+            document.getElementById('breach-today-asset').textContent = this.state.signals[this.state.account()][breach.id].asset ?? '—';
+        };
+
+        await Promise.all([inventory(), monitors()]).then(() => scenario());
     }
 
     refresh(status){

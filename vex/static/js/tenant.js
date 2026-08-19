@@ -22,17 +22,23 @@ class TenantScreen {
     }
 
     async panel() {
-        const inventory = async () => {
-            const assets = await this.api.inventory.list();
-            const users = assets.filter(a => a.metadata?.group === 'identity').length ?? 0;
-            const domains = assets.filter(a => a.metadata?.group === 'domain').length ?? 0;
-
-            document.getElementById('monitor-count').textContent = assets?.length ?? 0;
-            document.getElementById('monitor-users').textContent = users;
-            document.getElementById('monitor-domains').textContent = domains;
+        const withLoading = async (el, fn) => {
+            el.classList.add('loading');
+            try {
+                return await fn();
+            } finally {
+                el.classList.remove('loading');
+            }
         };
 
-        const monitors = async () => {
+        const inventory = withLoading(document.getElementById('monitor-count'), async () => {
+            const assets = await this.api.inventory.list();
+            document.getElementById('monitor-users').textContent = assets.filter(a => a.metadata?.group === 'identity').length ?? 0;
+            document.getElementById('monitor-domains').textContent = assets.filter(a => a.metadata?.group === 'domain').length ?? 0;
+            document.getElementById('monitor-count').textContent = assets?.length ?? 0;
+        });
+
+        const monitors = withLoading(document.getElementById('monitors-count'), async () => {
             const monitors = await this.api.monitors.list();
             const google = monitors.some(m => /google/i.test(m));
             const microsoft = monitors.some(m => /microsoft/i.test(m));
@@ -41,26 +47,21 @@ class TenantScreen {
             document.getElementById('monitors-warning').style.display = google || microsoft ? 'none' : 'flex';
             document.getElementById('monitors-connected').style.display = google || microsoft ? 'flex' : 'none';
             document.getElementById('monitors-connected-text').textContent = google ? 'Google Workspace connected' : 'Microsoft 365 connected';
-        };
+        });
 
-        const scenario = async () => {
-            this.breaches = await this.api.breach.list();
-
-            const today = new Date().toDateString();
+        const scenario = () => withLoading(document.querySelector('.breach-today-card'), async () => {
             const card = document.querySelector('.breach-today-card');
-            const breach = this.breaches?.find(b => new Date(b.created).toDateString() === today);
+            this.breaches = await this.api.breach.list();
+            const breach = this.breaches?.find(b => new Date(b.created).toDateString() === new Date().toDateString());
 
-            if (!breach) {
-                card.dataset.state = 'empty';
-                return;
-            }
+            card.dataset.state = breach ? 'active' : 'empty';
+            if (!breach) return;
 
-            card.dataset.state = 'active';
             document.getElementById('breach-today-name').textContent = breach.name ?? '';
             document.getElementById('breach-today-asset').textContent = this.state.signals[this.state.account()][breach.id].asset ?? '—';
-        };
+        });
 
-        await Promise.all([inventory(), monitors()]).then(() => scenario());
+        await Promise.all([inventory, monitors]).then(scenario);
     }
 
     refresh(status){

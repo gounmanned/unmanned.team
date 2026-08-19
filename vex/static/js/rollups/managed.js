@@ -80,7 +80,7 @@ class ManagedRollup {
         if (count === 0) {
             badge.innerHTML = '<img src="static/img/status/CH.svg" class="managed-badge-icon">';
         } else {
-            badge.textContent = count;
+            badge.textContent = count > 999 ? '999' : count;
         }
     }
 

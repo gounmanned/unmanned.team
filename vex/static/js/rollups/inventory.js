@@ -1,10 +1,7 @@
 class InventoryRollup {
-    static EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
-    static DOMAIN_RE = /^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,}$/i;
-
-    static classify(name) {
-        if (InventoryRollup.EMAIL_RE.test(name)) return 'identity';
-        if (InventoryRollup.DOMAIN_RE.test(name)) return 'domain';
+    static classify(asset) {
+        const group = asset.metadata?.group;
+        if (group === 'identity' || group === 'domain') return group;
         return 'other';
     }
 
@@ -34,7 +31,7 @@ class InventoryRollup {
     }
 
     async reload() {
-        this.assets = (await this.api.inventory.list()).map(a => ({ ...a, type: InventoryRollup.classify(a.name) }));
+        this.assets = (await this.api.inventory.list()).map(a => ({ ...a, type: InventoryRollup.classify(a) }));
         this.watermark.hide();
         this.render();
     }

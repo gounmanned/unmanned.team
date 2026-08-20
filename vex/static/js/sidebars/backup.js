@@ -64,19 +64,27 @@ class BackupSidebar {
                 this.pathStack.push(displayName);
                 this.reload();
             } else {
-                const redirect = await this.api.call('GET', `file/${this.api.root.replace(/\/$/, '')}?name=${displayName}`);
-                if (!redirect) return;
-                const response = await fetch(redirect.url, { method: 'GET' });
-                if (!response.ok) return;
 
-                const blob = await response.blob();
-                const a = Object.assign(document.createElement('a'), {
-                    href: URL.createObjectURL(blob),
-                    download: displayName
-                });
+                item.classList.add('loading');
 
-                a.click();
-                URL.revokeObjectURL(a.href);
+                try {
+                    const redirect = await this.api.call('GET', `file/${this.api.root.replace(/\/$/, '')}?name=${displayName}`);
+                    if (!redirect) return;
+
+                    const response = await fetch(redirect.url, { method: 'GET' });
+                    if (!response.ok) return;
+
+                    const blob = await response.blob();
+                    const a = Object.assign(document.createElement('a'), {
+                        href: URL.createObjectURL(blob),
+                        download: displayName
+                    });
+
+                    a.click();
+                    URL.revokeObjectURL(a.href);
+                } finally {
+                    item.classList.remove('loading');
+                }
             }
         });
 

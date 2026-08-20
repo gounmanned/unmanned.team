@@ -155,7 +155,7 @@
             <li>Build an authorization request URL using your <code>client_id</code> and <code>redirect_uri</code>:</li>
         </ol>
         <pre>https://authz.constantcontact.com/oauth2/default/v1/authorize?
-client_id={client_id}&redirect_uri={redirect_uri}&response_type=code&
+client_id={client_id}&redirect_uri=https://localhost&response_type=code&
 scope=account_read contact_data campaign_data offline_access&state={random_string}</pre>
         <ol start="2">
             <li>Open the URL in a browser, log in, and grant Vex access to your account.</li>

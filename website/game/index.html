@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Can You Catch a Rat?</title>
+<meta name="description" content="Vex runs one real breach against your business. Can your detection and response find where it happened and what it was — before the clock runs out?">
+<link rel="apple-touch-icon" href="https://cdn.unmanned.team/img/logo.png">
+<link rel="icon" type="image/png" href="https://cdn.unmanned.team/img/logo.png">
+<meta property="og:title" content="Can You Catch a Rat? — Unmanned, Inc" />
+<meta property="og:description" content="Vex runs one real breach against your business. Can your defense find it before the clock runs out?" />
+<meta property="og:url" content="https://unmanned.team/catch-a-rat" />
+<meta property="og:type" content="website" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&family=Hedvig+Letters+Serif&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.unmanned.team/css/global.css">
+<style>
+  html{ overflow-x:hidden; scroll-behavior:smooth; }
+  body{
+    background:var(--white);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+  }
+
+  :root{
+    --paper:#f2ede1;
+    --paper-line:#d8cfb8;
+    --blueprint:#0b0c0d;
+    --blueprint-line:rgba(120,150,180,0.22);
+    --blueprint-line-strong:rgba(150,180,210,0.4);
+  }
+
+  .mono{ font-family:'JetBrains Mono',monospace; letter-spacing:0.04em; }
+
+  /* ---------- SHARED STATUS DOT (kept from brand system) ---------- */
+  .status-dot{
+    width:6px;height:6px;border-radius:50%;
+    background:var(--pink);
+    box-shadow:0 0 0 0 rgba(224,18,128,0.5);
+    animation:pulse 2.2s infinite;
+    flex-shrink:0;
+    display:inline-block;
+  }
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(224,18,128,0.45);}
+    70%{box-shadow:0 0 0 8px rgba(224,18,128,0);}
+    100%{box-shadow:0 0 0 0 rgba(224,18,128,0);}
+  }
+
+  .eyebrow-label{
+    font-size:11px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--gray-mid);
+    display:flex;
+    align-items:center;
+    gap:11px;
+  }
+
+  /* ---------- HUD CORNER FRAME (carried over from the main site) ---------- */
+  .corner{
+    position:absolute;
+    width:var(--corner-size, 28px);
+    height:var(--corner-size, 28px);
+    border-color:var(--ink);
+    opacity:0.55;
+  }
+  .corner.tl{border-top:1.5px solid;border-left:1.5px solid;}
+  .corner.tr{border-top:1.5px solid;border-right:1.5px solid;}
+  .corner.bl{border-bottom:1.5px solid;border-left:1.5px solid;}
+  .corner.br{border-bottom:1.5px solid;border-right:1.5px solid;}
+
+  .hud-frame{ position:fixed; inset:0; pointer-events:none; z-index:40; }
+  .hud-frame .corner.tl{top:46px;left:20px;}
+  .hud-frame .corner.tr{top:46px;right:20px;}
+  .hud-frame .corner.bl{bottom:20px;left:20px;}
+  .hud-frame .corner.br{bottom:20px;right:20px;}
+
+  .classbar{
+    position:fixed;
+    top:0;left:0;right:0;
+    z-index:60;
+    background:#0b0c0d;
+    color:#87878c;
+    font-family:'JetBrains Mono',monospace;
+    font-size:9.5px;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    text-align:center;
+    padding:6px 0;
+  }
+
+  @media (max-width:700px){
+    .hud-frame .corner{width:18px;height:18px;}
+    .hud-frame .corner.tl,.hud-frame .corner.tr{top:64px;}
+    .hud-frame .corner.bl,.hud-frame .corner.br{bottom:12px;}
+    .hud-frame .corner.tl,.hud-frame .corner.bl{left:12px;}
+    .hud-frame .corner.tr,.hud-frame .corner.br{right:12px;}
+    .classbar{font-size:8.5px;}
+  }
+
+  .divider{
+    position:relative;
+    border-top:1px solid var(--gray-line);
+    display:flex;
+    justify-content:space-between;
+    padding:14px 56px;
+    font-size:10px;
+    color:var(--gray-mid);
+  }
+  @media (max-width:700px){ .divider{padding:14px 20px;} }
+
+  a:focus-visible, button:focus-visible{
+    outline:1.5px solid var(--pink);
+    outline-offset:4px;
+  }
+
+  /* ---------- RADAR RINGS (shared symbol, reused via <use>, same as home) ---------- */
+  .radar-ring{
+    fill:none;
+    stroke:var(--gray-line);
+    stroke-width:1;
+    stroke-opacity:0.45;
+    animation:ringGlow 7.5s ease-in-out infinite;
+  }
+  .radar-ring.r2{animation-delay:-2.5s;}
+  .radar-ring.r3{animation-delay:-5s;}
+  @keyframes ringGlow{
+    0%, 100%{stroke:var(--gray-line);stroke-opacity:0.4;stroke-width:1;filter:none;}
+    50%{stroke:rgba(224,18,128,0.5);stroke-opacity:0.75;stroke-width:1.15;filter:drop-shadow(0 0 4px rgba(224,18,128,0.28));}
+  }
+
+  .scan-sweep{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    overflow:hidden;
+    z-index:1;
+  }
+  .scan-sweep::after{
+    content:'';
+    position:absolute;
+    left:0;right:0;
+    height:120px;
+    top:-120px;
+    background:linear-gradient(to bottom, rgba(224,18,128,0) 0%, rgba(224,18,128,0.06) 50%, rgba(224,18,128,0) 100%);
+    animation:sweep 2.6s cubic-bezier(0.4,0,0.2,1) 1;
+  }
+  @keyframes sweep{
+    0%{ top:-120px; }
+    100%{ top:100%; }
+  }
+
+  /* ==================================================================
+     HERO — a blueprint floor plan at night. One red blip moving through
+     it. That's the whole idea of the game, shown before it's explained.
+     ================================================================== */
+  .hero{
+    position:relative;
+    min-height:100svh;
+    background:var(--blueprint);
+    color:#eef1f5;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:150px 24px 90px;
+    overflow:hidden;
+  }
+
+  .blueprint-grid{
+    position:absolute;
+    inset:0;
+    background-image:
+      linear-gradient(var(--blueprint-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--blueprint-line) 1px, transparent 1px);
+    background-size:42px 42px;
+    -webkit-mask-image:radial-gradient(ellipse 70% 60% at 50% 45%, #000 40%, transparent 88%);
+    mask-image:radial-gradient(ellipse 70% 60% at 50% 45%, #000 40%, transparent 88%);
+    opacity:0.9;
+  }
+
+  .floorplan{
+    position:absolute;
+    top:50%; left:50%;
+    transform:translate(-50%,-50%);
+    width:min(920px, 145vw);
+    opacity:0.85;
+  }
+  .floorplan .room{ fill:none; stroke:var(--blueprint-line-strong); stroke-width:1.2; }
+  .floorplan .door{ stroke:var(--blueprint-line-strong); stroke-width:1.2; fill:none; }
+  .floorplan .node{ fill:var(--blueprint-line-strong); }
+  .floorplan .label{ font-family:'JetBrains Mono',monospace; font-size:9px; fill:#5f7387; letter-spacing:0.08em; }
+
+  .rat-dot{
+    position:absolute;
+    width:9px;height:9px;
+    border-radius:50%;
+    background:var(--pink);
+    box-shadow:0 0 0 4px rgba(224,18,128,0.18), 0 0 14px rgba(224,18,128,0.75);
+    animation:scurry 14s ease-in-out infinite;
+  }
+  .rat-tag{
+    position:absolute;
+    transform:translate(14px,-6px);
+    font-family:'JetBrains Mono',monospace;
+    font-size:9.5px;
+    letter-spacing:0.1em;
+    color:var(--pink);
+    white-space:nowrap;
+    animation:scurry 14s ease-in-out infinite;
+  }
+  @keyframes scurry{
+    0%{   left:14%;  top:70%; }
+    12%{  left:14%;  top:70%; }
+    22%{  left:14%;  top:24%; }
+    34%{  left:38%;  top:24%; }
+    46%{  left:38%;  top:58%; }
+    58%{  left:63%;  top:58%; }
+    70%{  left:63%;  top:16%; }
+    82%{  left:86%;  top:16%; }
+    92%{  left:86%;  top:44%; }
+    100%{ left:86%;  top:44%; }
+  }
+
+  .hero-content{ position:relative; z-index:2; max-width:900px; }
+
+  .hero-eyebrow{
+    justify-content:center;
+    color:#8b97a5;
+    margin-bottom:34px;
+  }
+
+  h1.rat-title{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700;
+    font-size:clamp(44px, 8.4vw, 108px);
+    line-height:0.98;
+    letter-spacing:-0.02em;
+    color:#f5f6f4;
+    transform:rotate(-1.1deg);
+  }
+  h1.rat-title .line2{ color:var(--pink); }
+
+  .hero-sub{
+    margin-top:30px;
+    font-size:clamp(16px, 2vw, 19px);
+    line-height:1.65;
+    color:#b7c0ca;
+    max-width:560px;
+    margin-left:auto;
+    margin-right:auto;
+  }
+
+  @media (max-width:700px){
+    .hero{ padding:130px 20px 70px; }
+    h1.rat-title{ font-size:clamp(48px, 15vw, 90px); }
+  }
+
+  /* ==================================================================
+     THE OLD MEASURE — a billion, crossed out, dialed back to one.
+     ================================================================== */
+  .brief{
+    padding:140px 24px;
+    max-width:760px;
+    margin:0 auto;
+  }
+  .brief.wide{ max-width:960px; }
+  @media (max-width:820px){ .brief{padding:96px 24px;} }
+
+  .brief-label{ margin-bottom:26px; }
+  .brief-content h2{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:500;
+    font-size:clamp(30px, 3.4vw, 38px);
+    line-height:1.2;
+    letter-spacing:-0.01em;
+    margin-bottom:24px;
+  }
+  .brief-content p{ font-size:16px; line-height:1.75; color:#2b2b2b; max-width:640px; }
+  .brief-content p + p{ margin-top:18px; }
+
+  .dial-back{
+    margin-top:64px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:clamp(20px, 6vw, 64px);
+    flex-wrap:wrap;
+  }
+  .dial-figure{ text-align:center; }
+  .dial-num{
+    font-family:'JetBrains Mono',monospace;
+    font-weight:700;
+    font-size:clamp(30px, 5.2vw, 56px);
+    line-height:1;
+    color:var(--gray-mid);
+  }
+  .dial-figure.old .dial-num{
+    position:relative;
+    color:#b9b9b4;
+  }
+  .dial-figure.old .dial-num::after{
+    content:'';
+    position:absolute;
+    left:-6%; right:-6%; top:50%;
+    height:2px;
+    background:var(--ink);
+    transform:rotate(-6deg);
+  }
+  .dial-figure.new .dial-num{ color:var(--pink); text-shadow:0 0 18px rgba(224,18,128,0.25); }
+  .dial-cap{
+    margin-top:12px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:var(--gray-mid);
+  }
+  .dial-arrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:22px;
+    color:var(--gray-mid);
+  }
+
+  /* ==================================================================
+     CASE FILE — the origin story, styled as a redacted dossier excerpt
+     torn out of a folder and taped to the page.
+     ================================================================== */
+  .dossier-wrap{
+    background:var(--paper);
+    padding:130px 24px;
+  }
+  @media (max-width:820px){ .dossier-wrap{ padding:90px 20px; } }
+
+  .dossier{
+    max-width:760px;
+    margin:0 auto;
+    background:#faf7ef;
+    border:1px solid var(--paper-line);
+    box-shadow:0 22px 44px -30px rgba(0,0,0,0.35);
+    padding:52px 48px 48px;
+    position:relative;
+    transform:rotate(-0.6deg);
+  }
+  .dossier::before{
+    content:'';
+    position:absolute;
+    top:-14px; left:50%;
+    transform:translateX(-50%) rotate(2deg);
+    width:78px; height:24px;
+    background:rgba(233,226,201,0.85);
+    border:1px solid rgba(0,0,0,0.06);
+  }
+  @media (max-width:700px){ .dossier{ padding:38px 24px 34px; } }
+
+  .dossier-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    flex-wrap:wrap;
+    gap:10px;
+    border-bottom:1px dashed var(--paper-line);
+    padding-bottom:16px;
+    margin-bottom:26px;
+  }
+  .dossier-tag{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:#8a8471;
+  }
+  .dossier-stamp{
+    font-family:'JetBrains Mono',monospace;
+    font-weight:700;
+    font-size:11px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:#a3382f;
+    border:2px solid #a3382f;
+    padding:3px 10px;
+    transform:rotate(-3deg);
+    opacity:0.85;
+  }
+
+  .dossier-body p{
+    font-family:'Hedvig Letters Serif', serif;
+    font-style:italic;
+    font-size:17px;
+    line-height:1.75;
+    color:#2a2620;
+  }
+  .dossier-body p + p{ margin-top:18px; }
+  .dossier-body strong{ color:#1c1a15; font-style:normal; font-weight:600; }
+
+  .dossier-meta{
+    margin-top:28px;
+    padding-top:20px;
+    border-top:1px dashed var(--paper-line);
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:18px;
+  }
+  .dossier-meta .m{ text-align:left; }
+  .dossier-meta .m-num{
+    font-family:'JetBrains Mono',monospace;
+    font-weight:700;
+    font-size:22px;
+    color:#2a2620;
+  }
+  .dossier-meta .m-cap{
+    margin-top:4px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:9.5px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:#8a8471;
+  }
+  @media (max-width:560px){
+    .dossier-meta{ grid-template-columns:1fr; gap:12px; }
+  }
+
+  /* ==================================================================
+     HOW IT WORKS — a real sequence, so numbering earns its place here.
+     ================================================================== */
+  .steps-wrap{ padding:150px 24px 120px; max-width:900px; margin:0 auto; }
+  @media (max-width:820px){ .steps-wrap{ padding:100px 20px 80px; } }
+
+  .steps{ margin-top:56px; }
+  .step{
+    display:grid;
+    grid-template-columns:64px 1fr;
+    gap:22px;
+    padding:26px 0;
+    border-top:1px solid var(--gray-line);
+  }
+  .step:last-child{ border-bottom:1px solid var(--gray-line); }
+  .step-num{
+    font-family:'JetBrains Mono',monospace;
+    font-weight:700;
+    font-size:14px;
+    color:var(--pink);
+  }
+  .step-title{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:600;
+    font-size:18px;
+    letter-spacing:-0.005em;
+    margin-bottom:6px;
+  }
+  .step-body{ font-size:14.5px; line-height:1.7; color:#3a3a38; max-width:560px; }
+
+  /* ==================================================================
+     LIVE DEMO — full-bleed dark section, same rhythm as the site's
+     other dark sections (not an inset box floating in whitespace).
+     ================================================================== */
+  .bell-frame{
+    padding:150px 24px 160px;
+  }
+  @media (max-width:700px){ .bell-frame{ padding:100px 20px 116px; } }
+
+  .bell-demo-eyebrow{ justify-content:center; color:#8b97a5; margin-bottom:18px; }
+  .bell-demo-title{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:500;
+    font-size:clamp(26px,4vw,38px);
+    letter-spacing:-0.01em;
+    margin-bottom:12px;
+  }
+  .bell-demo-sub{ font-size:15px; color:#b7c0ca; max-width:440px; margin:0 auto 48px; line-height:1.65; }
+
+  .bell-rig{
+    position:relative;
+    display:inline-flex;
+    flex-direction:column;
+    align-items:center;
+    gap:22px;
+  }
+  .clock-readout{
+    font-family:'JetBrains Mono',monospace;
+    font-weight:700;
+    font-size:clamp(34px,5.6vw,50px);
+    letter-spacing:0.02em;
+    color:#eef1f5;
+    min-width:9ch;
+  }
+  .clock-readout.running{ color:var(--pink); text-shadow:0 0 16px rgba(224,18,128,0.4); }
+  .clock-readout.caught{ color:#5fd18a; text-shadow:0 0 16px rgba(95,209,138,0.35); }
+  .clock-state{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    color:#8b97a5;
+  }
+
+  .bell-btn{
+    position:relative;
+    width:88px; height:88px;
+    border-radius:50%;
+    border:1.5px solid rgba(238,241,245,0.35);
+    background:rgba(238,241,245,0.04);
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:border-color 0.2s ease, background 0.2s ease;
+  }
+  .bell-btn:hover{ border-color:var(--pink); }
+  .bell-btn svg{ width:36px; height:36px; }
+  .bell-btn path, .bell-btn circle{ stroke:#eef1f5; transition:stroke 0.2s ease; }
+  .bell-btn:hover path, .bell-btn:hover circle{ stroke:var(--pink); }
+  .bell-btn.ringing{ animation:bellShake 0.5s ease; }
+  .bell-btn.ringing path, .bell-btn.ringing circle{ stroke:#5fd18a; }
+  @keyframes bellShake{
+    0%,100%{ transform:rotate(0); }
+    20%{ transform:rotate(-14deg); }
+    40%{ transform:rotate(11deg); }
+    60%{ transform:rotate(-7deg); }
+    80%{ transform:rotate(4deg); }
+  }
+  .bell-ring-pulse{
+    position:absolute;
+    inset:0;
+    border-radius:50%;
+    border:1.5px solid var(--pink);
+    opacity:0;
+  }
+  .bell-ring-pulse.pulse{ animation:bellPulse 0.7s ease-out; }
+  @keyframes bellPulse{
+    0%{ opacity:0.8; transform:scale(1); }
+    100%{ opacity:0; transform:scale(1.9); }
+  }
+
+  .bell-actions{ margin-top:8px; display:flex; gap:14px; justify-content:center; flex-wrap:wrap; }
+  .bell-action-btn{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11.5px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:#b7c0ca;
+    background:none;
+    border:1px solid rgba(238,241,245,0.25);
+    padding:8px 14px;
+    border-radius:2px;
+    cursor:pointer;
+    transition:border-color 0.15s ease, color 0.15s ease;
+  }
+  .bell-action-btn:hover:not(:disabled){ border-color:#eef1f5; color:#eef1f5; }
+  .bell-action-btn:disabled{ opacity:0.35; cursor:not-allowed; }
+
+  /* ==================================================================
+     WHO IT'S FOR — three case tabs
+     ================================================================== */
+  .cases-wrap{ background:var(--paper); padding:140px 24px; }
+  @media (max-width:820px){ .cases-wrap{ padding:96px 20px; } }
+  .cases-inner{ max-width:1040px; margin:0 auto; }
+
+  .case-grid{
+    margin-top:56px;
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:22px;
+  }
+  @media (max-width:900px){ .case-grid{ grid-template-columns:1fr; } }
+
+  .case-card{
+    background:#faf7ef;
+    border:1px solid var(--paper-line);
+    padding:28px 24px 26px;
+  }
+  .case-index{
+    font-family:'JetBrains Mono',monospace;
+    font-weight:700;
+    font-size:13px;
+    color:var(--pink);
+    margin-bottom:16px;
+  }
+  .case-tag{
+    font-family:'JetBrains Mono',monospace;
+    font-size:9.5px;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:#8a8471;
+    margin-bottom:10px;
+  }
+  .case-title{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:600;
+    font-size:19px;
+    letter-spacing:-0.005em;
+    margin-bottom:12px;
+  }
+  .case-body{ font-size:14px; line-height:1.7; color:#3a3630; }
+
+  /* ==================================================================
+     CTA — identical structure/treatment to the homepage contact block.
+     ================================================================== */
+  .dark-frame{
+    --db-ink:#f3f3f0;
+    --db-mid:#87878c;
+    background:#0b0c0d;
+    color:var(--db-ink);
+    position:relative;
+    padding:150px 24px 160px;
+    text-align:center;
+    overflow:hidden;
+  }
+  .dark-frame .eyebrow-row{ justify-content:center; margin-bottom:44px; }
+  .dark-frame .eyebrow-row.mono{ color:var(--db-mid); }
+  .dark-frame .body-wrap{ position:relative; z-index:2; }
+  @media (max-width:700px){ .dark-frame{padding:100px 20px 116px;} }
+
+  .radar-echo{
+    position:absolute;
+    top:50%;left:50%;
+    transform:translate(-50%,-50%);
+    width:min(780px, 140vw); height:min(780px, 140vw);
+    opacity:0.6;
+    pointer-events:none;
+    z-index:0;
+  }
+  .radar-echo svg{ width:100%; height:100%; }
+
+  .contact-statement{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:500;
+    font-size:clamp(28px, 4vw, 42px);
+    letter-spacing:-0.01em;
+    line-height:1.28;
+    margin:0 0 44px;
+    color:var(--db-ink);
+  }
+  .contact-cta{
+    display:inline-flex;
+    align-items:baseline;
+    gap:10px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:clamp(18px, 2.6vw, 24px);
+    letter-spacing:0.02em;
+    color:var(--db-ink);
+    text-decoration:none;
+    border-bottom:1px solid var(--pink);
+    padding-bottom:6px;
+    transition:opacity 0.2s ease;
+  }
+  .contact-cta:hover{ opacity:0.65; }
+  .contact-cta .arrow{ color:var(--pink); transition:transform 0.2s ease; display:inline-block; }
+  .contact-cta:hover .arrow{ transform:translateX(3px); }
+
+  /* ---------- FOOTER (kept from brand system) ---------- */
+  footer{
+    border-top:1px solid var(--gray-line);
+    padding:28px 56px 40px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-size:10.5px;
+    color:var(--gray-mid);
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+  }
+  footer a{ color:inherit; text-decoration:none; }
+  footer a:hover{ color:var(--ink); }
+  footer .fmark{ color:var(--ink); font-weight:500; }
+  @media (max-width:700px){
+    footer{ padding:22px 20px 36px; flex-direction:column; gap:10px; text-align:center; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .status-dot, .rat-dot, .rat-tag, .bell-btn.ringing, .radar-ring, .scan-sweep::after{ animation:none; }
+    html{ scroll-behavior:auto; }
+  }
+</style>
+</head>
+<body>
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <g id="radar-rings">
+        <circle class="radar-ring r1" cx="400" cy="400" r="120"></circle>
+        <circle class="radar-ring r2" cx="400" cy="400" r="240"></circle>
+        <circle class="radar-ring r3" cx="400" cy="400" r="360"></circle>
+      </g>
+    </defs>
+  </svg>
+
+  <div class="classbar">UNMANNED, INC · FIELD EXERCISE · CATCH THE RAT</div>
+
+  <div class="hud-frame">
+    <div class="corner tl"></div>
+    <div class="corner tr"></div>
+    <div class="corner bl"></div>
+    <div class="corner br"></div>
+  </div>
+
+  <!-- ================= HERO ================= -->
+  <section class="hero">
+    <div class="blueprint-grid" aria-hidden="true"></div>
+    <svg class="floorplan" viewBox="0 0 920 620" aria-hidden="true">
+      <rect class="room" x="60" y="60" width="260" height="220"></rect>
+      <rect class="room" x="60" y="320" width="260" height="220"></rect>
+      <rect class="room" x="360" y="60" width="220" height="480"></rect>
+      <rect class="room" x="620" y="60" width="260" height="220"></rect>
+      <rect class="room" x="620" y="320" width="260" height="220"></rect>
+      <line class="door" x1="190" y1="280" x2="190" y2="320"></line>
+      <line class="door" x1="320" y1="170" x2="360" y2="170"></line>
+      <line class="door" x1="320" y1="430" x2="360" y2="430"></line>
+      <line class="door" x1="580" y1="170" x2="620" y2="170"></line>
+      <line class="door" x1="580" y1="430" x2="620" y2="430"></line>
+      <line class="door" x1="750" y1="280" x2="750" y2="320"></line>
+      <circle class="node" cx="120" cy="120" r="3"></circle>
+      <circle class="node" cx="260" cy="380" r="3"></circle>
+      <circle class="node" cx="450" cy="240" r="3"></circle>
+      <circle class="node" cx="470" cy="470" r="3"></circle>
+      <circle class="node" cx="700" cy="120" r="3"></circle>
+      <circle class="node" cx="820" cy="380" r="3"></circle>
+      <text class="label" x="70" y="52">FLOOR 3 — WEST WING</text>
+      <text class="label" x="370" y="52">CORE / IDENTITY</text>
+      <text class="label" x="630" y="52">FLOOR 3 — EAST WING</text>
+    </svg>
+    <div class="rat-dot" aria-hidden="true"></div>
+    <div class="rat-tag mono" aria-hidden="true">TRACKING…</div>
+
+    <div class="hero-content">
+      <div class="eyebrow-label hero-eyebrow mono"><span class="status-dot"></span>A field exercise from Unmanned</div>
+      <h1 class="rat-title">CAN YOU<br><span class="line2">CATCH A RAT?</span></h1>
+      <p class="hero-sub">
+        Vex breaks into your business — for real, once a day.
+        Your job: find where it happened and what it did.
+      </p>
+    </div>
+  </section>
+
+  <div class="divider mono">
+    <span>REC · 00:00:00</span>
+    <span>ONE ATTACK. ONE ANSWER.</span>
+  </div>
+
+  <!-- ================= THE OLD MEASURE ================= -->
+  <section class="brief">
+    <div class="brief-label eyebrow-label mono"><span class="status-dot"></span>The old measure</div>
+    <div class="brief-content">
+      <h2>Everyone's bragging about a billion.</h2>
+      <p>
+        The AI pitch has settled into a number: attacks stopped per day, blocked at machine speed, somewhere in the billions.
+        It sounds impressive. 
+        It's also unmeasurable — you can't verify a billion of anything, and nobody's asking you to try.
+      </p>
+      <p>
+        We think that's the wrong scoreboard. So we're dialing it back to the one number you actually can check.
+      </p>
+    </div>
+
+    <div class="dial-back">
+      <div class="dial-figure old">
+        <div class="dial-num">1,000,000,000</div>
+        <div class="dial-cap">Attacks per day, unverifiable</div>
+      </div>
+      <div class="dial-arrow"></div>
+      <div class="dial-figure new">
+        <div class="dial-num">1</div>
+        <div class="dial-cap">Attack, human scale, provable</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider mono">
+    <span>REC · 00:00:01</span>
+    <span>ORIGIN</span>
+  </div>
+
+  <!-- ================= CASE FILE / ORIGIN STORY ================= -->
+  <section class="dossier-wrap">
+    <div class="dossier">
+      <div class="dossier-head">
+        <span class="dossier-tag mono">FIELD NOTE — ORIGIN</span>
+        <span class="dossier-stamp">ON RECORD</span>
+      </div>
+      <div class="dossier-body">
+        <p>
+          This game didn't start with Vex. It started in an auditorium.
+        </p>
+        <p>
+          For years, our founder <strong>David Hunt</strong> ran an annual exercise against U.S. Army cyber defenders using a <strong>top-secret</strong> attack platform he built — against a realistic <strong>2,500-endpoint range</strong> wired into a live SIEM.
+        </p>
+        <p>
+          <strong>100 to 150 defenders</strong> would sit together and watch their tools. 
+          David's team ran exactly <strong>one attack, on one endpoint</strong>. 
+          When a defender found where it happened and what it was, they rang a bell.
+        </p>
+        <p>
+          The point was never the score. 
+          It was tuning — the tech, and the humans behind it — for the moment that actually matters: the one real attacker who gets in.
+        </p>
+      </div>
+      <div class="dossier-meta">
+        <div class="m">
+          <div class="m-num">2,500</div>
+          <div class="m-cap">Endpoints in range</div>
+        </div>
+        <div class="m">
+          <div class="m-num">100–150</div>
+          <div class="m-cap">Defenders watching</div>
+        </div>
+        <div class="m">
+          <div class="m-num">1</div>
+          <div class="m-cap">One bell.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider mono">
+    <span>REC · 00:00:02</span>
+    <span>THE RULES</span>
+  </div>
+
+  <!-- ================= HOW IT WORKS ================= -->
+  <section class="steps-wrap" id="how-it-works">
+    <div class="brief-label eyebrow-label mono"><span class="status-dot"></span>How Vex runs it</div>
+    <div class="brief-content">
+      <h2>Same game. Every day. On your business.</h2>
+      <p>Vex plays David's role now, automatically — and it's your team's turn to ring the bell.</p>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num mono">01</div>
+        <div>
+          <div class="step-title">Vex plans the breach</div>
+          <div class="step-body">Every day, Vex generates one breach scenario — the single most probable way into your business right now.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num mono">02</div>
+        <div>
+          <div class="step-title">A human runs it</div>
+          <div class="step-body">One of our operators executes that exact scenario against your environment and starts the clock the moment it begins.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num mono">03</div>
+        <div>
+          <div class="step-title">Your defense hunts it</div>
+          <div class="step-body">Your SOC, your analysts, your vendors — whoever's on watch — go looking for where it happened and what it was.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num mono">04</div>
+        <div>
+          <div class="step-title">You ring the bell</div>
+          <div class="step-body">Submit your answer to Vex for verification. Get it right, the clock stops and you've got a provable time-to-detect.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider mono">
+    <span>REC · 00:00:03</span>
+    <span>LIVE DEMO</span>
+  </div>
+
+  <!-- ================= LIVE DEMO (full-bleed dark section) ================= -->
+  <section class="dark-frame bell-frame">
+    <div class="blueprint-grid" aria-hidden="true" style="opacity:0.5;"></div>
+    <div class="body-wrap">
+      <div class="eyebrow-label bell-demo-eyebrow mono"><span class="status-dot"></span>Try the mechanic</div>
+      <div class="bell-demo-title">The clock is the whole game.</div>
+      <p class="bell-demo-sub">Start the attack. Watch the clock run. Ring the bell.</p>
+
+      <div class="bell-rig">
+        <div class="clock-readout mono" id="clockReadout">00:00.0</div>
+        <div class="clock-state" id="clockState">STANDING BY</div>
+        <button class="bell-btn" id="bellBtn" aria-label="Ring the bell" disabled>
+          <div class="bell-ring-pulse" id="bellPulse"></div>
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3a5 5 0 0 0-5 5c0 5-2 6-2 7h14c0-1-2-2-2-7a5 5 0 0 0-5-5Z"></path>
+            <path d="M10 19a2 2 0 0 0 4 0"></path>
+          </svg>
+        </button>
+        <div class="bell-actions">
+          <button class="bell-action-btn mono" id="startBtn">Start attack</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider mono">
+    <span>REC · 00:00:04</span>
+    <span>WHO PLAYS</span>
+  </div>
+
+  <!-- ================= WHO IT'S FOR ================= -->
+  <section class="cases-wrap">
+    <div class="cases-inner">
+      <div class="brief-label eyebrow-label mono"><span class="status-dot"></span>Who this is for</div>
+      <div class="brief-content">
+        <h2>One game, three reasons to play.</h2>
+      </div>
+
+      <div class="case-grid">
+        <div class="case-card">
+          <div class="case-index mono">01</div>
+          <div class="case-tag mono">Continuous verification</div>
+          <div class="case-title">Enterprises</div>
+          <div class="case-body">Stop taking your detection stack's word for it. Run the exercise on a cadence and get an honest, repeatable time-to-detect instead of a slide deck.</div>
+        </div>
+        <div class="case-card">
+          <div class="case-index mono">02</div>
+          <div class="case-tag mono">Bake-offs</div>
+          <div class="case-title">Buyers, evaluating vendors</div>
+          <div class="case-body">Before you sign with a SOC or MDR vendor, put them in the auditorium. Same attack, same clock, every finalist — the results are the pitch.</div>
+        </div>
+        <div class="case-card">
+          <div class="case-index mono">03</div>
+          <div class="case-tag mono">Proof over marketing</div>
+          <div class="case-title">AI SOC vendors</div>
+          <div class="case-body">Skip the billion-attacks-a-day claim nobody can check. Show a prospect your product catching one real breach, live, at human scale.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CONTACT (same treatment as the homepage) ================= -->
+  <section class="dark-frame contact">
+    <div class="scan-sweep" aria-hidden="true"></div>
+    <div class="radar-echo" aria-hidden="true">
+      <svg viewBox="0 0 800 800">
+        <use href="#radar-rings"></use>
+      </svg>
+    </div>
+    <div class="body-wrap">
+      <div class="eyebrow-row eyebrow-label mono"><span class="status-dot"></span>Get a free account</div>
+      <p class="contact-statement">Ring the bell.</p>
+      <a class="contact-cta" href="mailto:go@unmanned.team?subject=I%20want%20to%20play%20Catch%20a%20Rat" target="_blank" rel="noopener noreferrer">Request invite <span class="arrow">→</span></a>
+    </div>
+  </section>
+
+  <footer class="mono">
+    <span class="fmark">UNMANNED</span>
+    <span>© 2026 UNMANNED, INC.</span>
+    <a href="https://gounmanned.substack.com/" target="_blank" rel="noopener noreferrer">READ OUR BLOG</a>
+  </footer>
+
+  <script>
+    (function(){
+      var clockEl = document.getElementById('clockReadout');
+      var stateEl = document.getElementById('clockState');
+      var bellBtn = document.getElementById('bellBtn');
+      var bellPulse = document.getElementById('bellPulse');
+      var startBtn = document.getElementById('startBtn');
+
+      var startTime = null;
+      var rafId = null;
+      var running = false;
+
+      function format(ms){
+        var totalTenths = Math.floor(ms / 100);
+        var minutes = Math.floor(totalTenths / 600);
+        var seconds = Math.floor((totalTenths % 600) / 10);
+        var tenths = totalTenths % 10;
+        function pad(n){ return n < 10 ? '0' + n : '' + n; }
+        return pad(minutes) + ':' + pad(seconds) + '.' + tenths;
+      }
+
+      function tick(){
+        var elapsed = Date.now() - startTime;
+        clockEl.textContent = format(elapsed);
+        if (running) rafId = requestAnimationFrame(tick);
+      }
+
+      startBtn.addEventListener('click', function(){
+        running = true;
+        startTime = Date.now();
+        clockEl.classList.remove('caught');
+        clockEl.classList.add('running');
+        stateEl.textContent = 'BREACH IN PROGRESS — HUNT IT';
+        startBtn.disabled = true;
+        bellBtn.disabled = false;
+        tick();
+      });
+
+      bellBtn.addEventListener('click', function(){
+        if (!running) return;
+        running = false;
+        if (rafId) cancelAnimationFrame(rafId);
+        clockEl.classList.remove('running');
+        clockEl.classList.add('caught');
+        stateEl.textContent = 'CAUGHT — VERIFIED';
+        bellBtn.disabled = true;
+        bellBtn.classList.add('ringing');
+        bellPulse.classList.add('pulse');
+        setTimeout(function(){ bellBtn.classList.remove('ringing'); bellPulse.classList.remove('pulse'); }, 700);
+      });
+    })();
+  </script>
+
+</body>
+</html>

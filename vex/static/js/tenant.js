@@ -123,7 +123,7 @@ class TenantScreen {
                 <td class="name" title="${signal.name}">${signal.name.substring(0, 99)}</td>
                 <td>#${signal.id}</td>
                 <td class="strength">${this.strength(signal.metadata?.strength ?? 0)}</td>
-                <td>${signal.asset}</td>
+                <td class="source">${signal.asset}</td>
                 <td>${signal.created}</td>
             `;
 

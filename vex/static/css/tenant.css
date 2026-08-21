@@ -238,9 +238,15 @@ td.name {
 td.severity { width: 90px; }
 td.strength { width: 120px; }
 
+td.source {
+  width: 18%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 #signal-table td:nth-child(1) { width: 40px; }   /* icon */
 #signal-table td:nth-child(4) { width: 130px; }  /* id (#1234...) */
-#signal-table td:nth-child(6) { width: 18%; }    /* asset/source */
 #signal-table td:nth-child(7) { width: 160px; }  /* timestamp */
 
 /* ── severity ──────────────────────────────────────────────────────── */

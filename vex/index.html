@@ -20,6 +20,7 @@
       <link rel="stylesheet" href="static/css/tenant.css?v=${v}">
       <link rel="stylesheet" href="static/css/monitors.css?v=${v}">
       <link rel="stylesheet" href="static/css/backups.css?v=${v}">
+      <link rel="stylesheet" href="static/css/signal.css?v=${v}">
     `);
   </script>
   <title>Vex</title>
@@ -38,7 +39,7 @@
 
   <site-spinner></site-spinner>
   <site-overlay></site-overlay>
-
+  
   <div class="delegation-notice">
       You are a managed service provider for this account
       <span id="delegation-notice" class="close-btn material-symbols-outlined">close</span>
@@ -50,15 +51,9 @@
 
   <main class="container">
     <div class="top-panel">
-      <div class="new-message">
-        <div class="textbox-container">
-          <textarea id="signal-value" class="modern-textbox" placeholder="Create a signal here or by connecting monitors."></textarea>
-          <button class="submit-button" id="signal-create">
-            <span class="material-symbols-outlined">send</span>
-          </button>
-        </div>
-      </div>
 
+      <div></div>
+      
       <div class="monitors-card" id="open-monitor-rollup">
         <div class="monitor-label">Connected monitors</div>
         <div class="monitor-body">
@@ -159,7 +154,7 @@
       </div>
     </div>
 
-    <div class="links">
+    <footer class="links">
       <div class="view-toggle">
         <button class="toggle-btn active" id="toggle">
           <span class="knob"></span>
@@ -169,7 +164,8 @@
 
       <a id="open-audit-rollup">Audit</a>
       <a id="open-backup-sidebar">Backups</a>
-    </div>
+      <a id="signal-create">+ Signal</a>
+    </footer>
   </main>
 
   <!-- Managed -->
@@ -423,7 +419,13 @@
   <site-sidebar id="signal-sidebar">
     <div id="severity-banner" class="severity-banner" data-severity="">
       <span class="material-symbols-outlined banner-icon"></span>
-      <span class="banner-text"></span>
+      <select id="signal-severity" class="banner-status-select">
+        <option value="1">Critical</option>
+        <option value="2">High</option>
+        <option value="3">Medium</option>
+        <option value="4">Low</option>
+        <option value="5">Info</option>
+      </select>
     </div>
 
     <div class="container">
@@ -433,31 +435,31 @@
     <div class="sidebar-actions">
       <form id="reply-form">
         <div class="button-row">
+
           <div class="field-group">
             <label>Status</label>
             <select id="signal-status">
-                <optgroup label="Close">
-                    <option id="CH" value="CH">Resolved</option>
-                    <option id="CF" value="CF">False positive</option>
-                    <option id="CR" value="CR">Accepted risk</option>
-                    <option id="CV" value="CV">Auto-closed</option>
-                </optgroup>
-                <optgroup label="Open">
-                    <option id="OA" value="OA">Open</option>
-                    <option id="OB" value="OB">Blocked</option>
-                </optgroup>
+              <optgroup label="Close">
+                <option id="CH" value="CH">Resolved</option>
+                <option id="CF" value="CF">False positive</option>
+                <option id="CR" value="CR">Accepted risk</option>
+                <option id="CV" value="CV">Auto-closed</option>
+              </optgroup>
+              <optgroup label="Open">
+                <option id="OA" value="OA">Open</option>
+                <option id="OB" value="OB">Blocked</option>
+              </optgroup>
             </select>
           </div>
 
           <div class="field-group">
-            <label>Severity</label>
-            <select id="signal-severity">
-              <option value="1">Critical</option>
-              <option value="2">High</option>
-              <option value="3">Medium</option>
-              <option value="4">Low</option>
-              <option value="5">Info</option>
-            </select>
+            <label>Asset</label>
+            <input type="text" id="signal-asset" placeholder="Asset" />
+          </div>
+
+          <div class="field-group">
+            <label>Source</label>
+            <input type="text" id="signal-source" placeholder="Source" />
           </div>
 
           <div class="field-group field-group--delete">
@@ -469,11 +471,11 @@
 
         <div class="new-message">
           <div class="textbox-container">
-            <textarea id="response" class="modern-textbox" placeholder="Update this signal"></textarea>
+            <textarea id="response" class="modern-textbox" placeholder="Add context to this signal"></textarea>
           </div>
           <div class="reply-actions">
-            <button type="button" class="reply-btn reply-btn--send" id="signal-update">
-              <span class="material-symbols-outlined">send</span> Update
+            <button type="button" class="reply-btn reply-btn--send" id="signal-save">
+              <span class="material-symbols-outlined">send</span> Send
             </button>
           </div>
         </div>
@@ -513,22 +515,6 @@
   </site-sidebar>
 
   <!-- Modals -->
-
-  <site-modal id="signal-modal">
-    <h3>Create signal</h3>
-    <input id="new-signal-name" type="text" placeholder="Add a unique title" max="99"/>
-    <input id="new-signal-asset" type="text" placeholder="Enter the asset associated to this signal" max="99"/>
-
-    <select id="new-signal-severity">
-      <option data-severity="1">Critical</option>
-      <option data-severity="2">High</option>
-      <option data-severity="3">Medium</option>
-      <option data-severity="4">Low</option>
-      <option data-severity="5">Info</option>
-    </select>
-
-    <button id="signal-create-2">Create</button>
-  </site-modal>
 
   <div class="toast" id="toast">
     <div class="toast-row">

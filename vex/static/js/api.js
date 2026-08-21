@@ -25,8 +25,8 @@ class SignalApi extends Gateway {
         return await this.call("POST", `signal${query}`, signal);
     }
 
-    async update(id, blob, source) {
-        return await this.call("POST", `signal/${id}`, {value: blob, source: source});
+    async update(id, blob) {
+        return await this.call("POST", `signal/${id}`, {value: blob});
     }
 
     async patch(id, patch) {

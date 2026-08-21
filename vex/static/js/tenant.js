@@ -134,7 +134,7 @@ class TenantScreen {
                     const updates = await this.api.signals.get(signal.id);
                     this.sidebar ??= new SignalSidebar(this.state);
                     this.sidebar.reset();
-                    this.sidebar.reload(this.state.signals[signal.account][signal.id], updates);
+                    this.sidebar.display(this.state.signals[signal.account][signal.id], updates);
                     document.getElementById('signal-sidebar').show();
                 });
             });
@@ -158,38 +158,10 @@ class TenantScreen {
         });
 
         document.getElementById('signal-create').addEventListener('click', () => {
-            document.getElementById("signal-modal").show();
-        });
-
-        document.getElementById('signal-create-2').addEventListener('click', async () => {
-            const blob = document.getElementById("signal-value");
-            const name = document.getElementById("new-signal-name");
-            const asset = document.getElementById("new-signal-asset");
-            const severity = document.getElementById("new-signal-severity");
-
-            const signal = {
-                name: name.value,
-                value: blob.value,
-                source: "helpdesk",
-                asset: asset.value.toLowerCase().trim(),
-                severity: parseInt(severity.options[severity.selectedIndex].dataset.severity),
-            };
-
-            if (Object.values(signal).some(v => !v || v === "")) {
-                alert("All fields are required!");
-                return;
-            }
-
-            await SiteSpinner.withLoading(async() => {
-                await this.api.signals.create(signal);
-            }).finally(() => {
-                blob.value = "";
-                name.value = "";
-                asset.value = "";
-            });
-
-            document.dispatchEvent(new CustomEvent('page:reload'));
-            document.querySelector('site-overlay').click();
+            this.sidebar ??= new SignalSidebar(this.state);
+            this.sidebar.reset();
+            this.sidebar.create();
+            document.getElementById('signal-sidebar').show();
         });
 
         document.getElementById('toggle').addEventListener('click', async () => {

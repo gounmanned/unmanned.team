@@ -131,10 +131,9 @@ class TenantScreen {
                 e.stopPropagation();
 
                 await SiteSpinner.withLoading(async () => {
-                    const updates = await this.api.signals.get(signal.id);
                     this.sidebar ??= new SignalSidebar(this.state);
                     this.sidebar.reset();
-                    this.sidebar.display(this.state.signals[signal.account][signal.id], updates);
+                    this.sidebar.inject(signal, await this.api.signals.get(signal.id));
                     document.getElementById('signal-sidebar').show();
                 });
             });
@@ -155,13 +154,6 @@ class TenantScreen {
                     row.style.display = !filter || status === filter ? '' : 'none';
                 });
             });
-        });
-
-        document.getElementById('signal-create').addEventListener('click', () => {
-            this.sidebar ??= new SignalSidebar(this.state);
-            this.sidebar.reset();
-            this.sidebar.create();
-            document.getElementById('signal-sidebar').show();
         });
 
         document.getElementById('toggle').addEventListener('click', async () => {

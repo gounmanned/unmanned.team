@@ -8,9 +8,14 @@ class SignalSidebar {
     reset() {
         document.getElementById("updates").innerHTML = "";
     }
+    
+    reload() {
+        this.signal = { id: null, severity: 5, status: "OA", asset: "", source: "helpdesk" };
+        this.render(this.signal);
+    }
 
-    display(signal, updates) {
-        this.signal = signal;
+    inject(signal, updates) {
+        this.signal = this.state.signals[signal.account][signal.id]
         this.render(signal);
 
         this.add(signal);
@@ -18,12 +23,7 @@ class SignalSidebar {
             this.add(update);
         });
     }
-
-    create() {
-        this.signal = { id: null, severity: 5, status: "OA", asset: "", source: "helpdesk" };
-        this.render(this.signal);
-    }
-
+   
     render(signal) {
         document.getElementById("signal-severity").value = signal.severity;
         document.getElementById("signal-status").value = signal.status;

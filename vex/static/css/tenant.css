@@ -408,7 +408,7 @@ td.strength {
 .filter-card.active .filter-label { color: rgba(255,255,255,0.8); }
 
 /* ─────────────────────────────────────────────────────────────────────────────
-   LINKS BAR
+   LINKS
 ───────────────────────────────────────────────────────────────────────────── */
 
 .links {
@@ -496,7 +496,7 @@ td.strength {
   background: var(--pink);
 }
 
-.links #signal-create {
+.links #open-signal-sidebar {
   display: inline-flex;
   align-items: center;
   padding: 4px 10px;
@@ -513,7 +513,7 @@ td.strength {
   transition: background 0.12s, border-color 0.12s, transform 0.12s;
 }
 
-.links #signal-create:hover {
+.links #open-signal-sidebar:hover {
   background: rgba(224,18,128,0.2);
   border-color: rgba(224,18,128,0.5);
 }

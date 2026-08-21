@@ -63,6 +63,7 @@ class Workspace {
                 };
 
                 this.sidebars = {
+                    signal: new SignalSidebar(state),
                     backup: new BackupSidebar(state),
                 }
 

@@ -563,7 +563,7 @@ class SiteFob extends HTMLElement {
                     justify-content: center;
                     border-radius: 50%;
                     background-color: white;
-                    color: var(--brand, #e01280);
+                    color: var(--pink, #e01280);
                     font-size: 2rem;
                     border: none;
                     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
@@ -572,7 +572,7 @@ class SiteFob extends HTMLElement {
                     z-index: 999;
                 }
                 .fob:hover {
-                    background-color: var(--brand, #e01280);
+                    background-color: var(--pink, #e01280);
                     color: white;
                     border: none;
                 }

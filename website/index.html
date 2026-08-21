@@ -1,14 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="no-js">
 <head>
 <meta charset="UTF-8">
+<script>document.documentElement.classList.replace('no-js','js');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Unmanned, Inc</title>
-<meta name="description" content="Autonomous offensive security. Attack paths found, chained, and proven — on autopilot.">
+<title>Vex — Unmanned, Inc</title>
+<meta name="description" content="Vex is a managed, 24/7 offensive security SOC — finding, chaining, and closing attack paths before an attacker does.">
 <link rel="apple-touch-icon" href="https://cdn.unmanned.team/img/logo.png">
 <link rel="icon" type="image/png" href="https://cdn.unmanned.team/img/logo.png">
 <meta property="og:title" content="Vex — Unmanned, Inc" />
-<meta property="og:description" content="Autonomous offensive security. Attack paths found, chained, and proven — on autopilot." />
+<meta property="og:description" content="Vex is a managed, 24/7 offensive security SOC — finding, chaining, and closing attack paths before an attacker does." />
 <meta property="og:url" content="https://unmanned.team" />
 <meta property="og:type" content="website" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -77,7 +78,8 @@
   .hud-frame .corner.bl{bottom:20px;left:20px;}
   .hud-frame .corner.br{bottom:20px;right:20px;}
 
-  /* small frame around HUD-style callout boxes (What is Vex / No Dashboard) */
+  /* small frame around HUD-style callout boxes (the coverage / remediation readouts) */
+  .hud-box{ position:relative; }
   .hud-box .corner{ --corner-size:20px; }
   .hud-box .corner.tl{top:0;left:0;}
   .hud-box .corner.tr{top:0;right:0;}
@@ -257,7 +259,6 @@
     max-width:760px;
     margin:0 auto;
   }
-  .brief.wide{ max-width:920px; }
   @media (max-width:820px){ .brief{padding:100px 24px 130px;} }
 
   .brief-label{ margin-bottom:26px; }
@@ -274,7 +275,7 @@
   .brief-content p{ font-size:16px; line-height:1.75; color:#2b2b2b; }
   .brief-content p + p{ margin-top:18px; }
 
-  /* ---------- DARK FRAME — shared by philosophy + contact ---------- */
+  /* ---------- DARK FRAME — shared by philosophy + solution + contact ---------- */
   .dark-frame{
     --db-ink:#f3f3f0;
     --db-mid:#87878c;
@@ -290,7 +291,7 @@
   .dark-frame .body-wrap{ position:relative; z-index:2; }
   @media (max-width:700px){ .dark-frame{padding:100px 20px 116px;} }
 
-  .dark-frame blockquote{
+  .dark-frame .section-statement{
     max-width:920px;
     margin:0 auto 26px;
     font-family:'Hedvig Letters Serif', serif;
@@ -301,7 +302,7 @@
     letter-spacing:-0.01em;
     color:var(--db-ink);
   }
-  .dark-frame blockquote em{ color:var(--pink); font-style:italic; }
+  .dark-frame .section-statement em{ color:var(--pink); font-style:italic; }
 
   /* ---------- PHILOSOPHY: LEAD (left-aligned inside a centered section) ---------- */
   .philosophy-lead{
@@ -361,6 +362,119 @@
     .risk-grid{ --cv-cell:24px; gap:4px; }
   }
 
+  /* ---------- PREVENT / DETECT / RESPOND ATTACK FILTER ----------
+     Left-to-right "attacks" flow along a track and fade out at the
+     gate they're blocked at. Most stop at gate 1; fewer reach gate 2;
+     almost none make it to gate 3 — the graphic doing the argument
+     that Vex covers all three, and prevention absorbs most of it. */
+  .attack-filter{
+    margin-top:96px;
+    width:100%;
+  }
+  .filter-track{
+    position:relative;
+    width:100%;
+    max-width:700px;
+    height:150px;
+    margin:0 auto 44px;
+    border-bottom:2px solid rgba(224,18,128,0.22);
+  }
+  .filter-gate{
+    position:absolute;
+    top:0;
+    bottom:0;
+  }
+  .filter-gate .gate-mark{
+    position:absolute;
+    top:0;
+    bottom:0;
+    left:0;
+    width:1.5px;
+    background:rgba(224,18,128,0.4);
+  }
+  .filter-gate .gate-label{
+    position:absolute;
+    top:100%;
+    left:0;
+    transform:translateX(-50%);
+    margin-top:16px;
+    font-size:14px;
+    letter-spacing:0.1em;
+    font-weight:500;
+    color:var(--db-ink);
+    white-space:nowrap;
+  }
+  .filter-gate .gate-sub{
+    position:absolute;
+    top:100%;
+    left:0;
+    transform:translateX(-50%);
+    margin-top:38px;
+    font-size:11.5px;
+    letter-spacing:0.02em;
+    color:var(--db-mid);
+    white-space:nowrap;
+  }
+  .filter-gate.gate-end .gate-label,
+  .filter-gate.gate-end .gate-sub{
+    transform:translateX(-88%);
+  }
+  .atk-dot{
+    position:absolute;
+    left:0;
+    width:10px;
+    height:10px;
+    margin-top:-5px;
+    border-radius:50%;
+    background:var(--pink);
+    box-shadow:0 0 10px rgba(224,18,128,0.65);
+    opacity:0;
+    animation-duration:4.2s;
+    animation-timing-function:linear;
+    animation-iteration-count:infinite;
+  }
+  .atk-dot.stop1{ animation-name:atkStop1; }
+  .atk-dot.stop2{ animation-name:atkStop2; }
+  .atk-dot.stop3{ animation-name:atkStop3; }
+  @keyframes atkStop1{
+    0%{ left:0%; opacity:0; }
+    6%{ opacity:1; }
+    30%{ left:28%; opacity:1; }
+    36%{ left:29%; opacity:0; }
+    100%{ left:29%; opacity:0; }
+  }
+  @keyframes atkStop2{
+    0%{ left:0%; opacity:0; }
+    6%{ opacity:1; }
+    55%{ left:60%; opacity:1; }
+    61%{ left:61%; opacity:0; }
+    100%{ left:61%; opacity:0; }
+  }
+  @keyframes atkStop3{
+    0%{ left:0%; opacity:0; }
+    6%{ opacity:1; }
+    85%{ left:92%; opacity:1; }
+    90%{ left:93%; opacity:0; }
+    100%{ left:93%; opacity:0; }
+  }
+  @media (max-width:700px){
+    .filter-track{ height:130px; margin-bottom:50px; max-width:100%; }
+    .filter-gate .gate-label{ font-size:12px; }
+    .filter-gate .gate-sub{ font-size:10px; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .atk-dot{ animation:none; opacity:0; }
+  }
+
+  /* ---------- LIGHT INVERSION OF A DARK-FRAME SECTION ----------
+     Same markup/rules as .dark-frame, just swaps the two custom
+     properties everything else already reads from. */
+  .dark-frame.invert-light{
+    background:var(--white);
+    --db-ink:#0b0c0d;
+    --db-mid:#6b6b70;
+  }
+
   .contact-statement{
     font-family:'Space Grotesk',sans-serif;
     font-weight:500;
@@ -392,135 +506,45 @@
     outline-offset:4px;
   }
 
-  /* ---------- SOLUTION (overnight timeline) ---------- */
-  .outcome-flow{
-    display:flex;
-    align-items:flex-start;
-    justify-content:center;
-    margin-top:72px;
-    flex-wrap:nowrap;
-  }
-  .outcome-node{ text-align:center; width:118px; flex-shrink:0; }
-  .outcome-node .outcome-time{
-    font-family:'Space Grotesk',sans-serif;
-    font-weight:700;
-    font-size:clamp(15px, 1.7vw, 21px);
-    letter-spacing:-0.01em;
-    line-height:1;
-    color:var(--gray-mid);
-    transition:color 0.2s ease;
-  }
-  .outcome-node .outcome-caption{
-    font-family:'JetBrains Mono',monospace;
-    font-size:9.5px;
-    line-height:1.5;
-    letter-spacing:0.06em;
-    text-transform:uppercase;
-    color:var(--gray-mid);
-    margin-top:10px;
-  }
-  /* explicit "lit" state instead of nth-child position math, so the
-     escalating-intensity effect survives adding/removing steps later */
-  .outcome-node.lit .outcome-time{ color:var(--ink); }
-  .outcome-node.lit .outcome-caption{ color:var(--gray-mid); }
-  .outcome-node.final .outcome-time{
-    color:var(--pink);
-    text-shadow:0 0 14px rgba(224,18,128,0.35);
-  }
-  .outcome-node.final .outcome-caption{ color:var(--ink); }
-
-  .outcome-connector{
-    position:relative;
-    flex:1 1 auto;
-    min-width:28px;
-    max-width:60px;
-    height:1px;
-    background:var(--gray-line);
-    margin-top:11px;
-    overflow:visible;
-    /* horizontal by default: the traveling dot moves along translateX */
-    --dx: calc(100% - 6px);
-    --dy: 0px;
-  }
-  .outcome-connector::after{
-    content:'';
-    position:absolute;
-    top:50%;left:0;
-    width:6px;height:6px;
-    margin-top:-3px;
-    border-radius:50%;
-    background:var(--pink);
-    box-shadow:0 0 8px rgba(224,18,128,0.55);
-    animation:travel 3.2s ease-in-out infinite;
-    animation-delay:calc((var(--seg) - 1) * 0.8s);
-    opacity:0;
-  }
-  /* single keyframe reused for both axes — the connector sets --dx/--dy */
-  @keyframes travel{
-    0%{ transform:translate(0,0); opacity:0; }
-    4%{ opacity:1; }
-    22%{ opacity:1; }
-    28%{ opacity:0; }
-    100%{ transform:translate(var(--dx), var(--dy)); opacity:0; }
-  }
-
-  @media (max-width:820px){
-    .outcome-flow{ flex-direction:column; align-items:center; margin-top:56px; gap:0; }
-    .outcome-node{ width:auto; max-width:280px; }
-    .outcome-connector{
-      width:1px;
-      height:36px;
-      min-width:0;
-      max-width:none;
-      margin:6px 0;
-      /* vertical on small screens: same keyframe, different translate target */
-      --dx: 0px;
-      --dy: calc(100% - 6px);
-    }
-    .outcome-connector::after{ top:0;left:50%; margin-left:-3px; margin-top:0; }
-  }
-
   @media (prefers-reduced-motion: reduce){
-    .status-dot, .radar-ring, .outcome-connector::after{ animation:none; opacity:0.9; }
+    .status-dot, .radar-ring{ animation:none; opacity:0.9; }
     .wordmark-frame .corner{ animation:none; opacity:0.65; transform:scale(1); }
     .scan-sweep::after{ animation:none; display:none; }
     .risk-cell.clears{ animation:none; opacity:0.15; }
+    .js .hud-box.reveal .corner,
+    .js .hud-box.reveal .vex-explainer-final{
+      opacity:1 !important;
+      transform:none !important;
+      animation:none !important;
+      transition:none !important;
+    }
   }
 
-  /* ---------- WHAT IS VEX ---------- */
+  /* ---------- READOUT CALLOUT (COVERAGE / REMEDIATION) ----------
+     A quiet instrument-panel readout, not a pull-quote: a hairline
+     top/bottom edge and a faint fill ground it in the same rule
+     the .divider uses elsewhere, the corner brackets tie it to the
+     page's HUD vocabulary, and the tag names what the reading is
+     rather than just restating the diagram above it. */
   .vex-explainer{
     position:relative;
-    max-width:700px;
-    margin:88px auto 0;
-    padding:48px 44px;
+    max-width:640px;
+    margin:132px auto 0;
+    padding:34px 36px;
     text-align:center;
+    border-top:1px solid color-mix(in srgb, var(--db-ink) 14%, transparent);
+    border-bottom:1px solid color-mix(in srgb, var(--db-ink) 14%, transparent);
+    background:color-mix(in srgb, var(--db-ink) 3%, transparent);
   }
-  .vex-explainer-comps{
-    display:flex;
-    margin-top:38px;
-    border-top:1px solid var(--gray-line);
-    border-bottom:1px solid var(--gray-line);
-  }
-  .vex-explainer-comps .comp-item{
-    flex:1;
-    padding:22px 16px;
-    border-left:1px solid var(--gray-line);
-  }
-  .vex-explainer-comps .comp-item:first-child{ border-left:none; }
-  .vex-explainer-comps .comp-index{
+  .hud-box-tag{
     display:block;
     font-family:'JetBrains Mono',monospace;
     font-size:10px;
-    letter-spacing:0.14em;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
     color:var(--pink);
-    margin-bottom:10px;
     opacity:0.85;
-  }
-  .vex-explainer-comps .comp-text{
-    display:block;
-    font-size:13px;
-    line-height:1.55;
-    color:var(--gray-mid);
+    margin-bottom:14px;
   }
   .vex-explainer-final{
     font-family:'Space Grotesk',sans-serif;
@@ -528,75 +552,42 @@
     font-size:clamp(19px, 2.4vw, 25px);
     line-height:1.5;
     letter-spacing:-0.005em;
-    color:var(--ink);
+    color:var(--db-ink);
     text-wrap:balance;
   }
   .vex-explainer-final em{ color:var(--pink); font-style:normal; font-weight:600; }
 
   @media (max-width:700px){
-    .vex-explainer{ margin-top:60px; padding:36px 20px 32px; }
-    .vex-explainer-comps{ flex-direction:column; }
-    .vex-explainer-comps .comp-item{
-      border-left:none;
-      border-top:1px solid var(--gray-line);
-      padding:16px 4px;
-      text-align:left;
-    }
-    .vex-explainer-comps .comp-item:first-child{ border-top:none; }
+    .vex-explainer{ margin-top:84px; padding:28px 20px; }
     .vex-explainer-final{ font-size:18px; }
   }
 
-  /* ---------- MDR TRIAD ----------
-     Deliberately NOT the hud-box callout — that bracketed treatment
-     is reserved for the Vex explainer directly above. This reuses the
-     divider-line/index motif but sits flat, so two light sections in
-     a row don't read as the same component reskinned. */
-  .mdr-triad{
-    margin-top:52px;
-    display:flex;
-    border-top:1px solid var(--gray-line);
-    border-bottom:1px solid var(--gray-line);
+  /* ---------- SCROLL REVEAL (readout lock-on) ----------
+     Progressive enhancement: with JS and motion both available, the
+     corner brackets and statement settle into place once, the first
+     time the readout enters view — echoing the hero's lock-on without
+     repeating it. Without JS, or with reduced motion, the readout is
+     simply visible; it never depends on the animation to be legible. */
+  .js .hud-box.reveal .corner{
+    opacity:0;
+    transform:scale(1.4);
   }
-  .mdr-triad .comp-item{
-    flex:1;
-    padding:26px 20px;
-    border-left:1px solid var(--gray-line);
+  .js .hud-box.reveal.in-view .corner{
+    animation:lockOn 0.7s cubic-bezier(0.2,0.7,0.2,1) forwards;
   }
-  .mdr-triad .comp-item:first-child{ border-left:none; }
-  .mdr-triad .comp-index{
-    display:block;
-    font-family:'JetBrains Mono',monospace;
-    font-size:10px;
-    letter-spacing:0.14em;
-    color:var(--pink);
-    margin-bottom:10px;
-    opacity:0.85;
+  .js .hud-box.reveal.in-view .corner.tr{ animation-delay:0.06s; }
+  .js .hud-box.reveal.in-view .corner.bl{ animation-delay:0.12s; }
+  .js .hud-box.reveal.in-view .corner.br{ animation-delay:0.18s; }
+  .js .hud-box.reveal .vex-explainer-final,
+  .js .hud-box.reveal .hud-box-tag{
+    opacity:0;
+    transform:translateY(8px);
+    transition:opacity 0.6s ease, transform 0.6s ease;
   }
-  .mdr-triad .comp-text{
-    display:block;
-    font-size:13px;
-    line-height:1.55;
-    color:var(--gray-mid);
-  }
-  @media (max-width:700px){
-    .mdr-triad{ flex-direction:column; }
-    .mdr-triad .comp-item{
-      border-left:none;
-      border-top:1px solid var(--gray-line);
-      padding:18px 4px;
-      text-align:left;
-    }
-    .mdr-triad .comp-item:first-child{ border-top:none; }
-  }
-
-  /* ---------- MDR NOTE (licensing aside under the MDR breakdown) ---------- */
-  .mdr-note{
-    margin-top:22px;
-    font-size:10.5px;
-    letter-spacing:0.1em;
-    text-transform:uppercase;
-    color:var(--gray-mid);
-    text-align:center;
+  .js .hud-box.reveal.in-view .vex-explainer-final,
+  .js .hud-box.reveal.in-view .hud-box-tag{
+    opacity:1;
+    transform:translateY(0);
   }
 
   /* ---------- FOOTER ---------- */
@@ -686,12 +677,79 @@
     <span>TARGET IDENTIFIED</span>
   </div>
 
-  <section class="dark-frame philosophy">
+  <!-- ============================================================
+       SECTION A — "The solution"
+       Job: land the purchase in one sentence, then show that a Vex
+       subscription is a managed 24/7 SOC covering all three stages —
+       and that most attacks never make it past the first one.
+       ============================================================ -->
+  <section class="dark-frame solution">
     <div class="scan-sweep" aria-hidden="true"></div>
     <div class="body-wrap">
-      <div class="eyebrow-row eyebrow-label mono"><span class="status-dot"></span>Our approach</div>
+      <div class="eyebrow-row eyebrow-label mono"><span class="status-dot"></span>The solution</div>
 
-      <blockquote>Eliminate <em>choke points</em>.</blockquote>
+      <h2 class="section-statement">A <em>hacker</em>, on retainer.</h2>
+
+      <p class="philosophy-lead">
+        Vex isn't a pentest, a scanner, or another dashboard.
+        It's a subscription to a red team that never clocks out — continuously breaking into your business the way a real attacker would.
+        Watch what happens to an attack as it moves through Vex.
+      </p>
+
+      <div class="attack-filter" aria-hidden="true">
+        <div class="filter-track">
+          <div class="filter-gate" style="left:29%">
+            <span class="gate-mark"></span>
+            <span class="gate-label mono">01 PREVENT</span>
+          </div>
+          <div class="filter-gate" style="left:61%">
+            <span class="gate-mark"></span>
+            <span class="gate-label mono">02 DETECT</span>
+          </div>
+          <div class="filter-gate gate-end" style="left:93%">
+            <span class="gate-mark"></span>
+            <span class="gate-label mono">03 RESPOND</span>
+          </div>
+
+          <span class="atk-dot stop1" style="top:14%;animation-delay:0s;"></span>
+          <span class="atk-dot stop1" style="top:30%;animation-delay:0.45s;"></span>
+          <span class="atk-dot stop1" style="top:46%;animation-delay:0.9s;"></span>
+          <span class="atk-dot stop1" style="top:62%;animation-delay:1.35s;"></span>
+          <span class="atk-dot stop1" style="top:78%;animation-delay:1.8s;"></span>
+          <span class="atk-dot stop1" style="top:94%;animation-delay:2.25s;"></span>
+
+          <span class="atk-dot stop2" style="top:22%;animation-delay:0.25s;"></span>
+          <span class="atk-dot stop2" style="top:50%;animation-delay:1.25s;"></span>
+          <span class="atk-dot stop2" style="top:78%;animation-delay:2.25s;"></span>
+
+          <span class="atk-dot stop3" style="top:50%;animation-delay:0.7s;"></span>
+        </div>
+      </div>
+      <div class="vex-explainer hud-box reveal">
+        <div class="corner tl"></div>
+        <div class="corner tr"></div>
+        <div class="corner bl"></div>
+        <div class="corner br"></div>
+        <span class="hud-box-tag">Coverage</span>
+        <p class="vex-explainer-final">Vex is a fully managed, 24/7 SOC — one system running prevention, detection, and response, so fewer attacks ever reach the last stage.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider mono">
+    <span>REC · 00:00:02</span>
+    <span>TARGET ISOLATED</span>
+  </div>
+
+  <!-- ============================================================
+       SECTION B1 — "How it works" (the choke-point graphic, restored)
+       ============================================================ -->
+  <section class="dark-frame philosophy invert-light">
+    <div class="scan-sweep" aria-hidden="true"></div>
+    <div class="body-wrap">
+      <div class="eyebrow-row eyebrow-label mono"><span class="status-dot"></span>How it works</div>
+
+      <h2 class="section-statement">Eliminate <em>choke points</em>.</h2>
 
       <p class="philosophy-lead">
         Every business has flaws.
@@ -733,109 +791,20 @@
         </div>
         <p class="choke-visual-caption mono">One fix. Six risks resolved.</p>
       </div>
-    </div>
-  </section>
 
-  <div class="divider mono">
-    <span>REC · 00:00:02</span>
-    <span>TARGET ISOLATED</span>
-  </div>
-
-  <section class="brief wide">
-    <div class="brief-label eyebrow-label mono"><span class="status-dot"></span>The solution</div>
-    <div class="brief-content">
-      <h2><u>Hack yourself</u> first.</h2>
-      <p>
-        Vex uses both black and white-box techniques to continuously analyze your users, SaaS, cloud, and endpoints — identifying the choke points.
-        First analysis ready in just five minutes.
-      </p>
-    </div>
-
-    <div class="outcome-flow">
-      <div class="outcome-node">
-        <div class="outcome-time">11:58 PM</div>
-        <div class="outcome-caption mono">Your DNS records change</div>
-      </div>
-      <div class="outcome-connector" style="--seg:1"></div>
-      <div class="outcome-node lit">
-        <div class="outcome-time">11:59 PM</div>
-        <div class="outcome-caption mono">Vex collects new signal</div>
-      </div>
-      <div class="outcome-connector" style="--seg:2"></div>
-      <div class="outcome-node lit">
-        <div class="outcome-time">12:02 AM</div>
-        <div class="outcome-caption mono">Signal correlation begins</div>
-      </div>
-      <div class="outcome-connector" style="--seg:3"></div>
-      <div class="outcome-node lit">
-        <div class="outcome-time">12:03 AM</div>
-        <div class="outcome-caption mono">Breach scenario generated</div>
-      </div>
-      <div class="outcome-connector" style="--seg:4"></div>
-      <div class="outcome-node final">
-        <div class="outcome-time">12:05 AM</div>
-        <div class="outcome-caption mono">Escalating critical path</div>
-      </div>
-    </div>
-
-    <div class="vex-explainer hud-box">
-      <div class="corner tl"></div>
-      <div class="corner tr"></div>
-      <div class="corner bl"></div>
-      <div class="corner br"></div>
-      <p class="vex-explainer-final">Vex is your <em>countermeasure against the attacker who never sleeps</em>, generating breach scenarios shortly after they open up. No human required.</p>
-      <div class="vex-explainer-comps">
-        <div class="comp-item">
-          <span class="comp-index">01</span>
-          <span class="comp-text">Vex thinks like a red team.</span>
-        </div>
-        <div class="comp-item">
-          <span class="comp-index">02</span>
-          <span class="comp-text">Vex analyzes like a SOC.</span>
-        </div>
-        <div class="comp-item">
-          <span class="comp-index">03</span>
-          <span class="comp-text">Vex runs like an AI agent.</span>
-        </div>
+      <div class="vex-explainer hud-box reveal">
+        <div class="corner tl"></div>
+        <div class="corner tr"></div>
+        <div class="corner bl"></div>
+        <div class="corner br"></div>
+        <span class="hud-box-tag">Remediation</span>
+        <p class="vex-explainer-final">Every choke point Vex finds becomes a ticket — closed by our managed SOC, or routed straight into yours via API.</p>
       </div>
     </div>
   </section>
 
   <div class="divider mono">
     <span>REC · 00:00:03</span>
-    <span>LOADING EXTENSION</span>
-  </div>
-
-  <section class="brief wide">
-    <div class="brief-label eyebrow-label mono"><span class="status-dot"></span>Managed Detection & Response</div>
-    <div class="brief-content">
-      <h2>Or let <u>us run it</u> for you.</h2>
-      <p>
-        Cybersecurity is defined by three things: preventing future attacks, detecting current attacks, and responding to past attacks.
-        Our MDR service covers all three, built on Vex.
-      </p>
-    </div>
-
-    <div class="mdr-triad">
-      <div class="comp-item">
-        <span class="comp-index">01 PREVENT</span>
-        <span class="comp-text">Vex finds and eliminates choke points before an attacker can use them.</span>
-      </div>
-      <div class="comp-item">
-        <span class="comp-index">02 DETECT</span>
-        <span class="comp-text">Our team watches for attacks currently unfolding, around the clock.</span>
-      </div>
-      <div class="comp-item">
-        <span class="comp-index">03 RESPOND</span>
-        <span class="comp-text">We contain and respond to the advanced attacks that evade all defenses.</span>
-      </div>
-    </div>
-
-    <p class="mdr-note mono">* Vex is also available standalone</p>
-  </section>
-
-  <div class="divider mono">
-    <span>REC · 00:00:04</span>
     <span>COMMS ESTABLISHED</span>
   </div>
 
@@ -848,8 +817,8 @@
     </div>
     <div class="body-wrap">
       <div class="eyebrow-row eyebrow-label mono"><span class="status-dot"></span>Get a free account</div>
-      <p class="contact-statement">Don't get hacked.</p>
-      <a class="contact-cta" href="mailto:go@unmanned.team?subject=Please%20create%20a%20free%20Vex%20account%20for%20me" target="_blank" rel="noopener noreferrer">Request invite <span class="arrow">→</span></a>
+      <h2 class="contact-statement">Don't get hacked.</h2>
+      <a class="contact-cta" href="mailto:go@unmanned.team?subject=Please%20create%20a%20free%20Vex%20account%20for%20me">Request invite <span class="arrow">→</span></a>
     </div>
   </section>
 
@@ -858,6 +827,27 @@
     <span>© 2026 UNMANNED, INC.</span>
     <a href="https://gounmanned.substack.com/" target="_blank" rel="noopener noreferrer">READ OUR BLOG</a>
   </footer>
+
+  <script>
+    (function(){
+      var boxes = document.querySelectorAll('.hud-box.reveal');
+      if(!boxes.length){ return; }
+      var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if(!('IntersectionObserver' in window) || reduceMotion){
+        boxes.forEach(function(el){ el.classList.add('in-view'); });
+        return;
+      }
+      var io = new IntersectionObserver(function(entries){
+        entries.forEach(function(entry){
+          if(entry.isIntersecting){
+            entry.target.classList.add('in-view');
+            io.unobserve(entry.target);
+          }
+        });
+      }, { threshold:0.4 });
+      boxes.forEach(function(el){ io.observe(el); });
+    })();
+  </script>
 
 </body>
 </html>

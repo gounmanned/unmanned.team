@@ -543,46 +543,6 @@ class SiteWatermark extends HTMLElement {
     }
 }
 
-class SiteFob extends HTMLElement {
-    constructor() {
-        super();
-        this.attachShadow({ mode: 'open' });
-    }
-
-    connectedCallback() {
-        this.shadowRoot.innerHTML = `
-            <style>
-                .fob {
-                    position: fixed;
-                    bottom: 24px;
-                    right: 24px;
-                    width: 56px;
-                    height: 56px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    border-radius: 50%;
-                    background-color: white;
-                    color: var(--pink, #e01280);
-                    font-size: 2rem;
-                    border: none;
-                    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-                    cursor: pointer;
-                    transition: background-color 0.3s ease, box-shadow 0.2s ease;
-                    z-index: 999;
-                }
-                .fob:hover {
-                    background-color: var(--pink, #e01280);
-                    color: white;
-                    border: none;
-                }
-                </style>
-
-            <button class="fob" title="Add">＋</button>
-        `;
-    }
-}
-
 customElements.define('site-header', SiteHeader);
 customElements.define('site-spinner', SiteSpinner);
 customElements.define('site-overlay', SiteOverlay);
@@ -590,4 +550,3 @@ customElements.define('site-modal', SiteModal);
 customElements.define('site-sidebar', SiteSidebar);
 customElements.define('site-rollup', SiteRollup);
 customElements.define('site-watermark', SiteWatermark);
-customElements.define('site-fob', SiteFob);

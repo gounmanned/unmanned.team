@@ -17,7 +17,7 @@ class InventoryRollup {
         this.assets = [];
         this.scope = 'domain';
         this.query = '';
-        this.labels = { domain: 'domains', identity: 'identities', other: 'other assets' };
+        this.labels = { domain: 'domains', identity: 'identities', other: 'assets' };
         this.listen();
     }
 

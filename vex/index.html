@@ -428,8 +428,20 @@
       </select>
     </div>
 
-    <div class="container">
+    <div class="container" id="updates-wrap">
       <ol id="updates" class="email-thread"></ol>
+
+      <div class="signal-radar-watermark" id="updates-empty">
+        <div class="signal-radar" aria-hidden="true">
+          <svg viewBox="0 0 800 800"><use href="#radar-rings"></use></svg>
+        </div>
+        <div class="corner tl signal-radar-corner"></div>
+        <div class="corner tr signal-radar-corner"></div>
+        <div class="corner bl signal-radar-corner"></div>
+        <div class="corner br signal-radar-corner"></div>
+        <span class="material-symbols-outlined">sensors</span>
+        <p>New signal</p>
+      </div>
     </div>
 
     <div class="sidebar-actions">

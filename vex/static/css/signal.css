@@ -1,3 +1,7 @@
+#signal-sidebar .container { position: relative; }
+#updates-wrap.empty #updates { display: none; }
+#updates-wrap.empty .signal-radar-watermark { display: flex; }
+
 #signal-sidebar .email-thread {
   list-style: none;
   margin: 0;

@@ -11,12 +11,12 @@ class SignalSidebar {
     
     reload() {
         this.signal = { id: null, severity: 5, status: "OA", asset: "", source: "helpdesk" };
-        this.render(this.signal);
+        this.render(this.signal, true);
     }
 
     inject(signal, updates) {
         this.signal = this.state.signals[signal.account][signal.id]
-        this.render(signal);
+        this.render(signal, false);
 
         this.add(signal);
         updates.sort((a, b) => new Date(a.updated) - new Date(b.updated)).forEach((update) => {
@@ -24,7 +24,8 @@ class SignalSidebar {
         });
     }
    
-    render(signal) {
+    render(signal, empty = false) {
+        document.getElementById("updates-wrap").classList.toggle("empty", empty);
         document.getElementById("signal-severity").value = signal.severity;
         document.getElementById("signal-status").value = signal.status;
         document.getElementById("signal-asset").value = signal.asset;

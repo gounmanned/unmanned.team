@@ -21,13 +21,8 @@ class SignalSidebar {
     }
 
     create() {
-        this.render({
-            id: null,
-            severity: 5,
-            status: "OR",
-            asset: "",
-            source: "helpdesk",
-        });
+        this.signal = { id: null, severity: 5, status: "OA", asset: "", source: "helpdesk" };
+        this.render(this.signal);
     }
 
     render(signal) {

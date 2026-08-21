@@ -3,6 +3,7 @@ class AppState {
         this.user = user;
         this.delegate;
         this.signals = {};
+        this.api = new Api(this);
     }
 
     account(){

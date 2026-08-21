@@ -1,7 +1,7 @@
 class MonitorRollup {
     constructor(state) {
         this.state = state;
-        this.api = new Api(state);
+        this.api = state.api;
         this.screen = document.getElementById('monitor-screen');
         this.wrap = document.getElementById('monitor-table-wrap');
         this.list = document.getElementById('monitor-list');
@@ -32,7 +32,6 @@ class MonitorRollup {
     }
 
     async reset() {
-        this.api.reset();
         this.watermark.show("Scan for signals");
         Object.values(this.available).forEach(s => { s.instances = []; });
         this.pickerOpen = false;

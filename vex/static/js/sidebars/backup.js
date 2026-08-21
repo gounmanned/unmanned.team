@@ -1,14 +1,13 @@
 class BackupSidebar {
     constructor(state) {
         this.state = state;
-        this.api = new Api(state);
+        this.api = state.api;
         this.list = document.getElementById('file-list');
         this.wrap = document.getElementById('file-list-wrap');
         this.pathStack = [];
     }
 
     async reset() {
-        this.api.reset();
         this.pathStack = [];
         await this.reload();
     }

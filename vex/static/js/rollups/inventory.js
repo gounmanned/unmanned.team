@@ -7,7 +7,7 @@ class InventoryRollup {
 
     constructor(state) {
         this.state = state;
-        this.api = new Api(state);
+        this.api = state.api;
         this.watermark = document.querySelector('#inventory-screen site-watermark');
         this.wrap = document.getElementById('asset-table-wrap');
         this.tbody = document.querySelector('#asset-table tbody');
@@ -22,7 +22,6 @@ class InventoryRollup {
     }
 
     async reset() {
-        this.api.reset();
         this.watermark.show("Asset inventory");
         this.assets = [];
         this.query = '';

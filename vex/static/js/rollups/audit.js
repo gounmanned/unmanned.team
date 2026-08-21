@@ -1,7 +1,7 @@
 class AuditRollup {
     constructor(state) {
         this.state = state;
-        this.api = new Api(state);
+        this.api = state.api;
         this.screen = document.getElementById('audit-screen');
         this.watermark = this.screen.querySelector('site-watermark');
         this.body = document.getElementById('audit-terminal-body');
@@ -16,7 +16,6 @@ class AuditRollup {
     }
 
     async reset() {
-        this.api.reset();
         this.logs = [];
         this.query = '';
         this.filter.value = '';

@@ -1,7 +1,7 @@
 class ManagedRollup {
     constructor(state) {
         this.state = state;
-        this.api = new Api(state);
+        this.api = state.api;
         this.screen = document.getElementById('managed-screen');
         this.list = document.getElementById('managed-accounts');
         this.members = new Map();
@@ -207,6 +207,7 @@ class ManagedRollup {
 
         right.querySelector('.managed-enter-btn').addEventListener('click', () => {
             this.state.delegate = domain;
+            this.state.api.reset();
             document.querySelector('.delegation-notice').firstChild.textContent = domain;
             document.querySelector('.delegation-notice').classList.add('visible');
             document.dispatchEvent(new CustomEvent('page:reset'));

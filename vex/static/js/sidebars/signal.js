@@ -1,12 +1,11 @@
 class SignalSidebar {
     constructor(state) {
         this.state = state;
-        this.api = new Api(state);
+        this.api = state.api;
         this.listen();
     }
 
     reset() {
-        this.api.reset();
         document.getElementById("updates").innerHTML = "";
     }
 

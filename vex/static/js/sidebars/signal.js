@@ -1,12 +1,12 @@
 class SignalSidebar {
     constructor(state) {
         this.state = state;
-        this.api = new SignalApi();
+        this.api = new Api(state);
         this.listen();
     }
 
     reset() {
-        this.api.set('account', this.state.account());
+        this.api.reset();
         document.getElementById("updates").innerHTML = "";
     }
 
@@ -67,10 +67,10 @@ class SignalSidebar {
                 const body = document.getElementById("response").value;
 
                 if (this.signal.id) {
-                    const update = await this.api.update(this.signal.id, body);
+                    const update = await this.api.signals.update(this.signal.id, body);
                     this.add(update);
                 } else {
-                    const signal = await this.api.create({
+                    const signal = await this.api.signals.create({
                         severity: parseInt(this.signal.severity),
                         status: this.signal.status,
                         asset: this.signal.asset,
@@ -89,7 +89,7 @@ class SignalSidebar {
             
             await SiteSpinner.withLoading(async () => {
                 const status = ev.target.selectedOptions[0].id;
-                await this.api.patch(this.signal.id, { status: status });
+                await this.api.signals.patch(this.signal.id, { status: status });
 
                 document.dispatchEvent(new CustomEvent('page:reload'));
                 document.querySelector('site-overlay').click();
@@ -101,7 +101,7 @@ class SignalSidebar {
 
             await SiteSpinner.withLoading(async () => {
                 const severity = ev.target.selectedOptions[0];
-                const signal = await this.api.patch(this.signal.id, { severity: parseInt(severity.value) });
+                const signal = await this.api.signals.patch(this.signal.id, { severity: parseInt(severity.value) });
                 this.state.signals[signal.account][signal.id] = signal;
                 document.getElementById("severity-banner").dataset.severity = signal.severity;
                 document.dispatchEvent(new CustomEvent('page:reset'));
@@ -113,7 +113,7 @@ class SignalSidebar {
 
             await SiteSpinner.withLoading(async () => {
                 const asset = ev.target.value;
-                const signal = await this.api.patch(this.signal.id, { asset: asset });
+                const signal = await this.api.signals.patch(this.signal.id, { asset: asset });
                 this.state.signals[signal.account][signal.id] = signal;
                 document.dispatchEvent(new CustomEvent('page:reset'));
             });
@@ -124,7 +124,7 @@ class SignalSidebar {
 
             await SiteSpinner.withLoading(async () => {
                 const source = ev.target.value;
-                const signal = await this.api.patch(this.signal.id, { source: source });
+                const signal = await this.api.signals.patch(this.signal.id, { source: source });
                 this.state.signals[signal.account][signal.id] = signal;
                 document.dispatchEvent(new CustomEvent('page:reset'));
             });
@@ -136,7 +136,7 @@ class SignalSidebar {
             await SiteSpinner.withLoading(async () => {
                 const signal = this.signal;
                 delete this.state.signals[signal.account][signal.id];
-                await this.api.delete(signal.id);
+                await this.api.signals.delete(signal.id);
 
                 document.dispatchEvent(new CustomEvent('page:reset'));
                 document.querySelector('site-overlay').click();

@@ -1,24 +1,24 @@
 class BackupSidebar {
     constructor(state) {
         this.state = state;
-        this.api = new FileApi();
+        this.api = new Api(state);
         this.list = document.getElementById('file-list');
         this.wrap = document.getElementById('file-list-wrap');
         this.pathStack = [];
     }
 
     async reset() {
-        this.api.set('account', this.state.account());
+        this.api.reset();
         this.pathStack = [];
         await this.reload();
     }
 
     async reload() {
         this.list.innerHTML = '';
-        this.api.root = ['backup', ...this.pathStack].join('/') + '/';
+        this.api.file.root = ['backup', ...this.pathStack].join('/') + '/';
         this.breadcrumb();
 
-        const files = await this.api.list();
+        const files = await this.api.file.list();
         files.forEach(name => this.add(name));
         this.wrap.classList.toggle('empty', files.length === 0);
     }
@@ -68,7 +68,7 @@ class BackupSidebar {
                 item.classList.add('loading');
 
                 try {
-                    const redirect = await this.api.call('GET', `file/${this.api.root.replace(/\/$/, '')}?name=${displayName}`);
+                    const redirect = await this.api.file.call('GET', `file/${this.api.file.root.replace(/\/$/, '')}?name=${displayName}`);
                     if (!redirect) return;
 
                     const response = await fetch(redirect.url, { method: 'GET' });

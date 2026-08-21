@@ -60,7 +60,7 @@ class SignalSidebar {
     }
 
     listen() {
-        document.getElementById('signal-create').addEventListener('click', async (e) => {
+        document.getElementById('signal-save').addEventListener('click', async (e) => {
             e.preventDefault();
 
             await SiteSpinner.withLoading(async () => {

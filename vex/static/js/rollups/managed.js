@@ -29,8 +29,9 @@ class ManagedRollup {
         });
 
         const pending = await this.api.managed.grants("pending");
-        (pending ?? []).forEach((domain) => {
-            this._add(domain, [], false);
+        (pending ?? []).forEach((email) => {
+            const domain = email.split("@")[1];
+            this._add(email, [domain], false);
         });
 
         this._updateEmptyState();

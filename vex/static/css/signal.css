@@ -138,9 +138,6 @@
 
 #signal-sidebar .delete-btn .material-symbols-outlined { font-size: 16px; }
 
-#signal-sidebar .new-message { padding: 0 18px; }
-#signal-sidebar .textbox-container .submit-button { display: none; }
-
 #signal-sidebar .reply-actions {
   display: flex;
   justify-content: flex-end;
@@ -186,6 +183,7 @@
 #signal-sidebar .severity-banner {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 8px;
   flex-shrink: 0;
   padding: 9px 18px;
@@ -209,10 +207,6 @@
 #signal-sidebar .severity-banner[data-severity="4"] { background: var(--sev-4) } /* Low */
 #signal-sidebar .severity-banner[data-severity="5"] { background: var(--sev-5) } /* Info */
 #signal-sidebar .severity-banner[data-severity="6"] { background: var(--sev-6) } /* Support */
-
-#signal-sidebar .severity-banner {
-  justify-content: space-between;
-}
 
 #signal-sidebar .severity-banner select.banner-status-select {
   appearance: none;
@@ -248,3 +242,34 @@
   font-weight: 500;
   letter-spacing: normal;
 }
+
+#signal-sidebar .new-message { padding: 0 18px; }
+#signal-sidebar .textbox-container .submit-button { display: none; }
+
+#signal-sidebar .new-message .textbox-container { position: relative; }
+
+#signal-sidebar .new-message .modern-textbox {
+  width: 100%;
+  height: 96px;
+  margin: 10px 0 5px;
+  padding: 13px 40px 13px 14px;
+  border: 1px solid var(--gray-line);
+  border-radius: 10px;
+  background: white;
+  font-size: 13.5px;
+  font-family: inherit;
+  line-height: 1.55;
+  color: var(--ink);
+  resize: none;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+#signal-sidebar .new-message .modern-textbox:focus {
+  border-color: var(--pink);
+  box-shadow: 0 0 0 3px rgba(224,18,128,0.08);
+}
+
+#signal-sidebar .new-message .modern-textbox::placeholder { color: var(--text-faint); }
+#signal-sidebar .new-message .submit-button { bottom: 17px; }

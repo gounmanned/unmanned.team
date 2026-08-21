@@ -10,25 +10,37 @@ class SignalSidebar {
         document.getElementById("updates").innerHTML = "";
     }
 
-    reload(signal, updates) {
+    display(signal, updates) {
         this.signal = signal;
+        this.render(signal);
 
-        document.getElementById("signal-severity").value = signal.severity;
-        document.getElementById("signal-status").value = signal.status;
-
-        const banner = document.getElementById("severity-banner");
-        banner.dataset.severity = signal.severity;
-        banner.innerHTML = `<span>${Workspace.SEVERITY[signal.severity]}</span>`;
         this.add(signal);
-
-        updates.sort((a, b) => new Date(a.updated) - new Date(b.updated)).forEach((update, _) => {
+        updates.sort((a, b) => new Date(a.updated) - new Date(b.updated)).forEach((update) => {
             this.add(update);
         });
     }
 
-    add(update) {
-        if (document.querySelector(`#updates li[data-key="${update.key}"]`)) return;
+    create() {
+        this.render({
+            id: null,
+            severity: 5,
+            status: "OR",
+            asset: "",
+            source: "helpdesk",
+        });
+    }
 
+    render(signal) {
+        document.getElementById("signal-severity").value = signal.severity;
+        document.getElementById("signal-status").value = signal.status;
+        document.getElementById("signal-asset").value = signal.asset;
+        document.getElementById("signal-source").value = signal.source;
+
+        const banner = document.getElementById("severity-banner");
+        banner.dataset.severity = signal.severity;
+    }
+
+    add(update) {
         const message = document.createElement("li");
         message.dataset.key = update.key;
         message.className = "";
@@ -49,37 +61,37 @@ class SignalSidebar {
 
         document.getElementById("updates").appendChild(message);
         document.getElementById("response").value = "";
-        const last = document.getElementById("updates").querySelector('li:last-child');
-        last.scrollIntoView({ behavior: 'smooth' });
+        document.getElementById("updates").querySelector('li:last-child').scrollIntoView({ behavior: 'smooth' });
     }
 
     listen() {
-        document.getElementById('signal-delete').addEventListener('click', async (e) => {
+        document.getElementById('signal-create').addEventListener('click', async (e) => {
             e.preventDefault();
 
             await SiteSpinner.withLoading(async () => {
-                const signal = this.signal;
-
-                delete this.state.signals[signal.account][signal.id];
-                await this.api.delete(signal.id);
-
-                document.dispatchEvent(new CustomEvent('page:reset'));
-                document.querySelector('site-overlay').click();
-            });
-        });
-
-        document.getElementById('signal-update').addEventListener('click', async (e) => {
-            e.preventDefault();
-
-            await SiteSpinner.withLoading(async () => {
-                const signal = this.signal;
                 const body = document.getElementById("response").value;
-                const update = await this.api.update(signal.id, body);
-                this.add(update);
+
+                if (this.signal.id) {
+                    const update = await this.api.update(this.signal.id, body);
+                    this.add(update);
+                } else {
+                    const signal = await this.api.create({
+                        severity: parseInt(this.signal.severity),
+                        status: this.signal.status,
+                        asset: this.signal.asset,
+                        source: this.signal.source,
+                        body,
+                    });
+
+                    document.dispatchEvent(new CustomEvent('page:reload'));
+                    document.querySelector('site-overlay').click();
+                }
             });
         });
 
         document.getElementById('signal-status').addEventListener('change', async (ev) => {
+            if (!this.signal || !this.signal.id) return;
+            
             await SiteSpinner.withLoading(async () => {
                 const status = ev.target.selectedOptions[0].id;
                 await this.api.patch(this.signal.id, { status: status });
@@ -90,12 +102,50 @@ class SignalSidebar {
         });
 
         document.getElementById('signal-severity').addEventListener('change', async (ev) => {
-            const severity = ev.target.selectedOptions[0];
-            const signal = await this.api.patch(this.signal.id, { severity: parseInt(severity.value) });
+            if (!this.signal || !this.signal.id) return;
 
-            this.state.signals[signal.account][signal.id] = signal;
-            document.dispatchEvent(new CustomEvent('page:reload'));
-            document.querySelector('site-overlay').click();
+            await SiteSpinner.withLoading(async () => {
+                const severity = ev.target.selectedOptions[0];
+                const signal = await this.api.patch(this.signal.id, { severity: parseInt(severity.value) });
+                this.state.signals[signal.account][signal.id] = signal;
+                document.getElementById("severity-banner").dataset.severity = signal.severity;
+                document.dispatchEvent(new CustomEvent('page:reset'));
+            });
+        });
+
+        document.getElementById('signal-asset').addEventListener('change', async (ev) => {
+            if (!this.signal || !this.signal.id) return;
+
+            await SiteSpinner.withLoading(async () => {
+                const asset = ev.target.value;
+                const signal = await this.api.patch(this.signal.id, { asset: asset });
+                this.state.signals[signal.account][signal.id] = signal;
+                document.dispatchEvent(new CustomEvent('page:reset'));
+            });
+        });
+
+        document.getElementById('signal-source').addEventListener('change', async (ev) => {
+            if (!this.signal || !this.signal.id) return;
+
+            await SiteSpinner.withLoading(async () => {
+                const source = ev.target.value;
+                const signal = await this.api.patch(this.signal.id, { source: source });
+                this.state.signals[signal.account][signal.id] = signal;
+                document.dispatchEvent(new CustomEvent('page:reset'));
+            });
+        });
+
+        document.getElementById('signal-delete').addEventListener('click', async (e) => {
+            e.preventDefault();
+
+            await SiteSpinner.withLoading(async () => {
+                const signal = this.signal;
+                delete this.state.signals[signal.account][signal.id];
+                await this.api.delete(signal.id);
+
+                document.dispatchEvent(new CustomEvent('page:reset'));
+                document.querySelector('site-overlay').click();
+            });
         });
     }
 }

@@ -540,6 +540,45 @@ td.strength {
 #signal-sidebar .severity-banner[data-severity="5"] { background: var(--sev-5) } /* Info */
 #signal-sidebar .severity-banner[data-severity="6"] { background: var(--sev-6) } /* Support */
 
+#signal-sidebar .severity-banner {
+  justify-content: space-between;
+}
+
+#signal-sidebar .severity-banner select.banner-status-select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  flex: 1;
+  background: transparent;
+  border: none;
+  margin: 0;
+  padding: 0 18px 0 0;
+  color: #fff;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  font-family: inherit;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right center;
+  background-size: 14px;
+}
+
+#signal-sidebar .severity-banner select.banner-status-select:focus {
+  outline: none;
+}
+
+#signal-sidebar .severity-banner select.banner-status-select option,
+#signal-sidebar .severity-banner select.banner-status-select optgroup {
+  color: #111827;
+  background: #fff;
+  text-transform: none;
+  font-weight: 500;
+  letter-spacing: normal;
+}
+
 /* ─────────────────────────────────────────────────────────────────────────────
    FILTER ROW
 ───────────────────────────────────────────────────────────────────────────── */
@@ -622,54 +661,3 @@ td.strength {
 }
 
 .filter-card.active .filter-label { color: rgba(255,255,255,0.8); }
-
-/* ─────────────────────────────────────────────────────────────────────────────
-   SIGNAL MODAL
-───────────────────────────────────────────────────────────────────────────── */
-
-#signal-modal {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: stretch;
-  padding: 20px;
-  --modal-width: 25%;
-}
-
-#signal-modal h3 {
-  padding: 10px;
-  font-size: 14px;
-  font-weight: 600;
-  color: #111827;
-  text-align: center;
-}
-
-#signal-modal input,
-#signal-modal select,
-#signal-modal button {
-  width: 100%;
-  height: 36px;
-  margin-bottom: 8px;
-  padding: 8px 12px;
-  border: 1px solid var(--border, #d1d5db);
-  border-radius: 7px;
-  font-size: 13px;
-  font-family: inherit;
-  box-sizing: border-box;
-  transition: border-color 0.15s;
-}
-
-#signal-modal input:focus,
-#signal-modal select:focus {
-  outline: none;
-  border-color: var(--pink);
-}
-
-#signal-modal button {
-  background: var(--pink);
-  border: none;
-  font-weight: 600;
-  color: white;
-  cursor: pointer;
-  transition: background 0.15s;
-}

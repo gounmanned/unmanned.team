@@ -41,12 +41,12 @@ class InventoryRollup {
             if (el) el.textContent = this.assets.filter(a => a.type === type).length;
         });
 
-        const signalsForAccount = Object.values(this.state.signals[this.state.account()]);
+        const open = Object.values(this.state.signals[this.state.account()]).filter(s => s.status.startsWith('O'));
 
         const rows = this.assets
             .filter(a => a.type === this.scope)
             .filter(a => !this.query || a.name.toLowerCase().includes(this.query) || (a.source || '').toLowerCase().includes(this.query))
-            .map(a => ({ ...a, signals: signalsForAccount.filter(s => s.asset == a.name).length }));
+            .map(a => ({ ...a, signals: open.filter(s => s.asset == a.name).length }));
 
         this.wrap.classList.toggle('empty', rows.length === 0);
         document.getElementById('asset-empty-label').textContent = this.query

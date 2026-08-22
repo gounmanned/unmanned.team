@@ -35,6 +35,11 @@ class SiteHeader extends HTMLElement {
           width: 24px;
           object-fit: contain;
         }
+        .text-group {
+          display: flex;
+          align-items: baseline;
+          gap: 6px;
+        }
         .company-name {
           font-size: 0.95rem;
           font-weight: 600;
@@ -43,7 +48,7 @@ class SiteHeader extends HTMLElement {
         .tagline {
           font-size: 0.9rem;
           color: var(--gray-mid, #6b7280);
-          margin-left: 6px;
+          margin-left: 0;
         }
         nav {
           display: flex;
@@ -73,8 +78,10 @@ class SiteHeader extends HTMLElement {
       <div class="header-container">
         <div class="logo-area">
           <img src="${this.getAttribute('logo') ?? 'https://cdn.unmanned.team/img/logo.png'}">
-          <span class="company-name"></span>
-          <span class="tagline"></span>
+          <span class="text-group">
+            <span class="company-name"></span>
+            <span class="tagline"></span>
+          </span>
         </div>
         <nav>
           <slot></slot>

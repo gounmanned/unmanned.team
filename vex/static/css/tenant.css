@@ -4,7 +4,7 @@
 
 .top-panel {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   align-items: stretch;
   gap: 14px;
 }
@@ -16,11 +16,10 @@
   min-width: 0;
 }
 
-/** shared card shell **/
+/** shared shell for the 3 secondary cards **/
 
 .inventory-card,
-.monitors-card,
-.breach-today-card {
+.monitors-card {
   cursor: pointer;
   position: relative;
   margin: 10px 0 5px;
@@ -33,6 +32,34 @@
   height: 96px;
 }
 
+/** breach card **/
+
+.breach-today-card {
+  cursor: pointer;
+  position: relative;
+  margin: 10px 0 5px;
+  padding: 10px 14px;
+  box-sizing: border-box;
+  border-radius: 10px;
+  border: 1px solid var(--gray-line);
+  display: flex;
+  flex-direction: column;
+  height: 96px;
+  transition: border-color 0.15s, background 0.15s;
+  /* no explicit background — matches .inventory-card / .monitors-card by default */
+}
+
+/** subtle alarm state **/
+
+.breach-today-card[data-state="active"] {
+  border-color: rgba(220, 38, 38, 0.25);
+  background: rgba(220, 38, 38, 0.015);
+}
+
+.breach-today-card[data-state="active"] .monitor-label {
+  color: #b91c1c;
+}
+
 .monitor-label {
   flex: 0 0 auto;
   font-size: 9.5px;
@@ -40,6 +67,19 @@
   letter-spacing: 0.5px;
   color: var(--text-muted);
   text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.breach-today-label-icon {
+  font-size: 13px !important;
+  color: #16a34a;
+  transition: color 0.15s;
+}
+
+.breach-today-card[data-state="active"] .breach-today-label-icon {
+  color: #dc2626;
 }
 
 .monitor-body {
@@ -72,6 +112,14 @@
   max-width: calc(100% - 18px);
 }
 
+.breach-today-card .monitor-value--text {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 22px;
+  max-width: calc(100% - 18px);
+}
+
 .monitor-breakdown {
   display: flex;
   align-items: center;
@@ -90,6 +138,15 @@
   min-width: 0;
 }
 
+.breach-today-card .monitor-breakdown-item {
+  font-size: 11px;
+}
+
+.breach-today-card .monitor-breakdown-item .material-symbols-outlined {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
 .monitor-breakdown-item span:not(.material-symbols-outlined) {
   white-space: nowrap;
   overflow: hidden;
@@ -105,24 +162,6 @@
   color: var(--text-muted);
 }
 
-.monitor-breakdown-item--warning,
-.monitor-breakdown-item--connected {
-  font-family: inherit;
-}
-
-.monitor-breakdown-item--warning {
-  color: #b45309;
-}
-
-.monitor-breakdown-item--warning .material-symbols-outlined,
-.monitor-breakdown-item--connected .material-symbols-outlined {
-  font-size: 13px;
-}
-
-.monitor-breakdown-item--warning .material-symbols-outlined {
-  color: #b45309;
-}
-
 .monitor-arrow,
 .breach-today-arrow {
   position: absolute;
@@ -134,10 +173,6 @@
   transition: transform 0.15s, color 0.15s;
 }
 
-.breach-today-arrow {
-  display: none;
-}
-
 .inventory-card:hover .monitor-arrow,
 .monitors-card:hover .monitor-arrow,
 .breach-today-card:hover .breach-today-arrow {
@@ -145,29 +180,35 @@
   color: var(--pink);
 }
 
+.breach-today-card[data-state="active"]:hover .breach-today-arrow {
+  color: #b91c1c;
+}
+
 /** breach card empty state **/
 
 .breach-today-empty {
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 6px;
-  font-size: 11px;
-  color: var(--text-muted);
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 3px;
 }
 
-.breach-today-empty .material-symbols-outlined {
-  font-size: 15px;
-  color: #16a34a;
-}
-
-.breach-today-empty p {
+.breach-today-empty-title {
   margin: 0;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.breach-today-empty-sub {
+  margin: 0;
+  font-size: 10.5px;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text-muted);
 }
 
 .breach-today-card[data-state="empty"] .breach-today-content { display: none; }
 .breach-today-card[data-state="active"] .breach-today-empty { display: none; }
-.breach-today-card[data-state="active"] .breach-today-arrow { display: block; }
 
 @media (max-width: 720px) {
   .top-panel { grid-template-columns: 1fr; height: auto; }

@@ -59,7 +59,7 @@ class TenantScreen {
         });
 
         await Promise.all([inventory, monitors, logs]).finally(scenario);
-    }    
+    }
 
     refresh(status){
         const count = document.querySelector(`[data-filter="${status}"] .filter-count`);

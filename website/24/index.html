@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="UTF-8">
+<script>document.documentElement.classList.replace('no-js','js');</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>24-hour security test</title>
+<meta name="description" content="A 24-hour security test run by Vex. Know exactly where you're exposed before someone else finds out first.">
+<link rel="apple-touch-icon" href="https://cdn.unmanned.team/img/logo.png">
+<link rel="icon" type="image/png" href="https://cdn.unmanned.team/img/logo.png">
+<meta property="og:title" content="24-hour security test" />
+<meta property="og:description" content="A 24-hour security test run by Vex. Know exactly where you're exposed before someone else finds out first." />
+<meta property="og:type" content="website" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&family=Hedvig+Letters+Serif&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.unmanned.team/css/global.css">
+<style>
+  :root{
+    --white:#ffffff;
+    --ink:#0b0c0d;
+    --pink:#e01280;
+    --gray-line:#e3e3e0;
+    --gray-mid:#87878c;
+  }
+  html{ overflow-x:hidden; }
+  body{
+    background:var(--white);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+  }
+  .mono{ font-family:'JetBrains Mono',monospace; letter-spacing:0.04em; }
+
+  /* ---------- SHARED HUD VOCABULARY (matches unmanned.team) ---------- */
+  .status-dot{
+    width:6px;height:6px;border-radius:50%;
+    background:var(--pink);
+    box-shadow:0 0 0 0 rgba(224,18,128,0.5);
+    animation:pulse 2.2s infinite;
+    flex-shrink:0; display:inline-block;
+  }
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(224,18,128,0.45);}
+    70%{box-shadow:0 0 0 8px rgba(224,18,128,0);}
+    100%{box-shadow:0 0 0 0 rgba(224,18,128,0);}
+  }
+  .eyebrow-label{
+    font-size:11px; letter-spacing:0.18em; text-transform:uppercase;
+    color:var(--gray-mid); display:flex; align-items:center; gap:11px;
+  }
+  .corner{
+    position:absolute;
+    width:var(--corner-size, 28px); height:var(--corner-size, 28px);
+    border-color:var(--ink); opacity:0.55;
+  }
+  .corner.tl{border-top:1.5px solid;border-left:1.5px solid;}
+  .corner.tr{border-top:1.5px solid;border-right:1.5px solid;}
+  .corner.bl{border-bottom:1.5px solid;border-left:1.5px solid;}
+  .corner.br{border-bottom:1.5px solid;border-right:1.5px solid;}
+
+  .hud-frame{ position:fixed; inset:0; pointer-events:none; z-index:40; }
+  .hud-frame .corner.tl{top:46px;left:20px;}
+  .hud-frame .corner.tr{top:46px;right:20px;}
+  .hud-frame .corner.bl{bottom:20px;left:20px;}
+  .hud-frame .corner.br{bottom:20px;right:20px;}
+
+  .hud-box{ position:relative; }
+  .hud-box .corner{ --corner-size:20px; }
+  .hud-box .corner.tl{top:0;left:0;}
+  .hud-box .corner.tr{top:0;right:0;}
+  .hud-box .corner.bl{bottom:0;left:0;}
+  .hud-box .corner.br{bottom:0;right:0;}
+
+  .scan-sweep{ position:absolute; inset:0; pointer-events:none; overflow:hidden; z-index:1; }
+  .scan-sweep::after{
+    content:''; position:absolute; left:0;right:0; height:120px; top:-120px;
+    background:linear-gradient(to bottom, rgba(224,18,128,0) 0%, rgba(224,18,128,0.06) 50%, rgba(224,18,128,0) 100%);
+    animation:sweep 2.6s cubic-bezier(0.4,0,0.2,1) 1;
+  }
+  @keyframes sweep{ 0%{top:-120px;} 100%{top:100%;} }
+
+  .classbar{
+    position:fixed; top:0; left:0; right:0; z-index:60;
+    background:#0b0c0d; color:#87878c;
+    font-family:'JetBrains Mono',monospace; font-size:9.5px;
+    letter-spacing:0.16em; text-transform:uppercase; text-align:center;
+    padding:6px 0;
+  }
+
+  @media (max-width:700px){
+    .hud-frame .corner{width:18px;height:18px;}
+    .hud-frame .corner.tl,.hud-frame .corner.tr{top:64px;}
+    .hud-frame .corner.bl,.hud-frame .corner.br{bottom:12px;}
+    .hud-frame .corner.tl,.hud-frame .corner.bl{left:12px;}
+    .hud-frame .corner.tr,.hud-frame .corner.br{right:12px;}
+    .classbar{font-size:8.5px;}
+  }
+
+  /* ---------- HERO — signature element: the 24hr mission clock ---------- */
+  .hero{
+    position:relative;
+    min-height:100svh;
+    display:flex; align-items:center;
+    padding:148px 24px 80px;
+  }
+  .hero-inner{
+    max-width:1080px; margin:0 auto; width:100%;
+    display:grid; grid-template-columns:1.05fr 0.95fr;
+    gap:64px; align-items:center;
+  }
+  .hero-eyebrow{ margin-bottom:22px; }
+  .hero h1{
+    font-family:'Space Grotesk',sans-serif; font-weight:600;
+    font-size:clamp(38px, 5vw, 60px);
+    line-height:1.06; letter-spacing:-0.015em;
+    margin-bottom:22px;
+  }
+  .hero h1 em{ font-style:normal; color:var(--pink); }
+  .hero-sub{
+    font-size:17.5px; line-height:1.75; color:#39393c;
+    max-width:480px; margin-bottom:34px;
+  }
+  .hero-ctas{ display:flex; align-items:center; gap:22px; flex-wrap:wrap; }
+  .btn-primary{
+    display:inline-flex; align-items:center; gap:10px;
+    background:var(--ink); color:var(--white);
+    font-family:'JetBrains Mono',monospace; font-size:12.5px; font-weight:500;
+    letter-spacing:0.1em; text-transform:uppercase;
+    padding:15px 26px; text-decoration:none;
+    transition:background 0.2s;
+  }
+  .btn-primary:hover{ background:var(--pink); }
+  .btn-primary .arrow{ transition:transform 0.2s; display:inline-block; }
+  .btn-primary:hover .arrow{ transform:translateX(3px); }
+
+  /* clock dial */
+  .clock-wrap{ display:flex; justify-content:center; align-items:center; position:relative; }
+  .clock-dial{ width:min(340px, 82vw); height:min(340px, 82vw); position:relative; }
+  .clock-dial svg{ width:100%; height:100%; display:block; }
+  .clock-track{ fill:none; stroke:var(--gray-line); stroke-width:1.5; }
+  .clock-tick{ stroke:var(--gray-line); stroke-width:1; }
+  .clock-tick.major{ stroke:var(--ink); stroke-opacity:0.4; stroke-width:1.5; }
+  .clock-arc{ fill:none; stroke-linecap:round; }
+  .clock-arc.scan{ stroke:rgba(224,18,128,0.32); stroke-width:3; }
+  .clock-arc.probe{ stroke:rgba(224,18,128,0.7); stroke-width:3; }
+  .clock-hand{
+    stroke:var(--pink); stroke-width:2; stroke-linecap:round;
+    transform-origin:150px 150px;
+    animation:sweepHand 18s linear infinite;
+  }
+  @keyframes sweepHand{ from{ transform:rotate(0deg); } to{ transform:rotate(360deg); } }
+  .clock-marker{ fill:var(--ink); }
+  .clock-label{
+    font-family:'JetBrains Mono',monospace; font-size:9px;
+    fill:var(--gray-mid); letter-spacing:0.06em;
+  }
+  .clock-center{
+    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    text-align:center; pointer-events:none;
+  }
+  .clock-readout{
+    font-family:'JetBrains Mono',monospace; font-weight:500;
+    font-size:clamp(20px, 3vw, 26px); letter-spacing:0.02em; color:var(--ink);
+  }
+  .clock-readout-label{
+    font-family:'JetBrains Mono',monospace; font-size:9.5px;
+    letter-spacing:0.16em; text-transform:uppercase; color:var(--pink);
+    margin-top:4px;
+  }
+
+  @media (max-width:860px){
+    .hero-inner{ grid-template-columns:1fr; gap:48px; }
+    .hero{ padding:120px 20px 64px; min-height:auto; }
+    .clock-wrap{ order:-1; }
+  }
+
+  .divider{
+    position:relative; border-top:1px solid var(--gray-line);
+    display:flex; justify-content:space-between;
+    padding:14px 56px; font-size:10px; color:var(--gray-mid);
+  }
+  @media (max-width:700px){ .divider{padding:14px 20px;} }
+
+  /* ---------- WHY IT MATTERS ---------- */
+  .matters{
+    padding:140px 24px 150px;
+    max-width:1080px; margin:0 auto;
+  }
+  @media (max-width:820px){ .matters{padding:96px 24px 110px;} }
+  .matters-grid{
+    display:grid; grid-template-columns:0.95fr 1.05fr; gap:72px; align-items:start;
+  }
+  @media (max-width:860px){ .matters-grid{ grid-template-columns:1fr; gap:48px; } }
+
+  .matters-label{ margin-bottom:26px; }
+  .matters h2{
+    font-family:'Space Grotesk',sans-serif; font-weight:500;
+    font-size:clamp(28px, 3vw, 34px); line-height:1.22; letter-spacing:-0.01em;
+    margin-bottom:22px;
+  }
+  .matters h2 u{ text-decoration-color:var(--pink); text-underline-offset:3px; }
+  .matters p{ font-size:15.5px; line-height:1.75; color:#2b2b2b; }
+  .matters p + p{ margin-top:16px; }
+  .matters p strong{ color:var(--ink); font-weight:600; }
+
+  .recon-panel{
+    border:1px solid var(--gray-line);
+    position:relative;
+  }
+  .recon-panel-bar{
+    display:flex; align-items:center; justify-content:space-between;
+    gap:16px; padding:15px 22px;
+    border-bottom:1px solid var(--gray-line);
+    background:rgba(224,18,128,0.025);
+  }
+  .recon-panel-label{
+    display:flex; align-items:center; gap:10px;
+    font-family:'JetBrains Mono',monospace; font-size:10.5px; font-weight:500;
+    letter-spacing:0.13em; text-transform:uppercase; color:var(--ink);
+  }
+  .recon-panel-status{
+    font-family:'JetBrains Mono',monospace; font-size:9.5px;
+    letter-spacing:0.12em; text-transform:uppercase; color:var(--gray-mid);
+    white-space:nowrap;
+  }
+  .recon-item{
+    display:grid; grid-template-columns:64px 1fr; gap:18px;
+    padding:22px 22px; border-bottom:1px solid var(--gray-line);
+  }
+  .recon-item:last-child{ border-bottom:none; }
+  .recon-time{
+    font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--pink);
+    letter-spacing:0.02em; padding-top:2px;
+  }
+  .recon-item h4{
+    font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:15.5px;
+    margin-bottom:6px; letter-spacing:-0.005em;
+  }
+  .recon-item p{ font-size:14px; line-height:1.65; color:var(--gray-mid); }
+
+  /* ---------- DARK FRAME (shared) ---------- */
+  .dark-frame{
+    --db-ink:#f3f3f0; --db-mid:#87878c;
+    background:#0b0c0d; color:var(--db-ink);
+    position:relative; padding:140px 24px 150px; overflow:hidden;
+  }
+  .dark-frame .eyebrow-row{ margin-bottom:40px; }
+  .dark-frame .eyebrow-row.mono{ color:var(--db-mid); }
+  .dark-frame .body-wrap{ position:relative; z-index:2; max-width:1080px; margin:0 auto; }
+  @media (max-width:700px){ .dark-frame{padding:96px 20px 110px;} }
+
+  .dark-frame .section-statement{
+    max-width:760px; margin:0 0 22px;
+    font-family:'Space Grotesk',sans-serif; font-weight:500;
+    font-size:clamp(28px, 3.6vw, 42px); line-height:1.14; letter-spacing:-0.015em;
+    color:var(--db-ink);
+  }
+  .dark-frame .section-statement em{ color:var(--pink); font-style:normal; }
+  .dark-frame .section-lead{
+    max-width:620px; font-size:16px; line-height:1.75; color:var(--db-mid);
+    margin-bottom:64px;
+  }
+
+  /* light inversion — swaps the two custom properties everything else reads from,
+     so no two dark-frame sections ever sit back-to-back */
+  .dark-frame.invert-light{
+    background:var(--white); color:var(--ink);
+    --db-ink:#0b0c0d; --db-mid:#6b6b70;
+  }
+
+  /* ---------- ENGAGEMENT TIMELINE ---------- */
+  .eng-track{
+    position:relative; width:100%; height:8px;
+    background:rgba(255,255,255,0.06);
+    margin-bottom:8px;
+  }
+  .eng-seg{ position:absolute; top:0; bottom:0; }
+  .eng-seg.connect, .eng-seg.report{
+    width:3px; background:var(--pink);
+    box-shadow:0 0 8px rgba(224,18,128,0.6);
+  }
+  .eng-seg.scan{ background:rgba(224,18,128,0.28); }
+  .eng-seg.probe{ background:rgba(224,18,128,0.6); }
+  .eng-seg.fill{
+    transform-origin:left center; transform:scaleX(0);
+    animation:fillSeg 1.4s cubic-bezier(0.2,0.7,0.2,1) forwards;
+  }
+  @keyframes fillSeg{ to{ transform:scaleX(1); } }
+
+  .eng-ticks{ position:relative; height:20px; margin-bottom:56px; }
+  .eng-tick{
+    position:absolute; top:0; transform:translateX(-50%);
+    font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--db-mid);
+  }
+
+  .eng-steps{
+    display:grid; grid-template-columns:repeat(4, 1fr);
+    gap:1px; background:rgba(255,255,255,0.08);
+  }
+  .eng-step{
+    background:#0b0c0d; padding:30px 24px; position:relative;
+    display:flex; flex-direction:column;
+  }
+  .eng-step-tag{
+    font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:500;
+    letter-spacing:0.14em; color:var(--pink); text-transform:uppercase;
+    margin-bottom:14px; opacity:0.85;
+  }
+  .eng-step h3{
+    font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:19px;
+    letter-spacing:-0.005em; margin-bottom:10px;
+  }
+  .eng-step p{
+    font-size:14px; line-height:1.65; color:var(--db-mid);
+    flex:1 1 auto; /* paragraph absorbs leftover vertical space so the pill
+                       below it sits at a fixed offset, not a variable one */
+  }
+  .eng-pill{
+    display:inline-block; align-self:flex-start;
+    margin-top:16px; /* fixed gap below the paragraph, instead of auto-pushed
+                         to the bottom of the card */
+    padding:5px 9px; /* symmetric padding so the badge box itself is uniform */
+    font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:500;
+    letter-spacing:0.1em; text-transform:uppercase;
+    border:1px solid rgba(224,18,128,0.35); color:var(--pink);
+  }
+  @media (max-width:860px){
+    .eng-steps{ grid-template-columns:1fr 1fr; }
+  }
+  @media (max-width:560px){
+    .eng-steps{ grid-template-columns:1fr; }
+  }
+
+  /* ---------- READOUT / DELIVERABLE ---------- */
+  .vex-explainer{
+    position:relative; max-width:760px; margin:0 auto;
+    padding:36px 40px; text-align:left;
+    border-top:1px solid color-mix(in srgb, var(--db-ink) 14%, transparent);
+    border-bottom:1px solid color-mix(in srgb, var(--db-ink) 14%, transparent);
+    background:color-mix(in srgb, var(--db-ink) 3%, transparent);
+  }
+  .hud-box-tag{
+    display:block; font-family:'JetBrains Mono',monospace; font-size:10px;
+    letter-spacing:0.16em; text-transform:uppercase; color:var(--db-mid);
+    margin-bottom:14px;
+  }
+  .vex-explainer-final{
+    font-family:'Space Grotesk',sans-serif; font-weight:500;
+    font-size:clamp(18px, 2.2vw, 23px); line-height:1.5; letter-spacing:-0.005em;
+    color:var(--db-ink); margin-bottom:26px;
+  }
+  .vex-explainer-final em{ color:var(--db-ink); font-style:normal; font-weight:600; }
+  .deliv-checks{
+    display:grid; grid-template-columns:repeat(4, auto); gap:22px 32px;
+    padding-top:22px; border-top:1px solid color-mix(in srgb, var(--db-ink) 10%, transparent);
+  }
+  .deliv-check{
+    display:flex; align-items:center; gap:9px;
+    font-family:'JetBrains Mono',monospace; font-size:11.5px;
+    letter-spacing:0.08em; text-transform:uppercase; color:var(--db-mid);
+  }
+  .deliv-check .status-dot{ background:var(--db-ink); animation:none; box-shadow:none; }
+  @media (max-width:700px){
+    .vex-explainer{ padding:26px 22px; }
+    .deliv-checks{ grid-template-columns:1fr 1fr; }
+  }
+
+  /* ---------- CTA ---------- */
+  .cta-frame{
+    background:var(--white); color:var(--ink);
+    padding:130px 24px 150px; text-align:center;
+  }
+  @media (max-width:700px){ .cta-frame{ padding:96px 20px 110px; } }
+  .cta-inner{ max-width:640px; margin:0 auto; }
+  .cta-inner .eyebrow-label{ justify-content:center; margin-bottom:30px; }
+  .cta-statement{
+    font-family:'Space Grotesk',sans-serif; font-weight:500;
+    font-size:clamp(28px, 4vw, 44px); letter-spacing:-0.015em; line-height:1.15;
+    margin-bottom:18px;
+  }
+  .cta-statement em{ color:var(--pink); font-style:normal; }
+  .cta-sub{ font-size:16px; color:var(--gray-mid); margin-bottom:40px; }
+  .cta-cta{
+    display:inline-flex; align-items:baseline; gap:10px;
+    font-family:'JetBrains Mono',monospace; font-size:clamp(16px, 2.2vw, 20px);
+    letter-spacing:0.02em; color:var(--ink); text-decoration:none;
+    border-bottom:1px solid var(--pink); padding-bottom:6px;
+    transition:opacity 0.2s ease;
+  }
+  .cta-cta:hover{ opacity:0.6; }
+  .cta-cta .arrow{ color:var(--pink); transition:transform 0.2s ease; display:inline-block; }
+  .cta-cta:hover .arrow{ transform:translateX(3px); }
+
+  a:focus-visible, .cta-cta:focus-visible, .btn-primary:focus-visible{
+    outline:1.5px solid var(--pink); outline-offset:4px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .status-dot{ animation:none; opacity:0.9; }
+    .clock-hand{ animation:none; }
+    .scan-sweep::after{ animation:none; display:none; }
+    .eng-seg.fill{ animation:none; transform:scaleX(1); }
+    .js .hud-box.reveal .corner,
+    .js .hud-box.reveal .vex-explainer-final,
+    .js .hud-box.reveal .deliv-checks{
+      opacity:1 !important; transform:none !important; animation:none !important; transition:none !important;
+    }
+  }
+
+  .js .hud-box.reveal .corner{ opacity:0; transform:scale(1.4); }
+  .js .hud-box.reveal.in-view .corner{ animation:lockOn 0.7s cubic-bezier(0.2,0.7,0.2,1) forwards; }
+  .js .hud-box.reveal.in-view .corner.tr{ animation-delay:0.06s; }
+  .js .hud-box.reveal.in-view .corner.bl{ animation-delay:0.12s; }
+  .js .hud-box.reveal.in-view .corner.br{ animation-delay:0.18s; }
+  @keyframes lockOn{
+    0%{opacity:0;transform:scale(1.4);}
+    60%{opacity:0.9;}
+    100%{opacity:0.75;transform:scale(1);}
+  }
+  .js .hud-box.reveal .vex-explainer-final,
+  .js .hud-box.reveal .deliv-checks,
+  .js .hud-box.reveal .hud-box-tag{
+    opacity:0; transform:translateY(8px);
+    transition:opacity 0.6s ease, transform 0.6s ease;
+  }
+  .js .hud-box.reveal.in-view .vex-explainer-final,
+  .js .hud-box.reveal.in-view .deliv-checks,
+  .js .hud-box.reveal.in-view .hud-box-tag{
+    opacity:1; transform:translateY(0);
+  }
+
+  footer{
+    border-top:1px solid var(--gray-line);
+    padding:28px 56px 40px;
+    display:flex; justify-content:space-between; align-items:center;
+    font-size:10.5px; color:var(--gray-mid);
+    text-transform:uppercase; letter-spacing:0.08em;
+  }
+  footer a{ color:inherit; text-decoration:none; }
+  footer a:hover{ color:var(--ink); }
+  footer .fmark{ color:var(--ink); font-weight:500; }
+  @media (max-width:700px){
+    footer{ padding:22px 20px 36px; flex-direction:column; gap:10px; text-align:center; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="classbar">UNMANNED, INC · 24-HOUR TEST · MISSION BRIEF</div>
+
+  <div class="hud-frame">
+    <div class="corner tl"></div>
+    <div class="corner tr"></div>
+    <div class="corner bl"></div>
+    <div class="corner br"></div>
+  </div>
+
+  <!-- ============================================================
+       HERO — signature element is the 24-hour mission clock, not
+       the homepage's radar. Same HUD chrome, different centerpiece.
+       ============================================================ -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-left">
+        <div class="hero-eyebrow eyebrow-label mono"><span class="status-dot"></span>24-hour security test</div>
+        <h1>Do you know who can see <em>into</em> your business?</h1>
+        <p class="hero-sub">Attackers don't open with something sophisticated. They walk the perimeter and test every door — quietly, at scale, before you know they were there. Vex runs that same sweep on you first.</p>
+        <div class="hero-ctas">
+          <a class="btn-primary" href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener">Schedule test <span class="arrow">→</span></a>
+        </div>
+      </div>
+      <div class="clock-wrap">
+        <div class="clock-dial">
+          <svg viewBox="0 0 300 300" aria-hidden="true">
+            <circle class="clock-track" cx="150" cy="150" r="120"></circle>
+            <path class="clock-arc scan" d="M 132.9 32.4 A 120 120 0 1 1 32.4 167.1"></path>
+            <path class="clock-arc probe" d="M 45.9 244.9 A 120 120 0 0 1 22.2 138.5"></path>
+            <g id="clockTicks"></g>
+            <line class="clock-hand" x1="150" y1="150" x2="150" y2="38"></line>
+            <circle class="clock-marker" cx="150" cy="30" r="3.5"></circle>
+          </svg>
+        </div>
+        <div class="clock-center">
+          <div class="clock-readout mono" id="clockReadout">T+00:00:00</div>
+          <div class="clock-readout-label">24-hr recon window</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider mono">
+    <span>LOG · 00:00:01</span>
+    <span>PERIMETER MAPPED</span>
+  </div>
+
+  <!-- ============================================================
+       WHY THIS MATTERS — content from the point-in-time assessment
+       offering, rebuilt as a HUD recon log instead of numbered cards.
+       ============================================================ -->
+  <section class="matters">
+    <div class="matters-grid">
+      <div>
+        <div class="matters-label eyebrow-label mono"><span class="status-dot"></span>Why this matters</div>
+        <h2>Attackers look for an <u>open door</u></h2>
+        <p>Before anyone tries anything sophisticated, they do what any operative does first: <strong>walk the perimeter and test every door</strong>. The unlocked one wins. In your business, that's a forgotten ex-employee account, an email system with no spam filtering, or a domain anyone can impersonate.</p>
+        <p>Most breaches aren't clever. They're opportunistic — someone found something obvious that nobody had closed. Often something that takes ten minutes to fix, once you know it's there.</p>
+        <p>Most business owners have never seen this view of their own company. Not because it's hidden — it's public information, sitting in DNS records and login pages anyone can reach — but because nobody's ever pointed a flashlight at it and told them what they were looking at.</p>
+        <p>The goal isn't to be bulletproof. <strong>Just close the doors.</strong></p>
+      </div>
+      <div class="recon-panel hud-box reveal">
+        <div class="corner tl"></div>
+        <div class="corner tr"></div>
+        <div class="corner bl"></div>
+        <div class="corner br"></div>
+        <div class="recon-panel-bar">
+          <span class="recon-panel-label"><span class="status-dot"></span>Recon log // first 5 minutes</span>
+          <span class="recon-panel-status">Unauthenticated access</span>
+        </div>
+        <div class="recon-item">
+          <div class="recon-time mono">T+00:30</div>
+          <div>
+            <h4>Locate the perimeter</h4>
+            <p>DNS records are public. In under a minute, an attacker maps who hosts your mail, whether spoofing protections exist, and where your web assets are exposed.</p>
+          </div>
+        </div>
+        <div class="recon-item">
+          <div class="recon-time mono">T+01:15</div>
+          <div>
+            <h4>Test the entry points</h4>
+            <p>Microsoft 365 and Google Workspace logins are internet-facing by design. If MFA isn't enforced, one reused password is all it takes.</p>
+          </div>
+        </div>
+        <div class="recon-item">
+          <div class="recon-time mono">T+02:40</div>
+          <div>
+            <h4>Sweep for open ports</h4>
+            <p>Every server exposes 65,535 possible ports. One left open that shouldn't be is a foothold — and a fast one to find.</p>
+          </div>
+        </div>
+        <div class="recon-item">
+          <div class="recon-time mono">T+04:05</div>
+          <div>
+            <h4>Spoof your identity</h4>
+            <p>Without the right email authentication in place, anyone can send mail that looks like it came from you — fake invoices to vendors, fake orders from the "CEO."</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider mono">
+    <span>LOG · 00:00:02</span>
+    <span>ENGAGEMENT WINDOW OPEN</span>
+  </div>
+
+  <!-- ============================================================
+       THE ENGAGEMENT — the 24-hour timeline, echoing the clock dial
+       in linear form. Distinct from the homepage's attack-filter.
+       ============================================================ -->
+  <section class="dark-frame engagement">
+    <div class="scan-sweep" aria-hidden="true"></div>
+    <div class="body-wrap">
+      <div class="eyebrow-row eyebrow-label mono"><span class="status-dot"></span>How it works</div>
+      <h2 class="section-statement">Human-augmented. <em>100% signal.</em></h2>
+      <p class="section-lead">Not just an automated scan with a pretty PDF. Vex — our proprietary platform — handles discovery at machine speed. Our people handle the nuance, the manual validation, and the judgment calls a scanner can't make.</p>
+
+      <div class="eng-track" aria-hidden="true">
+        <div class="eng-seg connect" style="left:0%;"></div>
+        <div class="eng-seg scan fill" style="left:4.2%; width:62.5%;"></div>
+        <div class="eng-seg probe fill" style="left:66.7%; width:29.1%; animation-delay:0.3s;"></div>
+        <div class="eng-seg report" style="left:calc(100% - 3px);"></div>
+      </div>
+      <div class="eng-ticks mono" aria-hidden="true">
+        <span class="eng-tick" style="left:0%;">H0</span>
+        <span class="eng-tick" style="left:25%;">H6</span>
+        <span class="eng-tick" style="left:50%;">H12</span>
+        <span class="eng-tick" style="left:75%;">H18</span>
+        <span class="eng-tick" style="left:100%;">H24</span>
+      </div>
+
+      <div class="eng-steps">
+        <div class="eng-step">
+          <div class="eng-step-tag">Hour 0</div>
+          <h3>Connect</h3>
+          <p>Vex connects to your Microsoft 365 or Google Workspace via API, a few lightweight agents go out, and the clock starts.</p>
+          <span class="eng-pill">AI</span>
+        </div>
+        <div class="eng-step">
+          <div class="eng-step-tag">Hours 1–16</div>
+          <h3>Scan</h3>
+          <p>Vex sweeps the environment: every DNS record, every application, every mail-routing rule. Anomalies get flagged.</p>
+          <span class="eng-pill">AI</span>
+        </div>
+        <div class="eng-step">
+          <div class="eng-step-tag">Hours 17–23</div>
+          <h3>Probe</h3>
+          <p>Analysts with offensive security backgrounds review Vex's findings and go deeper. This is where judgment matters.</p>
+          <span class="eng-pill">Human</span>
+        </div>
+        <div class="eng-step">
+          <div class="eng-step-tag">Hour 24</div>
+          <h3>Report</h3>
+          <p>You get a clear rundown of your actual exposure. Straightforward fixes are often closed live on the debrief call.</p>
+          <span class="eng-pill">Human</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider mono">
+    <span>LOG · 00:00:03</span>
+    <span>FINDINGS COMPILED</span>
+  </div>
+
+  <!-- ============================================================
+       WHAT YOU GET — deliverable, rendered as a readout callout
+       ============================================================ -->
+  <section class="dark-frame deliverable invert-light">
+    <div class="scan-sweep" aria-hidden="true"></div>
+    <div class="body-wrap">
+      <div class="eyebrow-row eyebrow-label mono"><span class="status-dot"></span>What you get</div>
+      <h2 class="section-statement">No noise. <em>A short list of fixes.</em></h2>
+      <p class="section-lead">A short, plain-English list of your exposure — ranked by what actually matters. Not a 40-page technical PDF.</p>
+
+      <div class="vex-explainer hud-box reveal">
+        <div class="corner tl"></div>
+        <div class="corner tr"></div>
+        <div class="corner bl"></div>
+        <div class="corner br"></div>
+        <span class="hud-box-tag">Debrief call</span>
+        <p class="vex-explainer-final">Anything we can close on the call, <em>we close on the call</em> — DNS records, stale accounts, quick configuration changes, done before you hang up. No ongoing commitment. The findings are yours: hand them to any IT provider or fix them yourself.</p>
+        <div class="deliv-checks">
+          <div class="deliv-check"><span class="status-dot"></span>DNS hardening</div>
+          <div class="deliv-check"><span class="status-dot"></span>Identity audit</div>
+          <div class="deliv-check"><span class="status-dot"></span>MFA enforcement</div>
+          <div class="deliv-check"><span class="status-dot"></span>Domain verification</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider mono">
+    <span>LOG · 00:00:04</span>
+    <span>WINDOW CLOSED</span>
+  </div>
+
+  <!-- ============================================================
+       CTA
+       ============================================================ -->
+  <section class="cta-frame">
+    <div class="cta-inner">
+      <div class="eyebrow-label mono"><span class="status-dot"></span>Get started</div>
+      <h2 class="cta-statement">Know if you're <em>exposed</em> — in 24 hours.</h2>
+      <p class="cta-sub">One call to scope. One day to run.</p>
+      <a class="cta-cta" href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener">Schedule test <span class="arrow">→</span></a>
+    </div>
+  </section>
+
+  <footer class="mono">
+    <span class="fmark">UNMANNED</span>
+    <span>© 2026 UNMANNED, INC.</span>
+    <a href="https://gounmanned.substack.com/" target="_blank" rel="noopener noreferrer">READ OUR BLOG</a>
+  </footer>
+
+  <script>
+    // Build the 24 hour ticks on the dial (24 minor, 4 major at 0/6/12/18)
+    (function(){
+      var g = document.getElementById('clockTicks');
+      if(!g) return;
+      var cx = 150, cy = 150, rOuter = 120, rInner = 113, rMajorInner = 108, rLabel = 96;
+      var NS = 'http://www.w3.org/2000/svg';
+      for (var h = 0; h < 24; h++){
+        var angle = (-90 + h * 15) * Math.PI / 180;
+        var isMajor = (h % 6 === 0);
+        var x1 = cx + Math.cos(angle) * rOuter;
+        var y1 = cy + Math.sin(angle) * rOuter;
+        var x2 = cx + Math.cos(angle) * (isMajor ? rMajorInner : rInner);
+        var y2 = cy + Math.sin(angle) * (isMajor ? rMajorInner : rInner);
+        var line = document.createElementNS(NS, 'line');
+        line.setAttribute('x1', x1); line.setAttribute('y1', y1);
+        line.setAttribute('x2', x2); line.setAttribute('y2', y2);
+        line.setAttribute('class', 'clock-tick' + (isMajor ? ' major' : ''));
+        g.appendChild(line);
+        if (isMajor){
+          var lx = cx + Math.cos(angle) * rLabel;
+          var ly = cy + Math.sin(angle) * rLabel;
+          var text = document.createElementNS(NS, 'text');
+          text.setAttribute('x', lx); text.setAttribute('y', ly + 3);
+          text.setAttribute('text-anchor', 'middle');
+          text.setAttribute('class', 'clock-label mono');
+          text.textContent = (h < 10 ? '0' : '') + h;
+          g.appendChild(text);
+        }
+      }
+    })();
+
+    // Ticking T+ readout, loops across a stylised 24hr span
+    (function(){
+      var el = document.getElementById('clockReadout');
+      if(!el) return;
+      var totalSeconds = 24 * 60 * 60;
+      var loopMs = 18000; // matches the hand's rotation speed
+      var start = performance.now();
+      function frame(now){
+        var elapsed = (now - start) % loopMs;
+        var frac = elapsed / loopMs;
+        var s = Math.floor(frac * totalSeconds);
+        var hh = Math.floor(s / 3600);
+        var mm = Math.floor((s % 3600) / 60);
+        var ss = s % 60;
+        function pad(n){ return (n < 10 ? '0' : '') + n; }
+        el.textContent = 'T+' + pad(hh) + ':' + pad(mm) + ':' + pad(ss);
+        requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+    })();
+
+    // Scroll reveal for hud-box readouts
+    (function(){
+      var boxes = document.querySelectorAll('.hud-box.reveal');
+      if(!boxes.length){ return; }
+      var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if(!('IntersectionObserver' in window) || reduceMotion){
+        boxes.forEach(function(el){ el.classList.add('in-view'); });
+        return;
+      }
+      var io = new IntersectionObserver(function(entries){
+        entries.forEach(function(entry){
+          if(entry.isIntersecting){
+            entry.target.classList.add('in-view');
+            io.unobserve(entry.target);
+          }
+        });
+      }, { threshold:0.35 });
+      boxes.forEach(function(el){ io.observe(el); });
+    })();
+  </script>
+</body>
+</html>

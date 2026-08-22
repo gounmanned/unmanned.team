@@ -142,48 +142,6 @@
 
 #signal-sidebar .delete-btn .material-symbols-outlined { font-size: 16px; }
 
-#signal-sidebar .reply-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 6px;
-  padding: 8px 0 14px;
-}
-
-#signal-sidebar .reply-btn {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 6px 13px;
-  border: 1px solid transparent;
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: 500;
-  font-family: inherit;
-  cursor: pointer;
-  transition: background 0.12s, color 0.12s;
-}
-
-#signal-sidebar .reply-btn .material-symbols-outlined { font-size: 13px; }
-
-#signal-sidebar .reply-btn--note {
-  background: var(--gray-soft);
-  border-color: var(--gray-line);
-  color: var(--text-strong);
-}
-
-#signal-sidebar .reply-btn--note:hover {
-  background: #e5e4e0;
-  color: var(--text-body);
-}
-
-#signal-sidebar .reply-btn--send {
-  background: var(--pink);
-  border-color: #b50f6a;
-  color: #fff;
-}
-
-#signal-sidebar .reply-btn--send:hover { background: #c9106f; }
-
 #signal-sidebar .severity-banner {
   display: flex;
   align-items: center;
@@ -247,15 +205,10 @@
   letter-spacing: normal;
 }
 
-#signal-sidebar .new-message { padding: 0 18px; }
-#signal-sidebar .textbox-container .submit-button { display: none; }
-
-#signal-sidebar .new-message .textbox-container { position: relative; }
-
 #signal-sidebar .new-message .modern-textbox {
   width: 100%;
   height: 96px;
-  margin: 10px 0 5px;
+  margin: 10px 0 10px;
   padding: 13px 40px 13px 14px;
   border: 1px solid var(--gray-line);
   border-radius: 10px;
@@ -276,4 +229,36 @@
 }
 
 #signal-sidebar .new-message .modern-textbox::placeholder { color: var(--text-faint); }
-#signal-sidebar .new-message .submit-button { bottom: 17px; }
+#signal-sidebar .new-message { padding: 0 18px; }
+
+#signal-sidebar .new-message .textbox-container { position: relative; }
+
+#signal-sidebar .new-message .send-btn {
+  position: absolute;
+  right: 8px;
+  bottom: 18px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: var(--pink);
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.12s, opacity 0.12s;
+}
+
+#signal-sidebar .new-message .send-btn:hover { background: #c9106f; }
+
+#signal-sidebar .new-message .send-btn .material-symbols-outlined {
+  font-size: 16px;
+}
+
+#signal-sidebar .new-message .send-btn:disabled {
+  background: var(--gray-line);
+  color: var(--text-faint);
+  cursor: default;
+}

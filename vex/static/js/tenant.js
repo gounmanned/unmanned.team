@@ -49,7 +49,7 @@ class TenantScreen {
 
         const logs = spin(document.getElementById('open-audit-rollup'), async () => {
             const messages = await this.api.audit.messages(1);
-            document.getElementById('audit-count').textContent = messages.length;
+            document.getElementById('audit-count').textContent = messages.length.toLocaleString();
         });
 
         const scenario = spin(document.getElementById('open-breach-rollup'), async () => {

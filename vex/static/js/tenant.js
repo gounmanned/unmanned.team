@@ -171,6 +171,8 @@ class TenantScreen {
 
         document.getElementById('delegation-notice').addEventListener('click', () => {
             this.state.delegate = null;
+            this.state.api.reset();
+
             document.dispatchEvent(new CustomEvent('page:reset'));
             document.querySelector('site-overlay').click();
             document.querySelector('.delegation-notice').classList.remove('visible');

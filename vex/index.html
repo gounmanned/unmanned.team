@@ -239,9 +239,14 @@
     <div class="audit-terminal" id="audit-terminal">
       <div class="audit-terminal-header">
         <div class="audit-search">
-          <span class="material-symbols-outlined">search</span>
-          <input type="text" id="audit-filter" placeholder="grep logs…" autocomplete="off">
+            <span class="material-symbols-outlined">search</span>
+            <input type="text" id="audit-filter" placeholder="grep logs…" autocomplete="off">
         </div>
+        <select id="audit-range">
+            <option value="1" selected>1h</option>
+            <option value="8">8h</option>
+            <option value="24">24h</option>
+        </select>
       </div>
 
       <div class="audit-terminal-body" id="audit-terminal-body">

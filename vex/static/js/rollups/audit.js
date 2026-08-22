@@ -9,28 +9,34 @@ class AuditRollup {
         this.emptyLabel = document.getElementById('audit-empty-label');
         this.footer = document.getElementById('audit-terminal-footer');
         this.filter = document.getElementById('audit-filter');
+        this.range = document.getElementById('audit-range');
 
         this.logs = [];
         this.query = '';
+        this.hours = 1;
         this.listen();
     }
 
     async reset() {
         this.logs = [];
         this.query = '';
+        this.hours = 1;
         this.filter.value = '';
+        this.range.value = '1';
         this.watermark.show("Unlimited audit trail");
         this.render();
     }
 
     async reload() {
-        const stream = await this.api.audit.messages(1) || [];
-        this.logs = stream.map(log => {
-            const [group, ...rest] = log.message.split(' | ');
-            return { timestamp: log.timestamp, group, message: rest.join(' | ') };
+        SiteSpinner.withLoading(async () => {
+            const stream = await this.api.audit.messages(this.hours) || [];
+            this.logs = stream.map(log => {
+                const [group, ...rest] = log.message.split(' | ');
+                return { timestamp: log.timestamp, group, message: rest.join(' | ') };
+            });
+            this.watermark.hide();
+            this.render();
         });
-        this.watermark.hide();
-        this.render();
     }
 
     render() {
@@ -52,8 +58,8 @@ class AuditRollup {
         `).join('');
 
         this.footer.innerHTML = `
-            <span>${rows.length} ${rows.length === 1 ? 'entry' : 'entries'}</span>
-            ${q ? `<span>· filtered from ${this.logs.length}</span>` : ''}
+            <span>${rows.length.toLocaleString()} ${rows.length === 1 ? 'entry' : 'entries'}</span>
+            ${q ? `<span>· filtered from ${this.logs.length.toLocaleString()}</span>` : ''}
         `;
     }
 
@@ -77,6 +83,11 @@ class AuditRollup {
         this.filter.addEventListener('input', ev => {
             this.query = ev.target.value.trim().toLowerCase();
             this.render();
+        });
+
+        this.range.addEventListener('change', ev => {
+            this.hours = Number(ev.target.value);
+            this.reload();
         });
     }
 }

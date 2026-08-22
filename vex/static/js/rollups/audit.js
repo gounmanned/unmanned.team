@@ -24,7 +24,7 @@ class AuditRollup {
     }
 
     async reload() {
-        const stream = await this.api.audit.messages() || [];
+        const stream = await this.api.audit.messages(1) || [];
         this.logs = stream.map(log => {
             const [group, ...rest] = log.message.split(' | ');
             return { timestamp: log.timestamp, group, message: rest.join(' | ') };

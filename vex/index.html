@@ -97,8 +97,20 @@
         <span class="material-symbols-outlined monitor-arrow">chevron_right</span>
       </div>
 
-      <div></div>
-
+      <div class="monitors-card" id="open-audit-rollup">
+        <div class="monitor-label">Audit logs</div>
+        <div class="monitor-body">
+          <div class="monitor-value" id="audit-count">0</div>
+          <div class="monitor-breakdown">
+            <span class="monitor-breakdown-item">
+              <span class="material-symbols-outlined">history</span>
+              <span>past 1 hour</span>
+            </span>
+          </div>
+        </div>
+        <span class="material-symbols-outlined monitor-arrow">chevron_right</span>
+      </div>
+      
     </div>
 
     <div class="filter-header">
@@ -160,7 +172,6 @@
         </button>
       </div>
 
-      <a id="open-audit-rollup">Audit</a>
       <a id="open-backup-sidebar">Backups</a>
       <a id="open-signal-sidebar">+ Signal</a>
     </footer>

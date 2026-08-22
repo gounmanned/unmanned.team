@@ -49,6 +49,11 @@ class TenantScreen {
             document.getElementById('monitors-connected-text').textContent = google ? 'Google Workspace connected' : 'Microsoft 365 connected';
         });
 
+        const logs = withLoading(document.getElementById('audit-count'), async () => {
+            const messages = await this.api.audit.messages(1);
+            document.getElementById('audit-count').textContent = messages.length;
+        });
+
         const scenario = () => withLoading(document.querySelector('.breach-today-card'), async () => {
             const card = document.querySelector('.breach-today-card');
             this.breaches = await this.api.breach.list();
@@ -61,7 +66,7 @@ class TenantScreen {
             document.getElementById('breach-today-asset').textContent = this.state.signals[this.state.account()][breach.id].asset ?? '—';
         });
 
-        await Promise.all([inventory, monitors]).finally(scenario);
+        await Promise.all([inventory, monitors, logs]).finally(scenario);
     }
 
     refresh(status){

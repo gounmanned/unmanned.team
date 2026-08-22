@@ -471,7 +471,7 @@ td.strength {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 2px;
+  gap: 8px;
   background: var(--gray-panel);
   border-top: 1px solid var(--gray-line);
   box-sizing: border-box;
@@ -494,6 +494,17 @@ td.strength {
 .links a:hover {
   background: var(--gray-hover);
   color: var(--ink);
+}
+
+.links a:not(:first-of-type)::before {
+  content: '';
+  position: absolute;
+  left: -1px;
+  top: 50%;
+  width: 1px;
+  height: 14px;
+  background: var(--gray-mid);
+  transform: translateY(-50%);
 }
 
 .links .view-toggle {
@@ -543,4 +554,17 @@ td.strength {
 .links .toggle-btn.active .knob::after {
   transform: translateX(13px);
   background: var(--pink);
+}
+
+.links a.cta {
+  color: var(--pink);
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.links a.cta:hover {
+  background: rgba(224, 18, 128, 0.08);
+  color: var(--pink);
 }

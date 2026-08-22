@@ -22,39 +22,31 @@ class TenantScreen {
     }
 
     async panel() {
-        const withLoading = async (el, fn) => {
-            el.classList.add('loading');
-            try {
-                return await fn();
-            } finally {
-                el.classList.remove('loading');
-            }
-        };
-
-        const inventory = withLoading(document.getElementById('monitor-count'), async () => {
+        const inventory = SiteSpinner.withLoading(async () => {
             const assets = await this.api.inventory.list();
             document.getElementById('monitor-users').textContent = assets.filter(a => a.metadata?.group === 'identity').length ?? 0;
             document.getElementById('monitor-domains').textContent = assets.filter(a => a.metadata?.group === 'domain').length ?? 0;
             document.getElementById('monitor-count').textContent = assets?.length ?? 0;
         });
 
-        const monitors = withLoading(document.getElementById('monitors-count'), async () => {
+        const monitors = SiteSpinner.withLoading(async () => {
             const m = await this.api.monitors.list();
-            const google = m.some(m => /google/i.test(m));
-            const microsoft = m.some(m => /microsoft/i.test(m));
+            const google = m.some(x => /google/i.test(x));
+            const microsoft = m.some(x => /microsoft/i.test(x));
 
             document.getElementById('monitors-count').textContent = m?.length ?? 0;
             document.getElementById('monitors-warning').style.display = google || microsoft ? 'none' : 'flex';
             document.getElementById('monitors-connected').style.display = google || microsoft ? 'flex' : 'none';
-            document.getElementById('monitors-connected-text').textContent = google ? 'Google Workspace connected' : 'Microsoft 365 connected';
+            document.getElementById('monitors-connected-text').textContent =
+                google ? 'Google Workspace connected' : microsoft ? 'Microsoft 365 connected' : '';
         });
 
-        const logs = withLoading(document.getElementById('audit-count'), async () => {
+        const logs = SiteSpinner.withLoading(async () => {
             const messages = await this.api.audit.messages(1);
             document.getElementById('audit-count').textContent = messages.length;
         });
 
-        const scenario = () => withLoading(document.querySelector('.breach-today-card'), async () => {
+        const scenario = () => SiteSpinner.withLoading(async () => {
             const card = document.querySelector('.breach-today-card');
             this.breaches = await this.api.breach.list();
             const breach = this.breaches?.find(b => new Date(b.created).toDateString() === new Date().toDateString());

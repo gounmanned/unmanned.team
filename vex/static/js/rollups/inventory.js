@@ -8,7 +8,6 @@ class InventoryRollup {
     constructor(state) {
         this.state = state;
         this.api = state.api;
-        this.watermark = document.querySelector('#inventory-screen site-watermark');
         this.wrap = document.getElementById('asset-table-wrap');
         this.tbody = document.querySelector('#asset-table tbody');
         this.toggle = document.getElementById('asset-scope-toggle');
@@ -22,7 +21,6 @@ class InventoryRollup {
     }
 
     async reset() {
-        this.watermark.show("Asset inventory");
         this.assets = [];
         this.query = '';
         this.search.value = '';
@@ -31,7 +29,6 @@ class InventoryRollup {
 
     async reload() {
         this.assets = (await this.api.inventory.list()).map(a => ({ ...a, type: InventoryRollup.classify(a) }));
-        this.watermark.hide();
         this.render();
     }
 

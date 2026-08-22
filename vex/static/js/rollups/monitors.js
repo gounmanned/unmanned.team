@@ -5,7 +5,6 @@ class MonitorRollup {
         this.screen = document.getElementById('monitor-screen');
         this.wrap = document.getElementById('monitor-table-wrap');
         this.list = document.getElementById('monitor-list');
-        this.watermark = this.screen.querySelector('site-watermark');
 
         this.pickerOpen = false;
         this.connectingKey = null;
@@ -32,7 +31,6 @@ class MonitorRollup {
     }
 
     async reset() {
-        this.watermark.show("Scan for signals");
         Object.values(this.available).forEach(s => { s.instances = []; });
         this.pickerOpen = false;
         this.connectingKey = null;
@@ -43,7 +41,6 @@ class MonitorRollup {
     async reload() {
         const monitors = await this.api.monitors.list();
         monitors.forEach(monitor => this.add(monitor));
-        this.watermark.hide();
     }
 
     add(monitor) {

@@ -66,11 +66,11 @@ class SignalSidebar {
             await SiteSpinner.withLoading(async () => {
                 const body = document.getElementById("response").value;
 
-                if (this.signal.id) {
+                if (this.signal.id && body) {
                     const update = await this.api.signals.update(this.signal.id, body);
                     this.add(update);
                 } else {
-                    const signal = await this.api.signals.create({
+                    await this.api.signals.create({
                         severity: parseInt(this.signal.severity),
                         status: this.signal.status,
                         asset: this.signal.asset,
@@ -85,46 +85,45 @@ class SignalSidebar {
         });
 
         document.getElementById('signal-status').addEventListener('change', async (ev) => {
-            if (!this.signal || !this.signal.id) return;
+            this.signal.status = ev.target.selectedOptions[0].id;
+            if (!this.signal?.id) return;
             
             await SiteSpinner.withLoading(async () => {
-                const status = ev.target.selectedOptions[0].id;
-                await this.api.signals.patch(this.signal.id, { status: status });
-
-                document.dispatchEvent(new CustomEvent('page:reload'));
-                document.querySelector('site-overlay').click();
+                const signal = await this.api.signals.patch(this.signal.id, { status: this.signal.status });
+                this.state.signals[signal.account][signal.id] = signal;
+                document.dispatchEvent(new CustomEvent('page:reset'));
             });
         });
 
         document.getElementById('signal-severity').addEventListener('change', async (ev) => {
-            if (!this.signal || !this.signal.id) return;
+            this.signal.severity = parseInt(ev.target.selectedOptions[0].value);
+            document.getElementById("severity-banner").dataset.severity = this.signal.severity;
+            if (!this.signal?.id) return;
 
             await SiteSpinner.withLoading(async () => {
-                const severity = ev.target.selectedOptions[0];
-                const signal = await this.api.signals.patch(this.signal.id, { severity: parseInt(severity.value) });
+                const signal = await this.api.signals.patch(this.signal.id, { severity: this.signal.severity });
                 this.state.signals[signal.account][signal.id] = signal;
-                document.getElementById("severity-banner").dataset.severity = signal.severity;
                 document.dispatchEvent(new CustomEvent('page:reset'));
             });
         });
 
         document.getElementById('signal-asset').addEventListener('change', async (ev) => {
-            if (!this.signal || !this.signal.id) return;
+            this.signal.asset = ev.target.value;
+            if (!this.signal?.id) return;
 
             await SiteSpinner.withLoading(async () => {
-                const asset = ev.target.value;
-                const signal = await this.api.signals.patch(this.signal.id, { asset: asset });
+                const signal = await this.api.signals.patch(this.signal.id, { asset: this.signal.asset });
                 this.state.signals[signal.account][signal.id] = signal;
                 document.dispatchEvent(new CustomEvent('page:reset'));
             });
         });
 
         document.getElementById('signal-source').addEventListener('change', async (ev) => {
-            if (!this.signal || !this.signal.id) return;
+            this.signal.source = ev.target.value;
+            if (!this.signal?.id) return;
 
             await SiteSpinner.withLoading(async () => {
-                const source = ev.target.value;
-                const signal = await this.api.signals.patch(this.signal.id, { source: source });
+                const signal = await this.api.signals.patch(this.signal.id, { source: this.signal.source });
                 this.state.signals[signal.account][signal.id] = signal;
                 document.dispatchEvent(new CustomEvent('page:reset'));
             });

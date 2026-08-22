@@ -503,7 +503,7 @@ td.strength {
   top: 50%;
   width: 1px;
   height: 14px;
-  background: var(--gray-mid);
+  background: var(--gray-line);
   transform: translateY(-50%);
 }
 

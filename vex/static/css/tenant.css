@@ -544,25 +544,3 @@ td.strength {
   transform: translateX(13px);
   background: var(--pink);
 }
-
-.links #open-signal-sidebar {
-  display: inline-flex;
-  align-items: center;
-  padding: 4px 10px;
-  border-radius: 999px;
-  background: rgba(224,18,128,0.12);
-  border: 1px solid rgba(224,18,128,0.3);
-  color: var(--pink);
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.1px;
-  text-decoration: none;
-  white-space: nowrap;
-  cursor: pointer;
-  transition: background 0.12s, border-color 0.12s, transform 0.12s;
-}
-
-.links #open-signal-sidebar:hover {
-  background: rgba(224,18,128,0.2);
-  border-color: rgba(224,18,128,0.5);
-}

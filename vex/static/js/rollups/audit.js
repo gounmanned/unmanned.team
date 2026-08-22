@@ -3,7 +3,6 @@ class AuditRollup {
         this.state = state;
         this.api = state.api;
         this.screen = document.getElementById('audit-screen');
-        this.watermark = this.screen.querySelector('site-watermark');
         this.body = document.getElementById('audit-terminal-body');
         this.list = document.getElementById('audit-list');
         this.emptyLabel = document.getElementById('audit-empty-label');
@@ -23,7 +22,6 @@ class AuditRollup {
         this.hours = 1;
         this.filter.value = '';
         this.range.value = '1';
-        this.watermark.show("Unlimited audit trail");
         this.render();
     }
 
@@ -34,7 +32,6 @@ class AuditRollup {
                 const [group, ...rest] = log.message.split(' | ');
                 return { timestamp: log.timestamp, group, message: rest.join(' | ') };
             });
-            this.watermark.hide();
             this.render();
         });
     }

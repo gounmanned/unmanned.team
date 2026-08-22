@@ -4,7 +4,6 @@ class BreachRollup {
     constructor(state) {
         this.state = state;
         this.api = state.api;
-        this.watermark = document.querySelector('#breach-screen site-watermark');
 
         this.railEl = document.getElementById('breach-rail');
         this.rangeEl = document.getElementById('breach-rail-range');
@@ -32,7 +31,6 @@ class BreachRollup {
     }
 
     async reset() {
-        this.watermark.show("Generated scenario");
         this.breaches = [];
         this.selectedIndex = BreachRollup.DAYS - 1;
         this.render();
@@ -40,7 +38,6 @@ class BreachRollup {
 
     async reload() {
         this.breaches = await this.api.breach.list();
-        this.watermark.hide();
         this.render();
     }
 

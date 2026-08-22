@@ -51,9 +51,22 @@
 
   <main class="container">
     <div class="top-panel">
-
-      <div></div>
       
+      <div class="breach-today-card" id="open-breach-rollup" data-state="empty">
+        <div class="monitor-label">Probable breach</div>
+        <div class="monitor-body breach-today-empty" id="breach-today-empty">
+          <span class="material-symbols-outlined">verified_user</span>
+          <p>No breach scenario today</p>
+        </div>
+        <div class="monitor-body breach-today-content" id="breach-today-content">
+          <div class="monitor-value monitor-value--text" id="breach-today-name"></div>
+          <div class="monitor-breakdown">
+            <span class="monitor-breakdown-item"><span class="material-symbols-outlined">person_pin_circle</span><span id="breach-today-asset"></span></span>
+          </div>
+        </div>
+        <span class="material-symbols-outlined breach-today-arrow">chevron_right</span>
+      </div>
+  
       <div class="monitors-card" id="open-monitor-rollup">
         <div class="monitor-label">Connected monitors</div>
         <div class="monitor-body">
@@ -84,23 +97,8 @@
         <span class="material-symbols-outlined monitor-arrow">chevron_right</span>
       </div>
 
-      <div class="breach-today-card" id="open-breach-rollup" data-state="empty">
-        <div class="monitor-label">Probable breach</div>
+      <div></div>
 
-        <div class="monitor-body breach-today-empty" id="breach-today-empty">
-          <span class="material-symbols-outlined">verified_user</span>
-          <p>No breach scenario today</p>
-        </div>
-
-        <div class="monitor-body breach-today-content" id="breach-today-content">
-          <div class="monitor-value monitor-value--text" id="breach-today-name"></div>
-          <div class="monitor-breakdown">
-            <span class="monitor-breakdown-item"><span class="material-symbols-outlined">person_pin_circle</span><span id="breach-today-asset"></span></span>
-          </div>
-        </div>
-
-        <span class="material-symbols-outlined breach-today-arrow">chevron_right</span>
-      </div>
     </div>
 
     <div class="filter-header">

@@ -4,7 +4,7 @@
 
 .top-panel {
   display: grid;
-  grid-template-columns: 39fr 18fr 18fr 18fr;
+  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
   align-items: stretch;
   gap: 14px;
 }

@@ -11,6 +11,7 @@ class TenantScreen {
         const filter = this.month ? `date=${this.month.toISOString().slice(0, 7)}` : "";
         await this.api.signals.list(filter, new CustomEvent("signal:account"));
         await this.api.signals.list(`status=O`, new CustomEvent("signal:account"));
+        this.panel();
     }
 
     async reset() {

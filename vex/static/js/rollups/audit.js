@@ -22,12 +22,13 @@ class AuditRollup {
     }
 
     async reload() {
-        SiteSpinner.withLoading(async () => {
+        return SiteSpinner.withLoading(async () => {
             const stream = await this.api.audit.messages(Number(this.range.value)) || [];
             this.logs = stream.map(log => {
                 const [group, ...rest] = log.message.split(' | ');
                 return { timestamp: log.timestamp, group, message: rest.join(' | ') };
             });
+
             this.render();
         });
     }

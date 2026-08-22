@@ -113,10 +113,8 @@ class Workspace {
     }
 
     async reset(state) {
-        await SiteSpinner.withLoading(async() => {
-            await this.tenant.reset();
-            await this.tenant.reload();
-        });
+        await this.tenant.reset();
+        await this.tenant.reload();
     }
 
     static avatar(s) {

@@ -22,14 +22,20 @@ class TenantScreen {
     }
 
     async panel() {
-        const inventory = SiteSpinner.withLoading(async () => {
+        const spin = async (el, fn) => {
+            el.classList.add('loading');
+            try { return await fn(); }
+            finally { el.classList.remove('loading'); }
+        };
+
+        const inventory = spin(document.getElementById('open-inventory-rollup'), async () => {
             const assets = await this.api.inventory.list();
             document.getElementById('monitor-users').textContent = assets.filter(a => a.metadata?.group === 'identity').length ?? 0;
             document.getElementById('monitor-domains').textContent = assets.filter(a => a.metadata?.group === 'domain').length ?? 0;
             document.getElementById('monitor-count').textContent = assets?.length ?? 0;
         });
 
-        const monitors = SiteSpinner.withLoading(async () => {
+        const monitors = spin(document.getElementById('open-monitor-rollup'), async () => {
             const m = await this.api.monitors.list();
             const google = m.some(x => /google/i.test(x));
             const microsoft = m.some(x => /microsoft/i.test(x));
@@ -41,12 +47,12 @@ class TenantScreen {
                 google ? 'Google Workspace connected' : microsoft ? 'Microsoft 365 connected' : '';
         });
 
-        const logs = SiteSpinner.withLoading(async () => {
+        const logs = spin(document.getElementById('open-audit-rollup'), async () => {
             const messages = await this.api.audit.messages(1);
             document.getElementById('audit-count').textContent = messages.length;
         });
 
-        const scenario = () => SiteSpinner.withLoading(async () => {
+        const scenario = spin(document.getElementById('open-breach-rollup'), async () => {
             const card = document.querySelector('.breach-today-card');
             this.breaches = await this.api.breach.list();
             const breach = this.breaches?.find(b => new Date(b.created).toDateString() === new Date().toDateString());
@@ -58,7 +64,7 @@ class TenantScreen {
             document.getElementById('breach-today-asset').textContent = this.state.signals[this.state.account()][breach.id].asset ?? '—';
         });
 
-        await Promise.all([inventory, monitors, logs]).finally(scenario);
+        await Promise.allSettled([inventory, monitors, logs, scenario]);
     }
 
     refresh(status){

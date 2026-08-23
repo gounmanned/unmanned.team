@@ -92,6 +92,7 @@ class SignalSidebar {
                 const signal = await this.api.signals.patch(this.signal.id, { status: this.signal.status });
                 this.state.signals[signal.account][signal.id] = signal;
                 document.dispatchEvent(new CustomEvent('page:reset'));
+                document.querySelector('site-overlay').click();
             });
         });
 

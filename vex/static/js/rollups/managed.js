@@ -14,12 +14,7 @@ class ManagedRollup {
         this._resetBadges();
         await this.load();
         this.api.managed.list(new CustomEvent("signal:managed"));
-
-        const signals = Object.values(this.state.signals)
-            .flatMap(a => Object.values(a))
-            .filter(t => t.status.startsWith('O'));
-
-        this._renderMetrics(signals);
+        this._refreshSignalState();
     }
 
     async load() {
@@ -37,13 +32,30 @@ class ManagedRollup {
         this._updateEmptyState();
     }
 
+    _midnight() {
+        const d = new Date();
+        d.setHours(0, 0, 0, 0);
+        return d;
+    }
+
+    _refreshSignalState() {
+        const midnight = this._midnight();
+        const openSignals = [];
+
+        Object.entries(this.state.signals).forEach(([domain, sigMap]) => {
+            const open = Object.values(sigMap).filter(t => t.status.startsWith('O'));
+            openSignals.push(...open);
+            this._setTodayDot(domain, open.some(t => new Date(t.created) >= midnight));
+        });
+
+        this._renderMetrics(openSignals);
+    }
+
     _renderMetrics = Workspace.debounce((signals) => {
         const row = document.getElementById('managed-signals-row');
         if (!row) return;
 
-        const now = new Date();
-        const midnight = new Date(now);
-        midnight.setHours(0, 0, 0, 0);
+        const midnight = this._midnight();
         const created = signals.filter(s => new Date(s.created) >= midnight);
 
         const counts = [1, 2, 3, 4, 5].map(sev => signals.filter(s => Number(s.severity) === sev).length);
@@ -75,7 +87,7 @@ class ManagedRollup {
     }
 
     _setBadge(domain, count) {
-        const badge = document.getElementById(`managed-badge-${domain}`);
+        const badge = document.getElementById(`managed-badge-content-${domain}`);
         if (!badge) return;
 
         if (count === 0) {
@@ -83,6 +95,12 @@ class ManagedRollup {
         } else {
             badge.textContent = count > 999 ? '999' : count;
         }
+    }
+
+    _setTodayDot(domain, hasToday) {
+        const dot = document.getElementById(`managed-today-dot-${domain}`);
+        if (!dot) return;
+        dot.classList.toggle('visible', hasToday);
     }
 
     _add(domain, members = [], enabled = true) {
@@ -93,7 +111,10 @@ class ManagedRollup {
         li.id = `managed-account-${domain}`;
         li.className = `managed-account-item${enabled ? '' : ' pending'}`;
         li.innerHTML = `
-            <span class="managed-account-badge" id="managed-badge-${domain}"></span>
+            <span class="managed-account-badge" id="managed-badge-${domain}">
+                <span class="managed-badge-content" id="managed-badge-content-${domain}"></span>
+                <span class="managed-today-dot" id="managed-today-dot-${domain}" title="New signal today"></span>
+            </span>
             <span class="managed-account-name">${domain}</span>
         `;
 
@@ -112,8 +133,7 @@ class ManagedRollup {
             .filter(t => t.status.startsWith('O'))
             .sort((a, b) => b.created.localeCompare(a.created));
 
-        const midnight = new Date();
-        midnight.setHours(0, 0, 0, 0);
+        const midnight = this._midnight();
 
         right.innerHTML = `
             <div class="managed-detail">
@@ -238,14 +258,11 @@ class ManagedRollup {
         document.addEventListener("signal:managed", (ev) => {
             this.state.track(ev.signal);
 
-            const signals = Object.values(this.state.signals[ev.signal.account] ?? {});
-            const open = signals.filter(t => t.status.startsWith('O'));
-
-            const badge = document.getElementById(`managed-badge-${ev.signal.account}`);
+            const open = Object.values(this.state.signals[ev.signal.account] ?? {})
+                .filter(t => t.status.startsWith('O'));
             this._setBadge(ev.signal.account, open.length);
 
-            const sum = Object.values(this.state.signals).flatMap(a => Object.values(a)).filter(s => s.status.startsWith('O'));
-            this._renderMetrics(sum);
+            this._refreshSignalState();
         });
 
         document.getElementById('managed-invite-btn').addEventListener('click', async () => {

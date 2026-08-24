@@ -69,7 +69,7 @@ class Workspace {
                     threat: new ThreatSidebar(state),
                 }
 
-                this.tenant = new TenantScreen(state, sidebars);
+                this.tenant = new TenantScreen(state, this.sidebars);
                 this.reset(state);
                 this.reload(state);
                 this.listen();

@@ -46,7 +46,7 @@ class TenantScreen {
             document.getElementById('monitors-warning').style.display = google || microsoft ? 'none' : 'flex';
             document.getElementById('monitors-connected').style.display = google || microsoft ? 'flex' : 'none';
             document.getElementById('monitors-connected-text').textContent =
-                google ? 'Google Workspace connected' : microsoft ? 'Microsoft 365 connected' : '';
+                google ? 'Google Workspace is connected' : microsoft ? 'Microsoft 365 is connected' : '';
         });
 
         const logs = spin(document.getElementById('open-audit-rollup'), async () => {

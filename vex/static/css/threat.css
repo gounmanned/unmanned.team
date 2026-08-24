@@ -1,0 +1,182 @@
+#threat-sidebar .threats-banner {
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+  padding: 16px 18px;
+  background: var(--gray-panel);
+  border-bottom: 1px solid var(--gray-line);
+}
+
+#threat-sidebar .threats-banner-scan {
+  position: absolute;
+  top: 0;
+  left: -30%;
+  width: 30%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--pink), transparent);
+  animation: threats-scan 3.2s linear infinite;
+}
+
+@keyframes threats-scan {
+  0%   { left: -30%; }
+  100% { left: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #threat-sidebar .threats-banner-scan { animation: none; opacity: 0.5; }
+}
+
+#threat-sidebar .threats-banner-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+#threat-sidebar .threats-banner-icon {
+  font-size: 22px;
+  color: var(--pink);
+  flex-shrink: 0;
+}
+
+#threat-sidebar .threats-banner-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  color: var(--ink);
+}
+
+#threat-sidebar .threats-banner-desc {
+  margin-top: 2px;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* ── Search / filter ─────────────────────────────────────────────────────── */
+
+#threat-sidebar .threat-search-wrap {
+  position: relative;
+  flex-shrink: 0;
+  padding: 8px 18px;
+  background: var(--gray-panel);
+  border-bottom: 1px solid var(--gray-line);
+}
+
+#threat-sidebar .threat-search-icon {
+  position: absolute;
+  left: 30px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+#threat-sidebar .threat-search-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 6px 10px 6px 30px;
+  background: var(--gray-soft);
+  border: 1px solid var(--gray-line);
+  border-radius: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11.5px;
+  color: var(--text-body);
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+#threat-sidebar .threat-search-input:focus {
+  border-color: var(--pink);
+}
+
+#threat-sidebar .threat-search-input::placeholder {
+  color: var(--text-muted);
+}
+
+/* ── Threat list ─────────────────────────────────────────────────────────── */
+
+#threat-sidebar .container {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  padding: 0;
+}
+
+#threat-sidebar .hacker-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow-y: auto;
+}
+
+#threat-sidebar .entry-threat {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 18px;
+  border-bottom: 1px solid var(--gray-line);
+  font-size: 12.5px;
+  line-height: 1.3;
+  transition: background 0.1s;
+}
+
+#threat-sidebar .entry-threat:hover { background: var(--gray-soft); }
+
+#threat-sidebar .threat-source-icon,
+#threat-sidebar .threat-source-fallback {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  object-fit: contain;
+  border-radius: 3px;
+}
+
+#threat-sidebar .threat-source-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: var(--text-strong);
+}
+
+#threat-sidebar .threat-name {
+  flex: 1;
+  min-width: 0;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text-body);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#threat-sidebar .threat-created {
+  flex-shrink: 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+/* ── No-results state (search matched nothing) ──────────────────────────── */
+
+#threat-list-wrap.no-results .hacker-list .entry-threat {
+  display: none;
+}
+
+#threat-list-wrap.no-results::after {
+  content: 'No matching threats';
+  display: block;
+  padding: 24px 18px;
+  text-align: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11.5px;
+  color: var(--text-muted);
+}
+
+/* ── Empty state (uses global .signal-radar-watermark) ──────────────────── */
+
+#threat-list-wrap.empty { display: block; }
+#threat-list-wrap.empty > .hacker-list { display: none; }
+#threat-list-wrap.empty .signal-radar-watermark { display: flex; }

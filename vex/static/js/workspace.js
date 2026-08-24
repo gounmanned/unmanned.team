@@ -26,6 +26,7 @@ class Api {
         this.audit = new AuditApi(state);
         this.file = new FileApi(state);
         this.monitors = new MonitorApi(state);
+        this.threat = new ThreatApi(state);
     }
 
     reset(){
@@ -36,6 +37,7 @@ class Api {
         this.audit.set("account", this.state.account());
         this.file.set("account", this.state.account());
         this.monitors.set("account", this.state.account());
+        this.threat.set("account", this.state.account());
     }
 }
 
@@ -65,6 +67,7 @@ class Workspace {
                 this.sidebars = {
                     signal: new SignalSidebar(state),
                     backup: new BackupSidebar(state),
+                    threat: new ThreatSidebar(state),
                 }
 
                 this.reset(state);

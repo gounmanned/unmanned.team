@@ -21,6 +21,7 @@
       <link rel="stylesheet" href="static/css/monitors.css?v=${v}">
       <link rel="stylesheet" href="static/css/backups.css?v=${v}">
       <link rel="stylesheet" href="static/css/signal.css?v=${v}">
+      <link rel="stylesheet" href="static/css/threat.css?v=${v}">
     `);
   </script>
   <title>Vex</title>
@@ -175,6 +176,7 @@
         </button>
       </div>
 
+      <a id="open-threat-sidebar">Threats</a>
       <a id="open-backup-sidebar">Backups</a>
       <a id="open-signal-sidebar" class="cta">New Signal</a>
     </footer>
@@ -533,6 +535,40 @@
     </div>
   </site-sidebar>
 
+  <site-sidebar id="threat-sidebar">
+    <div class="threats-banner">
+      <div class="threats-banner-scan"></div>
+      <div class="threats-banner-row">
+        <span class="material-symbols-outlined threats-banner-icon">shield_person</span>
+        <div class="threats-banner-text">
+          <div class="threats-banner-title">Known threats</div>
+          <div class="threats-banner-desc">Vex tracks threat actors targeting your account.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="threat-search-wrap">
+      <span class="material-symbols-outlined threat-search-icon">search</span>
+      <input type="text" id="threat-search" class="threat-search-input" placeholder="Search threats..." autocomplete="off">
+    </div>
+
+    <div class="container" id="threat-list-wrap">
+      <ul id="threat-list" class="hacker-list"></ul>
+
+      <div class="signal-radar-watermark" id="threat-empty">
+        <div class="signal-radar" aria-hidden="true">
+          <svg viewBox="0 0 800 800"><use href="#radar-rings"></use></svg>
+        </div>
+        <div class="corner tl signal-radar-corner"></div>
+        <div class="corner tr signal-radar-corner"></div>
+        <div class="corner bl signal-radar-corner"></div>
+        <div class="corner br signal-radar-corner"></div>
+        <span class="material-symbols-outlined">travel_explore</span>
+        <p id="threat-empty-label">No threats detected</p>
+      </div>
+    </div>
+  </site-sidebar>
+
   <!-- Modals -->
 
   <div class="toast" id="toast">
@@ -557,6 +593,7 @@
     <script src="static/js/tenant.js?v=${v}"><\/script>
     <script src="static/js/sidebars/signal.js?v=${v}"><\/script>
     <script src="static/js/sidebars/backup.js?v=${v}"><\/script>
+    <script src="static/js/sidebars/threat.js?v=${v}"><\/script>
     <script src="static/js/rollups/audit.js?v=${v}"><\/script>
     <script src="static/js/rollups/managed.js?v=${v}"><\/script>
     <script src="static/js/rollups/monitors.js?v=${v}"><\/script>

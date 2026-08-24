@@ -122,6 +122,16 @@ class AuditApi extends Gateway {
     }
 }
 
+class ThreatApi extends Gateway {
+    constructor(){
+        super();
+    }
+
+    async list() {
+        return this.call("GET", "threat");
+    }
+}
+
 class FileApi extends Gateway {
     constructor(root){
         super();

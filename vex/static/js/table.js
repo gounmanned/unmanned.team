@@ -21,15 +21,22 @@ class Table {
         row.dataset.updated = signal.updated;
 
         const closed = signal.status.startsWith("C");
+        const unread = !closed && !signal.read;
+
         row.classList.toggle("closed", closed);
+        row.classList.toggle("unread", unread);
 
         if (closed) {
             this.body.appendChild(row);
             return;
         }
 
-        const openRows = [...this.body.children].filter(r => !r.classList.contains("closed"));
-        const anchor = openRows.find(r => new Date(r.dataset.updated) < new Date(signal.updated));
+        const anchor = [...this.body.children]
+            .filter(r => !r.classList.contains("closed"))
+            .find(r => {
+                const rUnread = r.classList.contains("unread");
+                return unread !== rUnread ? !rUnread : new Date(r.dataset.updated) < new Date(signal.updated);
+            });
 
         this.body.insertBefore(row, anchor ?? this.body.querySelector(".closed") ?? null);
     }

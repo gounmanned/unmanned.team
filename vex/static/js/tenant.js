@@ -134,6 +134,8 @@ class TenantScreen {
             row.addEventListener('click', async (e) => {
                 e.stopPropagation();
 
+                row.classList.remove("unread");
+
                 await SiteSpinner.withLoading(async () => {
                     this.sidebar ??= new SignalSidebar(this.state);
                     this.sidebar.reset();

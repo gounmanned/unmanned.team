@@ -127,32 +127,21 @@
             <li>Log into your <a href="https://dash.cloudflare.com" target="_blank">Cloudflare Dashboard</a>.</li>
             <li>Navigate to the <strong>Manage Account -> Account API tokens</strong> section</li>
             <li>Under <strong>"Create token"</strong>, click <strong>"Get started"</strong>.</li>
-            <li>Set the <strong>Token name</strong> to <code>Security Monitor</code>.</li>
+            <li>Set the <strong>Token name</strong> to <code>Vex</code>.</li>
         </ol>
 
         <h2>Step 2: Configure Account policy</h2>
         <ol>
-            <li>Select "Entire Account" under Edit Policy</li>
-            <li>Check READ for all options under "DNS & Zones", "App Security", "Analytics & Logs", "Account & Billing"</li>
+            <li>Check "Read all resources" under permission polices</li>
+            <li>Ensure "Entire Account" is selected (it is by default)</li>
+            <li>Select No Expiration</li>
+            <li>Click "Review token"</li>
+            <li>Click "Create token"</li>
         </ol>
 
-        <h2>Step 3: Configure Domain policy</h2>
+        <h2>Step 3: Connect Vex</h2>
         <ol>
-            <li>Click to add another policy (+ policy)</li>
-            <li>Select "All domains" under Edit Policy</li>
-            <li>Check READ for all options under "DNS & Zones", "App Security", "Analytics & Logs"</li>
-        </ol>
-
-        <h2>Step 4: Create Token</h2>
-        <ol>
-            <li>Click <strong>Review</strong> and finish creating your token.</li>
-            <li>Click <strong>"Create Token"</strong>.</li>
-        </ol>
-
-        <h2>Step 5: Upload Token to Vex</h2>
-        <ol>
-            <li>Create a new text file and name it <code>cloudflare.json</code>.</li>
-            <li>Using the token from Step 4, create a JSON object with this structure:</li>
+            <li>Add the following JSON to Vex:</li>
         </ol>
         <pre>
 {

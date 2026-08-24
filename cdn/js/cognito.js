@@ -23,7 +23,7 @@ class Cognito {
     }
 
     static logout(){
-        const redirect = encodeURIComponent("https://pinkduckcompany.com");
+        const redirect = encodeURIComponent("https://unmanned.team");
 
         window.location.href = `https://${Cognito.domain}/logout?client_id=${Cognito.client_id}&logout_uri=${redirect}`;
         throw new Error('Redirecting - stop execution');

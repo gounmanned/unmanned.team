@@ -267,7 +267,7 @@
   position: relative;
 }
 
-#managed-screen .managed-badge-icon { width: 24px; height: 24px; object-fit: contain; }
+#managed-screen .managed-badge-icon { width: 32px; height: 32px; object-fit: contain; }
 
 #managed-screen .managed-account-name {
   flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;

@@ -54,7 +54,6 @@ class Workspace {
         Auth.init(code)
             .then(async user => await SiteSpinner.withLoading(async () => {
                 const state = new AppState(user);
-                this.tenant = new TenantScreen(state);
 
                 this.rollups = {
                     managed: new ManagedRollup(state),
@@ -70,6 +69,7 @@ class Workspace {
                     threat: new ThreatSidebar(state),
                 }
 
+                this.tenant = new TenantScreen(state, sidebars);
                 this.reset(state);
                 this.reload(state);
                 this.listen();

@@ -2,11 +2,11 @@ class ThreatSidebar {
     constructor(state) {
         this.state = state;
         this.api = state.api.threat;
+        this.threats = [];
         this.list = document.getElementById('threat-list');
         this.wrap = document.getElementById('threat-list-wrap');
         this.search = document.getElementById('threat-search');
-        this.threats = [];
-        this.listen();
+        this.search.addEventListener('input', () => this.filter(this.search.value));
     }
 
     async reset() {
@@ -66,9 +66,5 @@ class ThreatSidebar {
         if (diffDay < 7) return `${diffDay}d ago`;
 
         return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
-    }
-
-    listen() {
-        this.search.addEventListener('input', () => this.filter(this.search.value));
     }
 }

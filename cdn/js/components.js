@@ -77,7 +77,7 @@ class SiteHeader extends HTMLElement {
 
       <div class="header-container">
         <div class="logo-area">
-          <img src="${this.getAttribute('logo') ?? 'https://cdn.unmanned.team/img/logo.png'}">
+          <img>
           <span class="text-group">
             <span class="company-name"></span>
             <span class="tagline"></span>
@@ -90,10 +90,11 @@ class SiteHeader extends HTMLElement {
     `;
   }
 
-  setCompany(name, tagline) {
-    this.shadowRoot.querySelector('.company-name').textContent = name;
-    this.shadowRoot.querySelector('.tagline').textContent = tagline ?? '';
-  }
+    setCompany(name, tagline, logo) {
+        this.shadowRoot.querySelector('.company-name').textContent = name;
+        this.shadowRoot.querySelector('.tagline').textContent = tagline ?? '';
+        this.shadowRoot.querySelector('.logo-area img').src = logo ?? 'https://cdn.unmanned.team/img/logo.png';
+    }
 }
 
 class SiteSpinner extends HTMLElement {

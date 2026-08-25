@@ -9,19 +9,19 @@ class TenantScreen {
     }
 
     async reload() {
-        await SiteSpinner.withLoading(async() => {
-            const filter = this.month ? `date=${this.month.toISOString().slice(0, 7)}` : "";
-            await this.api.signals.list(filter, new CustomEvent("signal:account"));
-            await this.api.signals.list(`status=O`, new CustomEvent("signal:account"));
-            this.panel();
-        });
+        const filter = this.month ? `date=${this.month.toISOString().slice(0, 7)}` : "";
+        await this.api.signals.list(filter, new CustomEvent("signal:account"));
+        await this.api.signals.list(`status=O`, new CustomEvent("signal:account"));
+        this.panel();
     }
 
     async reset() {
-        this.api.reset();
-        this.table.clear();
-        this.table.watermark(true);
-        this.panel();
+        await SiteSpinner.withLoading(async() => {
+            this.api.reset();
+            this.table.clear();
+            this.table.watermark(true);
+            this.panel();
+        });
     }
 
     async panel() {

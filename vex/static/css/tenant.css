@@ -1,7 +1,3 @@
-/* ─────────────────────────────────────────────────────────────────
-   TOP PANEL
-───────────────────────────────────────────────────────────────── */
-
 .top-panel {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -12,12 +8,14 @@
 .top-panel .new-message,
 .top-panel .inventory-card,
 .top-panel .monitors-card,
+.top-panel .audit-card,
 .top-panel .breach-today-card {
   min-width: 0;
 }
 
 /** shared shell for the 3 secondary cards **/
 
+.audit-card,
 .inventory-card,
 .monitors-card {
   cursor: pointer;
@@ -30,6 +28,7 @@
   display: flex;
   flex-direction: column;
   height: 96px;
+  overflow: hidden;
 }
 
 /** breach card **/
@@ -45,6 +44,7 @@
   display: flex;
   flex-direction: column;
   height: 96px;
+  overflow: hidden;
   transition: border-color 0.15s, background 0.15s;
   /* no explicit background — matches .inventory-card / .monitors-card by default */
 }
@@ -60,6 +60,48 @@
   color: #b91c1c;
 }
 
+/** corner accent (visual aid) **/
+
+.corner-accent {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 44px;
+  height: 44px;
+  clip-path: polygon(0 0, 100% 0, 0 100%);
+  background: var(--accent-bg, rgba(15, 23, 42, 0.04));
+  border-top-left-radius: inherit;
+  pointer-events: none;
+  z-index: 0;
+  transition: background 0.15s;
+}
+
+.corner-accent .material-symbols-outlined {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  font-size: 15px;
+  line-height: 1;
+}
+
+/* per-card accent tint + icon color */
+.inventory-card .corner-accent { background: rgba(236, 72, 153, 0.08); }
+.inventory-card .corner-accent .material-symbols-outlined { color: var(--pink); }
+.monitors-card .corner-accent { background: rgba(59, 130, 246, 0.08); }
+.monitors-card .corner-accent .material-symbols-outlined { color: #3b82f6; }
+.breach-today-card .corner-accent { background: rgba(22, 163, 74, 0.07); }
+.breach-today-card .corner-accent .material-symbols-outlined { color: #16a34a; transition: color 0.15s; }
+.audit-card .corner-accent { background: rgba(217, 119, 6, 0.08); }
+.audit-card .corner-accent .material-symbols-outlined { color: #d97706; }
+
+.breach-today-card[data-state="active"] .corner-accent {
+  background: rgba(220, 38, 38, 0.07);
+}
+
+.breach-today-card[data-state="active"] .corner-accent .material-symbols-outlined {
+  color: #dc2626;
+}
+
 .monitor-label {
   flex: 0 0 auto;
   font-size: 9.5px;
@@ -70,16 +112,9 @@
   display: flex;
   align-items: center;
   gap: 4px;
-}
-
-.breach-today-label-icon {
-  font-size: 13px !important;
-  color: #16a34a;
-  transition: color 0.15s;
-}
-
-.breach-today-card[data-state="active"] .breach-today-label-icon {
-  color: #dc2626;
+  padding-left: 38px;
+  position: relative;
+  z-index: 1;
 }
 
 .monitor-body {
@@ -89,6 +124,8 @@
   flex-direction: column;
   justify-content: center;
   gap: 4px;
+  position: relative;
+  z-index: 1;
 }
 
 .monitor-value,
@@ -171,8 +208,10 @@
   font-size: 20px;
   color: var(--text-faint);
   transition: transform 0.15s, color 0.15s;
+  z-index: 1;
 }
 
+.audit-card:hover .monitor-arrow,
 .inventory-card:hover .monitor-arrow,
 .monitors-card:hover .monitor-arrow,
 .breach-today-card:hover .breach-today-arrow {

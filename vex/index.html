@@ -52,11 +52,13 @@
 
   <main class="container">
     <div class="top-panel">
+  
+      <!-- BREACH CARD (empty state) -->
       <div class="breach-today-card" id="open-breach-rollup" data-state="empty">
-        <div class="monitor-label">
-          <span class="material-symbols-outlined breach-today-label-icon" id="breach-today-icon">verified_user</span>
-          Probable breach
+        <div class="corner-accent">
+          <span class="material-symbols-outlined">verified_user</span>
         </div>
+        <div class="monitor-label">Probable breach</div>
         <div class="monitor-body breach-today-empty" id="breach-today-empty">
           <p class="breach-today-empty-title">No breach scenario today</p>
           <p class="breach-today-empty-sub">Monitoring connected assets</p>
@@ -70,40 +72,52 @@
         <span class="material-symbols-outlined breach-today-arrow">chevron_right</span>
       </div>
   
+      <!-- MONITORS CARD -->
       <div class="monitors-card" id="open-monitor-rollup">
+        <div class="corner-accent">
+          <span class="material-symbols-outlined">lan</span>
+        </div>
         <div class="monitor-label">Connected monitors</div>
         <div class="monitor-body">
-          <div class="monitor-value" id="monitors-count">—</div>
+          <div class="monitor-value" id="monitors-count"></div>
           <div class="monitor-breakdown">
             <span class="monitor-breakdown-item monitor-breakdown-item--warning" id="monitors-warning" style="display:none;">
               <span class="material-symbols-outlined">warning</span>
               <span>Connect Microsoft or Google</span>
             </span>
-            <span class="monitor-breakdown-item monitor-breakdown-item--connected" id="monitors-connected" style="display:none;">
+            <span class="monitor-breakdown-item monitor-breakdown-item--connected" id="monitors-connected">
               <span class="material-symbols-outlined">check_circle</span>
-              <span id="monitors-connected-text"></span>
+              <span id="monitors-connected-text">All synced</span>
             </span>
           </div>
         </div>
         <span class="material-symbols-outlined monitor-arrow">chevron_right</span>
       </div>
-
+  
+      <!-- INVENTORY CARD -->
       <div class="inventory-card" id="open-inventory-rollup">
+        <div class="corner-accent">
+          <span class="material-symbols-outlined">inventory_2</span>
+        </div>
         <div class="monitor-label">Total assets</div>
         <div class="monitor-body">
-          <div class="monitor-value" id="monitor-count">—</div>
+          <div class="monitor-value" id="monitor-count"></div>
           <div class="monitor-breakdown">
-            <span class="monitor-breakdown-item"><span class="monitor-breakdown-count" id="monitor-users">0</span> users</span>
-            <span class="monitor-breakdown-item"><span class="monitor-breakdown-count" id="monitor-domains">0</span> domains</span>
+            <span class="monitor-breakdown-item"><span class="monitor-breakdown-count" id="monitor-users"></span> users</span>
+            <span class="monitor-breakdown-item"><span class="monitor-breakdown-count" id="monitor-domains"></span> domains</span>
           </div>
         </div>
         <span class="material-symbols-outlined monitor-arrow">chevron_right</span>
       </div>
 
-      <div class="monitors-card" id="open-audit-rollup">
+      <!-- AUDIT CARD -->
+      <div class="audit-card" id="open-audit-rollup">
+        <div class="corner-accent">
+          <span class="material-symbols-outlined">history</span>
+        </div>
         <div class="monitor-label">Audit logs</div>
         <div class="monitor-body">
-          <div class="monitor-value" id="audit-count">0</div>
+          <div class="monitor-value" id="audit-count"></div>
           <div class="monitor-breakdown">
             <span class="monitor-breakdown-item">
               <span class="material-symbols-outlined">history</span>

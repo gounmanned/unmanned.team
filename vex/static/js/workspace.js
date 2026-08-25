@@ -85,7 +85,7 @@ class Workspace {
             .catch(err => {
                 console.error(err);
             }).finally(() => {
-                document.querySelector('site-header').setCompany("Vex", "Don't get hacked");
+                document.querySelector('site-header').setCompany("Vex", "Security Operations Center");
                 Workspace.toast("Vex is currently running unauthenticated security tests against your accounts.");
             });
     }

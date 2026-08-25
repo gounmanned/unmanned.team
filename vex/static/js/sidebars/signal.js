@@ -64,10 +64,10 @@ class SignalSidebar {
             e.preventDefault();
 
             await SiteSpinner.withLoading(async () => {
-                const body = document.getElementById("response").value;
+                const comment = document.getElementById("response").value;
 
-                if (this.signal.id && body) {
-                    const update = await this.api.signals.update(this.signal.id, body);
+                if (this.signal.id && comment) {
+                    const update = await this.api.signals.update(this.signal.id, comment);
                     this.add(update);
                 } else {
                     await this.api.signals.create({
@@ -75,7 +75,7 @@ class SignalSidebar {
                         status: this.signal.status,
                         asset: this.signal.asset,
                         source: this.signal.source,
-                        body,
+                        value: comment,
                     });
 
                     document.dispatchEvent(new CustomEvent('page:reload'));

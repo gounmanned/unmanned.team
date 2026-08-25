@@ -1,5 +1,6 @@
 #inventory-screen .table-wrap {
   overflow-y: auto;
+  padding: 0 16px 16px;
 }
 
 #inventory-screen .asset-toolbar {

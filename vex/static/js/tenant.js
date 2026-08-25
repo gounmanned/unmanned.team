@@ -41,14 +41,12 @@ class TenantScreen {
 
         const monitors = spin(document.getElementById('open-monitor-rollup'), async () => {
             const m = await this.api.monitors.list();
-            const google = m.some(x => /google/i.test(x));
-            const microsoft = m.some(x => /microsoft/i.test(x));
+            const identity = m.find(x => /google|microsoft/i.test(x));
+            const endpoint = m.find(x => /level/i.test(x));
 
             document.getElementById('monitors-count').textContent = m?.length ?? 0;
-            document.getElementById('monitors-warning').style.display = google || microsoft ? 'none' : 'flex';
-            document.getElementById('monitors-connected').style.display = google || microsoft ? 'flex' : 'none';
-            document.getElementById('monitors-connected-text').textContent =
-                google ? 'Google Workspace is connected' : microsoft ? 'Microsoft 365 is connected' : '';
+            document.getElementById('monitors-identity-name').textContent = identity ? (/google/i.test(identity) ? 'Google' : 'Microsoft') : 'n/a';
+            document.getElementById('monitors-endpoint-name').textContent = endpoint ? 'Level' : 'n/a';
         });
 
         const logs = spin(document.getElementById('open-audit-rollup'), async () => {

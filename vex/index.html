@@ -62,7 +62,7 @@
         <div class="monitor-label">Probable breach</div>
         <div class="monitor-body breach-today-empty" id="breach-today-empty">
           <p class="breach-today-empty-title">No breach scenario today</p>
-          <p class="breach-today-empty-sub">Monitoring connected assets</p>
+          <p class="breach-today-empty-sub">Next attempt: 6am EST</p>
         </div>
         <div class="monitor-body breach-today-content" id="breach-today-content">
           <div class="monitor-value monitor-value--text" id="breach-today-name"></div>
@@ -82,13 +82,11 @@
         <div class="monitor-body">
           <div class="monitor-value" id="monitors-count"></div>
           <div class="monitor-breakdown">
-            <span class="monitor-breakdown-item monitor-breakdown-item--warning" id="monitors-warning" style="display:none;">
-              <span class="material-symbols-outlined">warning</span>
-              <span>Connect Microsoft or Google</span>
+            <span class="monitor-breakdown-item">
+              <strong>Identity:</strong> <span id="monitors-identity-name"></span>
             </span>
-            <span class="monitor-breakdown-item monitor-breakdown-item--connected" id="monitors-connected">
-              <span class="material-symbols-outlined">check_circle</span>
-              <span id="monitors-connected-text">All synced</span>
+            <span class="monitor-breakdown-item">
+              <strong>Endpoint:</strong> <span id="monitors-endpoint-name"></span>
             </span>
           </div>
         </div>
@@ -100,7 +98,7 @@
         <div class="corner-accent">
           <span class="material-symbols-outlined">inventory_2</span>
         </div>
-        <div class="monitor-label">Total assets</div>
+        <div class="monitor-label">Asset inventory</div>
         <div class="monitor-body">
           <div class="monitor-value" id="monitor-count"></div>
           <div class="monitor-breakdown">
@@ -164,7 +162,7 @@
       <a id="open-risk-sidebar">Accepted Risks</a>
       <a id="open-threat-sidebar">Recent Threats</a>
       <a id="open-backup-sidebar">File Backups</a>
-      <a id="open-signal-sidebar" class="cta">New Signal</a>
+      <a id="open-signal-sidebar" class="cta">Add Signal</a>
     </footer>
   </main>
 

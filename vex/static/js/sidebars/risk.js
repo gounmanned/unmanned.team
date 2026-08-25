@@ -43,7 +43,8 @@ class RiskSidebar {
                 <img class="risk-source-icon" src="static/img/source/${signal.source}.png"
                      alt="${signal.source}" onerror="this.replaceWith(Object.assign(document.createElement('span'), {className:'material-symbols-outlined risk-source-fallback', textContent:'travel_explore'}))">
                 <span class="risk-name">${signal.name}</span>
-                <span class="risk-accepted">accepted ${signal.updated}</span>
+                <span class="risk-asset">${signal.asset}</span>
+                <span class="risk-accepted">accepted ${Workspace.date(signal.updated)}</span>
                 <button class="risk-remove" type="button" title="Reopen risk" aria-label="Reopen risk">
                     <span class="material-symbols-outlined">close</span>
                 </button>

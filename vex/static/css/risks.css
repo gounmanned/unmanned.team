@@ -90,9 +90,20 @@
   white-space: nowrap;
 }
 
+#risk-sidebar .risk-asset {
+  flex-shrink: 0;
+  padding: 1px 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--text-muted);
+  background: var(--gray-soft);
+  border: 1px solid var(--gray-line);
+  border-radius: 3px;
+  white-space: nowrap;
+}
+
 #risk-sidebar .risk-accepted {
   flex-shrink: 0;
-  font-family: 'JetBrains Mono', monospace;
   font-size: 10.5px;
   color: var(--text-muted);
   white-space: nowrap;

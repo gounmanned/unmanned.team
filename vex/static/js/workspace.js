@@ -150,4 +150,9 @@ class Workspace {
         el.querySelector("#toast-text").textContent = text;
         setTimeout(() => { el.classList.remove('open') }, duration);
     }
+
+    static date(iso) {
+        const d = new Date(iso);
+        return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+    }
 }

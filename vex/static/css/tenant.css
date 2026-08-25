@@ -467,6 +467,9 @@ td.strength {
 .links .view-toggle {
   position: absolute;
   left: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .links .toggle-btn {
@@ -524,4 +527,11 @@ td.strength {
 .links a.cta:hover {
   background: rgba(224, 18, 128, 0.08);
   color: var(--pink);
+}
+
+.links .count {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted, #8a8f98);
+  white-space: nowrap;
 }

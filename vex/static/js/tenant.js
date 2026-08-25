@@ -20,6 +20,7 @@ class TenantScreen {
             this.api.reset();
             this.table.clear();
             this.table.watermark(true);
+            this.count();
             this.panel();
         });
     }
@@ -68,6 +69,12 @@ class TenantScreen {
         });
 
         await Promise.allSettled([inventory, monitors, logs, scenario]);
+    }
+
+    count() {
+        const el = document.getElementById('signal-count');
+        const n = this.table.body.children.length;
+        if (el) el.textContent = `${n.toLocaleString()} signal${n === 1 ? '' : 's'}`;
     }
 
     strength(value) {
@@ -126,6 +133,7 @@ class TenantScreen {
             });
 
             upsert(row, signal);
+            this.count();
         });
 
         document.getElementById('toggle').addEventListener('click', async () => {

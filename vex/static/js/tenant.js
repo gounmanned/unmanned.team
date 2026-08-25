@@ -9,10 +9,12 @@ class TenantScreen {
     }
 
     async reload() {
-        const filter = this.month ? `date=${this.month.toISOString().slice(0, 7)}` : "";
-        await this.api.signals.list(filter, new CustomEvent("signal:account"));
-        await this.api.signals.list(`status=O`, new CustomEvent("signal:account"));
-        this.panel();
+        await SiteSpinner.withLoading(async() => {
+            const filter = this.month ? `date=${this.month.toISOString().slice(0, 7)}` : "";
+            await this.api.signals.list(filter, new CustomEvent("signal:account"));
+            await this.api.signals.list(`status=O`, new CustomEvent("signal:account"));
+            this.panel();
+        });
     }
 
     async reset() {
@@ -20,7 +22,6 @@ class TenantScreen {
         this.table.clear();
         this.table.watermark(true);
         this.panel();
-        document.querySelectorAll('[data-filter] .filter-count').forEach(i => i.textContent = 0);
     }
 
     async panel() {
@@ -69,19 +70,6 @@ class TenantScreen {
         await Promise.allSettled([inventory, monitors, logs, scenario]);
     }
 
-    refresh(status){
-        const count = document.querySelector(`[data-filter="${status}"] .filter-count`);
-        if (!count) return;
-
-        count.classList.add('loading');
-
-        setTimeout(() => {
-            const signals = this.state.signals[this.state.account()];
-            count.textContent = Object.values(signals).filter(t => t.status == status).length;
-            count.classList.remove('loading');
-        }, 1000);
-    }
-
     strength(value) {
         const lit = Math.min(value, 10);
         const maxed = value >= 10;
@@ -101,11 +89,6 @@ class TenantScreen {
     listen() {
         document.addEventListener('signal:account', (ev) => {
             const upsert = (row, signal) => {
-                if (signal.status !== row.dataset.status) {
-                    this.refresh(signal.status);
-                    this.refresh(row.dataset.status);
-                }
-
                 this.table.add(row, signal);
                 this.table.watermark(false);
             };
@@ -143,21 +126,6 @@ class TenantScreen {
             });
 
             upsert(row, signal);
-        });
-
-        document.querySelectorAll('.filter-card').forEach(card => {
-            card.addEventListener('click', (e) => {
-                const current = card.classList.contains('active');
-                document.querySelectorAll('.filter-card').forEach(c => c.classList.remove('active'));
-                if (!current) card.classList.add('active');
-
-                const filter = document.querySelector('.filter-card.active')?.dataset.filter;
-
-                document.querySelectorAll('#signal-table tbody tr').forEach(row => {
-                    const status = row.dataset.status;
-                    row.style.display = !filter || status === filter ? '' : 'none';
-                });
-            });
         });
 
         document.getElementById('toggle').addEventListener('click', async () => {

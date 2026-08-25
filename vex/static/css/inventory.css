@@ -186,3 +186,20 @@
     font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24;
     filter: drop-shadow(0 0 3px rgba(245,158,11,0.5));
 }
+
+#inventory-screen .star-btn[data-field="status"] {
+    color: #16a34a;
+}
+#inventory-screen .star-btn[data-field="status"]:hover { color: #15803d; }
+#inventory-screen .star-btn[data-field="status"] .material-symbols-outlined {
+    font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+}
+#inventory-screen .star-btn[data-field="status"].active {
+    color: #dc2626;
+    background: rgba(220,38,38,0.15);
+}
+#inventory-screen .star-btn[data-field="status"].active:hover { color: #b91c1c; }
+#inventory-screen .star-btn[data-field="status"].active .material-symbols-outlined {
+    font-size: 18px;
+    filter: drop-shadow(0 0 3px rgba(220,38,38,0.55));
+}

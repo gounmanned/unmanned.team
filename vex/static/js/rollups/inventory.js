@@ -49,11 +49,16 @@ class InventoryRollup {
         document.getElementById('asset-empty-label').textContent = this.query
             ? `No ${this.labels[this.scope]} match "${this.query}"`
             : `No ${this.labels[this.scope]}`;
-        
+
         this.tbody.innerHTML = rows.map(a => `
             <tr data-id="${a.id ?? a.name}">
+                <td class="asset-status">
+                    <button class="star-btn ${a.metadata?.status === '1' ? 'active' : ''}" data-field="status" type="button" aria-label="Toggle status">
+                        <span class="material-symbols-outlined">pause_circle</span>
+                    </button>
+                </td>
                 <td class="asset-priority">
-                    <button class="star-btn ${a.metadata?.priority === '1' ? 'active' : ''}" type="button" aria-label="Toggle priority">
+                    <button class="star-btn ${a.metadata?.priority === '1' ? 'active' : ''}" data-field="priority" type="button" aria-label="Toggle priority">
                         <span class="material-symbols-outlined">star</span>
                     </button>
                 </td>
@@ -61,13 +66,9 @@ class InventoryRollup {
                 <td class="asset-source">
                     ${a.metadata?.platform ? `<img src="static/img/source/${a.metadata.platform}.png" alt="" title="${a.metadata.platform}">` : '—'}
                 </td>
-                <td class="asset-value">
-                    ${a.name}
-                </td>
-                <td class="asset-signals">
-                    ${a.signals}
-                </td>
-                <td class="asset-seen">${a.updated ? new Date(a.updated).toLocaleDateString() : '—'}</td>
+                <td class="asset-value">${a.name}</td>
+                <td class="asset-signals">${a.signals}</td>
+                <td class="asset-seen">${a.updated ? new Date(a.updated).toLocaleDateString() : '—'}</td>          
             </tr>
         `).join('');
     }
@@ -91,9 +92,10 @@ class InventoryRollup {
             const star = ev.target.closest('.star-btn');
             if (star) {
                 const id = star.closest('tr').dataset.id;
+                const field = star.dataset.field;
                 const next = !star.classList.contains('active');
                 SiteSpinner.withLoading(async () => {
-                    await this.api.inventory.update(id, 'priority', next ? '1' : '0');
+                    await this.api.inventory.update(id, field, next ? '1' : '0');
                     star.classList.toggle('active', next);
                 });
                 return;

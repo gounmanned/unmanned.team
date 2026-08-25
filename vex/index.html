@@ -22,6 +22,7 @@
       <link rel="stylesheet" href="static/css/backups.css?v=${v}">
       <link rel="stylesheet" href="static/css/signal.css?v=${v}">
       <link rel="stylesheet" href="static/css/threat.css?v=${v}">
+      <link rel="stylesheet" href="static/css/risks.css?v=${v}">
     `);
   </script>
   <title>Vex</title>
@@ -160,8 +161,9 @@
         <span class="count" id="signal-count">0 signals</span>
       </div>
 
-      <a id="open-threat-sidebar">Threats</a>
-      <a id="open-backup-sidebar">Backups</a>
+      <a id="open-risk-sidebar">Accepted Risks</a>
+      <a id="open-threat-sidebar">Recent Threats</a>
+      <a id="open-backup-sidebar">File Backups</a>
       <a id="open-signal-sidebar" class="cta">New Signal</a>
     </footer>
   </main>
@@ -553,6 +555,34 @@
     </div>
   </site-sidebar>
 
+  <site-sidebar id="risk-sidebar">
+    <div class="risks-banner">
+      <div class="risks-banner-row">
+        <span class="material-symbols-outlined risks-banner-icon">verified_user</span>
+        <div class="risks-banner-text">
+          <div class="risks-banner-title">Accepted risks</div>
+          <div class="risks-banner-desc">Signals you've reviewed and accepted as risk.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container" id="risk-list-wrap">
+      <ul id="risk-list" class="hacker-list"></ul>
+
+      <div class="signal-radar-watermark" id="risk-empty">
+        <div class="signal-radar" aria-hidden="true">
+          <svg viewBox="0 0 800 800"><use href="#radar-rings"></use></svg>
+        </div>
+        <div class="corner tl signal-radar-corner"></div>
+        <div class="corner tr signal-radar-corner"></div>
+        <div class="corner bl signal-radar-corner"></div>
+        <div class="corner br signal-radar-corner"></div>
+        <span class="material-symbols-outlined">verified_user</span>
+        <p id="risk-empty-label">No accepted risks</p>
+      </div>
+    </div>
+  </site-sidebar>
+
   <!-- Modals -->
 
   <div class="toast" id="toast">
@@ -578,6 +608,7 @@
     <script src="static/js/sidebars/signal.js?v=${v}"><\/script>
     <script src="static/js/sidebars/backup.js?v=${v}"><\/script>
     <script src="static/js/sidebars/threat.js?v=${v}"><\/script>
+    <script src="static/js/sidebars/risk.js?v=${v}"><\/script>
     <script src="static/js/rollups/audit.js?v=${v}"><\/script>
     <script src="static/js/rollups/managed.js?v=${v}"><\/script>
     <script src="static/js/rollups/monitors.js?v=${v}"><\/script>

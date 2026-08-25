@@ -1,0 +1,135 @@
+#risk-sidebar .risks-banner {
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+  padding: 16px 18px;
+  background: var(--gray-panel);
+  border-bottom: 1px solid var(--gray-line);
+}
+
+#risk-sidebar .risks-banner-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+#risk-sidebar .risks-banner-icon {
+  font-size: 22px;
+  color: var(--pink);
+  flex-shrink: 0;
+}
+
+#risk-sidebar .risks-banner-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  color: var(--ink);
+}
+
+#risk-sidebar .risks-banner-desc {
+  margin-top: 2px;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* ── Risk list ───────────────────────────────────────────────────────────── */
+
+#risk-sidebar .container {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  padding: 0;
+}
+
+#risk-sidebar .hacker-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow-y: auto;
+}
+
+#risk-sidebar .entry-risk {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 18px;
+  border-bottom: 1px solid var(--gray-line);
+  font-size: 12.5px;
+  line-height: 1.3;
+  transition: background 0.1s;
+}
+
+#risk-sidebar .entry-risk:hover { background: var(--gray-soft); }
+
+#risk-sidebar .risk-source-icon,
+#risk-sidebar .risk-source-fallback {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  object-fit: contain;
+  border-radius: 3px;
+}
+
+#risk-sidebar .risk-source-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: var(--text-strong);
+}
+
+#risk-sidebar .risk-name {
+  flex: 1;
+  min-width: 0;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text-body);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#risk-sidebar .risk-accepted {
+  flex-shrink: 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+#risk-sidebar .risk-remove {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background 0.1s, color 0.1s;
+}
+
+#risk-sidebar .risk-remove:hover {
+  background: var(--gray-soft);
+  color: var(--pink);
+}
+
+#risk-sidebar .risk-remove:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+#risk-sidebar .risk-remove .material-symbols-outlined {
+  font-size: 15px;
+}
+
+/* ── Empty state (uses global .signal-radar-watermark) ──────────────────── */
+
+#risk-list-wrap.empty { display: block; }
+#risk-list-wrap.empty > .hacker-list { display: none; }
+#risk-list-wrap.empty .signal-radar-watermark { display: flex; }

@@ -77,7 +77,7 @@ class SiteHeader extends HTMLElement {
 
       <div class="header-container">
         <div class="logo-area">
-          <img>
+          <img />
           <span class="text-group">
             <span class="company-name"></span>
             <span class="tagline"></span>

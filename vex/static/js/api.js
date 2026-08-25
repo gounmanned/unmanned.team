@@ -127,8 +127,9 @@ class ThreatApi extends Gateway {
         super();
     }
 
-    async list() {
-        return this.call("GET", "threat");
+    async list(offset) {
+        const path = offset ? `threat?offset=${encodeURIComponent(JSON.stringify(offset))}` : 'threat';
+        return this.call("GET", path);
     }
 }
 

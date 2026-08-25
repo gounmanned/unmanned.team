@@ -15,10 +15,25 @@ class ThreatSidebar {
 
     async reload() {
         this.list.innerHTML = '';
-        this.threats = (await this.api.list()).sort((a, b) => new Date(b.created) - new Date(a.created));
+        this.threats = (await this.pages()).sort((a, b) => new Date(b.created) - new Date(a.created));
         this.threats.forEach(threat => this.add(threat));
         this.wrap.classList.toggle('empty', this.threats.length === 0);
         this.wrap.classList.remove('no-results');
+    }
+
+    async pages() {
+        const all = [];
+        let offset = null;
+
+        do {
+            const res = await this.api.list(offset);
+            if (!res) break;
+
+            all.push(...res.threats);
+            offset = (res.page && Object.keys(res.page).length > 0) ? res.page : null;
+        } while (offset);
+
+        return all;
     }
 
     add(threat) {

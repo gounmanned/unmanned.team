@@ -136,7 +136,7 @@ class TenantScreen {
 
         document.getElementById('toggle').addEventListener('click', async () => {
             const active = document.getElementById('toggle').classList.toggle('active');
-            document.getElementById('toggle-label').textContent = active ? 'This month' : 'All signals';
+            document.getElementById('toggle-label').textContent = active ? 'This month' : 'This year';
 
             this.state.signals = {};
             this.month = active ? new Date() : null;

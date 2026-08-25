@@ -10,6 +10,10 @@ class AppState {
         return this.delegate || this.user.email.split('@').pop();
     }
 
+    reset() {
+        this.signals = {};
+    }
+
     track(signal) {
         this.signals[signal.account] ??= {};
         this.signals[signal.account][signal.id] = signal;

@@ -8,7 +8,9 @@ class ManagedRollup {
         this.listen();
     }
 
-    async reset() {}
+    async reset() {
+        this.state.reset();
+    }
 
     async reload() {
         this._resetBadges();

@@ -38,7 +38,7 @@ class InventoryRollup {
             if (el) el.textContent = this.assets.filter(a => a.type === type).length;
         });
 
-        const open = Object.values(this.state.signals[this.state.account()]).filter(s => s.status.startsWith('O'));
+        const open = Object.values(this.state.signals?.[this.state.account()] ?? {}).filter(s => s.status.startsWith('O'));
 
         const rows = this.assets
             .filter(a => a.type === this.scope)

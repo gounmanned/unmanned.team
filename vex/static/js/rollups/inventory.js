@@ -7,7 +7,7 @@ class InventoryRollup {
 
     constructor(state) {
         this.state = state;
-        this.api = state.api;
+        this.api = state.api.inventory;
         this.wrap = document.getElementById('asset-table-wrap');
         this.tbody = document.querySelector('#asset-table tbody');
         this.toggle = document.getElementById('asset-scope-toggle');
@@ -28,7 +28,7 @@ class InventoryRollup {
     }
 
     async reload() {
-        this.assets = (await this.api.inventory.list()).map(a => ({ ...a, type: InventoryRollup.classify(a) }));
+        this.assets = (await this.api.list()).map(a => ({ ...a, type: InventoryRollup.classify(a) }));
         this.render();
     }
 
@@ -51,9 +51,9 @@ class InventoryRollup {
             : `No ${this.labels[this.scope]}`;
 
         this.tbody.innerHTML = rows.map(a => `
-            <tr data-id="${a.id ?? a.name}">
+            <tr data-id="${a.id ?? a.name}" class="${a.status.startsWith('A') ? '' : 'asset-suspended'}">
                 <td class="asset-status">
-                    <button class="star-btn ${a.metadata?.status === '1' ? 'active' : ''}" data-field="status" type="button" aria-label="Toggle status">
+                    <button class="star-btn ${a.status.startsWith("A") ? '' : 'active'}" data-field="status" type="button" aria-label="Toggle status">
                         <span class="material-symbols-outlined">pause_circle</span>
                     </button>
                 </td>
@@ -89,17 +89,45 @@ class InventoryRollup {
         });
 
         this.tbody.addEventListener('click', ev => {
-            const star = ev.target.closest('.star-btn');
-            if (star) {
-                const id = star.closest('tr').dataset.id;
-                const field = star.dataset.field;
-                const next = !star.classList.contains('active');
-                SiteSpinner.withLoading(async () => {
-                    await this.api.inventory.update(id, field, next ? '1' : '0');
-                    star.classList.toggle('active', next);
-                });
-                return;
-            }
+            this.handleStatusClick(ev) || this.handlePriorityClick(ev);
         });
+    }
+
+    handleStatusClick(ev) {
+        const star = ev.target.closest('.star-btn[data-field="status"]');
+        if (!star) return false;
+
+        const tr = star.closest('tr');
+        const id = tr.dataset.id;
+        const asset = this.assets.find(a => (a.id ?? a.name) == id);
+        if (!asset) return true;
+
+        const value = asset.status.startsWith('A') ? 'X0' : 'A0';
+
+        SiteSpinner.withLoading(async () => {
+            await this.api.update(id, {}, value);
+            asset.status = value;
+            this.render();
+        });
+
+        return true;
+    }
+
+    handlePriorityClick(ev) {
+        const star = ev.target.closest('.star-btn[data-field="priority"]');
+        if (!star) return false;
+
+        const tr = star.closest('tr');
+        const id = tr.dataset.id;
+        const next = !star.classList.contains('active');
+
+        SiteSpinner.withLoading(async () => {
+            await this.api.update(id, { priority: next ? '1' : '0' });
+            star.classList.toggle('active', next);
+            const asset = this.assets.find(a => (a.id ?? a.name) == id);
+            if (asset?.metadata) asset.metadata.priority = next ? '1' : '0';
+        });
+
+        return true;
     }
 }

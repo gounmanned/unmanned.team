@@ -203,3 +203,13 @@
     font-size: 18px;
     filter: drop-shadow(0 0 3px rgba(220,38,38,0.55));
 }
+
+#inventory-screen #asset-table tbody tr.asset-suspended .asset-value {
+  color: var(--text-muted);
+  text-decoration: line-through;
+  text-decoration-color: rgba(220,38,38,0.4);
+}
+#inventory-screen #asset-table tbody tr.asset-suspended .asset-source img {
+  opacity: 0.4;
+  filter: grayscale(1);
+}

@@ -25,8 +25,6 @@ class MonitorRollup {
             constantcontact: { name: 'Constant Contact', instances: [] },
         };
 
-        this._renderCallout();
-        this._render();
         this.listen();
     }
 
@@ -195,6 +193,8 @@ class MonitorRollup {
                     this.connectingKey = null;
                 }).catch(() => {
                     alert("Invalid JSON. Verify your quotes are correct.");
+                }).finally(() => {
+                    document.dispatchEvent(new CustomEvent('page:reset'));
                 });
 
                 return this._render();

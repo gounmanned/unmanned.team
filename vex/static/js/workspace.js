@@ -75,13 +75,13 @@ class Workspace {
                 }
 
                 this.tenant = new TenantScreen(state, this.sidebars);
-                this.reset(state);
-                this.reload(state);
+                this.reset();
+                this.reload();
                 this.listen();
 
-                setInterval(() => this.reload(state), 60000)                
-                document.addEventListener('page:reload', () => this.reload(state));
-                document.addEventListener('page:reset', () => this.reset(state));
+                setInterval(() => this.reload(), 60000)                
+                document.addEventListener('page:reload', () => this.reload());
+                document.addEventListener('page:reset', () => this.reset());
             }))
             .catch(err => {
                 console.error(err);
@@ -115,12 +115,11 @@ class Workspace {
         });      
     }
 
-    async reload(state) {
+    async reload() {
         await this.tenant.reload();
-        await this.rollups.managed.reload();
     }
 
-    async reset(state) {
+    async reset() {
         await this.tenant.reset();
         await this.tenant.reload();
     }

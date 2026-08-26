@@ -286,7 +286,7 @@ h1 span{color:var(--respond)}
 .philo-media::after{
   content:"";
   position:absolute;inset:0;
-  background:linear-gradient(180deg, rgba(18,19,26,.6) -70%, transparent 32%, transparent 68%, rgba(18,19,26,.6) 170%);
+  background:linear-gradient(180deg, rgba(18,19,26,.4) 0%, transparent 20%, transparent 80%, rgba(18,19,26,.4) 100%);
   z-index:1;
 }
 .philo-copy{order:2}
@@ -390,20 +390,22 @@ footer{padding:20px 0;background:var(--ink);border-top:1px solid #26262a;color:#
 /* Responsive */
 @media(max-width:860px){
   .nav-links{display:none}
-  .hero-bg{width:110%;min-width:0;right:-30%;opacity:.22}
+  .hero{min-height:auto;padding:56px 0}
+  .hero-bg{display:none}
   .tenses{grid-template-columns:1fr}
   .tense{border-left:0;padding:28px 0}
   .tense:first-child{border-top:0}
   .philo-row,.philo-row.reverse{grid-template-columns:1fr;gap:28px;padding:42px 0}
   .philo-row .philo-media,.philo-row.reverse .philo-media{order:1;aspect-ratio:16/10}
   .philo-row .philo-copy,.philo-row.reverse .philo-copy{order:2}
-  .philo-row .philo-media::before,.philo-row.reverse .philo-media::before{background:linear-gradient(180deg, transparent 0%, transparent 55%, rgba(18,19,26,.5) 80%, var(--ink) 105%)}
+  .philo-row .philo-media::before,.philo-row.reverse .philo-media::before{background:linear-gradient(180deg, transparent 0%, transparent 70%, rgba(18,19,26,.85) 92%, var(--ink) 100%)}
+  .philo-row .philo-media::after,.philo-row.reverse .philo-media::after{content:none}
   .row{grid-template-columns:14px 1fr;row-gap:4px}
   .row p{grid-column:2}
 }
 @media(max-width:560px){
   .wrap{width:min(var(--max),calc(100% - 28px))}
-  .hero{padding:120px 0 56px;min-height:100vh;min-height:100dvh}
+  .hero{padding:96px 0 48px;min-height:auto}
   .hero-inner{padding-left:20px;max-width:100%}
   h1{font-size:44px}
   .hero-copy{font-size:15.5px}
@@ -435,7 +437,7 @@ footer{padding:20px 0;background:var(--ink);border-top:1px solid #26262a;color:#
   <div class="hero-bg" aria-hidden="true"><img src="dashboard.png" alt=""></div>
   <div class="hero-inner">
     <div class="kicker"><i></i> Autonomous security</div>
-    <h1>The hacker<br> who<span> heals.</span></br></h1>
+    <h1>The hacker<br> who<span> heals.</span></h1>
     <p class="hero-copy">
       Vex is a modern Managed Detection and Response (MDR) platform, backed by an always-on AI SOC and expert human IT operations.
     </p>

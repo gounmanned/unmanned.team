@@ -116,9 +116,9 @@
   }
   .hero-bg{
     position:absolute;top:0;bottom:0;right:-8%;width:64%;min-width:520px;z-index:1;pointer-events:none;
-    opacity:0.6;
-    mask-image:radial-gradient(ellipse 66% 78% at 62% 50%, #000 26%, transparent 84%);
-    -webkit-mask-image:radial-gradient(ellipse 66% 78% at 62% 50%, #000 26%, transparent 84%);
+    opacity:0.65;                                                       /* was 0.38 — raise this for more visibility */
+    mask-image:radial-gradient(ellipse 66% 78% at 62% 50%, #000 45%, transparent 95%);      /* was #000 26%, transparent 84% */
+    -webkit-mask-image:radial-gradient(ellipse 66% 78% at 62% 50%, #000 45%, transparent 95%);
   }
   .hero-bg img{width:100%;height:100%;object-fit:cover;display:block;}
   .hero-inner{position:relative;z-index:2;max-width:560px;}

@@ -6,6 +6,8 @@ class Cognito {
     static redirect;
     static session;
 
+    static STORAGE_KEY = 'cognito.session';
+
     static init(backend, client, domain, redirect) {
         Cognito.backend = backend;
         Cognito.client_id = client;
@@ -23,6 +25,7 @@ class Cognito {
     }
 
     static logout(){
+        sessionStorage.removeItem(Cognito.STORAGE_KEY);
         const redirect = encodeURIComponent("https://unmanned.team");
 
         window.location.href = `https://${Cognito.domain}/logout?client_id=${Cognito.client_id}&logout_uri=${redirect}`;
@@ -39,7 +42,36 @@ class Cognito {
         return code;
     }
 
+    static decode(id_token) {
+        return JSON.parse(atob(id_token.split('.')[1]));
+    }
+
+    // Returns the decoded payload of a still-valid cached session, or null.
+    // Lets a plain page load (e.g. navigating "back" within the site) reuse
+    // the existing login instead of bouncing out to the hosted UI every time.
+    static restore() {
+        try {
+            const cached = JSON.parse(sessionStorage.getItem(Cognito.STORAGE_KEY));
+            if (!cached) return null;
+
+            const payload = Cognito.decode(cached.id_token);
+            if (payload.exp * 1000 <= Date.now()) return null;
+
+            Cognito.session = cached.id_token;
+            return payload;
+        } catch {
+            return null;
+        }
+    }
+
     static async exchange(code) {
+        if (!code) {
+            const restored = Cognito.restore();
+            if (restored) return restored;
+
+            Cognito.login();
+        }
+
         const params = new URLSearchParams();
         params.append('client_id', Cognito.client_id);
         params.append('redirect_uri', Cognito.redirect);
@@ -58,10 +90,11 @@ class Cognito {
             Cognito.login();
         }
 
-        const { id_token } = await response.json();        
+        const { id_token } = await response.json();
         Cognito.session = id_token;
+        sessionStorage.setItem(Cognito.STORAGE_KEY, JSON.stringify({ id_token }));
 
-        return JSON.parse(atob(id_token.split('.')[1]));
+        return Cognito.decode(id_token);
     }
 }
 
@@ -97,7 +130,10 @@ class Gateway {
 
             const response = await fetch(url, options);
 
-            if (response.status === 401) Cognito.login();
+            if (response.status === 401) {
+                sessionStorage.removeItem(Cognito.STORAGE_KEY);
+                Cognito.login();
+            }
             return response.ok ? response.json() : null;
 
         } catch (error) {

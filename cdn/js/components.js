@@ -55,7 +55,7 @@ class SiteHeader extends HTMLElement {
           align-items: center;
           gap: 12px;
         }
-        ::slotted(h4) {
+        ::slotted(h4), ::slotted(a) {
           font-size: 0.85rem;
           font-weight: 500;
           cursor: pointer;
@@ -66,7 +66,11 @@ class SiteHeader extends HTMLElement {
           padding: 4px 10px;
           transition: color 0.15s, border-color 0.15s;
         }
-        ::slotted(h4:hover) {
+        ::slotted(a) {
+          text-decoration: none;
+          display: inline-block;
+        }
+        ::slotted(h4:hover), ::slotted(a:hover) {
           color: var(--pink, #e01280);
           border-color: var(--pink, #e01280);
         }

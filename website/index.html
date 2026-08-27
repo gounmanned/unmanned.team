@@ -4,39 +4,64 @@
 <meta charset="UTF-8">
 <script>document.documentElement.classList.replace('no-js','js');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Unmanned, Inc</title>
-<meta name="description" content="Vex is a managed, 24/7 offensive security SOC — finding, chaining, and closing attack paths before an attacker does.">
+<title>Vex by Unmanned</title>
+<meta name="description" content="Vex is an autonomous red team that plugs into your business, finds your choke points, and hacks you before anyone else gets the chance.">
 <link rel="apple-touch-icon" href="https://cdn.unmanned.team/img/logo.png">
 <link rel="icon" type="image/png" href="https://cdn.unmanned.team/img/logo.png">
-<meta property="og:title" content="Vex — Unmanned, Inc" />
-<meta property="og:description" content="Vex is a managed, 24/7 offensive security SOC — finding, chaining, and closing attack paths before an attacker does." />
+<meta property="og:title" content="VEX — Unmanned, Inc." />
+<meta property="og:description" content="An autonomous red team that finds your choke points before an attacker does." />
 <meta property="og:url" content="https://unmanned.team" />
 <meta property="og:type" content="website" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&family=Hedvig+Letters+Serif&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.unmanned.team/css/global.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  html{ overflow-x:hidden; }
+  :root{
+    --ink:#0b0c0d;
+    --white:#fcfcfa;
+    --pink:#e01280;
+    --pink-dim:rgba(224,18,128,0.45);
+    --gray-line:#dcdcd8;
+    --gray-mid:#6c6c70;
+    --db-ink:#f3f3f0;
+    --db-mid:#8a8a8e;
+  }
+  *{box-sizing:border-box;}
+  html{overflow-x:hidden;scroll-behavior:smooth;}
   body{
+    margin:0;
     background:var(--white);
     color:var(--ink);
     font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .mono{font-family:'JetBrains Mono',monospace;letter-spacing:0.04em;}
+  a{color:inherit;}
+  ::selection{background:var(--pink);color:#fff;}
+
+  /* ---------- GRID BACKDROP ---------- */
+  .grid-bg{
+    position:absolute; inset:0;
+    background-image:
+      linear-gradient(to right, rgba(11,12,13,0.045) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(11,12,13,0.045) 1px, transparent 1px);
+    background-size:44px 44px;
+    mask-image:radial-gradient(ellipse 70% 60% at 50% 35%, #000 40%, transparent 90%);
+    pointer-events:none;
+  }
+  .dark-frame .grid-bg{
+    background-image:
+      linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px);
   }
 
-  .mono{
-    font-family:'JetBrains Mono',monospace;
-    letter-spacing:0.04em;
-  }
-
-  /* ---------- SHARED STATUS DOT ---------- */
+  /* ---------- STATUS DOT ---------- */
   .status-dot{
     width:6px;height:6px;border-radius:50%;
     background:var(--pink);
     box-shadow:0 0 0 0 rgba(224,18,128,0.5);
     animation:pulse 2.2s infinite;
-    flex-shrink:0;
-    display:inline-block;
+    flex-shrink:0;display:inline-block;
   }
   @keyframes pulse{
     0%{box-shadow:0 0 0 0 rgba(224,18,128,0.45);}
@@ -44,575 +69,319 @@
     100%{box-shadow:0 0 0 0 rgba(224,18,128,0);}
   }
 
-  /* ---------- SHARED EYEBROW LABEL ---------- */
   .eyebrow-label{
-    font-size:11px;
-    letter-spacing:0.18em;
-    text-transform:uppercase;
-    color:var(--gray-mid);
-    display:flex;
-    align-items:center;
-    gap:11px;
+    font-size:11px;letter-spacing:0.18em;text-transform:uppercase;
+    color:var(--gray-mid);display:flex;align-items:center;gap:11px;
   }
+  .dark-frame .eyebrow-label{color:var(--db-mid);}
 
-  /* ---------- SHARED CORNER MARK ----------
-     One rule set, reused wherever a HUD-style bracket frame is needed.
-     Callers set --corner-size (default 28px) and provide their own
-     top/right/bottom/left offsets via a context class. */
+  /* ---------- CORNER MARKS ---------- */
   .corner{
     position:absolute;
-    width:var(--corner-size, 28px);
-    height:var(--corner-size, 28px);
-    border-color:var(--ink);
-    opacity:0.55;
+    width:var(--corner-size,28px);height:var(--corner-size,28px);
+    border-color:var(--ink);opacity:0.55;
   }
+  .dark-frame .corner{border-color:var(--db-ink);}
   .corner.tl{border-top:1.5px solid;border-left:1.5px solid;}
   .corner.tr{border-top:1.5px solid;border-right:1.5px solid;}
   .corner.bl{border-bottom:1.5px solid;border-left:1.5px solid;}
   .corner.br{border-bottom:1.5px solid;border-right:1.5px solid;}
 
-  /* fixed frame around the whole viewport */
-  .hud-frame{ position:fixed; inset:0; pointer-events:none; z-index:40; }
+  .hud-frame{position:fixed;inset:0;pointer-events:none;z-index:40;}
   .hud-frame .corner.tl{top:46px;left:20px;}
   .hud-frame .corner.tr{top:46px;right:20px;}
   .hud-frame .corner.bl{bottom:20px;left:20px;}
   .hud-frame .corner.br{bottom:20px;right:20px;}
 
-  /* small frame around HUD-style callout boxes (the coverage / remediation readouts) */
-  .hud-box{ position:relative; }
-  .hud-box .corner{ --corner-size:20px; }
+  .hud-box{position:relative;}
+  .hud-box .corner{--corner-size:18px;}
   .hud-box .corner.tl{top:0;left:0;}
   .hud-box .corner.tr{top:0;right:0;}
   .hud-box .corner.bl{bottom:0;left:0;}
   .hud-box .corner.br{bottom:0;right:0;}
 
-  /* ---------- WORDMARK RETICLE ----------
-     Lock-on brackets that snap onto the VEX wordmark once on load —
-     a targeting cue, not a decoration: it's the same bracket language
-     as .hud-frame and .hud-box, scaled to frame the one word on the
-     page worth locking onto. */
-  .wordmark-frame{
-    position:relative;
-    display:inline-block;
-  }
+  /* ---------- WORDMARK RETICLE ---------- */
+  .wordmark-frame{position:relative;display:inline-block;}
   .wordmark-frame .corner{
-    --corner-size:22px;
-    border-color:var(--pink);
-    opacity:0;
-    transform:scale(1.5);
+    --corner-size:26px;border-color:var(--pink);
+    opacity:0;transform:scale(1.5);
     animation:lockOn 0.9s cubic-bezier(0.2,0.7,0.2,1) 0.5s forwards;
   }
-  .wordmark-frame .corner.tl{top:-14px;left:-18px;}
-  .wordmark-frame .corner.tr{top:-14px;right:-18px;animation-delay:0.58s;}
-  .wordmark-frame .corner.bl{bottom:-10px;left:-18px;animation-delay:0.66s;}
-  .wordmark-frame .corner.br{bottom:-10px;right:-18px;animation-delay:0.74s;}
+  .wordmark-frame .corner.tl{top:-16px;left:-22px;}
+  .wordmark-frame .corner.tr{top:-16px;right:-22px;animation-delay:0.58s;}
+  .wordmark-frame .corner.bl{bottom:-12px;left:-22px;animation-delay:0.66s;}
+  .wordmark-frame .corner.br{bottom:-12px;right:-22px;animation-delay:0.74s;}
   @keyframes lockOn{
     0%{opacity:0;transform:scale(1.5);}
     60%{opacity:0.9;}
     100%{opacity:0.75;transform:scale(1);}
   }
 
-  /* ---------- SCANLINE ----------
-     One slow pass per dark section on load — reinforces "sensor
-     sweep" without looping forever and pulling focus from copy. */
-  .scan-sweep{
-    position:absolute;
-    inset:0;
-    pointer-events:none;
-    overflow:hidden;
-    z-index:1;
-  }
+  /* ---------- SCANLINE (one pass, on load) ---------- */
+  .scan-sweep{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:1;}
   .scan-sweep::after{
-    content:'';
-    position:absolute;
-    left:0;right:0;
-    height:120px;
-    top:-120px;
-    background:linear-gradient(to bottom, rgba(224,18,128,0) 0%, rgba(224,18,128,0.06) 50%, rgba(224,18,128,0) 100%);
-    animation:sweep 2.6s cubic-bezier(0.4,0,0.2,1) 1;
+    content:'';position:absolute;left:0;right:0;height:120px;top:-120px;
+    background:linear-gradient(to bottom, rgba(224,18,128,0) 0%, rgba(224,18,128,0.07) 50%, rgba(224,18,128,0) 100%);
+    animation:sweep 2.4s cubic-bezier(0.4,0,0.2,1) 1;
   }
-  @keyframes sweep{
-    0%{ top:-120px; }
-    100%{ top:100%; }
-  }
+  @keyframes sweep{0%{top:-120px;}100%{top:100%;}}
 
   /* ---------- CLASSIFICATION BAR ---------- */
   .classbar{
-    position:fixed;
-    top:0;left:0;right:0;
-    z-index:60;
-    background:#0b0c0d;
-    color:#87878c;
-    font-family:'JetBrains Mono',monospace;
-    font-size:9.5px;
-    letter-spacing:0.16em;
-    text-transform:uppercase;
-    text-align:center;
-    padding:6px 0;
+    position:fixed;top:0;left:0;right:0;z-index:60;
+    background:#0b0c0d;color:#87878c;
+    font-family:'JetBrains Mono',monospace;font-size:9.5px;
+    letter-spacing:0.16em;text-transform:uppercase;text-align:center;padding:6px 0;
   }
 
   @media (max-width:700px){
-    .hud-frame .corner{width:18px;height:18px;}
-    .hud-frame .corner.tl,.hud-frame .corner.tr{top:64px;}
+    .hud-frame .corner{width:16px;height:16px;}
+    .hud-frame .corner.tl,.hud-frame .corner.tr{top:60px;}
     .hud-frame .corner.bl,.hud-frame .corner.br{bottom:12px;}
     .hud-frame .corner.tl,.hud-frame .corner.bl{left:12px;}
     .hud-frame .corner.tr,.hud-frame .corner.br{right:12px;}
-    .classbar{font-size:8.5px;}
+    .classbar{font-size:8px;}
   }
 
   /* ---------- HERO ---------- */
   .hero{
-    position:relative;
-    min-height:100svh;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    text-align:center;
-    padding:140px 24px 80px;
+    position:relative;min-height:100svh;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;padding:150px 24px 70px;overflow:hidden;
   }
-
-  /* radar rings — reused via <use> from the #radar-rings symbol defined once in body */
-  .radar, .radar-echo{
-    position:absolute;
-    top:50%;left:50%;
-    transform:translate(-50%,-50%);
-    pointer-events:none;
+  .radar,.radar-echo{
+    position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;
   }
-  .radar{ width:min(880px, 130vw); height:min(880px, 130vw); z-index:0; }
-  .radar-echo{ width:min(780px, 140vw); height:min(780px, 140vw); opacity:0.6; z-index:1; }
-  .radar svg, .radar-echo svg{ width:100%; height:100%; }
-
-  .radar-ring{
-    fill:none;
-    stroke:var(--gray-line);
-    stroke-width:1;
-    stroke-opacity:0.45;
-    animation:ringGlow 7.5s ease-in-out infinite;
-  }
+  .radar{width:min(900px,140vw);height:min(900px,140vw);z-index:0;}
+  .radar-echo{width:min(760px,140vw);height:min(760px,140vw);opacity:0.55;z-index:1;}
+  .radar svg,.radar-echo svg{width:100%;height:100%;}
+  .radar-ring{fill:none;stroke:var(--gray-line);stroke-width:1;stroke-opacity:0.45;animation:ringGlow 7.5s ease-in-out infinite;}
   .radar-ring.r2{animation-delay:-2.5s;}
   .radar-ring.r3{animation-delay:-5s;}
   @keyframes ringGlow{
-    0%, 100%{stroke:var(--gray-line);stroke-opacity:0.4;stroke-width:1;filter:none;}
+    0%,100%{stroke:var(--gray-line);stroke-opacity:0.4;stroke-width:1;filter:none;}
     50%{stroke:rgba(224,18,128,0.5);stroke-opacity:0.75;stroke-width:1.15;filter:drop-shadow(0 0 4px rgba(224,18,128,0.28));}
   }
-  .radar-tick{ stroke:var(--gray-line); stroke-width:1; }
+  .radar-tick{stroke:var(--gray-line);stroke-width:1;}
 
+  .hero-eyebrow{position:relative;z-index:2;margin-bottom:26px;justify-content:center;}
   h1.wordmark{
-    position:relative;
-    z-index:2;
-    font-family:'Space Grotesk',sans-serif;
-    font-weight:700;
-    font-size:clamp(72px, 15vw, 200px);
-    letter-spacing:-0.02em;
-    line-height:0.9;
-    color:var(--ink);
+    position:relative;z-index:2;
+    font-family:'Space Grotesk',sans-serif;font-weight:700;
+    font-size:clamp(96px,19vw,260px);
+    letter-spacing:-0.02em;line-height:0.86;color:var(--ink);margin:0;
   }
-
-  .tagline-row{
-    position:relative;
-    z-index:2;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap:14px;
-    margin-top:30px;
+  .tagline-row{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:16px;margin-top:34px;}
+  .tagline{font-size:clamp(24px,3vw,36px);letter-spacing:0.01em;color:var(--ink);font-weight:400;max-width:640px;margin:0;}
+  .hero-sub{
+    font-size:14px;color:var(--gray-mid);max-width:420px;line-height:1.6;
   }
-  .tagline{
-    font-size:clamp(24px, 3vw, 36px);
-    letter-spacing:0.01em;
-    color:var(--ink);
-    font-weight:400;
-    max-width:640px;
-  }
+  .hero-sub b{color:var(--ink);font-weight:600;}
 
   @media (max-width:700px){
-    .hero{ padding:120px 20px 64px; min-height:100vh; }
-    .radar{ width:150vw; height:150vw; max-width:640px; max-height:640px; }
-    h1.wordmark{ font-size:clamp(80px, 38vw, 220px); }
-    .wordmark-frame .corner{ --corner-size:16px; }
+    .hero{padding:130px 20px 60px;min-height:100vh;}
+    .radar{width:170vw;height:170vw;max-width:640px;max-height:640px;}
+    h1.wordmark{font-size:clamp(84px,40vw,220px);}
+    .wordmark-frame .corner{--corner-size:16px;}
     .wordmark-frame .corner.tl,.wordmark-frame .corner.tr{top:-10px;}
     .wordmark-frame .corner.bl,.wordmark-frame .corner.br{bottom:-6px;}
     .wordmark-frame .corner.tl,.wordmark-frame .corner.bl{left:-10px;}
     .wordmark-frame .corner.tr,.wordmark-frame .corner.br{right:-10px;}
-    .tagline-row{ margin-top:18px; }
-    .tagline{ font-size:24px; }
+    .tagline-row{margin-top:20px;}
+    .tagline{font-size:24px;}
   }
-  @media (max-width:400px){
-    h1.wordmark{ font-size:clamp(72px, 36vw, 170px); }
-  }
+  @media (max-width:400px){h1.wordmark{font-size:clamp(76px,38vw,170px);}}
 
   .divider{
-    position:relative;
-    border-top:1px solid var(--gray-line);
-    display:flex;
-    justify-content:space-between;
-    padding:14px 56px;
-    font-size:10px;
-    color:var(--gray-mid);
+    position:relative;border-top:1px solid var(--gray-line);
+    display:flex;justify-content:space-between;padding:14px 56px;
+    font-size:10px;color:var(--gray-mid);
   }
-  @media (max-width:700px){ .divider{padding:14px 20px;} }
+  .dark-frame + .divider, .divider.on-dark{
+    border-top-color:rgba(255,255,255,0.14);color:var(--db-mid);background:#0b0c0d;
+  }
+  @media (max-width:700px){.divider{padding:14px 20px;}}
 
-  /* ---------- WHAT WE DO ---------- */
-  .brief{
-    padding:150px 24px 180px;
-    max-width:760px;
-    margin:0 auto;
+  /* ---------- SECTION SHELLS ---------- */
+  .section{position:relative;padding:150px 24px 150px;max-width:900px;margin:0 auto;}
+  @media (max-width:820px){.section{padding:96px 24px 110px;}}
+  .section-label{margin-bottom:26px;justify-content:flex-start;}
+  .section h2{
+    font-family:'Space Grotesk',sans-serif;font-weight:500;
+    font-size:clamp(34px,4.2vw,52px);line-height:1.14;letter-spacing:-0.01em;margin:0 0 14px;
   }
-  @media (max-width:820px){ .brief{padding:100px 24px 130px;} }
+  .section .subhead{
+    font-family:'Space Grotesk',sans-serif;font-weight:500;font-size:clamp(17px,1.8vw,20px);
+    color:var(--pink);margin:0 0 28px;
+  }
+  .section p.lede{font-size:16px;line-height:1.75;color:#2b2b2b;max-width:640px;}
+  .section p.lede + p.lede{margin-top:16px;}
 
-  .brief-label{ margin-bottom:26px; }
+  .dark-frame{background:#0b0c0d;color:var(--db-ink);}
+  .dark-frame p.lede{color:#c7c7ca;}
 
-  .brief-content h2{
-    font-family:'Space Grotesk',sans-serif;
-    font-weight:500;
-    font-size:clamp(32px, 3.4vw, 38px);
-    line-height:1.2;
-    letter-spacing:-0.01em;
-    margin-bottom:26px;
+  /* ---------- ABOUT VEX: SOURCE→VEX→ALERT DIAGRAM ---------- */
+  .flow{
+    margin-top:64px;display:flex;align-items:stretch;gap:0;
+    border-top:1px solid var(--gray-line);border-bottom:1px solid var(--gray-line);
   }
-  .brief-content h2 u{ text-decoration-color:var(--pink); text-underline-offset:3px; }
-  .brief-content p{ font-size:16px; line-height:1.75; color:#2b2b2b; }
-  .brief-content p + p{ margin-top:18px; }
+  .flow-col{flex:1;padding:32px 22px;position:relative;}
+  .flow-col + .flow-col{border-left:1px solid var(--gray-line);}
+  .flow-col-tag{font-size:10px;letter-spacing:0.16em;text-transform:uppercase;color:var(--gray-mid);margin-bottom:16px;display:block;}
+  .flow-list{list-style:none;margin:0;padding:0;font-size:13.5px;color:#2b2b2b;}
+  .flow-list li{
+    padding:8px 0;border-top:1px dashed var(--gray-line);display:flex;align-items:center;gap:8px;
+  }
+  .flow-list li:first-child{border-top:none;}
+  .flow-list li::before{content:'';width:4px;height:4px;background:var(--pink);border-radius:50%;flex-shrink:0;}
+  .flow-core{
+    display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:14px;
+  }
+  .scan-field{position:relative;width:176px;height:176px;display:flex;align-items:center;justify-content:center;}
+  .flow-core .core-node{
+    width:78px;height:78px;border-radius:50%;
+    border:1.5px solid var(--pink);display:flex;align-items:center;justify-content:center;
+    font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px;letter-spacing:0.02em;
+    position:relative;z-index:1;
+  }
+  .flow-core .core-node::before{
+    content:'';position:absolute;inset:-9px;border:1px solid var(--pink-dim);border-radius:50%;
+    animation:ringGlow 4s ease-in-out infinite;
+  }
+  .flow-core .core-status{font-size:10px;color:var(--gray-mid);display:flex;align-items:center;gap:7px;}
 
-  /* ---------- DARK FRAME — shared by philosophy + solution + contact ---------- */
-  .dark-frame{
-    --db-ink:#f3f3f0;
-    --db-mid:#87878c;
-    background:#0b0c0d;
-    color:var(--db-ink);
-    position:relative;
-    padding:150px 24px 160px;
-    text-align:center;
-    overflow:hidden;
+  /* targeting reticle: scans around the field, then locks onto VEX */
+  .target-reticle{
+    position:absolute;top:50%;left:50%;width:42px;height:42px;z-index:2;
+    animation:targetScan 6s cubic-bezier(0.6,0,0.35,1) infinite;
   }
-  .dark-frame .eyebrow-row{ justify-content:center; margin-bottom:44px; }
-  .dark-frame .eyebrow-row.mono{ color:var(--db-mid); }
-  .dark-frame .body-wrap{ position:relative; z-index:2; }
-  @media (max-width:700px){ .dark-frame{padding:100px 20px 116px;} }
-
-  .dark-frame .section-statement{
-    max-width:920px;
-    margin:0 auto 26px;
-    font-family:'Hedvig Letters Serif', serif;
-    font-style:italic;
-    font-weight:400;
-    font-size:clamp(28px, 4.4vw, 48px);
-    line-height:1.32;
-    letter-spacing:-0.01em;
-    color:var(--db-ink);
-  }
-  .dark-frame .section-statement em{ color:var(--pink); font-style:italic; }
-
-  /* ---------- PHILOSOPHY: LEAD (left-aligned inside a centered section) ---------- */
-  .philosophy-lead{
-    max-width:520px;
-    margin:0 auto 40px;
-    text-align:left;
-    font-size:15.5px;
-    line-height:1.75;
-    color:var(--db-mid);
-  }
-
-  /* ---------- PHILOSOPHY: CHOKE-POINT VISUAL ----------
-     A grid of risk boxes. One is highlighted (the choke point). When
-     it resolves, a scattered set of other boxes fade out with it —
-     the risks that only existed because of it. */
-  .choke-visual{
-    margin-top:56px;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-  }
-  .risk-grid{
-    --cv-cell:30px;
-    display:grid;
-    grid-template-columns:repeat(6, var(--cv-cell));
-    gap:5px;
-  }
-  .risk-cell{
-    width:var(--cv-cell);
-    height:var(--cv-cell);
-    border-radius:2px;
-    background:rgba(224,18,128,0.12);
-    border:1px solid rgba(224,18,128,0.32);
-  }
-  .risk-cell.choke{
-    background:var(--pink);
-    border-color:var(--pink);
-    box-shadow:0 0 10px rgba(224,18,128,0.55);
-  }
-  .risk-cell.clears{
-    animation:riskClear 5s ease-in-out infinite;
-  }
-  @keyframes riskClear{
-    0%, 42%{ opacity:1; filter:brightness(1); }
-    48%{ filter:brightness(1.8); }
-    55%, 92%{ opacity:0.15; filter:brightness(1); }
-    100%{ opacity:1; }
-  }
-  .choke-visual-caption{
-    margin-top:20px;
-    font-size:10px;
-    letter-spacing:0.14em;
-    text-transform:uppercase;
-    color:var(--db-mid);
+  .target-reticle .corner{--corner-size:12px;border-color:var(--pink);opacity:1;}
+  .target-reticle .corner.tl{top:0;left:0;}
+  .target-reticle .corner.tr{top:0;right:0;}
+  .target-reticle .corner.bl{bottom:0;left:0;}
+  .target-reticle .corner.br{bottom:0;right:0;}
+  @keyframes targetScan{
+    0%{  transform:translate(calc(-50% - 58px), calc(-50% - 46px)) scale(1); opacity:0; }
+    6%{  opacity:0.55; }
+    18%{ transform:translate(calc(-50% + 50px), calc(-50% - 52px)) scale(1); opacity:0.55; }
+    36%{ transform:translate(calc(-50% + 54px), calc(-50% + 44px)) scale(1); opacity:0.55; }
+    54%{ transform:translate(calc(-50% - 50px), calc(-50% + 40px)) scale(1); opacity:0.6; }
+    70%{ transform:translate(calc(-50% + 8px), calc(-50% - 10px)) scale(1); opacity:0.7; filter:none; }
+    82%{ transform:translate(-50%, -50%) scale(1.95); opacity:1; filter:drop-shadow(0 0 8px rgba(224,18,128,0.65)); }
+    94%{ transform:translate(-50%, -50%) scale(1.95); opacity:1; filter:drop-shadow(0 0 8px rgba(224,18,128,0.65)); }
+    100%{ transform:translate(calc(-50% - 58px), calc(-50% - 46px)) scale(1); opacity:0; }
   }
   @media (max-width:700px){
-    .risk-grid{ --cv-cell:24px; gap:4px; }
+    .flow{flex-direction:column;}
+    .flow-col + .flow-col{border-left:none;border-top:1px solid var(--gray-line);}
+  }
+  @media (max-width:480px){
+    .scan-field{transform:scale(0.82);}
   }
 
-  /* ---------- PREVENT / DETECT / RESPOND ATTACK FILTER ----------
-     Left-to-right "attacks" flow along a track and fade out at the
-     gate they're blocked at. Most stop at gate 1; fewer reach gate 2;
-     almost none make it to gate 3 — the graphic doing the argument
-     that Vex covers all three, and prevention absorbs most of it. */
-  .attack-filter{
-    margin-top:96px;
-    width:100%;
+  /* ---------- CHOKE POINT DIAGRAM: N paths through one signal ---------- */
+  .choke-diagram{margin-top:72px;}
+  .choke-svg{width:100%;height:auto;display:block;}
+  .choke-line{stroke:var(--gray-line);stroke-width:1.2;}
+  .choke-dot{fill:var(--ink);}
+  .choke-node{fill:var(--pink);}
+  .choke-node-ring{fill:none;stroke:var(--pink);stroke-width:1;opacity:0.55;animation:ringGlow 4s ease-in-out infinite;}
+  .reticle-mark{stroke:var(--pink);stroke-width:1.4;fill:none;opacity:0.8;}
+  .choke-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.05em;fill:var(--gray-mid);}
+  .choke-label.hot{fill:var(--pink);}
+
+  /* ---------- STREAM LINE (Slack / Teams / Jira / ServiceNow / API) ---------- */
+  .stream-line{margin-top:76px;padding-top:48px;border-top:1px solid var(--gray-line);text-align:center;}
+  .stream-copy{
+    font-family:'Space Grotesk',sans-serif;font-weight:500;font-size:clamp(19px,2.2vw,25px);
+    line-height:1.5;margin:0 auto 40px;color:var(--ink);max-width:480px;
   }
-  .filter-track{
-    position:relative;
-    width:100%;
-    max-width:700px;
-    height:150px;
-    margin:0 auto 44px;
-    border-bottom:2px solid rgba(224,18,128,0.22);
+  .channels-row{display:flex;justify-content:center;flex-wrap:wrap;gap:44px;}
+  .channel-item{display:flex;flex-direction:column;align-items:center;gap:12px;}
+  .channel-icon{width:32px;height:32px;object-fit:contain;}
+  .channel-name{font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--gray-mid);}
+  @media (max-width:560px){.channels-row{gap:28px;row-gap:26px;}}
+
+  /* ---------- MANAGED BANNER (thin, full width, dark) ---------- */
+  .banner{
+    position:relative;background:#0b0c0d;color:var(--db-ink);overflow:hidden;
+    padding:76px 24px;
   }
-  .filter-gate{
-    position:absolute;
-    top:0;
-    bottom:0;
+  .banner-inner{position:relative;z-index:1;max-width:900px;margin:0 auto;display:flex;gap:48px;align-items:center;flex-wrap:wrap;}
+  .banner-graphic{
+    position:absolute;top:50%;left:0;transform:translate(-38%,-50%);
+    width:min(920px,90vw);height:min(920px,90vw);opacity:0.4;pointer-events:none;z-index:0;
   }
-  .filter-gate .gate-mark{
-    position:absolute;
-    top:0;
-    bottom:0;
-    left:0;
-    width:1.5px;
-    background:rgba(224,18,128,0.4);
+  .banner-graphic svg{width:100%;height:100%;}
+  .banner-content{flex:1 1 340px;min-width:260px;}
+  .banner h2{
+    font-family:'Space Grotesk',sans-serif;font-weight:500;font-size:clamp(30px,3.6vw,42px);
+    letter-spacing:-0.01em;margin:0 0 18px;line-height:1.12;
   }
-  .filter-gate .gate-label{
-    position:absolute;
-    top:100%;
-    left:0;
-    transform:translateX(-50%);
-    margin-top:16px;
-    font-size:14px;
-    letter-spacing:0.1em;
-    font-weight:500;
-    color:var(--db-ink);
-    white-space:nowrap;
+  .banner-body p{font-size:15.5px;line-height:1.75;color:#c7c7ca;margin:0 0 14px;}
+  .banner-link{
+    display:inline-flex;align-items:baseline;gap:8px;margin-top:4px;
+    font-family:'Space Grotesk',sans-serif;font-weight:500;
+    font-size:15px;letter-spacing:0;color:var(--db-ink);text-decoration:none;
+    border-bottom:1px solid var(--pink);padding-bottom:4px;transition:opacity 0.2s ease;
   }
-  .filter-gate .gate-sub{
-    position:absolute;
-    top:100%;
-    left:0;
-    transform:translateX(-50%);
-    margin-top:38px;
-    font-size:11.5px;
-    letter-spacing:0.02em;
-    color:var(--db-mid);
-    white-space:nowrap;
-  }
-  .filter-gate.gate-end .gate-label,
-  .filter-gate.gate-end .gate-sub{
-    transform:translateX(-88%);
-  }
-  .atk-dot{
-    position:absolute;
-    left:0;
-    width:10px;
-    height:10px;
-    margin-top:-5px;
-    border-radius:50%;
-    background:var(--pink);
-    box-shadow:0 0 10px rgba(224,18,128,0.65);
-    opacity:0;
-    animation-duration:4.2s;
-    animation-timing-function:linear;
-    animation-iteration-count:infinite;
-  }
-  .atk-dot.stop1{ animation-name:atkStop1; }
-  .atk-dot.stop2{ animation-name:atkStop2; }
-  .atk-dot.stop3{ animation-name:atkStop3; }
-  @keyframes atkStop1{
-    0%{ left:0%; opacity:0; }
-    6%{ opacity:1; }
-    30%{ left:28%; opacity:1; }
-    36%{ left:29%; opacity:0; }
-    100%{ left:29%; opacity:0; }
-  }
-  @keyframes atkStop2{
-    0%{ left:0%; opacity:0; }
-    6%{ opacity:1; }
-    55%{ left:60%; opacity:1; }
-    61%{ left:61%; opacity:0; }
-    100%{ left:61%; opacity:0; }
-  }
-  @keyframes atkStop3{
-    0%{ left:0%; opacity:0; }
-    6%{ opacity:1; }
-    85%{ left:92%; opacity:1; }
-    90%{ left:93%; opacity:0; }
-    100%{ left:93%; opacity:0; }
-  }
+  .banner-link:hover{opacity:0.65;}
+  .banner-link .arrow{color:var(--pink);transition:transform 0.2s ease;display:inline-block;}
+  .banner-link:hover .arrow{transform:translateX(3px);}
   @media (max-width:700px){
-    .filter-track{ height:130px; margin-bottom:50px; max-width:100%; }
-    .filter-gate .gate-label{ font-size:12px; }
-    .filter-gate .gate-sub{ font-size:10px; }
-  }
-  @media (prefers-reduced-motion: reduce){
-    .atk-dot{ animation:none; opacity:0; }
+    .banner{padding:56px 20px;}
+    .banner-inner{gap:28px;}
+    .banner-graphic{opacity:0.25;}
   }
 
-  /* ---------- LIGHT INVERSION OF A DARK-FRAME SECTION ----------
-     Same markup/rules as .dark-frame, just swaps the two custom
-     properties everything else already reads from. */
-  .dark-frame.invert-light{
-    background:var(--white);
-    --db-ink:#0b0c0d;
-    --db-mid:#6b6b70;
-  }
-
+  /* ---------- CONTACT ---------- */
   .contact-statement{
-    font-family:'Space Grotesk',sans-serif;
-    font-weight:500;
-    font-size:clamp(28px, 4vw, 42px);
-    letter-spacing:-0.01em;
-    line-height:1.28;
-    margin:0 0 44px;
-    color:var(--db-ink);
+    font-family:'Space Grotesk',sans-serif;font-weight:500;font-size:clamp(26px,6.4vw,64px);
+    letter-spacing:-0.02em;line-height:1;margin:0 0 44px;color:var(--db-ink);white-space:nowrap;
   }
   .contact-cta{
-    display:inline-flex;
-    align-items:baseline;
-    gap:10px;
-    font-family:'JetBrains Mono',monospace;
-    font-size:clamp(18px, 2.6vw, 24px);
-    letter-spacing:0.02em;
-    color:var(--db-ink);
-    text-decoration:none;
-    border-bottom:1px solid var(--pink);
-    padding-bottom:6px;
+    display:inline-flex;align-items:baseline;gap:10px;
+    font-family:'JetBrains Mono',monospace;font-size:clamp(18px,2.6vw,24px);letter-spacing:0.02em;
+    color:var(--db-ink);text-decoration:none;border-bottom:1px solid var(--pink);padding-bottom:6px;
     transition:opacity 0.2s ease;
   }
-  .contact-cta:hover{ opacity:0.65; }
-  .contact-cta .arrow{ color:var(--pink); transition:transform 0.2s ease; display:inline-block; }
-  .contact-cta:hover .arrow{ transform:translateX(3px); }
-
-  a:focus-visible, .contact-cta:focus-visible{
-    outline:1.5px solid var(--pink);
-    outline-offset:4px;
+  .contact-cta:hover{opacity:0.65;}
+  .contact-cta .arrow{color:var(--pink);transition:transform 0.2s ease;display:inline-block;}
+  .contact-cta:hover .arrow{transform:translateX(3px);}
+  a:focus-visible,.contact-cta:focus-visible{outline:1.5px solid var(--pink);outline-offset:4px;}
+  .contact-section{
+    padding:160px 24px 170px;text-align:center;position:relative;overflow:hidden;
   }
-
-  @media (prefers-reduced-motion: reduce){
-    .status-dot, .radar-ring{ animation:none; opacity:0.9; }
-    .wordmark-frame .corner{ animation:none; opacity:0.65; transform:scale(1); }
-    .scan-sweep::after{ animation:none; display:none; }
-    .risk-cell.clears{ animation:none; opacity:0.15; }
-    .js .hud-box.reveal .corner,
-    .js .hud-box.reveal .vex-explainer-final{
-      opacity:1 !important;
-      transform:none !important;
-      animation:none !important;
-      transition:none !important;
-    }
-  }
-
-  /* ---------- READOUT CALLOUT (COVERAGE / REMEDIATION) ----------
-     A quiet instrument-panel readout, not a pull-quote: a hairline
-     top/bottom edge and a faint fill ground it in the same rule
-     the .divider uses elsewhere, the corner brackets tie it to the
-     page's HUD vocabulary, and the tag names what the reading is
-     rather than just restating the diagram above it. */
-  .vex-explainer{
-    position:relative;
-    max-width:640px;
-    margin:132px auto 0;
-    padding:34px 36px;
-    text-align:center;
-    border-top:1px solid color-mix(in srgb, var(--db-ink) 14%, transparent);
-    border-bottom:1px solid color-mix(in srgb, var(--db-ink) 14%, transparent);
-    background:color-mix(in srgb, var(--db-ink) 3%, transparent);
-  }
-  .hud-box-tag{
-    display:block;
-    font-family:'JetBrains Mono',monospace;
-    font-size:10px;
-    letter-spacing:0.16em;
-    text-transform:uppercase;
-    color:var(--pink);
-    opacity:0.85;
-    margin-bottom:14px;
-  }
-  .vex-explainer-final{
-    font-family:'Space Grotesk',sans-serif;
-    font-weight:500;
-    font-size:clamp(19px, 2.4vw, 25px);
-    line-height:1.5;
-    letter-spacing:-0.005em;
-    color:var(--db-ink);
-    text-wrap:balance;
-  }
-  .vex-explainer-final em{ color:var(--pink); font-style:normal; font-weight:600; }
-
-  @media (max-width:700px){
-    .vex-explainer{ margin-top:84px; padding:28px 20px; }
-    .vex-explainer-final{ font-size:18px; }
-  }
-
-  /* ---------- SCROLL REVEAL (readout lock-on) ----------
-     Progressive enhancement: with JS and motion both available, the
-     corner brackets and statement settle into place once, the first
-     time the readout enters view — echoing the hero's lock-on without
-     repeating it. Without JS, or with reduced motion, the readout is
-     simply visible; it never depends on the animation to be legible. */
-  .js .hud-box.reveal .corner{
-    opacity:0;
-    transform:scale(1.4);
-  }
-  .js .hud-box.reveal.in-view .corner{
-    animation:lockOn 0.7s cubic-bezier(0.2,0.7,0.2,1) forwards;
-  }
-  .js .hud-box.reveal.in-view .corner.tr{ animation-delay:0.06s; }
-  .js .hud-box.reveal.in-view .corner.bl{ animation-delay:0.12s; }
-  .js .hud-box.reveal.in-view .corner.br{ animation-delay:0.18s; }
-  .js .hud-box.reveal .vex-explainer-final,
-  .js .hud-box.reveal .hud-box-tag{
-    opacity:0;
-    transform:translateY(8px);
-    transition:opacity 0.6s ease, transform 0.6s ease;
-  }
-  .js .hud-box.reveal.in-view .vex-explainer-final,
-  .js .hud-box.reveal.in-view .hud-box-tag{
-    opacity:1;
-    transform:translateY(0);
-  }
+  .contact-section .body-wrap{position:relative;z-index:2;}
+  .contact-section .eyebrow-row{justify-content:center;margin-bottom:36px;}
+  @media (max-width:700px){.contact-section{padding:110px 20px 120px;}}
 
   /* ---------- FOOTER ---------- */
   footer{
-    border-top:1px solid var(--gray-line);
-    padding:28px 56px 40px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    font-size:10.5px;
-    color:var(--gray-mid);
-    text-transform:uppercase;
-    letter-spacing:0.08em;
+    border-top:1px solid var(--gray-line);padding:28px 56px 40px;
+    display:flex;justify-content:space-between;align-items:center;
+    font-size:10.5px;color:var(--gray-mid);text-transform:uppercase;letter-spacing:0.08em;
   }
-  footer a{ color:inherit; text-decoration:none; }
-  footer a:hover{ color:var(--ink); }
-  footer .fmark{ color:var(--ink); font-weight:500; }
-  @media (max-width:700px){
-    footer{ padding:22px 20px 36px; flex-direction:column; gap:10px; text-align:center; }
+  footer a{text-decoration:none;}
+  footer a:hover{color:var(--ink);}
+  footer .fmark{color:var(--ink);font-weight:500;}
+  @media (max-width:700px){footer{padding:22px 20px 36px;flex-direction:column;gap:10px;text-align:center;}}
+
+  /* ---------- SCROLL REVEAL ---------- */
+  .js .reveal{opacity:0;transform:translateY(14px);transition:opacity 0.6s ease, transform 0.6s ease;}
+  .js .reveal.in-view{opacity:1;transform:translateY(0);}
+
+  @media (prefers-reduced-motion: reduce){
+    .status-dot,.radar-ring,.core-node::before,.choke-node-ring{animation:none;opacity:0.85;}
+    .target-reticle{animation:none;transform:translate(-50%,-50%) scale(1.95);opacity:1;}
+    .wordmark-frame .corner{animation:none;opacity:0.65;transform:scale(1);}
+    .scan-sweep::after{animation:none;display:none;}
+    .js .reveal{opacity:1 !important;transform:none !important;transition:none !important;}
   }
 </style>
 </head>
 <body>
 
-  <!-- Radar rings defined once, reused by both the hero and contact sections via <use> -->
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
     <defs>
       <g id="radar-rings">
@@ -623,7 +392,7 @@
     </defs>
   </svg>
 
-  <div class="classbar">UNMANNED · AUTONOMOUS SECURITY · PUBLIC RELEASE</div>
+  <div class="classbar">UNMANNED · AUTONOMOUS OFFENSIVE SECURITY · PUBLIC RELEASE</div>
 
   <div class="hud-frame">
     <div class="corner tl"></div>
@@ -632,7 +401,11 @@
     <div class="corner br"></div>
   </div>
 
+  <!-- ============================================================
+       HERO
+       ============================================================ -->
   <section class="hero">
+    <div class="grid-bg" aria-hidden="true"></div>
     <div class="radar" aria-hidden="true">
       <svg viewBox="0 0 800 800">
         <use href="#radar-rings"></use>
@@ -649,7 +422,7 @@
       <h1 class="wordmark">VEX</h1>
     </div>
     <div class="tagline-row">
-      <span class="tagline">Don't get hacked</span>
+      <p class="tagline">Don't get hacked.</p>
     </div>
   </section>
 
@@ -658,162 +431,184 @@
     <span>AUTOPILOT ENGAGED</span>
   </div>
 
-  <section class="brief">
-    <div class="brief-label eyebrow-label mono"><span class="status-dot"></span>The problem</div>
-    <div class="brief-content">
-      <h2>You're <u>not ready</u> for an AI cyber attack.</h2>
-      <p>
-        You've bought firewalls, endpoint tools, an AI SOC.
-        But you have a nagging feeling an attacker could still get in.
-        Trust that feeling.
-        Detection and response will help you during and after an attack.
-        You need to prevent it from happening in the first place.
-      </p>
+  <!-- ============================================================
+       ABOUT VEX
+       ============================================================ -->
+  <section class="section" id="about">
+    <div class="section-label eyebrow-label mono"><span class="status-dot"></span>What Vex does</div>
+    <h2>Go beyond a pentest</h2>
+    <p class="subhead">Vex hacks you before anyone else gets the chance.</p>
+    <p class="lede">
+      Vex is an autonomous red team that plugs directly into your business — Google Workspace, Microsoft 365, Cloudflare, your endpoints, and more. Once connected, it runs continuously, mapping the seams between your systems the same way an attacker would, and identifies your most probable breach points.
+    </p>
+
+    <div class="flow reveal" aria-hidden="true">
+      <div class="flow-col">
+        <span class="flow-col-tag mono">You connect</span>
+        <ul class="flow-list">
+          <li>Identity</li>
+          <li>Domain</li>
+          <li>Endpoint</li>
+          <li>20+ more</li>
+        </ul>
+      </div>
+      <div class="flow-col flow-core">
+        <div class="scan-field">
+          <div class="core-node">VEX</div>
+          <div class="target-reticle">
+            <span class="corner tl"></span>
+            <span class="corner tr"></span>
+            <span class="corner bl"></span>
+            <span class="corner br"></span>
+          </div>
+        </div>
+        <div class="core-status mono"><span class="status-dot"></span>Running</div>
+      </div>
+      <div class="flow-col">
+        <span class="flow-col-tag mono">We alert</span>
+        <ul class="flow-list">
+          <li>Slack</li>
+          <li>Microsoft Teams</li>
+          <li>Email</li>
+          <li>SOC</li>
+        </ul>
+      </div>
     </div>
   </section>
 
   <div class="divider mono">
     <span>REC · 00:00:01</span>
-    <span>TARGET IDENTIFIED</span>
+    <span>SIGNAL ACQUIRED</span>
   </div>
 
   <!-- ============================================================
-       SECTION A — "The solution"
-       Job: land the purchase in one sentence, then show that a Vex
-       subscription is a managed 24/7 SOC covering all three stages —
-       and that most attacks never make it past the first one.
+       FIND YOUR CHOKE POINTS
        ============================================================ -->
-  <section class="dark-frame solution">
-    <div class="scan-sweep" aria-hidden="true"></div>
-    <div class="body-wrap">
-      <div class="eyebrow-row eyebrow-label mono"><span class="status-dot"></span>The solution</div>
+  <section class="section" id="choke">
+    <div class="section-label eyebrow-label mono"><span class="status-dot"></span>Find your choke points</div>
+    <h2>One fix. Every path closes.</h2>
+    <p class="lede">
+      When several breach points trace back to the same underlying weakness — an over-permissioned identity, a stale credential, an exposed config — we call that a <b>signal</b>, and the point where they converge a <b>choke point</b>. You don't need to fix everything Vex finds. Just the choke point.
+    </p>
 
-      <h2 class="section-statement">Hire an <em>AI hacker</em>.</h2>
+    <div class="choke-diagram reveal">
+      <svg class="choke-svg" viewBox="0 0 640 210" aria-hidden="true">
+        <line class="choke-line" x1="70" y1="46" x2="320" y2="150"></line>
+        <line class="choke-line" x1="205" y1="46" x2="320" y2="150"></line>
+        <line class="choke-line" x1="320" y1="46" x2="320" y2="150"></line>
+        <line class="choke-line" x1="435" y1="46" x2="320" y2="150"></line>
+        <line class="choke-line" x1="570" y1="46" x2="320" y2="150"></line>
 
-      <p class="philosophy-lead">
-        Vex isn't a pentest or a scanner.
-        It's a subscription to a red team that never clocks out — continuously breaking into your business the way a real attacker would.
-        Watch what happens to attacks as they move through Vex.
-      </p>
+        <circle class="choke-dot" cx="70" cy="46" r="4"></circle>
+        <circle class="choke-dot" cx="205" cy="46" r="4"></circle>
+        <circle class="choke-dot" cx="320" cy="46" r="4"></circle>
+        <circle class="choke-dot" cx="435" cy="46" r="4"></circle>
+        <circle class="choke-dot" cx="570" cy="46" r="4"></circle>
 
-      <div class="attack-filter" aria-hidden="true">
-        <div class="filter-track">
-          <div class="filter-gate" style="left:29%">
-            <span class="gate-mark"></span>
-            <span class="gate-label mono">PREVENT</span>
-          </div>
-          <div class="filter-gate" style="left:61%">
-            <span class="gate-mark"></span>
-            <span class="gate-label mono">DETECT</span>
-          </div>
-          <div class="filter-gate gate-end" style="left:93%">
-            <span class="gate-mark"></span>
-            <span class="gate-label mono">RESPOND</span>
-          </div>
+        <text class="choke-label" x="70" y="28" text-anchor="middle">PATH 1</text>
+        <text class="choke-label" x="205" y="28" text-anchor="middle">PATH 2</text>
+        <text class="choke-label" x="320" y="28" text-anchor="middle">PATH 3</text>
+        <text class="choke-label" x="435" y="28" text-anchor="middle">PATH 4</text>
+        <text class="choke-label" x="570" y="28" text-anchor="middle">PATH 5</text>
 
-          <span class="atk-dot stop1" style="top:14%;animation-delay:0s;"></span>
-          <span class="atk-dot stop1" style="top:30%;animation-delay:0.45s;"></span>
-          <span class="atk-dot stop1" style="top:46%;animation-delay:0.9s;"></span>
-          <span class="atk-dot stop1" style="top:62%;animation-delay:1.35s;"></span>
-          <span class="atk-dot stop1" style="top:78%;animation-delay:1.8s;"></span>
-          <span class="atk-dot stop1" style="top:94%;animation-delay:2.25s;"></span>
+        <circle class="choke-node-ring" cx="320" cy="150" r="24"></circle>
+        <circle class="choke-node" cx="320" cy="150" r="7"></circle>
+        <path class="reticle-mark" d="M292,124 h12 M292,124 v12"></path>
+        <path class="reticle-mark" d="M348,124 h-12 M348,124 v12"></path>
+        <path class="reticle-mark" d="M292,176 h12 M292,176 v-12"></path>
+        <path class="reticle-mark" d="M348,176 h-12 M348,176 v-12"></path>
+        <text class="choke-label hot" x="320" y="187" text-anchor="middle">CHOKE POINT · SIG_03</text>
+      </svg>
+    </div>
 
-          <span class="atk-dot stop2" style="top:22%;animation-delay:0.25s;"></span>
-          <span class="atk-dot stop2" style="top:50%;animation-delay:1.25s;"></span>
-          <span class="atk-dot stop2" style="top:78%;animation-delay:2.25s;"></span>
-
-          <span class="atk-dot stop3" style="top:50%;animation-delay:0.7s;"></span>
+    <div class="stream-line reveal">
+      <p class="stream-copy">Choke points stream straight to wherever your team already works.</p>
+      <div class="channels-row">
+        <div class="channel-item">
+          <img class="channel-icon" src="static/slack.png" alt="Slack" loading="lazy">
+          <span class="channel-name mono">Slack</span>
         </div>
-      </div>
-      <div class="vex-explainer hud-box reveal">
-        <div class="corner tl"></div>
-        <div class="corner tr"></div>
-        <div class="corner bl"></div>
-        <div class="corner br"></div>
-        <span class="hud-box-tag">Simple terms</span>
-        <p class="vex-explainer-final">Vex is a fully managed, 24/7 SOC — one system running prevention, detection, and response, so fewer attacks ever need response.</p>
+        <div class="channel-item">
+          <img class="channel-icon" src="static/teams.png" alt="Microsoft Teams" loading="lazy">
+          <span class="channel-name mono">Teams</span>
+        </div>
+        <div class="channel-item">
+          <img class="channel-icon" src="static/jira.png" alt="Jira" loading="lazy">
+          <span class="channel-name mono">Jira</span>
+        </div>
+        <div class="channel-item">
+          <img class="channel-icon" src="static/servicenow.png" alt="ServiceNow" loading="lazy">
+          <span class="channel-name mono">ServiceNow</span>
+        </div>
+        <div class="channel-item">
+          <img class="channel-icon" src="static/rapid7.png" alt="Rapid7" loading="lazy">
+          <span class="channel-name mono">Rapid7</span>
+        </div>
       </div>
     </div>
   </section>
 
   <div class="divider mono">
     <span>REC · 00:00:02</span>
-    <span>TARGET ISOLATED</span>
+    <span>CHOKE POINT LOCATED</span>
   </div>
 
   <!-- ============================================================
-       SECTION B1 — "How it works" (the choke-point graphic, restored)
+       MANAGED VEX — thin dark banner
        ============================================================ -->
-  <section class="dark-frame philosophy invert-light">
+  <section class="banner">
+    <div class="grid-bg" aria-hidden="true"></div>
     <div class="scan-sweep" aria-hidden="true"></div>
-    <div class="body-wrap">
-      <div class="eyebrow-row eyebrow-label mono"><span class="status-dot"></span>How it works</div>
-
-      <h2 class="section-statement">Eliminate <em>choke points</em>.</h2>
-
-      <p class="philosophy-lead">
-        Every business has flaws.
-        Some — an over-permissioned identity, an exposed server — can become the critical path into your business.
-        We call these choke points.
-        You don't need to fix everything.
-        Just the choke points.
-      </p>
-
-      <div class="choke-visual">
-        <div class="risk-grid" aria-hidden="true">
-          <div class="risk-cell"></div>
-          <div class="risk-cell clears"></div>
-          <div class="risk-cell"></div>
-          <div class="risk-cell"></div>
-          <div class="risk-cell"></div>
-          <div class="risk-cell"></div>
-
-          <div class="risk-cell"></div>
-          <div class="risk-cell clears"></div>
-          <div class="risk-cell"></div>
-          <div class="risk-cell clears choke"></div>
-          <div class="risk-cell"></div>
-          <div class="risk-cell"></div>
-
-          <div class="risk-cell"></div>
-          <div class="risk-cell"></div>
-          <div class="risk-cell clears"></div>
-          <div class="risk-cell"></div>
-          <div class="risk-cell clears"></div>
-          <div class="risk-cell"></div>
-
-          <div class="risk-cell"></div>
-          <div class="risk-cell"></div>
-          <div class="risk-cell clears"></div>
-          <div class="risk-cell"></div>
-          <div class="risk-cell clears"></div>
-          <div class="risk-cell"></div>
+    <div class="banner-graphic" aria-hidden="true">
+      <svg viewBox="0 0 800 800">
+        <use href="#radar-rings"></use>
+        <line class="radar-tick" x1="400" y1="20" x2="400" y2="780"></line>
+        <line class="radar-tick" x1="20" y1="400" x2="780" y2="400"></line>
+      </svg>
+    </div>
+    <div class="banner-inner">
+      <div class="banner-content">
+        <h2>Let us run it for you.</h2>
+        <div class="banner-body">
+          <p>
+            Managed Vex is a full MDR solution: an AI SOC platform manned by a 24/7 security operations center. We don't just tell you where the choke point is — we close it. Every finding is reviewed and remediated by the same elite hacker team that built and runs Vex, not a rotating contractor desk.
+          </p>
+          <a class="banner-link" href="/managed">Read more about Managed Vex <span class="arrow">→</span></a>
         </div>
-        <p class="choke-visual-caption mono">One fix. Six risks resolved.</p>
-      </div>
-
-      <div class="vex-explainer hud-box reveal">
-        <div class="corner tl"></div>
-        <div class="corner tr"></div>
-        <div class="corner bl"></div>
-        <div class="corner br"></div>
-        <span class="hud-box-tag">Prevention first</span>
-        <p class="vex-explainer-final">Every choke point Vex finds becomes a ticket — closed by our managed SOC, or routed straight into yours via API.</p>
       </div>
     </div>
   </section>
 
   <div class="divider mono">
     <span>REC · 00:00:03</span>
+    <span>OPERATOR VERIFIED</span>
+  </div>
+
+  <!-- ============================================================
+       TEAM
+       ============================================================ -->
+  <section class="section" id="team">
+    <div class="section-label eyebrow-label mono"><span class="status-dot"></span>About us</div>
+    <h2>Built by an elite team of hackers.</h2>
+    <p class="lede" style="max-width:none;">
+      Unmanned was built by elite offensive security operators who spent their careers finding the ways in—not writing about them.
+      Our founder spent 20 years in U.S. government offensive operations, built MITRE CALDERA (a government adversary emulation platform), served as a Distinguished Engineer at Rapid7, held CTO roles across multiple security startups, and literally wrote <a href="https://www.amazon.com/dp/B0CSH2Z9DL?lv=shuf&channelId=500&plpRedirect=mhFallback" target="_blank">the book</a> on continuous security.
+    </p>
+  </section>
+
+  <div class="divider mono">
+    <span>REC · 00:00:04</span>
     <span>COMMS ESTABLISHED</span>
   </div>
 
-  <section class="dark-frame contact">
+  <!-- ============================================================
+       CONTACT
+       ============================================================ -->
+  <section class="dark-frame contact-section" id="contact">
+    <div class="grid-bg" aria-hidden="true"></div>
     <div class="scan-sweep" aria-hidden="true"></div>
     <div class="radar-echo" aria-hidden="true">
-      <svg viewBox="0 0 800 800">
-        <use href="#radar-rings"></use>
-      </svg>
+      <svg viewBox="0 0 800 800"><use href="#radar-rings"></use></svg>
     </div>
     <div class="body-wrap">
       <div class="eyebrow-row eyebrow-label mono"><span class="status-dot"></span>Get a free account</div>
@@ -830,11 +625,11 @@
 
   <script>
     (function(){
-      var boxes = document.querySelectorAll('.hud-box.reveal');
-      if(!boxes.length){ return; }
+      var els = document.querySelectorAll('.reveal');
+      if(!els.length){ return; }
       var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       if(!('IntersectionObserver' in window) || reduceMotion){
-        boxes.forEach(function(el){ el.classList.add('in-view'); });
+        els.forEach(function(el){ el.classList.add('in-view'); });
         return;
       }
       var io = new IntersectionObserver(function(entries){
@@ -844,8 +639,8 @@
             io.unobserve(entry.target);
           }
         });
-      }, { threshold:0.4 });
-      boxes.forEach(function(el){ io.observe(el); });
+      }, { threshold:0.25 });
+      els.forEach(function(el){ io.observe(el); });
     })();
   </script>
 </body>

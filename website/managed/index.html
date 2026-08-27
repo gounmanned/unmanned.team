@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="UTF-8">
+<script>document.documentElement.classList.replace('no-js','js');</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Managed Vex — Unmanned, Inc.</title>
+<meta name="description" content="Vex is a managed, 24/7 offensive security SOC — finding, chaining, and closing attack paths before an attacker does.">
+<link rel="apple-touch-icon" href="https://cdn.unmanned.team/img/logo.png">
+<link rel="icon" type="image/png" href="https://cdn.unmanned.team/img/logo.png">
+<meta property="og:title" content="Managed Vex — Unmanned, Inc." />
+<meta property="og:description" content="Vex is a managed, 24/7 offensive security SOC — finding, chaining, and closing attack paths before an attacker does." />
+<meta property="og:url" content="https://unmanned.team/managed" />
+<meta property="og:type" content="website" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0b0c0d;
+    --white:#fcfcfa;
+    --pink:#e01280;
+    --pink-dim:rgba(224,18,128,0.45);
+    --gray-line:#dcdcd8;
+    --gray-mid:#6c6c70;
+    --db-ink:#f3f3f0;
+    --db-mid:#8a8a8e;
+  }
+  *{box-sizing:border-box;}
+  html{overflow-x:hidden;scroll-behavior:smooth;}
+  body{margin:0;background:var(--white);color:var(--ink);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;}
+  .mono{font-family:'JetBrains Mono',monospace;letter-spacing:0.04em;}
+  a{color:inherit;}
+  ::selection{background:var(--pink);color:#fff;}
+  .wrap{width:min(1100px,calc(100% - 48px));margin:0 auto;}
+
+  .grid-bg{
+    position:absolute;inset:0;z-index:0;
+    background-image:
+      linear-gradient(to right, rgba(11,12,13,0.045) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(11,12,13,0.045) 1px, transparent 1px);
+    background-size:44px 44px;
+    mask-image:radial-gradient(ellipse 70% 60% at 50% 35%, #000 40%, transparent 90%);
+    pointer-events:none;
+  }
+
+  .status-dot{
+    width:6px;height:6px;border-radius:50%;background:var(--pink);
+    box-shadow:0 0 0 0 rgba(224,18,128,0.5);animation:pulse 2.2s infinite;flex-shrink:0;display:inline-block;
+  }
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(224,18,128,0.45);}
+    70%{box-shadow:0 0 0 8px rgba(224,18,128,0);}
+    100%{box-shadow:0 0 0 0 rgba(224,18,128,0);}
+  }
+  .eyebrow-label{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--gray-mid);display:flex;align-items:center;gap:11px;}
+
+  .corner{position:absolute;width:var(--corner-size,28px);height:var(--corner-size,28px);border-color:var(--ink);opacity:0.55;}
+  .corner.tl{border-top:1.5px solid;border-left:1.5px solid;}
+  .corner.tr{border-top:1.5px solid;border-right:1.5px solid;}
+  .corner.bl{border-bottom:1.5px solid;border-left:1.5px solid;}
+  .corner.br{border-bottom:1.5px solid;border-right:1.5px solid;}
+
+  .hud-frame{position:fixed;inset:0;pointer-events:none;z-index:40;}
+  .hud-frame .corner.tl{top:46px;left:20px;}
+  .hud-frame .corner.tr{top:46px;right:20px;}
+  .hud-frame .corner.bl{bottom:20px;left:20px;}
+  .hud-frame .corner.br{bottom:20px;right:20px;}
+
+  .scan-sweep{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:1;}
+  .scan-sweep::after{
+    content:'';position:absolute;left:0;right:0;height:120px;top:-120px;
+    background:linear-gradient(to bottom, rgba(224,18,128,0) 0%, rgba(224,18,128,0.07) 50%, rgba(224,18,128,0) 100%);
+    animation:sweep 2.4s cubic-bezier(0.4,0,0.2,1) 1;
+  }
+  @keyframes sweep{0%{top:-120px;}100%{top:100%;}}
+
+  .classbar{
+    position:fixed;top:0;left:0;right:0;z-index:60;background:#0b0c0d;color:#87878c;
+    font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.16em;
+    text-transform:uppercase;text-align:center;padding:6px 0;
+  }
+  @media (max-width:700px){
+    .hud-frame .corner{width:16px;height:16px;}
+    .hud-frame .corner.tl,.hud-frame .corner.tr{top:60px;}
+    .hud-frame .corner.bl,.hud-frame .corner.br{bottom:12px;}
+    .hud-frame .corner.tl,.hud-frame .corner.bl{left:12px;}
+    .hud-frame .corner.tr,.hud-frame .corner.br{right:12px;}
+    .classbar{font-size:8px;}
+  }
+
+  /* ---------- STICKY HEADER ---------- */
+  .site-header{position:sticky;top:25px;z-index:30;background:var(--white);border-bottom:1px solid var(--gray-line);}
+  .header-inner{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:18px 0;}
+  .brand{display:flex;align-items:center;gap:9px;font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:600;letter-spacing:0.01em;text-decoration:none;}
+  .header-nav{display:flex;align-items:center;gap:30px;margin:0 auto 0 48px;}
+  .header-nav a{
+    font-family:'Inter',sans-serif;font-size:12px;font-weight:500;letter-spacing:0.07em;text-transform:uppercase;
+    text-decoration:none;color:var(--gray-mid);
+  }
+  .header-nav a:hover{color:var(--ink);}
+  .btn{
+    font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:13.5px;letter-spacing:0;
+    padding:11px 18px;text-decoration:none;transition:opacity 0.2s ease;display:inline-flex;align-items:center;gap:8px;white-space:nowrap;
+  }
+  .btn-solid{background:var(--ink);color:#fff;}
+  .btn:hover{opacity:0.7;}
+  @media (max-width:760px){.header-nav{display:none;}}
+
+  /* ---------- HERO ---------- */
+  :root{--header-h:85px;}
+  .hero{
+    position:relative;overflow:hidden;display:flex;align-items:center;
+    min-height:100vh;min-height:calc(100vh - var(--header-h));min-height:calc(100dvh - var(--header-h));
+    padding:70px 0;
+  }
+  .hero-bg{
+    position:absolute;top:0;bottom:0;right:-8%;width:64%;min-width:520px;z-index:1;pointer-events:none;
+    opacity:0.6;
+    mask-image:radial-gradient(ellipse 66% 78% at 62% 50%, #000 26%, transparent 84%);
+    -webkit-mask-image:radial-gradient(ellipse 66% 78% at 62% 50%, #000 26%, transparent 84%);
+  }
+  .hero-bg img{width:100%;height:100%;object-fit:cover;display:block;}
+  .hero-inner{position:relative;z-index:2;max-width:560px;}
+  .hero-eyebrow{margin-bottom:22px;}
+  .hero h1{
+    margin:0;font-family:'Space Grotesk',sans-serif;font-weight:700;
+    font-size:clamp(42px,6.2vw,74px);line-height:0.98;letter-spacing:-0.03em;
+  }
+  .hero h1 span{color:var(--pink);}
+  .hero-copy{max-width:480px;margin:26px 0 0;color:#4b4c52;font-size:16.5px;line-height:1.7;}
+  @media (max-width:900px){.hero-bg{display:none;}}
+  @media (max-width:700px){.hero{min-height:auto;padding:56px 0 48px;}}
+
+  .divider{
+    position:relative;border-top:1px solid var(--gray-line);display:flex;justify-content:space-between;
+    padding:14px 56px;font-size:10px;color:var(--gray-mid);
+  }
+  @media (max-width:700px){.divider{padding:14px 20px;}}
+
+  /* ---------- SECTION SHELL ---------- */
+  .section{position:relative;padding:100px 0 120px;}
+  @media (max-width:820px){.section{padding:70px 0 90px;}}
+  .section h2{
+    margin:0 0 16px;font-family:'Space Grotesk',sans-serif;font-weight:500;
+    font-size:clamp(32px,4vw,48px);letter-spacing:-0.01em;line-height:1.14;
+  }
+  .section p.lede{font-size:16px;line-height:1.75;color:#2b2b2b;max-width:680px;}
+
+  /* ---------- STAT CALLOUTS ---------- */
+  .stat-row{margin-top:56px;display:flex;border-top:1px solid var(--gray-line);border-bottom:1px solid var(--gray-line);}
+  .stat-card{flex:1;padding:32px 30px;}
+  .stat-card + .stat-card{border-left:1px solid var(--gray-line);}
+  .stat-num{display:block;font-size:36px;color:var(--pink);margin-bottom:14px;letter-spacing:-0.01em;}
+  .stat-card h3{margin:0 0 8px;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:17px;}
+  .stat-card p{margin:0;font-size:13.5px;line-height:1.6;color:var(--gray-mid);}
+  @media (max-width:760px){
+    .stat-row{flex-direction:column;}
+    .stat-card + .stat-card{border-left:none;border-top:1px solid var(--gray-line);}
+  }
+
+  /* ---------- FLAT CHECKLIST ---------- */
+  .checklist{margin-top:70px;border-top:1px solid var(--gray-line);}
+  .check-row{
+    display:grid;grid-template-columns:96px minmax(0,220px) 1fr;gap:24px;align-items:baseline;
+    padding:18px 0;border-bottom:1px solid var(--gray-line);
+  }
+  .check-tag{font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--pink);}
+  .check-row h3{margin:0;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:14.5px;letter-spacing:-0.005em;}
+  .check-row p{margin:0;font-size:13px;line-height:1.6;color:var(--gray-mid);}
+  @media (max-width:760px){
+    .check-row{grid-template-columns:1fr;gap:4px;padding:18px 0;}
+    .check-row h3{order:2;}
+    .check-tag{order:1;}
+    .check-row p{order:3;margin-top:2px;}
+  }
+
+  /* ---------- CONTACT ---------- */
+  .contact-section{padding:150px 0 160px;text-align:center;position:relative;overflow:hidden;background:#0b0c0d;color:var(--db-ink);}
+  .contact-section .body-wrap{position:relative;z-index:2;}
+  .contact-section .eyebrow-row{justify-content:center;margin-bottom:36px;}
+  .radar-echo{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:min(760px,140vw);height:min(760px,140vw);opacity:0.5;z-index:1;pointer-events:none;}
+  .radar-echo svg{width:100%;height:100%;}
+  .radar-ring{fill:none;stroke:var(--gray-line);stroke-width:1;stroke-opacity:0.45;animation:ringGlow 7.5s ease-in-out infinite;}
+  .radar-ring.r2{animation-delay:-2.5s;}
+  .radar-ring.r3{animation-delay:-5s;}
+  @keyframes ringGlow{
+    0%,100%{stroke:var(--gray-line);stroke-opacity:0.4;stroke-width:1;filter:none;}
+    50%{stroke:rgba(224,18,128,0.5);stroke-opacity:0.75;stroke-width:1.15;filter:drop-shadow(0 0 4px rgba(224,18,128,0.28));}
+  }
+  .contact-statement{
+    font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:clamp(30px,6vw,58px);
+    letter-spacing:-0.03em;line-height:1.06;margin:0 0 44px;color:var(--db-ink);
+  }
+  .contact-statement span{color:var(--pink);}
+  .contact-cta{
+    display:inline-flex;align-items:baseline;gap:10px;font-family:'JetBrains Mono',monospace;
+    font-size:clamp(16px,2.2vw,20px);letter-spacing:0.02em;color:var(--db-ink);text-decoration:none;
+    border-bottom:1px solid var(--pink);padding-bottom:6px;transition:opacity 0.2s ease;
+  }
+  .contact-cta:hover{opacity:0.65;}
+  .contact-cta .arrow{color:var(--pink);transition:transform 0.2s ease;display:inline-block;}
+  .contact-cta:hover .arrow{transform:translateX(3px);}
+  a:focus-visible,.contact-cta:focus-visible{outline:1.5px solid var(--pink);outline-offset:4px;}
+  @media (max-width:700px){.contact-section{padding:110px 0 120px;}}
+
+  /* ---------- FOOTER ---------- */
+  footer{
+    border-top:1px solid var(--gray-line);padding:28px 56px 40px;display:flex;justify-content:space-between;
+    align-items:center;font-size:10.5px;color:var(--gray-mid);text-transform:uppercase;letter-spacing:0.08em;
+  }
+  footer a{text-decoration:none;}
+  footer a:hover{color:var(--ink);}
+  footer .fmark{color:var(--ink);font-weight:500;}
+  @media (max-width:700px){footer{padding:22px 20px 36px;flex-direction:column;gap:10px;text-align:center;}}
+
+  .js .reveal{opacity:0;transform:translateY(14px);transition:opacity 0.6s ease, transform 0.6s ease;}
+  .js .reveal.in-view{opacity:1;transform:translateY(0);}
+
+  @media (prefers-reduced-motion: reduce){
+    .status-dot,.radar-ring{animation:none;opacity:0.85;}
+    .scan-sweep::after{animation:none;display:none;}
+    .js .reveal{opacity:1 !important;transform:none !important;transition:none !important;}
+  }
+</style>
+</head>
+<body>
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <g id="radar-rings">
+        <circle class="radar-ring r1" cx="400" cy="400" r="120"></circle>
+        <circle class="radar-ring r2" cx="400" cy="400" r="240"></circle>
+        <circle class="radar-ring r3" cx="400" cy="400" r="360"></circle>
+      </g>
+    </defs>
+  </svg>
+
+  <div class="classbar">UNMANNED · MANAGED VEX · PUBLIC RELEASE</div>
+
+  <div class="hud-frame">
+    <div class="corner tl"></div>
+    <div class="corner tr"></div>
+    <div class="corner bl"></div>
+    <div class="corner br"></div>
+  </div>
+
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a href="/" class="brand"><span class="status-dot"></span>VEX</a>
+      <nav class="header-nav">
+        <a href="#prevent">Prevent</a>
+        <a href="#detect">Detect</a>
+        <a href="#respond">Respond</a>
+      </nav>
+      <a class="btn btn-solid" href="mailto:go@unmanned.team?subject=Vex%20Security%20Assessment">Talk to us →</a>
+    </div>
+  </header>
+
+  <main>
+
+  <!-- ============================================================
+       HERO
+       ============================================================ -->
+  <section class="hero">
+    <div class="grid-bg" aria-hidden="true"></div>
+    <div class="hero-bg" aria-hidden="true"><img src="static/dashboard.png" alt=""></div>
+    <div class="wrap">
+      <div class="hero-inner">
+        <div class="hero-eyebrow eyebrow-label mono"><span class="status-dot"></span>Managed Vex</div>
+        <h1>The hacker<br>who <span>heals.</span></h1>
+        <p class="hero-copy">Vex isn't just an AI hacker finding a way in — it's a fully managed SOC platform, running prevention, detection, and response around the clock.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider mono">
+    <span>REC · 00:00:00</span>
+    <span>COVERAGE MAPPED</span>
+  </div>
+
+  <!-- ============================================================
+       WHAT'S INCLUDED
+       ============================================================ -->
+  <section class="section" id="included">
+    <div class="wrap">
+      <div class="section-label eyebrow-label mono"><span class="status-dot"></span>Coverage</div>
+      <h2>What's included</h2>
+      <p class="lede">
+        Cybersecurity breaks down into three tenses: <b>prevent</b> future attacks, <b>detect</b> current attacks, and <b>respond</b> to past attacks. Managed Vex lays every feature out exactly that way, so you can see precisely what's covered — and compare it line for line against anything else you're considering.
+      </p>
+
+      <div class="stat-row reveal">
+        <div class="stat-card">
+          <span class="stat-num mono">24/7</span>
+          <h3>Always-on SOC</h3>
+          <p>Manned and AI analysts watching everything, day and night.</p>
+        </div>
+        <div class="stat-card">
+          <span class="stat-num mono">100%</span>
+          <h3>Full coverage</h3>
+          <p>Endpoint, identity, domain, and SaaS — all under one system.</p>
+        </div>
+        <div class="stat-card">
+          <span class="stat-num mono">&lt;1s</span>
+          <h3>Automatic containment</h3>
+          <p>Breached accounts suspended in milliseconds, before a human even looks.</p>
+        </div>
+      </div>
+
+      <div class="checklist reveal">
+        <div class="check-row" id="prevent">
+          <span class="check-tag mono">Prevent</span>
+          <h3>AI Red Team</h3>
+          <p>Launches continuous LLM-backed attacks against your infrastructure, finding the same paths a real attacker would.</p>
+        </div>
+        <div class="check-row">
+          <span class="check-tag mono">Prevent</span>
+          <h3>Attack Surface Monitoring</h3>
+          <p>Tracks every domain and every human or AI identity as your environment changes.</p>
+        </div>
+        <div class="check-row">
+          <span class="check-tag mono">Prevent</span>
+          <h3>Endpoint Protection</h3>
+          <p>Runs the EDR of your choice, or ours, with full visibility across every device.</p>
+        </div>
+        <div class="check-row">
+          <span class="check-tag mono">Prevent</span>
+          <h3>Vulnerability Management</h3>
+          <p>Detects vulnerable systems automatically and keeps patching on schedule across every endpoint.</p>
+        </div>
+        <div class="check-row">
+          <span class="check-tag mono">Prevent</span>
+          <h3>Identity Security</h3>
+          <p>Protects logins, privileges, and access across every account that touches your business.</p>
+        </div>
+        <div class="check-row">
+          <span class="check-tag mono">Prevent</span>
+          <h3>Email Security</h3>
+          <p>Blocks phishing, impersonation, and account takeover before a message reaches an inbox.</p>
+        </div>
+        <div class="check-row">
+          <span class="check-tag mono">Prevent</span>
+          <h3>SaaS Security</h3>
+          <p>Connects to 50+ SaaS tools to watch the applications your business already runs on.</p>
+        </div>
+        <div class="check-row">
+          <span class="check-tag mono">Prevent</span>
+          <h3>Email Deliverability</h3>
+          <p>Keeps your domains authenticated and your business and marketing email out of spam folders.</p>
+        </div>
+
+        <div class="check-row" id="detect">
+          <span class="check-tag mono">Detect</span>
+          <h3>Manned SOC</h3>
+          <p>Human analysts watch, investigate, and escalate real activity across your environment, day and night.</p>
+        </div>
+        <div class="check-row">
+          <span class="check-tag mono">Detect</span>
+          <h3>AI SOC</h3>
+          <p>AI agents scan every event log and alert, surfacing context and remediation advice for analysts.</p>
+        </div>
+        <div class="check-row">
+          <span class="check-tag mono">Detect</span>
+          <h3>SIEM</h3>
+          <p>Centralizes security telemetry so events can be searched, correlated, and retained.</p>
+        </div>
+        <div class="check-row">
+          <span class="check-tag mono">Detect</span>
+          <h3>Threat Intelligence</h3>
+          <p>Correlates every event across services to flag attacks from known threat actors.</p>
+        </div>
+        <div class="check-row">
+          <span class="check-tag mono">Detect</span>
+          <h3>Insider Threat Detection</h3>
+          <p>Flags unusual access and behavior that point to a compromised or malicious account.</p>
+        </div>
+        <div class="check-row">
+          <span class="check-tag mono">Detect</span>
+          <h3>DNS Monitoring</h3>
+          <p>Tracks DNS records for the kind of quiet change an attacker relies on going unnoticed.</p>
+        </div>
+        <div class="check-row">
+          <span class="check-tag mono">Detect</span>
+          <h3>Compliance Monitoring</h3>
+          <p>Checks your controls and evidence against HIPAA and other frameworks, continuously.</p>
+        </div>
+        <div class="check-row">
+          <span class="check-tag mono">Detect</span>
+          <h3>Outage Monitoring</h3>
+          <p>Watches for service failures, from QuickBooks to Shopify, so you know when critical systems are down.</p>
+        </div>
+
+        <div class="check-row" id="respond">
+          <span class="check-tag mono">Respond</span>
+          <h3>Incident Response</h3>
+          <p>Delivers unlimited incident response support through resolution when an attack slips through.</p>
+        </div>
+        <div class="check-row">
+          <span class="check-tag mono">Respond</span>
+          <h3>Backup &amp; Recovery</h3>
+          <p>Takes automatic file backups daily and moves them into cold storage.</p>
+        </div>
+        <div class="check-row">
+          <span class="check-tag mono">Respond</span>
+          <h3>Automatic Triage</h3>
+          <p>Disables user accounts within milliseconds when breach probability is high.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider mono">
+    <span>REC · 00:00:01</span>
+    <span>COMMS ESTABLISHED</span>
+  </div>
+
+  <!-- ============================================================
+       CONTACT
+       ============================================================ -->
+  <section class="contact-section" id="contact">
+    <div class="grid-bg" aria-hidden="true"></div>
+    <div class="scan-sweep" aria-hidden="true"></div>
+    <div class="radar-echo" aria-hidden="true">
+      <svg viewBox="0 0 800 800"><use href="#radar-rings"></use></svg>
+    </div>
+    <div class="wrap body-wrap">
+      <div class="eyebrow-row eyebrow-label mono"><span class="status-dot"></span>Get started</div>
+      <h2 class="contact-statement">Ready when your<br>next attacker <span>is.</span></h2>
+      <a class="contact-cta" href="mailto:go@unmanned.team?subject=Vex%20Security%20Assessment">Talk to us <span class="arrow">→</span></a>
+    </div>
+  </section>
+
+  </main>
+
+  <footer class="mono">
+    <span class="fmark">UNMANNED</span>
+    <a href="https://gounmanned.substack.com/" target="_blank" rel="noopener noreferrer">READ OUR BLOG</a>
+  </footer>
+
+  <script>
+    (function(){
+      var els = document.querySelectorAll('.reveal');
+      if(!els.length){ return; }
+      var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if(!('IntersectionObserver' in window) || reduceMotion){
+        els.forEach(function(el){ el.classList.add('in-view'); });
+        return;
+      }
+      var io = new IntersectionObserver(function(entries){
+        entries.forEach(function(entry){
+          if(entry.isIntersecting){
+            entry.target.classList.add('in-view');
+            io.unobserve(entry.target);
+          }
+        });
+      }, { threshold:0.2 });
+      els.forEach(function(el){ io.observe(el); });
+    })();
+  </script>
+</body>
+</html>

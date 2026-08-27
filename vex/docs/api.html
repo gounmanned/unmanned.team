@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="apple-touch-icon" href="https://cdn.unmanned.team/img/logo.png">
+<link rel="icon" type="image/png" href="https://cdn.unmanned.team/img/logo.png">
+<title>API — Vex</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@600&family=DM+Sans:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:        #06070a;
+  --surface:   #0c0e14;
+  --surface-2: #10121a;
+  --text:      #eeeef2;
+  --dim:       #8f8fa8;
+  --mid:       #b8b8cc;
+  --brand:     #e01280;
+  --b-border:  rgba(224,18,128,0.2);
+  --w-border:  rgba(255,255,255,0.06);
+  --grid:      rgba(224,18,128,0.04);
+  --sidebar-w: 220px;
+
+  --font-display: 'Oswald', sans-serif;
+  --font-body:    'DM Sans', sans-serif;
+  --font-mono:    'JetBrains Mono', monospace;
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-weight: 400;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background: repeating-linear-gradient(
+    0deg, transparent, transparent 2px,
+    rgba(0,0,0,0.032) 2px, rgba(0,0,0,0.032) 4px
+  );
+  pointer-events: none;
+  z-index: 999;
+}
+
+.pg {
+  position: fixed; inset: 0;
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 64px 64px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+a { color: var(--brand); text-decoration: none; }
+a:hover { opacity: 0.8; }
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: 64px;
+  display: flex; align-items: center;
+  background: rgba(6,7,10,0.92);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--w-border);
+  z-index: 600;
+  transition: border-color 0.3s;
+}
+.nav-inner {
+  max-width: 1060px; margin: 0 auto; width: 100%;
+  padding: 0 36px;
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+}
+.nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; position: absolute; left: 36px; }
+.nav-logo img { width: 24px; height: 24px; object-fit: contain; }
+.nav-logo span {
+  font-family: var(--font-mono);
+  font-size: 12px; font-weight: 500;
+  letter-spacing: 0.18em; text-transform: uppercase; color: var(--dim);
+}
+.nav-back {
+  font-family: var(--font-mono);
+  font-size: 11px; font-weight: 500;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim);
+  text-decoration: none; display: flex; align-items: center; gap: 7px; transition: color 0.2s;
+}
+.nav-back svg { flex-shrink: 0; }
+.nav-back:hover { color: var(--brand); opacity: 1; }
+
+
+/* ── LAYOUT ── */
+.layout {
+  display: flex;
+  min-height: 100vh;
+  padding-top: 64px;
+}
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width: var(--sidebar-w);
+  flex-shrink: 0;
+  position: fixed;
+  top: 64px; left: 0; bottom: 0;
+  overflow-y: auto;
+  background: var(--surface);
+  border-right: 1px solid var(--w-border);
+  z-index: 100;
+  padding: 44px 0 64px;
+}
+.sidebar::-webkit-scrollbar { width: 3px; }
+.sidebar::-webkit-scrollbar-thumb { background: rgba(224,18,128,0.12); }
+
+.sb-group { margin-bottom: 8px; }
+.sb-group-label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 9px; font-weight: 500;
+  letter-spacing: 0.24em; text-transform: uppercase;
+  color: var(--brand); opacity: 0.4;
+  padding: 22px 28px 9px;
+}
+.sb-link {
+  display: block;
+  padding: 8px 28px;
+  font-family: var(--font-body);
+  font-size: 14px; font-weight: 400;
+  color: var(--dim); text-decoration: none;
+  border-left: 2px solid transparent;
+  margin-left: -1px;
+  transition: color 0.15s, background 0.15s, border-color 0.15s;
+  line-height: 1.3;
+}
+.sb-link:hover { color: var(--text); background: rgba(255,255,255,0.025); opacity: 1; }
+.sb-link.active {
+  color: var(--brand);
+  border-left-color: var(--brand);
+  background: rgba(224,18,128,0.04);
+  opacity: 1;
+}
+
+/* ── MAIN ── */
+.main {
+  margin-left: var(--sidebar-w);
+  flex: 1; min-width: 0;
+  position: relative; z-index: 1;
+}
+
+/* ── HERO ── */
+.hero {
+  padding: 88px 80px 80px;
+  border-bottom: 1px solid var(--w-border);
+  position: relative; overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 55% 120% at -5% 50%, rgba(224,18,128,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 35% 80% at 100% 10%, rgba(224,18,128,0.04) 0%, transparent 60%);
+  pointer-events: none;
+}
+.hero-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 10px; font-weight: 500;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--brand); opacity: 0.7;
+  margin-bottom: 18px;
+  position: relative; z-index: 1;
+}
+.hero h1 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(44px, 5.5vw, 76px);
+  line-height: 1.0; letter-spacing: 0.02em; text-transform: uppercase;
+  margin-bottom: 24px;
+  position: relative; z-index: 1;
+  opacity: 0; animation: fadeUp 0.65s cubic-bezier(0.22,1,0.36,1) 0.1s forwards;
+}
+.hero h1 em { font-style: normal; color: var(--brand); }
+.hero-sub {
+  font-size: 19px; font-weight: 400;
+  line-height: 1.8; color: var(--mid);
+  max-width: 600px;
+  margin-bottom: 44px;
+  position: relative; z-index: 1;
+  opacity: 0; animation: fadeUp 0.6s cubic-bezier(0.22,1,0.36,1) 0.22s forwards;
+}
+.hero-base {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--dim);
+  position: relative; z-index: 1;
+  display: flex; align-items: center; gap: 12px;
+  opacity: 0; animation: fadeUp 0.6s cubic-bezier(0.22,1,0.36,1) 0.38s forwards;
+}
+.hero-base-label {
+  font-size: 10px; letter-spacing: 0.15em;
+  text-transform: uppercase; color: rgba(255,255,255,0.2);
+}
+.hero-base code {
+  color: var(--brand); opacity: 0.9;
+  background: rgba(224,18,128,0.07);
+  padding: 6px 14px;
+  border: 1px solid var(--b-border);
+  font-size: 13px;
+}
+.ps-num {
+  font-family: var(--font-mono);
+  font-size: 11px; font-weight: 500;
+  color: var(--brand); opacity: 0.45;
+  flex-shrink: 0;
+  letter-spacing: 0.1em;
+}
+.ps-title {
+  font-family: var(--font-body);
+  font-size: 15px; font-weight: 500;
+  color: var(--text);
+  margin-bottom: 3px;
+}
+.ps-body {
+  font-family: var(--font-body);
+  font-size: 13px; font-weight: 400;
+  line-height: 1.65; color: var(--dim);
+}
+.ps-body a { color: var(--brand); }
+
+/* ── DOC SECTION (single column, full width) ── */
+.doc-section {
+  border-bottom: 1px solid var(--w-border);
+  padding: 72px 80px;
+  max-width: 900px;
+}
+.doc-section:last-child { border-bottom: none; }
+
+.sec-tag {
+  font-family: var(--font-mono);
+  font-size: 9px; font-weight: 500;
+  letter-spacing: 0.24em; text-transform: uppercase;
+  color: var(--brand); opacity: 0.55;
+  margin-bottom: 12px;
+}
+.sec-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 38px; letter-spacing: 0.02em; text-transform: uppercase;
+  line-height: 1.0;
+  margin-bottom: 20px;
+}
+.sec-body {
+  font-size: 17px; font-weight: 400;
+  line-height: 1.85; color: var(--mid);
+  max-width: 680px;
+  margin-bottom: 14px;
+}
+.sec-body:last-child { margin-bottom: 0; }
+.sec-body strong { color: var(--text); font-weight: 500; }
+.sec-body code {
+  font-family: var(--font-mono);
+  font-size: 13px; color: var(--brand);
+  background: rgba(224,18,128,0.07);
+  padding: 2px 7px;
+  border: 1px solid rgba(224,18,128,0.12);
+}
+.sec-body a { color: var(--brand); }
+
+/* endpoints */
+.endpoints { margin-top: 28px; display: flex; flex-direction: column; gap: 6px; }
+.endpoint {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 13px 18px;
+  border: 1px solid var(--w-border);
+  background: var(--surface);
+  transition: border-color 0.2s;
+}
+.endpoint:hover { border-color: var(--b-border); }
+.ep-method {
+  font-family: var(--font-mono);
+  font-size: 9px; font-weight: 500;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 3px 8px; flex-shrink: 0; margin-top: 2px;
+}
+.m-get  { background: rgba(52,211,153,0.08);  color: rgba(52,211,153,0.9); }
+.m-post { background: rgba(96,165,250,0.08);  color: rgba(96,165,250,0.9); }
+.m-pat  { background: rgba(251,191,36,0.08);  color: rgba(251,191,36,0.9); }
+.m-del  { background: rgba(248,113,113,0.08); color: rgba(248,113,113,0.9); }
+.ep-path {
+  font-family: var(--font-mono);
+  font-size: 14px; font-weight: 500;
+  color: var(--text); letter-spacing: 0.02em;
+}
+.ep-path span { color: var(--brand); opacity: 0.75; }
+.ep-desc { font-size: 13px; color: var(--dim); margin-top: 3px; line-height: 1.5; }
+
+/* note */
+.note {
+  display: flex; gap: 14px;
+  padding: 16px 20px;
+  border: 1px solid var(--b-border);
+  background: rgba(224,18,128,0.04);
+  margin-top: 24px;
+  max-width: 680px;
+}
+.note-icon { color: var(--brand); flex-shrink: 0; margin-top: 2px; }
+.note-body { font-size: 15px; line-height: 1.75; color: var(--mid); }
+.note-body strong { color: var(--text); font-weight: 500; }
+.note-body code {
+  font-family: var(--font-mono);
+  font-size: 12px; color: var(--brand);
+  background: rgba(224,18,128,0.07);
+  padding: 1px 6px;
+  border: 1px solid rgba(224,18,128,0.12);
+}
+.note-body a { color: var(--brand); }
+
+/* integration grid */
+.int-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 2px; background: var(--w-border);
+  margin-top: 28px; max-width: 680px;
+}
+.int-item {
+  background: var(--surface);
+  padding: 18px 22px;
+  display: flex; align-items: flex-start; gap: 10px;
+}
+.int-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--brand); opacity: 0.45;
+  flex-shrink: 0; margin-top: 7px;
+}
+.int-name {
+  font-family: var(--font-mono);
+  font-size: 12px; font-weight: 500;
+  color: var(--text); letter-spacing: 0.04em; margin-bottom: 3px;
+}
+.int-desc { font-size: 13px; color: var(--dim); line-height: 1.5; }
+
+/* status table */
+.status-table {
+  width: 100%; max-width: 680px;
+  border-collapse: collapse;
+  margin-top: 28px;
+}
+.status-table thead th {
+  text-align: left;
+  padding: 9px 14px;
+  font-family: var(--font-mono);
+  font-size: 9px; font-weight: 500;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--dim);
+  border-bottom: 1px solid var(--w-border);
+  background: var(--surface-2);
+}
+.status-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.035);
+  color: var(--mid); font-size: 14.5px;
+  vertical-align: top;
+}
+.status-table tr:last-child td { border-bottom: none; }
+.status-table tr:hover td { background: rgba(255,255,255,0.012); }
+.st-code {
+  font-family: var(--font-mono);
+  font-size: 12px; font-weight: 500;
+  color: var(--brand); letter-spacing: 0.06em; white-space: nowrap;
+}
+.st-label { font-family: var(--font-mono); font-size: 12px; color: var(--text); white-space: nowrap; }
+.st-desc { color: var(--dim); line-height: 1.55; }
+
+/* code block */
+.code-block {
+  margin-top: 32px;
+  border: 1px solid var(--w-border);
+  background: var(--surface);
+  overflow: hidden;
+}
+.code-block + .code-block { margin-top: 12px; }
+.code-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 20px;
+  border-bottom: 1px solid var(--w-border);
+  background: var(--surface-2);
+}
+.code-filename {
+  font-family: var(--font-mono);
+  font-size: 12px; font-weight: 500;
+  color: var(--dim); letter-spacing: 0.06em;
+}
+.code-lang {
+  font-family: var(--font-mono);
+  font-size: 9px; font-weight: 500;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: rgba(224,18,128,0.4);
+}
+.code-block pre {
+  padding: 26px 26px;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 13px; line-height: 1.78;
+  tab-size: 2;
+}
+.code-block pre::-webkit-scrollbar { height: 3px; }
+.code-block pre::-webkit-scrollbar-thumb { background: var(--b-border); }
+
+.t-kw   { color: rgba(224,18,128,0.85); }
+.t-str  { color: rgba(167,219,131,0.9); }
+.t-cmnt { color: rgba(255,255,255,0.2); font-style: italic; }
+.t-fn   { color: rgba(140,180,255,0.85); }
+.t-num  { color: rgba(245,158,11,0.85); }
+
+/* animations */
+@keyframes fadeUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+
+/* responsive */
+@media (max-width: 960px) {
+  .nav-back { display: none; }
+  .hero, .doc-section { padding-left: 40px; padding-right: 40px; }
+}
+@media (max-width: 760px) {
+  .sidebar { display: none; }
+  .main { margin-left: 0; }
+  .hero, .doc-section { padding-left: 24px; padding-right: 24px; }
+  .int-grid { grid-template-columns: 1fr; }
+  .doc-section { max-width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<div class="pg"></div>
+
+<nav>
+  <div class="nav-inner">
+    <a class="nav-logo" href="https://vex.unmanned.team">
+      <img src="https://cdn.unmanned.team/img/logo.png" alt="Vex">
+      <span>Vex</span>
+    </a>
+    <a class="nav-back" href="https://vex.unmanned.team">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M19 12H5M11 6l-6 6 6 6"/>
+      </svg>
+      Back home
+    </a>
+  </div>
+</nav>
+
+<div class="layout">
+
+  <aside class="sidebar">
+    <div class="sb-group">
+      <span class="sb-group-label">Overview</span>
+      <a class="sb-link active" href="#intro">Introduction</a>
+      <a class="sb-link" href="#auth">Authentication</a>
+    </div>
+    <div class="sb-group">
+      <span class="sb-group-label">Signals</span>
+      <a class="sb-link" href="#signals-list">List Signals</a>
+      <a class="sb-link" href="#signals-get">Get Signal</a>
+      <a class="sb-link" href="#signals-create">Create Signal</a>
+      <a class="sb-link" href="#signals-update">Update Signal</a>
+    </div>
+    <div class="sb-group">
+      <span class="sb-group-label">Monitors</span>
+      <a class="sb-link" href="#monitors-list">List Monitors</a>
+      <a class="sb-link" href="#monitors-connect">Connect Monitor</a>
+      <a class="sb-link" href="#monitors-disconnect">Disconnect Monitor</a>
+    </div>
+    <div class="sb-group">
+      <span class="sb-group-label">Multi-tenancy</span>
+      <a class="sb-link" href="#delegation">Account Delegation</a>
+      <a class="sb-link" href="#invite">Invite Customer</a>
+    </div>
+  </aside>
+
+  <div class="main">
+
+    <!-- HERO -->
+    <div class="hero" id="intro">
+      <div class="hero-eyebrow">// Reference</div>
+      <h1>One API.<br>Signals + Monitors.<br><em>Fully headless.</em></h1>
+      <p class="hero-sub">Vex runs like an always-on red team, collecting security signals and generating a breach scenario if they combine into a probable attack. Use these docs to plug Vex into anything.</p>
+      <div class="hero-base">
+        <span class="hero-base-label">Base URL</span>
+        <code>https://us.unmanned.team</code>
+      </div>
+    </div>
+
+    <!-- AUTH -->
+    <div class="doc-section" id="auth">
+      <div class="sec-tag">Authentication</div>
+      <h2 class="sec-title">Authenticate with the API</h2>
+      <p class="sec-body">Vex uses <strong>AWS Cognito</strong>, fronted by a hosted login page. Send users to the hosted UI, exchange the returned <code>code</code> for an ID token, then pass it as a <code>Bearer</code> value in the <code>Authorization</code> header on every request.</p>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filename">authenticate.js</span>
+          <span class="code-lang">JavaScript</span>
+        </div>
+        <pre><code><span class="t-kw">const</span> HOSTED_UI    = <span class="t-str">'https://lock-unmanned.auth.us-east-2.amazoncognito.com'</span>;
+<span class="t-kw">const</span> CLIENT_ID    = <span class="t-str">'2314edi18c3o3t8sroh2u2hucf'</span>;
+<span class="t-kw">const</span> REDIRECT_URI = <span class="t-str">'https://yourapp.example.com/callback'</span>;
+
+<span class="t-cmnt">// 1. Send the user to the hosted login page</span>
+<span class="t-kw">function</span> <span class="t-fn">login</span>() {
+  <span class="t-kw">const</span> params = <span class="t-kw">new</span> URLSearchParams({
+    client_id: CLIENT_ID,
+    response_type: <span class="t-str">'code'</span>,
+    scope: <span class="t-str">'email openid profile'</span>,
+    redirect_uri: REDIRECT_URI,
+  });
+  window.location.href = <span class="t-str">`${HOSTED_UI}/login?${params}`</span>;
+}
+
+<span class="t-cmnt">// 2. Exchange the ?code= param on your callback for tokens</span>
+<span class="t-kw">async function</span> <span class="t-fn">exchange</span>(code) {
+  <span class="t-kw">const</span> body = <span class="t-kw">new</span> URLSearchParams({
+    grant_type: <span class="t-str">'authorization_code'</span>,
+    client_id: CLIENT_ID,
+    redirect_uri: REDIRECT_URI,
+    code,
+  });
+
+  <span class="t-kw">const</span> resp = <span class="t-kw">await</span> <span class="t-fn">fetch</span>(<span class="t-str">`${HOSTED_UI}/oauth2/token`</span>, {
+    method: <span class="t-str">'POST'</span>,
+    headers: { <span class="t-str">'Content-Type'</span>: <span class="t-str">'application/x-www-form-urlencoded'</span> },
+    body,
+  });
+
+  <span class="t-kw">const</span> { id_token } = <span class="t-kw">await</span> resp.<span class="t-fn">json</span>();
+  <span class="t-kw">return</span> id_token;
+}
+
+<span class="t-kw">const</span> idToken = <span class="t-kw">await</span> <span class="t-fn">exchange</span>(code);
+
+<span class="t-cmnt">// Attach to every request</span>
+<span class="t-kw">const</span> headers = {
+  <span class="t-str">'Authorization'</span>: <span class="t-str">`Bearer ${idToken}`</span>,
+  <span class="t-str">'Content-Type'</span>: <span class="t-str">'application/json'</span>,
+};</code></pre>
+      </div>
+      <div class="note">
+        <svg class="note-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0 1 12 2.944a11.955 11.955 0 0 1-8.618 3.04A12.02 12.02 0 0 0 3 9c0 5.591 3.824 10.29 9 11.622C17.176 19.29 21 14.591 21 9c0-1.022-.124-2.018-.355-2.973h-.027z"/></svg>
+        <div class="note-body">ID tokens are short-lived. A request that comes back <code>401</code> means yours has expired — send the user through the hosted login page again rather than trying to refresh in place.</div>
+      </div>
+    </div>
+
+    <!-- SIGNAL LIST -->
+    <div class="doc-section" id="signals-list">
+      <div class="sec-tag">Signals</div>
+      <h2 class="sec-title">List signals</h2>
+      <p class="sec-body">Returns signals in your account. Filter by <code>status</code> or <code>date</code>. For MSP-wide queries across every managed account, use <code>/managed/signal</code> instead.</p>
+      <div class="endpoints">
+        <div class="endpoint">
+          <span class="ep-method m-get">GET</span>
+          <div>
+            <div class="ep-path">/signal<span>?status=OA</span></div>
+            <div class="ep-desc">Returns signals, filterable by status code or month.</div>
+          </div>
+        </div>
+        <div class="endpoint">
+          <span class="ep-method m-get">GET</span>
+          <div>
+            <div class="ep-path">/managed/signal</div>
+            <div class="ep-desc">MSP-wide: returns signals across every managed account.</div>
+          </div>
+        </div>
+      </div>
+      <table class="status-table">
+        <thead>
+          <tr><th>Code</th><th>Label</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="st-code">OA</span></td><td><span class="st-label">Active</span></td><td class="st-desc">Open and unresolved. Default signal queue view.</td></tr>
+          <tr><td><span class="st-code">OB</span></td><td><span class="st-label">Blocked</span></td><td class="st-desc">Waiting on someone before work can continue.</td></tr>
+          <tr><td><span class="st-code">CH</span></td><td><span class="st-label">Closed</span></td><td class="st-desc">Resolved and closed by a human.</td></tr>
+          <tr><td><span class="st-code">CV</span></td><td><span class="st-label">Closed by Vex</span></td><td class="st-desc">Vex closed it directly with high confidence.</td></tr>
+          <tr><td><span class="st-code">CR</span></td><td><span class="st-label">Accepted risk</span></td><td class="st-desc">The account accepted the risk on this signal.</td></tr>
+          <tr><td><span class="st-code">CD</span></td><td><span class="st-label">Duplicate</span></td><td class="st-desc">Superseded by another signal covering the same issue.</td></tr>
+          <tr><td><span class="st-code">CF</span></td><td><span class="st-label">False positive</span></td><td class="st-desc">Nothing actionable to complete.</td></tr>
+        </tbody>
+      </table>
+      <div class="note">
+        <svg class="note-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0 1 12 2.944a11.955 11.955 0 0 1-8.618 3.04A12.02 12.02 0 0 0 3 9c0 5.591 3.824 10.29 9 11.622C17.176 19.29 21 14.591 21 9c0-1.022-.124-2.018-.355-2.973h-.027z"/></svg>
+        <div class="note-body">Any status starting with <code>O</code> counts as open, and anything starting with <code>C</code> counts as closed — <code>PATCH</code> enforces that a new status matches one of those two prefixes.</div>
+      </div>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filename">list-signals.js</span>
+          <span class="code-lang">JavaScript</span>
+        </div>
+        <pre><code>
+<span class="t-cmnt">// Active signals in current account</span>
+<span class="t-kw">const</span> active = <span class="t-kw">await</span> <span class="t-fn">fetch</span>(<span class="t-str">`${BASE}/signal?status=OA`</span>, { headers })
+  .<span class="t-fn">then</span>(r => r.<span class="t-fn">json</span>());
+
+<span class="t-cmnt">// Signals updated in a given month</span>
+<span class="t-kw">const</span> month = <span class="t-kw">await</span> <span class="t-fn">fetch</span>(<span class="t-str">`${BASE}/signal?date=2026-01`</span>, { headers })
+  .<span class="t-fn">then</span>(r => r.<span class="t-fn">json</span>());
+
+<span class="t-cmnt">// MSP-wide: active across every managed account</span>
+<span class="t-kw">const</span> managedActive = <span class="t-kw">await</span> <span class="t-fn">fetch</span>(<span class="t-str">`${BASE}/managed/signal`</span>, { headers })
+  .<span class="t-fn">then</span>(r => r.<span class="t-fn">json</span>());</code></pre>
+      </div>
+    </div>
+
+    <!-- SIGNAL GET -->
+    <div class="doc-section" id="signals-get">
+      <div class="sec-tag">Signals</div>
+      <h2 class="sec-title">Get a signal's thread</h2>
+      <p class="sec-body">Fetch the ordered thread of updates posted to a signal. This does not return the signal's own fields (<code>status</code>, <code>severity</code>, <code>asset</code>) — pull those from the list endpoint above.</p>
+      <div class="endpoints">
+        <div class="endpoint">
+          <span class="ep-method m-get">GET</span>
+          <div>
+            <div class="ep-path">/signal/<span>{id}</span></div>
+            <div class="ep-desc">Returns the thread of updates posted to a signal, oldest first.</div>
+          </div>
+        </div>
+      </div>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filename">get-signal.js</span>
+          <span class="code-lang">JavaScript</span>
+        </div>
+        <pre><code><span class="t-kw">const</span> thread = <span class="t-kw">await</span> <span class="t-fn">fetch</span>(<span class="t-str">`${BASE}/signal/482913`</span>, { headers })
+  .<span class="t-fn">then</span>(r => r.<span class="t-fn">json</span>());</code></pre>
+      </div>
+    </div>
+
+    <!-- SIGNAL CREATE -->
+    <div class="doc-section" id="signals-create">
+      <div class="sec-tag">Signals</div>
+      <h2 class="sec-title">Create a signal</h2>
+      <p class="sec-body">One step: <code>POST /signal</code> with a <code>source</code>, <code>severity</code>, and the raw <code>value</code> of what happened. Vex writes the headline itself. Signals carry a <strong>severity</strong> from <code>1</code> (critical) to <code>5</code> (info).</p>
+      <p class="sec-body">To add a follow-up to an existing signal — a threaded message, like the next entry in a conversation — <code>POST /signal/{id}</code> instead.</p>
+      <div class="endpoints">
+        <div class="endpoint">
+          <span class="ep-method m-post">POST</span>
+          <div>
+            <div class="ep-path">/signal</div>
+            <div class="ep-desc">Creates a new signal. Returns the object including its ID.</div>
+          </div>
+        </div>
+        <div class="endpoint">
+          <span class="ep-method m-post">POST</span>
+          <div>
+            <div class="ep-path">/signal/<span>{id}</span></div>
+            <div class="ep-desc">Adds a follow-up update to an existing signal's thread.</div>
+          </div>
+        </div>
+      </div>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filename">create-signal.js</span>
+          <span class="code-lang">JavaScript</span>
+        </div>
+        <pre><code><span class="t-cmnt">// Step 1: Create the signal — Vex generates the headline</span>
+<span class="t-kw">const</span> signal = <span class="t-kw">await</span> <span class="t-fn">fetch</span>(<span class="t-str">`${BASE}/signal`</span>, {
+  method: <span class="t-str">'POST'</span>,
+  headers,
+  body: <span class="t-fn">JSON.stringify</span>({
+    source:   <span class="t-str">'api'</span>,       <span class="t-cmnt">// 'google' | 'microsoft' | 'cloudflare' | 'level' | 'api'</span>
+    severity: <span class="t-num">2</span>,            <span class="t-cmnt">// 1=critical 2=high 3=medium 4=low 5=info</span>
+    asset:    <span class="t-str">'east-wing-printer-03'</span>,
+    value:    <span class="t-str">'HP LaserJet not responding. Tried power cycling — no change.'</span>,
+  }),
+}).<span class="t-fn">then</span>(r => r.<span class="t-fn">json</span>());
+
+<span class="t-cmnt">// Step 2: Add a follow-up to the thread</span>
+<span class="t-kw">await</span> <span class="t-fn">fetch</span>(<span class="t-str">`${BASE}/signal/${signal.id}`</span>, {
+  method: <span class="t-str">'POST'</span>,
+  headers,
+  body: <span class="t-fn">JSON.stringify</span>({
+    value: <span class="t-str">'Replaced the fuser unit — printer back online.'</span>,
+  }),
+}).<span class="t-fn">then</span>(r => r.<span class="t-fn">json</span>());</code></pre>
+      </div>
+    </div>
+
+    <!-- SIGNAL UPDATE -->
+    <div class="doc-section" id="signals-update">
+      <div class="sec-tag">Signals</div>
+      <h2 class="sec-title">Update or delete a signal</h2>
+      <p class="sec-body">Patch <code>status</code>, <code>severity</code>, <code>asset</code>, or <code>source</code> — only the fields you include are changed. Deleting is permanent: it removes the signal, its full thread, and any generated file.</p>
+      <div class="endpoints">
+        <div class="endpoint">
+          <span class="ep-method m-pat">PATCH</span>
+          <div>
+            <div class="ep-path">/signal/<span>{id}</span></div>
+            <div class="ep-desc">Partial update. Send only the fields to change.</div>
+          </div>
+        </div>
+        <div class="endpoint">
+          <span class="ep-method m-del">DEL</span>
+          <div>
+            <div class="ep-path">/signal/<span>{id}</span></div>
+            <div class="ep-desc">Permanently deletes the signal and its thread.</div>
+          </div>
+        </div>
+      </div>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filename">update-signal.js</span>
+          <span class="code-lang">JavaScript</span>
+        </div>
+        <pre><code><span class="t-cmnt">// Close a signal</span>
+<span class="t-kw">await</span> <span class="t-fn">fetch</span>(<span class="t-str">`${BASE}/signal/482913`</span>, {
+  method: <span class="t-str">'PATCH'</span>,
+  headers,
+  body: <span class="t-fn">JSON.stringify</span>({ status: <span class="t-str">'CH'</span> }),
+}).<span class="t-fn">then</span>(r => r.<span class="t-fn">json</span>());
+
+<span class="t-cmnt">// Re-triage severity</span>
+<span class="t-kw">await</span> <span class="t-fn">fetch</span>(<span class="t-str">`${BASE}/signal/482913`</span>, {
+  method: <span class="t-str">'PATCH'</span>,
+  headers,
+  body: <span class="t-fn">JSON.stringify</span>({ severity: <span class="t-num">1</span> }),
+}).<span class="t-fn">then</span>(r => r.<span class="t-fn">json</span>());
+
+<span class="t-cmnt">// Delete permanently</span>
+<span class="t-kw">await</span> <span class="t-fn">fetch</span>(<span class="t-str">`${BASE}/signal/482913`</span>, {
+  method: <span class="t-str">'DELETE'</span>, headers,
+});</code></pre>
+      </div>
+    </div>
+
+    <!-- MONITORS LIST -->
+    <div class="doc-section" id="monitors-list">
+      <div class="sec-tag">Monitors</div>
+      <h2 class="sec-title">List monitors</h2>
+      <p class="sec-body">Monitors are integrations Vex connects to on your behalf. Once connected, Vex continuously scans for the signals that feed its breach-scenario engine.</p>
+      <div class="int-grid">
+        <div class="int-item"><div class="int-dot"></div><div><div class="int-name">microsoft</div><div class="int-desc">M365 — users, mailboxes, MFA, conditional access, SharePoint</div></div></div>
+        <div class="int-item"><div class="int-dot"></div><div><div class="int-name">google</div><div class="int-desc">Workspace — users, Drive, Gmail security, 2-step verification</div></div></div>
+        <div class="int-item"><div class="int-dot"></div><div><div class="int-name">cloudflare</div><div class="int-desc">DNS records, audit logs, zone security posture</div></div></div>
+        <div class="int-item"><div class="int-dot"></div><div><div class="int-name">level</div><div class="int-desc">RMM — endpoint patch status, device health</div></div></div>
+      </div>
+      <div class="endpoints" style="margin-top:28px;">
+        <div class="endpoint">
+          <span class="ep-method m-get">GET</span>
+          <div>
+            <div class="ep-path">/monitor</div>
+            <div class="ep-desc">Returns the keys of every monitor connected on the current account.</div>
+          </div>
+        </div>
+      </div>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filename">list-monitors.js</span>
+          <span class="code-lang">JavaScript</span>
+        </div>
+        <pre><code><span class="t-kw">const</span> monitors = <span class="t-kw">await</span> <span class="t-fn">fetch</span>(<span class="t-str">`${BASE}/monitor`</span>, { headers })
+  .<span class="t-fn">then</span>(r => r.<span class="t-fn">json</span>());</code></pre>
+      </div>
+    </div>
+
+    <!-- MONITORS CONNECT -->
+    <div class="doc-section" id="monitors-connect">
+      <div class="sec-tag">Monitors</div>
+      <h2 class="sec-title">Connect a monitor</h2>
+      <p class="sec-body">Connect a new monitor by <code>POST</code>ing credentials to <code>/monitor/{name}</code>. The body is stored as-is — its shape is whatever that integration's connector expects, so use the credential formats below for the built-in integrations.</p>
+      <div class="endpoints">
+        <div class="endpoint">
+          <span class="ep-method m-post">POST</span>
+          <div>
+            <div class="ep-path">/monitor/<span>{name}</span></div>
+            <div class="ep-desc">Connects a monitor. Body is the credentials object for that integration.</div>
+          </div>
+        </div>
+      </div>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filename">connect-monitor.js</span>
+          <span class="code-lang">JavaScript</span>
+        </div>
+        <pre><code><span class="t-cmnt">// Google Workspace — service account JSON key</span>
+<span class="t-kw">await</span> <span class="t-fn">fetch</span>(<span class="t-str">`${BASE}/monitor/google`</span>, {
+  method: <span class="t-str">'POST'</span>,
+  headers,
+  body: <span class="t-fn">JSON.stringify</span>({
+    type: <span class="t-str">'service_account'</span>,
+    project_id: <span class="t-str">'your-project-id'</span>,
+    private_key_id: <span class="t-str">'...'</span>,
+    private_key: <span class="t-str">'-----BEGIN RSA PRIVATE KEY-----\n...'</span>,
+    client_email: <span class="t-str">'vex@your-project.iam.gserviceaccount.com'</span>,
+  }),
+}).<span class="t-fn">then</span>(r => r.<span class="t-fn">json</span>());
+
+<span class="t-cmnt">// Microsoft 365 — app registration credentials</span>
+<span class="t-kw">await</span> <span class="t-fn">fetch</span>(<span class="t-str">`${BASE}/monitor/microsoft`</span>, {
+  method: <span class="t-str">'POST'</span>,
+  headers,
+  body: <span class="t-fn">JSON.stringify</span>({
+    tenant_id:     <span class="t-str">'your-tenant-id'</span>,
+    client_id:     <span class="t-str">'your-app-client-id'</span>,
+    client_secret: <span class="t-str">'your-app-secret'</span>,
+  }),
+}).<span class="t-fn">then</span>(r => r.<span class="t-fn">json</span>());</code></pre>
+      </div>
+    </div>
+
+    <!-- MONITORS DISCONNECT -->
+    <div class="doc-section" id="monitors-disconnect">
+      <div class="sec-tag">Monitors</div>
+      <h2 class="sec-title">Disconnect a monitor</h2>
+      <p class="sec-body">Send <code>DELETE</code> to <code>/monitor/{key}</code>. Vex removes the stored credential and stops scanning immediately. Signals the monitor already produced are left in place.</p>
+      <div class="endpoints">
+        <div class="endpoint">
+          <span class="ep-method m-del">DEL</span>
+          <div>
+            <div class="ep-path">/monitor/<span>{key}</span></div>
+            <div class="ep-desc">Disconnects the monitor and removes its stored credential.</div>
+          </div>
+        </div>
+      </div>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filename">disconnect-monitor.js</span>
+          <span class="code-lang">JavaScript</span>
+        </div>
+        <pre><code><span class="t-kw">await</span> <span class="t-fn">fetch</span>(<span class="t-str">`${BASE}/monitor/google`</span>, {
+  method: <span class="t-str">'DELETE'</span>,
+  headers,
+});</code></pre>
+      </div>
+    </div>
+
+    <!-- DELEGATION -->
+    <div class="doc-section" id="delegation">
+      <div class="sec-tag">Multi-tenancy</div>
+      <h2 class="sec-title">Account delegation</h2>
+      <p class="sec-body">By default every API call operates in your own account. To act on behalf of a managed customer, pass the <strong><code>account</code> header</strong> set to their domain. Vex scopes all reads and writes to that account for any request carrying the header.</p>
+      <p class="sec-body">The header only works once a grant exists between you and that account — created the first time they accept your invitation (see below). No separate login or token exchange, just the header.</p>
+      <div class="note">
+        <svg class="note-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0 1 12 2.944a11.955 11.955 0 0 1-8.618 3.04A12.02 12.02 0 0 0 3 9c0 5.591 3.824 10.29 9 11.622C17.176 19.29 21 14.591 21 9c0-1.022-.124-2.018-.355-2.973h-.027z"/></svg>
+        <div class="note-body">The <code>account</code> header works on <strong>every endpoint</strong> — signals, monitors, files, and audit. Drop it to fall back to your own account.</div>
+      </div>
+      <div class="endpoints" style="margin-top:28px;">
+        <div class="endpoint">
+          <span class="ep-method m-get">GET</span>
+          <div>
+            <div class="ep-path">/managed/grants</div>
+            <div class="ep-desc">Returns every account currently granted to you.</div>
+          </div>
+        </div>
+        <div class="endpoint">
+          <span class="ep-method m-get">GET</span>
+          <div>
+            <div class="ep-path">/managed/overview<span>?account={domain}</span></div>
+            <div class="ep-desc">Returns the account summary for one managed customer.</div>
+          </div>
+        </div>
+      </div>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filename">delegation.js</span>
+          <span class="code-lang">JavaScript</span>
+        </div>
+        <pre><code><span class="t-cmnt">// Act on behalf of a managed account</span>
+<span class="t-kw">const</span> clientHeaders = { ...headers, <span class="t-str">'account'</span>: <span class="t-str">'acmecorp.com'</span> };
+
+<span class="t-cmnt">// Active signals in the managed account</span>
+<span class="t-kw">const</span> signals = <span class="t-kw">await</span> <span class="t-fn">fetch</span>(<span class="t-str">`${BASE}/signal?status=OA`</span>, { headers: clientHeaders })
+  .<span class="t-fn">then</span>(r => r.<span class="t-fn">json</span>());
+
+<span class="t-cmnt">// Loop every account you manage, print active signal counts</span>
+<span class="t-kw">const</span> accounts = <span class="t-kw">await</span> <span class="t-fn">fetch</span>(<span class="t-str">`${BASE}/managed/grants`</span>, { headers })
+  .<span class="t-fn">then</span>(r => r.<span class="t-fn">json</span>());
+
+<span class="t-kw">for</span> (<span class="t-kw">const</span> domain <span class="t-kw">of</span> Object.<span class="t-fn">keys</span>(accounts)) {
+  <span class="t-kw">const</span> active = <span class="t-kw">await</span> <span class="t-fn">fetch</span>(<span class="t-str">`${BASE}/signal?status=OA`</span>, {
+    headers: { ...headers, account: domain },
+  }).<span class="t-fn">then</span>(r => r.<span class="t-fn">json</span>());
+  console.<span class="t-fn">log</span>(domain, active.length, <span class="t-str">'active'</span>);
+}</code></pre>
+      </div>
+    </div>
+
+    <!-- INVITE -->
+    <div class="doc-section" id="invite">
+      <div class="sec-tag">Multi-tenancy</div>
+      <h2 class="sec-title">Invite a customer</h2>
+      <p class="sec-body">Invite a customer to be managed by you. They receive an email to accept, which creates the grant that <code>account</code>-header delegation relies on above.</p>
+      <div class="endpoints">
+        <div class="endpoint">
+          <span class="ep-method m-post">POST</span>
+          <div>
+            <div class="ep-path">/managed/invite</div>
+            <div class="ep-desc">Sends an invitation email. Accepting it creates the grant automatically.</div>
+          </div>
+        </div>
+        <div class="endpoint">
+          <span class="ep-method m-get">GET</span>
+          <div>
+            <div class="ep-path">/managed/grants<span>?for=pending</span></div>
+            <div class="ep-desc">Lists invitations sent but not yet accepted.</div>
+          </div>
+        </div>
+        <div class="endpoint">
+          <span class="ep-method m-post">POST</span>
+          <div>
+            <div class="ep-path">/managed/grants/<span>{account}</span>/<span>{user}</span></div>
+            <div class="ep-desc">Grants a teammate access to an account you already manage.</div>
+          </div>
+        </div>
+        <div class="endpoint">
+          <span class="ep-method m-del">DEL</span>
+          <div>
+            <div class="ep-path">/managed/grants/<span>{account}</span>/<span>{user}</span></div>
+            <div class="ep-desc">Revokes a teammate's access to that account.</div>
+          </div>
+        </div>
+      </div>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filename">invite-customer.js</span>
+          <span class="code-lang">JavaScript</span>
+        </div>
+        <pre><code><span class="t-cmnt">// Send invitation</span>
+<span class="t-kw">await</span> <span class="t-fn">fetch</span>(<span class="t-str">`${BASE}/managed/invite`</span>, {
+  method: <span class="t-str">'POST'</span>,
+  headers,
+  body: <span class="t-fn">JSON.stringify</span>({ to: <span class="t-str">'customer@acmecorp.com'</span> }),
+});
+
+<span class="t-cmnt">// See invitations still awaiting acceptance</span>
+<span class="t-kw">const</span> pending = <span class="t-kw">await</span> <span class="t-fn">fetch</span>(<span class="t-str">`${BASE}/managed/grants?for=pending`</span>, { headers })
+  .<span class="t-fn">then</span>(r => r.<span class="t-fn">json</span>());
+
+<span class="t-cmnt">// Assign a teammate to help manage the account</span>
+<span class="t-kw">await</span> <span class="t-fn">fetch</span>(<span class="t-str">`${BASE}/managed/grants/acmecorp.com/engineer@unmanned.team`</span>, {
+  method: <span class="t-str">'POST'</span>, headers,
+});
+
+<span class="t-cmnt">// Remove them from the account</span>
+<span class="t-kw">await</span> <span class="t-fn">fetch</span>(<span class="t-str">`${BASE}/managed/grants/acmecorp.com/engineer@unmanned.team`</span>, {
+  method: <span class="t-str">'DELETE'</span>, headers,
+});</code></pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const nav = document.querySelector('nav');
+window.addEventListener('scroll', () => {
+  nav.style.borderBottomColor = window.scrollY > 40
+    ? 'rgba(224,18,128,0.13)'
+    : 'rgba(255,255,255,0.06)';
+}, { passive: true });
+
+const sections = document.querySelectorAll('[id]');
+const links = document.querySelectorAll('.sb-link');
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      links.forEach(l => l.classList.remove('active'));
+      const a = document.querySelector(`.sb-link[href="#${e.target.id}"]`);
+      if (a) a.classList.add('active');
+    }
+  });
+}, { rootMargin: '-15% 0px -75% 0px' });
+sections.forEach(s => io.observe(s));
+
+</script>
+</body>
+</html>

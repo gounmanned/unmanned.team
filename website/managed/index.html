@@ -130,7 +130,9 @@
   .hero h1 span{color:var(--pink);}
   .hero-copy{max-width:480px;margin:26px 0 0;color:#4b4c52;font-size:16.5px;line-height:1.7;}
   @media (max-width:900px){.hero-bg{display:none;}}
-  @media (max-width:700px){.hero{min-height:auto;padding:56px 0 48px;}}
+  @media (max-width:700px){
+    .hero{padding:56px 0 48px;}
+  }
 
   .divider{
     position:relative;border-top:1px solid var(--gray-line);display:flex;justify-content:space-between;
@@ -179,7 +181,7 @@
   .why-section{position:relative;padding:96px 0 116px;border-bottom:1px solid var(--gray-line);}
   @media (max-width:820px){.why-section{padding:66px 0 80px;}}
 
-  .why-grid{margin-top:0;display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:center;}
+  .why-grid{margin-top:0;display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:start;}
   @media (max-width:900px){.why-grid{grid-template-columns:1fr;gap:44px;}}
 
   .why-copy h2{

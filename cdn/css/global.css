@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
 :root{
   --white:#fcfcfa;
@@ -14,8 +14,8 @@
   --background:#FAF9F6;
   --db-ink:#f3f3f0;
   --db-mid:#8a8a8e;
-  --font-sans:'Public Sans', -apple-system, Arial, sans-serif;
-  --font-display:'Fraunces', Georgia, serif;
+  --font-sans:'Inter', -apple-system, Arial, sans-serif;
+  --font-display:'Space Grotesk', -apple-system, sans-serif;
   --font-mono:'JetBrains Mono', monospace;
 }
 

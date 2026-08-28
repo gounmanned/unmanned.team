@@ -116,8 +116,8 @@
   }
   .hero-bg{
     position:absolute;top:0;bottom:0;right:-8%;width:64%;min-width:520px;z-index:1;pointer-events:none;
-    opacity:0.65;                                                       /* was 0.38 — raise this for more visibility */
-    mask-image:radial-gradient(ellipse 66% 78% at 62% 50%, #000 45%, transparent 95%);      /* was #000 26%, transparent 84% */
+    opacity:0.65;
+    mask-image:radial-gradient(ellipse 66% 78% at 62% 50%, #000 45%, transparent 95%);
     -webkit-mask-image:radial-gradient(ellipse 66% 78% at 62% 50%, #000 45%, transparent 95%);
   }
   .hero-bg img{width:100%;height:100%;object-fit:cover;display:block;}
@@ -174,6 +174,34 @@
     .check-tag{order:1;}
     .check-row p{order:3;margin-top:2px;}
   }
+
+  /* ---------- WHY VEX ---------- */
+  .why-section{position:relative;padding:96px 0 116px;border-bottom:1px solid var(--gray-line);}
+  @media (max-width:820px){.why-section{padding:66px 0 80px;}}
+
+  .why-grid{margin-top:0;display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:center;}
+  @media (max-width:900px){.why-grid{grid-template-columns:1fr;gap:44px;}}
+
+  .why-copy h2{
+    margin:0 0 20px;font-family:'Space Grotesk',sans-serif;font-weight:500;
+    font-size:clamp(30px,3.6vw,44px);letter-spacing:-0.01em;line-height:1.12;
+  }
+  .why-copy p{font-size:16px;line-height:1.75;color:#2b2b2b;max-width:460px;margin:0;}
+
+  .intrusion-panel{position:relative;border:1px solid var(--gray-line);background:#fbfbf9;padding:22px 22px 20px;}
+  .intrusion-panel .corner{width:14px;height:14px;opacity:0.4;}
+  .intrusion-panel .corner.tl{top:-1px;left:-1px;}
+  .intrusion-panel .corner.tr{top:-1px;right:-1px;}
+  .intrusion-panel .corner.bl{bottom:-1px;left:-1px;}
+  .intrusion-panel .corner.br{bottom:-1px;right:-1px;}
+  .intrusion-head{font-size:10px;color:var(--gray-mid);margin-bottom:14px;}
+  .intrusion-svg{width:100%;height:auto;display:block;}
+  .node-normal{fill:var(--gray-line);}
+  .node-flag{fill:var(--pink);}
+  .node-ring{fill:none;stroke:var(--pink);stroke-width:1;opacity:0.55;}
+  .node-ring.pulse{animation:ringGlow 3s ease-in-out infinite;}
+  .intrusion-tag{font-size:10px;fill:var(--pink);font-family:'JetBrains Mono',monospace;letter-spacing:0.04em;}
+  .intrusion-lead{stroke:var(--pink);stroke-width:1;opacity:0.55;}
 
   /* ---------- CONTACT ---------- */
   .contact-section{padding:150px 0 160px;text-align:center;position:relative;overflow:hidden;background:#0b0c0d;color:var(--db-ink);}
@@ -249,6 +277,7 @@
     <div class="wrap header-inner">
       <a href="/" class="brand"><span class="status-dot"></span>VEX</a>
       <nav class="header-nav">
+        <a href="#why">Why Vex</a>
         <a href="#prevent">Prevent</a>
         <a href="#detect">Detect</a>
         <a href="#respond">Respond</a>
@@ -269,13 +298,61 @@
       <div class="hero-inner">
         <div class="hero-eyebrow eyebrow-label mono"><span class="status-dot"></span>Managed Vex</div>
         <h1>The hacker<br>who <span>heals.</span></h1>
-        <p class="hero-copy">Vex isn't just an AI hacker finding a way in — it's a full managed service: we prevent, detect and respond to attacks around the clock.</p>
+        <p class="hero-copy">Vex isn't just an AI hacker finding a way in — it's a complete managed service: we prevent, detect and respond to attacks around the clock.</p>
       </div>
     </div>
   </section>
 
   <div class="divider mono">
     <span>REC · 00:00:00</span>
+    <span>THREAT MODEL LOADED</span>
+  </div>
+
+  <!-- ============================================================
+       WHY VEX / POSITIONING
+       ============================================================ -->
+  <section class="why-section" id="why">
+    <div class="wrap">
+      <div class="section-label eyebrow-label mono"><span class="status-dot"></span>Why Vex is different</div>
+
+      <div class="why-grid reveal">
+        <div class="why-copy">
+          <h2>Built to notice when someone else gets in.</h2>
+          <p>
+            Vex spends every day breaking into your business — testing accounts, endpoints, and SaaS apps the way a real attacker would. That gives it a live map of exactly what a breach looks like inside your environment, before one ever happens. So when a second, uninvited hacker tries the same door, Vex is the one already watching it.
+          </p>
+        </div>
+
+        <div class="intrusion-panel">
+          <div class="corner tl"></div>
+          <div class="corner tr"></div>
+          <div class="corner bl"></div>
+          <div class="corner br"></div>
+          <div class="intrusion-head mono">LIVE ENVIRONMENT · 341 IDENTITIES MONITORED</div>
+
+          <svg class="intrusion-svg" viewBox="0 0 380 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Grid representing every identity in your environment, with one flagged as an unauthorized session Vex has detected.">
+            <circle class="node-normal" cx="24" cy="24" r="4"/><circle class="node-normal" cx="72" cy="24" r="4"/><circle class="node-normal" cx="120" cy="24" r="4"/><circle class="node-normal" cx="168" cy="24" r="4"/><circle class="node-normal" cx="216" cy="24" r="4"/><circle class="node-normal" cx="264" cy="24" r="4"/><circle class="node-normal" cx="312" cy="24" r="4"/>
+
+            <circle class="node-normal" cx="24" cy="72" r="4"/><circle class="node-normal" cx="72" cy="72" r="4"/><circle class="node-normal" cx="120" cy="72" r="4"/><circle class="node-normal" cx="168" cy="72" r="4"/><circle class="node-normal" cx="216" cy="72" r="4"/><circle class="node-normal" cx="264" cy="72" r="4"/><circle class="node-normal" cx="312" cy="72" r="4"/>
+
+            <circle class="node-normal" cx="24" cy="120" r="4"/><circle class="node-normal" cx="72" cy="120" r="4"/><circle class="node-normal" cx="120" cy="120" r="4"/><circle class="node-normal" cx="168" cy="120" r="4"/>
+            <circle class="node-ring pulse" cx="216" cy="120" r="14"/>
+            <circle class="node-flag" cx="216" cy="120" r="4.5"/>
+            <circle class="node-normal" cx="264" cy="120" r="4"/><circle class="node-normal" cx="312" cy="120" r="4"/>
+
+            <circle class="node-normal" cx="24" cy="168" r="4"/><circle class="node-normal" cx="72" cy="168" r="4"/><circle class="node-normal" cx="120" cy="168" r="4"/><circle class="node-normal" cx="168" cy="168" r="4"/><circle class="node-normal" cx="216" cy="168" r="4"/><circle class="node-normal" cx="264" cy="168" r="4"/><circle class="node-normal" cx="312" cy="168" r="4"/>
+
+            <line class="intrusion-lead" x1="228" y1="132" x2="246" y2="150"/>
+            <text class="intrusion-tag" x="250" y="145">UNAUTHORIZED</text>
+            <text class="intrusion-tag" x="250" y="158">SESSION FLAGGED</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider mono">
+    <span>REC · 00:00:01</span>
     <span>COVERAGE MAPPED</span>
   </div>
 
@@ -411,7 +488,7 @@
   </section>
 
   <div class="divider mono">
-    <span>REC · 00:00:01</span>
+    <span>REC · 00:00:02</span>
     <span>COMMS ESTABLISHED</span>
   </div>
 

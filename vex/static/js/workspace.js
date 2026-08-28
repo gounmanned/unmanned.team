@@ -126,7 +126,7 @@ class Workspace {
 
     static avatar(s) {
         if (s == "security@vex.unmanned.team") {
-            return `static/img/source/email.png`;
+            return "https://cdn.unmanned.team/img/logo.png";
         }
 
         if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s)) {

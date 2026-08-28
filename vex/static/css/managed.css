@@ -277,31 +277,6 @@
 #managed-screen .managed-account-item:hover .managed-account-name,
 #managed-screen .managed-account-item.selected .managed-account-name { color: var(--ink); }
 
-#managed-screen .managed-today-dot {
-  position: absolute;
-  top: -2px;
-  right: -2px;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: var(--pink);
-  border: 1.5px solid var(--white);
-  opacity: 0;
-  transform: scale(0.6);
-  transition: opacity 0.15s, transform 0.15s;
-  pointer-events: none;
-}
-
-#managed-screen .managed-today-dot.visible {
-  opacity: 1;
-  transform: scale(1);
-  animation: managed-pulse 2.2s infinite;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  #managed-screen .managed-today-dot.visible { animation: none; }
-}
-
 /* ── INVITE BAR ──────────────────────────────────────────────────────────── */
 
 #managed-screen .managed-invite {

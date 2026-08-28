@@ -41,13 +41,10 @@ class ManagedRollup {
     }
 
     _refreshSignalState() {
-        const midnight = this._midnight();
         const openSignals = [];
 
-        Object.entries(this.state.signals).forEach(([domain, sigMap]) => {
-            const open = Object.values(sigMap).filter(t => t.status.startsWith('O'));
-            openSignals.push(...open);
-            this._setTodayDot(domain, open.some(t => new Date(t.created) >= midnight));
+        Object.values(this.state.signals).forEach((sigMap) => {
+            openSignals.push(...Object.values(sigMap).filter(t => t.status.startsWith('O')));
         });
 
         this._renderMetrics(openSignals);
@@ -99,12 +96,6 @@ class ManagedRollup {
         }
     }
 
-    _setTodayDot(domain, hasToday) {
-        const dot = document.getElementById(`managed-today-dot-${domain}`);
-        if (!dot) return;
-        dot.classList.toggle('visible', hasToday);
-    }
-
     _add(domain, members = [], enabled = true) {
         if (this.members.has(domain)) return;
         this.members.set(domain, members);
@@ -115,7 +106,6 @@ class ManagedRollup {
         li.innerHTML = `
             <span class="managed-account-badge" id="managed-badge-${domain}">
                 <span class="managed-badge-content" id="managed-badge-content-${domain}"></span>
-                <span class="managed-today-dot" id="managed-today-dot-${domain}" title="New signal today"></span>
             </span>
             <span class="managed-account-name">${domain}</span>
         `;

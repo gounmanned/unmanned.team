@@ -23,6 +23,8 @@ class MonitorRollup {
             github:     { name: 'Github', instances: [] },
             slack:      { name: 'Slack', instances: [] },
             constantcontact: { name: 'Constant Contact', instances: [] },
+            screenconnect: { name: 'Screen Connect', instances: [] },
+            jira: { name: 'Jira', instances: [] },
         };
 
         this.listen();

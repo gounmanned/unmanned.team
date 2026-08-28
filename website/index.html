@@ -220,87 +220,123 @@
   .dark-frame{background:#0b0c0d;color:var(--db-ink);}
   .dark-frame p.lede{color:#c7c7ca;}
 
-  /* ---------- ABOUT VEX: SOURCE→VEX→ALERT DIAGRAM ---------- */
-  .flow{
-    margin-top:64px;display:flex;align-items:stretch;gap:0;
-    border-top:1px solid var(--gray-line);border-bottom:1px solid var(--gray-line);
+  /* ---------- WHAT VEX DOES: ROAMING RETICLE + SECURITY HOLES ---------- */
+  .roam-field{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:3;}
+  .roam-reticle{
+    position:absolute;width:38px;height:38px;margin:-19px 0 0 -19px;
+    animation:roamMove 17s ease-in-out infinite, roamPulse 3.4s ease-in-out infinite;
   }
-  .flow-col{flex:1;padding:32px 22px;position:relative;}
-  .flow-col + .flow-col{border-left:1px solid var(--gray-line);}
-  .flow-col-tag{font-size:10px;letter-spacing:0.16em;text-transform:uppercase;color:var(--gray-mid);margin-bottom:16px;display:block;}
-  .flow-list{list-style:none;margin:0;padding:0;font-size:13.5px;color:#2b2b2b;}
-  .flow-list li{
-    padding:8px 0;border-top:1px dashed var(--gray-line);display:flex;align-items:center;gap:8px;
+  .roam-reticle .corner{--corner-size:12px;border-color:var(--pink);}
+  .roam-reticle .corner.tl{top:0;left:0;}
+  .roam-reticle .corner.tr{top:0;right:0;}
+  .roam-reticle .corner.bl{bottom:0;left:0;}
+  .roam-reticle .corner.br{bottom:0;right:0;}
+  /* stops sit only in the section's top/bottom padding bands (never over text),
+     using calc(100% - Npx) so the bottom-band stops stay put no matter how the
+     text above them wraps or how tall it grows. consecutive identical stops
+     create a pause; the jump between them is the "roam". */
+  @keyframes roamMove{
+    0%,13%  { top:56px; left:6%; }
+    19%,32% { top:56px; left:88%; }
+    38%,51% { top:calc(100% - 60px); left:14%; }
+    57%,70% { top:calc(100% - 60px); left:52%; }
+    76%,89% { top:calc(100% - 60px); left:86%; }
+    95%,100%{ top:56px; left:6%; }
   }
-  .flow-list li:first-child{border-top:none;}
-  .flow-list li::before{content:'';width:4px;height:4px;background:var(--pink);border-radius:50%;flex-shrink:0;}
-  .flow-core{
-    display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:14px;
+  @keyframes roamPulse{
+    0%,72%  { transform:scale(1);    opacity:0.5; filter:none; }
+    86%     { transform:scale(1.45); opacity:1;   filter:drop-shadow(0 0 7px rgba(224,18,128,0.6)); }
+    100%    { transform:scale(1);    opacity:0.5; filter:none; }
   }
-  .scan-field{position:relative;width:176px;height:176px;display:flex;align-items:center;justify-content:center;}
-  .flow-core .core-node{
-    width:78px;height:78px;border-radius:50%;
-    border:1.5px solid var(--pink);display:flex;align-items:center;justify-content:center;
-    font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px;letter-spacing:0.02em;
-    position:relative;z-index:1;
+
+  /* holes sit at the same 5 stops the reticle visits, and flash as it locks on */
+  .hole{
+    position:absolute;width:13px;height:13px;margin:-6.5px 0 0 -6.5px;
+    border-radius:50%;border:1px dashed var(--gray-mid);
   }
-  .flow-core .core-node::before{
-    content:'';position:absolute;inset:-9px;border:1px solid var(--pink-dim);border-radius:50%;
+  .hole::after{
+    content:'';position:absolute;top:50%;left:50%;width:3px;height:3px;
+    margin:-1.5px 0 0 -1.5px;border-radius:50%;background:var(--gray-mid);
+  }
+  .hole-a{ top:56px; left:6%;  animation:holeFlashA 17s ease-in-out infinite; }
+  .hole-b{ top:56px; left:88%; animation:holeFlashB 17s ease-in-out infinite; }
+  .hole-c{ top:calc(100% - 60px); left:14%; animation:holeFlashC 17s ease-in-out infinite; }
+  .hole-d{ top:calc(100% - 60px); left:52%; animation:holeFlashD 17s ease-in-out infinite; }
+  .hole-e{ top:calc(100% - 60px); left:86%; animation:holeFlashE 17s ease-in-out infinite; }
+
+  @keyframes holeFlashA{
+    0%,100%{ opacity:0.5; transform:scale(1); border-color:var(--gray-mid); box-shadow:none; }
+    4%     { opacity:1;   transform:scale(1.5); border-color:var(--pink); box-shadow:0 0 7px rgba(224,18,128,0.55); }
+    11%    { opacity:0.5; transform:scale(1); border-color:var(--gray-mid); box-shadow:none; }
+  }
+  @keyframes holeFlashB{
+    0%,20%,100%{ opacity:0.5; transform:scale(1); border-color:var(--gray-mid); box-shadow:none; }
+    25%        { opacity:1;   transform:scale(1.5); border-color:var(--pink); box-shadow:0 0 7px rgba(224,18,128,0.55); }
+    30%        { opacity:0.5; transform:scale(1); border-color:var(--gray-mid); box-shadow:none; }
+  }
+  @keyframes holeFlashC{
+    0%,39%,100%{ opacity:0.5; transform:scale(1); border-color:var(--gray-mid); box-shadow:none; }
+    44%        { opacity:1;   transform:scale(1.5); border-color:var(--pink); box-shadow:0 0 7px rgba(224,18,128,0.55); }
+    49%        { opacity:0.5; transform:scale(1); border-color:var(--gray-mid); box-shadow:none; }
+  }
+  @keyframes holeFlashD{
+    0%,58%,100%{ opacity:0.5; transform:scale(1); border-color:var(--gray-mid); box-shadow:none; }
+    63%        { opacity:1;   transform:scale(1.5); border-color:var(--pink); box-shadow:0 0 7px rgba(224,18,128,0.55); }
+    68%        { opacity:0.5; transform:scale(1); border-color:var(--gray-mid); box-shadow:none; }
+  }
+  @keyframes holeFlashE{
+    0%,77%,100%{ opacity:0.5; transform:scale(1); border-color:var(--gray-mid); box-shadow:none; }
+    82%        { opacity:1;   transform:scale(1.5); border-color:var(--pink); box-shadow:0 0 7px rgba(224,18,128,0.55); }
+    87%        { opacity:0.5; transform:scale(1); border-color:var(--gray-mid); box-shadow:none; }
+  }
+
+  /* ---------- HOW VEX WORKS: VERTICAL TIMELINE ---------- */
+  .timeline{position:relative;margin-top:64px;}
+  .timeline::before{
+    content:'';position:absolute;top:0;bottom:0;left:31px;width:1px;
+    background:var(--gray-line);z-index:0;
+  }
+  .timeline-step{position:relative;z-index:1;display:flex;gap:30px;padding:44px 0;}
+  .timeline-step:first-child{padding-top:0;}
+  .timeline-step:last-child{padding-bottom:0;}
+  .timeline-step + .timeline-step{border-top:1px solid var(--gray-line);}
+
+  .timeline-rail{flex:0 0 64px;display:flex;justify-content:center;}
+  .timeline-node{
+    width:64px;height:64px;border-radius:50%;background:var(--white);
+    border:1.5px solid var(--gray-line);display:flex;align-items:center;justify-content:center;
+    position:relative;
+  }
+  .timeline-index{font-size:12px;color:var(--gray-mid);}
+  .timeline-step--hot .timeline-node{width:84px;height:84px;border-color:var(--pink);}
+  .timeline-node-ring{
+    position:absolute;inset:-10px;border:1px solid var(--pink-dim);border-radius:50%;
     animation:ringGlow 4s ease-in-out infinite;
   }
-  .flow-core .core-status{font-size:10px;color:var(--gray-mid);display:flex;align-items:center;gap:7px;}
-
-  /* targeting reticle: scans around the field, then locks onto VEX */
-  .target-reticle{
-    position:absolute;top:50%;left:50%;width:42px;height:42px;z-index:2;
-    animation:targetScan 6s cubic-bezier(0.6,0,0.35,1) infinite;
-  }
-  .target-reticle .corner{--corner-size:12px;border-color:var(--pink);opacity:1;}
-  .target-reticle .corner.tl{top:0;left:0;}
-  .target-reticle .corner.tr{top:0;right:0;}
-  .target-reticle .corner.bl{bottom:0;left:0;}
-  .target-reticle .corner.br{bottom:0;right:0;}
-  @keyframes targetScan{
-    0%{  transform:translate(calc(-50% - 58px), calc(-50% - 46px)) scale(1); opacity:0; }
-    6%{  opacity:0.55; }
-    18%{ transform:translate(calc(-50% + 50px), calc(-50% - 52px)) scale(1); opacity:0.55; }
-    36%{ transform:translate(calc(-50% + 54px), calc(-50% + 44px)) scale(1); opacity:0.55; }
-    54%{ transform:translate(calc(-50% - 50px), calc(-50% + 40px)) scale(1); opacity:0.6; }
-    70%{ transform:translate(calc(-50% + 8px), calc(-50% - 10px)) scale(1); opacity:0.7; filter:none; }
-    82%{ transform:translate(-50%, -50%) scale(1.95); opacity:1; filter:drop-shadow(0 0 8px rgba(224,18,128,0.65)); }
-    94%{ transform:translate(-50%, -50%) scale(1.95); opacity:1; filter:drop-shadow(0 0 8px rgba(224,18,128,0.65)); }
-    100%{ transform:translate(calc(-50% - 58px), calc(-50% - 46px)) scale(1); opacity:0; }
-  }
-  @media (max-width:700px){
-    .flow{flex-direction:column;}
-    .flow-col + .flow-col{border-left:none;border-top:1px solid var(--gray-line);}
-  }
-  @media (max-width:480px){
-    .scan-field{transform:scale(0.82);}
-  }
-
-  /* ---------- CHOKE POINT DIAGRAM: N paths through one signal ---------- */
-  .choke-diagram{margin-top:72px;}
-  .choke-svg{width:100%;height:auto;display:block;}
+  .timeline-choke-svg{width:60%;height:60%;}
   .choke-line{stroke:var(--gray-line);stroke-width:1.2;}
   .choke-dot{fill:var(--ink);}
   .choke-node{fill:var(--pink);}
-  .choke-node-ring{fill:none;stroke:var(--pink);stroke-width:1;opacity:0.55;animation:ringGlow 4s ease-in-out infinite;}
-  .reticle-mark{stroke:var(--pink);stroke-width:1.4;fill:none;opacity:0.8;}
-  .choke-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.05em;fill:var(--gray-mid);}
-  .choke-label.hot{fill:var(--pink);}
 
-  /* ---------- STREAM LINE (Slack / Teams / Jira / ServiceNow / API) ---------- */
-  .stream-line{margin-top:76px;padding-top:48px;border-top:1px solid var(--gray-line);text-align:center;}
-  .stream-copy{
-    font-family:'Space Grotesk',sans-serif;font-weight:500;font-size:clamp(19px,2.2vw,25px);
-    line-height:1.5;margin:0 auto 40px;color:var(--ink);max-width:480px;
+  .timeline-content{flex:1;padding-top:8px;}
+  .timeline-tag{font-size:11px;letter-spacing:0.13em;text-transform:uppercase;color:var(--gray-mid);}
+  .timeline-tag.hot{color:var(--pink);font-weight:600;}
+  .timeline-heading{
+    font-family:'Space Grotesk',sans-serif;font-weight:500;
+    font-size:clamp(20px,2.4vw,27px);letter-spacing:-0.01em;margin:8px 0 12px;
   }
-  .channels-row{display:flex;justify-content:center;flex-wrap:wrap;gap:44px;}
-  .channel-item{display:flex;flex-direction:column;align-items:center;gap:12px;}
-  .channel-icon{width:32px;height:32px;object-fit:contain;}
-  .channel-name{font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--gray-mid);}
-  @media (max-width:560px){.channels-row{gap:28px;row-gap:26px;}}
+  .timeline-desc{font-size:14.5px;line-height:1.75;color:#2b2b2b;max-width:480px;}
+  .timeline-icons{display:flex;gap:16px;margin-top:18px;}
+  .timeline-icons .channel-icon{width:22px;height:22px;object-fit:contain;}
+
+  @media (max-width:560px){
+    .timeline::before{left:23px;}
+    .timeline-step{gap:18px;padding:34px 0;}
+    .timeline-rail{flex-basis:48px;}
+    .timeline-node{width:48px;height:48px;}
+    .timeline-step--hot .timeline-node{width:64px;height:64px;}
+    .timeline-heading{margin:6px 0 8px;}
+  }
 
   /* ---------- MANAGED BANNER (thin, full width, dark) ---------- */
   .banner{
@@ -372,8 +408,9 @@
   .js .reveal.in-view{opacity:1;transform:translateY(0);}
 
   @media (prefers-reduced-motion: reduce){
-    .status-dot,.radar-ring,.core-node::before,.choke-node-ring{animation:none;opacity:0.85;}
-    .target-reticle{animation:none;transform:translate(-50%,-50%) scale(1.95);opacity:1;}
+    .status-dot,.radar-ring,.timeline-node-ring{animation:none;opacity:0.85;}
+    .roam-reticle{animation:none;top:56px;left:6%;opacity:0.7;}
+    .hole{animation:none;opacity:0.5;}
     .wordmark-frame .corner{animation:none;opacity:0.65;transform:scale(1);}
     .scan-sweep::after{animation:none;display:none;}
     .js .reveal{opacity:1 !important;transform:none !important;transition:none !important;}
@@ -432,49 +469,29 @@
   </div>
 
   <!-- ============================================================
-       ABOUT VEX
+       WHAT VEX DOES
        ============================================================ -->
   <section class="section" id="about">
-    <div class="section-label eyebrow-label mono"><span class="status-dot"></span>What Vex does</div>
-    <h2>Go beyond a pentest</h2>
-    <p class="subhead">Vex hacks you before anyone else gets the chance.</p>
-    <p class="lede">
-      Vex is an autonomous red team that plugs directly into your business — Google Workspace, Microsoft 365, Cloudflare, your endpoints, and more. 
-      Once connected, it runs continuously, mapping the seams between your systems the same way an attacker would, identifying the most probable breach scenario.
-    </p>
-
-    <div class="flow reveal" aria-hidden="true">
-      <div class="flow-col">
-        <span class="flow-col-tag mono">You connect</span>
-        <ul class="flow-list">
-          <li>Identity</li>
-          <li>Domain</li>
-          <li>Endpoint</li>
-          <li>20+ more</li>
-        </ul>
-      </div>
-      <div class="flow-col flow-core">
-        <div class="scan-field">
-          <div class="core-node">VEX</div>
-          <div class="target-reticle">
-            <span class="corner tl"></span>
-            <span class="corner tr"></span>
-            <span class="corner bl"></span>
-            <span class="corner br"></span>
-          </div>
-        </div>
-        <div class="core-status mono"><span class="status-dot"></span>Running</div>
-      </div>
-      <div class="flow-col">
-        <span class="flow-col-tag mono">We alert</span>
-        <ul class="flow-list">
-          <li>Slack</li>
-          <li>Microsoft Teams</li>
-          <li>Email</li>
-          <li>SOC</li>
-        </ul>
+    <div class="roam-field" aria-hidden="true">
+      <div class="hole hole-a"></div>
+      <div class="hole hole-b"></div>
+      <div class="hole hole-c"></div>
+      <div class="hole hole-d"></div>
+      <div class="hole hole-e"></div>
+      <div class="roam-reticle">
+        <span class="corner tl"></span>
+        <span class="corner tr"></span>
+        <span class="corner bl"></span>
+        <span class="corner br"></span>
       </div>
     </div>
+    <div class="section-label eyebrow-label mono"><span class="status-dot"></span>What Vex does</div>
+    <h2>We hack you first</h2>
+    <p class="subhead">Don't wait for a malicious AI to find your security holes.</p>
+    <p class="lede">
+      Vex is an autonomous red team that plugs directly into your business — Google Workspace, Microsoft 365, Cloudflare, your endpoints, and more.
+      Once connected, it runs continuously, mapping the seams between your systems and identifying the most probable breach scenario.
+    </p>
   </section>
 
   <div class="divider mono">
@@ -483,67 +500,71 @@
   </div>
 
   <!-- ============================================================
-       FIND YOUR CHOKE POINTS
+       HOW VEX WORKS
        ============================================================ -->
   <section class="section" id="choke">
-    <div class="section-label eyebrow-label mono"><span class="status-dot"></span>Find your choke points</div>
-    <h2>One fix. Every path closes.</h2>
+    <div class="section-label eyebrow-label mono"><span class="status-dot"></span>How Vex works</div>
+    <h2>One fix. Stop the hack.</h2>
     <p class="lede">
-      When several attack paths trace back to the same underlying weakness — a stale credential, an exposed config — we call that a <b>choke point</b>. You don't need to fix everything Vex finds. Just the choke point.
+      When several attack paths trace back to the same underlying weakness, we call it a choke point. Fix that one thing and every path behind it closes.
     </p>
 
-    <div class="choke-diagram reveal">
-      <svg class="choke-svg" viewBox="0 0 640 210" aria-hidden="true">
-        <line class="choke-line" x1="70" y1="46" x2="320" y2="150"></line>
-        <line class="choke-line" x1="205" y1="46" x2="320" y2="150"></line>
-        <line class="choke-line" x1="320" y1="46" x2="320" y2="150"></line>
-        <line class="choke-line" x1="435" y1="46" x2="320" y2="150"></line>
-        <line class="choke-line" x1="570" y1="46" x2="320" y2="150"></line>
-
-        <circle class="choke-dot" cx="70" cy="46" r="4"></circle>
-        <circle class="choke-dot" cx="205" cy="46" r="4"></circle>
-        <circle class="choke-dot" cx="320" cy="46" r="4"></circle>
-        <circle class="choke-dot" cx="435" cy="46" r="4"></circle>
-        <circle class="choke-dot" cx="570" cy="46" r="4"></circle>
-
-        <text class="choke-label" x="70" y="28" text-anchor="middle">PATH 1</text>
-        <text class="choke-label" x="205" y="28" text-anchor="middle">PATH 2</text>
-        <text class="choke-label" x="320" y="28" text-anchor="middle">PATH 3</text>
-        <text class="choke-label" x="435" y="28" text-anchor="middle">PATH 4</text>
-        <text class="choke-label" x="570" y="28" text-anchor="middle">PATH 5</text>
-
-        <circle class="choke-node-ring" cx="320" cy="150" r="24"></circle>
-        <circle class="choke-node" cx="320" cy="150" r="7"></circle>
-        <path class="reticle-mark" d="M292,124 h12 M292,124 v12"></path>
-        <path class="reticle-mark" d="M348,124 h-12 M348,124 v12"></path>
-        <path class="reticle-mark" d="M292,176 h12 M292,176 v-12"></path>
-        <path class="reticle-mark" d="M348,176 h-12 M348,176 v-12"></path>
-        <text class="choke-label hot" x="320" y="187" text-anchor="middle">CHOKE POINT · SIG_03</text>
-      </svg>
-    </div>
-
-    <div class="stream-line reveal">
-      <p class="stream-copy">Choke points stream straight to wherever your team already works.</p>
-      <div class="channels-row">
-        <div class="channel-item">
-          <img class="channel-icon" src="static/slack.png" alt="Slack" loading="lazy">
-          <span class="channel-name mono">Slack</span>
+    <div class="timeline reveal">
+      <div class="timeline-step">
+        <div class="timeline-rail"><div class="timeline-node"><span class="timeline-index mono">01</span></div></div>
+        <div class="timeline-content">
+          <span class="timeline-tag mono">Connect</span>
+          <h3 class="timeline-heading">Plug into what you already run</h3>
+          <p class="timeline-desc">Google Workspace, Microsoft 365, Cloudflare, your endpoints, and 20+ more integrations — set up in minutes.</p>
         </div>
-        <div class="channel-item">
-          <img class="channel-icon" src="static/teams.png" alt="Microsoft Teams" loading="lazy">
-          <span class="channel-name mono">Teams</span>
+      </div>
+
+      <div class="timeline-step">
+        <div class="timeline-rail"><div class="timeline-node"><span class="status-dot"></span></div></div>
+        <div class="timeline-content">
+          <span class="timeline-tag mono">Run</span>
+          <h3 class="timeline-heading">Scans around the clock</h3>
+          <p class="timeline-desc">Vex maps the seams between your systems continuously, hunting for the most probable breach scenario before anyone else.</p>
         </div>
-        <div class="channel-item">
-          <img class="channel-icon" src="static/jira.png" alt="Jira" loading="lazy">
-          <span class="channel-name mono">Jira</span>
+      </div>
+
+      <div class="timeline-step timeline-step--hot">
+        <div class="timeline-rail">
+          <div class="timeline-node">
+            <span class="timeline-node-ring" aria-hidden="true"></span>
+            <svg class="timeline-choke-svg" viewBox="0 0 160 120" aria-hidden="true">
+              <line class="choke-line" x1="20" y1="18" x2="80" y2="92"></line>
+              <line class="choke-line" x1="58" y1="18" x2="80" y2="92"></line>
+              <line class="choke-line" x1="102" y1="18" x2="80" y2="92"></line>
+              <line class="choke-line" x1="140" y1="18" x2="80" y2="92"></line>
+              <circle class="choke-dot" cx="20" cy="18" r="4"></circle>
+              <circle class="choke-dot" cx="58" cy="18" r="4"></circle>
+              <circle class="choke-dot" cx="102" cy="18" r="4"></circle>
+              <circle class="choke-dot" cx="140" cy="18" r="4"></circle>
+              <circle class="choke-node" cx="80" cy="92" r="7"></circle>
+            </svg>
+          </div>
         </div>
-        <div class="channel-item">
-          <img class="channel-icon" src="static/servicenow.png" alt="ServiceNow" loading="lazy">
-          <span class="channel-name mono">ServiceNow</span>
+        <div class="timeline-content">
+          <span class="timeline-tag mono hot">Choke point found</span>
+          <h3 class="timeline-heading">The one fix that matters</h3>
+          <p class="timeline-desc">When multiple attack paths trace back to the same weakness — a stale credential, an exposed config — that's the choke point. You don't need to fix everything Vex finds. Just this.</p>
         </div>
-        <div class="channel-item">
-          <img class="channel-icon" src="static/rapid7.png" alt="Rapid7" loading="lazy">
-          <span class="channel-name mono">Rapid7</span>
+      </div>
+
+      <div class="timeline-step">
+        <div class="timeline-rail"><div class="timeline-node"><span class="timeline-index mono">04</span></div></div>
+        <div class="timeline-content">
+          <span class="timeline-tag mono">Alert sent</span>
+          <h3 class="timeline-heading">Straight to your team</h3>
+          <p class="timeline-desc">When a choke point is found, it streams to wherever your team works: SOC, text, email or messaging platform.</p>
+          <div class="timeline-icons">
+            <img class="channel-icon" src="static/slack.png" alt="Slack" loading="lazy">
+            <img class="channel-icon" src="static/teams.png" alt="Microsoft Teams" loading="lazy">
+            <img class="channel-icon" src="static/jira.png" alt="Jira" loading="lazy">
+            <img class="channel-icon" src="static/servicenow.png" alt="ServiceNow" loading="lazy">
+            <img class="channel-icon" src="static/rapid7.png" alt="Rapid7" loading="lazy">
+          </div>
         </div>
       </div>
     </div>
@@ -572,7 +593,7 @@
         <h2>Let us run it for you.</h2>
         <div class="banner-body">
           <p>
-            Managed Vex is a full MDR solution: our platform backed by a complete, manned security operations center. We don't just tell you where the choke point is — we close it. Every finding is reviewed and remediated by the same elite hacker team that built and runs Vex, not a rotating contractor desk.
+            Managed Vex pairs the platform with a full security operations team behind it. We don't just show you the choke point — we close it. Every finding is reviewed and fixed by the same hackers who built and run Vex.
           </p>
           <a class="banner-link" href="/managed">Read more about Managed Vex <span class="arrow">→</span></a>
         </div>

@@ -126,12 +126,14 @@ class Workspace {
 
     static avatar(s) {
         if (s == "security@vex.unmanned.team") {
-            return "https://cdn.unmanned.team/img/logo.png";
+            return `static/img/source/email.png`;
         }
 
-        const local = `static/img/source/${s}.png`;
-        const fallback = `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(s)}`;
-        return `${local}" onerror="this.onerror=null;this.src=&apos;${fallback}&apos;`;
+        if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s)) {
+            return `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(s)}`;
+        }
+
+        return `static/img/source/${s}.png`;
     }
 
     static debounce(fn, delay) {

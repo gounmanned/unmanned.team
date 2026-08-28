@@ -1,36 +1,34 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
 :root{
-  --white:#ffffff;
-  --ink:#0a0a0a;
-  --gray-line:#dcdcdc;
-  --gray-mid:#8a8a8a;
+  --white:#fcfcfa;
+  --ink:#0b0c0d;
+  --gray-line:#dcdcd8;
+  --gray-mid:#6c6c70;
   --gray-soft:#f4f4f4;
   --gray-panel:#eeeeee;
   --gray-hover:#e4e4e4;
-  --pink:#E01280;
-  --background: #FAF9F6;
-}
-
-* {
-  box-sizing: border-box;
-  margin: 0;
-  scrollbar-width: thin; /* Firefox */
-  scrollbar-color: #ccc transparent; /* Firefox */
-}
-
-html {
-  scroll-behavior: smooth;
-  overflow-x:hidden;
-  max-width:100%;
+  --pink:#e01280;
+  --pink-dim:rgba(224,18,128,0.45);
+  --brand: var(--pink);
+  --background:#FAF9F6;
+  --db-ink:#f3f3f0;
+  --db-mid:#8a8a8e;
+  --font-sans:'Inter', -apple-system, Arial, sans-serif;
+  --font-display:'Space Grotesk', -apple-system, sans-serif;
+  --font-mono:'JetBrains Mono', monospace;
 }
 
 body {
-  font-family: -apple-system, Arial, sans-serif;
+  font-family: var(--font-sans);
   background-color: var(--background);
-  color: var(--text);
+  color: var(--ink);
   font-size: 16px;
   line-height: 1.5;
-  overflow-x:hidden;
-  max-width:100%;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
 }
 
 main {
@@ -49,12 +47,10 @@ button {
   cursor: pointer;
   padding: 14px 28px;
   font-size: 16px;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255,255,255,0.25);
+  border: 1px solid var(--gray-line);
   color: inherit;
   transform: translateY(0);
-  box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.06);
 }
 
 button:active {

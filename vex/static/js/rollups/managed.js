@@ -16,7 +16,6 @@ class ManagedRollup {
         this._resetBadges();
         await this.load();
         this.api.managed.list(new CustomEvent("signal:managed"));
-        this._refreshSignalState();
     }
 
     async load() {
@@ -39,40 +38,6 @@ class ManagedRollup {
         d.setHours(0, 0, 0, 0);
         return d;
     }
-
-    _refreshSignalState() {
-        const openSignals = [];
-
-        Object.values(this.state.signals).forEach((sigMap) => {
-            openSignals.push(...Object.values(sigMap).filter(t => t.status.startsWith('O')));
-        });
-
-        this._renderMetrics(openSignals);
-    }
-
-    _renderMetrics = Workspace.debounce((signals) => {
-        const row = document.getElementById('managed-signals-row');
-        if (!row) return;
-
-        const midnight = this._midnight();
-        const created = signals.filter(s => new Date(s.created) >= midnight);
-
-        const counts = [1, 2, 3, 4, 5].map(sev => signals.filter(s => Number(s.severity) === sev).length);
-        const todayCounts = [1, 2, 3, 4, 5].map(sev => created.filter(s => Number(s.severity) === sev).length);
-
-        row.innerHTML = counts.map((n, i) => {
-            const deltaHtml = todayCounts[i] ? `<span class="box-delta">+${todayCounts[i]} today</span>` : '';
-            return `
-                <div class="managed-signal-box${n === 0 ? ' zero' : ''}" data-severity="${i + 1}">
-                    <span class="box-top">
-                        <span class="box-count">${n}</span>
-                        ${deltaHtml}
-                    </span>
-                    <span class="box-label">${Workspace.SEVERITY[i + 1]}</span>
-                </div>
-            `;
-        }).join('');
-    }, 50);
 
     _updateEmptyState() {
         const wrap = document.querySelector('.managed-accounts-wrap');
@@ -253,8 +218,6 @@ class ManagedRollup {
             const open = Object.values(this.state.signals[ev.signal.account] ?? {})
                 .filter(t => t.status.startsWith('O'));
             this._setBadge(ev.signal.account, open.length);
-
-            this._refreshSignalState();
         });
 
         document.getElementById('managed-invite-btn').addEventListener('click', async () => {

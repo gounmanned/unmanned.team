@@ -91,7 +91,7 @@ class SignalSidebar {
             await SiteSpinner.withLoading(async () => {
                 const signal = await this.api.signals.patch(this.signal.id, { status: this.signal.status });
                 this.state.signals[signal.account][signal.id] = signal;
-                document.dispatchEvent(new CustomEvent('page:reset'));
+                document.dispatchEvent(new CustomEvent('page:reload'));
                 document.querySelector('site-overlay').click();
             });
         });
@@ -104,7 +104,7 @@ class SignalSidebar {
             await SiteSpinner.withLoading(async () => {
                 const signal = await this.api.signals.patch(this.signal.id, { severity: this.signal.severity });
                 this.state.signals[signal.account][signal.id] = signal;
-                document.dispatchEvent(new CustomEvent('page:reset'));
+                document.dispatchEvent(new CustomEvent('page:reload'));
             });
         });
 
@@ -115,7 +115,7 @@ class SignalSidebar {
             await SiteSpinner.withLoading(async () => {
                 const signal = await this.api.signals.patch(this.signal.id, { asset: this.signal.asset });
                 this.state.signals[signal.account][signal.id] = signal;
-                document.dispatchEvent(new CustomEvent('page:reset'));
+                document.dispatchEvent(new CustomEvent('page:reload'));
             });
         });
 
@@ -126,7 +126,7 @@ class SignalSidebar {
             await SiteSpinner.withLoading(async () => {
                 const signal = await this.api.signals.patch(this.signal.id, { source: this.signal.source });
                 this.state.signals[signal.account][signal.id] = signal;
-                document.dispatchEvent(new CustomEvent('page:reset'));
+                document.dispatchEvent(new CustomEvent('page:reload'));
             });
         });
 

@@ -105,7 +105,10 @@
   }
   .btn-solid{background:var(--ink);color:#fff;}
   .btn:hover{opacity:0.7;}
-  @media (max-width:760px){.header-nav,.site-header{display:none;}}
+  @media (max-width:760px){
+    .header-nav,.site-header{display:none;}
+    .hero{--header-h:0px;}
+  }
 
   /* ---------- HERO ---------- */
   :root{--header-h:85px;}
@@ -534,7 +537,7 @@
             io.unobserve(entry.target);
           }
         });
-      }, { threshold:0.4 });
+      }, { threshold:0, rootMargin:'0px 0px 150px 0px' });
       els.forEach(function(el){ io.observe(el); });
     })();
   </script>

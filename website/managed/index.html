@@ -105,7 +105,7 @@
   }
   .btn-solid{background:var(--ink);color:#fff;}
   .btn:hover{opacity:0.7;}
-  @media (max-width:760px){.header-nav{display:none;}}
+  @media (max-width:760px){.header-nav,.site-header{display:none;}}
 
   /* ---------- HERO ---------- */
   :root{--header-h:85px;}
@@ -301,7 +301,7 @@
       <div class="hero-inner">
         <div class="hero-eyebrow eyebrow-label mono"><span class="status-dot"></span>Managed Vex</div>
         <h1>The hacker<br>who <span>heals.</span></h1>
-        <p class="hero-copy">Vex isn't just an AI hacker finding a way in — it's a complete managed service: we prevent, detect and respond to attacks around the clock.</p>
+        <p class="hero-copy">Vex isn't just an AI hacker finding a way in — it's a complete managed service: we prevent, detect and respond to any attack that comes your way.</p>
       </div>
     </div>
   </section>
@@ -320,9 +320,9 @@
 
       <div class="why-grid reveal">
         <div class="why-copy">
-          <h2>Built to notice when someone else gets in.</h2>
+          <h2>Vex notices when a hacker gets in.</h2>
           <p>
-            Vex spends every day breaking into your business — testing accounts, endpoints, and SaaS apps the way a real attacker would. So when a second, uninvited hacker tries the same door, Vex is the one already watching it.
+            Vex spends every day breaking into your business — testing accounts, endpoints, and apps the way a real attacker would. So when a second, uninvited hacker tries the same door, Vex is already there.
           </p>
         </div>
 
@@ -373,8 +373,8 @@
       <div class="stat-row reveal">
         <div class="stat-card">
           <span class="stat-num mono">100%</span>
-          <h3>Data collection</h3>
-          <p>All security-relevant alerts and events are collected and cleaned.</p>
+          <h3>Prevention first</h3>
+          <p>Our analysts prevent issues before they become incidents.</p>
         </div>
         <div class="stat-card">
           <span class="stat-num mono">24/7</span>
@@ -534,7 +534,7 @@
             io.unobserve(entry.target);
           }
         });
-      }, { threshold:0.2 });
+      }, { threshold:0.4 });
       els.forEach(function(el){ io.observe(el); });
     })();
   </script>

@@ -317,6 +317,26 @@
   margin-top: 20px;
 }
 
+tr.unread {
+  font-weight: 600;
+}
+
+tr.unread td.name {
+  position: relative;
+}
+
+tr.unread td.name::before {
+  content: '';
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--pink);
+  margin-right: 8px;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
 td.name {
   width: 32%;
   white-space: nowrap;

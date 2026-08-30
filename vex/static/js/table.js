@@ -20,6 +20,9 @@ class Table {
         row.dataset.severity = signal.severity;
         row.dataset.updated = signal.updated;
 
+        const unread = !signal.read;
+        row.classList.toggle("unread", unread);
+
         const closed = signal.status.startsWith("C");
         row.classList.toggle("closed", closed);
 
@@ -28,8 +31,12 @@ class Table {
             return;
         }
 
-        const openRows = [...this.body.children].filter(r => !r.classList.contains("closed"));
-        const anchor = openRows.find(r => new Date(r.dataset.updated) < new Date(signal.updated));
+        const open = [...this.body.children].filter(r => r !== row && !r.classList.contains("closed"));
+        const anchor = open.find(r => {
+            const rUnread = r.classList.contains("unread");
+            if (unread !== rUnread) return unread;
+            return new Date(r.dataset.updated) < new Date(signal.updated);
+        });
 
         this.body.insertBefore(row, anchor ?? this.body.querySelector(".closed") ?? null);
     }

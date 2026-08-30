@@ -152,7 +152,6 @@ class TenantScreen {
             this.state.api.reset();
 
             document.dispatchEvent(new CustomEvent('page:reset'));
-            document.querySelector('site-overlay').click();
             document.querySelector('.delegation-notice').classList.remove('visible');
         });
     }

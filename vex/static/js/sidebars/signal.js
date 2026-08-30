@@ -22,6 +22,8 @@ class SignalSidebar {
         updates.sort((a, b) => new Date(a.updated) - new Date(b.updated)).forEach((update) => {
             this.add(update);
         });
+
+        document.dispatchEvent(new CustomEvent('page:reload'));
     }
    
     render(signal, empty = false) {

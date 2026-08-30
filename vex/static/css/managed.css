@@ -114,6 +114,18 @@
   position: relative;
 }
 
+#managed-screen .managed-account-badge.has-unread::after {
+  content: '';
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--pink);
+  border: 1.5px solid var(--gray-panel);
+}
+
 #managed-screen .managed-badge-icon { width: 32px; height: 32px; object-fit: contain; }
 
 #managed-screen .managed-account-name {

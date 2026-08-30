@@ -44,12 +44,6 @@ class ManagedRollup {
         if (wrap) wrap.classList.toggle('empty', this.members.size === 0);
     }
 
-    _resetBadges() {
-        this.members.forEach((_, domain) => {
-            this._setBadge(domain, 0);
-        });
-    }
-
     _setBadge(domain, count) {
         const badge = document.getElementById(`managed-badge-content-${domain}`);
         if (!badge) return;
@@ -194,6 +188,18 @@ class ManagedRollup {
         this._loadOverview(domain);
     }
 
+    _resetBadges() {
+        this.members.forEach((_, domain) => {
+            this._setBadge(domain, 0);
+            this._setUnread(domain, false);
+        });
+    }
+
+    _setUnread(domain, unread) {
+        const badge = document.getElementById(`managed-badge-${domain}`);
+        if (badge) badge.classList.toggle('has-unread', unread);
+    }
+
     async _loadOverview(domain) {
         const column = document.getElementById('managed-overview-col');
         const created = document.getElementById('managed-overview-created');
@@ -217,7 +223,9 @@ class ManagedRollup {
 
             const open = Object.values(this.state.signals[ev.signal.account] ?? {})
                 .filter(t => t.status.startsWith('O'));
+
             this._setBadge(ev.signal.account, open.length);
+            this._setUnread(ev.signal.account, open.some(t => !t.read));
         });
 
         document.getElementById('managed-invite-btn').addEventListener('click', async () => {

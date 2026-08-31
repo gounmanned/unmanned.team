@@ -1,17 +1,21 @@
 class TenantScreen {
     constructor(state, sidebars) {
         this.state = state;
-        this.api = new Api(state);
+        this.api = state.api;
         this.sidebars = sidebars;
         this.table = new Table('signal-table');
         this.month = new Date();
         this.listen();
+
+        this.notifications = new Notifications(this.api.notification);
     }
 
     async reload() {
         const filter = this.month ? `date=${this.month.toISOString().slice(0, 7)}` : "";
         await this.api.signals.list(filter, new CustomEvent("signal:account"));
         await this.api.signals.list(`status=O`, new CustomEvent("signal:account"));
+
+        this.notifications.show();
         this.panel();
     }
 

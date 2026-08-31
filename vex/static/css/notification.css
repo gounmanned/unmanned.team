@@ -1,0 +1,95 @@
+.notification-stack {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 9999;
+  max-width: 360px;
+  width: 100%;
+}
+
+.notification-toast {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: var(--gray-panel);
+  border: 1px solid var(--gray-line);
+  border-left: 3px solid var(--sev-1);
+  border-radius: 8px;
+  padding: 10px 12px;
+  box-sizing: border-box;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  animation: notification-in 0.2s ease-out;
+  transition: opacity 0.15s, transform 0.15s;
+}
+
+.notification-toast.dismissing {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.notification-toast .material-symbols-outlined.notification-icon {
+  font-size: 17px;
+  color: var(--sev-1);
+  flex-shrink: 0;
+  line-height: 1;
+  margin-top: 1px;
+}
+
+.notification-body {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.notification-name {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--sev-1);
+  margin-bottom: 3px;
+}
+
+.notification-value {
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: var(--text-strong);
+  word-break: break-word;
+}
+
+.notification-time {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-top: 5px;
+}
+
+.notification-close {
+  flex-shrink: 0;
+  font-size: 16px;
+  color: var(--text-faint);
+  cursor: pointer;
+  transition: color 0.12s;
+}
+
+.notification-close:hover {
+  color: var(--ink);
+}
+
+@keyframes notification-in {
+  from { opacity: 0; transform: translateX(20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@media (max-width: 720px) {
+  .notification-stack {
+    left: 14px;
+    right: 14px;
+    top: 12px;
+    max-width: none;
+  }
+}

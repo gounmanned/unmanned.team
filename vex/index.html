@@ -14,6 +14,7 @@
     document.write(`
       <link rel="stylesheet" href="static/css/index.css?v=${v}">
       <link rel="stylesheet" href="static/css/audit.css?v=${v}">
+      <link rel="stylesheet" href="static/css/notification.css?v=${v}">
       <link rel="stylesheet" href="static/css/breach.css?v=${v}">
       <link rel="stylesheet" href="static/css/managed.css?v=${v}">
       <link rel="stylesheet" href="static/css/inventory.css?v=${v}">
@@ -574,17 +575,7 @@
     </div>
   </site-sidebar>
 
-  <!-- Modals -->
-
-  <div class="toast" id="toast">
-    <div class="toast-row">
-      <img src="https://cdn.unmanned.team/img/logo.png" class="toast-icon" alt="Vex">
-      <div id="toast-text" class="toast-text"></div>
-    </div>
-    <div class="toast-progress">
-      <div class="toast-progress-fill"></div>
-    </div>
-  </div>
+  <div class="notification-stack" id="notification-stack"></div>
 
 </body>
 
@@ -595,6 +586,7 @@
     <script src="static/js/api.js?v=${v}"><\/script>
     <script src="static/js/workspace.js?v=${v}"><\/script>
     <script src="static/js/table.js?v=${v}"><\/script>
+    <script src="static/js/notification.js?v=${v}"><\/script>
     <script src="static/js/tenant.js?v=${v}"><\/script>
     <script src="static/js/sidebars/signal.js?v=${v}"><\/script>
     <script src="static/js/sidebars/backup.js?v=${v}"><\/script>

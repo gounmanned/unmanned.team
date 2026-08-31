@@ -16,9 +16,9 @@ class SignalSidebar {
 
     inject(signal, updates) {
         this.signal = this.state.signals[signal.account][signal.id]
-        this.render(signal, false);
+        this.render(this.signal, false);
 
-        this.add(signal);
+        this.add(this.signal);
         updates.sort((a, b) => new Date(a.updated) - new Date(b.updated)).forEach((update) => {
             this.add(update);
         });

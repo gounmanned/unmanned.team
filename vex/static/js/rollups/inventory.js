@@ -122,7 +122,7 @@ class InventoryRollup {
         const next = !star.classList.contains('active');
 
         SiteSpinner.withLoading(async () => {
-            await this.api.update(id, { priority: next ? '1' : '0' });
+            await this.api.update(id, { priority: next ? '1' : '' });
             star.classList.toggle('active', next);
             const asset = this.assets.find(a => (a.id ?? a.name) == id);
             if (asset?.metadata) asset.metadata.priority = next ? '1' : '0';

@@ -33,6 +33,8 @@
   animation: managed-pulse 2.2s infinite;
   flex-shrink: 0;
   display: inline-block;
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
 @keyframes managed-pulse {
@@ -123,7 +125,8 @@
   height: 8px;
   border-radius: 50%;
   background: var(--pink);
-  border: 1.5px solid var(--gray-panel);
+  border: 2px solid var(--gray-panel);
+  box-sizing: border-box;
 }
 
 #managed-screen .managed-badge-icon { width: 32px; height: 32px; object-fit: contain; }

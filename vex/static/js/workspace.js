@@ -31,6 +31,7 @@ class Api {
         this.file = new FileApi(state);
         this.monitors = new MonitorApi(state);
         this.threat = new ThreatApi(state);
+        this.notification = new NotificationApi(state);
     }
 
     reset(){
@@ -42,6 +43,7 @@ class Api {
         this.file.set("account", this.state.account());
         this.monitors.set("account", this.state.account());
         this.threat.set("account", this.state.account());
+        this.notification.set("account", this.state.account());
     }
 }
 
@@ -87,7 +89,6 @@ class Workspace {
                 console.error(err);
             }).finally(() => {
                 document.querySelector('site-header').setCompany("Vex", "Security Operations Center");
-                Workspace.toast("Vex is currently running unauthenticated security tests against your accounts.");
             });
     }
 
@@ -142,14 +143,6 @@ class Workspace {
             clearTimeout(timer);
             timer = setTimeout(() => fn(...args), delay);
         };
-    }
-
-    static toast(text, duration = 5000) {
-        const el = document.getElementById('toast');
-
-        requestAnimationFrame(() => el.classList.add('open'));
-        el.querySelector("#toast-text").textContent = text;
-        setTimeout(() => { el.classList.remove('open') }, duration);
     }
 
     static date(iso) {

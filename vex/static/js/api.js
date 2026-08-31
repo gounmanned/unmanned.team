@@ -148,6 +148,20 @@ class FileApi extends Gateway {
     }
 }
 
+class NotificationApi extends Gateway {
+    constructor(){
+        super();
+    }
+
+    async list() {
+        return await this.call("GET", "notification");
+    }
+
+    async clear(key) {
+        return await this.call("DELETE", `notification/${key}`);
+    }
+}
+
 class Auth {
     static async init(code) {
         const backend = "us.unmanned.team";

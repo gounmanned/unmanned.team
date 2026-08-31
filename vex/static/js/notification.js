@@ -1,7 +1,7 @@
 class Notifications {
-    constructor(api, containerId = 'notification-stack') {
+    constructor(api, container = 'notification-stack') {
         this.api = api;
-        this.container = document.getElementById(containerId);
+        this.container = document.getElementById(container);
     }
 
     async show() {

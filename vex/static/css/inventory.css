@@ -86,12 +86,15 @@
 }
 
 #inventory-screen .scope-btn .count {
+  display: inline-block;
+  min-width: 20px;
   font-family: 'JetBrains Mono', monospace;
   font-size: 10.5px;
   color: var(--text-muted);
   background: var(--gray-soft);
   padding: 1px 6px;
   border-radius: 6px;
+  text-align: center;
 }
 #inventory-screen .scope-toggle[data-scope="domain"] .scope-btn[data-scope="domain"] .count,
 #inventory-screen .scope-toggle[data-scope="identity"] .scope-btn[data-scope="identity"] .count,

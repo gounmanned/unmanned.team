@@ -1,0 +1,63 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+<style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap');
+      .head { font-family: 'Space Grotesk', Arial, sans-serif; font-weight: 700; }
+      .brand { font-family: 'Space Grotesk', Arial, sans-serif; font-weight: 600; }
+      .body { font-family: 'Inter', Helvetica, sans-serif; font-weight: 400; }
+</style>
+<pattern id="grid" width="44" height="44" patternUnits="userSpaceOnUse">
+<path d="M 44 0 L 0 0 0 44" fill="none" stroke="rgba(11,12,13,0.045)" stroke-width="1"/>
+</pattern>
+</defs>
+
+<!-- base -->
+<rect width="1200" height="630" fill="#fcfcfa"/>
+<rect width="1200" height="630" fill="url(#grid)"/>
+
+<!-- corner reticle -->
+<g stroke="#0b0c0d" stroke-opacity="0.75" stroke-width="2.25" fill="none">
+<path d="M 40 78 L 40 40 L 78 40"/>
+<path d="M 1122 40 L 1160 40 L 1160 78"/>
+<path d="M 40 552 L 40 590 L 78 590"/>
+<path d="M 1160 552 L 1160 590 L 1122 590"/>
+</g>
+
+<!-- brand mark -->
+<circle cx="70" cy="112" r="5" fill="#e01280"/>
+<text x="84" y="119" class="brand" font-size="21" letter-spacing="0.03em" fill="#0b0c0d">Vex</text>
+
+<!-- title -->
+<text x="68" y="232" class="head" font-size="72" letter-spacing="-0.01em" fill="#0b0c0d">Unlimited SIEM</text>
+
+<!-- description (5 lines) -->
+<g class="body" font-size="22" fill="#2b2b2b">
+<text x="70" y="296">Every security alert and event log from any endpoint or</text>
+<text x="70" y="332">SaaS product you connect flows into one searchable,</text>
+<text x="70" y="368">downloadable SIEM that never ages out. Work with the</text>
+<text x="70" y="404">full history over the UI for the past 24 hours, or reach</text>
+<text x="70" y="440">back forever through the API.</text>
+</g>
+
+<!-- icon: stacked database / forever history, with dashed rings + infinity badge -->
+<g transform="translate(945,270)">
+<circle r="86" fill="none" stroke="#6c6c70" stroke-width="1.5" stroke-dasharray="4 7" opacity="0.6"/>
+<circle r="86" fill="none" stroke="#e01280" stroke-width="1.5" stroke-dasharray="4 7" opacity="0.4"
+transform="rotate(35)"/>
+
+<!-- database stack -->
+<g transform="translate(-30,-38)">
+<ellipse cx="0" cy="0" rx="34" ry="12" fill="#fcfcfa" stroke="#e01280" stroke-width="3"/>
+<path d="M -34,0 L -34,22 A 34,12 0 0 0 34,22 L 34,0" fill="#fcfcfa" stroke="#e01280" stroke-width="3"/>
+<path d="M -34,22 L -34,44 A 34,12 0 0 0 34,44 L 34,22" fill="#fcfcfa" stroke="#e01280" stroke-width="3"/>
+<path d="M -34,44 L -34,66 A 34,12 0 0 0 34,66 L 34,44" fill="#fcfcfa" stroke="#e01280" stroke-width="3"/>
+</g>
+
+<!-- forever/infinity badge -->
+<g transform="translate(55,56)">
+<circle r="25" fill="#fcfcfa" stroke="#e01280" stroke-width="1.5"/>
+<path d="M -10,0 C -10,-6 -3,-6 0,0 C 3,6 10,6 10,0 C 10,-6 3,-6 0,0 C -3,6 -10,6 -10,0 Z"
+fill="none" stroke="#e01280" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</g>
+</svg>

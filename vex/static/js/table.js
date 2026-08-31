@@ -20,10 +20,9 @@ class Table {
         row.dataset.severity = signal.severity;
         row.dataset.updated = signal.updated;
 
-        const unread = !signal.read;
-        row.classList.toggle("unread", unread);
-
         const closed = signal.status.startsWith("C");
+        const unread = !signal.read && !closed;
+        row.classList.toggle("unread", unread);
         row.classList.toggle("closed", closed);
 
         if (closed) {

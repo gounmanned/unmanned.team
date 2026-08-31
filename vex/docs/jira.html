@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Jira</title>
+    <link rel="icon" href="https://cdn.unmanned.team/img/logo.png" type="image/png" />
+    <link rel="apple-touch-icon" href="https://cdn.unmanned.team/img/logo.png" />
+    <link rel="stylesheet" href="https://cdn.unmanned.team/css/global.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <style>
+        body {
+            margin: 0;
+            padding: 2rem;
+            background-color: #f8fafc;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 3rem 4rem;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--brand);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        h2 {
+            font-size: 1.3rem;
+            color: var(--brand);
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        p {
+            line-height: 1.6;
+        }
+
+        ul, ol {
+            margin: 1rem 0 1rem 1.5rem;
+            padding-left: 1.5rem;
+        }
+
+        ul { list-style-type: disc; }
+        ol { list-style-type: decimal; }
+
+        li { margin-bottom: 0.5rem; }
+
+        ol li::marker {
+            font-weight: bold;
+            color: var(--brand);
+        }
+
+        ul li::marker { color: var(--brand); }
+
+        pre {
+            background: #f3f3f3;
+            padding: 1rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        code {
+            background: #f3f3f3;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+        }
+
+        a { color: var(--brand); text-decoration: none; }
+
+        .important-note {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .step-divider {
+            border: none;
+            border-top: 1px solid #e5e7eb;
+            margin: 2.5rem 0 0;
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            .container { padding: 2rem; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Jira</h1>
+        <p>This guide walks you through creating an Atlassian API token scoped to your Jira site, and storing it so Vex can periodically create tickets in your projects.</p>
+
+        <h2>Prerequisites</h2>
+        <ul>
+            <li>You have access to a <strong>Jira Queue</strong> whose projects you want Vex to create tickets in.</li>
+            <li>If your organization restricts API token creation, an org admin may need to allow it (see Step 3).</li>
+        </ul>
+
+        <hr class="step-divider" />
+        <h2>Step 1: Access API Token Settings</h2>
+        <ol>
+            <li>Log into <a href="https://id.atlassian.com/manage-profile/security/api-tokens" target="_blank">Atlassian</a> with the account tied to your Jira site.</li>
+            <li>Click <strong>"Create API token with scopes"</strong>. Atlassian is phasing out unscoped "classic" tokens in favor of scoped ones, so use a scoped token for any new integration.</li>
+        </ol>
+
+        <hr class="step-divider" />
+        <h2>Step 2: Configure the Token</h2>
+        <ol>
+            <li>Set the <strong>Token name</strong> to <code>Vex Ticket Creator</code>.</li>
+            <li>Set an <strong>Expiration</strong>. Scoped tokens cannot be non-expiring &mdash; expiration is capped at 365 days, so choose the maximum and plan to rotate it before it lapses.</li>
+            <li>Under <strong>App</strong>, select <strong>Jira</strong>.</li>
+            <li>Under <strong>Scopes</strong>, grant only what Vex needs:</li>
+        </ol>
+
+        <pre><code>Jira work items: Read
+Jira work items: Write</code></pre>
+
+        <p class="important-note">Grant <strong>Write</strong> access &mdash; Vex needs it to create tickets. Read-only scopes will let Vex see your projects but not create anything in them.</p>
+
+        <ol start="5">
+            <li>Click <strong>"Generate"</strong>.</li>
+        </ol>
+
+        <hr class="step-divider" />
+        <h2>Step 3: Organization Restrictions</h2>
+        <ol>
+            <li>Some Atlassian organizations restrict API token creation or usage through an org-level <strong>API token policy</strong>.</li>
+            <li>If token creation is blocked, ask an org admin to allow it under <strong>Organization Settings &rarr; Security &rarr; API token policy</strong>.</li>
+            <li>The token will not work until your organization permits API token access.</li>
+        </ol>
+
+        <hr class="step-divider" />
+        <h2>Step 4: Copy Your Token</h2>
+        <ol>
+            <li>Copy the generated token immediately &mdash; Atlassian will not show it again after you navigate away.</li>
+            <li>Store it securely before proceeding.</li>
+        </ol>
+
+        <hr class="step-divider" />
+        <h2>Step 5: Save to Vex</h2>
+        <p>Inside Vex, add your credential in the following JSON format, including your Jira site's base URL and the key of the project you want tickets created in:</p>
+        <pre>{
+  "email": "you@example.com",
+  "api_token": "$JIRA_TOKEN",
+  "base_url": "https://examplecompany.atlassian.net",
+  "project_key": "QUEUENAME"
+}</pre>
+        <p><code>project_key</code> is the short, uppercase identifier for the Jira project you want tickets created in (for example, <code>OPS</code> or <code>SUP</code>). You can find it in the URL of any issue in that project, or under <strong>Project settings &rarr; Details</strong>.</p>
+        <p>Once registered, Vex will create tickets in the specified Jira project using this token.</p>
+    </div>
+</body>
+</html>

@@ -158,7 +158,7 @@ class NotificationApi extends Gateway {
     }
 
     async clear(key) {
-        return await this.call("DELETE", `notification/${key}`);
+        return await this.call("DELETE", `notification/${encodeURIComponent(key)}`);
     }
 }
 

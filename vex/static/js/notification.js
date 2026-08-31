@@ -2,16 +2,19 @@ class Notifications {
     constructor(api, container = 'notification-stack') {
         this.api = api;
         this.container = document.getElementById(container);
+        this.rendered = new Set();
     }
 
     async show() {
         const notifications = await this.api.list();
         if (!notifications?.length) return;
 
-        notifications.forEach(n => this.render(n));
+        notifications.filter(n => !this.rendered.has(n.key)).forEach(n => this.render(n));
     }
 
     render(notification) {
+        this.rendered.add(notification.key);
+
         const el = document.createElement('div');
         el.className = 'notification-toast';
         el.innerHTML = `
@@ -26,7 +29,6 @@ class Notifications {
 
         const closeBtn = el.querySelector('.notification-close');
         closeBtn.addEventListener('click', () => this.dismiss(notification.key, el, closeBtn));
-
         this.container.appendChild(el);
     }
 
@@ -37,6 +39,7 @@ class Notifications {
         try {
             await this.api.clear(key);
             el.remove();
+            this.rendered.delete(key);
         } catch (e) {
             el.classList.remove('dismissing');
             closeBtn.style.pointerEvents = '';

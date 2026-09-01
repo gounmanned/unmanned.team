@@ -1,7 +1,6 @@
 class ThreatSidebar {
-    constructor(state, sidebars) {
+    constructor(state) {
         this.state = state;
-        this.sidebars = sidebars;
         this.api = state.api.threat;
         this.threats = [];
         this.list = document.getElementById('threat-list');
@@ -102,8 +101,8 @@ class ThreatSidebar {
 
     async openSignal(signal) {
         await SiteSpinner.withLoading(async () => {
-            this.sidebars.signal.reset();
-            this.sidebars.signal.inject(signal, await this.state.api.signals.get(signal.id));
+            Workspace.sidebars.signal.reset();
+            Workspace.sidebars.signal.inject(signal, await this.state.api.signals.get(signal.id));
             document.querySelector('site-overlay').click();
             document.getElementById('signal-sidebar').show();
         });

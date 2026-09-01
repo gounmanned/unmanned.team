@@ -48,6 +48,8 @@ class Api {
 }
 
 class Workspace {
+    static #instance;
+
     static SEVERITY = {
         1: 'Critical',
         2: 'High',
@@ -57,6 +59,7 @@ class Workspace {
     };
 
     async render(code) {
+        Workspace.#instance = this;
         Auth.init(code)
             .then(async user => await SiteSpinner.withLoading(async () => {
                 const state = new AppState(user);
@@ -76,9 +79,7 @@ class Workspace {
                     risk: new RiskSidebar(state),
                 }
 
-                this.sidebars.threat.sidebars = this.sidebars;
-                this.tenant = new TenantScreen(state, this.sidebars);
-                
+                this.tenant = new TenantScreen(state);
                 this.reset();
                 this.reload();
                 this.listen();
@@ -150,5 +151,9 @@ class Workspace {
     static date(iso) {
         const d = new Date(iso);
         return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+    }
+
+    static get sidebars() {
+        return Workspace.#instance?.sidebars;
     }
 }

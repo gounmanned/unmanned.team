@@ -156,14 +156,8 @@
   .stat-row{margin-top:56px;display:flex;border-top:1px solid var(--gray-line);border-bottom:1px solid var(--gray-line);}
   .stat-card{flex:1;padding:32px 30px;}
   .stat-card + .stat-card{border-left:1px solid var(--gray-line);}
-  .stat-num{
-    display:block;
-    font-size:36px;
-    line-height:1;
-    color:var(--pink);
-    margin-bottom:14px;
-    letter-spacing:-0.01em;
-  }
+  .stat-num{display:block;font-size:36px;color:var(--pink);margin-bottom:14px;letter-spacing:-0.01em;}
+  .stat-infinity{font-size:48px;line-height:0.75;}
   .stat-card h3{margin:0 0 8px;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:17px;}
   .stat-card p{margin:0;font-size:13.5px;line-height:1.6;color:var(--gray-mid);}
   @media (max-width:760px){
@@ -382,7 +376,7 @@
 
       <div class="stat-row reveal">
         <div class="stat-card">
-          <span class="stat-num mono">∞</span>
+          <span class="stat-num mono stat-infinity">∞</span>
           <h3>Prevent incidents</h3>
           <p>Our analysts proactively tune your tech like an oil change for a car.</p>
         </div>

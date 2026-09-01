@@ -17,7 +17,7 @@
 .top-panel .new-message,
 .top-panel .inventory-card,
 .top-panel .monitors-card,
-.top-panel .audit-card,
+.top-panel .threat-card,
 .top-panel .breach-card {
   min-width: 0;
 }
@@ -123,8 +123,8 @@
 .monitors-card .corner-accent .material-symbols-outlined { color: #3b82f6; }
 .breach-card .corner-accent { background: rgba(22, 163, 74, 0.07); }
 .breach-card .corner-accent .material-symbols-outlined { color: #16a34a; transition: color 0.15s; }
-.audit-card .corner-accent { background: rgba(217, 119, 6, 0.08); }
-.audit-card .corner-accent .material-symbols-outlined { color: #d97706; }
+.threat-card .corner-accent { background: rgba(217, 119, 6, 0.08); }
+.threat-card .corner-accent .material-symbols-outlined { color: #d97706; }
 
 .breach-card[data-state="active"] .corner-accent {
   background: var(--alarm-tint);

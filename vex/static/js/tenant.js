@@ -1,8 +1,7 @@
 class TenantScreen {
-    constructor(state, sidebars) {
+    constructor(state) {
         this.state = state;
         this.api = state.api;
-        this.sidebars = sidebars;
         this.table = new Table('signal-table');
         this.month = new Date();
         this.listen();
@@ -79,12 +78,18 @@ class TenantScreen {
             document.getElementById('breach-asset').textContent = this.state.signals[this.state.account()][breach.id].asset ?? '—';
         });
 
-        const logs = spin(document.getElementById('open-audit-rollup'), async () => {
-            const messages = await this.api.audit.messages(1);
-            document.getElementById('audit-count').textContent = messages.length.toLocaleString();
+        const threats = spin(document.getElementById('open-threat-sidebar'), async () => {
+            const card = document.querySelector('.threat-card');
+            const page = await this.api.threat.list();
+            const hits = Object.values(this.state.signals[this.state.account()] || {})
+                .filter(s => s.source === 'threat' && s.status?.startsWith('O'));
+            setAlarm(card, hits.length ? "Assess potential targeted attacks" : null);
+
+            document.getElementById('threat-count').textContent = hits.length;
+            document.getElementById('monitors-threat-total').textContent = page.threats.length.toLocaleString(); 
         });
 
-        await Promise.allSettled([inventory, monitors, scenario, logs]);
+        await Promise.allSettled([inventory, monitors, scenario, threats]);
     }
 
     count() {
@@ -142,8 +147,8 @@ class TenantScreen {
                 e.stopPropagation();
 
                 await SiteSpinner.withLoading(async () => {
-                    this.sidebars.signal.reset();
-                    this.sidebars.signal.inject(signal, await this.api.signals.get(signal.id));
+                    Workspace.sidebars.signal.reset();
+                    Workspace.sidebars.signal.inject(signal, await this.api.signals.get(signal.id));
                     document.getElementById('signal-sidebar').show();
                 });
             });

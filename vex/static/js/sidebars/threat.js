@@ -6,6 +6,8 @@ class ThreatSidebar {
         this.list = document.getElementById('threat-list');
         this.wrap = document.getElementById('threat-list-wrap');
         this.search = document.getElementById('threat-search');
+        this.callout = document.getElementById('threats-callout');
+        this.calloutList = this.callout.querySelector('.threats-callout-names');
         this.search.addEventListener('input', () => this.filter(this.search.value));
     }
 
@@ -19,6 +21,7 @@ class ThreatSidebar {
         this.threats.forEach(threat => this.add(threat));
         this.wrap.classList.toggle('empty', this.threats.length === 0);
         this.wrap.classList.remove('no-results');
+        this.hits();
     }
 
     async pages() {
@@ -63,6 +66,46 @@ class ThreatSidebar {
         });
 
         this.wrap.classList.toggle('no-results', this.threats.length > 0 && visible === 0);
+    }
+
+    hits() {
+        const signals = Object.values(this.state.signals[this.state.account()] || {})
+            .filter(s => s.source === 'threat');
+
+        this.callout.hidden = signals.length === 0;
+        this.calloutList.innerHTML = '';
+
+        signals.forEach(signal => {
+            const row = document.createElement('div');
+            row.className = 'threats-callout-hit';
+
+            const name = document.createElement('span');
+            name.className = 'threats-callout-hit-name';
+            name.textContent = signal.name;
+            name.title = signal.name;
+
+            const arrow = document.createElement('button');
+            arrow.type = 'button';
+            arrow.className = 'threats-callout-hit-arrow material-symbols-outlined';
+            arrow.textContent = 'chevron_right';
+            arrow.setAttribute('aria-label', `Open ${signal.name}`);
+            arrow.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.openSignal(signal);
+            });
+
+            row.append(name, arrow);
+            this.calloutList.appendChild(row);
+        });
+    }
+
+    async openSignal(signal) {
+        await SiteSpinner.withLoading(async () => {
+            Workspace.sidebars.signal.reset();
+            Workspace.sidebars.signal.inject(signal, await this.state.api.signals.get(signal.id));
+            document.querySelector('site-overlay').click();
+            document.getElementById('signal-sidebar').show();
+        });
     }
 
     formatTime(ts) {

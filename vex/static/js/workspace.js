@@ -76,7 +76,9 @@ class Workspace {
                     risk: new RiskSidebar(state),
                 }
 
+                this.sidebars.threat.sidebars = this.sidebars;
                 this.tenant = new TenantScreen(state, this.sidebars);
+                
                 this.reset();
                 this.reload();
                 this.listen();

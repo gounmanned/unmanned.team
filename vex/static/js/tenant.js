@@ -80,10 +80,11 @@ class TenantScreen {
         });
 
         const threats = spin(document.getElementById('open-threat-sidebar'), async () => {
+            const card = document.querySelector('.threat-card');
             const page = await this.api.threat.list();
             const hits = Object.values(this.state.signals[this.state.account()] || {})
                 .filter(s => s.source === 'threat' && s.status?.startsWith('O'));
-            //setAlarm(card, page ? "Fix " : null);
+            setAlarm(card, hits.length ? "Assess potential targeted attacks" : null);
 
             document.getElementById('threat-count').textContent = hits.length;
             document.getElementById('monitors-threat-total').textContent = page.threats.length.toLocaleString(); 

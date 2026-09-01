@@ -46,11 +46,9 @@ class TenantScreen {
         const monitors = spin(document.getElementById('open-monitor-rollup'), async () => {
             const m = await this.api.monitors.list();
             const identity = m.find(x => /google|microsoft/i.test(x));
-            const endpoint = m.find(x => /level/i.test(x));
 
             document.getElementById('monitors-count').textContent = m?.length ?? 0;
             document.getElementById('monitors-identity-name').textContent = identity ? (/google/i.test(identity) ? 'Google' : 'Microsoft') : 'n/a';
-            document.getElementById('monitors-endpoint-name').textContent = endpoint ? 'Level' : 'n/a';
         });
 
         const logs = spin(document.getElementById('open-audit-rollup'), async () => {

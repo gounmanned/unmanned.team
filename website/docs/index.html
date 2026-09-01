@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="UTF-8">
+<script>document.documentElement.classList.replace('no-js','js');</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unmanned | Docs</title>
+<meta name="description" content="A step-by-step guide for MSP and MSSP partners standing up their Vex account.">
+<link rel="apple-touch-icon" href="https://cdn.unmanned.team/img/logo.png">
+<link rel="icon" type="image/png" href="https://cdn.unmanned.team/img/logo.png">
+<meta property="og:title" content="Guide to Vex — Unmanned, Inc." />
+<meta property="og:description" content="A step-by-step guide for MSP and MSSP partners standing up their Vex account." />
+<meta property="og:url" content="https://unmanned.team/docs" />
+<meta property="og:type" content="website" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0b0c0d;
+    --white:#fcfcfa;
+    --pink:#e01280;
+    --pink-dim:rgba(224,18,128,0.45);
+    --gray-line:#dcdcd8;
+    --gray-mid:#6c6c70;
+    --db-ink:#f3f3f0;
+    --db-mid:#8a8a8e;
+    --header-h:85px;
+  }
+  *{box-sizing:border-box;}
+  html{overflow-x:hidden;scroll-behavior:smooth;}
+  body{margin:0;background:var(--white);color:var(--ink);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;}
+  .mono{font-family:'JetBrains Mono',monospace;letter-spacing:0.04em;}
+  a{color:inherit;}
+  ::selection{background:var(--pink);color:#fff;}
+  .wrap{width:min(1100px,calc(100% - 48px));margin:0 auto;}
+
+  .grid-bg{
+    position:absolute;inset:0;z-index:0;
+    background-image:
+      linear-gradient(to right, rgba(11,12,13,0.045) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(11,12,13,0.045) 1px, transparent 1px);
+    background-size:44px 44px;
+    mask-image:radial-gradient(ellipse 70% 60% at 50% 35%, #000 40%, transparent 90%);
+    pointer-events:none;
+  }
+
+  .status-dot{
+    width:6px;height:6px;border-radius:50%;background:var(--pink);
+    box-shadow:0 0 0 0 rgba(224,18,128,0.5);animation:pulse 2.2s infinite;flex-shrink:0;display:inline-block;
+  }
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(224,18,128,0.45);}
+    70%{box-shadow:0 0 0 8px rgba(224,18,128,0);}
+    100%{box-shadow:0 0 0 0 rgba(224,18,128,0);}
+  }
+  .eyebrow-label{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--gray-mid);display:flex;align-items:center;gap:11px;}
+
+  .corner{position:absolute;width:var(--corner-size,28px);height:var(--corner-size,28px);border-color:var(--ink);opacity:0.55;}
+  .corner.tl{border-top:1.5px solid;border-left:1.5px solid;}
+  .corner.tr{border-top:1.5px solid;border-right:1.5px solid;}
+  .corner.bl{border-bottom:1.5px solid;border-left:1.5px solid;}
+  .corner.br{border-bottom:1.5px solid;border-right:1.5px solid;}
+
+  .hud-frame{position:fixed;inset:0;pointer-events:none;z-index:40;}
+  .hud-frame .corner.tl{top:46px;left:20px;}
+  .hud-frame .corner.tr{top:46px;right:20px;}
+  .hud-frame .corner.bl{bottom:20px;left:20px;}
+  .hud-frame .corner.br{bottom:20px;right:20px;}
+
+  .classbar{
+    position:fixed;top:0;left:0;right:0;z-index:60;background:#0b0c0d;color:#87878c;
+    font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.16em;
+    text-transform:uppercase;text-align:center;padding:6px 0;
+  }
+  @media (max-width:700px){
+    .hud-frame .corner{width:16px;height:16px;}
+    .hud-frame .corner.tl,.hud-frame .corner.tr{top:60px;}
+    .hud-frame .corner.bl,.hud-frame .corner.br{bottom:12px;}
+    .hud-frame .corner.tl,.hud-frame .corner.bl{left:12px;}
+    .hud-frame .corner.tr,.hud-frame .corner.br{right:12px;}
+    .classbar{font-size:8px;}
+  }
+
+  /* ---------- STICKY HEADER ---------- */
+  .site-header{position:sticky;top:25px;z-index:30;background:var(--white);border-bottom:1px solid var(--gray-line);}
+  .header-inner{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:18px 0;}
+  .brand{display:flex;align-items:center;gap:9px;font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:600;letter-spacing:0.01em;text-decoration:none;}
+  .brand .sub{color:var(--gray-mid);font-weight:500;font-size:13px;}
+  .header-nav{display:flex;align-items:center;gap:30px;margin:0 auto 0 48px;}
+  .header-nav a{
+    font-family:'Inter',sans-serif;font-size:12px;font-weight:500;letter-spacing:0.07em;text-transform:uppercase;
+    text-decoration:none;color:var(--gray-mid);
+  }
+  .header-nav a:hover{color:var(--ink);}
+  .btn{
+    font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:13.5px;letter-spacing:0;
+    padding:11px 18px;text-decoration:none;transition:opacity 0.2s ease;display:inline-flex;align-items:center;gap:8px;white-space:nowrap;
+  }
+  .btn-solid{background:var(--ink);color:#fff;}
+  .btn:hover{opacity:0.7;}
+  @media (max-width:760px){
+    .header-nav{display:none;}
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;overflow:hidden;padding:96px 0 76px;
+  }
+  .hero-inner{position:relative;z-index:2;max-width:640px;}
+  .hero-eyebrow{margin-bottom:22px;}
+  .hero h1{
+    margin:0;font-family:'Space Grotesk',sans-serif;font-weight:700;
+    font-size:clamp(38px,5.6vw,62px);line-height:1.03;letter-spacing:-0.03em;
+  }
+  .hero h1 span{color:var(--pink);}
+  .hero-copy{max-width:520px;margin:24px 0 0;color:#4b4c52;font-size:16.5px;line-height:1.7;}
+  @media (max-width:700px){
+    .hero{padding:56px 0 44px;}
+  }
+
+  .divider{
+    position:relative;border-top:1px solid var(--gray-line);display:flex;justify-content:space-between;
+    padding:14px 56px;font-size:10px;color:var(--gray-mid);
+  }
+  @media (max-width:700px){.divider{padding:14px 20px;}}
+
+  /* ---------- SECTION SHELL ---------- */
+  .section{position:relative;padding:80px 0 96px;}
+  @media (max-width:820px){.section{padding:56px 0 70px;}}
+  .section h2{
+    margin:0 0 16px;font-family:'Space Grotesk',sans-serif;font-weight:500;
+    font-size:clamp(30px,3.8vw,44px);letter-spacing:-0.01em;line-height:1.14;
+  }
+  .section p.lede{font-size:16px;line-height:1.8;color:#2b2b2b;max-width:660px;}
+  .section p.lede + p.lede{margin-top:16px;}
+
+  /* ---------- STEPS ---------- */
+  .steps-list{margin-top:56px;counter-reset:step;}
+  .step{
+    position:relative;display:grid;grid-template-columns:88px minmax(0,1fr) minmax(0,380px);
+    gap:36px;align-items:start;padding:44px 0;border-top:1px solid var(--gray-line);
+    counter-increment:step;
+  }
+  .steps-list .step:last-child{border-bottom:1px solid var(--gray-line);}
+  .step-index{font-size:13px;color:var(--pink);padding-top:2px;}
+  .step-index::before{content:counter(step, decimal-leading-zero);}
+  .step-body h3{
+    margin:0 0 10px;font-family:'Space Grotesk',sans-serif;font-weight:600;
+    font-size:20px;letter-spacing:-0.01em;
+  }
+  .step-body p{margin:0;font-size:14.5px;line-height:1.75;color:#3a3a3d;max-width:480px;}
+  .step-body p + p{margin-top:12px;}
+  .step-body code{
+    font-family:'JetBrains Mono',monospace;font-size:0.92em;background:#f1f1ee;
+    padding:1.5px 5px;border-radius:2px;color:var(--ink);
+  }
+
+  .step-media{
+    position:relative;border:1px solid var(--gray-line);background:#fbfbf9;
+    aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;padding:30px;
+  }
+  .step-media .corner{width:12px;height:12px;opacity:0.4;}
+  .step-media .corner.tl{top:-1px;left:-1px;}
+  .step-media .corner.tr{top:-1px;right:-1px;}
+  .step-media .corner.bl{bottom:-1px;left:-1px;}
+  .step-media .corner.br{bottom:-1px;right:-1px;}
+  .step-icon{width:100%;height:100%;max-width:180px;max-height:180px;}
+
+  @media (max-width:900px){
+    .step{grid-template-columns:56px 1fr;}
+    .step-media{grid-column:1 / -1;max-width:420px;}
+  }
+  @media (max-width:560px){
+    .step{grid-template-columns:1fr;gap:16px;padding:32px 0;}
+    .step-index{padding-top:0;}
+    .step-media{max-width:none;}
+  }
+
+  /* ---------- CONTACT ---------- */
+  .contact-section{padding:130px 0 140px;text-align:center;position:relative;overflow:hidden;background:#0b0c0d;color:var(--db-ink);}
+  .contact-section .body-wrap{position:relative;z-index:2;}
+  .contact-section .eyebrow-row{justify-content:center;margin-bottom:36px;}
+  .contact-statement{
+    font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:clamp(28px,5.4vw,50px);
+    letter-spacing:-0.03em;line-height:1.1;margin:0 0 40px;color:var(--db-ink);
+  }
+  .contact-statement span{color:var(--pink);}
+  .contact-cta{
+    display:inline-flex;align-items:baseline;gap:10px;font-family:'JetBrains Mono',monospace;
+    font-size:clamp(16px,2.2vw,20px);letter-spacing:0.02em;color:var(--db-ink);text-decoration:none;
+    border-bottom:1px solid var(--pink);padding-bottom:6px;transition:opacity 0.2s ease;
+  }
+  .contact-cta:hover{opacity:0.65;}
+  .contact-cta .arrow{color:var(--pink);transition:transform 0.2s ease;display:inline-block;}
+  .contact-cta:hover .arrow{transform:translateX(3px);}
+  a:focus-visible,.contact-cta:focus-visible{outline:1.5px solid var(--pink);outline-offset:4px;}
+  @media (max-width:700px){.contact-section{padding:100px 0 110px;}}
+
+  /* ---------- FOOTER ---------- */
+  footer{
+    border-top:1px solid var(--gray-line);padding:28px 56px 40px;display:flex;justify-content:space-between;
+    align-items:center;font-size:10.5px;color:var(--gray-mid);text-transform:uppercase;letter-spacing:0.08em;
+  }
+  footer a{text-decoration:none;}
+  footer a:hover{color:var(--ink);}
+  footer .fmark{color:var(--ink);font-weight:500;}
+  @media (max-width:700px){footer{padding:22px 20px 36px;flex-direction:column;gap:10px;text-align:center;}}
+
+  .js .reveal{opacity:0;transform:translateY(14px);transition:opacity 0.6s ease, transform 0.6s ease;}
+  .js .reveal.in-view{opacity:1;transform:translateY(0);}
+
+  @media (prefers-reduced-motion: reduce){
+    .status-dot{animation:none;opacity:0.85;}
+    .js .reveal{opacity:1 !important;transform:none !important;transition:none !important;}
+  }
+</style>
+</head>
+<body>
+
+  <div class="classbar">UNMANNED · VEX · DOCUMENTATION</div>
+
+  <div class="hud-frame">
+    <div class="corner tl"></div>
+    <div class="corner tr"></div>
+    <div class="corner bl"></div>
+    <div class="corner br"></div>
+  </div>
+
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a href="/" class="brand"><span class="status-dot"></span>VEX <span class="sub">/ Docs</span></a>
+      <nav class="header-nav">
+        <a href="#about">About</a>
+        <a href="#journey">The steps</a>
+      </nav>
+      <a class="btn btn-solid" href="mailto:go@unmanned.team?subject=Vex%20Partner%20Support">Talk to us →</a>
+    </div>
+  </header>
+
+  <main>
+
+  <!-- ============================================================
+       HERO
+       ============================================================ -->
+  <section class="hero">
+    <div class="grid-bg" aria-hidden="true"></div>
+    <div class="wrap">
+      <div class="hero-inner">
+        <div class="hero-eyebrow eyebrow-label mono"><span class="status-dot"></span>Partner Guide</div>
+        <h1>From license<br>to <span>live.</span></h1>
+        <p class="hero-copy">Everything an MSP or MSSP partner needs to create an account, understand the ecosystem, and run it day-to-day.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider mono">
+    <span>DOC · V1</span>
+    <span>10 STEPS</span>
+  </div>
+
+  <!-- ============================================================
+       ABOUT THIS GUIDE
+       ============================================================ -->
+  <section class="section" id="about">
+    <div class="wrap">
+      <div class="section-label eyebrow-label mono"><span class="status-dot"></span>About this guide</div>
+      <h2>Who this is for</h2>
+      <p class="lede">
+        This guide is for MSP and MSSP partners who've purchased a Vex license and are setting up for the first time. It walks through registration, connecting your first monitors, and the day-to-day workflow of triaging signals, managing assets, and reviewing threats across one or many customer accounts.
+      </p>
+    </div>
+  </section>
+
+  <div class="divider mono">
+    <span>DOC · V1</span>
+    <span>ONBOARDING PATH</span>
+  </div>
+
+  <section class="section" id="journey">
+    <div class="wrap">
+      <div class="section-label eyebrow-label mono"><span class="status-dot"></span>The journey</div>
+      <h2>Get to know Vex in 10 steps</h2>
+      <p class="lede">
+        Each step below walks through your initial system setup.
+      </p>
+
+      <div class="steps-list">
+
+        <!-- STEP: register -->
+        <div class="step reveal">
+          <div class="step-index mono"></div>
+          <div class="step-body">
+            <h3>Register an account</h3>
+            <p>Email <code>go@unmanned.team</code> to request a free account. Once Unmanned enables it, log in at <code>vex.unmanned.team</code>.</p>
+            <p>Accounts are partitioned by domain name, so any people that share the same email domain will automatically group together.</p>
+            <p>Wait, but how much does this cost? We charge a flat (small) fee for each customer account you manage inside the platform. But we let you pilot the platform free of charge, for as long as you need.</p>
+          </div>
+          <div class="step-media">
+            <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+            <svg class="step-icon" viewBox="0 0 180 180" style="stroke:var(--ink);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round" aria-hidden="true">
+              <rect x="18" y="42" width="120" height="82" />
+              <path d="M18 42 L78 90 L138 42" />
+              <circle cx="132" cy="120" r="16" style="stroke:var(--pink)" />
+              <path d="M144 132 L164 152" style="stroke:var(--pink)" />
+              <path d="M152 148 L160 140" style="stroke:var(--pink)" />
+              <path d="M158 154 L166 146" style="stroke:var(--pink)" />
+            </svg>
+          </div>
+        </div>
+
+        <!-- STEP: dashboard -->
+        <div class="step reveal">
+          <div class="step-index mono"></div>
+          <div class="step-body">
+            <h3>Familiarize yourself with the dashboard</h3>
+            <p>The dashboard works like a ticketing system. Every security weakness Vex finds is logged as a <b>signal</b>.</p>
+            <p>New signals appear as you connect monitors, and independently from Vex's own ongoing public exposure scraping.</p>
+          </div>
+          <div class="step-media">
+            <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+            <svg class="step-icon" viewBox="0 0 180 180" style="stroke:var(--ink);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round" aria-hidden="true">
+              <rect x="14" y="22" width="46" height="136" />
+              <rect x="67" y="22" width="46" height="136" />
+              <rect x="120" y="22" width="46" height="136" />
+              <rect x="21" y="34" width="32" height="24" />
+              <rect x="21" y="66" width="32" height="24" />
+              <rect x="74" y="34" width="32" height="24" style="stroke:var(--pink)" />
+              <rect x="74" y="66" width="32" height="24" />
+              <rect x="127" y="34" width="32" height="24" />
+              <circle cx="90" cy="46" r="2.5" style="stroke:none;fill:var(--pink)" />
+            </svg>
+          </div>
+        </div>
+
+        <!-- STEP: monitors -->
+        <div class="step reveal">
+          <div class="step-index mono"></div>
+          <div class="step-body">
+            <h3>Connect monitors</h3>
+            <p>Start with an identity monitor — Google Workspace or Microsoft 365 — to pull in user accounts and assets, and a Cloudflare monitor to pull in domains and DNS records.</p>
+            <p>Add an RMM or EDR monitor next. We recommend Level.io, if you don't have one (it's great). Endpoint monitors ship security alerts and event logs into Vex.</p>
+            <p>Finally, add a notification monitor like Slack or Jira, so all signals stream to you in real-time!</p>
+          </div>
+          <div class="step-media">
+            <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+            <svg class="step-icon" viewBox="0 0 180 180" style="stroke:var(--ink);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round" aria-hidden="true">
+              <line x1="90" y1="90" x2="34" y2="40" />
+              <line x1="90" y1="90" x2="146" y2="40" />
+              <line x1="90" y1="90" x2="34" y2="140" />
+              <line x1="90" y1="90" x2="146" y2="140" />
+              <line x1="90" y1="90" x2="90" y2="150" />
+              <circle cx="34" cy="40" r="7" />
+              <circle cx="146" cy="40" r="7" />
+              <circle cx="34" cy="140" r="7" />
+              <circle cx="146" cy="140" r="7" />
+              <circle cx="90" cy="150" r="7" />
+              <circle cx="90" cy="90" r="13" style="stroke:var(--pink)" />
+              <circle cx="90" cy="90" r="4" style="stroke:none;fill:var(--pink)" />
+            </svg>
+          </div>
+        </div>
+
+        <!-- STEP: triage -->
+        <div class="step reveal">
+          <div class="step-index mono"></div>
+          <div class="step-body">
+            <h3>Triage tickets</h3>
+            <p>By now, you probably see some tickets. As monitors run, signals land on the board. Click into one to see full context, Vex's automated response, and its recommended resolution.</p>
+            <p>Each signal carries a status — active, blocked, acceptable risk, false positive, resolved, or auto-resolved by Vex — and you can leave commentary directly on the ticket.</p>
+            <p>Vex will attempt to automatically triage signals wherever possible, otherwise leaving them open for a human to take a look.</p>
+          </div>
+          <div class="step-media">
+            <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+            <svg class="step-icon" viewBox="0 0 180 180" style="stroke:var(--ink);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round" aria-hidden="true">
+              <path d="M22 46 h136 v70 a10 10 0 0 0 0 20 v6 h-136 v-6 a10 10 0 0 0 0 -20 z" />
+              <line x1="120" y1="46" x2="120" y2="142" stroke-dasharray="1 9" />
+              <circle cx="70" cy="94" r="20" style="stroke:var(--pink)" />
+              <path d="M61 94 L68 102 L81 86" style="stroke:var(--pink)" />
+            </svg>
+          </div>
+        </div>
+
+        <!-- STEP: assets -->
+        <div class="step reveal">
+          <div class="step-index mono"></div>
+          <div class="step-body">
+            <h3>Manage assets</h3>
+            <p>Open asset inventory to see every domain and user identity Vex is tracking.</p>
+            <p>Mark an asset as priority with the star icon, or suspend it with the pause icon. Suspending revokes access tokens and disables that person or domain immediately.</p>
+          </div>
+          <div class="step-media">
+            <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+            <svg class="step-icon" viewBox="0 0 180 180" style="stroke:var(--ink);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round" aria-hidden="true">
+              <rect x="16" y="16" width="30" height="30" />
+              <rect x="58" y="16" width="30" height="30" />
+              <rect x="16" y="58" width="30" height="30" />
+              <rect x="16" y="100" width="30" height="30" />
+              <rect x="58" y="100" width="30" height="30" />
+              <path d="M100 16 l6 13 14 2 -10 10 2 14 -12 -7 -12 7 2 -14 -10 -10 14 -2 z" style="stroke:var(--pink)" />
+              <rect x="58" y="58" width="30" height="30" style="stroke:var(--pink)" />
+              <line x1="68" y1="66" x2="68" y2="80" style="stroke:var(--pink)" />
+              <line x1="78" y1="66" x2="78" y2="80" style="stroke:var(--pink)" />
+            </svg>
+          </div>
+        </div>
+
+        <!-- STEP: threat actors -->
+        <div class="step reveal">
+          <div class="step-index mono"></div>
+          <div class="step-body">
+            <h3>Review threat actors</h3>
+            <p>Vex analyzes every attack against your account and correlates activity across all connected monitors.</p>
+            <p>When the same attacker shows up in more than one place, Vex groups that activity into a threat actor you can review and determine if you need to take action.</p>
+          </div>
+          <div class="step-media">
+            <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+            <svg class="step-icon" viewBox="0 0 180 180" style="stroke:var(--ink);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round" aria-hidden="true">
+              <circle cx="90" cy="90" r="24" style="stroke:var(--gray-mid)" />
+              <circle cx="90" cy="90" r="48" style="stroke:var(--gray-mid)" />
+              <circle cx="90" cy="90" r="72" style="stroke:var(--gray-mid)" />
+              <circle cx="90" cy="90" r="2.5" style="stroke:none;fill:var(--ink)" />
+              <circle cx="122" cy="66" r="5" style="stroke:none;fill:var(--pink)" />
+              <circle cx="52" cy="128" r="5" style="stroke:none;fill:var(--pink)" />
+              <line x1="122" y1="66" x2="52" y2="128" style="stroke:var(--pink)" stroke-dasharray="1 7" />
+            </svg>
+          </div>
+        </div>
+
+        <!-- STEP: breach scenarios -->
+        <div class="step reveal">
+          <div class="step-index mono"></div>
+          <div class="step-body">
+            <h3>Check today's breach scenario</h3>
+            <p>Breach Scenarios shows "the breach of the day" — Vex's read on all open signals and the most probable path an attacker would take through your business right now.</p>
+            <p>It's built to show what an adversarial AI would do if let loose in your environment, and it highlights a single choke point: the one signal every attack path runs through. Fix that first.</p>
+          </div>
+          <div class="step-media">
+            <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+            <svg class="step-icon" viewBox="0 0 180 180" style="stroke:var(--ink);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round" aria-hidden="true">
+              <line x1="26" y1="26" x2="90" y2="90" />
+              <line x1="70" y1="20" x2="90" y2="90" />
+              <line x1="118" y1="26" x2="90" y2="90" />
+              <line x1="90" y1="90" x2="90" y2="150" />
+              <circle cx="26" cy="26" r="6" />
+              <circle cx="70" cy="20" r="6" />
+              <circle cx="118" cy="26" r="6" />
+              <circle cx="90" cy="150" r="6" />
+              <circle cx="90" cy="90" r="15" style="stroke:var(--pink)" />
+              <circle cx="90" cy="90" r="4" style="stroke:none;fill:var(--pink)" />
+            </svg>
+          </div>
+        </div>
+
+        <!-- STEP: backups -->
+        <div class="step reveal">
+          <div class="step-index mono"></div>
+          <div class="step-body">
+            <h3>Confirm file backups</h3>
+            <p>Every day, Vex takes differential backups — files that changed in the last 24 hours — across Microsoft and Google ecosystems. Backups run at 5pm EST.</p>
+          </div>
+          <div class="step-media">
+            <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+            <svg class="step-icon" viewBox="0 0 180 180" style="stroke:var(--ink);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round" aria-hidden="true">
+              <path d="M32 62 L90 34 L148 62 L90 90 Z" />
+              <path d="M32 92 L90 120 L148 92" />
+              <path d="M32 122 L90 150 L148 122" />
+              <circle cx="140" cy="132" r="18" style="stroke:var(--pink)" />
+              <path d="M144 122 a10 10 0 1 1 -9 6" style="stroke:var(--pink)" />
+              <path d="M144 118 l1 6 -6 1" style="stroke:var(--pink)" />
+            </svg>
+          </div>
+        </div>
+
+        <!-- STEP: msp view -->
+        <div class="step reveal">
+          <div class="step-index mono"></div>
+          <div class="step-body">
+            <h3>Invite your first customer</h3>
+            <p>Click "Switch tenant" to move into the MSP view, where you manage every customer account from one place.</p>
+            <p>Invite your first customer from the left sidebar — they'll receive an email invitation to accept. Once accepted, you can delegate into their account and invite additional admins beyond yourself.</p>
+          </div>
+          <div class="step-media">
+            <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+            <svg class="step-icon" viewBox="0 0 180 180" style="stroke:var(--ink);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round" aria-hidden="true">
+              <rect x="16" y="34" width="70" height="52" />
+              <circle cx="34" cy="52" r="5" />
+              <circle cx="50" cy="52" r="5" />
+              <circle cx="66" cy="52" r="5" />
+              <line x1="26" y1="70" x2="76" y2="70" />
+              <rect x="94" y="94" width="70" height="52" style="stroke:var(--pink)" />
+              <circle cx="112" cy="112" r="5" style="stroke:var(--pink)" />
+              <circle cx="128" cy="112" r="5" style="stroke:var(--pink)" />
+              <circle cx="144" cy="112" r="5" style="stroke:var(--pink)" />
+              <line x1="104" y1="130" x2="154" y2="130" style="stroke:var(--pink)" />
+              <path d="M86 78 L94 94" stroke-dasharray="1 6" />
+            </svg>
+          </div>
+        </div>
+
+        <!-- STEP: white label -->
+        <div class="step reveal">
+          <div class="step-index mono"></div>
+          <div class="step-body">
+            <h3>White label the user interface</h3>
+            <p>Clone the web interface at https://github.com/gounmanned/unmanned.team and follow the steps to white label the UI. You can apply your own branding, colors, logos and adjust any part of the experience. When you're done, you can run it locally or deploy it on your own infrastructure.</p>
+            <p>Or, if you prefer to stay out of the UI, get to know the API.</p>
+          </div>
+          <div class="step-media">
+            <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+              <svg class="step-icon" viewBox="0 0 180 180" style="stroke:var(--ink);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round" aria-hidden="true">
+                <rect x="18" y="30" width="144" height="106" />
+                <line x1="18" y1="50" x2="162" y2="50" />
+                <circle cx="30" cy="40" r="2.2" style="fill:var(--ink);stroke:none" />
+                <circle cx="39" cy="40" r="2.2" style="fill:var(--ink);stroke:none" />
+                <circle cx="48" cy="40" r="2.2" style="fill:var(--ink);stroke:none" />
+                <rect x="32" y="62" width="46" height="12" />
+                <rect x="32" y="82" width="98" height="8" />
+                <rect x="32" y="96" width="98" height="8" />
+                <rect x="32" y="110" width="70" height="8" />
+                <circle cx="132" cy="118" r="16" style="stroke:var(--pink)" />
+                <circle cx="144" cy="105" r="10" style="stroke:var(--pink)" />
+                <circle cx="150" cy="126" r="6.5" style="fill:var(--pink);stroke:none" />
+              </svg>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <div class="divider mono">
+    <span>DOC · V1</span>
+    <span>SUPPORT</span>
+  </div>
+
+  <!-- ============================================================
+       CONTACT
+       ============================================================ -->
+  <section class="contact-section" id="contact">
+    <div class="grid-bg" aria-hidden="true"></div>
+    <div class="wrap body-wrap">
+      <div class="eyebrow-row eyebrow-label mono"><span class="status-dot"></span>Stuck on a step?</div>
+      <h2 class="contact-statement">We'll get you<br>set up <span>ourselves.</span></h2>
+      <a class="contact-cta" href="mailto:go@unmanned.team?subject=Vex%20Partner%20Support">Talk to us <span class="arrow">→</span></a>
+    </div>
+  </section>
+
+  </main>
+
+  <footer class="mono">
+    <span class="fmark">UNMANNED</span>
+    <a href="https://gounmanned.substack.com/" target="_blank" rel="noopener noreferrer">READ OUR BLOG</a>
+  </footer>
+
+  <script>
+    (function(){
+      var els = document.querySelectorAll('.reveal');
+      if(!els.length){ return; }
+      var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if(!('IntersectionObserver' in window) || reduceMotion){
+        els.forEach(function(el){ el.classList.add('in-view'); });
+        return;
+      }
+      var io = new IntersectionObserver(function(entries){
+        entries.forEach(function(entry){
+          if(entry.isIntersecting){
+            entry.target.classList.add('in-view');
+            io.unobserve(entry.target);
+          }
+        });
+      }, { threshold:0, rootMargin:'0px 0px 150px 0px' });
+      els.forEach(function(el){ io.observe(el); });
+    })();
+  </script>
+</body>
+</html>

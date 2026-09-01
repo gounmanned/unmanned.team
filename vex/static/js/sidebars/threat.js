@@ -103,7 +103,6 @@ class ThreatSidebar {
         await SiteSpinner.withLoading(async () => {
             Workspace.sidebars.signal.reset();
             Workspace.sidebars.signal.inject(signal, await this.state.api.signals.get(signal.id));
-            document.querySelector('site-overlay').click();
             document.getElementById('signal-sidebar').show();
         });
     }

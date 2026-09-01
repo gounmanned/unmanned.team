@@ -154,6 +154,7 @@ class Workspace {
     }
 
     static get sidebars() {
+        document.querySelector('site-overlay').click();
         return Workspace.#instance?.sidebars;
     }
 }

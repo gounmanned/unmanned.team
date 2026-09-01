@@ -6,6 +6,7 @@ class ThreatSidebar {
         this.list = document.getElementById('threat-list');
         this.wrap = document.getElementById('threat-list-wrap');
         this.search = document.getElementById('threat-search');
+        this.callout = document.getElementById('threats-callout');
         this.search.addEventListener('input', () => this.filter(this.search.value));
     }
 
@@ -19,6 +20,7 @@ class ThreatSidebar {
         this.threats.forEach(threat => this.add(threat));
         this.wrap.classList.toggle('empty', this.threats.length === 0);
         this.wrap.classList.remove('no-results');
+        this.hits();
     }
 
     async pages() {
@@ -63,6 +65,17 @@ class ThreatSidebar {
         });
 
         this.wrap.classList.toggle('no-results', this.threats.length > 0 && visible === 0);
+    }
+
+    hits() {
+        const names = new Set(
+            Object.values(this.state.signals[this.state.account()] || {})
+                .filter(s => s.source === 'threat')
+                .map(s => s.name)
+        );
+
+        this.callout.hidden = names.size === 0;
+        this.callout.querySelector('.threats-callout-names').textContent = [...names].join(', ');
     }
 
     formatTime(ts) {

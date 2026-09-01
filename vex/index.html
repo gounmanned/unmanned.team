@@ -110,19 +110,18 @@
         <span class="material-symbols-outlined monitor-arrow">chevron_right</span>
       </div>
 
-      <!-- AUDIT CARD -->
-      <div class="audit-card panel-card" id="open-audit-rollup">
-        <span class="alarm-tab" id="audit-alarm-tab"></span>
+      <!-- THREAT CARD -->
+      <div class="threat-card panel-card" id="open-threat-sidebar">
+        <span class="alarm-tab" id="threat-alarm-tab"></span>
         <div class="corner-accent">
-          <span class="material-symbols-outlined">history</span>
+          <span class="material-symbols-outlined">gpp_maybe</span>
         </div>
-        <div class="monitor-label">SIEM logs</div>
+        <div class="monitor-label">Active threats</div>
         <div class="monitor-body">
-          <div class="monitor-value" id="audit-count"></div>
+          <div class="monitor-value" id="threat-count"></div>
           <div class="monitor-breakdown">
             <span class="monitor-breakdown-item">
-              <span class="material-symbols-outlined">history</span>
-              <span>past 1 hour</span>
+              <span class="monitor-breakdown-count" id="monitors-threat-total"></span>  attacks today
             </span>
           </div>
         </div>
@@ -158,7 +157,7 @@
       </div>
 
       <a id="open-risk-sidebar">Accepted Risks</a>
-      <a id="open-threat-sidebar">Recent Threats</a>
+      <a id="open-audit-rollup">SIEM Logs</a>
       <a id="open-backup-sidebar">File Backups</a>
       <a id="open-signal-sidebar" class="cta">Add Signal</a>
     </footer>
@@ -516,15 +515,22 @@
       <div class="threats-banner-row">
         <span class="material-symbols-outlined threats-banner-icon">shield_person</span>
         <div class="threats-banner-text">
-          <div class="threats-banner-title">Known threats</div>
+          <div class="threats-banner-title">Active threats</div>
           <div class="threats-banner-desc">Vex tracks threat actors targeting your account.</div>
         </div>
+      </div>
+    </div>
+    
+    <div class="threats-callout" id="threats-callout" hidden>
+      <span class="material-symbols-outlined threats-callout-icon">warning</span>
+      <div class="threats-callout-text">
+          <div class="threats-callout-names"></div>
       </div>
     </div>
 
     <div class="threat-search-wrap">
       <span class="material-symbols-outlined threat-search-icon">search</span>
-      <input type="text" id="threat-search" class="threat-search-input" placeholder="Search threats..." autocomplete="off">
+      <input type="text" id="threat-search" class="threat-search-input" placeholder="Search threats from last 24 hours" autocomplete="off">
     </div>
 
     <div class="container" id="threat-list-wrap">

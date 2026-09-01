@@ -1,0 +1,85 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+<style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap');
+      .head { font-family: 'Space Grotesk', Arial, sans-serif; font-weight: 700; }
+      .brand { font-family: 'Space Grotesk', Arial, sans-serif; font-weight: 600; }
+      .body { font-family: 'Inter', Helvetica, sans-serif; font-weight: 400; }
+</style>
+<pattern id="grid" width="44" height="44" patternUnits="userSpaceOnUse">
+<path d="M 44 0 L 0 0 0 44" fill="none" stroke="rgba(11,12,13,0.045)" stroke-width="1"/>
+</pattern>
+</defs>
+
+<!-- base -->
+<rect width="1200" height="630" fill="#fcfcfa"/>
+<rect width="1200" height="630" fill="url(#grid)"/>
+
+<!-- corner reticle -->
+<g stroke="#0b0c0d" stroke-opacity="0.75" stroke-width="2.25" fill="none">
+<path d="M 40 78 L 40 40 L 78 40"/>
+<path d="M 1122 40 L 1160 40 L 1160 78"/>
+<path d="M 40 552 L 40 590 L 78 590"/>
+<path d="M 1160 552 L 1160 590 L 1122 590"/>
+</g>
+
+<!-- brand mark -->
+<circle cx="70" cy="112" r="5" fill="#e01280"/>
+<text x="84" y="119" class="brand" font-size="21" letter-spacing="0.03em" fill="#0b0c0d">Vex</text>
+
+<!-- title -->
+<text x="68" y="232" class="head" font-size="72" letter-spacing="-0.01em" fill="#0b0c0d">Breach Scenario</text>
+
+<!-- description (5 lines) -->
+<g class="body" font-size="22" fill="#2b2b2b">
+<text x="70" y="296">Every day, Vex correlates every signal, misconfig, and</text>
+<text x="70" y="332">exposed weakness across the account into a live attack</text>
+<text x="70" y="368">graph, then simulates how an adversary would chain</text>
+<text x="70" y="404">them together — surfacing the single most probable</text>
+<text x="70" y="440">path to breach before anyone else finds it.</text>
+</g>
+
+<!-- icon: signal graph with highlighted attack path to a breach point, plus recurring-scan badge -->
+<g transform="translate(945,270)">
+<circle r="86" fill="none" stroke="#6c6c70" stroke-width="1.5" stroke-dasharray="4 7" opacity="0.6"/>
+<circle r="86" fill="none" stroke="#e01280" stroke-width="1.5" stroke-dasharray="4 7" opacity="0.4"
+transform="rotate(35)"/>
+
+<!-- background signals: broader graph, low-signal / not on the critical path -->
+<g stroke="#6c6c70" stroke-width="1.5" stroke-dasharray="2 4" opacity="0.55">
+<line x1="-55" y1="8" x2="-52" y2="-30"/>
+<line x1="-55" y1="8" x2="-18" y2="-46"/>
+<line x1="-6" y1="42" x2="14" y2="-20"/>
+<line x1="-6" y1="42" x2="-52" y2="-30"/>
+<line x1="32" y1="-42" x2="-18" y2="-46"/>
+<line x1="32" y1="-42" x2="14" y2="-20"/>
+</g>
+<g fill="#fcfcfa" stroke="#6c6c70" stroke-width="2">
+<circle cx="-55" cy="8" r="5"/>
+<circle cx="-6" cy="42" r="5"/>
+<circle cx="32" cy="-42" r="5"/>
+</g>
+
+<!-- highlighted attack path: chained weaknesses leading to the breach point -->
+<path d="M -52,-30 L -18,-46 L 14,-20 L 46,18" fill="none" stroke="#e01280" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<g fill="#fcfcfa" stroke="#e01280" stroke-width="3">
+<circle cx="-52" cy="-30" r="7"/>
+<circle cx="-18" cy="-46" r="7"/>
+<circle cx="14" cy="-20" r="7"/>
+</g>
+
+<!-- breach point: bullseye -->
+<g transform="translate(46,18)">
+<circle r="16" fill="none" stroke="#e01280" stroke-width="2"/>
+<circle r="9" fill="none" stroke="#e01280" stroke-width="2"/>
+<circle r="3" fill="#e01280"/>
+</g>
+
+<!-- recurring daily-scan badge -->
+<g transform="translate(55,56)">
+<circle r="25" fill="#fcfcfa" stroke="#e01280" stroke-width="1.5"/>
+<path d="M 8,-2 A 9,9 0 1 1 2,-8.7" fill="none" stroke="#e01280" stroke-width="2.2" stroke-linecap="round"/>
+<path d="M 2,-8.7 L 6.4,-9.6 L 4.3,-4.4 Z" fill="#e01280"/>
+</g>
+</g>
+</svg>

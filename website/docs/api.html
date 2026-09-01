@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="apple-touch-icon" href="https://cdn.unmanned.team/img/logo.png">
+<link rel="icon" type="image/png" href="https://cdn.unmanned.team/img/logo.png">
+<title>Unmanned | Docs | API</title>
+<meta name="description" content="Every Vex endpoint: monitors, signals, and alerts. Base URL, auth, and the actual request bodies.">
+<meta property="og:title" content="Vex: API Reference" />
+<meta property="og:description" content="Every Vex endpoint: monitors, signals, and alerts. Base URL, auth, and the actual request bodies." />
+<meta property="og:url" content="https://vex.unmanned.team/api" />
+<meta property="og:type" content="website" />
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Space+Grotesk:wght@700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+:root{
+  --paper:#f4f5f2;
+  --paper-2:#eceae4;
+  --ink:#12131a;
+  --muted:#6b6e76;
+  --line:#dcdbd5;
+  --blood:#b3242f;
+  --neon:#e31c79;
+  --go:#16b378;
+  --max:1120px;
+  --header-h:64px;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:Inter,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+a{color:inherit}
+.mono{font-family:"IBM Plex Mono",monospace}
+.display{font-family:"Bebas Neue",Impact,sans-serif}
+.wrap{width:min(var(--max),calc(100% - 40px));margin:auto;position:relative;z-index:1}
+
+.grain{position:fixed;inset:-10%;z-index:40;pointer-events:none;opacity:.05;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  background-size:140px 140px;
+}
+
+/* Header */
+header{
+  height:var(--header-h);display:flex;align-items:center;
+  border-bottom:1px solid var(--line);
+  background:rgba(244,245,242,.9);
+  backdrop-filter:blur(10px);
+  position:sticky;top:0;z-index:50;
+  transition:box-shadow .2s ease;
+}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:24px}
+.logo{display:flex;align-items:center;gap:8px;font:700 20px/1 "Space Grotesk",sans-serif;letter-spacing:-.04em;text-decoration:none;color:var(--ink);flex:0 0 auto}
+.logo i{width:7px;height:7px;border-radius:50%;background:var(--neon);display:block}
+.nav-links{display:flex;align-items:center;gap:28px;flex:0 0 auto}
+.nav-links a{font-size:11.5px;font-weight:600;text-decoration:none;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.nav-links a:hover{color:var(--ink)}
+.nav-links a.current{color:var(--ink)}
+
+.kicker{display:flex;align-items:center;gap:9px;margin-bottom:16px;color:var(--muted);font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase}
+.kicker i{width:7px;height:7px;border-radius:50%;background:var(--neon);display:block;flex-shrink:0}
+
+/* API hero */
+.api-hero{padding:88px 0 56px;border-bottom:1px solid var(--line)}
+.api-hero h1{margin:0 0 20px;font:400 clamp(42px,7vw,80px)/1.02 "Bebas Neue",Impact,sans-serif;letter-spacing:.005em;text-transform:uppercase;color:var(--ink)}
+.api-hero-copy{max-width:600px;margin:0 0 28px;color:#4b4c52;font-size:16.5px;line-height:1.75}
+.base-url{display:inline-flex;align-items:center;gap:10px;padding:12px 18px;background:var(--paper-2);border:1px solid var(--line);border-radius:4px;font:500 13.5px "IBM Plex Mono",monospace;color:var(--ink);margin-bottom:28px}
+.base-url span{color:var(--muted);font-size:10px;letter-spacing:.12em;text-transform:uppercase;font-weight:600}
+
+/* Sections */
+.api-section{padding:64px 0;border-bottom:1px solid var(--line)}
+.api-section:last-of-type{border-bottom:none}
+.api-section-head h2{margin:0;font:400 clamp(28px,4vw,40px)/1.05 "Bebas Neue",Impact,sans-serif;letter-spacing:.005em;text-transform:uppercase;color:var(--ink)}
+.api-section-intro{max-width:640px;margin:14px 0 0;color:#4b4c52;font-size:15.5px;line-height:1.75}
+
+/* Endpoints */
+.endpoint{margin-top:44px;padding-top:40px;border-top:1px solid var(--line)}
+.endpoint:first-of-type{margin-top:36px;padding-top:0;border-top:none}
+.endpoint-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.method-pill{font:700 11px "IBM Plex Mono",monospace;letter-spacing:.06em;padding:4px 10px;border-radius:3px;text-transform:uppercase;color:#fff;flex-shrink:0}
+.method-pill.get{background:var(--go)}
+.method-pill.post{background:var(--neon)}
+.method-pill.delete{background:var(--blood)}
+.endpoint-path{font:600 15.5px "IBM Plex Mono",monospace;color:var(--ink)}
+.status-code{margin-left:auto;font:500 11px "IBM Plex Mono",monospace;color:var(--muted)}
+.endpoint-desc{max-width:660px;color:var(--muted);font-size:14.5px;line-height:1.75;margin:0 0 8px}
+.endpoint-desc code{font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--neon);background:rgba(227,28,121,.07);padding:1px 5px;border-radius:2px}
+
+/* Param tables */
+.param-table{width:100%;max-width:760px;border-collapse:collapse;margin:20px 0 4px;font-size:13px}
+.param-table th{text-align:left;font:600 10px "IBM Plex Mono",monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:8px 16px 8px 0;border-bottom:1px solid var(--line)}
+.param-table td{padding:11px 16px 11px 0;border-bottom:1px solid var(--line);vertical-align:top;color:#4b4c52;line-height:1.5}
+.param-table td:first-child{font-family:"IBM Plex Mono",monospace;color:var(--ink);font-weight:600;white-space:nowrap}
+.param-table td.type{color:var(--muted);white-space:nowrap;font-family:"IBM Plex Mono",monospace;font-size:12px}
+.req{color:var(--neon);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.opt{color:var(--muted);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+
+/* Code blocks (shared with the main site) */
+.code-block{margin-top:18px;border:1px solid var(--line);border-radius:4px;overflow:hidden;background:#fff;box-shadow:0 1px 2px rgba(18,19,26,.04);max-width:760px}
+.code-block + .code-block{margin-top:12px}
+.code-pair{display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:none}
+.code-pair .code-block{max-width:none}
+.code-header{display:flex;align-items:center;justify-content:space-between;padding:9px 18px;border-bottom:1px solid var(--line);background:var(--paper-2)}
+.code-filename{font:600 11.5px/1 "IBM Plex Mono",monospace;color:var(--ink);letter-spacing:.04em}
+.code-lang{font:600 9px/1 "IBM Plex Mono",monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--neon);opacity:.75}
+.code-block pre{margin:0;padding:18px 20px;overflow-x:auto;font-family:"IBM Plex Mono",monospace;font-size:12.5px;line-height:1.7;color:var(--ink);tab-size:2}
+.code-block pre::-webkit-scrollbar{height:3px}
+.code-block pre::-webkit-scrollbar-thumb{background:var(--line)}
+.t-kw{color:#c11868}
+.t-str{color:#0d8f5f}
+.t-cmnt{color:rgba(18,19,26,.42);font-style:italic}
+.t-fn{color:#2f5f96}
+.t-num{color:#a97815}
+.t-key{color:#7a3fc4}
+
+.aside-note{max-width:660px;margin-top:16px;color:var(--muted);font-size:13.5px;line-height:1.7;font-style:italic}
+
+/* Callouts */
+.callout{margin-top:28px;padding:20px 22px;background:var(--paper-2);border:1px solid var(--line);border-left:3px solid var(--neon);border-radius:4px;max-width:760px}
+.callout-title{display:flex;align-items:center;gap:8px;font:700 11px "IBM Plex Mono",monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);margin-bottom:10px}
+.callout-title i{width:7px;height:7px;border-radius:50%;background:var(--neon);display:block;flex-shrink:0}
+.callout p{margin:0 0 10px;color:#4b4c52;font-size:14px;line-height:1.7}
+.callout p:last-child{margin-bottom:0}
+.callout code{font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--neon);background:rgba(227,28,121,.07);padding:1px 5px;border-radius:2px}
+
+/* Errors table section */
+.error-row{display:flex;gap:20px;padding:16px 0;border-top:1px solid var(--line);align-items:baseline}
+.error-row:first-child{border-top:none}
+.error-code{font:600 15px "IBM Plex Mono",monospace;color:var(--ink);min-width:64px;flex-shrink:0}
+.error-desc{color:var(--muted);font-size:14px;line-height:1.6}
+
+/* Footer */
+footer{padding:20px 0;background:var(--ink);border-top:1px solid #26262a;color:#66666b;font-size:10px}
+.footer{display:flex;justify-content:space-between;gap:20px}
+.footer a{color:#88888d;text-decoration:none}
+.footer a:hover{color:#fff}
+
+@media(max-width:860px){
+  .nav-links{display:none}
+  .code-pair{grid-template-columns:1fr}
+}
+@media(max-width:560px){
+  .wrap{width:min(var(--max),calc(100% - 28px))}
+  .api-hero{padding:64px 0 40px}
+  .api-section{padding:44px 0}
+  .endpoint-head{gap:10px}
+  .status-code{margin-left:0;width:100%}
+}
+</style>
+</head>
+<body>
+
+<div class="grain" aria-hidden="true"></div>
+
+<header>
+  <div class="wrap nav">
+    <a class="logo" href="index.html"><i></i>Vex</a>
+    <nav class="nav-links">
+      <a href="index.html#threat">Threat</a>
+      <a href="index.html#stakeout">Monitors</a>
+      <a href="index.html#setup">Setup</a>
+      <a href="index.html#signal">Signal</a>
+      <a href="index.html#tipoff">Alerts</a>
+      <a href="api.html" class="current">API</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <section class="api-hero">
+    <div class="wrap">
+      <div class="kicker"><i></i>For developers</div>
+      <h1>The actual API.</h1>
+      <p class="api-hero-copy">Everything from the previous page, minus the doors and the dramatic lighting. Resource groups, a handful of endpoints, and none of them require you to believe in metaphors.</p>
+      <div class="base-url"><span>Base URL</span> https://us.unmanned.team</div>
+    </div>
+  </section>
+
+  <!-- AUTHENTICATION -->
+  <section class="api-section" id="auth">
+    <div class="wrap">
+      <div class="api-section-head"><h2>Authentication</h2></div>
+      <p class="api-section-intro">Two steps: trade a client ID and secret for a token, then send that token on everything else. Nothing exotic — a standard client-credentials exchange.</p>
+
+      <div class="endpoint" id="post-auth-token">
+        <div class="endpoint-head">
+          <span class="method-pill post">POST</span>
+          <span class="endpoint-path">/auth/token</span>
+          <span class="status-code">200 OK</span>
+        </div>
+        <p class="endpoint-desc">Exchanges a client ID and secret for a bearer token. Email <code class="mono">go@unmanned.team</code> to get credentials if you don't have them yet — this is the first call you'll ever make.</p>
+        <table class="param-table">
+          <tr><th>Parameter</th><th>In</th><th>Type</th><th></th><th>Description</th></tr>
+          <tr><td>client_id</td><td class="type">body</td><td class="type">string</td><td><span class="req">Required</span></td><td>Identifies your workspace.</td></tr>
+          <tr><td>client_secret</td><td class="type">body</td><td class="type">string</td><td><span class="req">Required</span></td><td>Keep this out of client-side code. Same rules as any other secret.</td></tr>
+        </table>
+        <div class="code-pair">
+          <div class="code-block">
+            <div class="code-header"><span class="code-filename">request</span><span class="code-lang">Shell</span></div>
+            <pre><code><span class="t-fn">curl</span> -X POST https://us.unmanned.team/auth/token \
+  -H <span class="t-str">"Content-Type: application/json"</span> \
+  -d <span class="t-str">'{"client_id":"$CLIENT_ID","client_secret":"$CLIENT_SECRET"}'</span></code></pre>
+          </div>
+          <div class="code-block">
+            <div class="code-header"><span class="code-filename">response</span><span class="code-lang">JSON</span></div>
+            <pre><code>{
+  <span class="t-key">"access_token"</span>: <span class="t-str">"eyJhbGciOi..."</span>,
+  <span class="t-key">"token_type"</span>: <span class="t-str">"bearer"</span>,
+  <span class="t-key">"expires_in"</span>: <span class="t-num">3600</span>
+}</code></pre>
+          </div>
+        </div>
+        <p class="aside-note">Tokens are short-lived on purpose. Cache one until it's within a few minutes of expiring, then call this again — don't request a fresh token on every API call.</p>
+      </div>
+
+      <div class="endpoint" id="use-auth-token">
+        <div class="endpoint-head">
+          <span class="endpoint-path">Using the token</span>
+        </div>
+        <p class="endpoint-desc">Every other request in this reference carries that token as a bearer header. Scoped to one workspace — no per-request signing, no separate keys per endpoint.</p>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="code-filename">auth-header.sh</span>
+            <span class="code-lang">Shell</span>
+          </div>
+          <pre><code><span class="t-fn">curl</span> https://us.unmanned.team/monitor \
+  -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span></code></pre>
+        </div>
+        <p class="aside-note">Tokens expire on their own; there's no need to rotate them by hand. Rotate the underlying client secret if it ever leaks.</p>
+      </div>
+
+      <div class="endpoint" id="account-delegation">
+        <div class="endpoint-head">
+          <span class="endpoint-path">Delegating into an account</span>
+        </div>
+        <p class="endpoint-desc">By default every call in this reference runs against your root tenant account — the one tied to your own account domain. If you manage other accounts, you can redirect any call to one of them.</p>
+        <div class="callout">
+          <div class="callout-title"><i></i>Account header</div>
+          <p>Pass an <code>account</code> header on any request in this doc and Vex delegates that call into the named account instead of your root tenant. Accounts are named after domains — <code>example.com</code>, not an internal ID.</p>
+          <p>You need permission to manage the account you're delegating into. Omit the header and everything runs against your own account domain, same as always.</p>
+        </div>
+        <table class="param-table">
+          <tr><th>Header</th><th>In</th><th>Type</th><th></th><th>Description</th></tr>
+          <tr><td>account</td><td class="type">header</td><td class="type">string, domain</td><td><span class="opt">Optional</span></td><td>The customer account to delegate into, e.g. <code class="mono">example.com</code>. Requires permission on that account. Omit to run against your root tenant.</td></tr>
+        </table>
+        <div class="code-block">
+          <div class="code-header"><span class="code-filename">delegate.sh</span><span class="code-lang">Shell</span></div>
+          <pre><code><span class="t-cmnt"># Runs against example.com instead of your own account</span>
+<span class="t-fn">curl</span> https://us.unmanned.team/monitor \
+  -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span> \
+  -H <span class="t-str">"account: example.com"</span></code></pre>
+        </div>
+        <p class="aside-note">This applies to every endpoint in this reference the same way — monitors, signals, assets, files, all of it. One header, no separate delegated tokens to manage.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SIGNALS -->
+  <section class="api-section" id="signals">
+    <div class="wrap">
+      <div class="api-section-head"><h2>Signals</h2></div>
+      <p class="api-section-intro">Everything a monitor noticed, and whether Vex thinks it's part of something bigger. This is the part that actually finds the way in.</p>
+
+      <div class="endpoint" id="get-signal">
+        <div class="endpoint-head">
+          <span class="method-pill get">GET</span>
+          <span class="endpoint-path">/signal</span>
+          <span class="status-code">200 OK</span>
+        </div>
+        <p class="endpoint-desc">Every signal Vex has collected, newest first. Query params exist so you don't have to scroll forever.</p>
+        <table class="param-table">
+          <tr><th>Parameter</th><th>In</th><th>Type</th><th></th><th>Description</th></tr>
+          <tr><td>since</td><td class="type">query</td><td class="type">string, ISO 8601</td><td><span class="opt">Optional</span></td><td>Only return signals detected after this timestamp.</td></tr>
+          <tr><td>monitor</td><td class="type">query</td><td class="type">string</td><td><span class="opt">Optional</span></td><td>Filter to one monitor's signals.</td></tr>
+          <tr><td>severity</td><td class="type">query</td><td class="type">info, warn, critical</td><td><span class="opt">Optional</span></td><td>Filter by how worried you should be.</td></tr>
+        </table>
+        <div class="code-block">
+          <div class="code-header"><span class="code-filename">response</span><span class="code-lang">JSON</span></div>
+          <pre><code>[
+  {
+    <span class="t-key">"id"</span>: <span class="t-str">"sig_8f2a1c"</span>,
+    <span class="t-key">"monitor"</span>: <span class="t-str">"google"</span>,
+    <span class="t-key">"type"</span>: <span class="t-str">"login.new_location"</span>,
+    <span class="t-key">"severity"</span>: <span class="t-str">"warn"</span>,
+    <span class="t-key">"detected_at"</span>: <span class="t-str">"2026-08-27T22:04:12Z"</span>,
+    <span class="t-key">"summary"</span>: <span class="t-str">"Login for jsmith@acmecorp.com from a new country"</span>
+  },
+  {
+    <span class="t-key">"id"</span>: <span class="t-str">"sig_9b0e77"</span>,
+    <span class="t-key">"monitor"</span>: <span class="t-str">"microsoft"</span>,
+    <span class="t-key">"type"</span>: <span class="t-str">"mfa.disabled"</span>,
+    <span class="t-key">"severity"</span>: <span class="t-str">"critical"</span>,
+    <span class="t-key">"detected_at"</span>: <span class="t-str">"2026-08-27T22:06:03Z"</span>,
+    <span class="t-key">"summary"</span>: <span class="t-str">"MFA disabled for an admin account"</span>
+  }
+]</code></pre>
+        </div>
+      </div>
+
+      <div class="endpoint" id="get-signal-id">
+        <div class="endpoint-head">
+          <span class="method-pill get">GET</span>
+          <span class="endpoint-path">/signal/{id}</span>
+          <span class="status-code">200 OK</span>
+        </div>
+        <p class="endpoint-desc">The full detail on one signal, including whatever else it got chained to.</p>
+        <div class="code-block">
+          <div class="code-header"><span class="code-filename">response</span><span class="code-lang">JSON</span></div>
+          <pre><code>{
+  <span class="t-key">"id"</span>: <span class="t-str">"sig_9b0e77"</span>,
+  <span class="t-key">"monitor"</span>: <span class="t-str">"microsoft"</span>,
+  <span class="t-key">"type"</span>: <span class="t-str">"mfa.disabled"</span>,
+  <span class="t-key">"severity"</span>: <span class="t-str">"critical"</span>,
+  <span class="t-key">"detected_at"</span>: <span class="t-str">"2026-08-27T22:06:03Z"</span>,
+  <span class="t-key">"summary"</span>: <span class="t-str">"MFA disabled for an admin account"</span>,
+  <span class="t-key">"related_signals"</span>: [<span class="t-str">"sig_8f2a1c"</span>, <span class="t-str">"sig_a114f0"</span>],
+  <span class="t-key">"chain_status"</span>: <span class="t-str">"way_in_detected"</span>
+}</code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- THREAT -->
+  <section class="api-section" id="threat">
+    <div class="wrap">
+      <div class="api-section-head"><h2>Threat</h2></div>
+      <p class="api-section-intro">The "nothing personal" part, quantified. A running count of the automated noise currently aimed at your business, whether or not any of it went anywhere.</p>
+
+      <div class="endpoint" id="get-threat">
+        <div class="endpoint-head">
+          <span class="method-pill get">GET</span>
+          <span class="endpoint-path">/threat</span>
+          <span class="status-code">200 OK</span>
+        </div>
+        <p class="endpoint-desc">A live summary of attempts against your business over a given window: how many, what kind, and where they were aimed. Nobody researched you specifically; this is the receipts.</p>
+        <table class="param-table">
+          <tr><th>Parameter</th><th>In</th><th>Type</th><th></th><th>Description</th></tr>
+          <tr><td>window</td><td class="type">query</td><td class="type">1h, 24h, 7d</td><td><span class="opt">Optional</span></td><td>How far back to look. Defaults to <code class="mono">24h</code>.</td></tr>
+        </table>
+        <div class="code-block">
+          <div class="code-header"><span class="code-filename">response</span><span class="code-lang">JSON</span></div>
+          <pre><code>{
+  <span class="t-key">"window"</span>: <span class="t-str">"24h"</span>,
+  <span class="t-key">"attempts"</span>: <span class="t-num">1842</span>,
+  <span class="t-key">"blocked"</span>: <span class="t-num">1842</span>,
+  <span class="t-key">"top_vector"</span>: <span class="t-str">"credential_stuffing"</span>,
+  <span class="t-key">"top_target"</span>: <span class="t-str">"email"</span>,
+  <span class="t-key">"last_attempt_at"</span>: <span class="t-str">"2026-08-31T03:14:00Z"</span>
+}</code></pre>
+        </div>
+        <p class="aside-note">"Blocked" means it never got past the front door. It does not mean nobody tried the handle.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- MONITORS -->
+  <section class="api-section" id="monitors">
+    <div class="wrap">
+      <div class="api-section-head"><h2>Monitors</h2></div>
+      <p class="api-section-intro">Connect, check, and disconnect the things watching your business. Slugs match the site: <code class="mono">google</code>, <code class="mono">microsoft</code>, <code class="mono">aws</code>, <code class="mono">cloudflare</code>, <code class="mono">level</code>, <code class="mono">shopify</code>, <code class="mono">quickbooks</code>, <code class="mono">hubspot</code>, <code class="mono">constant-contact</code>, <code class="mono">slack</code>, <code class="mono">squarespace</code>, and the many more we didn't have room to list here either.</p>
+
+      <div class="endpoint" id="get-monitor">
+        <div class="endpoint-head">
+          <span class="method-pill get">GET</span>
+          <span class="endpoint-path">/monitor</span>
+          <span class="status-code">200 OK</span>
+        </div>
+        <p class="endpoint-desc">Lists every monitor currently connected to your account. This is the "yes, it's still working" button.</p>
+        <div class="code-block">
+          <div class="code-header"><span class="code-filename">response</span><span class="code-lang">JSON</span></div>
+          <pre><code>[
+  {
+    <span class="t-key">"name"</span>: <span class="t-str">"google"</span>,
+    <span class="t-key">"status"</span>: <span class="t-str">"active"</span>,
+    <span class="t-key">"connected_at"</span>: <span class="t-str">"2026-06-02T14:11:00Z"</span>,
+    <span class="t-key">"last_signal_at"</span>: <span class="t-str">"2026-08-27T22:04:12Z"</span>
+  },
+  {
+    <span class="t-key">"name"</span>: <span class="t-str">"slack"</span>,
+    <span class="t-key">"status"</span>: <span class="t-str">"active"</span>,
+    <span class="t-key">"connected_at"</span>: <span class="t-str">"2026-06-02T14:12:40Z"</span>,
+    <span class="t-key">"last_signal_at"</span>: <span class="t-kw">null</span>
+  }
+]</code></pre>
+        </div>
+      </div>
+
+      <div class="endpoint" id="post-monitor">
+        <div class="endpoint-head">
+          <span class="method-pill post">POST</span>
+          <span class="endpoint-path">/monitor/{name}</span>
+          <span class="status-code">201 Created</span>
+        </div>
+        <p class="endpoint-desc">Connects a new monitor. It wants credentials, not your firstborn.</p>
+        <table class="param-table">
+          <tr><th>Parameter</th><th>In</th><th>Type</th><th></th><th>Description</th></tr>
+          <tr><td>name</td><td class="type">path</td><td class="type">string</td><td><span class="req">Required</span></td><td>Monitor slug, e.g. <code class="mono">google</code> or <code class="mono">microsoft</code>.</td></tr>
+        </table>
+        <p class="aside-note">Body shape depends on the provider. The two most common patterns:</p>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="code-filename">connect-monitor.js</span>
+            <span class="code-lang">JavaScript</span>
+          </div>
+          <pre><code><span class="t-cmnt">// Google Workspace: service account JSON key</span>
+<span class="t-kw">await</span> <span class="t-fn">fetch</span>(<span class="t-str">`${BASE}/monitor/google`</span>, {
+  method: <span class="t-str">'POST'</span>,
+  headers, <span class="t-cmnt">// Authorization: Bearer &lt;token&gt;</span>
+  body: <span class="t-fn">JSON.stringify</span>({
+    type: <span class="t-str">'service_account'</span>,
+    project_id: <span class="t-str">'your-project-id'</span>,
+    private_key_id: <span class="t-str">'...'</span>,
+    private_key: <span class="t-str">'-----BEGIN RSA PRIVATE KEY-----\n...'</span>,
+    client_email: <span class="t-str">'vex@your-project.iam.gserviceaccount.com'</span>,
+  }),
+}).<span class="t-fn">then</span>(r => r.<span class="t-fn">json</span>());
+
+<span class="t-cmnt">// Microsoft 365: app registration credentials</span>
+<span class="t-kw">await</span> <span class="t-fn">fetch</span>(<span class="t-str">`${BASE}/monitor/microsoft`</span>, {
+  method: <span class="t-str">'POST'</span>,
+  headers,
+  body: <span class="t-fn">JSON.stringify</span>({
+    tenant_id:     <span class="t-str">'your-tenant-id'</span>,
+    client_id:     <span class="t-str">'your-app-client-id'</span>,
+    client_secret: <span class="t-str">'your-app-secret'</span>,
+  }),
+}).<span class="t-fn">then</span>(r => r.<span class="t-fn">json</span>());</code></pre>
+        </div>
+        <div class="code-block">
+          <div class="code-header"><span class="code-filename">response</span><span class="code-lang">JSON</span></div>
+          <pre><code>{
+  <span class="t-key">"name"</span>: <span class="t-str">"google"</span>,
+  <span class="t-key">"status"</span>: <span class="t-str">"active"</span>,
+  <span class="t-key">"connected_at"</span>: <span class="t-str">"2026-08-28T09:00:00Z"</span>
+}</code></pre>
+        </div>
+      </div>
+
+      <div class="endpoint" id="get-monitor-name">
+        <div class="endpoint-head">
+          <span class="method-pill get">GET</span>
+          <span class="endpoint-path">/monitor/{name}</span>
+          <span class="status-code">200 OK</span>
+        </div>
+        <p class="endpoint-desc">Status of a single monitor: when it connected, when it last checked in, and whether it's actively watching or having a moment.</p>
+        <div class="code-block">
+          <div class="code-header"><span class="code-filename">response</span><span class="code-lang">JSON</span></div>
+          <pre><code>{
+  <span class="t-key">"name"</span>: <span class="t-str">"google"</span>,
+  <span class="t-key">"status"</span>: <span class="t-str">"active"</span>,
+  <span class="t-key">"connected_at"</span>: <span class="t-str">"2026-06-02T14:11:00Z"</span>,
+  <span class="t-key">"last_signal_at"</span>: <span class="t-str">"2026-08-27T22:04:12Z"</span>,
+  <span class="t-key">"last_checked_at"</span>: <span class="t-str">"2026-08-28T08:59:47Z"</span>
+}</code></pre>
+        </div>
+      </div>
+
+      <div class="endpoint" id="delete-monitor">
+        <div class="endpoint-head">
+          <span class="method-pill delete">DELETE</span>
+          <span class="endpoint-path">/monitor/{name}</span>
+          <span class="status-code">204 No Content</span>
+        </div>
+        <p class="endpoint-desc">Disconnects a monitor. Vex stops watching that surface immediately. We'll miss it more than you will.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ASSETS -->
+  <section class="api-section" id="assets">
+    <div class="wrap">
+      <div class="api-section-head"><h2>Assets</h2></div>
+      <p class="api-section-intro">The inventory Vex has built of your business from the monitors you've connected: domains, identities, endpoints, whatever else showed up. This is what "surface" actually refers to everywhere else in this reference.</p>
+
+      <div class="endpoint" id="get-asset">
+        <div class="endpoint-head">
+          <span class="method-pill get">GET</span>
+          <span class="endpoint-path">/asset</span>
+          <span class="status-code">200 OK</span>
+        </div>
+        <p class="endpoint-desc">Every asset Vex currently knows about, across every connected monitor. No filtering needed to get the full picture — this is the full picture.</p>
+        <div class="code-block">
+          <div class="code-header"><span class="code-filename">response</span><span class="code-lang">JSON</span></div>
+          <pre><code>[
+  {
+    <span class="t-key">"id"</span>: <span class="t-str">"ast_2c91af"</span>,
+    <span class="t-key">"type"</span>: <span class="t-str">"identity"</span>,
+    <span class="t-key">"value"</span>: <span class="t-str">"jsmith@acmecorp.com"</span>,
+    <span class="t-key">"source"</span>: <span class="t-str">"google"</span>,
+    <span class="t-key">"first_seen_at"</span>: <span class="t-str">"2026-06-02T14:11:00Z"</span>
+  },
+  {
+    <span class="t-key">"id"</span>: <span class="t-str">"ast_77d0e1"</span>,
+    <span class="t-key">"type"</span>: <span class="t-str">"domain"</span>,
+    <span class="t-key">"value"</span>: <span class="t-str">"acmecorp.com"</span>,
+    <span class="t-key">"source"</span>: <span class="t-str">"cloudflare"</span>,
+    <span class="t-key">"first_seen_at"</span>: <span class="t-str">"2026-06-02T14:13:22Z"</span>
+  }
+]</code></pre>
+        </div>
+        <p class="aside-note">Assets accumulate as monitors connect and never get removed automatically — disconnect the monitor if one stops being relevant.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- BREACH -->
+  <section class="api-section" id="breach">
+    <div class="wrap">
+      <div class="api-section-head"><h2>Breach</h2></div>
+      <p class="api-section-intro">Scenarios built from your assets showing up in breach data — where the exposure came from, and what it actually touches on your side.</p>
+
+      <div class="endpoint" id="get-breach">
+        <div class="endpoint-head">
+          <span class="method-pill get">GET</span>
+          <span class="endpoint-path">/breach</span>
+          <span class="status-code">200 OK</span>
+        </div>
+        <p class="endpoint-desc">Every breach scenario Vex has assembled for your assets, newest first.</p>
+        <div class="code-block">
+          <div class="code-header"><span class="code-filename">response</span><span class="code-lang">JSON</span></div>
+          <pre><code>[
+  {
+    <span class="t-key">"id"</span>: <span class="t-str">"brc_44a9f0"</span>,
+    <span class="t-key">"source"</span>: <span class="t-str">"third_party_breach"</span>,
+    <span class="t-key">"breach_name"</span>: <span class="t-str">"vendorx-2024"</span>,
+    <span class="t-key">"breach_date"</span>: <span class="t-str">"2024-03-11"</span>,
+    <span class="t-key">"exposed_assets"</span>: [<span class="t-str">"ast_2c91af"</span>],
+    <span class="t-key">"exposed_fields"</span>: [<span class="t-str">"email"</span>, <span class="t-str">"password_hash"</span>]
+  }
+]</code></pre>
+        </div>
+        <p class="aside-note">A breach scenario doesn't mean the credential still works — just that it exists somewhere it shouldn't. Cross-reference against signals to see if anyone's tried it.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- NOTIFICATIONS -->
+  <section class="api-section" id="notifications">
+    <div class="wrap">
+      <div class="api-section-head"><h2>Notifications</h2></div>
+      <p class="api-section-intro">Not signals about your business — signals about Vex itself. Expired credentials, a monitor that stopped checking in, anything that means the watching has a gap in it.</p>
+
+      <div class="endpoint" id="get-notification">
+        <div class="endpoint-head">
+          <span class="method-pill get">GET</span>
+          <span class="endpoint-path">/notification</span>
+          <span class="status-code">200 OK</span>
+        </div>
+        <p class="endpoint-desc">Every open notification about your Vex setup: broken auth, a stalled monitor, anything worth fixing before it becomes a blind spot.</p>
+        <div class="code-block">
+          <div class="code-header"><span class="code-filename">response</span><span class="code-lang">JSON</span></div>
+          <pre><code>[
+  {
+    <span class="t-key">"id"</span>: <span class="t-str">"ntf_5e18c2"</span>,
+    <span class="t-key">"type"</span>: <span class="t-str">"monitor.auth_expired"</span>,
+    <span class="t-key">"severity"</span>: <span class="t-str">"warn"</span>,
+    <span class="t-key">"monitor"</span>: <span class="t-str">"microsoft"</span>,
+    <span class="t-key">"message"</span>: <span class="t-str">"App registration secret expired, reconnect to resume monitoring"</span>,
+    <span class="t-key">"created_at"</span>: <span class="t-str">"2026-08-30T11:02:00Z"</span>
+  }
+]</code></pre>
+        </div>
+        <p class="aside-note">These are about the plumbing, not the threat landscape — see Threat and Signals for that.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FILES -->
+  <section class="api-section" id="files">
+    <div class="wrap">
+      <div class="api-section-head"><h2>Files</h2></div>
+      <p class="api-section-intro">Reports, exports, and anything else Vex generates and hands back to you, organized into namespaces the same way you'd organize a directory tree.</p>
+
+      <div class="endpoint" id="get-file-namespace">
+        <div class="endpoint-head">
+          <span class="method-pill get">GET</span>
+          <span class="endpoint-path">/file/{namespace}</span>
+          <span class="status-code">200 OK</span>
+        </div>
+        <p class="endpoint-desc">Lists the files inside a namespace. <code class="mono">namespace</code> is optional — omit it to list from the root.</p>
+        <table class="param-table">
+          <tr><th>Parameter</th><th>In</th><th>Type</th><th></th><th>Description</th></tr>
+          <tr><td>namespace</td><td class="type">path</td><td class="type">string</td><td><span class="opt">Optional</span></td><td>Directory-style path, e.g. <code class="mono">reports/2026-08</code>. Omit for the root namespace.</td></tr>
+        </table>
+        <div class="code-block">
+          <div class="code-header"><span class="code-filename">response</span><span class="code-lang">JSON</span></div>
+          <pre><code>[
+  {
+    <span class="t-key">"name"</span>: <span class="t-str">"monthly-summary.pdf"</span>,
+    <span class="t-key">"namespace"</span>: <span class="t-str">"reports/2026-08"</span>,
+    <span class="t-key">"size_bytes"</span>: <span class="t-num">184320</span>,
+    <span class="t-key">"created_at"</span>: <span class="t-str">"2026-09-01T04:00:00Z"</span>
+  }
+]</code></pre>
+        </div>
+      </div>
+
+      <div class="endpoint" id="get-file-download">
+        <div class="endpoint-head">
+          <span class="method-pill get">GET</span>
+          <span class="endpoint-path">/file/{namespace}?name={file}</span>
+          <span class="status-code">301 Moved Permanently</span>
+        </div>
+        <p class="endpoint-desc">Downloads a specific file. Add the <code class="mono">name</code> query param and the response becomes a redirect instead of a listing.</p>
+        <table class="param-table">
+          <tr><th>Parameter</th><th>In</th><th>Type</th><th></th><th>Description</th></tr>
+          <tr><td>namespace</td><td class="type">path</td><td class="type">string</td><td><span class="opt">Optional</span></td><td>Directory-style path the file lives in.</td></tr>
+          <tr><td>name</td><td class="type">query</td><td class="type">string</td><td><span class="req">Required</span></td><td>The file name inside that namespace.</td></tr>
+        </table>
+        <div class="code-block">
+          <div class="code-header"><span class="code-filename">request</span><span class="code-lang">Shell</span></div>
+          <pre><code><span class="t-fn">curl</span> -L https://us.unmanned.team/file/reports/2026-08?name=monthly-summary.pdf \
+  -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span> \
+  -o monthly-summary.pdf</code></pre>
+        </div>
+        <p class="aside-note">The 301 points to a pre-signed, time-limited S3 URL that starts the download on its own — follow the redirect (<code class="mono">-L</code> in curl) rather than treating the 301 itself as an error.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- AUDIT -->
+  <section class="api-section" id="audit">
+    <div class="wrap">
+      <div class="api-section-head"><h2>Audit</h2></div>
+      <p class="api-section-intro">Raw SIEM log lines, for whoever needs to look at the actual record instead of Vex's take on it.</p>
+
+      <div class="endpoint" id="get-audit">
+        <div class="endpoint-head">
+          <span class="method-pill get">GET</span>
+          <span class="endpoint-path">/audit</span>
+          <span class="status-code">200 OK</span>
+        </div>
+        <p class="endpoint-desc">SIEM log entries collected across your connected monitors over the requested window.</p>
+        <table class="param-table">
+          <tr><th>Parameter</th><th>In</th><th>Type</th><th></th><th>Description</th></tr>
+          <tr><td>hours</td><td class="type">query</td><td class="type">integer</td><td><span class="opt">Optional</span></td><td>How many hours back to pull logs for. Defaults to <code class="mono">24</code>.</td></tr>
+        </table>
+        <div class="code-block">
+          <div class="code-header"><span class="code-filename">response</span><span class="code-lang">JSON</span></div>
+          <pre><code>[
+  {
+    <span class="t-key">"id"</span>: <span class="t-str">"aud_0f3b21"</span>,
+    <span class="t-key">"monitor"</span>: <span class="t-str">"google"</span>,
+    <span class="t-key">"event"</span>: <span class="t-str">"login.success"</span>,
+    <span class="t-key">"actor"</span>: <span class="t-str">"jsmith@acmecorp.com"</span>,
+    <span class="t-key">"ip"</span>: <span class="t-str">"203.0.113.42"</span>,
+    <span class="t-key">"logged_at"</span>: <span class="t-str">"2026-08-31T20:41:09Z"</span>
+  }
+]</code></pre>
+        </div>
+        <p class="aside-note">This is the unfiltered feed — expect volume. Use Signals if you want Vex's opinion on which of these lines actually matter.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ERRORS -->
+  <section class="api-section" id="errors">
+    <div class="wrap">
+      <div class="api-section-head"><h2>Errors</h2></div>
+      <p class="api-section-intro">Standard HTTP status codes, used the way they were intended. No custom error taxonomy to memorize.</p>
+      <div style="max-width:660px;margin-top:12px">
+        <div class="error-row"><span class="error-code mono">400</span><span class="error-desc">You sent something malformed. Read the error message; we tried to be nice about it.</span></div>
+        <div class="error-row"><span class="error-code mono">401</span><span class="error-desc">Missing or invalid token. See Authentication, above.</span></div>
+        <div class="error-row"><span class="error-code mono">404</span><span class="error-desc">That monitor, signal, asset, breach, notification, file, or namespace doesn't exist, or never did.</span></div>
+        <div class="error-row"><span class="error-code mono">429</span><span class="error-desc">Slow down. Or don't, and see what happens.</span></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap footer">
+    <span class="mono">VEX · BY UNMANNED</span>
+    <span><a href="mailto:go@unmanned.team">go@unmanned.team</a></span>
+  </div>
+</footer>
+
+<script>
+const header = document.querySelector('header');
+window.addEventListener('scroll', () => {
+  header.style.boxShadow = window.scrollY > 20 ? '0 1px 0 rgba(18,19,26,.06)' : 'none';
+}, { passive: true });
+</script>
+</body>
+</html>

@@ -1,3 +1,12 @@
+:root {
+  --alarm: #dc2626;
+  --alarm-border: rgba(220, 38, 38, 0.25);
+  --alarm-bg-subtle: rgba(220, 38, 38, 0.015);
+  --alarm-bg: rgba(220, 38, 38, 0.02);
+  --alarm-tint: rgba(220, 38, 38, 0.07);
+  --alarm-tint-icon: rgba(220, 38, 38, 0.08);
+}
+
 .top-panel {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -9,15 +18,13 @@
 .top-panel .inventory-card,
 .top-panel .monitors-card,
 .top-panel .audit-card,
-.top-panel .breach-today-card {
+.top-panel .breach-card {
   min-width: 0;
 }
 
-/** shared shell for the 3 secondary cards **/
+/** shared shell for all 4 top-panel cards **/
 
-.audit-card,
-.inventory-card,
-.monitors-card {
+.panel-card {
   cursor: pointer;
   position: relative;
   margin: 10px 0 5px;
@@ -29,35 +36,60 @@
   flex-direction: column;
   height: 96px;
   overflow: hidden;
-}
-
-/** breach card **/
-
-.breach-today-card {
-  cursor: pointer;
-  position: relative;
-  margin: 10px 0 5px;
-  padding: 10px 14px;
-  box-sizing: border-box;
-  border-radius: 10px;
-  border: 1px solid var(--gray-line);
-  display: flex;
-  flex-direction: column;
-  height: 96px;
-  overflow: hidden;
   transition: border-color 0.15s, background 0.15s;
-  /* no explicit background — matches .inventory-card / .monitors-card by default */
 }
 
-/** subtle alarm state **/
+/** breach card's own "scenario today" state **/
 
-.breach-today-card[data-state="active"] {
-  border-color: rgba(220, 38, 38, 0.25);
-  background: rgba(220, 38, 38, 0.015);
+.breach-card[data-state="active"] {
+  border-color: var(--alarm-border);
+  background: var(--alarm-bg-subtle);
 }
 
-.breach-today-card[data-state="active"] .monitor-label {
+.breach-card[data-state="active"] .monitor-label {
   color: #b91c1c;
+}
+
+/** generic alarm state — shared across all 4 cards, independent of breach's data-state **/
+
+.panel-card[data-alarm="true"] {
+  overflow: visible; /* let the tab poke above the border */
+  border-color: var(--alarm);
+  background: var(--alarm-bg);
+}
+
+.alarm-tab {
+  display: none;
+  position: absolute;
+  top: -9px;
+  right: 12px;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 9px;
+  border-radius: 5px;
+  background: var(--alarm);
+  color: #fff;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: calc(100% - 28px);
+  z-index: 3;
+  box-shadow: 0 1px 3px var(--alarm-border);
+}
+
+[data-alarm="true"] .alarm-tab {
+  display: inline-flex;
+}
+
+[data-alarm="true"] .corner-accent {
+  background: var(--alarm-tint-icon);
+}
+
+[data-alarm="true"] .corner-accent .material-symbols-outlined {
+  color: var(--alarm);
 }
 
 /** corner accent (visual aid) **/
@@ -89,17 +121,17 @@
 .inventory-card .corner-accent .material-symbols-outlined { color: var(--pink); }
 .monitors-card .corner-accent { background: rgba(59, 130, 246, 0.08); }
 .monitors-card .corner-accent .material-symbols-outlined { color: #3b82f6; }
-.breach-today-card .corner-accent { background: rgba(22, 163, 74, 0.07); }
-.breach-today-card .corner-accent .material-symbols-outlined { color: #16a34a; transition: color 0.15s; }
+.breach-card .corner-accent { background: rgba(22, 163, 74, 0.07); }
+.breach-card .corner-accent .material-symbols-outlined { color: #16a34a; transition: color 0.15s; }
 .audit-card .corner-accent { background: rgba(217, 119, 6, 0.08); }
 .audit-card .corner-accent .material-symbols-outlined { color: #d97706; }
 
-.breach-today-card[data-state="active"] .corner-accent {
-  background: rgba(220, 38, 38, 0.07);
+.breach-card[data-state="active"] .corner-accent {
+  background: var(--alarm-tint);
 }
 
-.breach-today-card[data-state="active"] .corner-accent .material-symbols-outlined {
-  color: #dc2626;
+.breach-card[data-state="active"] .corner-accent .material-symbols-outlined {
+  color: var(--alarm);
 }
 
 .monitor-label {
@@ -149,14 +181,6 @@
   max-width: calc(100% - 18px);
 }
 
-.breach-today-card .monitor-value--text {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--ink);
-  line-height: 22px;
-  max-width: calc(100% - 18px);
-}
-
 .monitor-breakdown {
   display: flex;
   align-items: center;
@@ -175,15 +199,6 @@
   min-width: 0;
 }
 
-.breach-today-card .monitor-breakdown-item {
-  font-size: 11px;
-}
-
-.breach-today-card .monitor-breakdown-item .material-symbols-outlined {
-  font-size: 13px;
-  color: var(--text-muted);
-}
-
 .monitor-breakdown-item span:not(.material-symbols-outlined) {
   white-space: nowrap;
   overflow: hidden;
@@ -199,8 +214,7 @@
   color: var(--text-muted);
 }
 
-.monitor-arrow,
-.breach-today-arrow {
+.monitor-arrow {
   position: absolute;
   right: 10px;
   top: 50%;
@@ -211,43 +225,40 @@
   z-index: 1;
 }
 
-.audit-card:hover .monitor-arrow,
-.inventory-card:hover .monitor-arrow,
-.monitors-card:hover .monitor-arrow,
-.breach-today-card:hover .breach-today-arrow {
+.panel-card:hover .monitor-arrow {
   transform: translateY(-50%) translateX(2px);
   color: var(--pink);
 }
 
-.breach-today-card[data-state="active"]:hover .breach-today-arrow {
+.breach-card[data-state="active"]:hover .monitor-arrow {
   color: #b91c1c;
 }
 
 /** breach card empty state **/
 
-.breach-today-empty {
+.breach-empty {
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
   gap: 3px;
 }
 
-.breach-today-empty-title {
+.breach-empty-title {
   margin: 0;
   font-size: 13.5px;
   font-weight: 600;
   color: var(--ink);
 }
 
-.breach-today-empty-sub {
+.breach-empty-sub {
   margin: 0;
   font-size: 10.5px;
   font-family: 'JetBrains Mono', monospace;
   color: var(--text-muted);
 }
 
-.breach-today-card[data-state="empty"] .breach-today-content { display: none; }
-.breach-today-card[data-state="active"] .breach-today-empty { display: none; }
+.breach-card[data-state="empty"] .breach-content { display: none; }
+.breach-card[data-state="active"] .breach-empty { display: none; }
 
 @media (max-width: 720px) {
   .top-panel { grid-template-columns: 1fr; height: auto; }

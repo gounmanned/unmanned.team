@@ -56,26 +56,28 @@
     <div class="top-panel">
   
       <!-- BREACH CARD (empty state) -->
-      <div class="breach-today-card" id="open-breach-rollup" data-state="empty">
+      <div class="breach-card panel-card" id="open-breach-rollup" data-state="empty">
+        <span class="alarm-tab" id="breach-alarm-tab"></span>
         <div class="corner-accent">
           <span class="material-symbols-outlined">verified_user</span>
         </div>
         <div class="monitor-label">Probable breach</div>
-        <div class="monitor-body breach-today-empty" id="breach-today-empty">
-          <p class="breach-today-empty-title">No breach scenario today</p>
-          <p class="breach-today-empty-sub">Next attempt: 6am EST</p>
+        <div class="monitor-body breach-empty" id="breach-empty">
+          <p class="breach-empty-title">No breach scenario today</p>
+          <p class="breach-empty-sub">Next attempt: 6am EST</p>
         </div>
-        <div class="monitor-body breach-today-content" id="breach-today-content">
-          <div class="monitor-value monitor-value--text" id="breach-today-name"></div>
+        <div class="monitor-body breach-content" id="breach-content">
+          <div class="monitor-value monitor-value--text" id="breach-name"></div>
           <div class="monitor-breakdown">
-            <span class="monitor-breakdown-item"><span class="material-symbols-outlined">person_pin_circle</span><span id="breach-today-asset"></span></span>
+            <span class="monitor-breakdown-item"><span class="material-symbols-outlined">person_pin_circle</span><span id="breach-asset"></span></span>
           </div>
         </div>
-        <span class="material-symbols-outlined breach-today-arrow">chevron_right</span>
+        <span class="material-symbols-outlined monitor-arrow">chevron_right</span>
       </div>
   
       <!-- MONITORS CARD -->
-      <div class="monitors-card" id="open-monitor-rollup">
+      <div class="monitors-card panel-card" id="open-monitor-rollup">
+        <span class="alarm-tab" id="monitors-alarm-tab"></span>
         <div class="corner-accent">
           <span class="material-symbols-outlined">lan</span>
         </div>
@@ -92,7 +94,8 @@
       </div>
   
       <!-- INVENTORY CARD -->
-      <div class="inventory-card" id="open-inventory-rollup">
+      <div class="inventory-card panel-card" id="open-inventory-rollup">
+        <span class="alarm-tab" id="inventory-alarm-tab"></span>
         <div class="corner-accent">
           <span class="material-symbols-outlined">inventory_2</span>
         </div>
@@ -108,7 +111,8 @@
       </div>
 
       <!-- AUDIT CARD -->
-      <div class="audit-card" id="open-audit-rollup">
+      <div class="audit-card panel-card" id="open-audit-rollup">
+        <span class="alarm-tab" id="audit-alarm-tab"></span>
         <div class="corner-accent">
           <span class="material-symbols-outlined">history</span>
         </div>
@@ -125,10 +129,6 @@
         <span class="material-symbols-outlined monitor-arrow">chevron_right</span>
       </div>
     </div>
-
-    <div id="feature-row">
-
-    </div>    
     
     <div class="table-wrap" id="signal-table-wrap">
       <table id="signal-table">

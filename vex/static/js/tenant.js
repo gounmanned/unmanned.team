@@ -36,19 +36,47 @@ class TenantScreen {
             finally { el.classList.remove('loading'); }
         };
 
+        const setAlarm = (card, reason) => {
+            card.dataset.alarm = reason ? 'true' : 'false';
+            const tab = card.querySelector('.alarm-tab');
+            if (tab) tab.textContent = reason ?? '';
+        };
+
         const inventory = spin(document.getElementById('open-inventory-rollup'), async () => {
+            const card = document.getElementById('open-inventory-rollup');
             const assets = await this.api.inventory.list();
-            document.getElementById('monitor-users').textContent = assets.filter(a => a.metadata?.group === 'identity').length ?? 0;
-            document.getElementById('monitor-domains').textContent = assets.filter(a => a.metadata?.group === 'domain').length ?? 0;
+            const users = assets.filter(a => a.metadata?.group === 'identity');
+            const domains = assets.filter(a => a.metadata?.group === 'domain');
+
+            document.getElementById('monitor-users').textContent = users.length ?? 0;
+            document.getElementById('monitor-domains').textContent = domains.length ?? 0;
             document.getElementById('monitor-count').textContent = assets?.length ?? 0;
+
+            const suspended = users.filter(a => a.status.startsWith("X")).length;
+            setAlarm(card, suspended ? `Restore ${suspended} suspended assets`: null);
         });
 
         const monitors = spin(document.getElementById('open-monitor-rollup'), async () => {
+            const card = document.getElementById('open-monitor-rollup');
             const m = await this.api.monitors.list();
             const identity = m.find(x => /google|microsoft/i.test(x));
+            setAlarm(card, m.length === 0 ? 'Set up your monitors' : null);
 
             document.getElementById('monitors-count').textContent = m?.length ?? 0;
             document.getElementById('monitors-identity-name').textContent = identity ? (/google/i.test(identity) ? 'Google' : 'Microsoft') : 'n/a';
+        });
+
+        const scenario = spin(document.getElementById('open-breach-rollup'), async () => {
+            const card = document.querySelector('.breach-card');
+            this.breaches = await this.api.breach.list();
+            const breach = this.breaches?.find(b => new Date(b.created).toDateString() === new Date().toDateString());
+
+            card.dataset.state = breach ? 'active' : 'empty';
+            setAlarm(card, breach ? "Fix the choke point" : null);
+            if (!breach) return;
+
+            document.getElementById('breach-name').textContent = breach.name ?? '';
+            document.getElementById('breach-asset').textContent = this.state.signals[this.state.account()][breach.id].asset ?? '—';
         });
 
         const logs = spin(document.getElementById('open-audit-rollup'), async () => {
@@ -56,19 +84,7 @@ class TenantScreen {
             document.getElementById('audit-count').textContent = messages.length.toLocaleString();
         });
 
-        const scenario = spin(document.getElementById('open-breach-rollup'), async () => {
-            const card = document.querySelector('.breach-today-card');
-            this.breaches = await this.api.breach.list();
-            const breach = this.breaches?.find(b => new Date(b.created).toDateString() === new Date().toDateString());
-
-            card.dataset.state = breach ? 'active' : 'empty';
-            if (!breach) return;
-
-            document.getElementById('breach-today-name').textContent = breach.name ?? '';
-            document.getElementById('breach-today-asset').textContent = this.state.signals[this.state.account()][breach.id].asset ?? '—';
-        });
-
-        await Promise.allSettled([inventory, monitors, logs, scenario]);
+        await Promise.allSettled([inventory, monitors, scenario, logs]);
     }
 
     count() {

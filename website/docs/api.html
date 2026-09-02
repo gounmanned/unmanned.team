@@ -281,28 +281,26 @@ footer{padding:20px 0;background:var(--ink);border-top:1px solid #26262a;color:#
         <p class="endpoint-desc">Every signal Vex has collected, newest first. Query params exist so you don't have to scroll forever.</p>
         <table class="param-table">
           <tr><th>Parameter</th><th>In</th><th>Type</th><th></th><th>Description</th></tr>
-          <tr><td>since</td><td class="type">query</td><td class="type">string, ISO 8601</td><td><span class="opt">Optional</span></td><td>Only return signals detected after this timestamp.</td></tr>
-          <tr><td>monitor</td><td class="type">query</td><td class="type">string</td><td><span class="opt">Optional</span></td><td>Filter to one monitor's signals.</td></tr>
-          <tr><td>severity</td><td class="type">query</td><td class="type">info, warn, critical</td><td><span class="opt">Optional</span></td><td>Filter by how worried you should be.</td></tr>
+          <tr><td>date</td><td class="type">query</td><td class="type">string, ISO 8601</td><td><span class="opt">Optional</span></td><td>Only return signals detected on this date.</td></tr>
         </table>
         <div class="code-block">
           <div class="code-header"><span class="code-filename">response</span><span class="code-lang">JSON</span></div>
           <pre><code>[
   {
-    <span class="t-key">"id"</span>: <span class="t-str">"sig_8f2a1c"</span>,
-    <span class="t-key">"monitor"</span>: <span class="t-str">"google"</span>,
-    <span class="t-key">"type"</span>: <span class="t-str">"login.new_location"</span>,
-    <span class="t-key">"severity"</span>: <span class="t-str">"warn"</span>,
-    <span class="t-key">"detected_at"</span>: <span class="t-str">"2026-08-27T22:04:12Z"</span>,
-    <span class="t-key">"summary"</span>: <span class="t-str">"Login for jsmith@acmecorp.com from a new country"</span>
+    <span class="t-key">"id"</span>: <span class="t-num">482910736244</span>,
+    <span class="t-key">"source"</span>: <span class="t-str">"google"</span>,
+    <span class="t-key">"name"</span>: <span class="t-str">"login.new_location"</span>,
+    <span class="t-key">"severity"</span>: <span class="t-num">3</span>,
+    <span class="t-key">"created"</span>: <span class="t-str">"2026-08-27T22:04:12Z"</span>,
+    <span class="t-key">"value"</span>: <span class="t-str">"Login for jsmith@acmecorp.com from a new country"</span>
   },
   {
-    <span class="t-key">"id"</span>: <span class="t-str">"sig_9b0e77"</span>,
-    <span class="t-key">"monitor"</span>: <span class="t-str">"microsoft"</span>,
-    <span class="t-key">"type"</span>: <span class="t-str">"mfa.disabled"</span>,
-    <span class="t-key">"severity"</span>: <span class="t-str">"critical"</span>,
-    <span class="t-key">"detected_at"</span>: <span class="t-str">"2026-08-27T22:06:03Z"</span>,
-    <span class="t-key">"summary"</span>: <span class="t-str">"MFA disabled for an admin account"</span>
+    <span class="t-key">"id"</span>: <span class="t-num">719203845561</span>,
+    <span class="t-key">"source"</span>: <span class="t-str">"microsoft"</span>,
+    <span class="t-key">"name"</span>: <span class="t-str">"mfa.disabled"</span>,
+    <span class="t-key">"severity"</span>: <span class="t-num">1</span>,
+    <span class="t-key">"created"</span>: <span class="t-str">"2026-08-27T22:06:03Z"</span>,
+    <span class="t-key">"value"</span>: <span class="t-str">"MFA disabled for an admin account"</span>
   }
 ]</code></pre>
         </div>
@@ -314,18 +312,16 @@ footer{padding:20px 0;background:var(--ink);border-top:1px solid #26262a;color:#
           <span class="endpoint-path">/signal/{id}</span>
           <span class="status-code">200 OK</span>
         </div>
-        <p class="endpoint-desc">The full detail on one signal, including whatever else it got chained to.</p>
+        <p class="endpoint-desc">The full detail on one signal.</p>
         <div class="code-block">
           <div class="code-header"><span class="code-filename">response</span><span class="code-lang">JSON</span></div>
           <pre><code>{
-  <span class="t-key">"id"</span>: <span class="t-str">"sig_9b0e77"</span>,
-  <span class="t-key">"monitor"</span>: <span class="t-str">"microsoft"</span>,
-  <span class="t-key">"type"</span>: <span class="t-str">"mfa.disabled"</span>,
-  <span class="t-key">"severity"</span>: <span class="t-str">"critical"</span>,
-  <span class="t-key">"detected_at"</span>: <span class="t-str">"2026-08-27T22:06:03Z"</span>,
-  <span class="t-key">"summary"</span>: <span class="t-str">"MFA disabled for an admin account"</span>,
-  <span class="t-key">"related_signals"</span>: [<span class="t-str">"sig_8f2a1c"</span>, <span class="t-str">"sig_a114f0"</span>],
-  <span class="t-key">"chain_status"</span>: <span class="t-str">"way_in_detected"</span>
+  <span class="t-key">"id"</span>: <span class="t-num">719203845561</span>,
+  <span class="t-key">"source"</span>: <span class="t-str">"microsoft"</span>,
+  <span class="t-key">"name"</span>: <span class="t-str">"mfa.disabled"</span>,
+  <span class="t-key">"severity"</span>: <span class="t-num">1</span>,
+  <span class="t-key">"created"</span>: <span class="t-str">"2026-08-27T22:06:03Z"</span>,
+  <span class="t-key">"value"</span>: <span class="t-str">"MFA disabled for an admin account"</span>
 }</code></pre>
         </div>
       </div>
@@ -344,23 +340,47 @@ footer{padding:20px 0;background:var(--ink);border-top:1px solid #26262a;color:#
           <span class="endpoint-path">/threat</span>
           <span class="status-code">200 OK</span>
         </div>
-        <p class="endpoint-desc">A live summary of attempts against your business over a given window: how many, what kind, and where they were aimed. Nobody researched you specifically; this is the receipts.</p>
+        <p class="endpoint-desc">Threat indicators detected against your business, paginated. Nobody researched you specifically; this is the receipts.</p>
         <table class="param-table">
           <tr><th>Parameter</th><th>In</th><th>Type</th><th></th><th>Description</th></tr>
-          <tr><td>window</td><td class="type">query</td><td class="type">1h, 24h, 7d</td><td><span class="opt">Optional</span></td><td>How far back to look. Defaults to <code class="mono">24h</code>.</td></tr>
+          <tr><td>offset</td><td class="type">query</td><td class="type">integer</td><td><span class="opt">Optional</span></td><td>Which page of results to retrieve. Defaults to <code class="mono">0</code>.</td></tr>
         </table>
         <div class="code-block">
           <div class="code-header"><span class="code-filename">response</span><span class="code-lang">JSON</span></div>
           <pre><code>{
-  <span class="t-key">"window"</span>: <span class="t-str">"24h"</span>,
-  <span class="t-key">"attempts"</span>: <span class="t-num">1842</span>,
-  <span class="t-key">"blocked"</span>: <span class="t-num">1842</span>,
-  <span class="t-key">"top_vector"</span>: <span class="t-str">"credential_stuffing"</span>,
-  <span class="t-key">"top_target"</span>: <span class="t-str">"email"</span>,
-  <span class="t-key">"last_attempt_at"</span>: <span class="t-str">"2026-08-31T03:14:00Z"</span>
+  <span class="t-key">"page"</span>: <span class="t-kw">null</span>,
+  <span class="t-key">"threats"</span>: [
+    {
+      <span class="t-key">"account"</span>: <span class="t-str">"acmecorp.com"</span>,
+      <span class="t-key">"created"</span>: <span class="t-str">"2026-09-02T17:32:57Z"</span>,
+      <span class="t-key">"id"</span>: <span class="t-num">4906162990486</span>,
+      <span class="t-key">"key"</span>: <span class="t-str">"threat#4906162990486#203.0.113.10"</span>,
+      <span class="t-key">"name"</span>: <span class="t-str">"203.0.113.10"</span>,
+      <span class="t-key">"source"</span>: <span class="t-str">"dmarc"</span>,
+      <span class="t-key">"ttl"</span>: <span class="t-num">1788456777</span>
+    },
+    {
+      <span class="t-key">"account"</span>: <span class="t-str">"acmecorp.com"</span>,
+      <span class="t-key">"created"</span>: <span class="t-str">"2026-09-02T17:32:57Z"</span>,
+      <span class="t-key">"id"</span>: <span class="t-num">4906162990486</span>,
+      <span class="t-key">"key"</span>: <span class="t-str">"threat#4906162990486#203.0.113.124"</span>,
+      <span class="t-key">"name"</span>: <span class="t-str">"203.0.113.124"</span>,
+      <span class="t-key">"source"</span>: <span class="t-str">"dmarc"</span>,
+      <span class="t-key">"ttl"</span>: <span class="t-num">1788456777</span>
+    },
+    {
+      <span class="t-key">"account"</span>: <span class="t-str">"acmecorp.com"</span>,
+      <span class="t-key">"created"</span>: <span class="t-str">"2026-09-02T11:12:32Z"</span>,
+      <span class="t-key">"id"</span>: <span class="t-num">5645257059374</span>,
+      <span class="t-key">"key"</span>: <span class="t-str">"threat#5645257059374#203.0.113.10"</span>,
+      <span class="t-key">"name"</span>: <span class="t-str">"203.0.113.10"</span>,
+      <span class="t-key">"source"</span>: <span class="t-str">"dmarc"</span>,
+      <span class="t-key">"ttl"</span>: <span class="t-num">1788433952</span>
+    }
+  ]
 }</code></pre>
         </div>
-        <p class="aside-note">"Blocked" means it never got past the front door. It does not mean nobody tried the handle.</p>
+        <p class="aside-note"><code class="mono">ttl</code> is a Unix timestamp marking when the entry ages out of the feed. <code class="mono">page</code> is <code class="mono">null</code> when there's no further page to fetch.</p>
       </div>
     </div>
   </section>
@@ -381,18 +401,8 @@ footer{padding:20px 0;background:var(--ink);border-top:1px solid #26262a;color:#
         <div class="code-block">
           <div class="code-header"><span class="code-filename">response</span><span class="code-lang">JSON</span></div>
           <pre><code>[
-  {
-    <span class="t-key">"name"</span>: <span class="t-str">"google"</span>,
-    <span class="t-key">"status"</span>: <span class="t-str">"active"</span>,
-    <span class="t-key">"connected_at"</span>: <span class="t-str">"2026-06-02T14:11:00Z"</span>,
-    <span class="t-key">"last_signal_at"</span>: <span class="t-str">"2026-08-27T22:04:12Z"</span>
-  },
-  {
-    <span class="t-key">"name"</span>: <span class="t-str">"slack"</span>,
-    <span class="t-key">"status"</span>: <span class="t-str">"active"</span>,
-    <span class="t-key">"connected_at"</span>: <span class="t-str">"2026-06-02T14:12:40Z"</span>,
-    <span class="t-key">"last_signal_at"</span>: <span class="t-kw">null</span>
-  }
+  <span class="t-str">"/acmecorp.com/google/0"</span>,
+  <span class="t-str">"/acmecorp.com/slack/0"</span>
 ]</code></pre>
         </div>
       </div>
@@ -406,7 +416,7 @@ footer{padding:20px 0;background:var(--ink);border-top:1px solid #26262a;color:#
         <p class="endpoint-desc">Connects a new monitor. It wants credentials, not your firstborn.</p>
         <table class="param-table">
           <tr><th>Parameter</th><th>In</th><th>Type</th><th></th><th>Description</th></tr>
-          <tr><td>name</td><td class="type">path</td><td class="type">string</td><td><span class="req">Required</span></td><td>Monitor slug, e.g. <code class="mono">google</code> or <code class="mono">microsoft</code>.</td></tr>
+          <tr><td>name</td><td class="type">path</td><td class="type">string</td><td><span class="req">Required</span></td><td>Monitor slug with index, e.g. <code class="mono">google/0</code> or <code class="mono">microsoft/0</code>.</td></tr>
         </table>
         <p class="aside-note">Body shape depends on the provider. The two most common patterns:</p>
         <div class="code-block">
@@ -415,7 +425,7 @@ footer{padding:20px 0;background:var(--ink);border-top:1px solid #26262a;color:#
             <span class="code-lang">JavaScript</span>
           </div>
           <pre><code><span class="t-cmnt">// Google Workspace: service account JSON key</span>
-<span class="t-kw">await</span> <span class="t-fn">fetch</span>(<span class="t-str">`${BASE}/monitor/google`</span>, {
+<span class="t-kw">await</span> <span class="t-fn">fetch</span>(<span class="t-str">`${BASE}/monitor/google/0`</span>, {
   method: <span class="t-str">'POST'</span>,
   headers, <span class="t-cmnt">// Authorization: Bearer &lt;token&gt;</span>
   body: <span class="t-fn">JSON.stringify</span>({
@@ -428,7 +438,7 @@ footer{padding:20px 0;background:var(--ink);border-top:1px solid #26262a;color:#
 }).<span class="t-fn">then</span>(r => r.<span class="t-fn">json</span>());
 
 <span class="t-cmnt">// Microsoft 365: app registration credentials</span>
-<span class="t-kw">await</span> <span class="t-fn">fetch</span>(<span class="t-str">`${BASE}/monitor/microsoft`</span>, {
+<span class="t-kw">await</span> <span class="t-fn">fetch</span>(<span class="t-str">`${BASE}/monitor/microsoft/0`</span>, {
   method: <span class="t-str">'POST'</span>,
   headers,
   body: <span class="t-fn">JSON.stringify</span>({
@@ -440,30 +450,7 @@ footer{padding:20px 0;background:var(--ink);border-top:1px solid #26262a;color:#
         </div>
         <div class="code-block">
           <div class="code-header"><span class="code-filename">response</span><span class="code-lang">JSON</span></div>
-          <pre><code>{
-  <span class="t-key">"name"</span>: <span class="t-str">"google"</span>,
-  <span class="t-key">"status"</span>: <span class="t-str">"active"</span>,
-  <span class="t-key">"connected_at"</span>: <span class="t-str">"2026-08-28T09:00:00Z"</span>
-}</code></pre>
-        </div>
-      </div>
-
-      <div class="endpoint" id="get-monitor-name">
-        <div class="endpoint-head">
-          <span class="method-pill get">GET</span>
-          <span class="endpoint-path">/monitor/{name}</span>
-          <span class="status-code">200 OK</span>
-        </div>
-        <p class="endpoint-desc">Status of a single monitor: when it connected, when it last checked in, and whether it's actively watching or having a moment.</p>
-        <div class="code-block">
-          <div class="code-header"><span class="code-filename">response</span><span class="code-lang">JSON</span></div>
-          <pre><code>{
-  <span class="t-key">"name"</span>: <span class="t-str">"google"</span>,
-  <span class="t-key">"status"</span>: <span class="t-str">"active"</span>,
-  <span class="t-key">"connected_at"</span>: <span class="t-str">"2026-06-02T14:11:00Z"</span>,
-  <span class="t-key">"last_signal_at"</span>: <span class="t-str">"2026-08-27T22:04:12Z"</span>,
-  <span class="t-key">"last_checked_at"</span>: <span class="t-str">"2026-08-28T08:59:47Z"</span>
-}</code></pre>
+          <pre><code><span class="t-kw">null</span></code></pre>
         </div>
       </div>
 
@@ -495,18 +482,24 @@ footer{padding:20px 0;background:var(--ink);border-top:1px solid #26262a;color:#
           <div class="code-header"><span class="code-filename">response</span><span class="code-lang">JSON</span></div>
           <pre><code>[
   {
-    <span class="t-key">"id"</span>: <span class="t-str">"ast_2c91af"</span>,
-    <span class="t-key">"type"</span>: <span class="t-str">"identity"</span>,
-    <span class="t-key">"value"</span>: <span class="t-str">"jsmith@acmecorp.com"</span>,
+    <span class="t-key">"account"</span>: <span class="t-str">"acmecorp.com"</span>,
+    <span class="t-key">"key"</span>: <span class="t-str">"asset#jsmith@acmecorp.com"</span>,
+    <span class="t-key">"metadata"</span>: {
+      <span class="t-key">"group"</span>: <span class="t-str">"identity"</span>
+    },
+    <span class="t-key">"name"</span>: <span class="t-str">"jsmith@acmecorp.com"</span>,
     <span class="t-key">"source"</span>: <span class="t-str">"google"</span>,
-    <span class="t-key">"first_seen_at"</span>: <span class="t-str">"2026-06-02T14:11:00Z"</span>
+    <span class="t-key">"updated"</span>: <span class="t-str">"2026-06-02T14:11:00Z"</span>
   },
   {
-    <span class="t-key">"id"</span>: <span class="t-str">"ast_77d0e1"</span>,
-    <span class="t-key">"type"</span>: <span class="t-str">"domain"</span>,
-    <span class="t-key">"value"</span>: <span class="t-str">"acmecorp.com"</span>,
+    <span class="t-key">"account"</span>: <span class="t-str">"acmecorp.com"</span>,
+    <span class="t-key">"key"</span>: <span class="t-str">"asset#acmecorp.com"</span>,
+    <span class="t-key">"metadata"</span>: {
+      <span class="t-key">"group"</span>: <span class="t-str">"domain"</span>
+    },
+    <span class="t-key">"name"</span>: <span class="t-str">"acmecorp.com"</span>,
     <span class="t-key">"source"</span>: <span class="t-str">"cloudflare"</span>,
-    <span class="t-key">"first_seen_at"</span>: <span class="t-str">"2026-06-02T14:13:22Z"</span>
+    <span class="t-key">"updated"</span>: <span class="t-str">"2026-06-02T14:13:22Z"</span>
   }
 ]</code></pre>
         </div>
@@ -532,12 +525,13 @@ footer{padding:20px 0;background:var(--ink);border-top:1px solid #26262a;color:#
           <div class="code-header"><span class="code-filename">response</span><span class="code-lang">JSON</span></div>
           <pre><code>[
   {
-    <span class="t-key">"id"</span>: <span class="t-str">"brc_44a9f0"</span>,
-    <span class="t-key">"source"</span>: <span class="t-str">"third_party_breach"</span>,
-    <span class="t-key">"breach_name"</span>: <span class="t-str">"vendorx-2024"</span>,
-    <span class="t-key">"breach_date"</span>: <span class="t-str">"2024-03-11"</span>,
-    <span class="t-key">"exposed_assets"</span>: [<span class="t-str">"ast_2c91af"</span>],
-    <span class="t-key">"exposed_fields"</span>: [<span class="t-str">"email"</span>, <span class="t-str">"password_hash"</span>]
+    <span class="t-key">"account"</span>: <span class="t-str">"acmecorp.com"</span>,
+    <span class="t-key">"created"</span>: <span class="t-str">"2026-08-27T10:00:52Z"</span>,
+    <span class="t-key">"id"</span>: <span class="t-num">8873456129034</span>,
+    <span class="t-key">"key"</span>: <span class="t-str">"breach#8873456129034#Quack Compromised"</span>,
+    <span class="t-key">"name"</span>: <span class="t-str">"Quack Compromised"</span>,
+    <span class="t-key">"ttl"</span>: <span class="t-num">1788429652</span>,
+    <span class="t-key">"value"</span>: <span class="t-str">"An attacker could initially exploit the unpatched macOS system by leveraging known vulnerabilities that remain unaddressed due to the patching failure. This provides a foothold into the device, allowing execution of code or escalation of privileges within the local environment.\n\nThe choke point is the persistent patching failure itself, as it represents a systemic weakness that enables all preceding initial access and local exploitation. Resolving this single signal would eliminate the numerous potential attack paths that depend on the existence of these unpatched vulnerabilities, as successful patching would close the security gaps an attacker needs.\n\nFrom this established foothold, an attacker could move laterally within the network, targeting other devices or sensitive data stored on the compromised MacBook. They might also deploy persistent malware or backdoors that survive reboots, ensuring long-term control over the endpoint.\n\nUltimately, this access could be used to exfiltrate sensitive company data or credentials, particularly targeting the acmecorp.com domain. The attacker could also use the compromised machine as a launch point for further attacks against internal infrastructure or cloud services."</span>
   }
 ]</code></pre>
         </div>
@@ -651,12 +645,12 @@ footer{padding:20px 0;background:var(--ink);border-top:1px solid #26262a;color:#
           <div class="code-header"><span class="code-filename">response</span><span class="code-lang">JSON</span></div>
           <pre><code>[
   {
-    <span class="t-key">"id"</span>: <span class="t-str">"aud_0f3b21"</span>,
-    <span class="t-key">"monitor"</span>: <span class="t-str">"google"</span>,
-    <span class="t-key">"event"</span>: <span class="t-str">"login.success"</span>,
-    <span class="t-key">"actor"</span>: <span class="t-str">"jsmith@acmecorp.com"</span>,
-    <span class="t-key">"ip"</span>: <span class="t-str">"203.0.113.42"</span>,
-    <span class="t-key">"logged_at"</span>: <span class="t-str">"2026-08-31T20:41:09Z"</span>
+    <span class="t-key">"message"</span>: <span class="t-str">"dmarc |  | spoof attempt on acmecorp.com from 203.0.113.10 x1 — dkim:pass spf:fail disposition:none"</span>,
+    <span class="t-key">"timestamp"</span>: <span class="t-str">"2026-09-02T17:32:57.35Z"</span>
+  },
+  {
+    <span class="t-key">"message"</span>: <span class="t-str">"dmarc |  | spoof attempt on acmecorp.com from 203.0.113.124 x1 — dkim:pass spf:fail disposition:none"</span>,
+    <span class="t-key">"timestamp"</span>: <span class="t-str">"2026-09-02T17:32:57.297Z"</span>
   }
 ]</code></pre>
         </div>

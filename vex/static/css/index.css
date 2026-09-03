@@ -103,7 +103,7 @@ body:has(.delegation-notice.visible) {
 }
 
 .delegation-notice {
-  background-color: var(--pink);
+  background: linear-gradient(135deg, #ff1f7a 0%, #6e5bff 100%);
   padding: 0 16px;
   height: 35px;
   display: none;

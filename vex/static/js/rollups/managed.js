@@ -15,7 +15,8 @@ class ManagedRollup {
     async reload() {
         this._resetBadges();
         await this.load();
-        this.api.managed.list(new CustomEvent("signal:managed"));
+        await this.api.managed.list(new CustomEvent("signal:managed"));
+        this.members.forEach((_, domain) => this._settleBadge(domain));
     }
 
     async load() {
@@ -55,6 +56,33 @@ class ManagedRollup {
         }
     }
 
+    _setBadgeLoading(domain) {
+        const badge = document.getElementById(`managed-badge-content-${domain}`);
+        if (!badge) return;
+
+        badge.innerHTML = '<span class="managed-badge-spinner"></span>';
+    }
+
+    _settleBadge(domain) {
+        const open = Object.values(this.state.signals[domain] ?? {})
+            .filter(t => t.status.startsWith('O'));
+
+        this._setBadge(domain, open.length);
+        this._setUnread(domain, open.some(t => !t.read));
+    }
+
+    _setUnread(domain, unread) {
+        const badge = document.getElementById(`managed-badge-${domain}`);
+        if (badge) badge.classList.toggle('has-unread', unread);
+    }
+
+    _resetBadges() {
+        this.members.forEach((_, domain) => {
+            this._setBadgeLoading(domain);
+            this._setUnread(domain, false);
+        });
+    }
+
     _add(domain, members = [], enabled = true) {
         if (this.members.has(domain)) return;
         this.members.set(domain, members);
@@ -74,7 +102,7 @@ class ManagedRollup {
         });
 
         this.list.appendChild(li);
-        this._setBadge(domain, 0);
+        this._setBadgeLoading(domain);
     }
 
     async _selectAccount(domain) {
@@ -188,18 +216,6 @@ class ManagedRollup {
         this._loadOverview(domain);
     }
 
-    _resetBadges() {
-        this.members.forEach((_, domain) => {
-            this._setBadge(domain, 0);
-            this._setUnread(domain, false);
-        });
-    }
-
-    _setUnread(domain, unread) {
-        const badge = document.getElementById(`managed-badge-${domain}`);
-        if (badge) badge.classList.toggle('has-unread', unread);
-    }
-
     async _loadOverview(domain) {
         const column = document.getElementById('managed-overview-col');
         const created = document.getElementById('managed-overview-created');
@@ -220,12 +236,7 @@ class ManagedRollup {
     listen() {
         document.addEventListener("signal:managed", (ev) => {
             this.state.track(ev.signal);
-
-            const open = Object.values(this.state.signals[ev.signal.account] ?? {})
-                .filter(t => t.status.startsWith('O'));
-
-            this._setBadge(ev.signal.account, open.length);
-            this._setUnread(ev.signal.account, open.some(t => !t.read));
+            this._settleBadge(ev.signal.account);
         });
 
         document.getElementById('managed-invite-btn').addEventListener('click', async () => {

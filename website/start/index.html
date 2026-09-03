@@ -10,7 +10,7 @@
 <link rel="icon" type="image/png" href="https://cdn.unmanned.team/img/logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
     --paper:#fafaf7;
@@ -24,11 +24,12 @@
   }
   *{box-sizing:border-box;}
   html{overflow-x:hidden;}
-  body{margin:0;background:var(--paper);color:var(--ink);-webkit-font-smoothing:antialiased;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;}
   a{color:inherit;}
   ::selection{background:var(--pink);color:#fff;}
   .wrap{width:min(640px,calc(100% - 40px));margin:0 auto;}
   :focus-visible{outline:2px solid var(--violet);outline-offset:3px;border-radius:4px;}
+  .mono{font-family:'JetBrains Mono',monospace;letter-spacing:0.04em;}
 
   /* ---------- TOPBAR ---------- */
   .topbar{padding:26px 0;}
@@ -37,12 +38,12 @@
     width:26px;height:26px;border-radius:7px;flex-shrink:0;
     background:linear-gradient(135deg,var(--pink),var(--violet));
   }
-  .brand-name{font-weight:600;font-size:15px;letter-spacing:-0.01em;}
+  .brand-name{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:15px;letter-spacing:-0.01em;}
 
   /* ---------- HERO ---------- */
   .hero{padding:26px 0 8px;text-align:center;}
   .hero h1{
-    margin:0;font-weight:700;
+    margin:0;font-family:'Space Grotesk',sans-serif;font-weight:700;
     font-size:clamp(38px,8vw,60px);line-height:1.02;letter-spacing:-0.035em;
   }
   .hero p{
@@ -83,7 +84,7 @@
     to{transform:translateX(120%);}
   }
   .status-panel-top{display:flex;align-items:center;justify-content:space-between;position:relative;z-index:2;}
-  .status-panel-brand{font-weight:600;font-size:14px;letter-spacing:-0.01em;}
+  .status-panel-brand{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:14px;letter-spacing:-0.01em;}
   .status-panel-live{
     display:flex;align-items:center;gap:7px;font-size:11.5px;color:rgba(255,255,255,0.5);font-weight:500;
   }
@@ -97,7 +98,7 @@
   }
   .status-panel-headline{
     position:relative;z-index:2;margin:26px 0 2px;
-    font-weight:700;font-size:28px;letter-spacing:-0.02em;
+    font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:28px;letter-spacing:-0.02em;
   }
   .status-panel-sub{
     position:relative;z-index:2;margin:0 0 26px;font-size:13.5px;color:rgba(255,255,255,0.55);line-height:1.5;
@@ -144,7 +145,7 @@
   .steps-section{padding:52px 0 0;}
   .steps-heading{text-align:center;margin-bottom:40px;}
   .steps-heading h2{
-    margin:0 0 10px;font-weight:600;
+    margin:0 0 10px;font-family:'Space Grotesk',sans-serif;font-weight:600;
     font-size:clamp(24px,4vw,30px);letter-spacing:-0.02em;
   }
   .steps-heading p{margin:0;font-size:14.5px;color:var(--mid);}
@@ -160,14 +161,14 @@
     position:relative;z-index:1;width:32px;height:32px;border-radius:50%;background:var(--paper);
     border:1.5px solid var(--ink);color:var(--ink);
     display:flex;align-items:center;justify-content:center;
-    font-weight:600;font-size:13px;
+    font-family:'JetBrains Mono',monospace;font-weight:600;font-size:13px;
   }
   .step-body h3{
-    margin:0 0 6px;font-weight:600;font-size:16px;letter-spacing:-0.005em;
+    margin:0 0 6px;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:16px;letter-spacing:-0.005em;
   }
   .step-body p{margin:0;font-size:14.5px;line-height:1.65;color:var(--ink-soft);}
   .step-body code{
-    font-size:0.88em;background:#efefe9;
+    font-family:'JetBrains Mono',monospace;font-size:0.88em;background:#efefe9;
     padding:2px 6px;border-radius:5px;color:var(--ink);
   }
 
@@ -211,14 +212,14 @@
           <div class="status-panel" id="status-panel">
             <div class="status-panel-top">
               <span class="status-panel-brand">VEX</span>
-              <span class="status-panel-live"><span class="pulse"></span>Waiting for install</span>
+              <span class="status-panel-live mono"><span class="pulse"></span>Waiting for install</span>
             </div>
             <div class="status-panel-headline">Protected</div>
             <p class="status-panel-sub">A US-based analyst will monitor your computer for security incidents. You can also reach out if you have any security concerns.</p>
             <div class="status-panel-code-block">
               <div>
-                <div class="status-panel-code-label">Case ID</div>
-                <div class="status-panel-code" id="confirmation-code">—</div>
+                <div class="status-panel-code-label mono">Case ID</div>
+                <div class="status-panel-code mono" id="confirmation-code">—</div>
               </div>
               <button class="copy-btn" id="copy-btn" type="button" aria-label="Copy case ID">
                 <svg id="copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="12" height="12" rx="2"></rect><path d="M4 16V5a1 1 0 0 1 1-1h11"></path></svg>
@@ -236,7 +237,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"></path><path d="m7 10 5 5 5-5"></path><path d="M5 21h14"></path></svg>
           Download
         </a>
-        <div class="download-meta">Windows - MacOS - Linux</div>
+        <div class="download-meta mono">Windows - MacOS - Linux</div>
       </div>
     </section>
 
@@ -276,7 +277,7 @@
     </section>
   </main>
 
-  <footer>
+  <footer class="mono">
     <div class="wrap">Need help? Email us at <a href="mailto:security@vex.unmanned.team">security@vex.unmanned.team</a>.</div>
   </footer>
 

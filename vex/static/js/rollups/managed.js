@@ -9,14 +9,20 @@ class ManagedRollup {
     }
 
     async reset() {
+        this.members.forEach((_, domain) => {
+            this._setBadgeLoading(domain);
+            this._setUnread(domain, false);
+        });
+
         this.state.reset();
     }
 
     async reload() {
-        this._resetBadges();
-        await this.load();
-        await this.api.managed.list(new CustomEvent("signal:managed"));
-        this.members.forEach((_, domain) => this._settleBadge(domain));
+        (async () => {
+            await this.load();
+            await this.api.managed.list(new CustomEvent("signal:managed"));
+            this.members.forEach((_, domain) => this._settleBadge(domain));
+        })();
     }
 
     async load() {
@@ -74,13 +80,6 @@ class ManagedRollup {
     _setUnread(domain, unread) {
         const badge = document.getElementById(`managed-badge-${domain}`);
         if (badge) badge.classList.toggle('has-unread', unread);
-    }
-
-    _resetBadges() {
-        this.members.forEach((_, domain) => {
-            this._setBadgeLoading(domain);
-            this._setUnread(domain, false);
-        });
     }
 
     _add(domain, members = [], enabled = true) {

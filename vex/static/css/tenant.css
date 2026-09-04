@@ -365,9 +365,12 @@ td.source {
   text-overflow: ellipsis;
 }
 
-#signal-table td:nth-child(1) { width: 40px; }   /* icon */
-#signal-table td:nth-child(4) { width: 130px; }  /* id (#1234...) */
-#signal-table td:nth-child(7) { width: 160px; }  /* timestamp */
+tr[data-status="CV"] td.autoclose {
+    background-image: url(https://cdn.unmanned.team/img/logo.png);
+    background-size: 14px 14px;
+    background-repeat: no-repeat;
+    background-position: left center;
+}
 
 /* ── severity ──────────────────────────────────────────────────────── */
 

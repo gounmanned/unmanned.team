@@ -38,5 +38,5 @@ class Table {
         });
 
         this.body.insertBefore(row, anchor ?? this.body.querySelector(".closed") ?? null);
-    }
+    }    
 }

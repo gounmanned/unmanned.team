@@ -141,6 +141,7 @@ class TenantScreen {
                 <td class="strength">${this.strength(signal.metadata?.strength ?? 0)}</td>
                 <td class="source">${signal.asset}</td>
                 <td>${signal.created}</td>
+                <td class="autoclose"></td>
             `;
 
             row.addEventListener('click', async (e) => {

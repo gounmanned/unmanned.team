@@ -70,7 +70,7 @@ class ThreatSidebar {
 
     hits() {
         const signals = Object.values(this.state.signals[this.state.account()] || {})
-            .filter(s => s.source === 'threat');
+            .filter(s => s.source === 'threat' && s.status.startsWith("O"));
 
         this.callout.hidden = signals.length === 0;
         this.calloutList.innerHTML = '';

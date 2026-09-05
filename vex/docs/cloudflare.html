@@ -114,7 +114,7 @@
 <body>
     <div class="container">
         <h1>Cloudflare</h1>
-        <p>This guide walks you through creating a Cloudflare API token with the necessary permissions to monitor security events across all your zones.</p>
+        <p>This guide walks you through creating a Cloudflare API token so Vex can monitor security events across your zones. There are two approaches below: a <strong>full access token</strong> that's quick to set up, and a <strong>restricted token</strong> that's scoped to only what Vex needs. Pick whichever fits your risk tolerance.</p>
 
         <h2>Prerequisites</h2>
         <ul>
@@ -130,21 +130,43 @@
             <li>Set the <strong>Token name</strong> to <code>Vex</code>.</li>
         </ol>
 
-        <h2>Step 2: Create token</h2>
+        <h2>Step 2, Option A: Full Access Token</h2>
+        <div class="important-note">
+            <strong>Note:</strong> This token can read and write every resource in the account. It's the fastest way to get Vex connected, but treat it like a master key &mdash; store it accordingly. Use Option B below if you'd rather scope it down.
+        </div>
         <ol>
-            <li>Check "Read all resources" under permission polices</li>
-            <li>Click to add another policy</li>
-            <li>Under "Registrar Domains", check Read</li>
-            <li>Under "DNS & Zones", check Edit for "DNS" and "Zone" (Read should already be checked)</li>
-            <li>Under "App Security", check Edit for "Zone WAF Rules" (Read should already be checked)</li>
+            <li>Select the <strong>"Read all resources"</strong> template &mdash; this populates one permission policy row per resource group, each set to <strong>Read</strong></li>
+            <li>Go through every row it added and check <strong>Edit</strong> as well, wherever that option is available (some groups, like Analytics or Logs, are read-only and won't have an Edit option &mdash; leave those as-is)</li>
             <li>Ensure "Entire Account" is selected (it is by default)</li>
-            <li>Select No Expiration</li>
+            <li>Select an expiration (or "No Expiration")</li>
+            <li>Click "Review token"</li>
+            <li>Click "Create token"</li>
+        </ol>
+
+        <h2>Step 2, Option B: Restricted Token</h2>
+        <div class="important-note">
+            <strong>Note:</strong> This token is scoped to only the permissions Vex actually uses: account-wide read visibility, domain and analytics read access, and read/write access to DNS, zone settings, and WAF rules.
+        </div>
+        <ol>
+            <li>Check "Read all resources" under permission policies</li>
+            <li>Click to add another policy</li>
+            <li>Search for "Registrar Domains" and check <strong>Read</strong></li>
+            <li>Click to add another policy</li>
+            <li>Select "Analytics & Logs" then "Zone Analytics" and check <strong>Read</strong></li>
+            <li>Click to add another policy</li>
+            <li>Select "DNS" and check both <strong>Read</strong> and <strong>Edit</strong></li>
+            <li>Click to add another policy</li>
+            <li>Select "Zone" and check both <strong>Read</strong> and <strong>Edit</strong></li>
+            <li>Click to add another policy</li>
+            <li>Select "App Security" then "Zone WAF Rules" and check both <strong>Read</strong> and <strong>Edit</strong></li>
+            <li>Ensure "Entire Account" is selected (it is by default), or scope to specific zones for even tighter access</li>
+            <li>Select an expiration (or "No Expiration")</li>
             <li>Click "Review token"</li>
             <li>Click "Create token"</li>
         </ol>
 
         <h2>Step 3: Connect Vex</h2>
-        <p>Add the following JSON to Vex:</p>
+        <p>Add the following JSON to Vex, using the token from whichever option you chose above:</p>
         <pre>
 {
     "account_id": "your_cloudflare_account_id",

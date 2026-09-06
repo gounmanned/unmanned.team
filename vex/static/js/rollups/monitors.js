@@ -80,9 +80,7 @@ class MonitorRollup {
         const instances = this._allInstances();
         this.wrap.classList.toggle('empty', instances.length === 0 && !this.pickerOpen);
 
-        const rows = instances.map(({ key, idx, source }) => this._monitorRow(key, idx, source)).join('')
-            || `<div class="monitor-empty">No monitors connected yet.</div>`;
-
+        const rows = instances.map(({ key, idx, source }) => this._monitorRow(key, idx, source)).join('');
         this.list.innerHTML = rows + this._addSection();
     }
 

@@ -67,16 +67,6 @@ class AssetApi extends Gateway {
     }
 }
 
-class BreachApi extends Gateway {
-    constructor(){
-        super();
-    }
-
-    async list() {
-        return await this.call("GET", `breach`);
-    }
-}
-
 class ManagedApi extends Gateway {
     constructor(){
         super();
@@ -119,17 +109,6 @@ class AuditApi extends Gateway {
 
     async messages(hours = 24) {
         return this.call("GET", `audit?hours=${hours}`);
-    }
-}
-
-class ThreatApi extends Gateway {
-    constructor(){
-        super();
-    }
-
-    async list(offset) {
-        const path = offset ? `threat?offset=${encodeURIComponent(JSON.stringify(offset))}` : 'threat';
-        return this.call("GET", path);
     }
 }
 

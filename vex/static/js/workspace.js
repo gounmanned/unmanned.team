@@ -24,25 +24,21 @@ class Api {
     constructor(state) {
         this.state = state;
         this.signals = new SignalApi(state);
-        this.breach = new BreachApi(state);
         this.inventory = new AssetApi(state);
         this.managed = new ManagedApi(state);
         this.audit = new AuditApi(state);
         this.file = new FileApi(state);
         this.monitors = new MonitorApi(state);
-        this.threat = new ThreatApi(state);
         this.notification = new NotificationApi(state);
     }
 
     reset(){
         this.signals.set("account", this.state.account());
-        this.breach.set("account", this.state.account());
         this.inventory.set("account", this.state.account());
         this.managed.set("account", this.state.account());
         this.audit.set("account", this.state.account());
         this.file.set("account", this.state.account());
         this.monitors.set("account", this.state.account());
-        this.threat.set("account", this.state.account());
         this.notification.set("account", this.state.account());
     }
 }

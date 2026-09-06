@@ -53,82 +53,8 @@
   </site-header>
 
   <main class="container">
-    <div class="top-panel">
-  
-      <!-- BREACH CARD (empty state) -->
-      <div class="breach-card panel-card" id="open-breach-rollup" data-state="empty">
-        <span class="alarm-tab" id="breach-alarm-tab"></span>
-        <div class="corner-accent">
-          <span class="material-symbols-outlined">verified_user</span>
-        </div>
-        <div class="monitor-label">Probable breach</div>
-        <div class="monitor-body breach-empty" id="breach-empty">
-          <p class="breach-empty-title">No breach scenario today</p>
-          <p class="breach-empty-sub">Next attempt: 6am EST</p>
-        </div>
-        <div class="monitor-body breach-content" id="breach-content">
-          <div class="monitor-value monitor-value--text" id="breach-name"></div>
-          <div class="monitor-breakdown">
-            <span class="monitor-breakdown-item"><span class="material-symbols-outlined">person_pin_circle</span><span id="breach-asset"></span></span>
-          </div>
-        </div>
-        <span class="material-symbols-outlined monitor-arrow">chevron_right</span>
-      </div>
-  
-      <!-- MONITORS CARD -->
-      <div class="monitors-card panel-card" id="open-monitor-rollup">
-        <span class="alarm-tab" id="monitors-alarm-tab"></span>
-        <div class="corner-accent">
-          <span class="material-symbols-outlined">lan</span>
-        </div>
-        <div class="monitor-label">Connected monitors</div>
-        <div class="monitor-body">
-          <div class="monitor-value" id="monitors-count"></div>
-          <div class="monitor-breakdown">
-            <span class="monitor-breakdown-item">
-              <strong>Identity:</strong> <span id="monitors-identity-name"></span>
-            </span>
-          </div>
-        </div>
-        <span class="material-symbols-outlined monitor-arrow">chevron_right</span>
-      </div>
-  
-      <!-- INVENTORY CARD -->
-      <div class="inventory-card panel-card" id="open-inventory-rollup">
-        <span class="alarm-tab" id="inventory-alarm-tab"></span>
-        <div class="corner-accent">
-          <span class="material-symbols-outlined">inventory_2</span>
-        </div>
-        <div class="monitor-label">Asset inventory</div>
-        <div class="monitor-body">
-          <div class="monitor-value" id="monitor-count"></div>
-          <div class="monitor-breakdown">
-            <span class="monitor-breakdown-item"><span class="monitor-breakdown-count" id="monitor-users"></span> users</span>
-            <span class="monitor-breakdown-item"><span class="monitor-breakdown-count" id="monitor-domains"></span> domains</span>
-          </div>
-        </div>
-        <span class="material-symbols-outlined monitor-arrow">chevron_right</span>
-      </div>
+    <div class="connections-grid" id="open-monitor-rollup"></div>
 
-      <!-- THREAT CARD -->
-      <div class="threat-card panel-card" id="open-threat-sidebar">
-        <span class="alarm-tab" id="threat-alarm-tab"></span>
-        <div class="corner-accent">
-          <span class="material-symbols-outlined">gpp_maybe</span>
-        </div>
-        <div class="monitor-label">Threat actors</div>
-        <div class="monitor-body">
-          <div class="monitor-value" id="threat-count"></div>
-          <div class="monitor-breakdown">
-            <span class="monitor-breakdown-item">
-              <span class="monitor-breakdown-count" id="monitors-threat-total"></span>  attacks today
-            </span>
-          </div>
-        </div>
-        <span class="material-symbols-outlined monitor-arrow">chevron_right</span>
-      </div>
-    </div>
-    
     <div class="table-wrap" id="signal-table-wrap">
       <table id="signal-table">
         <colgroup>
@@ -166,6 +92,9 @@
         <span class="count" id="signal-count">0 signals</span>
       </div>
 
+      <a id="open-inventory-rollup">Asset Inventory</a>
+      <a id="open-threat-sidebar">Active Threats</a>
+      <a id="open-breach-rollup">Probable Breach</a>
       <a id="open-risk-sidebar">Accepted Risks</a>
       <a id="open-audit-rollup">Audit Logs</a>
       <a id="open-backup-sidebar">File Backups</a>

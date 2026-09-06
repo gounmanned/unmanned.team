@@ -29,67 +29,39 @@ class TenantScreen {
     }
 
     async panel() {
-        const spin = async (el, fn) => {
-            el.classList.add('loading');
-            try { return await fn(); }
-            finally { el.classList.remove('loading'); }
-        };
+        const grid = document.getElementById('open-monitor-rollup');
+        const toggleLoading = (on) => grid.querySelectorAll('.connection-slot.connected').forEach(slot => slot.classList.toggle('loading', on));
+        toggleLoading(true);
 
-        const setAlarm = (card, reason) => {
-            card.dataset.alarm = reason ? 'true' : 'false';
-            const tab = card.querySelector('.alarm-tab');
-            if (tab) tab.textContent = reason ?? '';
-        };
+        try {
+            const monitors = await this.api.monitors.list();
+            const vendors = [...new Set(monitors.map(k => k.split('/')[2]).filter(Boolean))].sort();
 
-        const inventory = spin(document.getElementById('open-inventory-rollup'), async () => {
-            const card = document.getElementById('open-inventory-rollup');
-            const assets = await this.api.inventory.list();
-            const users = assets.filter(a => a.metadata?.group === 'identity');
-            const domains = assets.filter(a => a.metadata?.group === 'domain');
+            const signature = vendors.join(',');
+            if (grid.dataset.signature === signature) return;
+            grid.dataset.signature = signature;
 
-            document.getElementById('monitor-users').textContent = users.length ?? 0;
-            document.getElementById('monitor-domains').textContent = domains.length ?? 0;
-            document.getElementById('monitor-count').textContent = assets?.length ?? 0;
+            const label = v => v.split(/[-_]/).map(w => w[0].toUpperCase() + w.slice(1)).join(' ');
 
-            const suspended = users.filter(a => a.status.startsWith("X")).length;
-            setAlarm(card, suspended ? `Restore ${suspended} suspended assets`: null);
-        });
+            const filled = vendors.map(v => `
+                <div class="connection-slot connected" data-vendor="${v}" title="${label(v)}">
+                    <img class="connection-logo" src="static/img/source/${v}.png" alt="${label(v)}"
+                        onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'material-symbols-outlined connection-logo',textContent:'linked_services'}))">
+                    <span class="connection-name">${label(v)}</span>
+                </div>
+            `);
 
-        const monitors = spin(document.getElementById('open-monitor-rollup'), async () => {
-            const card = document.getElementById('open-monitor-rollup');
-            const m = await this.api.monitors.list();
-            const identity = m.find(x => /google|microsoft/i.test(x));
-            setAlarm(card, m.length === 0 ? 'Set up your monitors' : null);
+            const empty = Array(Math.max(0, 10 - vendors.length)).fill(`
+                <div class="connection-slot">
+                    <span class="material-symbols-outlined connection-plug-icon">power_off</span>
+                    <span class="connection-name">Connect</span>
+                </div>
+            `);
 
-            document.getElementById('monitors-count').textContent = m?.length ?? 0;
-            document.getElementById('monitors-identity-name').textContent = identity ? (/google/i.test(identity) ? 'Google' : 'Microsoft') : 'n/a';
-        });
-
-        const scenario = spin(document.getElementById('open-breach-rollup'), async () => {
-            const card = document.querySelector('.breach-card');
-            this.breaches = await this.api.breach.list();
-            const breach = this.breaches?.find(b => new Date(b.created).toDateString() === new Date().toDateString());
-
-            card.dataset.state = breach ? 'active' : 'empty';
-            setAlarm(card, breach ? "Fix the choke point" : null);
-            if (!breach) return;
-
-            document.getElementById('breach-name').textContent = breach.name ?? '';
-            document.getElementById('breach-asset').textContent = this.state.signals[this.state.account()][breach.id].asset ?? '—';
-        });
-
-        const threats = spin(document.getElementById('open-threat-sidebar'), async () => {
-            const card = document.querySelector('.threat-card');
-            const page = await this.api.threat.list();
-            const hits = Object.values(this.state.signals[this.state.account()] || {})
-                .filter(s => s.source === 'threat' && s.status?.startsWith('O'));
-            setAlarm(card, hits.length ? "Assess potential targeted attacks" : null);
-
-            document.getElementById('threat-count').textContent = hits.length;
-            document.getElementById('monitors-threat-total').textContent = page.threats.length.toLocaleString(); 
-        });
-
-        await Promise.allSettled([inventory, monitors, scenario, threats]);
+            grid.innerHTML = [...filled, ...empty].join('');
+        } finally {
+            toggleLoading(false);
+        }
     }
 
     count() {

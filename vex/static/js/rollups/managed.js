@@ -18,8 +18,9 @@ class ManagedRollup {
     }
 
     async reload() {
+        await this.load();
+
         (async () => {
-            await this.load();
             await this.api.managed.list(new CustomEvent("signal:managed"));
             this.members.forEach((_, domain) => this._settleBadge(domain));
         })();

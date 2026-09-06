@@ -68,14 +68,12 @@ class Workspace {
                     managed: new ManagedRollup(state),
                     monitor: new MonitorRollup(state),
                     inventory: new InventoryRollup(state),
-                    breach: new BreachRollup(state),
                     audit: new AuditRollup(state),
                 };
 
                 this.sidebars = {
                     signal: new SignalSidebar(state),
                     backup: new BackupSidebar(state),
-                    threat: new ThreatSidebar(state),
                     risk: new RiskSidebar(state),
                 }
 

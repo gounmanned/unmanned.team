@@ -15,14 +15,12 @@
       <link rel="stylesheet" href="static/css/index.css?v=${v}">
       <link rel="stylesheet" href="static/css/audit.css?v=${v}">
       <link rel="stylesheet" href="static/css/notification.css?v=${v}">
-      <link rel="stylesheet" href="static/css/breach.css?v=${v}">
       <link rel="stylesheet" href="static/css/managed.css?v=${v}">
       <link rel="stylesheet" href="static/css/inventory.css?v=${v}">
       <link rel="stylesheet" href="static/css/tenant.css?v=${v}">
       <link rel="stylesheet" href="static/css/monitors.css?v=${v}">
       <link rel="stylesheet" href="static/css/backups.css?v=${v}">
       <link rel="stylesheet" href="static/css/signal.css?v=${v}">
-      <link rel="stylesheet" href="static/css/threat.css?v=${v}">
       <link rel="stylesheet" href="static/css/risks.css?v=${v}">
     `);
   </script>
@@ -93,8 +91,6 @@
       </div>
 
       <a id="open-inventory-rollup">Asset Inventory</a>
-      <a id="open-threat-sidebar">Active Threats</a>
-      <a id="open-breach-rollup">Probable Breach</a>
       <a id="open-risk-sidebar">Accepted Risks</a>
       <a id="open-audit-rollup">Audit Logs</a>
       <a id="open-backup-sidebar">File Backups</a>
@@ -134,7 +130,7 @@
           <div class="corner br managed-intro-corner"></div>
           <div class="managed-intro-label"><span class="status-dot"></span>WHAT IS VEX</div>
           <p class="managed-intro-text">
-            Vex <em>runs like an always-on red team</em>, collecting security signals.
+            Vex <em>is an always-on red team</em>, collecting security signals.
             A breach scenario is generated if they can combine into a probable attack.
             Your job is to close signals before that happens.
           </p>
@@ -181,76 +177,6 @@
       </div>
 
       <div class="audit-terminal-footer" id="audit-terminal-footer"></div>
-    </div>
-  </site-rollup>
-
-  <site-rollup id="breach-screen">
-    <div class="monitor-intro">
-      <span class="material-symbols-outlined">warning</span>
-      <p>Vex generates the most probable breach scenario and the choke point to stop it.</p>
-    </div>
-
-    <div class="breach-rail-wrap">
-      <div class="breach-rail-label">
-        <span>7-day rolling window</span>
-        <span class="breach-rail-range" id="breach-rail-range"></span>
-      </div>
-      <div class="breach-rail" id="breach-rail"></div>
-    </div>
-
-    <div class="breach-body" id="breach-body">
-      <div class="breach-detail-empty" id="breach-detail-empty">
-        <span class="material-symbols-outlined">travel_explore</span>
-        <p>No breach scenario for this day</p>
-      </div>
-
-      <div class="breach-detail-content" id="breach-detail-content">
-        <div class="breach-signal-col">
-          <div class="breach-chokepoint-badge">
-            <span class="material-symbols-outlined">bolt</span>
-            Choke point
-          </div>
-
-          <div class="breach-signal-head">
-            <span class="breach-signal-icon">
-              <img id="breach-signal-img" src="" alt="">
-            </span>
-            <div>
-              <div class="breach-signal-name" id="breach-signal-name"></div>
-              <span class="breach-severity-badge" id="breach-severity-badge"></span>
-            </div>
-          </div>
-          <div class="breach-signal-id" id="breach-signal-id"></div>
-
-          <div class="breach-signal-stats">
-            <div class="breach-stat">
-              <div class="breach-stat-label"><span class="material-symbols-outlined">person_pin_circle</span>Asset</div>
-              <div class="breach-stat-value is-mono" id="breach-stat-asset"></div>
-            </div>
-            <div class="breach-stat">
-              <div class="breach-stat-label"><span class="material-symbols-outlined">sensors</span>Source</div>
-              <div class="breach-stat-value" id="breach-stat-source"></div>
-            </div>
-            <div class="breach-stat breach-stat-strength">
-              <div class="breach-stat-label"><span class="material-symbols-outlined">repeat</span>Signal strength</div>
-              <div class="breach-strength-row">
-                <div class="breach-strength-meter"><div class="breach-strength-fill" id="breach-strength-fill"></div></div>
-                <span class="breach-strength-count" id="breach-strength-count"></span>
-              </div>
-            </div>
-          </div>
-
-          <div class="breach-signal-found" id="breach-signal-found"></div>
-        </div>
-
-        <div class="breach-scenario-col">
-          <div class="breach-scenario-inner">
-            <div class="breach-timestamp" id="breach-timestamp"></div>
-            <h1 class="breach-title" id="breach-title"></h1>
-            <div class="breach-narrative" id="breach-narrative"></div>
-          </div>
-        </div>
-      </div>
     </div>
   </site-rollup>
 
@@ -448,47 +374,6 @@
     </div>
   </site-sidebar>
 
-  <site-sidebar id="threat-sidebar">
-    <div class="threats-banner">
-      <div class="threats-banner-scan"></div>
-      <div class="threats-banner-row">
-        <span class="material-symbols-outlined threats-banner-icon">shield_person</span>
-        <div class="threats-banner-text">
-          <div class="threats-banner-title">Active threats</div>
-          <div class="threats-banner-desc">Vex tracks threat actors targeting your account.</div>
-        </div>
-      </div>
-    </div>
-    
-    <div class="threats-callout" id="threats-callout" hidden>
-      <span class="material-symbols-outlined threats-callout-icon">warning</span>
-      <div class="threats-callout-text">
-          <div class="threats-callout-names"></div>
-      </div>
-    </div>
-
-    <div class="threat-search-wrap">
-      <span class="material-symbols-outlined threat-search-icon">search</span>
-      <input type="text" id="threat-search" class="threat-search-input" placeholder="Search threats from last 24 hours" autocomplete="off">
-    </div>
-
-    <div class="container" id="threat-list-wrap">
-      <ul id="threat-list" class="hacker-list"></ul>
-
-      <div class="signal-radar-watermark" id="threat-empty">
-        <div class="signal-radar" aria-hidden="true">
-          <svg viewBox="0 0 800 800"><use href="#radar-rings"></use></svg>
-        </div>
-        <div class="corner tl signal-radar-corner"></div>
-        <div class="corner tr signal-radar-corner"></div>
-        <div class="corner bl signal-radar-corner"></div>
-        <div class="corner br signal-radar-corner"></div>
-        <span class="material-symbols-outlined">travel_explore</span>
-        <p id="threat-empty-label">No threats detected</p>
-      </div>
-    </div>
-  </site-sidebar>
-
   <site-sidebar id="risk-sidebar">
     <div class="risks-banner">
       <div class="risks-banner-row">
@@ -532,13 +417,11 @@
     <script src="static/js/tenant.js?v=${v}"><\/script>
     <script src="static/js/sidebars/signal.js?v=${v}"><\/script>
     <script src="static/js/sidebars/backup.js?v=${v}"><\/script>
-    <script src="static/js/sidebars/threat.js?v=${v}"><\/script>
     <script src="static/js/sidebars/risk.js?v=${v}"><\/script>
     <script src="static/js/rollups/audit.js?v=${v}"><\/script>
     <script src="static/js/rollups/managed.js?v=${v}"><\/script>
     <script src="static/js/rollups/monitors.js?v=${v}"><\/script>
     <script src="static/js/rollups/inventory.js?v=${v}"><\/script>
-    <script src="static/js/rollups/breach.js?v=${v}"><\/script>
   `);
 </script>
 

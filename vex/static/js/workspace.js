@@ -123,7 +123,7 @@ class Workspace {
     }
 
     static avatar(s) {
-        if (s == "security@vex.unmanned.team") {
+        if (s == "vex") {
             return "https://cdn.unmanned.team/img/logo.png";
         }
 

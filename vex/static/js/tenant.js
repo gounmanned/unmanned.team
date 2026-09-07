@@ -23,6 +23,7 @@ class TenantScreen {
             this.api.reset();
             this.table.clear();
             this.table.watermark(true);
+            this.chokepoint();
             this.count();
             this.panel();
         });
@@ -86,11 +87,48 @@ class TenantScreen {
         `;
     }
 
+    async open(signal) {
+        await SiteSpinner.withLoading(async () => {
+            Workspace.sidebars.signal.reset();
+            Workspace.sidebars.signal.inject(signal, await this.api.signals.get(signal.id));
+            document.getElementById('signal-sidebar').show();
+        });
+    }
+
+    chokepoint() {
+        const el = document.getElementById('chokepoint-callout');
+        if (!el) return;
+
+        const candidates = Object.values(this.state.signals || {})
+            .filter(s => s.status?.startsWith('O') && s.metadata?.chokepoint);
+
+        if (!candidates.length) {
+            el.style.display = 'none';
+            this.chokepointSignal = null;
+            return;
+        }
+
+        const signal = candidates.sort((a, b) =>
+            new Date(b.metadata.chokepoint) - new Date(a.metadata.chokepoint)
+        )[0];
+
+        this.chokepointSignal = signal;
+
+        document.getElementById('chokepoint-name').textContent = signal.name;
+        document.getElementById('chokepoint-asset').textContent = signal.asset;
+        document.getElementById('chokepoint-source').textContent = signal.source;
+        document.getElementById('chokepoint-created').textContent = signal.created;
+        document.getElementById('chokepoint-updated').textContent = signal.updated ?? signal.created;
+        document.getElementById('chokepoint-detected').textContent = new Date(signal.metadata.chokepoint).toLocaleString();
+        el.style.display = 'flex';
+    }
+    
     listen() {
         document.addEventListener('signal:account', (ev) => {
             const upsert = (row, signal) => {
                 this.table.add(row, signal);
                 this.table.watermark(false);
+                this.chokepoint();
             };
 
             this.state.track(ev.signal);
@@ -120,9 +158,7 @@ class TenantScreen {
                 e.stopPropagation();
 
                 await SiteSpinner.withLoading(async () => {
-                    Workspace.sidebars.signal.reset();
-                    Workspace.sidebars.signal.inject(signal, await this.api.signals.get(signal.id));
-                    document.getElementById('signal-sidebar').show();
+                    await this.open(signal);
                 });
             });
 
@@ -149,6 +185,10 @@ class TenantScreen {
 
             document.dispatchEvent(new CustomEvent('page:reset'));
             document.querySelector('.delegation-notice').classList.remove('visible');
+        });
+
+        document.getElementById('chokepoint-callout').addEventListener('click', () => {
+            if (this.chokepointSignal) this.open(this.chokepointSignal);
         });
     }
 }

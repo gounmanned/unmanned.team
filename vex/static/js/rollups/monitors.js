@@ -191,13 +191,14 @@ class MonitorRollup {
                     this.available[key].instances.sort((a, b) => a - b);
                     this.pickerOpen = false;
                     this.connectingKey = null;
+                    this._render();
                 }).catch(() => {
                     alert("Invalid JSON. Verify your quotes are correct.");
                 }).finally(() => {
                     document.dispatchEvent(new CustomEvent('page:reset'));
                 });
 
-                return this._render();
+                return;
             }
         });
 

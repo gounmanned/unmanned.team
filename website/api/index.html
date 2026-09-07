@@ -181,7 +181,7 @@ footer{padding:20px 0;background:var(--ink);border-top:1px solid #26262a;color:#
       <div class="kicker"><i></i>For developers</div>
       <h1>The actual API.</h1>
       <p class="api-hero-copy">Everything from the previous page, minus the doors and the dramatic lighting. Resource groups, a handful of endpoints, and none of them require you to believe in metaphors.</p>
-      <div class="base-url"><span>Base URL</span> https://us.unmanned.team</div>
+      <div class="base-url"><span>Base URL</span> https://4ycv63am8b.execute-api.us-east-2.amazonaws.com</div>
     </div>
   </section>
 
@@ -189,37 +189,41 @@ footer{padding:20px 0;background:var(--ink);border-top:1px solid #26262a;color:#
   <section class="api-section" id="auth">
     <div class="wrap">
       <div class="api-section-head"><h2>Authentication</h2></div>
-      <p class="api-section-intro">Two steps: trade a client ID and secret for a token, then send that token on everything else. Nothing exotic — a standard client-credentials exchange.</p>
+      <p class="api-section-intro">Two steps: trade your username and password for a token, then send that token on everything else. Nothing exotic — a standard AWS Cognito exchange.</p>
 
       <div class="endpoint" id="post-auth-token">
         <div class="endpoint-head">
           <span class="method-pill post">POST</span>
-          <span class="endpoint-path">/auth/token</span>
+          <span class="endpoint-path">cognito-idp.us-east-2.amazonaws.com</span>
           <span class="status-code">200 OK</span>
         </div>
-        <p class="endpoint-desc">Exchanges a client ID and secret for a bearer token. Email <code class="mono">go@unmanned.team</code> to get credentials if you don't have them yet — this is the first call you'll ever make.</p>
+        <p class="endpoint-desc">Exchanges your username and password for a bearer token via AWS Cognito. This call goes straight to Cognito, not the Vex base URL. Email <code class="mono">go@unmanned.team</code> to get credentials if you don't have them yet — this is the first call you'll ever make.</p>
         <table class="param-table">
           <tr><th>Parameter</th><th>In</th><th>Type</th><th></th><th>Description</th></tr>
-          <tr><td>client_id</td><td class="type">body</td><td class="type">string</td><td><span class="req">Required</span></td><td>Identifies your workspace.</td></tr>
-          <tr><td>client_secret</td><td class="type">body</td><td class="type">string</td><td><span class="req">Required</span></td><td>Keep this out of client-side code. Same rules as any other secret.</td></tr>
+          <tr><td>ClientId</td><td class="type">body</td><td class="type">string</td><td><span class="req">Required</span></td><td>Identifies your workspace.</td></tr>
+          <tr><td>USERNAME</td><td class="type">body, AuthParameters</td><td class="type">string</td><td><span class="req">Required</span></td><td>Your Vex account email.</td></tr>
+          <tr><td>PASSWORD</td><td class="type">body, AuthParameters</td><td class="type">string</td><td><span class="req">Required</span></td><td>Keep this out of client-side code. Same rules as any other secret.</td></tr>
         </table>
         <div class="code-pair">
           <div class="code-block">
             <div class="code-header"><span class="code-filename">request</span><span class="code-lang">Shell</span></div>
-            <pre><code><span class="t-fn">curl</span> -X POST https://us.unmanned.team/auth/token \
-  -H <span class="t-str">"Content-Type: application/json"</span> \
-  -d <span class="t-str">'{"client_id":"$CLIENT_ID","client_secret":"$CLIENT_SECRET"}'</span></code></pre>
+            <pre><code><span class="t-fn">curl</span> https://cognito-idp.us-east-2.amazonaws.com/ \
+  -H <span class="t-str">"Content-Type: application/x-amz-json-1.1"</span> \
+  -H <span class="t-str">"X-Amz-Target: AWSCognitoIdentityProviderService.InitiateAuth"</span> \
+  -d <span class="t-str">'{"AuthFlow": "USER_PASSWORD_AUTH", "ClientId": "2314edi18c3o3t8sroh2u2hucf", "AuthParameters": {"USERNAME": "you@yourcompany.com", "PASSWORD": "your-password"}}'</span></code></pre>
           </div>
           <div class="code-block">
             <div class="code-header"><span class="code-filename">response</span><span class="code-lang">JSON</span></div>
             <pre><code>{
-  <span class="t-key">"access_token"</span>: <span class="t-str">"eyJhbGciOi..."</span>,
-  <span class="t-key">"token_type"</span>: <span class="t-str">"bearer"</span>,
-  <span class="t-key">"expires_in"</span>: <span class="t-num">3600</span>
+   <span class="t-key">"AuthenticationResult"</span> : {
+      <span class="t-key">"AccessToken"</span> : <span class="t-str">"eyJraWQiOi..."</span>,
+      <span class="t-key">"TokenType"</span> : <span class="t-str">"Bearer"</span>
+   },
+   <span class="t-key">"ChallengeParameters"</span> : {}
 }</code></pre>
           </div>
         </div>
-        <p class="aside-note">Tokens are short-lived on purpose. Cache one until it's within a few minutes of expiring, then call this again — don't request a fresh token on every API call.</p>
+        <p class="aside-note">Tokens are short-lived on purpose. Cache the <code class="mono">AccessToken</code> until it expires, then call this again — don't request a fresh token on every API call.</p>
       </div>
 
       <div class="endpoint" id="use-auth-token">
@@ -232,10 +236,10 @@ footer{padding:20px 0;background:var(--ink);border-top:1px solid #26262a;color:#
             <span class="code-filename">auth-header.sh</span>
             <span class="code-lang">Shell</span>
           </div>
-          <pre><code><span class="t-fn">curl</span> https://us.unmanned.team/monitor \
+          <pre><code><span class="t-fn">curl</span> https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/monitor \
   -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span></code></pre>
         </div>
-        <p class="aside-note">Tokens expire on their own; there's no need to rotate them by hand. Rotate the underlying client secret if it ever leaks.</p>
+        <p class="aside-note">Tokens expire on their own; there's no need to rotate them by hand. Rotate your password if it ever leaks.</p>
       </div>
 
       <div class="endpoint" id="account-delegation">
@@ -255,7 +259,7 @@ footer{padding:20px 0;background:var(--ink);border-top:1px solid #26262a;color:#
         <div class="code-block">
           <div class="code-header"><span class="code-filename">delegate.sh</span><span class="code-lang">Shell</span></div>
           <pre><code><span class="t-cmnt"># Runs against example.com instead of your own account</span>
-<span class="t-fn">curl</span> https://us.unmanned.team/monitor \
+<span class="t-fn">curl</span> https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/monitor \
   -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span> \
   -H <span class="t-str">"account: example.com"</span></code></pre>
         </div>
@@ -270,6 +274,33 @@ footer{padding:20px 0;background:var(--ink);border-top:1px solid #26262a;color:#
       <div class="api-section-head"><h2>Signals</h2></div>
       <p class="api-section-intro">Everything a monitor noticed, and whether Vex thinks it's part of something bigger. Signals represent actionable security weaknesses.</p>
 
+      <div class="callout">
+        <div class="callout-title"><i></i>Signal status values</div>
+        <p>The <code>status</code> field tracks where a signal sits in the help desk workflow, from first appearing to however it eventually gets closed out.</p>
+        <table class="param-table">
+          <tr><th>Code</th><th>Label</th><th>Description</th></tr>
+          <tr><td>OP</td><td class="type">Open</td><td>Actively being worked. Default help desk queue view.</td></tr>
+          <tr><td>OB</td><td class="type">Blocked</td><td>Waiting on the customer before work can continue.</td></tr>
+          <tr><td>CH</td><td class="type">Resolved</td><td>Confirmed resolved and archived.</td></tr>
+          <tr><td>CI</td><td class="type">False positive</td><td>Nothing actionable to complete.</td></tr>
+          <tr><td>CR</td><td class="type">Accepted risk</td><td>Customer accepted the risk on this ticket.</td></tr>
+          <tr><td>CS</td><td class="type">Auto-closed</td><td>Sam closed with high confidence.</td></tr>
+        </table>
+      </div>
+
+      <div class="callout">
+        <div class="callout-title"><i></i>Signal severity values</div>
+        <p>The <code>severity</code> field is a 1–5 scale, most urgent first.</p>
+        <table class="param-table">
+          <tr><th>Value</th><th>Label</th></tr>
+          <tr><td>1</td><td class="type">critical</td></tr>
+          <tr><td>2</td><td class="type">high</td></tr>
+          <tr><td>3</td><td class="type">medium</td></tr>
+          <tr><td>4</td><td class="type">low</td></tr>
+          <tr><td>5</td><td class="type">info</td></tr>
+        </table>
+      </div>
+
       <div class="endpoint" id="get-signal">
         <div class="endpoint-head">
           <span class="method-pill get">GET</span>
@@ -280,7 +311,13 @@ footer{padding:20px 0;background:var(--ink);border-top:1px solid #26262a;color:#
         <table class="param-table">
           <tr><th>Parameter</th><th>In</th><th>Type</th><th></th><th>Description</th></tr>
           <tr><td>date</td><td class="type">query</td><td class="type">string, ISO 8601</td><td><span class="opt">Optional</span></td><td>Only return signals detected on this date.</td></tr>
+          <tr><td>status</td><td class="type">query</td><td class="type">string</td><td><span class="opt">Optional</span></td><td>Only return signals with this status code, e.g. <code class="mono">OP</code>.</td></tr>
         </table>
+        <div class="code-block">
+          <div class="code-header"><span class="code-filename">request</span><span class="code-lang">Shell</span></div>
+          <pre><code><span class="t-fn">curl</span> <span class="t-str">"https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/signal?date=2026-08-27"</span> \
+  -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span></code></pre>
+        </div>
         <div class="code-block">
           <div class="code-header"><span class="code-filename">response</span><span class="code-lang">JSON</span></div>
           <pre><code>[
@@ -290,7 +327,16 @@ footer{padding:20px 0;background:var(--ink);border-top:1px solid #26262a;color:#
     <span class="t-key">"name"</span>: <span class="t-str">"login.new_location"</span>,
     <span class="t-key">"severity"</span>: <span class="t-num">3</span>,
     <span class="t-key">"created"</span>: <span class="t-str">"2026-08-27T22:04:12Z"</span>,
-    <span class="t-key">"value"</span>: <span class="t-str">"Login for jsmith@acmecorp.com from a new country"</span>
+    <span class="t-key">"updated"</span>: <span class="t-str">"2026-08-27T22:04:12Z"</span>,
+    <span class="t-key">"value"</span>: <span class="t-str">"Login for jsmith@acmecorp.com from a new country"</span>,
+    <span class="t-key">"account"</span>: <span class="t-str">"acmecorp.com"</span>,
+    <span class="t-key">"asset"</span>: <span class="t-str">"jsmith@acmecorp.com"</span>,
+    <span class="t-key">"key"</span>: <span class="t-str">"signal#482910736244"</span>,
+    <span class="t-key">"status"</span>: <span class="t-str">"CH"</span>,
+    <span class="t-key">"metadata"</span>: {
+      <span class="t-key">"strength"</span>: <span class="t-str">"1"</span>
+    },
+    <span class="t-key">"ttl"</span>: <span class="t-num">1795644252</span>
   },
   {
     <span class="t-key">"id"</span>: <span class="t-num">719203845561</span>,
@@ -298,7 +344,16 @@ footer{padding:20px 0;background:var(--ink);border-top:1px solid #26262a;color:#
     <span class="t-key">"name"</span>: <span class="t-str">"mfa.disabled"</span>,
     <span class="t-key">"severity"</span>: <span class="t-num">1</span>,
     <span class="t-key">"created"</span>: <span class="t-str">"2026-08-27T22:06:03Z"</span>,
-    <span class="t-key">"value"</span>: <span class="t-str">"MFA disabled for an admin account"</span>
+    <span class="t-key">"updated"</span>: <span class="t-str">"2026-08-27T22:06:03Z"</span>,
+    <span class="t-key">"value"</span>: <span class="t-str">"MFA disabled for an admin account"</span>,
+    <span class="t-key">"account"</span>: <span class="t-str">"acmecorp.com"</span>,
+    <span class="t-key">"asset"</span>: <span class="t-str">"jsmith@acmecorp.com"</span>,
+    <span class="t-key">"key"</span>: <span class="t-str">"signal#719203845561"</span>,
+    <span class="t-key">"status"</span>: <span class="t-str">"CH"</span>,
+    <span class="t-key">"metadata"</span>: {
+      <span class="t-key">"strength"</span>: <span class="t-str">"1"</span>
+    },
+    <span class="t-key">"ttl"</span>: <span class="t-num">1795644363</span>
   }
 ]</code></pre>
         </div>
@@ -312,6 +367,11 @@ footer{padding:20px 0;background:var(--ink);border-top:1px solid #26262a;color:#
         </div>
         <p class="endpoint-desc">The full detail on one signal.</p>
         <div class="code-block">
+          <div class="code-header"><span class="code-filename">request</span><span class="code-lang">Shell</span></div>
+          <pre><code><span class="t-fn">curl</span> https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/signal/719203845561 \
+  -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span></code></pre>
+        </div>
+        <div class="code-block">
           <div class="code-header"><span class="code-filename">response</span><span class="code-lang">JSON</span></div>
           <pre><code>{
   <span class="t-key">"id"</span>: <span class="t-num">719203845561</span>,
@@ -319,8 +379,34 @@ footer{padding:20px 0;background:var(--ink);border-top:1px solid #26262a;color:#
   <span class="t-key">"name"</span>: <span class="t-str">"mfa.disabled"</span>,
   <span class="t-key">"severity"</span>: <span class="t-num">1</span>,
   <span class="t-key">"created"</span>: <span class="t-str">"2026-08-27T22:06:03Z"</span>,
-  <span class="t-key">"value"</span>: <span class="t-str">"MFA disabled for an admin account"</span>
+  <span class="t-key">"updated"</span>: <span class="t-str">"2026-08-27T22:06:03Z"</span>,
+  <span class="t-key">"value"</span>: <span class="t-str">"MFA disabled for an admin account"</span>,
+  <span class="t-key">"account"</span>: <span class="t-str">"acmecorp.com"</span>,
+  <span class="t-key">"asset"</span>: <span class="t-str">"jsmith@acmecorp.com"</span>,
+  <span class="t-key">"key"</span>: <span class="t-str">"signal#719203845561"</span>,
+  <span class="t-key">"status"</span>: <span class="t-str">"CH"</span>,
+  <span class="t-key">"metadata"</span>: {
+    <span class="t-key">"strength"</span>: <span class="t-str">"1"</span>
+  },
+  <span class="t-key">"ttl"</span>: <span class="t-num">1795644363</span>
 }</code></pre>
+        </div>
+      </div>
+      <div class="endpoint" id="get-managed-signal">
+        <div class="endpoint-head">
+          <span class="method-pill get">GET</span>
+          <span class="endpoint-path">/managed/signal</span>
+          <span class="status-code">200 OK</span>
+        </div>
+        <p class="endpoint-desc">Every open signal across every account you manage, in one call.</p>
+        <div class="callout">
+          <div class="callout-title"><i></i>Multi-tenant shortcut</div>
+          <p>If you manage several accounts, this is the one call worth knowing about: it returns every open signal across all of them in a single response, so you don't have to loop over each account with the <code>account</code> header just to check for open work.</p>
+        </div>
+        <div class="code-block">
+          <div class="code-header"><span class="code-filename">request</span><span class="code-lang">Shell</span></div>
+          <pre><code><span class="t-fn">curl</span> https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/managed/signal \
+  -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span></code></pre>
         </div>
       </div>
     </div>
@@ -332,6 +418,12 @@ footer{padding:20px 0;background:var(--ink);border-top:1px solid #26262a;color:#
       <div class="api-section-head"><h2>Monitors</h2></div>
       <p class="api-section-intro">Connect, check, and disconnect the things watching your business. Slugs match the site: <code class="mono">google</code>, <code class="mono">microsoft</code>, <code class="mono">aws</code>, <code class="mono">cloudflare</code>, <code class="mono">level</code>, <code class="mono">shopify</code>, <code class="mono">quickbooks</code>, <code class="mono">hubspot</code>, <code class="mono">constant-contact</code>, <code class="mono">slack</code>, <code class="mono">squarespace</code>, and the many more we didn't have room to list here either.</p>
 
+      <div class="callout">
+        <div class="callout-title"><i></i>Monitor keys</div>
+        <p>Every monitor is identified by a three-part key: <code>account/vendor/index</code> — e.g. <code>acmecorp.com/google/0</code>.</p>
+        <p>The <code>account</code> is the domain the monitor belongs to, and <code>vendor</code> is the slug for what it's watching (<code>google</code>, <code>microsoft</code>, and so on). The <code>index</code> is what lets you connect more than one of the same vendor — say, two separate Microsoft 365 tenants — by giving each its own <code>index</code> under the same vendor slug.</p>
+      </div>
+
       <div class="endpoint" id="get-monitor">
         <div class="endpoint-head">
           <span class="method-pill get">GET</span>
@@ -339,6 +431,11 @@ footer{padding:20px 0;background:var(--ink);border-top:1px solid #26262a;color:#
           <span class="status-code">200 OK</span>
         </div>
         <p class="endpoint-desc">Lists every monitor currently connected to your account. This is the "yes, it's still working" button.</p>
+        <div class="code-block">
+          <div class="code-header"><span class="code-filename">request</span><span class="code-lang">Shell</span></div>
+          <pre><code><span class="t-fn">curl</span> https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/monitor \
+  -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span></code></pre>
+        </div>
         <div class="code-block">
           <div class="code-header"><span class="code-filename">response</span><span class="code-lang">JSON</span></div>
           <pre><code>[
@@ -362,32 +459,30 @@ footer{padding:20px 0;background:var(--ink);border-top:1px solid #26262a;color:#
         <p class="aside-note">Body shape depends on the provider. The two most common patterns:</p>
         <div class="code-block">
           <div class="code-header">
-            <span class="code-filename">connect-monitor.js</span>
-            <span class="code-lang">JavaScript</span>
+            <span class="code-filename">connect-monitor.sh</span>
+            <span class="code-lang">Shell</span>
           </div>
-          <pre><code><span class="t-cmnt">// Google Workspace: service account JSON key</span>
-<span class="t-kw">await</span> <span class="t-fn">fetch</span>(<span class="t-str">`${BASE}/monitor/google/0`</span>, {
-  method: <span class="t-str">'POST'</span>,
-  headers, <span class="t-cmnt">// Authorization: Bearer &lt;token&gt;</span>
-  body: <span class="t-fn">JSON.stringify</span>({
-    type: <span class="t-str">'service_account'</span>,
-    project_id: <span class="t-str">'your-project-id'</span>,
-    private_key_id: <span class="t-str">'...'</span>,
-    private_key: <span class="t-str">'-----BEGIN RSA PRIVATE KEY-----\n...'</span>,
-    client_email: <span class="t-str">'vex@your-project.iam.gserviceaccount.com'</span>,
-  }),
-}).<span class="t-fn">then</span>(r => r.<span class="t-fn">json</span>());
+          <pre><code><span class="t-cmnt"># Google Workspace: service account JSON key</span>
+<span class="t-fn">curl</span> -X POST https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/monitor/google/0 \
+  -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span> \
+  -H <span class="t-str">"Content-Type: application/json"</span> \
+  -d <span class="t-str">'{
+    "type": "service_account",
+    "project_id": "your-project-id",
+    "private_key_id": "...",
+    "private_key": "-----BEGIN RSA PRIVATE KEY-----\n...",
+    "client_email": "vex@your-project.iam.gserviceaccount.com"
+  }'</span>
 
-<span class="t-cmnt">// Microsoft 365: app registration credentials</span>
-<span class="t-kw">await</span> <span class="t-fn">fetch</span>(<span class="t-str">`${BASE}/monitor/microsoft/0`</span>, {
-  method: <span class="t-str">'POST'</span>,
-  headers,
-  body: <span class="t-fn">JSON.stringify</span>({
-    tenant_id:     <span class="t-str">'your-tenant-id'</span>,
-    client_id:     <span class="t-str">'your-app-client-id'</span>,
-    client_secret: <span class="t-str">'your-app-secret'</span>,
-  }),
-}).<span class="t-fn">then</span>(r => r.<span class="t-fn">json</span>());</code></pre>
+<span class="t-cmnt"># Microsoft 365: app registration credentials</span>
+<span class="t-fn">curl</span> -X POST https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/monitor/microsoft/0 \
+  -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span> \
+  -H <span class="t-str">"Content-Type: application/json"</span> \
+  -d <span class="t-str">'{
+    "tenant_id": "your-tenant-id",
+    "client_id": "your-app-client-id",
+    "client_secret": "your-app-secret"
+  }'</span></code></pre>
         </div>
         <div class="code-block">
           <div class="code-header"><span class="code-filename">response</span><span class="code-lang">JSON</span></div>
@@ -402,6 +497,11 @@ footer{padding:20px 0;background:var(--ink);border-top:1px solid #26262a;color:#
           <span class="status-code">204 No Content</span>
         </div>
         <p class="endpoint-desc">Disconnects a monitor. Vex stops watching that surface immediately. We'll miss it more than you will.</p>
+        <div class="code-block">
+          <div class="code-header"><span class="code-filename">request</span><span class="code-lang">Shell</span></div>
+          <pre><code><span class="t-fn">curl</span> -X DELETE https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/monitor/google/0 \
+  -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span></code></pre>
+        </div>
       </div>
     </div>
   </section>
@@ -420,6 +520,11 @@ footer{padding:20px 0;background:var(--ink);border-top:1px solid #26262a;color:#
         </div>
         <p class="endpoint-desc">Every asset Vex currently knows about, across every connected monitor. No filtering needed to get the full picture — this is the full picture.</p>
         <div class="code-block">
+          <div class="code-header"><span class="code-filename">request</span><span class="code-lang">Shell</span></div>
+          <pre><code><span class="t-fn">curl</span> https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/asset \
+  -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span></code></pre>
+        </div>
+        <div class="code-block">
           <div class="code-header"><span class="code-filename">response</span><span class="code-lang">JSON</span></div>
           <pre><code>[
   {
@@ -430,6 +535,8 @@ footer{padding:20px 0;background:var(--ink);border-top:1px solid #26262a;color:#
     },
     <span class="t-key">"name"</span>: <span class="t-str">"jsmith@acmecorp.com"</span>,
     <span class="t-key">"source"</span>: <span class="t-str">"google"</span>,
+    <span class="t-key">"status"</span>: <span class="t-str">"A0"</span>,
+    <span class="t-key">"ttl"</span>: <span class="t-num">1788185460</span>,
     <span class="t-key">"updated"</span>: <span class="t-str">"2026-06-02T14:11:00Z"</span>
   },
   {
@@ -440,11 +547,13 @@ footer{padding:20px 0;background:var(--ink);border-top:1px solid #26262a;color:#
     },
     <span class="t-key">"name"</span>: <span class="t-str">"acmecorp.com"</span>,
     <span class="t-key">"source"</span>: <span class="t-str">"cloudflare"</span>,
+    <span class="t-key">"status"</span>: <span class="t-str">"A0"</span>,
+    <span class="t-key">"ttl"</span>: <span class="t-num">1788185602</span>,
     <span class="t-key">"updated"</span>: <span class="t-str">"2026-06-02T14:13:22Z"</span>
   }
 ]</code></pre>
         </div>
-        <p class="aside-note">Assets accumulate as monitors connect and never get removed automatically — disconnect the monitor if one stops being relevant.</p>
+        <p class="aside-note">Assets accumulate as monitors connect, and expire on their own via <code class="mono">ttl</code> if they haven't been seen in a while — no need to remove them by hand.</p>
       </div>
     </div>
   </section>
@@ -462,6 +571,11 @@ footer{padding:20px 0;background:var(--ink);border-top:1px solid #26262a;color:#
           <span class="status-code">200 OK</span>
         </div>
         <p class="endpoint-desc">Every open notification about your Vex setup: broken auth, a stalled monitor, anything worth fixing before it becomes a blind spot.</p>
+        <div class="code-block">
+          <div class="code-header"><span class="code-filename">request</span><span class="code-lang">Shell</span></div>
+          <pre><code><span class="t-fn">curl</span> https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/notification \
+  -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span></code></pre>
+        </div>
         <div class="code-block">
           <div class="code-header"><span class="code-filename">response</span><span class="code-lang">JSON</span></div>
           <pre><code>[
@@ -499,7 +613,7 @@ footer{padding:20px 0;background:var(--ink);border-top:1px solid #26262a;color:#
         </table>
         <div class="code-block">
           <div class="code-header"><span class="code-filename">request</span><span class="code-lang">Shell</span></div>
-          <pre><code><span class="t-fn">curl</span> https://us.unmanned.team/file/signal/ \
+          <pre><code><span class="t-fn">curl</span> https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/file/signal/ \
   -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span></code></pre>
         </div>
         <div class="code-block">
@@ -526,7 +640,7 @@ footer{padding:20px 0;background:var(--ink);border-top:1px solid #26262a;color:#
         </table>
         <div class="code-block">
           <div class="code-header"><span class="code-filename">request</span><span class="code-lang">Shell</span></div>
-          <pre><code><span class="t-fn">curl</span> https://us.unmanned.team/file/signal?name=4827193650228 \
+          <pre><code><span class="t-fn">curl</span> <span class="t-str">"https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/file/signal?name=4827193650228"</span> \
   -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span></code></pre>
         </div>
         <div class="code-block">
@@ -557,6 +671,11 @@ footer{padding:20px 0;background:var(--ink);border-top:1px solid #26262a;color:#
           <tr><th>Parameter</th><th>In</th><th>Type</th><th></th><th>Description</th></tr>
           <tr><td>hours</td><td class="type">query</td><td class="type">integer</td><td><span class="opt">Optional</span></td><td>How many hours back to pull logs for. Defaults to <code class="mono">24</code>.</td></tr>
         </table>
+        <div class="code-block">
+          <div class="code-header"><span class="code-filename">request</span><span class="code-lang">Shell</span></div>
+          <pre><code><span class="t-fn">curl</span> <span class="t-str">"https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/audit?hours=24"</span> \
+  -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span></code></pre>
+        </div>
         <div class="code-block">
           <div class="code-header"><span class="code-filename">response</span><span class="code-lang">JSON</span></div>
           <pre><code>[

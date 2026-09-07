@@ -37,7 +37,6 @@ class Notifications {
         el.classList.add('dismissing');
 
         try {
-            await this.api.clear(key);
             el.remove();
             this.rendered.delete(key);
         } catch (e) {

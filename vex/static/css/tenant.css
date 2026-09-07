@@ -124,7 +124,6 @@
 #breach-screen .breach-detail-empty p {
   position: relative; z-index: 2;
   margin: 0;
-  font-family: 'JetBrains Mono', monospace;
   font-size: 11px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -247,7 +246,6 @@ td.strength {
 }
 
 .strength-value {
-  font-family: 'JetBrains Mono', monospace;
   font-size: 10.5px;
   font-weight: 600;
   color: var(--text-muted);

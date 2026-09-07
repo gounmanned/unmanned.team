@@ -88,7 +88,6 @@
 #inventory-screen .scope-btn .count {
   display: inline-block;
   min-width: 20px;
-  font-family: 'JetBrains Mono', monospace;
   font-size: 10.5px;
   color: var(--text-muted);
   background: var(--gray-soft);

@@ -20,7 +20,6 @@
 }
 
 #risk-sidebar .risks-banner-title {
-  font-family: 'JetBrains Mono', monospace;
   font-size: 12.5px;
   font-weight: 700;
   letter-spacing: 0.3px;
@@ -83,7 +82,6 @@
 #risk-sidebar .risk-name {
   flex: 1;
   min-width: 0;
-  font-family: 'JetBrains Mono', monospace;
   color: var(--text-body);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -93,7 +91,6 @@
 #risk-sidebar .risk-asset {
   flex-shrink: 0;
   padding: 1px 6px;
-  font-family: 'JetBrains Mono', monospace;
   font-size: 10px;
   color: var(--text-muted);
   background: var(--gray-soft);

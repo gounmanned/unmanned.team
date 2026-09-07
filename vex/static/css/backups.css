@@ -45,7 +45,6 @@
 }
 
 #backup-sidebar .backups-banner-title {
-  font-family: 'JetBrains Mono', monospace;
   font-size: 12.5px;
   font-weight: 700;
   letter-spacing: 0.3px;
@@ -70,7 +69,6 @@
   background: var(--gray-panel);
   border-bottom: 1px solid var(--gray-line);
   font-size: 11px;
-  font-family: 'JetBrains Mono', monospace;
   color: var(--text-muted);
 }
 
@@ -129,7 +127,6 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   color: var(--text-body);
-  font-family: 'JetBrains Mono', monospace;
 }
 
 #backup-sidebar .entry-chevron {

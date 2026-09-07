@@ -45,7 +45,6 @@
 }
 
 .notification-name {
-  font-family: 'JetBrains Mono', monospace;
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.5px;
@@ -62,7 +61,6 @@
 }
 
 .notification-time {
-  font-family: 'JetBrains Mono', monospace;
   font-size: 10px;
   color: var(--text-muted);
   margin-top: 5px;

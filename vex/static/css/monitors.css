@@ -19,7 +19,7 @@
 
 .monitor-callout { flex-shrink: 0; margin: 16px 18px; }
 .monitor-callout-text { margin: 0 0 4px; font-size: 12px; line-height: 1.6; color: var(--text-muted); }
-.monitor-callout-address { margin: 0; font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: var(--text-strong); }
+.monitor-callout-address { margin: 0; font-size: 11.5px; color: var(--text-strong); }
 .monitor-callout-address:hover { color: var(--pink); }
 
 #monitor-screen .table-wrap { padding: 0 18px; overflow-y: auto; }

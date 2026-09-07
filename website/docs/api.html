@@ -165,10 +165,8 @@ footer{padding:20px 0;background:var(--ink);border-top:1px solid #26262a;color:#
     <a class="logo" href="index.html"><i></i>VEX</a>
     <nav class="nav-links">
       <a href="#signals">Signals</a>
-      <a href="#threat">Threat</a>
       <a href="#monitors">Monitors</a>
       <a href="#assets">Assets</a>
-      <a href="#breach">Breach</a>
       <a href="#notifications">Notifications</a>
       <a href="#files">Files</a>
       <a href="#audit">Audit</a>
@@ -328,63 +326,6 @@ footer{padding:20px 0;background:var(--ink);border-top:1px solid #26262a;color:#
     </div>
   </section>
 
-  <!-- THREAT -->
-  <section class="api-section" id="threat">
-    <div class="wrap">
-      <div class="api-section-head"><h2>Threat</h2></div>
-      <p class="api-section-intro">The "nothing personal" part, quantified. A running count of the automated noise currently aimed at your business, whether or not any of it went anywhere.</p>
-
-      <div class="endpoint" id="get-threat">
-        <div class="endpoint-head">
-          <span class="method-pill get">GET</span>
-          <span class="endpoint-path">/threat</span>
-          <span class="status-code">200 OK</span>
-        </div>
-        <p class="endpoint-desc">Threat indicators detected against your business, paginated. Nobody researched you specifically; this is the receipts.</p>
-        <table class="param-table">
-          <tr><th>Parameter</th><th>In</th><th>Type</th><th></th><th>Description</th></tr>
-          <tr><td>offset</td><td class="type">query</td><td class="type">integer</td><td><span class="opt">Optional</span></td><td>Which page of results to retrieve. Defaults to <code class="mono">0</code>.</td></tr>
-        </table>
-        <div class="code-block">
-          <div class="code-header"><span class="code-filename">response</span><span class="code-lang">JSON</span></div>
-          <pre><code>{
-  <span class="t-key">"page"</span>: <span class="t-kw">null</span>,
-  <span class="t-key">"threats"</span>: [
-    {
-      <span class="t-key">"account"</span>: <span class="t-str">"acmecorp.com"</span>,
-      <span class="t-key">"created"</span>: <span class="t-str">"2026-09-02T17:32:57Z"</span>,
-      <span class="t-key">"id"</span>: <span class="t-num">4906162990486</span>,
-      <span class="t-key">"key"</span>: <span class="t-str">"threat#4906162990486#203.0.113.10"</span>,
-      <span class="t-key">"name"</span>: <span class="t-str">"203.0.113.10"</span>,
-      <span class="t-key">"source"</span>: <span class="t-str">"dmarc"</span>,
-      <span class="t-key">"ttl"</span>: <span class="t-num">1788456777</span>
-    },
-    {
-      <span class="t-key">"account"</span>: <span class="t-str">"acmecorp.com"</span>,
-      <span class="t-key">"created"</span>: <span class="t-str">"2026-09-02T17:32:57Z"</span>,
-      <span class="t-key">"id"</span>: <span class="t-num">4906162990486</span>,
-      <span class="t-key">"key"</span>: <span class="t-str">"threat#4906162990486#203.0.113.124"</span>,
-      <span class="t-key">"name"</span>: <span class="t-str">"203.0.113.124"</span>,
-      <span class="t-key">"source"</span>: <span class="t-str">"dmarc"</span>,
-      <span class="t-key">"ttl"</span>: <span class="t-num">1788456777</span>
-    },
-    {
-      <span class="t-key">"account"</span>: <span class="t-str">"acmecorp.com"</span>,
-      <span class="t-key">"created"</span>: <span class="t-str">"2026-09-02T11:12:32Z"</span>,
-      <span class="t-key">"id"</span>: <span class="t-num">5645257059374</span>,
-      <span class="t-key">"key"</span>: <span class="t-str">"threat#5645257059374#203.0.113.10"</span>,
-      <span class="t-key">"name"</span>: <span class="t-str">"203.0.113.10"</span>,
-      <span class="t-key">"source"</span>: <span class="t-str">"dmarc"</span>,
-      <span class="t-key">"ttl"</span>: <span class="t-num">1788433952</span>
-    }
-  ]
-}</code></pre>
-        </div>
-        <p class="aside-note"><code class="mono">ttl</code> is a Unix timestamp marking when the entry ages out of the feed. <code class="mono">page</code> is <code class="mono">null</code> when there's no further page to fetch.</p>
-      </div>
-    </div>
-  </section>
-
   <!-- MONITORS -->
   <section class="api-section" id="monitors">
     <div class="wrap">
@@ -504,38 +445,6 @@ footer{padding:20px 0;background:var(--ink);border-top:1px solid #26262a;color:#
 ]</code></pre>
         </div>
         <p class="aside-note">Assets accumulate as monitors connect and never get removed automatically — disconnect the monitor if one stops being relevant.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- BREACH -->
-  <section class="api-section" id="breach">
-    <div class="wrap">
-      <div class="api-section-head"><h2>Breach</h2></div>
-      <p class="api-section-intro">Scenarios built from your assets showing up in breach data — where the exposure came from, and what it actually touches on your side.</p>
-
-      <div class="endpoint" id="get-breach">
-        <div class="endpoint-head">
-          <span class="method-pill get">GET</span>
-          <span class="endpoint-path">/breach</span>
-          <span class="status-code">200 OK</span>
-        </div>
-        <p class="endpoint-desc">Every breach scenario Vex has assembled for your assets, newest first.</p>
-        <div class="code-block">
-          <div class="code-header"><span class="code-filename">response</span><span class="code-lang">JSON</span></div>
-          <pre><code>[
-  {
-    <span class="t-key">"account"</span>: <span class="t-str">"acmecorp.com"</span>,
-    <span class="t-key">"created"</span>: <span class="t-str">"2026-08-27T10:00:52Z"</span>,
-    <span class="t-key">"id"</span>: <span class="t-num">8873456129034</span>,
-    <span class="t-key">"key"</span>: <span class="t-str">"breach#8873456129034#Quack Compromised"</span>,
-    <span class="t-key">"name"</span>: <span class="t-str">"Quack Compromised"</span>,
-    <span class="t-key">"ttl"</span>: <span class="t-num">1788429652</span>,
-    <span class="t-key">"value"</span>: <span class="t-str">"An attacker could initially exploit the unpatched macOS system by leveraging known vulnerabilities that remain unaddressed due to the patching failure. This provides a foothold into the device, allowing execution of code or escalation of privileges within the local environment.\n\nThe choke point is the persistent patching failure itself, as it represents a systemic weakness that enables all preceding initial access and local exploitation. Resolving this single signal would eliminate the numerous potential attack paths that depend on the existence of these unpatched vulnerabilities, as successful patching would close the security gaps an attacker needs.\n\nFrom this established foothold, an attacker could move laterally within the network, targeting other devices or sensitive data stored on the compromised MacBook. They might also deploy persistent malware or backdoors that survive reboots, ensuring long-term control over the endpoint.\n\nUltimately, this access could be used to exfiltrate sensitive company data or credentials, particularly targeting the acmecorp.com domain. The attacker could also use the compromised machine as a launch point for further attacks against internal infrastructure or cloud services."</span>
-  }
-]</code></pre>
-        </div>
-        <p class="aside-note">A breach scenario doesn't mean the credential still works — just that it exists somewhere it shouldn't. Cross-reference against signals to see if anyone's tried it.</p>
       </div>
     </div>
   </section>

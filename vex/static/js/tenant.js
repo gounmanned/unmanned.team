@@ -23,6 +23,7 @@ class TenantScreen {
             this.api.reset();
             this.table.clear();
             this.table.watermark(true);
+            this.generateChokepoint();
             this.count();
             this.panel();
         });
@@ -86,11 +87,47 @@ class TenantScreen {
         `;
     }
 
+    async open(signal) {
+        await SiteSpinner.withLoading(async () => {
+            Workspace.sidebars.signal.reset();
+            Workspace.sidebars.signal.inject(signal, await this.api.signals.get(signal.id));
+            document.getElementById('signal-sidebar').show();
+        });
+    }
+
+    generateChokepoint() {
+        const callout = document.getElementById('chokepoint-callout');
+        if (!callout) return;
+
+        const candidates = Object.values(this.state.signals[this.state.account()] ?? {})
+            .filter(s => s.status?.startsWith('O') && s.metadata?.chokepoint);
+
+        if (!candidates.length) {
+            callout.style.display = 'none';
+            this.chokepoint = null;
+            return;
+        }
+
+        this.chokepoint = candidates.sort((a, b) =>
+            new Date(b.metadata.chokepoint) - new Date(a.metadata.chokepoint)
+        )[0];
+
+        document.getElementById('chokepoint-name').textContent = this.chokepoint.name;
+        document.getElementById('chokepoint-created').textContent = Workspace.date(this.chokepoint.created);
+        document.getElementById('chokepoint-updated').textContent = Workspace.date(this.chokepoint.updated);
+
+        const logo = document.getElementById('chokepoint-logo');
+        logo.src = `static/img/source/${this.chokepoint.source}.png`;
+        logo.alt = this.chokepoint.source;
+        callout.style.display = 'flex';
+    }
+    
     listen() {
         document.addEventListener('signal:account', (ev) => {
             const upsert = (row, signal) => {
                 this.table.add(row, signal);
                 this.table.watermark(false);
+                this.generateChokepoint();
             };
 
             this.state.track(ev.signal);
@@ -120,9 +157,7 @@ class TenantScreen {
                 e.stopPropagation();
 
                 await SiteSpinner.withLoading(async () => {
-                    Workspace.sidebars.signal.reset();
-                    Workspace.sidebars.signal.inject(signal, await this.api.signals.get(signal.id));
-                    document.getElementById('signal-sidebar').show();
+                    await this.open(signal);
                 });
             });
 
@@ -134,7 +169,7 @@ class TenantScreen {
             const active = document.getElementById('toggle').classList.toggle('active');
             document.getElementById('toggle-label').textContent = active ? 'This month' : 'This year';
 
-            this.state.signals = {};
+            this.state.reset();
             this.month = active ? new Date() : null;
 
             await SiteSpinner.withLoading(async() => {
@@ -149,6 +184,10 @@ class TenantScreen {
 
             document.dispatchEvent(new CustomEvent('page:reset'));
             document.querySelector('.delegation-notice').classList.remove('visible');
+        });
+
+        document.getElementById('chokepoint-callout').addEventListener('click', () => {
+            if (this.chokepoint) this.open(this.chokepoint);
         });
     }
 }

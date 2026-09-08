@@ -135,7 +135,7 @@
 #signal-table {
   table-layout: fixed;
   width: 100%;
-  margin-top: 20px;
+  margin-top: 8px;
 }
 
 tr.unread {
@@ -377,4 +377,156 @@ td.strength {
   font-weight: 500;
   color: var(--text-muted, #8a8f98);
   white-space: nowrap;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   CHOKE POINT CALLOUT
+───────────────────────────────────────────────────────────────── */
+
+.chokepoint-callout {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  margin: 16px 0;
+  padding: 16px 20px;
+  box-sizing: border-box;
+  border-radius: 12px;
+  background:
+    radial-gradient(120% 180% at 0% 0%, rgba(224,18,128,0.10), transparent 60%),
+    var(--gray-panel, #fff);
+  border: 1px solid rgba(224,18,128,0.25);
+  cursor: pointer;
+  overflow: hidden;
+  isolation: isolate;
+  transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.chokepoint-callout::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  border-radius: inherit;
+  background: linear-gradient(115deg, rgba(224,18,128,0) 20%, rgba(224,18,128,0.8) 50%, rgba(224,18,128,0) 80%);
+  background-size: 220% 220%;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+  animation: chokepoint-sheen 4s ease-in-out infinite;
+}
+
+@keyframes chokepoint-sheen {
+  0%   { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+.chokepoint-callout:hover {
+  transform: translateY(-1px);
+  border-color: rgba(224,18,128,0.45);
+  box-shadow: 0 8px 24px -12px rgba(224,18,128,0.35);
+}
+
+.chokepoint-callout:active { transform: translateY(0); }
+
+/* ── icon / logo ─────────────────────────────────────────────── */
+
+.chokepoint-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(224,18,128,0.12);
+  color: var(--pink);
+  z-index: 1;
+}
+
+.chokepoint-icon::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 1px solid rgba(224,18,128,0.4);
+  animation: chokepoint-pulse 2.2s ease-out infinite;
+}
+
+@keyframes chokepoint-pulse {
+  0%   { transform: scale(0.75); opacity: 0.9; }
+  80%  { transform: scale(1.35); opacity: 0; }
+  100% { transform: scale(1.35); opacity: 0; }
+}
+
+.chokepoint-logo {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  z-index: 2;
+}
+
+/* ── body / text ──────────────────────────────────────────────── */
+
+.chokepoint-body { flex: 1; min-width: 0; z-index: 1; }
+
+.chokepoint-title-row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.chokepoint-label {
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--pink);
+}
+
+.chokepoint-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-strong);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chokepoint-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+  margin-top: 4px;
+  font-size: 11.5px;
+  color: var(--text-muted);
+}
+
+.chokepoint-meta .cp-field { color: var(--text-strong); font-weight: 600; }
+
+.chokepoint-meta .cp-dot {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--gray-line);
+  display: inline-block;
+}
+
+.chokepoint-explainer {
+  margin: 6px 0 0;
+  font-size: 11.5px;
+  line-height: 1.4;
+  color: var(--text-muted);
+  max-width: 640px;
+}
+
+@media (max-width: 640px) {
+  .chokepoint-callout { flex-wrap: wrap; }
+  .chokepoint-explainer { max-width: 100%; }
 }

@@ -53,6 +53,24 @@
   <main class="container">
     <div class="connections-grid" id="open-monitor-rollup"></div>
 
+    <div class="chokepoint-callout" id="chokepoint-callout" style="display:none;">
+      <div class="chokepoint-icon">
+        <img class="chokepoint-logo" id="chokepoint-logo"/>
+      </div>
+      <div class="chokepoint-body">
+        <div class="chokepoint-title-row">
+          <span class="chokepoint-label">Choke Point</span>
+          <span class="chokepoint-name" id="chokepoint-name"></span>
+        </div>
+        <div class="chokepoint-meta">
+          <span>First seen <span class="cp-field" id="chokepoint-created"></span></span>
+          <span class="cp-dot"></span>
+          <span>Last updated <span class="cp-field" id="chokepoint-updated"></span></span>
+        </div>
+        <p class="chokepoint-explainer">A choke point is a single security weakness used by many attack paths. Fix this first.</p>
+      </div>
+    </div>
+    
     <div class="table-wrap" id="signal-table-wrap">
       <table id="signal-table">
         <colgroup>

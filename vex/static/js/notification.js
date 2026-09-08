@@ -1,6 +1,6 @@
 class Notifications {
-    constructor(api) {
-        this.api = api;
+    constructor(state) {
+        this.api = state.api.notification;
         this.items = [];
         this.bell = document.getElementById('notification-bell');
         this.panel = document.getElementById('notification-panel');
@@ -10,22 +10,17 @@ class Notifications {
     }
 
     async refresh() {
-        this.items = await this.api.list() ?? [];
+        const items = await this.api.list() ?? [];
+        this.items = items;
         this.bell.classList.toggle('has-notifications', this.items.length > 0);
-    }
-
-    clear() {
-        this.items = [];
-        this.bell.classList.remove('has-notifications');
-        this.panel.classList.remove('open');
-        this.list.innerHTML = '';
+        this.render();
     }
 
     render() {
         this.list.innerHTML = this.items.map(n => `
             <li>
-                <div class="notification-name">${this.escape(n.name)}</div>
-                <div class="notification-value">${this.escape(n.value)}</div>
+                <div class="notification-name">${n.name}</div>
+                <div class="notification-value">${n.value}</div>
                 <div class="notification-time">${this.relativeTime(n.created)}</div>
             </li>
         `).join('');
@@ -33,20 +28,12 @@ class Notifications {
         this.panel.classList.toggle('empty', this.items.length === 0);
     }
 
-    escape(str) {
-        const div = document.createElement('div');
-        div.textContent = str ?? '';
-        return div.innerHTML;
-    }
-
     listen() {
         this.bell.addEventListener('click', async (e) => {
             e.stopPropagation();
-
             const opening = !this.panel.classList.contains('open');
             if (opening) {
                 await this.refresh();
-                this.render();
             }
             this.panel.classList.toggle('open', opening);
         });

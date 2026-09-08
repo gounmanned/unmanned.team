@@ -1,0 +1,117 @@
+/* ─────────────────────────────────────────────────────────────────
+   GETTING STARTED
+───────────────────────────────────────────────────────────────── */
+
+.getting-started {
+  width: 100%;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--gray-line);
+}
+
+.gs-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+}
+
+@media (max-width: 900px) {
+  .gs-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 480px) {
+  .gs-grid { grid-template-columns: 1fr; }
+}
+
+.gs-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  opacity: 0.5;
+  transition: opacity 0.15s;
+}
+
+.gs-card.done {
+  opacity: 1;
+}
+
+.gs-card:first-child { padding-left: 0; }
+
+.gs-card:not(:first-child)::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 2px;
+  bottom: 2px;
+  width: 1px;
+  background: var(--gray-line);
+}
+
+@media (max-width: 900px) {
+  .gs-card:nth-child(odd)::before { display: none; }
+}
+
+@media (max-width: 480px) {
+  .gs-card::before { display: none !important; }
+}
+
+.gs-card-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.gs-card-top {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 4px;
+}
+
+.gs-check {
+  font-size: 16px;
+  color: var(--gray-line, #d1d5db);
+  flex-shrink: 0;
+  transition: color 0.15s, font-size 0.15s;
+}
+
+.gs-card.done .gs-check {
+  font-variation-settings: 'FILL' 1;
+  font-size: 17px;
+  color: #4b9e82;
+}
+
+.gs-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-strong);
+}
+
+.gs-status {
+  display: none;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-left: 2px;
+}
+
+.gs-card.done .gs-status {
+  display: inline;
+}
+
+.gs-desc {
+  margin: 0;
+  font-size: 10.5px;
+  line-height: 1.4;
+  color: var(--text-muted);
+}
+
+.gs-logo {
+  display: none;
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  flex-shrink: 0;
+}

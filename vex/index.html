@@ -15,6 +15,7 @@
       <link rel="stylesheet" href="static/css/index.css?v=${v}">
       <link rel="stylesheet" href="static/css/audit.css?v=${v}">
       <link rel="stylesheet" href="static/css/notification.css?v=${v}">
+      <link rel="stylesheet" href="static/css/onboarding.css?v=${v}">
       <link rel="stylesheet" href="static/css/managed.css?v=${v}">
       <link rel="stylesheet" href="static/css/inventory.css?v=${v}">
       <link rel="stylesheet" href="static/css/tenant.css?v=${v}">
@@ -62,6 +63,72 @@
   </site-header>
 
   <main class="container">
+    <div class="getting-started" id="getting-started">
+      <div class="gs-grid">
+
+        <div class="gs-card" id="gs-email">
+          <div class="gs-card-main">
+            <div class="gs-card-top">
+              <span class="material-symbols-outlined gs-check">radio_button_unchecked</span>
+              <span class="gs-title">Connect email</span>
+              <span class="gs-status"></span>
+            </div>
+            <p class="gs-desc">Monitor your identity provider for security incidents, compliance gaps, and to build an asset inventory.</p>
+          </div>
+          <img class="gs-logo" alt="" />
+        </div>
+
+        <div class="gs-card" id="gs-endpoint">
+          <div class="gs-card-main">
+            <div class="gs-card-top">
+              <span class="material-symbols-outlined gs-check">radio_button_unchecked</span>
+              <span class="gs-title">Connect endpoints</span>
+              <span class="gs-status"></span>
+            </div>
+            <p class="gs-desc">Pull signals directly from your EDR or RMM to catch suspicious device activity.</p>
+          </div>
+          <img class="gs-logo" alt="" />
+        </div>
+
+        <div class="gs-card" id="gs-domain">
+          <div class="gs-card-main">
+            <div class="gs-card-top">
+              <span class="material-symbols-outlined gs-check">radio_button_unchecked</span>
+              <span class="gs-title">Connect domain</span>
+              <span class="gs-status"></span>
+            </div>
+            <p class="gs-desc">Track DNS changes, domain renewal notices, and security alerts from DDoS attacks.</p>
+          </div>
+          <img class="gs-logo" alt="" />
+        </div>
+
+        <div class="gs-card" id="gs-saas">
+          <div class="gs-card-main">
+            <div class="gs-card-top">
+              <span class="material-symbols-outlined gs-check">radio_button_unchecked</span>
+              <span class="gs-title">Connect services</span>
+              <span class="gs-status"></span>
+            </div>
+            <p class="gs-desc">Attach any other web service you'd like Vex to keep an eye on, from a CRM to a cloud.</p>
+          </div>
+          <img class="gs-logo" alt="" />
+        </div>
+
+        <div class="gs-card" id="gs-notifications">
+          <div class="gs-card-main">
+            <div class="gs-card-top">
+              <span class="material-symbols-outlined gs-check">radio_button_unchecked</span>
+              <span class="gs-title">Connect notifications</span>
+              <span class="gs-status"></span>
+            </div>
+            <p class="gs-desc">Choose where you want to hear about new signals when Vex discovers them.</p>
+          </div>
+          <img class="gs-logo" alt="" />
+        </div>
+
+      </div>
+    </div>
+
     <div class="chokepoint-callout" id="chokepoint-callout" style="display:none;">
       <div class="chokepoint-icon">
         <img class="chokepoint-logo" id="chokepoint-logo"/>
@@ -441,6 +508,7 @@
     <script src="static/js/workspace.js?v=${v}"><\/script>
     <script src="static/js/table.js?v=${v}"><\/script>
     <script src="static/js/notification.js?v=${v}"><\/script>
+    <script src="static/js/onboarding.js?v=${v}"><\/script>
     <script src="static/js/tenant.js?v=${v}"><\/script>
     <script src="static/js/sidebars/signal.js?v=${v}"><\/script>
     <script src="static/js/sidebars/backup.js?v=${v}"><\/script>

@@ -23,7 +23,7 @@ class TenantScreen {
             this.api.reset();
             this.table.clear();
             this.table.watermark(true);
-            this.chokepoint();
+            this.generateChokepoint();
             this.count();
             this.panel();
         });
@@ -95,32 +95,31 @@ class TenantScreen {
         });
     }
 
-    chokepoint() {
-        const el = document.getElementById('chokepoint-callout');
-        if (!el) return;
+    generateChokepoint() {
+        const callout = document.getElementById('chokepoint-callout');
+        if (!callout) return;
 
-        const candidates = Object.values(this.state.signals || {})
+        const candidates = Object.values(this.state.signals[this.state.account()] ?? {})
             .filter(s => s.status?.startsWith('O') && s.metadata?.chokepoint);
 
         if (!candidates.length) {
-            el.style.display = 'none';
-            this.chokepointSignal = null;
+            callout.style.display = 'none';
+            this.chokepoint = null;
             return;
         }
 
-        const signal = candidates.sort((a, b) =>
+        this.chokepoint = candidates.sort((a, b) =>
             new Date(b.metadata.chokepoint) - new Date(a.metadata.chokepoint)
         )[0];
 
-        this.chokepointSignal = signal;
+        document.getElementById('chokepoint-name').textContent = this.chokepoint.name;
+        document.getElementById('chokepoint-created').textContent = Workspace.date(this.chokepoint.created);
+        document.getElementById('chokepoint-updated').textContent = Workspace.date(this.chokepoint.updated);
 
-        document.getElementById('chokepoint-name').textContent = signal.name;
-        document.getElementById('chokepoint-asset').textContent = signal.asset;
-        document.getElementById('chokepoint-source').textContent = signal.source;
-        document.getElementById('chokepoint-created').textContent = signal.created;
-        document.getElementById('chokepoint-updated').textContent = signal.updated ?? signal.created;
-        document.getElementById('chokepoint-detected').textContent = new Date(signal.metadata.chokepoint).toLocaleString();
-        el.style.display = 'flex';
+        const logo = document.getElementById('chokepoint-logo');
+        logo.src = `static/img/source/${this.chokepoint.source}.png`;
+        logo.alt = this.chokepoint.source;
+        callout.style.display = 'flex';
     }
     
     listen() {
@@ -128,7 +127,7 @@ class TenantScreen {
             const upsert = (row, signal) => {
                 this.table.add(row, signal);
                 this.table.watermark(false);
-                this.chokepoint();
+                this.generateChokepoint();
             };
 
             this.state.track(ev.signal);
@@ -170,7 +169,7 @@ class TenantScreen {
             const active = document.getElementById('toggle').classList.toggle('active');
             document.getElementById('toggle-label').textContent = active ? 'This month' : 'This year';
 
-            this.state.signals = {};
+            this.state.reset();
             this.month = active ? new Date() : null;
 
             await SiteSpinner.withLoading(async() => {
@@ -188,7 +187,7 @@ class TenantScreen {
         });
 
         document.getElementById('chokepoint-callout').addEventListener('click', () => {
-            if (this.chokepointSignal) this.open(this.chokepointSignal);
+            if (this.chokepoint) this.open(this.chokepoint);
         });
     }
 }

@@ -55,7 +55,7 @@
 
     <div class="chokepoint-callout" id="chokepoint-callout" style="display:none;">
       <div class="chokepoint-icon">
-        <span class="material-symbols-outlined">bolt</span>
+        <img class="chokepoint-logo" id="chokepoint-logo"/>
       </div>
       <div class="chokepoint-body">
         <div class="chokepoint-title-row">
@@ -63,19 +63,12 @@
           <span class="chokepoint-name" id="chokepoint-name"></span>
         </div>
         <div class="chokepoint-meta">
-          <span class="cp-field" id="chokepoint-asset"></span>
+          <span>First seen <span class="cp-field" id="chokepoint-created"></span></span>
           <span class="cp-dot"></span>
-          <span class="cp-field" id="chokepoint-source"></span>
-          <span class="cp-dot"></span>
-          <span>Created <span class="cp-field" id="chokepoint-created"></span></span>
-          <span class="cp-dot"></span>
-          <span>Updated <span class="cp-field" id="chokepoint-updated"></span></span>
-          <span class="cp-dot"></span>
-          <span>Detected <span class="cp-field" id="chokepoint-detected"></span></span>
+          <span>Last updated <span class="cp-field" id="chokepoint-updated"></span></span>
         </div>
-        <p class="chokepoint-explainer">A choke point is a security weakness that many attack paths go through.</p>
+        <p class="chokepoint-explainer">A choke point is a single security weakness used by many attack paths. Fix this first.</p>
       </div>
-      <span class="material-symbols-outlined chokepoint-arrow">arrow_forward</span>
     </div>
     
     <div class="table-wrap" id="signal-table-wrap">

@@ -58,14 +58,14 @@ class SiteHeader extends HTMLElement {
           gap: 12px;
         }
         ::slotted(h4) {
-          font-size: 0.85rem;
-          font-weight: 500;
+          font-size: 0.75rem;
+          font-weight: 300;
           cursor: pointer;
           white-space: nowrap;
           color: var(--ink, #0b0c0d);
-          border: 1px solid var(--gray-line, #dcdcd8);
+          border: 1px solid #f3f3f0;
           border-radius: 6px;
-          padding: 4px 10px;
+          padding: 3px 8px;
           transition: color 0.15s, border-color 0.15s;
         }
         ::slotted(h4:hover) {

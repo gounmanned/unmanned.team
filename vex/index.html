@@ -47,6 +47,17 @@
   </div>
 
   <site-header>
+    <button id="notification-bell" class="bell-btn" type="button" aria-label="Notifications">
+      <span class="material-symbols-outlined">notifications</span>
+      <span class="bell-dot"></span>
+    </button>
+
+    <div class="notification-panel" id="notification-panel">
+      <div class="notification-panel-header">Notifications</div>
+      <ul id="notification-panel-list"></ul>
+      <div class="notification-panel-empty" id="notification-panel-empty">You're all caught up</div>
+    </div>
+
     <h4 id="open-managed-rollup">&#x2191; Switch tenant</h4>
   </site-header>
 

@@ -1,50 +1,116 @@
-.notification-stack {
-  position: fixed;
-  top: 16px;
-  right: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  z-index: 9999;
-  max-width: 360px;
-  width: 100%;
+/* ─────────────────────────────────────────────────────────────────
+   NOTIFICATION BELL
+───────────────────────────────────────────────────────────────── */
+
+.bell-btn {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  margin-right: 4px;
+  border: none;
+  background: transparent;
+  border-radius: 50%;
+  color: var(--text-muted, #9ca3af);
+  cursor: pointer;
+  line-height: 0;
+  position: relative;
+  transition: background 0.15s, color 0.15s;
 }
 
-.notification-toast {
-  position: relative;
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
+.bell-btn:hover {
+  background: var(--gray-hover);
+  color: var(--ink);
+}
+
+.bell-btn .material-symbols-outlined {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.bell-dot {
+  box-sizing: border-box;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: transparent; /* clear when there's nothing to see */
+}
+
+.bell-btn.has-notifications .bell-dot {
+  background: var(--sev-1);
+  animation: bell-pulse 1.6s ease-out infinite;
+}
+
+@keyframes bell-pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.55); }
+  70%  { box-shadow: 0 0 0 8px rgba(220, 38, 38, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   NOTIFICATION PANEL
+───────────────────────────────────────────────────────────────── */
+
+.notification-panel {
+  display: none;
+  position: absolute;
+  top: 44px;
+  right: 14px;
+  width: 320px;
+  max-height: 420px;
+  overflow-y: auto;
   background: var(--gray-panel);
   border: 1px solid var(--gray-line);
-  border-left: 3px solid var(--sev-1);
-  border-radius: 8px;
-  padding: 10px 12px;
-  box-sizing: border-box;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-  animation: notification-in 0.2s ease-out;
-  transition: opacity 0.15s, transform 0.15s;
+  border-radius: 10px;
+  box-shadow: 0 12px 32px -12px rgba(0, 0, 0, 0.28);
+  z-index: 60;
 }
 
-.notification-toast.dismissing {
-  opacity: 0.5;
-  pointer-events: none;
+.notification-panel.open {
+  display: block;
 }
 
-.notification-toast .material-symbols-outlined.notification-icon {
-  font-size: 17px;
-  color: var(--sev-1);
-  flex-shrink: 0;
-  line-height: 1;
-  margin-top: 1px;
+.notification-panel-header {
+  padding: 10px 14px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--gray-line);
 }
 
-.notification-body {
-  flex: 1 1 auto;
-  min-width: 0;
+.notification-panel-empty {
+  padding: 28px 14px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-muted);
+  display: none;
 }
 
-.notification-name {
+.notification-panel.empty .notification-panel-empty { display: block; }
+.notification-panel.empty #notification-panel-list { display: none; }
+
+#notification-panel-list {
+  list-style: none;
+  margin: 0;
+  padding: 4px 0;
+}
+
+#notification-panel-list li {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--gray-line);
+}
+
+#notification-panel-list li:last-child { border-bottom: none; }
+
+#notification-panel-list .notification-name {
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.5px;
@@ -53,41 +119,23 @@
   margin-bottom: 3px;
 }
 
-.notification-value {
+#notification-panel-list .notification-value {
   font-size: 12.5px;
   line-height: 1.4;
   color: var(--text-strong);
   word-break: break-word;
 }
 
-.notification-time {
+#notification-panel-list .notification-time {
   font-size: 10px;
   color: var(--text-muted);
-  margin-top: 5px;
-}
-
-.notification-close {
-  flex-shrink: 0;
-  font-size: 16px;
-  color: var(--text-faint);
-  cursor: pointer;
-  transition: color 0.12s;
-}
-
-.notification-close:hover {
-  color: var(--ink);
-}
-
-@keyframes notification-in {
-  from { opacity: 0; transform: translateX(20px); }
-  to   { opacity: 1; transform: translateX(0); }
+  margin-top: 4px;
 }
 
 @media (max-width: 720px) {
-  .notification-stack {
+  .notification-panel {
     left: 14px;
     right: 14px;
-    top: 12px;
-    max-width: none;
+    width: auto;
   }
 }

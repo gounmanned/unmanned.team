@@ -1,49 +1,61 @@
 class Notifications {
-    constructor(api, container = 'notification-stack') {
+    constructor(api) {
         this.api = api;
-        this.container = document.getElementById(container);
-        this.rendered = new Set();
+        this.items = [];
+        this.bell = document.getElementById('notification-bell');
+        this.panel = document.getElementById('notification-panel');
+        this.list = document.getElementById('notification-panel-list');
+        this.refresh();
+        this.listen();
     }
 
-    async show() {
-        const notifications = await this.api.list();
-        if (!notifications?.length) return;
-
-        notifications.filter(n => !this.rendered.has(n.key)).forEach(n => this.render(n));
+    async refresh() {
+        this.items = await this.api.list() ?? [];
+        this.bell.classList.toggle('has-notifications', this.items.length > 0);
     }
 
-    render(notification) {
-        this.rendered.add(notification.key);
-
-        const el = document.createElement('div');
-        el.className = 'notification-toast';
-        el.innerHTML = `
-            <span class="material-symbols-outlined notification-icon">notifications</span>
-            <div class="notification-body">
-                <div class="notification-name">${notification.name}</div>
-                <div class="notification-value">${notification.value}</div>
-                <div class="notification-time">${this.relativeTime(notification.created)}</div>
-            </div>
-            <span class="material-symbols-outlined notification-close">close</span>
-        `;
-
-        const closeBtn = el.querySelector('.notification-close');
-        closeBtn.addEventListener('click', () => this.dismiss(notification.key, el, closeBtn));
-        this.container.appendChild(el);
+    clear() {
+        this.items = [];
+        this.bell.classList.remove('has-notifications');
+        this.panel.classList.remove('open');
+        this.list.innerHTML = '';
     }
 
-    async dismiss(key, el, closeBtn) {
-        closeBtn.style.pointerEvents = 'none';
-        el.classList.add('dismissing');
+    render() {
+        this.list.innerHTML = this.items.map(n => `
+            <li>
+                <div class="notification-name">${this.escape(n.name)}</div>
+                <div class="notification-value">${this.escape(n.value)}</div>
+                <div class="notification-time">${this.relativeTime(n.created)}</div>
+            </li>
+        `).join('');
 
-        try {
-            el.remove();
-            this.rendered.delete(key);
-        } catch (e) {
-            el.classList.remove('dismissing');
-            closeBtn.style.pointerEvents = '';
-            console.error('Failed to clear notification', key, e);
-        }
+        this.panel.classList.toggle('empty', this.items.length === 0);
+    }
+
+    escape(str) {
+        const div = document.createElement('div');
+        div.textContent = str ?? '';
+        return div.innerHTML;
+    }
+
+    listen() {
+        this.bell.addEventListener('click', async (e) => {
+            e.stopPropagation();
+
+            const opening = !this.panel.classList.contains('open');
+            if (opening) {
+                await this.refresh();
+                this.render();
+            }
+            this.panel.classList.toggle('open', opening);
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!this.panel.contains(e.target) && !this.bell.contains(e.target)) {
+                this.panel.classList.remove('open');
+            }
+        });
     }
 
     relativeTime(created) {

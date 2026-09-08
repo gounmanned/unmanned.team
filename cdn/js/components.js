@@ -5,91 +5,103 @@ class SiteHeader extends HTMLElement {
   }
 
   connectedCallback() {
-    this.shadowRoot.innerHTML = `
-      <style>
-        :host {
-          display: block;
-          position: fixed;
-          top: var(--header-offset, 0);
-          left: 0; right: 0;
-          height: 52px;
-          z-index: 10;
-          background: var(--gray-panel, #eeeeee);
-          border-bottom: 1px solid var(--gray-line, #dcdcd8);
-          font-family: var(--font-sans, -apple-system, Arial, sans-serif);
-        }
-        .header-container {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 0 32px;
-          height: 100%;
-        }
-        .logo-area {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          flex-shrink: 0;
-        }
-        .logo-area img {
-          height: 24px;
-          width: 24px;
-          object-fit: contain;
-        }
-        .text-group {
-          display: flex;
-          align-items: baseline;
-          gap: 6px;
-        }
-        .company-name {
-          font-family: var(--font-display, 'Space Grotesk', sans-serif);
-          font-size: 0.95rem;
-          font-weight: 600;
-          color: var(--ink, #0b0c0d);
-        }
-        .tagline {
-          font-size: 0.9rem;
-          color: var(--gray-mid, #6c6c70);
-          margin-left: 0;
-        }
-        nav {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-        }
-        ::slotted(h4) {
-          font-size: 0.85rem;
-          font-weight: 500;
-          cursor: pointer;
-          white-space: nowrap;
-          color: var(--ink, #0b0c0d);
-          border: 1px solid var(--gray-line, #dcdcd8);
-          border-radius: 6px;
-          padding: 4px 10px;
-          transition: color 0.15s, border-color 0.15s;
-        }
-        ::slotted(h4:hover) {
-          color: var(--pink, #e01280);
-          border-color: var(--pink, #e01280);
-        }
-        @media (max-width: 768px) {
-          nav { display: none; }
-        }
-      </style>
+      this.shadowRoot.innerHTML = `
+        <style>
+          :host {
+            display: block;
+            position: fixed;
+            top: var(--header-offset, 0);
+            left: 0; right: 0;
+            height: 52px;
+            z-index: 10;
+            background: var(--gray-panel, #eeeeee);
+            border-bottom: 1px solid var(--gray-line, #dcdcd8);
+            font-family: var(--font-sans, -apple-system, Arial, sans-serif);
+          }
+          .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 32px;
+            height: 100%;
+            position: relative;
+          }
+          .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+          }
+          .logo-area img {
+            height: 24px;
+            width: 24px;
+            object-fit: contain;
+          }
+          .text-group {
+            display: flex;
+            align-items: baseline;
+            gap: 6px;
+          }
+          .company-name {
+            font-family: var(--font-display, 'Space Grotesk', sans-serif);
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--ink, #0b0c0d);
+          }
+          .tagline {
+            font-size: 0.9rem;
+            color: var(--gray-mid, #6c6c70);
+            margin-left: 0;
+          }
+          .header-center {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            align-items: center;
+          }
+          nav {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+          }
+          ::slotted(h4) {
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            white-space: nowrap;
+            color: var(--ink, #0b0c0d);
+            border: 1px solid var(--gray-line, #dcdcd8);
+            border-radius: 6px;
+            padding: 4px 10px;
+            transition: color 0.15s, border-color 0.15s;
+          }
+          ::slotted(h4:hover) {
+            color: var(--pink, #e01280);
+            border-color: var(--pink, #e01280);
+          }
+          @media (max-width: 768px) {
+            nav { display: none; }
+          }
+        </style>
 
-      <div class="header-container">
-        <div class="logo-area">
-          <img />
-          <span class="text-group">
-            <span class="company-name"></span>
-            <span class="tagline"></span>
-          </span>
+        <div class="header-container">
+          <div class="logo-area">
+            <img />
+            <span class="text-group">
+              <span class="company-name"></span>
+              <span class="tagline"></span>
+            </span>
+          </div>
+          <div class="header-center">
+            <slot name="center"></slot>
+          </div>
+          <nav>
+            <slot></slot>
+          </nav>
         </div>
-        <nav>
-          <slot></slot>
-        </nav>
-      </div>
-    `;
+      `;
   }
 
   setCompany(name, tagline, logo) {

@@ -8,7 +8,7 @@
 <p align="center">
   <a href="#quickstart">Quickstart</a> •
   <a href="#codebase">Codebase</a> •
-  <a href="#white-labeling">White-labeling</a> •
+  <a href="#white-labeling">White Label</a> •
   <a href="#philosophy">Philosophy</a>
 </p>
 
@@ -71,18 +71,18 @@ Inside `vex/`:
 | `index.html` | The single HTML file that defines the app's structure |
 | `static/css/` | Styles for the entire app |
 | `static/img/` | All image assets |
-| `static/js/api.js` | The API contract with the backend — **do not modify** |
+| `static/js/api.js` | The API contract with the back end — **do not modify** |
 | `static/js/workspace.js` | Primary orchestration file — app state and coordination |
 | `static/js/screens/*` | Individual screens/sections of the app |
 
 > [!WARNING]
-> `static/js/api.js` defines the contract between the client and the production backend. Changing it won't change how the backend behaves — it'll just break your client. Everything else is fair game.
+> `static/js/api.js` defines the contract between the client and the production back end. Changing it won't change how the back end behaves — it'll just break your client. Everything else is fair game.
 
 ---
 
-## White-labeling
+## White Label
 
-Vex is designed to be forked and rebranded. You can modify **any** frontend source code — logo, colors, copy, layout, screens — and deploy it to your own stack for your own customers.
+Vex is designed to be forked and rebranded. You can modify **any** front end source code — logo, colors, copy, layout, screens — and deploy it to your own stack for your own customers.
 
 A typical white-label flow:
 

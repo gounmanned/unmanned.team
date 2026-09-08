@@ -1,81 +1,4 @@
 /* ─────────────────────────────────────────────────────────────────
-   CONNECTIONS GRID
-───────────────────────────────────────────────────────────────── */
-
-.connections-grid {
-  display: grid;
-  grid-template-columns: repeat(10, minmax(0, 1fr));
-  gap: 8px;
-  margin: 10px 0 5px;
-}
-
-.connection-slot {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  height: 68px;
-  padding: 8px 4px;
-  box-sizing: border-box;
-  border-radius: 8px;
-  border: 1px solid var(--gray-line);
-  background: var(--gray-panel, #fff);
-  cursor: pointer;
-  transition: border-color 0.15s, background 0.15s;
-}
-
-.connection-slot:hover {
-  border-color: var(--pink);
-}
-
-.connection-plug-icon {
-  font-size: 20px;
-  color: var(--text-faint, #c4c4c4);
-}
-
-.connection-logo {
-  display: none;
-  width: 26px;
-  height: 26px;
-  object-fit: contain;
-}
-
-.connection-slot.connected .connection-plug-icon {
-  display: none;
-}
-
-.connection-slot.connected .connection-logo {
-  display: block;
-}
-
-.connection-name {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.2px;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
-  padding: 0 4px;
-}
-
-.connection-slot.connected .connection-name {
-  color: var(--text-strong);
-}
-
-@media (max-width: 900px) {
-  .connections-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
-}
-
-@media (max-width: 480px) {
-  .connections-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-}
-
-/* ─────────────────────────────────────────────────────────────────
    CORE AREA
 ───────────────────────────────────────────────────────────────── */
 
@@ -135,7 +58,6 @@
 #signal-table {
   table-layout: fixed;
   width: 100%;
-  margin-top: 8px;
 }
 
 tr.unread {
@@ -389,7 +311,7 @@ td.strength {
   align-items: center;
   gap: 16px;
   width: 100%;
-  margin: 16px 0;
+  margin-bottom: 16px;
   padding: 16px 20px;
   box-sizing: border-box;
   border-radius: 12px;

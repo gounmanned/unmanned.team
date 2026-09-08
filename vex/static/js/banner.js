@@ -1,4 +1,4 @@
-class Onboarding {
+class Banner {
     static endpoint = false;
 
     constructor(state) {

@@ -8,7 +8,7 @@ class TenantScreen {
 
         // add-ons
         this.notifications = new Notifications(this.state);
-        this.onboarding = new Onboarding(this.state);
+        this.banner = new Banner(this.state);
     }
 
     async reload() {
@@ -18,7 +18,7 @@ class TenantScreen {
 
         // refresh add-ons
         this.notifications.refresh();
-        this.onboarding.refresh();
+        this.banner.refresh();
     }
 
     async reset() {

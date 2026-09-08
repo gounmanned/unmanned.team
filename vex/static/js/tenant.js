@@ -15,7 +15,6 @@ class TenantScreen {
         await this.api.signals.list(`status=O`, new CustomEvent("signal:account"));
 
         this.notifications.show();
-        this.panel();
     }
 
     async reset() {
@@ -25,44 +24,7 @@ class TenantScreen {
             this.table.watermark(true);
             this.generateChokepoint();
             this.count();
-            this.panel();
         });
-    }
-
-    async panel() {
-        const grid = document.getElementById('open-monitor-rollup');
-        const toggleLoading = (on) => grid.querySelectorAll('.connection-slot.connected').forEach(slot => slot.classList.toggle('loading', on));
-        toggleLoading(true);
-
-        try {
-            const monitors = await this.api.monitors.list();
-            const vendors = [...new Set(monitors.map(k => k.split('/')[2]).filter(Boolean))].sort();
-
-            const signature = vendors.join(',');
-            if (grid.dataset.signature === signature) return;
-            grid.dataset.signature = signature;
-
-            const label = v => v.split(/[-_]/).map(w => w[0].toUpperCase() + w.slice(1)).join(' ');
-
-            const filled = vendors.map(v => `
-                <div class="connection-slot connected" data-vendor="${v}" title="${label(v)}">
-                    <img class="connection-logo" src="static/img/source/${v}.png" alt="${label(v)}"
-                        onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'material-symbols-outlined connection-logo',textContent:'linked_services'}))">
-                    <span class="connection-name">${label(v)}</span>
-                </div>
-            `);
-
-            const empty = Array(Math.max(0, 10 - vendors.length)).fill(`
-                <div class="connection-slot">
-                    <span class="material-symbols-outlined connection-plug-icon">power_off</span>
-                    <span class="connection-name">Connect</span>
-                </div>
-            `);
-
-            grid.innerHTML = [...filled, ...empty].join('');
-        } finally {
-            toggleLoading(false);
-        }
     }
 
     count() {

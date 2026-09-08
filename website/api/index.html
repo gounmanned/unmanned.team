@@ -233,6 +233,18 @@ footer{padding:20px 0;background:var(--ink);border-top:1px solid #26262a;color:#
         <p class="endpoint-desc">Every other request in this reference carries that token as a bearer header. Scoped to one workspace — no per-request signing, no separate keys per endpoint.</p>
         <div class="code-block">
           <div class="code-header">
+            <span class="code-filename">save-token.sh</span>
+            <span class="code-lang">Shell</span>
+          </div>
+          <pre><code><span class="t-fn">export</span> VEX_TOKEN=$(<span class="t-fn">curl</span> https://cognito-idp.us-east-2.amazonaws.com/ \
+  -H <span class="t-str">"Content-Type: application/x-amz-json-1.1"</span> \
+  -H <span class="t-str">"X-Amz-Target: AWSCognitoIdentityProviderService.InitiateAuth"</span> \
+  -d <span class="t-str">'{"AuthFlow": "USER_PASSWORD_AUTH", "ClientId": "2314edi18c3o3t8sroh2u2hucf", "AuthParameters": {"USERNAME": "you@yourcompany.com", "PASSWORD": "your-password"}}'</span> \
+  | jq -r <span class="t-str">'.AuthenticationResult.AccessToken'</span>)</code></pre>
+        </div>
+        <p class="aside-note">Every curl example in this reference assumes <code class="mono">$VEX_TOKEN</code> is already set this way — run it once per session and the rest just work.</p>
+        <div class="code-block">
+          <div class="code-header">
             <span class="code-filename">auth-header.sh</span>
             <span class="code-lang">Shell</span>
           </div>

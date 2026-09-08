@@ -16,7 +16,6 @@ class SiteHeader extends HTMLElement {
           z-index: 10;
           background: var(--gray-panel, #eeeeee);
           border-bottom: 1px solid var(--gray-line, #dcdcd8);
-          font-family: var(--font-sans, -apple-system, Arial, sans-serif);
         }
         .header-container {
           display: flex;
@@ -42,7 +41,6 @@ class SiteHeader extends HTMLElement {
           gap: 6px;
         }
         .company-name {
-          font-family: var(--font-display, 'Space Grotesk', sans-serif);
           font-size: 0.95rem;
           font-weight: 600;
           color: var(--ink, #0b0c0d);
@@ -59,6 +57,7 @@ class SiteHeader extends HTMLElement {
         }
         ::slotted(h4) {
           font-size: 0.85rem;
+          font-weight: 200;
           cursor: pointer;
           white-space: nowrap;
           color: var(--ink, #0b0c0d);
@@ -286,7 +285,6 @@ class SiteModal extends HTMLElement {
         border-radius: 8px;
         box-shadow: 0 0 20px rgba(224, 18, 128, 0.5), 0 0 40px rgba(224, 18, 128, 0.2);
         overflow: hidden;
-        font-family: var(--font-sans, -apple-system, Arial, sans-serif);
         color: var(--ink, #0b0c0d);
       }
 
@@ -347,7 +345,6 @@ class SiteSidebar extends HTMLElement {
         box-shadow: 0 0 5px rgba(224, 18, 128, 0.5), 0 0 40px rgba(224, 18, 128, 0.2);
         z-index: 1001;
         transform: translateX(100%);
-        font-family: var(--font-sans, -apple-system, Arial, sans-serif);
       }
 
       .sidebar.open {
@@ -418,7 +415,6 @@ class SiteRollup extends HTMLElement {
           visibility: hidden;
           transform: translateY(100%);
           overflow: hidden;
-          font-family: var(--font-sans, -apple-system, Arial, sans-serif);
         }
         .rollup.open {
           visibility: visible;

@@ -213,11 +213,6 @@ td.strength {
   transition: background 0.12s, color 0.12s;
 }
 
-.links a:hover {
-  background: var(--gray-hover);
-  color: var(--ink);
-}
-
 .links a:not(:first-of-type)::before {
   content: '';
   position: absolute;

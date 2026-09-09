@@ -57,6 +57,8 @@ class SiteHeader extends HTMLElement {
           color: var(--gray-mid, #6c6c70);
           cursor: pointer;
           border-radius: 4px;
+          font-size: 16px;
+          line-height: 1;
           transition: color 0.15s, background 0.15s;
         }
         ::slotted([slot="account-switcher"]:hover) {

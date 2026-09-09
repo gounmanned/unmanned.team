@@ -24,6 +24,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
+  height: 64px;
   padding: 10px 16px;
   opacity: 0.5;
   transition: opacity 0.15s;
@@ -226,8 +227,8 @@
 }
 
 .gs-stat-notif-logo {
-  width: 26px;
-  height: 26px;
+  width: 36px;
+  height: 36px;
   object-fit: contain;
 }
 

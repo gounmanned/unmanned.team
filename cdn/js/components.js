@@ -90,6 +90,13 @@ class SiteHeader extends HTMLElement {
         </nav>
       </div>
     `;
+
+    this.shadowRoot.querySelector('.account-group').addEventListener('click', () => {
+      const switcher = this.shadowRoot
+        .querySelector('slot[name="account-switcher"]')
+        .assignedElements()[0];
+      switcher?.click();
+    });
   }
 
   setAccount(name, logo) {

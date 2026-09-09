@@ -18,13 +18,7 @@ class Banner {
         this.state = state;
         this.api = state.api;
         this.el = document.getElementById("getting-started");
-        this.initToggle();
-    }
-
-    initToggle() {
-        const btn = document.getElementById("gs-toggle");
-        if (!btn) return;
-        btn.addEventListener("click", () => this.toggleStats());
+        this.listen();
     }
 
     async toggleStats() {
@@ -114,5 +108,14 @@ class Banner {
         if (this.el.classList.contains("stats-mode")) {
             await this.loadStats(monitors);
         }
+    }
+
+    listen() {
+        const toggle = document.getElementById("gs-toggle");
+        if (toggle) toggle.addEventListener("click", () => this.toggleStats());
+
+        this.el.addEventListener("click", (e) => {
+            if (e.target.closest(".gs-card-main")) document.getElementById("open-monitor-rollup").click();
+        });
     }
 }

@@ -57,6 +57,7 @@
 .gs-card-main {
   flex: 1;
   min-width: 0;
+  cursor: pointer;
 }
 
 .gs-card-top {

@@ -95,10 +95,17 @@ class SiteHeader extends HTMLElement {
         </nav>
       </div>
     `;
+
+    this.shadowRoot.querySelector('.account-switcher').addEventListener('click', (e) => {
+      e.stopPropagation();
+      this.dispatchEvent(new CustomEvent('account-switch', {
+        bubbles: true,
+        composed: true,
+      }));
+    });
   }
 
   setAccount(domain, logo) {
-    this._currentAccount = domain;
     this.shadowRoot.querySelector('.account-name').textContent = domain;
     this.shadowRoot.querySelector('.logo-area img').src = logo ?? 'https://cdn.unmanned.team/img/logo.png';
   }

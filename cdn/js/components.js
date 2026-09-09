@@ -44,7 +44,6 @@ class SiteHeader extends HTMLElement {
           font-size: 0.95rem;
           font-weight: 600;
           color: var(--ink, #0b0c0d);
-          font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
         }
         .account-switcher {
           display: flex;
@@ -72,21 +71,6 @@ class SiteHeader extends HTMLElement {
           display: flex;
           align-items: center;
           gap: 12px;
-        }
-        ::slotted(h4) {
-          font-size: 0.85rem;
-          font-weight: 200;
-          cursor: pointer;
-          white-space: nowrap;
-          color: var(--ink, #0b0c0d);
-          border: 1px solid var(--gray-line, #dcdcd8);
-          border-radius: 6px;
-          padding: 4px 10px;
-          transition: color 0.15s, border-color 0.15s;
-        }
-        ::slotted(h4:hover) {
-          color: var(--pink, #e01280);
-          border-color: var(--pink, #e01280);
         }
         @media (max-width: 768px) {
           nav { display: none; }

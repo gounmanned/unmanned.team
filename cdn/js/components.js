@@ -45,7 +45,7 @@ class SiteHeader extends HTMLElement {
           font-weight: 600;
           color: var(--ink, #0b0c0d);
         }
-        .account-switcher {
+        ::slotted([slot="account-switcher"]) {
           display: flex;
           align-items: center;
           justify-content: center;
@@ -59,13 +59,9 @@ class SiteHeader extends HTMLElement {
           border-radius: 4px;
           transition: color 0.15s, background 0.15s;
         }
-        .account-switcher:hover {
+        ::slotted([slot="account-switcher"]:hover) {
           color: var(--pink, #e01280);
           background: var(--gray-line, #dcdcd8);
-        }
-        .account-switcher svg {
-          width: 14px;
-          height: 14px;
         }
         nav {
           display: flex;
@@ -82,12 +78,7 @@ class SiteHeader extends HTMLElement {
           <img />
           <span class="account-group">
             <span class="account-name"></span>
-            <button class="account-switcher" type="button" title="Switch account" aria-label="Switch account">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M8 9l4-4 4 4"></path>
-                <path d="M16 15l-4 4-4-4"></path>
-              </svg>
-            </button>
+            <slot name="account-switcher"></slot>
           </span>
         </div>
         <nav>
@@ -95,19 +86,11 @@ class SiteHeader extends HTMLElement {
         </nav>
       </div>
     `;
-
-    this.shadowRoot.querySelector('.account-switcher').addEventListener('click', (e) => {
-      e.stopPropagation();
-      this.dispatchEvent(new CustomEvent('account-switch', {
-        bubbles: true,
-        composed: true,
-      }));
-    });
   }
 
-  setAccount(domain, logo) {
-    this.shadowRoot.querySelector('.account-name').textContent = domain;
-    this.shadowRoot.querySelector('.logo-area img').src = logo ?? 'https://cdn.unmanned.team/img/logo.png';
+  setAccount(name, logo) {
+    this.shadowRoot.querySelector('.account-name').textContent = name;
+    this.shadowRoot.querySelector('.logo-area img').src = logo;
   }
 }
 

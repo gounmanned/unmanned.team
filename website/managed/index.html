@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <script>document.documentElement.classList.replace('no-js','js');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vex / Managed Security</title>
+<title>Vex / Managed</title>
 <meta name="description" content="Vex is a managed, 24/7 offensive security SOC — finding, chaining, and closing attack paths before an attacker does.">
 <link rel="apple-touch-icon" href="https://cdn.unmanned.team/img/logo.png">
 <link rel="icon" type="image/png" href="https://cdn.unmanned.team/img/logo.png">
@@ -114,7 +114,8 @@
   /* ---------- HERO ---------- */
   .hero{
     position:relative;overflow:hidden;display:flex;align-items:center;
-    min-height:88vh;min-height:calc(88vh - var(--header-h));min-height:calc(88dvh - var(--header-h));
+    min-height:100vh;
+    min-height:100dvh; /* accounts for mobile browser chrome */
     padding:70px 0;
   }
   .hero-bg{
@@ -133,9 +134,6 @@
   .hero h1 span{color:var(--pink);}
   .hero-copy{max-width:500px;margin:26px 0 0;color:#4b4c52;font-size:16.5px;line-height:1.7;}
   @media (max-width:900px){.hero-bg{display:none;}}
-  @media (max-width:700px){
-    .hero{padding:56px 0 48px;min-height:0;}
-  }
 
   .divider{
     position:relative;border-top:1px solid var(--gray-line);display:flex;justify-content:space-between;
@@ -517,11 +515,6 @@
       </div>
     </div>
   </section>
-
-  <div class="divider mono">
-    <span>REC · 00:00:02</span>
-    <span>COVERAGE MAPPED</span>
-  </div>
 
   <div class="divider mono">
     <span>REC · 00:00:03</span>

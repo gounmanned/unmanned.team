@@ -284,11 +284,6 @@ td.strength {
   gap: 4px;
 }
 
-.links a.cta:hover {
-  background: rgba(224, 18, 128, 0.08);
-  color: var(--pink);
-}
-
 .links .count {
   font-size: 12px;
   font-weight: 500;

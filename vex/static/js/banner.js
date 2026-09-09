@@ -17,7 +17,6 @@ class Banner {
     constructor(state) {
         this.state = state;
         this.api = state.api;
-        this.statsLoading = false;
         this.el = document.getElementById("getting-started");
         this.initToggle();
     }
@@ -47,9 +46,7 @@ class Banner {
     }
 
     async loadStats(monitors = null) {
-        if (this.statsLoading) return;
-        this.statsLoading = true;
-        this.el.classList.add("stats-loading");
+        this.el.classList.add("loading");
 
         const [assets, fetchedMonitors] = await Promise.all([
             this.api.inventory.list().catch(() => []),
@@ -81,8 +78,7 @@ class Banner {
         notifEmpty?.toggleAttribute('hidden', !!notifVendor);
         if (notifVendor && notifLogo) notifLogo.src = `static/img/source/${notifVendor}.png`;
 
-        this.el.classList.remove("stats-loading");
-        this.statsLoading = false;
+        this.el.classList.remove("loading");
     }
 
     async refresh() {

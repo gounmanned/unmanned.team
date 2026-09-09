@@ -144,14 +144,6 @@ class TenantScreen {
             });
         });
 
-        document.getElementById('delegation-notice').addEventListener('click', () => {
-            this.state.delegate = null;
-            this.state.api.reset();
-
-            document.dispatchEvent(new CustomEvent('page:reset'));
-            document.querySelector('.delegation-notice').classList.remove('visible');
-        });
-
         document.getElementById('chokepoint-callout').addEventListener('click', () => {
             if (this.chokepoint) this.open(this.chokepoint);
         });

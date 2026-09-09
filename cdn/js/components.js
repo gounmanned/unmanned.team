@@ -38,7 +38,14 @@ class SiteHeader extends HTMLElement {
         .account-group {
           display: flex;
           align-items: center;
-          gap: 4px;
+          gap: 2px;
+          padding: 6px 8px;
+          border-radius: 6px;
+          cursor: pointer;
+          transition: background 0.15s;
+        }
+        .account-group:hover {
+          background: var(--gray-hover, #e4e4e4);
         }
         .account-name {
           font-size: 0.95rem;
@@ -49,21 +56,16 @@ class SiteHeader extends HTMLElement {
           display: flex;
           align-items: center;
           justify-content: center;
-          width: 20px;
-          height: 20px;
+          width: 18px;
+          height: 18px;
           padding: 0;
           border: none;
           background: transparent;
-          color: var(--gray-mid, #6c6c70);
+          color: inherit;
           cursor: pointer;
-          border-radius: 4px;
           font-size: 16px;
           line-height: 1;
-          transition: color 0.15s, background 0.15s;
-        }
-        ::slotted([slot="account-switcher"]:hover) {
-          color: var(--pink, #e01280);
-          background: var(--gray-line, #dcdcd8);
+          pointer-events: none;
         }
         nav {
           display: flex;

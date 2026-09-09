@@ -148,18 +148,32 @@ class ManagedRollup {
                         <span class="managed-col-header-title">Open Signals</span>
                     </div>
                     <div class="managed-col-body managed-col-body--scroll">
-                        <ul class="managed-list">
-                            ${signals.length ? signals.map(t => `
-                                <li class="managed-row-item managed-row-item--signal">
-                                    <img class="managed-row-avatar managed-row-avatar--square" src="${Workspace.avatar(t.source)}"/>
-                                    <span class="managed-row-sev managed-row-sev--${t.severity}" title="Severity ${t.severity}"></span>
-                                    <span class="managed-row-label">${t.name}</span>
-                                    ${t.asset ? `<span class="managed-row-asset"><span class="material-symbols-outlined">my_location</span>${t.asset}</span>` : ''}
-                                    ${t.source ? `<span class="managed-row-source">${t.source}</span>` : ''}
-                                    ${new Date(t.created) >= midnight ? '<span class="managed-row-tag">Today</span>' : ''}
-                                </li>
-                            `).join('') : `<li class="managed-row-empty">No open signal</li>`}
-                        </ul>
+                        ${signals.length ? `
+                            <ul class="managed-list">
+                                ${signals.map(t => `
+                                    <li class="managed-row-item managed-row-item--signal">
+                                        <img class="managed-row-avatar managed-row-avatar--square" src="${Workspace.avatar(t.source)}"/>
+                                        <span class="managed-row-sev managed-row-sev--${t.severity}" title="Severity ${t.severity}"></span>
+                                        <span class="managed-row-label">${t.name}</span>
+                                        ${t.asset ? `<span class="managed-row-asset"><span class="material-symbols-outlined">my_location</span>${t.asset}</span>` : ''}
+                                        ${t.source ? `<span class="managed-row-source">${t.source}</span>` : ''}
+                                        ${new Date(t.created) >= midnight ? '<span class="managed-row-tag">Today</span>' : ''}
+                                    </li>
+                                `).join('')}
+                            </ul>
+                        ` : `
+                            <div class="managed-signals-empty">
+                                <div class="managed-signals-radar">
+                                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                                        <circle class="radar-ring" cx="50" cy="50" r="20"/>
+                                        <circle class="radar-ring" cx="50" cy="50" r="35"/>
+                                        <circle class="radar-ring" cx="50" cy="50" r="48"/>
+                                    </svg>
+                                </div>
+                                <span class="material-symbols-outlined">radar</span>
+                                <p>No open signals</p>
+                            </div>
+                        `}
                     </div>
                     <div class="managed-col-footer managed-col-footer--action">
                         <button class="managed-enter-btn">

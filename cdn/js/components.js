@@ -35,20 +35,38 @@ class SiteHeader extends HTMLElement {
           width: 24px;
           object-fit: contain;
         }
-        .text-group {
+        .account-group {
           display: flex;
-          align-items: baseline;
-          gap: 6px;
+          align-items: center;
+          gap: 4px;
         }
-        .company-name {
+        .account-name {
           font-size: 0.95rem;
           font-weight: 600;
           color: var(--ink, #0b0c0d);
+          font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
         }
-        .tagline {
-          font-size: 0.9rem;
+        .account-switcher {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 20px;
+          height: 20px;
+          padding: 0;
+          border: none;
+          background: transparent;
           color: var(--gray-mid, #6c6c70);
-          margin-left: 0;
+          cursor: pointer;
+          border-radius: 4px;
+          transition: color 0.15s, background 0.15s;
+        }
+        .account-switcher:hover {
+          color: var(--pink, #e01280);
+          background: var(--gray-line, #dcdcd8);
+        }
+        .account-switcher svg {
+          width: 14px;
+          height: 14px;
         }
         nav {
           display: flex;
@@ -78,9 +96,14 @@ class SiteHeader extends HTMLElement {
       <div class="header-container">
         <div class="logo-area">
           <img />
-          <span class="text-group">
-            <span class="company-name"></span>
-            <span class="tagline"></span>
+          <span class="account-group">
+            <span class="account-name"></span>
+            <button class="account-switcher" type="button" title="Switch account" aria-label="Switch account">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M8 9l4-4 4 4"></path>
+                <path d="M16 15l-4 4-4-4"></path>
+              </svg>
+            </button>
           </span>
         </div>
         <nav>
@@ -90,9 +113,9 @@ class SiteHeader extends HTMLElement {
     `;
   }
 
-  setCompany(name, tagline, logo) {
-    this.shadowRoot.querySelector('.company-name').textContent = name;
-    this.shadowRoot.querySelector('.tagline').textContent = tagline ?? '';
+  setAccount(domain, logo) {
+    this._currentAccount = domain;
+    this.shadowRoot.querySelector('.account-name').textContent = domain;
     this.shadowRoot.querySelector('.logo-area img').src = logo ?? 'https://cdn.unmanned.team/img/logo.png';
   }
 }

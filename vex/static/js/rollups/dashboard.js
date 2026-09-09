@@ -1,14 +1,4 @@
 class DashboardRollup {
-    // Matches the <option> values in #signal-severity on the signal sidebar.
-    static SEVERITY = {
-        1: { label: 'Critical', color: '#e11d48' },
-        2: { label: 'High', color: '#f97316' },
-        3: { label: 'Medium', color: '#f59e0b' },
-        4: { label: 'Low', color: '#3b82f6' },
-        5: { label: 'Info', color: '#94a3b8' },
-    };
-
-    // Matches the <option> values in #signal-status on the signal sidebar.
     static STATUS = {
         OA: { label: 'Active', color: '#2563eb' },
         OB: { label: 'Blocked', color: '#f59e0b' },
@@ -18,27 +8,30 @@ class DashboardRollup {
         CV: { label: 'Auto-closed', color: '#0ea5e9' },
     };
 
-    // Named notification destinations for the monitors panel. Falls back to the
-    // raw metadata value (title-cased) for anything not listed here.
-    static DESTINATIONS = {
-        slack: { label: 'Slack', color: '#8a5cf6' },
-        teams: { label: 'Microsoft Teams', color: '#5059c9' },
-        jira: { label: 'Jira', color: '#2684ff' },
+    static SOURCE_PALETTE = ['#3b82f6', '#8b5cf6', '#f97316', '#16a34a', '#e11d48', '#0ea5e9', '#f59e0b', '#6366f1'];
+
+    static ASSET_GROUPS = {
+        identity: { label: 'Human', color: '#3b82f6' },
+        domain:   { label: 'Domain', color: '#8b5cf6' },
+        other:    { label: 'Other', color: '#94a3b8' },
     };
 
-    // Bottom-to-top stacking order for the severity area chart — Critical ends
-    // up drawn on top, since that's the band a security reviewer scans for first.
-    static SEVERITY_STACK_ORDER = [5, 4, 3, 2, 1];
-
-    // NOTE: identity assets don't carry an explicit "is this a human" flag in the
-    // sample metadata, so this assumes service accounts are tagged via
-    // metadata.type === 'service_account'. Adjust to match the real field.
     static classifyAsset(asset) {
         const group = asset.metadata?.group;
-        if (group === 'domain') return 'domain';
-        if (group !== 'identity') return 'other';
-        return asset.metadata?.type === 'service_account' ? 'service' : 'human';
+        return DashboardRollup.ASSET_GROUPS[group] ? group : 'other';
     }
+
+    static monitorVendor(key) {
+        if (typeof key !== 'string') return null;
+        return key.split('/').filter(Boolean)[1] ?? null;
+    }
+
+    static HEADER_STATS = [
+        { id: 'email',    label: 'Email accounts', icon: 'mail' },
+        { id: 'endpoint', label: 'Endpoints',       icon: 'laptop' },
+        { id: 'domain',   label: 'Domains',         icon: 'public' },
+        { id: 'saas',     label: 'SaaS monitors',   icon: 'radar' },
+    ];
 
     constructor(state) {
         this.state = state;
@@ -46,8 +39,8 @@ class DashboardRollup {
         this.root = document.getElementById('dashboard-root');
 
         this.month = new Date();
-        this.monthSignals = [];
         this.openSignals = [];
+        this.monthSignals = [];
         this.assets = [];
         this.monitors = [];
 
@@ -55,8 +48,8 @@ class DashboardRollup {
     }
 
     async reset() {
-        this.monthSignals = [];
         this.openSignals = [];
+        this.monthSignals = [];
         this.assets = [];
         this.monitors = [];
         this.render();
@@ -64,93 +57,63 @@ class DashboardRollup {
 
     async reload() {
         await SiteSpinner.withLoading(async () => {
-            this.monthSignals = [];
             this.openSignals = [];
+            this.monthSignals = [];
 
             const monthKey = this.month.toISOString().slice(0, 7);
 
-            await Promise.all([
+            const [, , assets, monitors] = await Promise.all([
                 this.api.signals.list(`date=${monthKey}`, new CustomEvent('dashboard:signal-month')),
                 this.api.signals.list('status=O', new CustomEvent('dashboard:signal-open')),
-                this.api.inventory.list().then(assets => { this.assets = assets; }),
-                this.api.monitors.list().then(monitors => { this.monitors = monitors; }),
+                this.api.inventory.list().catch(() => []),
+                this.api.monitors.list().catch(() => []),
             ]);
 
-            this.render();
-        });
-    }
+            this.assets = assets;
+            this.monitors = monitors;
 
-    async open(signal) {
-        await SiteSpinner.withLoading(async () => {
-            Workspace.sidebars.signal.reset();
-            Workspace.sidebars.signal.inject(signal, await this.api.signals.get(signal.id));
-            document.getElementById('signal-sidebar').show();
+            this.render();
         });
     }
 
     render() {
         if (!this.root) return;
 
-        const autoClosed = this.monthSignals.filter(s => s.status === 'CV').length;
-        const criticalHighOpen = this.openSignals.filter(s => Number(s.severity) <= 2).length;
-        const mttr = this.avgResolutionDays();
-        const trend = this.recentSignalTrend();
-
-        const severitySegments = this.severityBreakdown();
-        const statusSegments = this.statusBreakdown();
-        const topSources = this.topSources();
-        const topChokePoints = this.topChokePoints();
-        const chokepoint = topChokePoints[0];
-        const destinationSegments = this.destinationBreakdown();
-        const platformSegments = this.platformBreakdown();
-
-        const humans = this.assets.filter(a => DashboardRollup.classifyAsset(a) === 'human').length;
-        const suspended = this.assets.filter(a => !a.status?.startsWith('A')).length;
-        const endpoints = this.assets.filter(a => !!a.metadata?.platform).length;
-        const connected = this.monitors.filter(m => !m.status || m.status.startsWith('A')).length;
-
-        const kpis = [
-            { icon: 'bolt', value: this.openSignals.length.toLocaleString(), label: 'Open signals' },
-            { icon: 'emergency', value: criticalHighOpen.toLocaleString(), label: 'Critical & high open' },
-            { icon: 'trending_up', value: trend.current.toLocaleString(), label: 'New signals (7d)', trend: this.trendBadge(trend.current, trend.previous) },
-            { icon: 'check_circle', value: autoClosed.toLocaleString(), label: 'Auto-closed this month' },
-            { icon: 'schedule', value: mttr === null ? '—' : `${mttr.toFixed(1)}d`, label: 'Avg. time to close' },
-        ];
+        this.openSignals ??= [];
+        this.monthSignals ??= [];
+        this.assets ??= [];
+        this.monitors ??= [];
 
         this.root.innerHTML = `
-            ${this.buildKpiRow(kpis)}
-
-            ${chokepoint ? this.buildChokepointCallout(chokepoint) : ''}
+            ${this.buildHeaderStats()}
 
             <section class="dashboard-panel dashboard-panel--signals">
                 <header class="dashboard-panel-header">
-                    <h2><span class="material-symbols-outlined dashboard-panel-icon">sensors</span>Signals</h2>
+                    <h2><span class="material-symbols-outlined dashboard-panel-icon">bolt</span>Signals</h2>
                     <span class="dashboard-panel-sub">${this.month.toLocaleString(undefined, { month: 'long', year: 'numeric' })}</span>
                 </header>
+
+                <div class="dashboard-panel-body dashboard-kpi-mini-row">
+                    ${this.miniKpi(this.openSignals.length, 'Open signals')}
+                    ${this.miniKpi(this.closedThisMonthCount(), 'Closed this month')}
+                    ${this.miniKpi(this.formatDuration(this.avgOpenTime()), 'Avg. open time')}
+                    ${this.miniKpi(this.autoClosedCount(), 'Auto-closed by Vex')}
+                </div>
+
                 <div class="dashboard-panel-body dashboard-signals-grid">
-                    <div class="dashboard-chart-block">
-                        <div class="dashboard-chart-block-label">Signal volume by severity, per day</div>
-                        ${this.buildSeverityAreaChart()}
-                        ${this.buildLegend(severitySegments, true)}
+                    <div class="dashboard-chart-block dashboard-chart-block--donut">
+                        <div class="dashboard-chart-block-label">Signals by source</div>
+                        ${this.buildPieChart(this.sourceBreakdown(), this.monthSignals.length, 'this month')}
+                        ${this.buildLegend(this.sourceBreakdown())}
                     </div>
                     <div class="dashboard-chart-block dashboard-chart-block--donut">
-                        <div class="dashboard-chart-block-label">Open signals by severity</div>
-                        ${this.buildDonutChart(severitySegments, this.openSignals.length, 'open')}
-                        ${this.buildLegend(severitySegments)}
+                        <div class="dashboard-chart-block-label">Signals by status</div>
+                        ${this.buildPieChart(this.statusBreakdown(), this.monthSignals.length, 'this month')}
+                        ${this.buildLegend(this.statusBreakdown())}
                     </div>
-                </div>
-                <div class="dashboard-panel-body dashboard-signals-grid--row2">
-                    <div class="dashboard-chart-block">
-                        <div class="dashboard-chart-block-label">Top signal sources this month</div>
-                        ${this.buildSourceBars(topSources)}
-                    </div>
-                    <div class="dashboard-chart-block">
-                        <div class="dashboard-chart-block-label">Status breakdown this month</div>
-                        ${this.buildStatusBars(statusSegments)}
-                    </div>
-                    <div class="dashboard-chart-block">
-                        <div class="dashboard-chart-block-label">Repeat choke points</div>
-                        ${this.buildChokePointList(topChokePoints)}
+                    <div class="dashboard-chart-block dashboard-chart-block--callout">
+                        <div class="dashboard-chart-block-label">Highest strength open signal</div>
+                        ${this.buildTopStrengthCallout()}
                     </div>
                 </div>
             </section>
@@ -160,37 +123,26 @@ class DashboardRollup {
                     <header class="dashboard-panel-header">
                         <h2><span class="material-symbols-outlined dashboard-panel-icon">inventory_2</span>Assets</h2>
                     </header>
-                    <div class="dashboard-panel-body dashboard-tile-grid">
-                        ${this.statTile(humans, 'Employees')}
-                        ${this.statTile(this.assets.length, 'Total assets')}
-                        ${this.statTile(suspended, 'Suspended')}
-                        ${this.statTile(endpoints, 'Endpoints')}
-                    </div>
-                    <div class="dashboard-panel-body">
-                        <div class="dashboard-chart-block">
-                            <div class="dashboard-chart-block-label">Endpoints by platform</div>
-                            ${this.buildPlatformBars(platformSegments)}
+                    <div class="dashboard-panel-body dashboard-assets-grid">
+                        <div class="dashboard-chart-block dashboard-chart-block--donut">
+                            <div class="dashboard-chart-block-label">Tracked assets</div>
+                            ${this.buildPieChart(this.assetGroupBreakdown(), this.assets.length, 'total')}
+                            ${this.buildLegend(this.assetGroupBreakdown())}
+                        </div>
+                        <div class="dashboard-tile-grid--2col">
+                            ${this.statTile(this.assets.length, 'Total assets')}
+                            ${this.statTile(this.suspendedCount(), 'Suspended', 'is-warning')}
                         </div>
                     </div>
                 </section>
 
                 <section class="dashboard-panel dashboard-panel--monitors">
                     <header class="dashboard-panel-header">
-                        <h2><span class="material-symbols-outlined dashboard-panel-icon">radar</span>Monitors</h2>
+                        <h2><span class="material-symbols-outlined dashboard-panel-icon">sensors</span>Connected monitors</h2>
+                        <span class="dashboard-panel-sub">${this.monitors.length}</span>
                     </header>
-                    <div class="dashboard-panel-body dashboard-monitors-grid">
-                        <div class="dashboard-chart-block dashboard-chart-block--donut">
-                            <div class="dashboard-chart-block-label">Connected</div>
-                            ${this.buildDonutChart(
-                                [{ label: 'Connected', color: '#2563eb', value: connected }],
-                                this.monitors.length,
-                                'monitors'
-                            )}
-                        </div>
-                        <div class="dashboard-chart-block">
-                            <div class="dashboard-chart-block-label">Where signals are sent</div>
-                            ${this.buildDestinationBars(destinationSegments)}
-                        </div>
+                    <div class="dashboard-panel-body">
+                        ${this.buildMonitorGrid()}
                     </div>
                 </section>
             </div>
@@ -199,27 +151,49 @@ class DashboardRollup {
 
     // --- data shaping -------------------------------------------------------
 
-    severityBreakdown() {
+    closedThisMonthCount() {
+        return this.monthSignals.filter(s => s.status?.startsWith('C')).length;
+    }
+
+    autoClosedCount() {
+        return this.monthSignals.filter(s => s.status === 'CV').length;
+    }
+
+    suspendedCount() {
+        return this.assets.filter(a => a.status?.startsWith('X')).length;
+    }
+
+    avgOpenTime() {
+        const closed = this.monthSignals.filter(s => s.status?.startsWith('C') && s.created && s.updated);
+        if (!closed.length) return null;
+
+        const totalMs = closed.reduce((sum, s) => sum + (new Date(s.updated) - new Date(s.created)), 0);
+        return totalMs / closed.length;
+    }
+
+    formatDuration(ms) {
+        if (ms === null || Number.isNaN(ms)) return '—';
+        const hours = ms / 3600000;
+        if (hours < 24) return `${hours.toFixed(1)}h`;
+        return `${(hours / 24).toFixed(1)}d`;
+    }
+
+    sourceBreakdown() {
         const counts = {};
-        this.openSignals.forEach(s => {
-            const key = s.severity ?? 0;
-            counts[key] = (counts[key] || 0) + 1;
-        });
+        this.monthSignals.forEach(s => { counts[s.source] = (counts[s.source] || 0) + 1; });
 
         return Object.entries(counts)
-            .sort((a, b) => a[0] - b[0])
-            .map(([severity, value]) => ({
-                label: DashboardRollup.SEVERITY[severity]?.label ?? `Severity ${severity}`,
-                color: DashboardRollup.SEVERITY[severity]?.color ?? '#94a3b8',
+            .sort((a, b) => b[1] - a[1])
+            .map(([source, value], i) => ({
+                label: source,
+                color: DashboardRollup.SOURCE_PALETTE[i % DashboardRollup.SOURCE_PALETTE.length],
                 value,
             }));
     }
 
     statusBreakdown() {
         const counts = {};
-        this.monthSignals.forEach(s => {
-            counts[s.status] = (counts[s.status] || 0) + 1;
-        });
+        this.monthSignals.forEach(s => { counts[s.status] = (counts[s.status] || 0) + 1; });
 
         return Object.entries(counts)
             .map(([status, value]) => ({
@@ -230,214 +204,95 @@ class DashboardRollup {
             .sort((a, b) => b.value - a.value);
     }
 
-    topSources() {
-        const counts = {};
-        this.monthSignals.forEach(s => {
-            counts[s.source] = (counts[s.source] || 0) + 1;
-        });
+    assetGroupBreakdown() {
+        const counts = { identity: 0, domain: 0, other: 0 };
+        this.assets.forEach(a => { counts[DashboardRollup.classifyAsset(a)]++; });
 
         return Object.entries(counts)
-            .sort((a, b) => b[1] - a[1])
-            .slice(0, 5)
-            .map(([source, value]) => ({ source, value }));
+            .filter(([, value]) => value > 0)
+            .map(([group, value]) => ({
+                label: DashboardRollup.ASSET_GROUPS[group].label,
+                color: DashboardRollup.ASSET_GROUPS[group].color,
+                value,
+            }));
     }
 
-    topChokePoints() {
+    topStrengthSignal() {
         return [...this.openSignals]
             .filter(s => Number(s.metadata?.strength) > 0)
-            .sort((a, b) => Number(b.metadata.strength) - Number(a.metadata.strength))
-            .slice(0, 5);
+            .sort((a, b) => Number(b.metadata.strength) - Number(a.metadata.strength))[0] ?? null;
     }
 
-    destinationBreakdown() {
-        const counts = {};
-        this.monitors.forEach(m => {
-            const dest = (m.metadata?.notification || '').toLowerCase();
-            if (!dest) return;
-            counts[dest] = (counts[dest] || 0) + 1;
-        });
+    // --- header stat strip ----------------------------------------------
 
-        return Object.entries(counts).map(([dest, value]) => ({
-            label: DashboardRollup.DESTINATIONS[dest]?.label ?? (dest.charAt(0).toUpperCase() + dest.slice(1)),
-            color: DashboardRollup.DESTINATIONS[dest]?.color ?? '#94a3b8',
-            value,
-        }));
-    }
+    buildHeaderStats() {
+        let email = 0, endpoint = 0, domain = 0;
+        for (const { metadata: md = {} } of this.assets) {
+            if (md.group === 'identity') email++;
+            if (md.platform) endpoint++;
+            if (md.group === 'domain') domain++;
+        }
+        const values = { email, endpoint, domain, saas: this.monitors.length };
 
-    platformBreakdown() {
-        const counts = {};
-        this.assets.forEach(a => {
-            const platform = a.metadata?.platform;
-            if (!platform) return;
-            counts[platform] = (counts[platform] || 0) + 1;
-        });
-
-        return Object.entries(counts).sort((a, b) => b[1] - a[1]).map(([platform, value]) => ({ platform, value }));
-    }
-
-    // Average days between created and updated for signals closed this month.
-    avgResolutionDays() {
-        const closed = this.monthSignals.filter(s => s.status?.startsWith('C') && s.created && s.updated);
-        if (!closed.length) return null;
-
-        const totalDays = closed.reduce((sum, s) => sum + (new Date(s.updated) - new Date(s.created)) / 86400000, 0);
-        return totalDays / closed.length;
-    }
-
-    // New-signal velocity, last 7 days vs the 7 days before that. NOTE: since
-    // monthSignals only covers the current calendar month, this under-counts the
-    // "previous 7 days" window during the first ~2 weeks of a new month.
-    recentSignalTrend() {
-        const now = Date.now(), oneDay = 86400000;
-        let current = 0, previous = 0;
-
-        this.monthSignals.forEach(s => {
-            const age = now - new Date(s.created).getTime();
-            if (age >= 0 && age <= 7 * oneDay) current++;
-            else if (age > 7 * oneDay && age <= 14 * oneDay) previous++;
-        });
-
-        return { current, previous };
+        return `
+            <div class="dashboard-stat-strip">
+                ${DashboardRollup.HEADER_STATS.map(stat => `
+                    <div class="dashboard-stat-card">
+                        <span class="material-symbols-outlined dashboard-stat-icon">${stat.icon}</span>
+                        <div class="dashboard-stat-body">
+                            <div class="dashboard-stat-value">${(values[stat.id] ?? 0).toLocaleString()}</div>
+                            <div class="dashboard-stat-label">${stat.label}</div>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
     }
 
     // --- small building blocks ----------------------------------------------
 
-    statTile(value, label) {
+    miniKpi(value, label) {
         return `
-            <div class="dashboard-tile">
+            <div class="dashboard-mini-kpi">
+                <div class="dashboard-mini-kpi-value">${typeof value === 'number' ? value.toLocaleString() : value}</div>
+                <div class="dashboard-mini-kpi-label">${label}</div>
+            </div>
+        `;
+    }
+
+    statTile(value, label, modifier = '') {
+        return `
+            <div class="dashboard-tile ${modifier}">
                 <div class="dashboard-tile-value">${value.toLocaleString()}</div>
                 <div class="dashboard-tile-label">${label}</div>
             </div>
         `;
     }
 
-    trendBadge(current, previous) {
-        if (previous === 0 && current === 0) {
-            return `<span class="dashboard-kpi-trend is-flat">flat</span>`;
-        }
-        if (previous === 0) {
-            return `<span class="dashboard-kpi-trend is-up"><span class="material-symbols-outlined">trending_up</span>new</span>`;
-        }
-
-        const pct = Math.round(((current - previous) / previous) * 100);
-        const dir = pct > 0 ? 'up' : pct < 0 ? 'down' : 'flat';
-        const icon = dir === 'up' ? 'trending_up' : dir === 'down' ? 'trending_down' : 'trending_flat';
-        const sign = pct > 0 ? '+' : '';
-
-        return `<span class="dashboard-kpi-trend is-${dir}"><span class="material-symbols-outlined">${icon}</span>${sign}${pct}%</span>`;
-    }
-
-    buildKpiRow(kpis) {
+    buildLegend(segments) {
+        if (!segments.length) return `<div class="dashboard-empty">No data yet</div>`;
         return `
-            <div class="dashboard-kpi-row">
-                ${kpis.map(k => `
-                    <div class="dashboard-kpi">
-                        <div class="dashboard-kpi-top">
-                            <span class="material-symbols-outlined dashboard-kpi-icon">${k.icon}</span>
-                            ${k.trend ?? ''}
-                        </div>
-                        <div class="dashboard-kpi-value">${k.value}</div>
-                        <div class="dashboard-kpi-label">${k.label}</div>
-                    </div>
-                `).join('')}
-            </div>
-        `;
-    }
-
-    // Reuses the exact chokepoint-callout markup/classes from the tenant screen
-    // (different id, so it can sit alongside that one) so it inherits the same
-    // styling and reads as the same product concept, not a new component.
-    buildChokepointCallout(signal) {
-        return `
-            <div class="chokepoint-callout" id="dashboard-chokepoint-callout" data-signal-id="${signal.id}">
-                <div class="chokepoint-icon">
-                    <img class="chokepoint-logo" src="static/img/source/${signal.source}.png" alt="${signal.source}" />
-                </div>
-                <div class="chokepoint-body">
-                    <div class="chokepoint-title-row">
-                        <span class="chokepoint-label">Choke Point</span>
-                        <span class="chokepoint-name">${signal.name}</span>
-                    </div>
-                    <div class="chokepoint-meta">
-                        <span>First seen <span class="cp-field">${Workspace.date(signal.created)}</span></span>
-                        <span class="cp-dot"></span>
-                        <span>Last updated <span class="cp-field">${Workspace.date(signal.updated)}</span></span>
-                    </div>
-                    <p class="chokepoint-explainer">A choke point is a single security weakness used by many attack paths. Fix this first.</p>
-                </div>
-            </div>
-        `;
-    }
-
-    buildLegend(segments, compact) {
-        if (!segments.length) return '';
-
-        return `
-            <ul class="dashboard-legend${compact ? ' dashboard-legend--compact' : ''}">
+            <ul class="dashboard-legend">
                 ${segments.map(s => `
                     <li>
                         <span class="dashboard-legend-swatch" style="background:${s.color}"></span>
                         <span class="dashboard-legend-label">${s.label}</span>
-                        ${compact ? '' : `<span class="dashboard-legend-value">${s.value}</span>`}
+                        <span class="dashboard-legend-value">${s.value}</span>
                     </li>
                 `).join('')}
             </ul>
         `;
     }
 
-    buildSeverityAreaChart() {
-        const daysInMonth = new Date(this.month.getFullYear(), this.month.getMonth() + 1, 0).getDate();
-        const order = DashboardRollup.SEVERITY_STACK_ORDER;
-        const perSeverity = order.map(() => Array(daysInMonth).fill(0));
-
-        this.monthSignals.forEach(s => {
-            const day = new Date(s.created).getDate();
-            if (day < 1 || day > daysInMonth) return;
-            const idx = order.indexOf(Number(s.severity));
-            if (idx === -1) return;
-            perSeverity[idx][day - 1]++;
-        });
-
-        const w = 720, h = 200, pad = 10;
-        const stepX = daysInMonth > 1 ? (w - pad * 2) / (daysInMonth - 1) : 0;
-        const dailyTotal = Array.from({ length: daysInMonth }, (_, d) => perSeverity.reduce((sum, layer) => sum + layer[d], 0));
-        const max = Math.max(1, ...dailyTotal);
-        const cumulative = Array(daysInMonth).fill(0);
-
-        const layers = order.map((sev, i) => {
-            const topPoints = [];
-            const bottomPoints = [];
-
-            for (let d = 0; d < daysInMonth; d++) {
-                const bottom = cumulative[d];
-                const top = bottom + perSeverity[i][d];
-                cumulative[d] = top;
-
-                const x = pad + d * stepX;
-                topPoints.push(`${x.toFixed(1)},${(h - pad - (top / max) * (h - pad * 2)).toFixed(1)}`);
-                bottomPoints.unshift(`${x.toFixed(1)},${(h - pad - (bottom / max) * (h - pad * 2)).toFixed(1)}`);
-            }
-
-            const color = DashboardRollup.SEVERITY[sev]?.color ?? '#94a3b8';
-            return `<polygon points="${topPoints.join(' ')} ${bottomPoints.join(' ')}" fill="${color}" fill-opacity="0.9"/>`;
-        }).join('');
-
-        return `
-            <svg class="dashboard-areachart" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">
-                ${layers}
-            </svg>
-        `;
-    }
-
-    buildDonutChart(segments, total, sublabel) {
-        const size = 156, stroke = 20, r = (size - stroke) / 2, circumference = r * 2 * Math.PI;
+    buildPieChart(segments, total, sublabel) {
+        const size = 148, stroke = 22, r = (size - stroke) / 2, circumference = r * 2 * Math.PI;
         let offset = 0;
 
         const arcs = segments.filter(s => s.value > 0).map(s => {
             const dash = (s.value / (total || 1)) * circumference;
             const arc = `
                 <circle cx="${size / 2}" cy="${size / 2}" r="${r}" fill="none"
-                    stroke="${s.color}" stroke-width="${stroke}"
+                    stroke="${s.color}" stroke-width="${stroke}" stroke-linecap="butt"
                     stroke-dasharray="${dash.toFixed(2)} ${(circumference - dash).toFixed(2)}"
                     stroke-dashoffset="${(-offset).toFixed(2)}"
                     transform="rotate(-90 ${size / 2} ${size / 2})"/>
@@ -447,89 +302,78 @@ class DashboardRollup {
         }).join('');
 
         return `
-            <svg class="dashboard-donutchart" viewBox="0 0 ${size} ${size}">
-                <circle cx="${size / 2}" cy="${size / 2}" r="${r}" fill="none" stroke="var(--dash-border, #e2e5eb)" stroke-width="${stroke}"/>
+            <svg class="dashboard-piechart" viewBox="0 0 ${size} ${size}">
+                <circle cx="${size / 2}" cy="${size / 2}" r="${r}" fill="none" stroke="var(--dash-border)" stroke-width="${stroke}"/>
                 ${arcs}
-                <text x="${size / 2}" y="${size / 2 - 4}" class="dashboard-donutchart-total">${total}</text>
-                <text x="${size / 2}" y="${size / 2 + 16}" class="dashboard-donutchart-label">${sublabel}</text>
+                <text x="${size / 2}" y="${size / 2 - 4}" class="dashboard-piechart-total">${total}</text>
+                <text x="${size / 2}" y="${size / 2 + 16}" class="dashboard-piechart-label">${sublabel}</text>
             </svg>
         `;
     }
 
-    buildBarRows(rows, { icon } = {}) {
-        if (!rows.length) return null;
+    wifiStrengthHero(value) {
+        const heights = [16, 26, 36, 46];
 
-        const max = Math.max(1, ...rows.map(r => r.value));
+        const bars = heights.map((h, i) => `
+            <rect x="${i * 17}" y="${46 - h}" width="13" height="${h}" rx="3" class="wifi-bar-hero"/>
+        `).join('');
 
         return `
-            <div class="dashboard-rows">
-                ${rows.map(r => `
-                    <div class="dashboard-row">
-                        <span class="dashboard-row-label${icon ? ' dashboard-row-label--icon' : ''}">
-                            ${icon ? `<img src="static/img/source/${r.iconKey}.png" alt="" />` : ''}
-                            ${r.label}
+            <div class="wifi-strength-hero">
+                <svg viewBox="0 0 63 46" class="wifi-strength-hero-svg">${bars}</svg>
+                <div class="wifi-strength-hero-value">${value}</div>
+                <div class="wifi-strength-hero-caption">attack paths</div>
+            </div>
+        `;
+    }
+
+    buildTopStrengthCallout() {
+        const signal = this.topStrengthSignal();
+        if (!signal) return `<div class="dashboard-empty">No open signals with recorded strength</div>`;
+
+        return `
+            <div class="dashboard-strength-hero" data-signal-id="${signal.id}">
+                ${this.wifiStrengthHero(Number(signal.metadata.strength))}
+                <div class="dashboard-strength-hero-body">
+                    <div class="dashboard-strength-hero-name" title="${signal.name}">${signal.name}</div>
+                    <div class="dashboard-strength-hero-meta">
+                        <span class="dashboard-strength-hero-meta-item">
+                            <img class="dashboard-strength-hero-source-logo" src="static/img/source/${signal.source}.png" alt="${signal.source}" />
+                            ${signal.source}
                         </span>
-                        <span class="dashboard-row-track">
-                            <span class="dashboard-row-fill" style="width:${((r.value / max) * 100).toFixed(1)}%; ${r.color ? `background:${r.color}` : ''}"></span>
+                        <span class="dashboard-strength-hero-meta-item">
+                            <span class="material-symbols-outlined">location_on</span>
+                            ${signal.asset}
                         </span>
-                        <span class="dashboard-row-value">${r.value}</span>
+                        <span class="dashboard-strength-hero-meta-item">
+                            <span class="material-symbols-outlined">schedule</span>
+                            First seen ${Workspace.date(signal.created)}
+                        </span>
                     </div>
-                `).join('')}
+                </div>
             </div>
         `;
     }
 
-    buildDestinationBars(segments) {
-        return this.buildBarRows(segments) ?? `<div class="dashboard-empty">No monitors have a notification destination configured</div>`;
-    }
+    buildMonitorGrid() {
+        const vendors = this.monitors
+            .map(key => DashboardRollup.monitorVendor(key))
+            .filter(Boolean);
 
-    buildStatusBars(segments) {
-        return this.buildBarRows(segments) ?? `<div class="dashboard-empty">No signals recorded this month</div>`;
-    }
-
-    buildSourceBars(sources) {
-        const rows = sources.map(s => ({ label: s.source, value: s.value, iconKey: s.source }));
-        return this.buildBarRows(rows, { icon: true }) ?? `<div class="dashboard-empty">No signals recorded this month</div>`;
-    }
-
-    buildPlatformBars(platforms) {
-        const rows = platforms.map(p => ({ label: p.platform, value: p.value, iconKey: p.platform }));
-        return this.buildBarRows(rows, { icon: true }) ?? `<div class="dashboard-empty">No endpoint platforms detected</div>`;
-    }
-
-    // Reuses the same strength-meter markup as TenantScreen.strength(), so it
-    // picks up signal.css styling for free instead of introducing a new pattern.
-    strengthMeter(value) {
-        const lit = Math.min(value, 10);
-        const maxed = value >= 10;
-
-        const bars = Array.from({ length: 10 }, (_, i) =>
-            `<span class="strength-bar${i < lit ? ' lit' : ''}"></span>`
-        ).join('');
-
-        return `
-            <div class="strength-meter${maxed ? ' maxed' : ''}">
-                <span class="strength-bars">${bars}</span>
-                <span class="strength-value">${value}${maxed ? '+' : ''}</span>
-            </div>
-        `;
-    }
-
-    buildChokePointList(signals) {
-        if (!signals.length) {
-            return `<div class="dashboard-empty">No repeat choke points among open signals</div>`;
+        if (!vendors.length) {
+            return `<div class="dashboard-empty">No monitors connected yet</div>`;
         }
 
         return `
-            <ul class="dashboard-chokelist">
-                ${signals.map(s => `
-                    <li data-signal-id="${s.id}">
-                        <img src="static/img/source/${s.source}.png" alt="" />
-                        <span class="dashboard-chokelist-name" title="${s.name}">${s.name}</span>
-                        ${this.strengthMeter(Number(s.metadata.strength))}
-                    </li>
+            <div class="dashboard-monitor-grid">
+                ${vendors.map(vendor => `
+                    <div class="dashboard-monitor-card">
+                        <span class="dashboard-monitor-status is-on"></span>
+                        <img class="dashboard-monitor-logo" src="static/img/source/${vendor}.png" alt="${vendor}" />
+                        <span class="dashboard-monitor-name">${vendor}</span>
+                    </div>
                 `).join('')}
-            </ul>
+            </div>
         `;
     }
 
@@ -545,9 +389,16 @@ class DashboardRollup {
         this.root?.addEventListener('click', ev => {
             const node = ev.target.closest('[data-signal-id]');
             if (!node) return;
-
             const signal = this.openSignals.find(s => String(s.id) === node.dataset.signalId);
             if (signal) this.open(signal);
+        });
+    }
+
+    async open(signal) {
+        await SiteSpinner.withLoading(async () => {
+            Workspace.sidebars.signal.reset();
+            Workspace.sidebars.signal.inject(signal, await this.api.signals.get(signal.id));
+            document.getElementById('signal-sidebar').show();
         });
     }
 }

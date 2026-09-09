@@ -131,8 +131,6 @@
   }
   .hero h1 span{color:var(--pink);}
   .hero-copy{max-width:500px;margin:26px 0 0;color:#4b4c52;font-size:16.5px;line-height:1.7;}
-  .hero-actions{margin-top:36px;display:flex;gap:14px;flex-wrap:wrap;}
-  .hero-actions .btn-ghost{border:1px solid var(--ink);}
   @media (max-width:900px){.hero-bg{display:none;}}
   @media (max-width:700px){
     .hero{padding:56px 0 48px;min-height:0;}
@@ -194,22 +192,6 @@
     .stat-card + .stat-card{border-left:none;border-top:1px solid var(--gray-line);}
   }
 
-  /* ---------- FLAT CHECKLIST ---------- */
-  .checklist{margin-top:70px;border-top:1px solid var(--gray-line);}
-  .check-row{
-    display:grid;grid-template-columns:96px minmax(0,220px) 1fr;gap:24px;align-items:baseline;
-    padding:18px 0;border-bottom:1px solid var(--gray-line);
-  }
-  .check-tag{font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--pink);}
-  .check-row h3{margin:0;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:14.5px;letter-spacing:-0.005em;}
-  .check-row p{margin:0;font-size:13px;line-height:1.6;color:var(--gray-mid);}
-  @media (max-width:760px){
-    .check-row{grid-template-columns:1fr;gap:4px;padding:18px 0;}
-    .check-row h3{order:2;}
-    .check-tag{order:1;}
-    .check-row p{order:3;margin-top:2px;}
-  }
-
   /* ---------- STEPS (JOURNEY) ---------- */
   .steps-list{margin-top:56px;counter-reset:step;}
   .step{
@@ -226,10 +208,6 @@
   }
   .step-body p{margin:0;font-size:14.5px;line-height:1.75;color:#3a3a3d;max-width:480px;}
   .step-body p + p{margin-top:12px;}
-  .step-body code{
-    font-family:'JetBrains Mono',monospace;font-size:0.92em;background:#f1f1ee;
-    padding:1.5px 5px;border-radius:2px;color:var(--ink);
-  }
 
   .step-media{
     position:relative;border:1px solid var(--gray-line);background:#fbfbf9;
@@ -346,7 +324,7 @@
       <div class="hero-inner">
         <div class="hero-eyebrow eyebrow-label mono"><span class="status-dot"></span>Managed Vex</div>
         <h1>The hacker<br>who <span>heals.</span></h1>
-        <p class="hero-copy">Vex isn't just an AI hacker finding a way in — it's a complete managed security service. We prevent, detect, and respond to any attack that comes your way, so you don't have to build or run a security team of your own.</p>
+        <p class="hero-copy">Vex isn't just an AI hacker finding a way in — it's a complete managed security service. We prevent, detect, and respond to any attack that comes your way, so you don't need a security team of your own.</p>
       </div>
     </div>
   </section>
@@ -370,7 +348,7 @@
             Vex spends every day breaking into your business — testing accounts, endpoints, and apps the way a real attacker would. So when a second, uninvited hacker tries the same door, Vex is already there.
           </p>
           <p>
-            That's the difference between managed Vex and a typical security tool: we're responsible for the outcome, not just the software. Keeping attackers out, catching what gets through, and shutting it down fast — that's on us.
+            That's the difference between managed Vex and a typical security tool: we're responsible for the outcome, not just the software. Keeping attackers out and shutting them down fast — that's on us.
           </p>
         </div>
 
@@ -458,9 +436,8 @@
         <div class="step reveal">
           <div class="step-index mono"></div>
           <div class="step-body">
-            <h3>We connect your monitors</h3>
+            <h3>Connect your monitors</h3>
             <p>We'll work with you to set up <b>monitors</b> — integrations that plug into your identity platform (Microsoft 365 or Google Workspace), your registrar (usually Cloudflare), and any other services you rely on, like HubSpot. The more you connect, the more visibility Vex has.</p>
-            <p>These monitors work around the clock, analyzing security events and alerts and sending them straight into our 24/7 manned SOC.</p>
           </div>
           <div class="step-media">
             <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
@@ -485,9 +462,8 @@
         <div class="step reveal">
           <div class="step-index mono"></div>
           <div class="step-body">
-            <h3>We deploy endpoint agents</h3>
-            <p>Next, we deploy lightweight agents on your Windows, Mac, and Linux computers.</p>
-            <p>On Windows and Mac, these agents apply patches automatically. Across all three, they send event logs and security alerts straight to the SOC.</p>
+            <h3>Install endpoint agents</h3>
+            <p>Next, we deploy lightweight agents across all employee computers. These agents apply patches automatically and send event logs and security alerts straight to the SOC.
           </div>
           <div class="step-media">
             <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
@@ -505,9 +481,8 @@
         <div class="step reveal">
           <div class="step-index mono"></div>
           <div class="step-body">
-            <h3>Our SOC takes it from here</h3>
-            <p>Our SOC monitors your account day and night, applying proactive fixes to your environment — always tuning — and responding directly to any cyber attack.</p>
-            <p>If something event-worthy is happening, a SOC analyst will contact you directly. You won't need to go looking for trouble.</p>
+            <h3>We take it from here</h3>
+            <p>We monitor your account day and night, applying proactive adjustments — always tuning — and responding directly to any cyberattack.</p>
           </div>
           <div class="step-media">
             <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
@@ -546,119 +521,6 @@
     <span>REC · 00:00:02</span>
     <span>COVERAGE MAPPED</span>
   </div>
-
-  <!-- ============================================================
-       WHAT'S INCLUDED
-       ============================================================ -->
-  <section class="section" id="included">
-    <div class="wrap">
-      <div class="section-label eyebrow-label mono"><span class="status-dot"></span>Coverage</div>
-      <h2>What's included</h2>
-      <p class="lede">
-        Cybersecurity breaks down into three tenses: <b>prevent</b> future attacks, <b>detect</b> current attacks, and <b>respond</b> to past attacks. Managed Vex maps every feature to one of these core functions — so nothing falls through the cracks.
-      </p>
-
-      <div class="checklist reveal">
-        <div class="check-row" id="prevent">
-          <span class="check-tag mono">Prevent</span>
-          <h3>AI Red Team</h3>
-          <p>Launches continuous LLM-backed attacks to find the most probable breach scenario.</p>
-        </div>
-        <div class="check-row">
-          <span class="check-tag mono">Prevent</span>
-          <h3>Attack Surface Monitoring</h3>
-          <p>Tracks every domain and every human or AI identity as your environment changes.</p>
-        </div>
-        <div class="check-row">
-          <span class="check-tag mono">Prevent</span>
-          <h3>Endpoint Protection</h3>
-          <p>Taps into the EDR of your choice, or ours, with full visibility across every device.</p>
-        </div>
-        <div class="check-row">
-          <span class="check-tag mono">Prevent</span>
-          <h3>Vulnerability Management</h3>
-          <p>Detects vulnerable systems automatically and keeps patching on schedule across every endpoint.</p>
-        </div>
-        <div class="check-row">
-          <span class="check-tag mono">Prevent</span>
-          <h3>Identity Security</h3>
-          <p>Protects logins, privileges, and access across every account that touches your business.</p>
-        </div>
-        <div class="check-row">
-          <span class="check-tag mono">Prevent</span>
-          <h3>Email Security</h3>
-          <p>Blocks phishing, impersonation, and account takeover before a message reaches an inbox.</p>
-        </div>
-        <div class="check-row">
-          <span class="check-tag mono">Prevent</span>
-          <h3>SaaS Security</h3>
-          <p>Connects to 50+ SaaS tools to watch the applications your business runs on.</p>
-        </div>
-        <div class="check-row">
-          <span class="check-tag mono">Prevent</span>
-          <h3>Email Deliverability</h3>
-          <p>Keeps your domains authenticated and your business and marketing email out of spam folders.</p>
-        </div>
-
-        <div class="check-row" id="detect">
-          <span class="check-tag mono">Detect</span>
-          <h3>Manned SOC</h3>
-          <p>Human analysts watch, investigate, and escalate real activity across your environment.</p>
-        </div>
-        <div class="check-row">
-          <span class="check-tag mono">Detect</span>
-          <h3>AI SOC</h3>
-          <p>AI agents scan every event log and alert, surfacing evidence and advice for analysts.</p>
-        </div>
-        <div class="check-row">
-          <span class="check-tag mono">Detect</span>
-          <h3>SIEM</h3>
-          <p>Centralizes security telemetry so events can be searched, correlated, and retained.</p>
-        </div>
-        <div class="check-row">
-          <span class="check-tag mono">Detect</span>
-          <h3>Threat Intelligence</h3>
-          <p>Correlates every event across services to flag attacks from known threat actors.</p>
-        </div>
-        <div class="check-row">
-          <span class="check-tag mono">Detect</span>
-          <h3>Insider Threat Detection</h3>
-          <p>Flags unusual access and behavior that point to a compromised or malicious account.</p>
-        </div>
-        <div class="check-row">
-          <span class="check-tag mono">Detect</span>
-          <h3>DNS Monitoring</h3>
-          <p>Tracks DNS records for the kind of quiet change an attacker relies on going unnoticed.</p>
-        </div>
-        <div class="check-row">
-          <span class="check-tag mono">Detect</span>
-          <h3>Compliance Monitoring</h3>
-          <p>Checks your controls and evidence against HIPAA and other frameworks, continuously.</p>
-        </div>
-        <div class="check-row">
-          <span class="check-tag mono">Detect</span>
-          <h3>Outage Monitoring</h3>
-          <p>Watches for service failures, from QuickBooks to Shopify, so you know what's offline.</p>
-        </div>
-
-        <div class="check-row" id="respond">
-          <span class="check-tag mono">Respond</span>
-          <h3>Incident Response</h3>
-          <p>Delivers unlimited incident response through resolution when an attack slips through.</p>
-        </div>
-        <div class="check-row">
-          <span class="check-tag mono">Respond</span>
-          <h3>Backup &amp; Recovery</h3>
-          <p>Takes automatic file backups daily and can be recovered on demand.</p>
-        </div>
-        <div class="check-row">
-          <span class="check-tag mono">Respond</span>
-          <h3>Automatic Triage</h3>
-          <p>Disables user accounts within milliseconds when breach probability is high.</p>
-        </div>
-      </div>
-    </div>
-  </section>
 
   <div class="divider mono">
     <span>REC · 00:00:03</span>

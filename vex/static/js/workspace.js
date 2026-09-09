@@ -80,7 +80,7 @@ class Workspace {
                 this.reset(state);
                 this.reload();
                 this.listen();
-
+                
                 setInterval(() => this.reload(), 60000)                
                 document.addEventListener('page:reload', () => this.reload());
                 document.addEventListener('page:reset', () => this.reset(state));

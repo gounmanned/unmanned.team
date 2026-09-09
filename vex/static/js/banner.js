@@ -100,7 +100,6 @@ class Banner {
 
             card.classList.toggle('done', isDone);
             card.querySelector('.gs-check').textContent = isDone ? 'check_circle' : 'radio_button_unchecked';
-            card.querySelector('.gs-status').textContent = isDone ? 'Connected' : '';
         }
 
         this.el.classList.remove("loading");

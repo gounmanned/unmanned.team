@@ -86,20 +86,6 @@
   color: var(--text-strong);
 }
 
-.gs-status {
-  display: none;
-  font-size: 9px;
-  font-weight: 600;
-  letter-spacing: 0.3px;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  margin-left: 2px;
-}
-
-.gs-card.done .gs-status {
-  display: inline;
-}
-
 .gs-desc {
   margin: 0;
   font-size: 10.5px;

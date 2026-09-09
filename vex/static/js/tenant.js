@@ -18,7 +18,7 @@ class TenantScreen {
 
         // refresh add-ons
         this.notifications.refresh();
-        this.banner.refresh();
+        this.banner.refresh();        
     }
 
     async reset() {

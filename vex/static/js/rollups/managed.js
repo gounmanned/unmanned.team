@@ -114,27 +114,13 @@ class ManagedRollup {
 
         right.innerHTML = `
             <div class="managed-detail">
-                <div class="managed-detail-col managed-detail-col--overview" id="managed-overview-col">
+                <div class="managed-detail-col managed-detail-col--admins">
                     <div class="managed-col-header">
                         <img class="managed-overview-favicon"
                             src="https://www.google.com/s2/favicons?domain=${domain}&sz=64"
                             onerror="this.src='https://cdn.unmanned.team/img/logo.png'"
                             alt="${domain}">
                         <span class="managed-col-header-title">${domain}</span>
-                    </div>
-                    <div class="managed-col-body">
-                        <div class="managed-overview" id="managed-overview">
-                            <p class="managed-overview-value" id="managed-overview-value">
-                                Your account overview updates every 24 hours.
-                            </p>
-                            <span class="managed-overview-created" id="managed-overview-created"></span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="managed-detail-col managed-detail-col--admins">
-                    <div class="managed-col-header">
-                        <span class="managed-col-header-title">Administrators</span>
                     </div>
                     <div class="managed-col-body managed-col-body--scroll">
                         <ul class="managed-admin-list">
@@ -146,7 +132,7 @@ class ManagedRollup {
                                         <span class="material-symbols-outlined">close</span>
                                     </button>
                                 </li>
-                            `).join('')}
+                            `).join('') || `<li class="managed-row-empty">No administrators yet</li>`}
                         </ul>
                     </div>
                     <div class="managed-col-footer">
@@ -163,10 +149,13 @@ class ManagedRollup {
                     </div>
                     <div class="managed-col-body managed-col-body--scroll">
                         <ul class="managed-list">
-                            ${SignalSidebar.length ? signals.map(t => `
-                                <li class="managed-row-item">
+                            ${signals.length ? signals.map(t => `
+                                <li class="managed-row-item managed-row-item--signal">
                                     <img class="managed-row-avatar managed-row-avatar--square" src="${Workspace.avatar(t.source)}"/>
+                                    <span class="managed-row-sev managed-row-sev--${t.severity}" title="Severity ${t.severity}"></span>
                                     <span class="managed-row-label">${t.name}</span>
+                                    ${t.asset ? `<span class="managed-row-asset"><span class="material-symbols-outlined">my_location</span>${t.asset}</span>` : ''}
+                                    ${t.source ? `<span class="managed-row-source">${t.source}</span>` : ''}
                                     ${new Date(t.created) >= midnight ? '<span class="managed-row-tag">Today</span>' : ''}
                                 </li>
                             `).join('') : `<li class="managed-row-empty">No open signal</li>`}
@@ -207,25 +196,6 @@ class ManagedRollup {
             document.dispatchEvent(new CustomEvent('page:reset'));
             document.querySelector('site-overlay').click();
         });
-
-        this._loadOverview(domain);
-    }
-
-    async _loadOverview(domain) {
-        const column = document.getElementById('managed-overview-col');
-        const created = document.getElementById('managed-overview-created');
-        const value = document.getElementById('managed-overview-value');
-
-        column.classList.add('loading');
-        const account = await this.api.managed.overview(domain);
-        column.classList.remove('loading');
-        if (!document.getElementById('managed-overview-col')) return;
-
-        if (account) {
-            value.textContent = account.metadata?.overview;
-            const d = new Date(account.created);
-            created.textContent = `${d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} at ${d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}`;
-        }
     }
 
     listen() {

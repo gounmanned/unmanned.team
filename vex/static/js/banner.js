@@ -67,7 +67,7 @@ class Banner {
             const el = document.getElementById(`gs-stat-${id}`);
             if (el) el.textContent = value;
         };
-        
+
         setStat('email', emailCount);
         setStat('endpoint', endpointCount);
         setStat('domain', domainCount);
@@ -75,10 +75,11 @@ class Banner {
 
         const notifVendor = Banner.firstVendorMatch(fetchedMonitors, new Set(Banner.STEP_VENDORS.notifications));
         const notifLogo = document.getElementById('gs-stat-notifications-logo');
-        if (notifLogo) {
-            if (notifVendor) notifLogo.src = `static/img/source/${notifVendor}.png`;
-            else notifLogo.removeAttribute('src');
-        }
+        const notifEmpty = document.getElementById('gs-stat-notifications-empty');
+
+        notifLogo?.toggleAttribute('hidden', !notifVendor);
+        notifEmpty?.toggleAttribute('hidden', !!notifVendor);
+        if (notifVendor && notifLogo) notifLogo.src = `static/img/source/${notifVendor}.png`;
 
         this.el.classList.remove("stats-loading");
         this.statsLoading = false;

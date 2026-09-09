@@ -17,6 +17,7 @@
       <link rel="stylesheet" href="static/css/notification.css?v=${v}">
       <link rel="stylesheet" href="static/css/banner.css?v=${v}">
       <link rel="stylesheet" href="static/css/managed.css?v=${v}">
+      <link rel="stylesheet" href="static/css/dashboard.css?v=${v}">
       <link rel="stylesheet" href="static/css/inventory.css?v=${v}">
       <link rel="stylesheet" href="static/css/tenant.css?v=${v}">
       <link rel="stylesheet" href="static/css/monitors.css?v=${v}">
@@ -63,6 +64,14 @@
 
   <main class="container">
     <div class="getting-started" id="getting-started">
+      <div class="gs-controls">
+        <button class="gs-toggle" id="gs-toggle" type="button" aria-label="Show live numbers" aria-pressed="false">
+          <span class="material-symbols-outlined">query_stats</span>
+        </button>
+        <button class="gs-toggle" id="open-dashboard-rollup" type="button" aria-label="Open dashboard">
+          <span class="material-symbols-outlined">open_in_new</span>
+        </button>
+      </div>
       <div class="gs-grid">
 
         <div class="gs-card" id="gs-email">
@@ -74,7 +83,11 @@
             </div>
             <p class="gs-desc">Monitor your identity provider for security incidents, compliance gaps, and to build an asset inventory.</p>
           </div>
-          <img class="gs-logo" alt="" />
+          <div class="gs-stat-block">
+            <span class="material-symbols-outlined gs-stat-icon-bg" aria-hidden="true">mail</span>
+            <span class="gs-stat-value" id="gs-stat-email">0</span>
+            <span class="gs-stat-label">Humans</span>
+          </div>
         </div>
 
         <div class="gs-card" id="gs-endpoint">
@@ -86,7 +99,11 @@
             </div>
             <p class="gs-desc">Pull signals directly from your EDR or RMM to catch suspicious device activity.</p>
           </div>
-          <img class="gs-logo" alt="" />
+          <div class="gs-stat-block">
+            <span class="material-symbols-outlined gs-stat-icon-bg" aria-hidden="true">devices</span>
+            <span class="gs-stat-value" id="gs-stat-endpoint">0</span>
+            <span class="gs-stat-label">Endpoints</span>
+          </div>
         </div>
 
         <div class="gs-card" id="gs-domain">
@@ -98,7 +115,11 @@
             </div>
             <p class="gs-desc">Track DNS changes, domain renewal notices, and security alerts from DDoS attacks.</p>
           </div>
-          <img class="gs-logo" alt="" />
+          <div class="gs-stat-block">
+            <span class="material-symbols-outlined gs-stat-icon-bg" aria-hidden="true">language</span>
+            <span class="gs-stat-value" id="gs-stat-domain">0</span>
+            <span class="gs-stat-label">Domains</span>
+          </div>
         </div>
 
         <div class="gs-card" id="gs-saas">
@@ -110,7 +131,11 @@
             </div>
             <p class="gs-desc">Attach any other web service you'd like to keep an eye on, from a CRM to cloud infrastructure.</p>
           </div>
-          <img class="gs-logo" alt="" />
+          <div class="gs-stat-block">
+            <span class="material-symbols-outlined gs-stat-icon-bg" aria-hidden="true">cloud</span>
+            <span class="gs-stat-value" id="gs-stat-saas">0</span>
+            <span class="gs-stat-label">Monitors</span>
+          </div>
         </div>
 
         <div class="gs-card" id="gs-notifications">
@@ -122,11 +147,16 @@
             </div>
             <p class="gs-desc">Choose where you want to receive real-time alerts when new signals are discovered.</p>
           </div>
-          <img class="gs-logo" alt="" />
+        <div class="gs-stat-block gs-stat-block-notif">
+          <span class="material-symbols-outlined gs-stat-icon-bg" aria-hidden="true">notifications</span>
+          <img class="gs-stat-notif-logo" id="gs-stat-notifications-logo" alt="" />
+          <span class="gs-stat-value gs-stat-notif-empty" id="gs-stat-notifications-empty">Not connected</span>
+          <span class="gs-stat-label">Notifications</span>
+        </div>
         </div>
 
       </div>
-    </div>
+    </div>    
 
     <div class="chokepoint-callout" id="chokepoint-callout" style="display:none;">
       <div class="chokepoint-icon">
@@ -354,6 +384,15 @@
     </div>
   </site-rollup>
 
+  <site-rollup id="dashboard-screen">
+    <div class="monitor-intro">
+      <span class="material-symbols-outlined">dashboard</span>
+      <p>Vex rolls up your signals, assets, and monitors into a single view.</p>
+    </div>
+
+    <div id="dashboard-root"></div>
+  </site-rollup>
+  
   <!--Sidebars-->
 
   <site-sidebar id="signal-sidebar">
@@ -513,6 +552,7 @@
     <script src="static/js/rollups/managed.js?v=${v}"><\/script>
     <script src="static/js/rollups/monitors.js?v=${v}"><\/script>
     <script src="static/js/rollups/inventory.js?v=${v}"><\/script>
+    <script src="static/js/rollups/dashboard.js?v=${v}"><\/script>
   `);
 </script>
 

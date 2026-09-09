@@ -1,8 +1,5 @@
-/* ─────────────────────────────────────────────────────────────────
-   GETTING STARTED
-───────────────────────────────────────────────────────────────── */
-
 .getting-started {
+  position: relative;
   width: 100%;
   margin-bottom: 20px;
   padding-bottom: 16px;
@@ -108,10 +105,132 @@
   color: var(--text-muted);
 }
 
-.gs-logo {
+/* ── banner controls (toggle + dashboard link) ───────────────── */
+
+.gs-controls {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  gap: 2px;
+  z-index: 2;
+}
+
+.gs-toggle {
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  background: transparent;
+  border-radius: 4px;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+}
+
+.gs-toggle:hover {
+  color: var(--text-strong);
+  background: var(--gray-line);
+}
+
+.gs-toggle[aria-pressed="true"] {
+  color: #4b9e82;
+}
+
+.gs-toggle .material-symbols-outlined {
+  font-size: 16px;
+}
+
+/* ── stats mode: centered stat, icon bled left-of-center ──────── */
+
+.gs-stat-block {
   display: none;
-  width: 30px;
-  height: 30px;
+  position: relative;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  text-align: center;
+}
+
+/* content that must sit above .gs-stat-icon-bg */
+.gs-stat-value,
+.gs-stat-label,
+.gs-stat-notif-logo {
+  position: relative;
+  z-index: 1;
+}
+
+.gs-stat-value {
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--text-strong);
+}
+
+.gs-stat-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.gs-stat-icon-bg {
+  position: absolute;
+  z-index: 0;
+  top: 50%;
+  left: 25%;
+  transform: translate(-50%, -50%);
+  font-size: 110px;
+  line-height: 1;
+  color: var(--text-muted);
+  opacity: 0.12;
+  pointer-events: none;
+  user-select: none;
+}
+
+#getting-started.stats-mode .gs-card {
+  opacity: 1;
+  overflow: hidden;
+}
+
+#getting-started.stats-mode .gs-card-main {
+  display: none;
+}
+
+#getting-started.stats-mode .gs-stat-block {
+  display: flex;
+}
+
+#getting-started.stats-loading .gs-stat-value {
+  visibility: hidden;
+}
+
+#getting-started.stats-loading .gs-stat-value::after {
+  content: '…';
+  visibility: visible;
+  position: absolute;
+  left: 0;
+  right: 0;
+}
+
+/* ── notifications box: logo (or "not connected") in place of the value ─ */
+
+.gs-stat-block-notif {
+  gap: 6px;
+}
+
+.gs-stat-notif-logo {
+  width: 26px;
+  height: 26px;
   object-fit: contain;
-  flex-shrink: 0;
+}
+
+.gs-stat-notif-empty {
+  font-size: 13px;
 }

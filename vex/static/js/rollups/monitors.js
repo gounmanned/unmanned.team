@@ -71,7 +71,7 @@ class MonitorRollup {
 
     _renderCallout() {
         document.getElementById('monitor-callout').innerHTML = `
-            <p class="monitor-callout-text">Every Vex account has a unique mailbox that accepts signals. Forward alerts from routers, DMARC rua, and other services that send email notifications.</p>
+            <p class="monitor-callout-text">Every account has a unique mailbox that accepts signals. Forward alerts from routers, DMARC rua, and other services that send email notifications.</p>
             <p class="monitor-callout-address">${this.emailAddress}</p>
         `;
     }

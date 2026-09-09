@@ -97,7 +97,7 @@ class DashboardRollup {
                     ${this.miniKpi(this.openSignals.length, 'Open signals')}
                     ${this.miniKpi(this.closedThisMonthCount(), 'Closed this month')}
                     ${this.miniKpi(this.formatDuration(this.avgOpenTime()), 'Avg. open time')}
-                    ${this.miniKpi(this.autoClosedCount(), 'Auto-closed by Vex')}
+                    ${this.miniKpi(this.autoClosedCount(), 'Auto-closed')}
                 </div>
 
                 <div class="dashboard-panel-body dashboard-signals-grid">

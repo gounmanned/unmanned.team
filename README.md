@@ -16,7 +16,7 @@
 
 ## About Vex
 
-Vex runs like an always-on red team, collecting security signals. A breach scenario is generated if they can combine into a probable attack. Your job is to close signals before that happens.
+Vex is an always-on red team that collects and analyzes security signals to prevent, detect and respond to cyberattacks.
 
 ## What is this?
 
@@ -60,23 +60,21 @@ This repository holds three top-level areas:
 ```
 .
 ├── vex/        # Vex application code — this is what you'll clone and modify
-├── website/    # unmanned.team corporate marketing site
+├── website/    # unmanned.team corporate website
 └── cdn/        # Shared global styles used across Vex and other Unmanned apps
 ```
 
-Inside `vex/`:
+The primary structure in `vex/`:
 
 | Path | What it is |
 |---|---|
 | `index.html` | The single HTML file that defines the app's structure |
 | `static/css/` | Styles for the entire app |
-| `static/img/` | All image assets |
 | `static/js/api.js` | The API contract with the back end — **do not modify** |
 | `static/js/workspace.js` | Primary orchestration file — app state and coordination |
-| `static/js/screens/*` | Individual screens/sections of the app |
-
-> [!WARNING]
-> `static/js/api.js` defines the contract between the client and the production back end. Changing it won't change how the back end behaves — it'll just break your client. Everything else is fair game.
+| `static/js/tenant.js` | The main screen you see showing the signal table |
+| `static/js/rollups/*` | Individual full-screen rollup sections in the app |
+| `static/js/sidebars/*` | Individual half-screen sidebars in the app |
 
 ---
 
@@ -89,8 +87,6 @@ A typical white-label flow:
 1. Fork/clone this repo
 2. Swap branding in `static/css/`
 3. Deploy `vex/` as a static site on your own infrastructure
-
-Because Vex is a light client, deployment is just serving static files — any static host works.
 
 ---
 

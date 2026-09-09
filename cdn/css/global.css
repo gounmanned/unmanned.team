@@ -40,19 +40,6 @@ main {
   box-sizing: border-box;
 }
 
-button {
-  background-color: transparent;
-  font-weight: 500;
-  border-radius: 6px;
-  cursor: pointer;
-  padding: 14px 28px;
-  font-size: 16px;
-  border: 1px solid var(--gray-line);
-  color: inherit;
-  transform: translateY(0);
-  box-shadow: 0 1px 2px rgba(0,0,0,0.06);
-}
-
 button:active {
   transform: translateY(-1px);
 }

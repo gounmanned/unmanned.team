@@ -12,6 +12,7 @@ class AppState {
 
     reset() {
         this.signals = {};
+        this.api.reset();
     }
 
     track(signal) {
@@ -56,6 +57,7 @@ class Workspace {
 
     async render(code) {
         Workspace.#instance = this;
+
         Auth.init(code)
             .then(async user => await SiteSpinner.withLoading(async () => {
                 const state = new AppState(user);
@@ -75,18 +77,16 @@ class Workspace {
                 }
 
                 this.tenant = new TenantScreen(state);
-                this.reset();
+                this.reset(state);
                 this.reload();
                 this.listen();
 
                 setInterval(() => this.reload(), 60000)                
                 document.addEventListener('page:reload', () => this.reload());
-                document.addEventListener('page:reset', () => this.reset());
+                document.addEventListener('page:reset', () => this.reset(state));
             }))
             .catch(err => {
                 console.error(err);
-            }).finally(() => {
-                document.querySelector('site-header').setCompany("Vex", "Security Operations Center");
             });
     }
 
@@ -118,7 +118,10 @@ class Workspace {
         await this.tenant.reload();
     }
 
-    async reset() {
+    async reset(state) {
+        state.reset();
+        document.querySelector('site-header').setAccount(state.account(), `https://www.google.com/s2/favicons?domain=${state.account()}&sz=64`);
+
         await this.tenant.reset();
         await this.tenant.reload();
     }

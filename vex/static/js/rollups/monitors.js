@@ -25,6 +25,7 @@ class MonitorRollup {
             constantcontact: { name: 'Constant Contact', instances: [] },
             screenconnect: { name: 'Screen Connect', instances: [] },
             jira: { name: 'Jira', instances: [] },
+            teams: { name: 'Teams', instances: [] },
         };
 
         this.listen();

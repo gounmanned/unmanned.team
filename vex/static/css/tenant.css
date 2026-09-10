@@ -177,8 +177,8 @@ tr.closed {
   opacity: 0.38;
 }
 
-tr.unread td {
-  background: rgba(224, 18, 128, 0.045);
+tr.unread {
+  font-weight: 600;
 }
 
 tr.unread td.name {

@@ -26,6 +26,7 @@ class MonitorRollup {
             screenconnect: { name: 'Screen Connect', instances: [] },
             jira: { name: 'Jira', instances: [] },
             teams: { name: 'Teams', instances: [] },
+            rapid7: { name: 'Rapid7', instances: [] },
         };
 
         this.listen();

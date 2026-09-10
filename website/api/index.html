@@ -6,6 +6,7 @@
 <link rel="apple-touch-icon" href="https://cdn.unmanned.team/img/logo.png">
 <link rel="icon" type="image/png" href="https://cdn.unmanned.team/img/logo.png">
 <title>Unmanned / API</title>
+<link rel="stylesheet" href="https://cdn.unmanned.team/css/global.css">
 <meta name="description" content="Every Vex endpoint: monitors, signals, and alerts. Base URL, auth, and the actual request bodies.">
 <meta property="og:title" content="Vex: API Reference" />
 <meta property="og:description" content="Every Vex endpoint: monitors, signals, and alerts. Base URL, auth, and the actual request bodies." />
@@ -34,13 +35,10 @@ body{
   margin:0;
   background:var(--paper);
   color:var(--ink);
-  font-family:Inter,Arial,sans-serif;
   -webkit-font-smoothing:antialiased;
   overflow-x:hidden;
 }
 a{color:inherit}
-.mono{font-family:"IBM Plex Mono",monospace}
-.display{font-family:"Bebas Neue",Impact,sans-serif}
 .wrap{width:min(var(--max),calc(100% - 40px));margin:auto;position:relative;z-index:1}
 
 .grain{position:fixed;inset:-10%;z-index:40;pointer-events:none;opacity:.05;mix-blend-mode:overlay;
@@ -92,14 +90,14 @@ header{
 .endpoint-path{font:600 15.5px "IBM Plex Mono",monospace;color:var(--ink)}
 .status-code{margin-left:auto;font:500 11px "IBM Plex Mono",monospace;color:var(--muted)}
 .endpoint-desc{max-width:660px;color:var(--muted);font-size:14.5px;line-height:1.75;margin:0 0 8px}
-.endpoint-desc code{font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--neon);background:rgba(227,28,121,.07);padding:1px 5px;border-radius:2px}
+.endpoint-desc code{font-size:12.5px;color:var(--neon);background:rgba(227,28,121,.07);padding:1px 5px;border-radius:2px}
 
 /* Param tables */
 .param-table{width:100%;max-width:760px;border-collapse:collapse;margin:20px 0 4px;font-size:13px}
 .param-table th{text-align:left;font:600 10px "IBM Plex Mono",monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:8px 16px 8px 0;border-bottom:1px solid var(--line)}
 .param-table td{padding:11px 16px 11px 0;border-bottom:1px solid var(--line);vertical-align:top;color:#4b4c52;line-height:1.5}
-.param-table td:first-child{font-family:"IBM Plex Mono",monospace;color:var(--ink);font-weight:600;white-space:nowrap}
-.param-table td.type{color:var(--muted);white-space:nowrap;font-family:"IBM Plex Mono",monospace;font-size:12px}
+.param-table td:first-child{color:var(--ink);font-weight:600;white-space:nowrap}
+.param-table td.type{color:var(--muted);white-space:nowrap;font-size:12px}
 .req{color:var(--neon);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
 .opt{color:var(--muted);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
 
@@ -111,7 +109,7 @@ header{
 .code-header{display:flex;align-items:center;justify-content:space-between;padding:9px 18px;border-bottom:1px solid var(--line);background:var(--paper-2)}
 .code-filename{font:600 11.5px/1 "IBM Plex Mono",monospace;color:var(--ink);letter-spacing:.04em}
 .code-lang{font:600 9px/1 "IBM Plex Mono",monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--neon);opacity:.75}
-.code-block pre{margin:0;padding:18px 20px;overflow-x:auto;font-family:"IBM Plex Mono",monospace;font-size:12.5px;line-height:1.7;color:var(--ink);tab-size:2}
+.code-block pre{margin:0;padding:18px 20px;overflow-x:auto;font-size:12.5px;line-height:1.7;color:var(--ink);tab-size:2}
 .code-block pre::-webkit-scrollbar{height:3px}
 .code-block pre::-webkit-scrollbar-thumb{background:var(--line)}
 .t-kw{color:#c11868}
@@ -129,7 +127,7 @@ header{
 .callout-title i{width:7px;height:7px;border-radius:50%;background:var(--neon);display:block;flex-shrink:0}
 .callout p{margin:0 0 10px;color:#4b4c52;font-size:14px;line-height:1.7}
 .callout p:last-child{margin-bottom:0}
-.callout code{font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--neon);background:rgba(227,28,121,.07);padding:1px 5px;border-radius:2px}
+.callout code{font-size:12.5px;color:var(--neon);background:rgba(227,28,121,.07);padding:1px 5px;border-radius:2px}
 
 /* Errors table section */
 .error-row{display:flex;gap:20px;padding:16px 0;border-top:1px solid var(--line);align-items:baseline}

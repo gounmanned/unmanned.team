@@ -116,11 +116,6 @@
         <h1>Microsoft Teams</h1>
         <p>This guide walks you through creating a Teams webhook so new signals go to a channel of your choice.</p>
 
-        <h2>Prerequisites</h2>
-        <ul>
-            <li>You have access to your <strong>Microsoft Teams</strong> workspace with permission to add workflows to a channel.</li>
-        </ul>
-
         <h2>Step 1: Open the Channel's Workflows</h2>
         <ol>
             <li>In Microsoft Teams, go to the <strong>team and channel</strong> where you want notifications posted.</li>
@@ -143,10 +138,6 @@
         <pre>
 https://xxxxx.xx.logic.azure.com:443/workflows/xxxxxxxxxxxxxxxxxxxx/triggers/manual/paths/invoke?...
         </pre>
-
-        <div class="important-note">
-            <strong>Treat this URL as a secret.</strong> Anyone who has it can post messages to your channel. Don't commit it to source control or share it outside your team.
-        </div>
 
         <h2>Step 4: Save to Vex</h2>
         <ol>

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="UTF-8">
+<script>document.documentElement.classList.replace('no-js','js');</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vex / Individual</title>
+<meta name="description" content="Vex for one computer — antivirus, automatic updates, fraud monitoring, and a US-based security team on call. $10/month.">
+<link rel="apple-touch-icon" href="https://cdn.unmanned.team/img/logo.png">
+<link rel="icon" type="image/png" href="https://cdn.unmanned.team/img/logo.png">
+<link rel="stylesheet" href="https://cdn.unmanned.team/css/global.css">
+<style>
+  :root{
+    --ink:#0b0c0d;
+    --white:#fcfcfa;
+    --pink:#e01280;
+    --pink-tint:#fdeef6;
+    --gray-line:#dcdcd8;
+    --gray-mid:#6c6c70;
+    --db-ink:#f3f3f0;
+    --db-mid:#8a8a8e;
+  }
+  *{box-sizing:border-box;}
+  html{overflow-x:hidden;scroll-behavior:smooth;}
+  body{margin:0;background:var(--white);color:var(--ink);-webkit-font-smoothing:antialiased;}
+  h1,h2,h3{margin:0;}
+  .mono{letter-spacing:0.03em;}
+  a{color:inherit;}
+  ::selection{background:var(--pink);color:#fff;}
+  .wrap{width:min(680px,calc(100% - 48px));margin:0 auto;}
+
+  /* ---------- GRID BACKDROP ---------- */
+  .grid-bg{
+    position:absolute;inset:0;pointer-events:none;
+    background-image:
+      linear-gradient(to right, rgba(11,12,13,0.045) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(11,12,13,0.045) 1px, transparent 1px);
+    background-size:44px 44px;
+    mask-image:radial-gradient(ellipse 70% 60% at 50% 35%, #000 40%, transparent 90%);
+  }
+  .dark-frame .grid-bg{
+    background-image:
+      linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px);
+  }
+
+  /* ---------- STATUS DOT ---------- */
+  .status-dot{
+    width:6px;height:6px;border-radius:50%;background:var(--pink);
+    box-shadow:0 0 0 0 rgba(224,18,128,0.5);
+    animation:pulse 2.2s infinite;
+    flex-shrink:0;display:inline-block;
+  }
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(224,18,128,0.45);}
+    70%{box-shadow:0 0 0 8px rgba(224,18,128,0);}
+    100%{box-shadow:0 0 0 0 rgba(224,18,128,0);}
+  }
+  @media (prefers-reduced-motion: reduce){.status-dot,.radar-ring{animation:none;opacity:0.85;}}
+
+  .btn{display:inline-flex;font-weight:600;font-size:15px;padding:15px 30px;text-decoration:none;background:var(--pink);color:#fff;transition:opacity 0.2s ease;}
+  .btn:hover{opacity:0.8;}
+
+  /* ---------- HERO ---------- */
+  .hero{position:relative;min-height:100vh;min-height:100svh;display:flex;flex-direction:column;justify-content:center;padding:100px 0 64px;text-align:center;overflow:hidden;}
+  .eyebrow{font-size:12px;color:var(--gray-mid);display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:20px;position:relative;z-index:2;}
+  .hero h1{position:relative;z-index:2;font-weight:700;font-size:clamp(32px,6vw,48px);line-height:1.1;letter-spacing:-0.02em;}
+  .hero p{position:relative;z-index:2;max-width:440px;margin:18px auto 0;color:#4b4c52;font-size:16px;line-height:1.65;}
+
+  .price{position:relative;z-index:2;margin:44px 0 0;}
+  .price .num{font-size:clamp(64px,14vw,96px);color:var(--pink);font-weight:600;letter-spacing:-0.02em;line-height:1;}
+  .price .unit{font-size:16px;color:var(--gray-mid);}
+  .price .note{margin-top:10px;font-size:13.5px;color:var(--gray-mid);}
+  .hero .btn{position:relative;z-index:2;margin-top:26px;}
+
+  hr{border:none;border-top:1px solid var(--gray-line);margin:0;}
+
+  /* ---------- SECTION ---------- */
+  .section{padding:60px 0;}
+  .section h2{font-weight:500;font-size:clamp(24px,4vw,30px);letter-spacing:-0.01em;margin-bottom:10px;}
+
+  /* what's included */
+  .list{list-style:none;margin:0;padding:0;}
+  .list li{display:flex;gap:14px;padding:16px 0;border-top:1px solid var(--gray-line);}
+  .list li:last-child{border-bottom:1px solid var(--gray-line);}
+  .list .ico{flex-shrink:0;width:20px;height:20px;stroke:var(--pink);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;margin-top:2px;}
+  .list h4{margin:0 0 3px;font-size:15px;font-weight:600;}
+  .list p{margin:0;font-size:14px;line-height:1.55;color:var(--gray-mid);}
+
+  /* ---------- FINAL CTA (matches homepage contact section) ---------- */
+  .scan-sweep{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:1;}
+  .scan-sweep::after{
+    content:'';position:absolute;left:0;right:0;height:120px;top:-120px;
+    background:linear-gradient(to bottom, rgba(224,18,128,0) 0%, rgba(224,18,128,0.07) 50%, rgba(224,18,128,0) 100%);
+    animation:sweep 2.4s cubic-bezier(0.4,0,0.2,1) 1;
+  }
+  @keyframes sweep{0%{top:-120px;}100%{top:100%;}}
+  @media (prefers-reduced-motion: reduce){.scan-sweep::after{animation:none;display:none;}}
+
+  .radar-echo{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:min(700px,140vw);height:min(700px,140vw);opacity:0.5;z-index:0;pointer-events:none;}
+  .radar-echo svg{width:100%;height:100%;}
+  .radar-ring{fill:none;stroke:var(--gray-line);stroke-width:1;stroke-opacity:0.45;animation:ringGlow 7.5s ease-in-out infinite;}
+  .radar-ring.r2{animation-delay:-2.5s;}
+  .radar-ring.r3{animation-delay:-5s;}
+  @keyframes ringGlow{
+    0%,100%{stroke:var(--gray-line);stroke-opacity:0.4;stroke-width:1;filter:none;}
+    50%{stroke:rgba(224,18,128,0.5);stroke-opacity:0.75;stroke-width:1.15;filter:drop-shadow(0 0 4px rgba(224,18,128,0.28));}
+  }
+  .dark-frame{background:#0b0c0d;color:var(--db-ink);}
+
+  .contact-section{padding:130px 0 140px;text-align:center;position:relative;overflow:hidden;}
+  .contact-section .body-wrap{position:relative;z-index:2;}
+  .contact-section .eyebrow-row{justify-content:center;margin-bottom:36px;color:var(--db-mid);}
+  .contact-statement{
+    font-weight:500;font-size:clamp(30px,6.4vw,58px);
+    letter-spacing:-0.02em;line-height:1.04;margin:0 0 40px;color:var(--db-ink);
+  }
+  .contact-cta{
+    display:inline-flex;align-items:baseline;gap:10px;
+    font-size:clamp(16px,2.2vw,20px);letter-spacing:0.02em;color:var(--db-ink);text-decoration:none;
+    border-bottom:1px solid var(--pink);padding-bottom:6px;transition:opacity 0.2s ease;
+  }
+  .contact-cta:hover{opacity:0.65;}
+  .contact-cta .arrow{color:var(--pink);transition:transform 0.2s ease;display:inline-block;}
+  .contact-cta:hover .arrow{transform:translateX(3px);}
+  .contact-price{position:relative;z-index:2;margin-top:24px;font-size:13px;color:var(--db-mid);}
+  a:focus-visible{outline:1.5px solid var(--pink);outline-offset:3px;}
+  @media (max-width:700px){.contact-section{padding:100px 0 110px;}}
+
+  footer{padding:24px 0;text-align:center;font-size:11px;color:var(--gray-mid);letter-spacing:0.05em;}
+</style>
+</head>
+<body>
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <g id="radar-rings">
+        <circle class="radar-ring r1" cx="400" cy="400" r="120"></circle>
+        <circle class="radar-ring r2" cx="400" cy="400" r="240"></circle>
+        <circle class="radar-ring r3" cx="400" cy="400" r="360"></circle>
+      </g>
+    </defs>
+  </svg>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="grid-bg" aria-hidden="true"></div>
+    <div class="wrap">
+      <div class="eyebrow mono"><span class="status-dot"></span>INDIVIDUAL VEX</div>
+      <h1>A US-based security team.<br>Just for you.</h1>
+      <p>One subscription replaces your antivirus, keeps your computer patched, watches for fraud, and gives you a dedicated human analyst on demand.</p>
+      <div class="price">
+        <div><span class="num mono">$10</span><span class="unit"> / month</span></div>
+        <p class="note">One computer, Windows or macOS. Cancel anytime.</p>
+      </div>
+      <a class="btn" href="#REPLACE_WITH_STRIPE_PAYMENT_LINK">Get protected →</a>
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- WHAT'S INCLUDED -->
+  <section class="section wrap">
+    <h2 style="margin-bottom:26px;">What you get</h2>
+    <ul class="list">
+      <li>
+        <svg class="ico" viewBox="0 0 24 24"><path d="M12 3 L20 6 V11 C20 16 16.5 19.5 12 21 C7.5 19.5 4 16 4 11 V6 Z"/><path d="M9 12 l2 2 l4 -5"/></svg>
+        <div><h4>Antivirus</h4><p>Blocks viruses and malware — no separate product to purchase.</p></div>
+      </li>
+      <li>
+        <svg class="ico" viewBox="0 0 24 24"><path d="M4 12 a8 8 0 1 1 2.3 5.6"/><path d="M4 20 v-5 h5"/></svg>
+        <div><h4>Automatic updates</h4><p>Your operating system and apps stay patched, automatically.</p></div>
+      </li>
+      <li>
+        <svg class="ico" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5 L21 21"/></svg>
+        <div><h4>Fraud monitoring</h4><p>Watches for suspicious activity tied to your computer.</p></div>
+      </li>
+      <li>
+        <svg class="ico" viewBox="0 0 24 24"><path d="M12 3 v6"/><path d="M12 3 l3.5 3.5"/><path d="M12 3 l-3.5 3.5"/><circle cx="12" cy="15" r="6"/></svg>
+        <div><h4>Proactive tuning</h4><p>If we spot something off, we'll reach out to you before it becomes an issue.</p></div>
+      </li>
+      <li>
+        <svg class="ico" viewBox="0 0 24 24"><rect x="4" y="7" width="16" height="11" rx="1.5"/><circle cx="9" cy="12.5" r="1.3"/><circle cx="15" cy="12.5" r="1.3"/><path d="M9 4.5 v2.5"/><path d="M15 4.5 v2.5"/></svg>
+        <div><h4>AI agent monitoring</h4><p>We keep an eye on the AI agents running on your computer.</p></div>
+      </li>
+      <li>
+        <svg class="ico" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="12" rx="0.5"/><path d="M4 5 l8 7 l8 -7"/></svg>
+        <div><h4>Monthly report</h4><p>A plain-English email each month on what we saw.</p></div>
+      </li>
+      <li>
+        <svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20 c0 -4 3 -6.5 7 -6.5 s7 2.5 7 6.5"/></svg>
+        <div><h4>A dedicated analyst</h4><p>A US-based analyst you can message anytime, who can remote in and take a look.</p></div>
+      </li>
+    </ul>
+  </section>
+
+  <hr>
+
+  <!-- FINAL CTA -->
+  <section class="dark-frame contact-section">
+    <div class="grid-bg" aria-hidden="true"></div>
+    <div class="scan-sweep" aria-hidden="true"></div>
+    <div class="radar-echo" aria-hidden="true">
+      <svg viewBox="0 0 800 800"><use href="#radar-rings"></use></svg>
+    </div>
+    <div class="wrap body-wrap">
+      <div class="eyebrow-row eyebrow-label mono" style="display:flex;align-items:center;gap:10px;font-size:11px;"><span class="status-dot"></span>Get started</div>
+      <h2 class="contact-statement">Don't get hacked.</h2>
+      <a class="contact-cta" href="#REPLACE_WITH_STRIPE_PAYMENT_LINK">Get protected — $10/mo <span class="arrow">→</span></a>
+      <p class="contact-price mono">CANCEL ANYTIME</p>
+    </div>
+  </section>
+
+  <footer class="mono">VEX · INDIVIDUAL</footer>
+
+</body>
+</html>

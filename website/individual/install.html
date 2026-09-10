@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="UTF-8">
+<script>document.documentElement.classList.replace('no-js','js');</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vex / Install</title>
+<meta name="description" content="Your Vex for You subscription is active. Download the agent and get set up.">
+<link rel="apple-touch-icon" href="https://cdn.unmanned.team/img/logo.png">
+<link rel="icon" type="image/png" href="https://cdn.unmanned.team/img/logo.png">
+<link rel="stylesheet" href="https://cdn.unmanned.team/css/global.css">
+<style>
+  :root{
+    --ink:#0b0c0d;
+    --white:#fcfcfa;
+    --pink:#e01280;
+    --pink-tint:#fdeef6;
+    --gray-line:#dcdcd8;
+    --gray-mid:#6c6c70;
+    --db-ink:#f3f3f0;
+    --db-mid:#8a8a8e;
+  }
+  *{box-sizing:border-box;}
+  html{overflow-x:hidden;scroll-behavior:smooth;}
+  body{margin:0;background:var(--white);color:var(--ink);-webkit-font-smoothing:antialiased;}
+  h1,h2,h3{margin:0;}
+  .mono{letter-spacing:0.03em;}
+  a{color:inherit;}
+  ::selection{background:var(--pink);color:#fff;}
+  .wrap{width:min(680px,calc(100% - 48px));margin:0 auto;}
+  :focus-visible{outline:1.5px solid var(--pink);outline-offset:3px;}
+
+  /* ---------- GRID BACKDROP ---------- */
+  .grid-bg{
+    position:absolute;inset:0;pointer-events:none;
+    background-image:
+      linear-gradient(to right, rgba(11,12,13,0.045) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(11,12,13,0.045) 1px, transparent 1px);
+    background-size:44px 44px;
+    mask-image:radial-gradient(ellipse 70% 60% at 50% 35%, #000 40%, transparent 90%);
+  }
+  .dark-frame .grid-bg{
+    background-image:
+      linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px);
+  }
+
+  /* ---------- STATUS DOT ---------- */
+  .status-dot{
+    width:6px;height:6px;border-radius:50%;background:var(--pink);
+    box-shadow:0 0 0 0 rgba(224,18,128,0.5);
+    animation:pulse 2.2s infinite;
+    flex-shrink:0;display:inline-block;
+  }
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(224,18,128,0.45);}
+    70%{box-shadow:0 0 0 8px rgba(224,18,128,0);}
+    100%{box-shadow:0 0 0 0 rgba(224,18,128,0);}
+  }
+  @media (prefers-reduced-motion: reduce){.status-dot,.radar-ring{animation:none;opacity:0.85;}}
+
+  .btn{display:inline-flex;font-weight:600;font-size:15px;padding:15px 30px;text-decoration:none;background:var(--pink);color:#fff;border:none;cursor:pointer;transition:opacity 0.2s ease;}
+  .btn:hover{opacity:0.8;}
+
+  hr{border:none;border-top:1px solid var(--gray-line);margin:0;}
+
+  /* ---------- HERO / CONFIRMATION ---------- */
+  .hero{position:relative;padding:100px 0 64px;text-align:center;overflow:hidden;}
+  .eyebrow{font-size:12px;color:var(--gray-mid);display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:20px;position:relative;z-index:2;}
+  .hero h1{position:relative;z-index:2;font-weight:700;font-size:clamp(32px,6vw,48px);line-height:1.1;letter-spacing:-0.02em;}
+  .hero p{position:relative;z-index:2;max-width:440px;margin:18px auto 0;color:#4b4c52;font-size:16px;line-height:1.65;}
+
+  /* confirmation code, styled after the .price block */
+  .confirm{position:relative;z-index:2;margin:44px auto 0;max-width:360px;}
+  .confirm-label{font-size:12px;color:var(--gray-mid);margin-bottom:10px;}
+  .confirm-row{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+    background:var(--pink-tint);border:1px solid var(--gray-line);padding:16px 18px;
+  }
+  .confirm-code{font-size:16px;font-weight:600;letter-spacing:0.01em;word-break:break-all;text-align:left;}
+  .copy-btn{
+    flex-shrink:0;width:32px;height:32px;border:1px solid var(--gray-line);background:#fff;color:var(--ink);
+    cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.15s ease;
+  }
+  .copy-btn:hover{background:var(--pink-tint);}
+  .copy-btn svg{width:15px;height:15px;stroke:var(--ink);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+
+  .hero .btn{position:relative;z-index:2;margin-top:30px;}
+  .download-meta{position:relative;z-index:2;margin-top:12px;font-size:12.5px;color:var(--gray-mid);}
+
+  /* ---------- SECTION ---------- */
+  .section{padding:60px 0;}
+  .section h2{font-weight:500;font-size:clamp(24px,4vw,30px);letter-spacing:-0.01em;margin-bottom:10px;}
+
+  /* steps, reusing the "what you get" list pattern with numbered markers */
+  .list{list-style:none;margin:0;padding:0;}
+  .list li{display:flex;gap:14px;padding:16px 0;border-top:1px solid var(--gray-line);}
+  .list li:last-child{border-bottom:1px solid var(--gray-line);}
+  .list .num{
+    flex-shrink:0;width:20px;height:20px;margin-top:2px;
+    border:1.5px solid var(--pink);color:var(--pink);border-radius:50%;
+    font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;
+  }
+  .list h4{margin:0 0 3px;font-size:15px;font-weight:600;}
+  .list p{margin:0;font-size:14px;line-height:1.55;color:var(--gray-mid);}
+  .list code{font-size:0.92em;background:var(--pink-tint);padding:2px 6px;color:var(--ink);}
+
+  /* ---------- CLOSING NOTE ---------- */
+  .note-section{padding:8px 0 56px;text-align:center;}
+  .note-section p{max-width:420px;margin:0 auto;font-size:14px;line-height:1.65;color:var(--gray-mid);}
+  .note-section a{color:var(--ink);border-bottom:1px solid var(--pink);text-decoration:none;}
+  .note-section a:hover{opacity:0.7;}
+</style>
+</head>
+<body>
+
+  <!-- HERO / CONFIRMATION -->
+  <section class="hero">
+    <div class="grid-bg" aria-hidden="true"></div>
+    <div class="wrap">
+      <div class="eyebrow mono"><span class="status-dot"></span>INDIVIDUAL VEX</div>
+      <h1>You're all set!</h1>
+      <p>Your subscription is active. Download your security agent below to finish setting up your computer.</p>
+
+      <div class="confirm">
+        <div class="confirm-label mono">CONFIRMATION ID</div>
+        <div class="confirm-row">
+          <div class="confirm-code mono" id="confirmation-code">—</div>
+          <button class="copy-btn" id="copy-btn" type="button" aria-label="Copy confirmation ID">
+            <svg id="copy-icon" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"></rect><path d="M4 16V5a1 1 0 0 1 1-1h11"></path></svg>
+            <svg id="check-icon" viewBox="0 0 24 24" style="display:none;"><path d="M20 6 9 17l-5-5"></path></svg>
+          </button>
+        </div>
+      </div>
+
+      <a class="btn" href="#REPLACE_WITH_AGENT_DOWNLOAD_URL" id="download-agent-btn">Download the agent →</a>
+      <div class="download-meta mono">WINDOWS · MACOS</div>
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- SETUP STEPS -->
+  <section class="section wrap">
+    <h2 style="margin-bottom:26px;">Get set up</h2>
+    <ul class="list">
+      <li>
+        <span class="num">1</span>
+        <div><h4>Download the installer</h4><p>Click the button above. It saves a small file to your Downloads folder.</p></div>
+      </li>
+      <li>
+        <span class="num">2</span>
+        <div><h4>Run it and click through</h4><p>Open the file and follow the prompts. If your computer asks whether to allow it to run, choose <code>Yes</code> or <code>Allow</code> — that's expected.</p></div>
+      </li>
+      <li>
+        <span class="num">3</span>
+        <div><h4>You're covered</h4><p>All done. Our Security Operations Center can now protect your computer, 24/7. Every month, we'll let you know how things are looking.</p></div>
+      </li>
+    </ul>
+  </section>
+
+  <!-- CLOSING NOTE -->
+  <section class="note-section wrap">
+    <p><a href="mailto:security@vex.unmanned.team">security@vex.unmanned.team</a></p>
+  </section>
+
+  <script>
+    (function(){
+      var params = new URLSearchParams(window.location.search);
+      var code = params.get('confirmation') || params.get('code') || params.get('session_id');
+      var codeEl = document.getElementById('confirmation-code');
+      if (code) {
+        codeEl.textContent = code;
+        codeEl.style.fontSize = code.length > 24 ? '13px' : (code.length > 16 ? '15px' : '16px');
+      }
+
+      var copyBtn = document.getElementById('copy-btn');
+      var copyIcon = document.getElementById('copy-icon');
+      var checkIcon = document.getElementById('check-icon');
+      copyBtn.addEventListener('click', function(){
+        if (!code) return;
+        navigator.clipboard.writeText(code).then(function(){
+          copyIcon.style.display = 'none';
+          checkIcon.style.display = 'block';
+          setTimeout(function(){
+            copyIcon.style.display = 'block';
+            checkIcon.style.display = 'none';
+          }, 1600);
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

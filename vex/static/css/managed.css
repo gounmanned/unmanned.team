@@ -358,10 +358,17 @@
 
 #managed-screen .managed-row-item--signal {
   display: grid;
-  grid-template-columns: 20px 8px minmax(0, 1fr) minmax(0, 1fr) 110px auto;
+  grid-template-columns: 20px 8px minmax(0, 1fr) minmax(0, 1fr) 110px 64px;
   align-items: center;
   gap: 10px;
 }
+
+#managed-screen .managed-row-item--signal .managed-row-avatar  { grid-column: 1; }
+#managed-screen .managed-row-item--signal .managed-row-sev     { grid-column: 2; }
+#managed-screen .managed-row-item--signal .managed-row-label   { grid-column: 3; }
+#managed-screen .managed-row-item--signal .managed-row-asset   { grid-column: 4; }
+#managed-screen .managed-row-item--signal .managed-row-source  { grid-column: 5; }
+#managed-screen .managed-row-item--signal .managed-row-tag     { grid-column: 6; }
 
 #managed-screen .managed-row-sev {
   width: 7px; height: 7px; flex-shrink: 0;

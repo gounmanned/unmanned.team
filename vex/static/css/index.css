@@ -108,7 +108,3 @@ table tr:hover img {
   min-height: 0;
   overflow-y: auto;
 }
-
-tr.closed {
-  opacity: 0.38;
-}

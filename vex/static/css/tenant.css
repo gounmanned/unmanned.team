@@ -57,10 +57,10 @@
    SIGNAL TABLE
 ═════════════════════════════════════════════════════════════════ */
 
-/* ── overflow safety ────────────────────────────────────────────── */
-
-.table-wrap {
+#signal-table-wrap {
   overflow-x: hidden;
+  overflow-y: auto;
+  max-height: calc(100vh - 340px);
 }
 
 #signal-table {
@@ -77,6 +77,9 @@
 /* ── header row ────────────────────────────────────────────────── */
 
 #signal-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
   padding: 6px 8px;
   text-align: left;
   font-size: 10.5px;
@@ -84,14 +87,12 @@
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--text-muted, #9ca3af);
+  background: var(--background);
   border-bottom: 1px solid var(--gray-line);
-  background: transparent;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
-/* ── filter, embedded in header (over the autoclose column) ──────── */
 
 .signal-filter-cell {
   padding: 4px 8px !important;
@@ -171,6 +172,10 @@ td.created {
 }
 
 /* ── row states ─────────────────────────────────────────────────── */
+
+tr.closed {
+  opacity: 0.38;
+}
 
 tr.unread td {
   background: rgba(224, 18, 128, 0.045);

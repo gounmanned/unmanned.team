@@ -4,6 +4,7 @@ class TenantScreen {
         this.api = state.api;
         this.table = new Table('signal-table');
         this.month = new Date();
+        this.filterTerm = '';
         this.listen();
 
         // add-ons
@@ -35,6 +36,17 @@ class TenantScreen {
         const el = document.getElementById('signal-count');
         const n = this.table.body.children.length;
         if (el) el.textContent = `${n.toLocaleString()} signal${n === 1 ? '' : 's'}`;
+    }
+
+    filter(term) {
+        const q = (term ?? '').trim().toLowerCase();
+        const rows = Array.from(this.table.body.children);
+
+        rows.forEach(row => {
+            const icon = row.querySelector('img');
+            const haystack = `${row.textContent} ${icon?.alt ?? ''}`.toLowerCase();
+            row.classList.toggle('signal-row-hidden', !(!q || haystack.includes(q)));
+        });
     }
 
     strength(value) {
@@ -112,10 +124,10 @@ class TenantScreen {
                 <td><img src="${Workspace.avatar(signal.source)}"/></td>
                 <td class="severity"></td>
                 <td class="name" title="${signal.name}">${signal.name.substring(0, 99)}</td>
-                <td>#${signal.id}</td>
+                <td class="id">#${signal.id}</td>
                 <td class="strength">${this.strength(signal.metadata?.strength ?? 0)}</td>
                 <td class="source">${signal.asset}</td>
-                <td>${signal.created}</td>
+                <td class="created">${signal.created}</td>
                 <td class="autoclose"></td>
             `;
 
@@ -128,7 +140,13 @@ class TenantScreen {
             });
 
             upsert(row, signal);
+            this.filter(this.filterTerm);
             this.count();
+        });
+
+        document.getElementById('signal-filter').addEventListener('input', (e) => {
+            this.filterTerm = e.target.value;
+            this.filter(this.filterTerm);
         });
 
         document.getElementById('toggle').addEventListener('click', async () => {

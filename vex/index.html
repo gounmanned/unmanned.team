@@ -172,15 +172,32 @@
     <div class="table-wrap" id="signal-table-wrap">
       <table id="signal-table">
         <colgroup>
-          <col style="width: 40px">   <!-- source -->
-          <col style="width: 90px">   <!-- severity -->
-          <col style="width: auto">   <!-- name — takes remaining space -->
-          <col style="width: 130px">  <!-- id -->
-          <col style="width: 120px">  <!-- strength -->
-          <col style="width: 200px">  <!-- source -->
-          <col style="width: 160px">  <!-- timestamp -->
-          <col style="width: 20px">   <!-- status -->
+          <col style="width: 3%">    <!-- icon -->
+          <col style="width: 7%">    <!-- severity -->
+          <col style="width: 33%">   <!-- name -->
+          <col style="width: 10%">   <!-- id -->
+          <col style="width: 8%">    <!-- strength -->
+          <col style="width: 16%">   <!-- source -->
+          <col style="width: 13%">   <!-- created -->
+          <col style="width: 10%">   <!-- filter / autoclose -->
         </colgroup>
+        <thead>
+          <tr>
+            <th></th>
+            <th>Severity</th>
+            <th>Name</th>
+            <th>ID</th>
+            <th>Strength</th>
+            <th>Source</th>
+            <th>Created</th>
+            <th class="signal-filter-cell">
+              <div class="signal-search">
+                <span class="material-symbols-outlined">search</span>
+                <input type="text" id="signal-filter" placeholder="Filter…" autocomplete="off">
+              </div>
+            </th>
+          </tr>
+        </thead>
         <tbody></tbody>
       </table>
 

@@ -1,6 +1,6 @@
-/* ─────────────────────────────────────────────────────────────────
-   CORE AREA
-───────────────────────────────────────────────────────────────── */
+/* ═════════════════════════════════════════════════════════════════
+   EMPTY STATE / WATERMARK
+═════════════════════════════════════════════════════════════════ */
 
 .signal-radar-watermark {
   display: none;
@@ -53,15 +53,127 @@
   color: var(--text-muted, #9ca3af);
 }
 
-/* ── table ──────────────────────────────────────────────────────── */
+/* ═════════════════════════════════════════════════════════════════
+   SIGNAL TABLE
+═════════════════════════════════════════════════════════════════ */
+
+/* ── overflow safety ────────────────────────────────────────────── */
+
+.table-wrap {
+  overflow-x: hidden;
+}
 
 #signal-table {
   table-layout: fixed;
   width: 100%;
 }
 
-tr.unread {
+#signal-table,
+#signal-table th,
+#signal-table td {
+  box-sizing: border-box;
+}
+
+/* ── header row ────────────────────────────────────────────────── */
+
+#signal-table thead th {
+  padding: 6px 8px;
+  text-align: left;
+  font-size: 10.5px;
   font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted, #9ca3af);
+  border-bottom: 1px solid var(--gray-line);
+  background: transparent;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── filter, embedded in header (over the autoclose column) ──────── */
+
+.signal-filter-cell {
+  padding: 4px 8px !important;
+}
+
+.signal-search {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  height: 24px;
+  padding: 0 8px;
+  box-sizing: border-box;
+  border: 1px solid var(--gray-line);
+  border-radius: 7px;
+  background: var(--gray-panel);
+  transition: border-color 0.12s, background 0.12s;
+}
+
+.signal-search:focus-within {
+  border-color: var(--pink);
+  background: var(--gray-panel, #fff);
+}
+
+.signal-search .material-symbols-outlined {
+  font-size: 14px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.signal-search input {
+  all: unset;
+  flex: 1;
+  min-width: 0;
+  font-size: 12px;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: normal;
+  color: var(--text-strong);
+}
+
+.signal-search input::placeholder {
+  color: var(--text-muted);
+  text-transform: none;
+}
+
+/* ── column rules ─────────────────────────────────────────────── */
+
+td.name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+td.id {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-variant-numeric: tabular-nums;
+}
+
+td.strength {
+  white-space: nowrap;
+}
+
+td.source {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+td.created {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── row states ─────────────────────────────────────────────────── */
+
+tr.unread td {
+  background: rgba(224, 18, 128, 0.045);
 }
 
 tr.unread td.name {
@@ -80,31 +192,16 @@ tr.unread td.name::before {
   flex-shrink: 0;
 }
 
-td.name {
-  width: 32%;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-td.severity { width: 90px; }
-td.strength { width: 120px; }
-
-td.source {
-  width: 18%;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+tr.signal-row-hidden { display: none; }
 
 tr[data-status="CV"] td.autoclose {
-    background-image: url(https://cdn.unmanned.team/img/sparkle.svg);
-    background-size: 18px 18px;
-    background-repeat: no-repeat;
-    background-position: left center;
+  background-image: url(https://cdn.unmanned.team/img/sparkle.svg);
+  background-size: 18px 18px;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
-/* ── severity ──────────────────────────────────────────────────────── */
+/* ── severity chip ──────────────────────────────────────────────── */
 
 .severity-chip {
   display: inline-flex;
@@ -120,16 +217,11 @@ tr[data-status="CV"] td.autoclose {
 
 .severity-chip[data-severity="1"] { background: rgba(220,38,38,0.1); color: var(--sev-1); } /* Critical */
 .severity-chip[data-severity="2"] { background: rgba(249,115,22,0.1); color: var(--sev-2); } /* High */
-.severity-chip[data-severity="3"] { background: rgba(234,179,8,0.1);  color: var(--sev-3) } /* Medium */
-.severity-chip[data-severity="4"] { background: rgba(59,130,246,0.1); color: var(--sev-4) } /* Low */
-.severity-chip[data-severity="5"] { background: var(--gray-soft);      color: var(--sev-5) } /* Info */
-.severity-chip[data-severity="6"] { background: rgba(13,148,136,0.1); color: var(--sev-6); } /* Support */
+.severity-chip[data-severity="3"] { background: rgba(234,179,8,0.1);  color: var(--sev-3); } /* Medium */
+.severity-chip[data-severity="4"] { background: rgba(59,130,246,0.1); color: var(--sev-4); } /* Low */
+.severity-chip[data-severity="5"] { background: var(--gray-soft);     color: var(--sev-5); } /* Info */
 
-/* ── strength ──────────────────────────────────────────────────────── */
-
-td.strength {
-  white-space: nowrap;
-}
+/* ── strength meter ─────────────────────────────────────────────── */
 
 .strength-meter {
   display: inline-flex;
@@ -152,15 +244,15 @@ td.strength {
   transition: background 0.15s, height 0.15s;
 }
 
-.strength-bar:nth-child(1) { height: 20%; }
-.strength-bar:nth-child(2) { height: 30%; }
-.strength-bar:nth-child(3) { height: 40%; }
-.strength-bar:nth-child(4) { height: 50%; }
-.strength-bar:nth-child(5) { height: 60%; }
-.strength-bar:nth-child(6) { height: 70%; }
-.strength-bar:nth-child(7) { height: 80%; }
-.strength-bar:nth-child(8) { height: 90%; }
-.strength-bar:nth-child(9) { height: 95%; }
+.strength-bar:nth-child(1)  { height: 20%; }
+.strength-bar:nth-child(2)  { height: 30%; }
+.strength-bar:nth-child(3)  { height: 40%; }
+.strength-bar:nth-child(4)  { height: 50%; }
+.strength-bar:nth-child(5)  { height: 60%; }
+.strength-bar:nth-child(6)  { height: 70%; }
+.strength-bar:nth-child(7)  { height: 80%; }
+.strength-bar:nth-child(8)  { height: 90%; }
+.strength-bar:nth-child(9)  { height: 95%; }
 .strength-bar:nth-child(10) { height: 100%; }
 
 .strength-bar.lit {
@@ -178,9 +270,9 @@ td.strength {
   color: var(--pink);
 }
 
-/* ─────────────────────────────────────────────────────────────────────────────
-   LINKS
-───────────────────────────────────────────────────────────────────────────── */
+/* ═════════════════════════════════════════════════════════════════
+   FOOTER LINKS
+═════════════════════════════════════════════════════════════════ */
 
 .links {
   position: fixed;
@@ -223,6 +315,23 @@ td.strength {
   background: var(--gray-mid);
   transform: translateY(-50%);
 }
+
+.links a.cta {
+  color: var(--pink);
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.links .count {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted, #8a8f98);
+  white-space: nowrap;
+}
+
+/* ── view toggle ────────────────────────────────────────────────── */
 
 .links .view-toggle {
   position: absolute;
@@ -276,24 +385,9 @@ td.strength {
   background: var(--pink);
 }
 
-.links a.cta {
-  color: var(--pink);
-  font-weight: 600;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.links .count {
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--text-muted, #8a8f98);
-  white-space: nowrap;
-}
-
-/* ─────────────────────────────────────────────────────────────────
+/* ═════════════════════════════════════════════════════════════════
    CHOKE POINT CALLOUT
-───────────────────────────────────────────────────────────────── */
+═════════════════════════════════════════════════════════════════ */
 
 .chokepoint-callout {
   position: relative;
@@ -344,7 +438,7 @@ td.strength {
 
 .chokepoint-callout:active { transform: translateY(0); }
 
-/* ── icon / logo ─────────────────────────────────────────────── */
+/* ── icon / logo ────────────────────────────────────────────────── */
 
 .chokepoint-icon {
   position: relative;
@@ -382,7 +476,7 @@ td.strength {
   z-index: 2;
 }
 
-/* ── body / text ──────────────────────────────────────────────── */
+/* ── body / text ────────────────────────────────────────────────── */
 
 .chokepoint-body { flex: 1; min-width: 0; z-index: 1; }
 

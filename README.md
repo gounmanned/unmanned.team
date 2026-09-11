@@ -24,18 +24,13 @@ This is the exact code that powers [vex.unmanned.team](https://vex.unmanned.team
 
 There is no build step, no bundler, and no framework. You edit files, you refresh the page.
 
-> [!IMPORTANT]
-> This is a **frontend-only** repo. All authentication, scanning, data processing, and business logic live behind the production API (`static/js/api.js`). Whitelabeling changes how Vex *looks and behaves in the browser* — it does not give you your own backend.
-
 ---
 
 ## Philosophy
 
-> ### 🦆 Light clients, heavy backends
+> ### Light clients
 >
-> At Unmanned, we don't think every product needs React, a bundler, a state management library, and a 400MB `node_modules` folder to render a dashboard.
->
-> Every dependency you add is code you didn't write, running with the same trust as code you did — and every framework abstraction is a place where a real problem can hide behind a virtual one. So Vex's frontend is built with **plain HTML, CSS, and JavaScript**, structured like a *light client*: the browser renders state and calls an API, and the backend does the compute work.
+> At Unmanned, we don't think every product needs React, a bundler, a state management library, and a 400MB `node_modules` folder to render a dashboard. Every dependency you add is code you didn't write, running with the same trust as code you did. So Vex's frontend is built with **plain HTML, CSS, and JavaScript**, structured like a *light client*: the browser renders state and calls an API.
 >
 ---
 

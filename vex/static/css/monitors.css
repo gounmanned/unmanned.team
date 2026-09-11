@@ -114,7 +114,7 @@
 }
 .monitor-picker-label { margin: 0 0 8px; font-size: 11px; color: var(--text-muted); }
 
-.monitor-source-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 10px; }
+.monitor-source-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 10px; }
 .monitor-source-option {
   position: relative;
   display: flex;

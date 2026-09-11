@@ -8,62 +8,66 @@ class MonitorRollup {
 
         this.pickerOpen = false;
         this.connectingKey = null;
+        this.credsExpanded = false;   // has the user opted into the cred field for an 'optional' source
+        this.connecting = false;      // true while a 1-click / empty-cred connect request is in flight
+        this.available = {};          // populated by _loadSources()
 
-        this.available = {
-            google:     { name: 'Google Workspace', instances: [] },
-            microsoft:  { name: 'Microsoft 365', instances: [] },
-            cloudflare: { name: 'Cloudflare', instances: [] },
-            level:      { name: 'Level.io', instances: [] },
-            shopify:    { name: 'Shopify', instances: [] },
-            hubspot:    { name: 'Hubspot', instances: [] },
-            square:     { name: 'Square', instances: [] },
-            quickbooks: { name: 'Quickbooks', instances: [] },
-            ramp:       { name: 'Ramp', instances: [] },
-            aws:        { name: 'AWS', instances: [] },
-            github:     { name: 'Github', instances: [] },
-            slack:      { name: 'Slack', instances: [] },
-            constantcontact: { name: 'Constant Contact', instances: [] },
-            screenconnect: { name: 'Screen Connect', instances: [] },
-            jira: { name: 'Jira', instances: [] },
-            teams: { name: 'Teams', instances: [] },
-            rapid7: { name: 'Rapid7', instances: [] },
-        };
-
+        this.ready = this._loadSources();
         this.listen();
     }
 
+    async _loadSources() {
+        const keys = await fetch('static/img/source/manifest.json').then(r => r.json());
+        keys.forEach(key => {
+            this.available[key] = {
+                name: key.charAt(0).toUpperCase() + key.slice(1),
+                instances: [],
+                creds: true,
+            };
+        });
+        this._render();
+    }
+
     async reset() {
+        await this.ready;
         Object.values(this.available).forEach(s => { s.instances = []; });
         this.pickerOpen = false;
         this.connectingKey = null;
+        this.credsExpanded = false;
+        this.connecting = false;
         this._renderCallout();
         this._render();
     }
 
     async reload() {
+        await this.ready;
         const monitors = await this.api.monitors.list();
         monitors.forEach(monitor => this.add(monitor));
     }
 
-    add(monitor) {
+    add(monitor, hasCreds = null) {
         const [, , name, indexStr] = monitor.split("/");
         const index = indexStr !== undefined ? parseInt(indexStr, 10) : 0;
         const source = this.available[name];
-        if (source && !source.instances.includes(index)) {
-            source.instances.push(index);
-            source.instances.sort((a, b) => a - b);
+        if (source && !source.instances.some(i => i.idx === index)) {
+            source.instances.push({ idx: index, hasCreds });
+            source.instances.sort((a, b) => a.idx - b.idx);
             this._render();
         }
     }
 
+    _credMode(key) {
+        return this.available[key].creds ? 'optional' : 'none';
+    }
+
     _nextIndex(key) {
         const instances = this.available[key].instances;
-        return instances.length ? Math.max(...instances) + 1 : 0;
+        return instances.length ? Math.max(...instances.map(i => i.idx)) + 1 : 0;
     }
 
     _allInstances() {
         return Object.entries(this.available).flatMap(([key, s]) =>
-            s.instances.map(idx => ({ key, idx, source: s }))
+            s.instances.map(inst => ({ key, inst, source: s }))
         );
     }
 
@@ -82,18 +86,29 @@ class MonitorRollup {
         const instances = this._allInstances();
         this.wrap.classList.toggle('empty', instances.length === 0 && !this.pickerOpen);
 
-        const rows = instances.map(({ key, idx, source }) => this._monitorRow(key, idx, source)).join('');
+        const rows = instances.map(({ key, inst, source }) => this._monitorRow(key, inst, source)).join('');
         this.list.innerHTML = rows + this._addSection();
     }
 
-    _monitorRow(key, idx, source) {
-        const label = source.instances.length > 1 ? `${source.name} #${idx + 1}` : source.name;
+    _monitorRow(key, inst, source) {
+        const label = source.instances.length > 1 ? `${source.name} #${inst.idx + 1}` : source.name;
+        const mode = this._credMode(key);
+
+        let sub = '';
+        if (mode === 'optional') {
+            if (inst.hasCreds === true) sub = 'Full monitoring';
+            else if (inst.hasCreds === false) sub = 'Outage only';
+        }
+
         return `
             <div class="monitor-row">
                 ${this._icon(key)}
-                <span class="monitor-name">${label}</span>
+                <span class="monitor-name-block">
+                    <span class="monitor-name">${label}</span>
+                    ${sub ? `<span class="monitor-status-sub">${sub}</span>` : ''}
+                </span>
                 <span class="monitor-status"><span class="monitor-dot"></span>Connected</span>
-                <button class="icon-btn" data-disconnect="${key}/${idx}" aria-label="Disconnect ${label}">×</button>
+                <button class="icon-btn" data-disconnect="${key}/${inst.idx}" aria-label="Disconnect ${label}">×</button>
             </div>
         `;
     }
@@ -109,9 +124,10 @@ class MonitorRollup {
         }
 
         if (!this.connectingKey) {
-            const options = Object.entries(this.available).map(([key, s]) => `
-                <button class="monitor-source-option" data-pick="${key}">${this._icon(key)}${s.name}</button>
-            `).join('');
+            const options = Object.entries(this.available).map(([key, s]) => {
+                const badge = this._credMode(key) === 'none' ? '<span class="monitor-source-badge">1-click</span>' : '';
+                return `<button class="monitor-source-option" data-pick="${key}">${this._icon(key)}<span>${s.name}</span>${badge}</button>`;
+            }).join('');
 
             return `
                 <div class="monitor-picker">
@@ -122,17 +138,37 @@ class MonitorRollup {
             `;
         }
 
-        const s = this.available[this.connectingKey];
+        const key = this.connectingKey;
+        const s = this.available[key];
+        const mode = this._credMode(key);
+
+        if (mode === 'none' || this.connecting) {
+            return `
+                <div class="monitor-picker monitor-picker-connecting">
+                    <div class="monitor-connect-header">${this._icon(key)}<span class="monitor-name">${s.name}</span></div>
+                    <p class="monitor-connect-note">Connecting…</p>
+                </div>
+            `;
+        }
+
+        const showCredField = this.credsExpanded;
+
         return `
             <div class="monitor-picker">
-                <div class="monitor-connect-header">${this._icon(this.connectingKey)}<span class="monitor-name">${s.name}</span></div>
-                <textarea data-cred rows="2" placeholder="Paste your API key or credentials"></textarea>
-                <p class="monitor-connect-error" data-cred-error hidden>Enter your credentials first.</p>
+                <div class="monitor-connect-header">${this._icon(key)}<span class="monitor-name">${s.name}</span></div>
+                ${!showCredField ? `<p class="monitor-connect-note">Connects instantly for outage monitoring. Add credentials for full monitoring.</p>` : ''}
+                ${showCredField ? `
+                    <textarea data-cred rows="2" placeholder="Paste your API key or credentials"></textarea>
+                    <p class="monitor-connect-error" data-cred-error hidden>Enter your credentials first.</p>
+                ` : ''}
                 <div class="monitor-connect-actions">
-                    <a href="docs/${this.connectingKey}.html" target="_blank" class="docs-link">Setup docs →</a>
+                    <a href="docs/${key}.html" target="_blank" class="docs-link">Setup docs →</a>
                     <div class="monitor-connect-actions-right">
                         <button class="btn ghost" data-back>Back</button>
-                        <button class="btn primary" data-submit>Connect</button>
+                        ${showCredField
+                            ? `<button class="btn primary" data-submit>Connect</button>`
+                            : `<button class="btn ghost" data-expand-creds>Add credentials</button>
+                               <button class="btn primary" data-submit-empty>Connect</button>`}
                     </div>
                 </div>
             </div>
@@ -146,6 +182,32 @@ class MonitorRollup {
         return `${hex}@vex.unmanned.team`;
     }
 
+    _resetPicker() {
+        this.pickerOpen = false;
+        this.connectingKey = null;
+        this.credsExpanded = false;
+        this.connecting = false;
+    }
+
+    _connect(key, value, hasCreds) {
+        const idx = this._nextIndex(key);
+        this.connecting = true;
+        this._render();
+
+        return this.api.monitors.connect(`${key}/${idx}`, value).then(() => {
+            this.available[key].instances.push({ idx, hasCreds });
+            this.available[key].instances.sort((a, b) => a.idx - b.idx);
+            this._resetPicker();
+            this._render();
+        }).catch(() => {
+            this.connecting = false;
+            alert("Invalid JSON. Verify your quotes are correct.");
+            this._render();
+        }).finally(() => {
+            document.dispatchEvent(new CustomEvent('page:reset'));
+        });
+    }
+
     listen() {
         this.list.addEventListener('click', ev => {
             if (ev.target.closest('[data-open-picker]')) {
@@ -153,19 +215,34 @@ class MonitorRollup {
                 return this._render();
             }
             if (ev.target.closest('[data-cancel-picker]')) {
-                this.pickerOpen = false;
-                this.connectingKey = null;
+                this._resetPicker();
                 return this._render();
             }
             if (ev.target.closest('[data-back]')) {
                 this.connectingKey = null;
+                this.credsExpanded = false;
                 return this._render();
             }
 
             const pick = ev.target.closest('[data-pick]');
             if (pick) {
                 this.connectingKey = pick.dataset.pick;
+                this.credsExpanded = false;
+
+                if (this._credMode(this.connectingKey) === 'none') {
+                    this._render();
+                    return this._connect(this.connectingKey, '{}', true);
+                }
                 return this._render();
+            }
+
+            if (ev.target.closest('[data-expand-creds]')) {
+                this.credsExpanded = true;
+                return this._render();
+            }
+
+            if (ev.target.closest('[data-submit-empty]')) {
+                return this._connect(this.connectingKey, '{}', false);
             }
 
             const disconnect = ev.target.closest('[data-disconnect]');
@@ -173,7 +250,7 @@ class MonitorRollup {
                 const [key, idxStr] = disconnect.dataset.disconnect.split('/');
                 const idx = parseInt(idxStr, 10);
                 this.api.monitors.disconnect(`${key}/${idx}`);
-                this.available[key].instances = this.available[key].instances.filter(i => i !== idx);
+                this.available[key].instances = this.available[key].instances.filter(i => i.idx !== idx);
                 return this._render();
             }
 
@@ -186,21 +263,7 @@ class MonitorRollup {
                     return;
                 }
 
-                const idx = this._nextIndex(key);
-
-                this.api.monitors.connect(`${key}/${idx}`, value).then(() => {
-                    this.available[key].instances.push(idx);
-                    this.available[key].instances.sort((a, b) => a - b);
-                    this.pickerOpen = false;
-                    this.connectingKey = null;
-                    this._render();
-                }).catch(() => {
-                    alert("Invalid JSON. Verify your quotes are correct.");
-                }).finally(() => {
-                    document.dispatchEvent(new CustomEvent('page:reset'));
-                });
-
-                return;
+                return this._connect(key, value, true);
             }
         });
 

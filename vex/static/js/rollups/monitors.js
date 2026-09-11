@@ -44,25 +44,25 @@ class MonitorRollup {
         monitors.forEach(monitor => this.add(monitor));
     }
 
-    add(monitor, hasCreds = null) {
+    add(monitor) {
         const [, , name, indexStr] = monitor.split("/");
         const index = indexStr !== undefined ? parseInt(indexStr, 10) : 0;
         const source = this.available[name];
-        if (source && !source.instances.some(i => i.idx === index)) {
-            source.instances.push({ idx: index, hasCreds });
-            source.instances.sort((a, b) => a.idx - b.idx);
+        if (source && !source.instances.includes(index)) {
+            source.instances.push(index);
+            source.instances.sort((a, b) => a - b);
             this._render();
         }
     }
 
     _nextIndex(key) {
         const instances = this.available[key].instances;
-        return instances.length ? Math.max(...instances.map(i => i.idx)) + 1 : 0;
+        return instances.length ? Math.max(...instances) + 1 : 0;
     }
 
     _allInstances() {
         return Object.entries(this.available).flatMap(([key, s]) =>
-            s.instances.map(inst => ({ key, inst, source: s }))
+            s.instances.map(idx => ({ key, idx, source: s }))
         );
     }
 
@@ -81,26 +81,19 @@ class MonitorRollup {
         const instances = this._allInstances();
         this.wrap.classList.toggle('empty', instances.length === 0 && !this.pickerOpen);
 
-        const rows = instances.map(({ key, inst, source }) => this._monitorRow(key, inst, source)).join('');
+        const rows = instances.map(({ key, idx, source }) => this._monitorRow(key, idx, source)).join('');
         this.list.innerHTML = rows + this._addSection();
     }
 
-    _monitorRow(key, inst, source) {
-        const label = source.instances.length > 1 ? `${source.name} #${inst.idx + 1}` : source.name;
-
-        let sub = '';
-        if (inst.hasCreds === true) sub = 'Full monitoring';
-        else if (inst.hasCreds === false) sub = 'Outage only';
+    _monitorRow(key, idx, source) {
+        const label = source.instances.length > 1 ? `${source.name} #${idx + 1}` : source.name;
 
         return `
             <div class="monitor-row">
                 ${this._icon(key)}
-                <span class="monitor-name-block">
-                    <span class="monitor-name">${label}</span>
-                    ${sub ? `<span class="monitor-status-sub">${sub}</span>` : ''}
-                </span>
+                <span class="monitor-name">${label}</span>
                 <span class="monitor-status"><span class="monitor-dot"></span>Connected</span>
-                <button class="icon-btn" data-disconnect="${key}/${inst.idx}" aria-label="Disconnect ${label}">×</button>
+                <button class="icon-btn" data-disconnect="${key}/${idx}" aria-label="Disconnect ${label}">×</button>
             </div>
         `;
     }
@@ -179,14 +172,14 @@ class MonitorRollup {
         this.connecting = false;
     }
 
-    _connect(key, value, hasCreds) {
+    _connect(key, value) {
         const idx = this._nextIndex(key);
         this.connecting = true;
         this._render();
 
         return this.api.monitors.connect(`${key}/${idx}`, value).then(() => {
-            this.available[key].instances.push({ idx, hasCreds });
-            this.available[key].instances.sort((a, b) => a.idx - b.idx);
+            this.available[key].instances.push(idx);
+            this.available[key].instances.sort((a, b) => a - b);
             this._resetPicker();
             this._render();
         }).catch(() => {
@@ -227,7 +220,7 @@ class MonitorRollup {
             }
 
             if (ev.target.closest('[data-submit-empty]')) {
-                return this._connect(this.connectingKey, '{}', false);
+                return this._connect(this.connectingKey, '{}');
             }
 
             const disconnect = ev.target.closest('[data-disconnect]');
@@ -235,7 +228,7 @@ class MonitorRollup {
                 const [key, idxStr] = disconnect.dataset.disconnect.split('/');
                 const idx = parseInt(idxStr, 10);
                 this.api.monitors.disconnect(`${key}/${idx}`);
-                this.available[key].instances = this.available[key].instances.filter(i => i.idx !== idx);
+                this.available[key].instances = this.available[key].instances.filter(i => i !== idx);
                 return this._render();
             }
 
@@ -248,7 +241,7 @@ class MonitorRollup {
                     return;
                 }
 
-                return this._connect(key, value, true);
+                return this._connect(key, value);
             }
         });
 

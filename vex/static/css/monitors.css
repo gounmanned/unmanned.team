@@ -84,8 +84,6 @@
 .monitor-row:hover .icon-btn { opacity: 1; }
 .icon-btn:hover { background: #fef2f2; border-color: #fecaca; color: #dc2626; }
 
-.monitor-empty { padding: 24px 4px; text-align: center; font-size: 12.5px; color: var(--text-faint); border-top: 1px solid var(--gray-line); }
-
 /* add monitor: one permanent control, never duplicated per source */
 
 .monitor-add-toggle {
@@ -116,8 +114,9 @@
 }
 .monitor-picker-label { margin: 0 0 8px; font-size: 11px; color: var(--text-muted); }
 
-.monitor-source-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 10px; }
+.monitor-source-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 10px; }
 .monitor-source-option {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 7px;
@@ -131,9 +130,15 @@
   font-size: 11.5px;
   color: var(--text-body);
 }
+.monitor-source-option span:not(.monitor-icon) { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .monitor-source-option:hover { border-color: var(--pink); color: var(--pink); }
 
 .monitor-connect-header { display: flex; align-items: center; gap: 9px; margin-bottom: 8px; }
+.monitor-connect-note { margin: 0 0 10px; font-size: 11.5px; line-height: 1.5; color: var(--text-muted); }
+
+.monitor-picker-connecting { text-align: center; }
+.monitor-picker-connecting .monitor-connect-header { justify-content: center; margin-bottom: 4px; }
+.monitor-picker-connecting .monitor-connect-note { margin: 0; color: var(--text-faint); }
 
 .monitor-picker textarea {
   width: 100%;

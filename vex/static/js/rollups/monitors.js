@@ -10,9 +10,14 @@ class MonitorRollup {
         this.connectingKey = null;
         this.credsExpanded = false;   // has the user opted into the cred field for an 'optional' source
         this.connecting = false;      // true while a 1-click / empty-cred connect request is in flight
+
         this.available = {};          // populated by _loadSources()
 
+        // Sources come from static/img/source/manifest.json rather than a hardcoded object,
+        // so adding a new integration is "drop in a PNG + a manifest row," not a JS change.
+        // `ready` resolves once `available` is populated — reload() and listen() both wait on it.
         this.ready = this._loadSources();
+
         this.listen();
     }
 
@@ -22,7 +27,6 @@ class MonitorRollup {
             this.available[key] = {
                 name: key.charAt(0).toUpperCase() + key.slice(1),
                 instances: [],
-                creds: true,
             };
         });
         this._render();
@@ -42,6 +46,9 @@ class MonitorRollup {
     async reload() {
         await this.ready;
         const monitors = await this.api.monitors.list();
+        // monitors is currently an array of path strings ("google/0", etc). If/when the API
+        // starts returning cred status per monitor, pass it as the second arg to add() so
+        // reloaded rows get the correct "outage only" / "full monitoring" sub-label.
         monitors.forEach(monitor => this.add(monitor));
     }
 
@@ -54,10 +61,6 @@ class MonitorRollup {
             source.instances.sort((a, b) => a.idx - b.idx);
             this._render();
         }
-    }
-
-    _credMode(key) {
-        return this.available[key].creds ? 'optional' : 'none';
     }
 
     _nextIndex(key) {
@@ -92,13 +95,13 @@ class MonitorRollup {
 
     _monitorRow(key, inst, source) {
         const label = source.instances.length > 1 ? `${source.name} #${inst.idx + 1}` : source.name;
-        const mode = this._credMode(key);
 
+        // Purely informational — no upgrade action from here. To add credentials to an
+        // outage-only monitor, the user disconnects and reconnects with creds.
         let sub = '';
-        if (mode === 'optional') {
-            if (inst.hasCreds === true) sub = 'Full monitoring';
-            else if (inst.hasCreds === false) sub = 'Outage only';
-        }
+        if (inst.hasCreds === true) sub = 'Full monitoring';
+        else if (inst.hasCreds === false) sub = 'Outage only';
+        // hasCreds === null (unknown, e.g. reloaded from an API that doesn't report it yet) -> no sub-label
 
         return `
             <div class="monitor-row">
@@ -124,10 +127,9 @@ class MonitorRollup {
         }
 
         if (!this.connectingKey) {
-            const options = Object.entries(this.available).map(([key, s]) => {
-                const badge = this._credMode(key) === 'none' ? '<span class="monitor-source-badge">1-click</span>' : '';
-                return `<button class="monitor-source-option" data-pick="${key}">${this._icon(key)}<span>${s.name}</span>${badge}</button>`;
-            }).join('');
+            const options = Object.entries(this.available).map(([key, s]) =>
+                `<button class="monitor-source-option" data-pick="${key}">${this._icon(key)}<span>${s.name}</span></button>`
+            ).join('');
 
             return `
                 <div class="monitor-picker">
@@ -140,9 +142,8 @@ class MonitorRollup {
 
         const key = this.connectingKey;
         const s = this.available[key];
-        const mode = this._credMode(key);
 
-        if (mode === 'none' || this.connecting) {
+        if (this.connecting) {
             return `
                 <div class="monitor-picker monitor-picker-connecting">
                     <div class="monitor-connect-header">${this._icon(key)}<span class="monitor-name">${s.name}</span></div>
@@ -189,6 +190,7 @@ class MonitorRollup {
         this.connecting = false;
     }
 
+    // Shared by 1-click connect, "Connect" with empty creds, and "Connect" with real creds.
     _connect(key, value, hasCreds) {
         const idx = this._nextIndex(key);
         this.connecting = true;
@@ -228,11 +230,6 @@ class MonitorRollup {
             if (pick) {
                 this.connectingKey = pick.dataset.pick;
                 this.credsExpanded = false;
-
-                if (this._credMode(this.connectingKey) === 'none') {
-                    this._render();
-                    return this._connect(this.connectingKey, '{}', true);
-                }
                 return this._render();
             }
 

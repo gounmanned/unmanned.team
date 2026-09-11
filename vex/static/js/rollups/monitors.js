@@ -8,16 +8,11 @@ class MonitorRollup {
 
         this.pickerOpen = false;
         this.connectingKey = null;
-        this.credsExpanded = false;   // has the user opted into the cred field for an 'optional' source
-        this.connecting = false;      // true while a 1-click / empty-cred connect request is in flight
+        this.credsExpanded = false;
+        this.connecting = false;
+        this.available = {};
 
-        this.available = {};          // populated by _loadSources()
-
-        // Sources come from static/img/source/manifest.json rather than a hardcoded object,
-        // so adding a new integration is "drop in a PNG + a manifest row," not a JS change.
-        // `ready` resolves once `available` is populated — reload() and listen() both wait on it.
         this.ready = this._loadSources();
-
         this.listen();
     }
 
@@ -46,9 +41,6 @@ class MonitorRollup {
     async reload() {
         await this.ready;
         const monitors = await this.api.monitors.list();
-        // monitors is currently an array of path strings ("google/0", etc). If/when the API
-        // starts returning cred status per monitor, pass it as the second arg to add() so
-        // reloaded rows get the correct "outage only" / "full monitoring" sub-label.
         monitors.forEach(monitor => this.add(monitor));
     }
 
@@ -96,12 +88,9 @@ class MonitorRollup {
     _monitorRow(key, inst, source) {
         const label = source.instances.length > 1 ? `${source.name} #${inst.idx + 1}` : source.name;
 
-        // Purely informational — no upgrade action from here. To add credentials to an
-        // outage-only monitor, the user disconnects and reconnects with creds.
         let sub = '';
         if (inst.hasCreds === true) sub = 'Full monitoring';
         else if (inst.hasCreds === false) sub = 'Outage only';
-        // hasCreds === null (unknown, e.g. reloaded from an API that doesn't report it yet) -> no sub-label
 
         return `
             <div class="monitor-row">
@@ -190,7 +179,6 @@ class MonitorRollup {
         this.connecting = false;
     }
 
-    // Shared by 1-click connect, "Connect" with empty creds, and "Connect" with real creds.
     _connect(key, value, hasCreds) {
         const idx = this._nextIndex(key);
         this.connecting = true;

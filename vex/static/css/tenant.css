@@ -60,7 +60,6 @@
 #signal-table-wrap {
   overflow-x: hidden;
   overflow-y: auto;
-  max-height: calc(100vh - 340px);
 }
 
 #signal-table {

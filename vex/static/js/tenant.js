@@ -127,7 +127,7 @@ class TenantScreen {
                 <td class="id">#${signal.id}</td>
                 <td class="strength">${this.strength(signal.metadata?.strength ?? 0)}</td>
                 <td class="source">${signal.asset}</td>
-                <td class="created">${signal.created}</td>
+                <td class="created">${Workspace.date(signal.created)}</td>
                 <td class="autoclose"></td>
             `;
 

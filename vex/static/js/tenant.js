@@ -33,9 +33,10 @@ class TenantScreen {
     }
 
     count() {
-        const el = document.getElementById('signal-count');
-        const n = this.table.body.children.length;
-        if (el) el.textContent = `${n.toLocaleString()} signal${n === 1 ? '' : 's'}`;
+        const rows = Array.from(this.table.body.children);
+        const open = rows.filter(r => !r.classList.contains('closed')).length;
+        const footnote = `${rows.length.toLocaleString()} signals ${open ? `(${open.toLocaleString()} open)` : ''}`;
+        document.getElementById('signal-count').textContent = footnote;
     }
 
     filter(term) {

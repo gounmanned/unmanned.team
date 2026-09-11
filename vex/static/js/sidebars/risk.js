@@ -41,7 +41,7 @@ class RiskSidebar {
             item.dataset.id = signal.id;
             item.innerHTML = `
                 <img class="risk-source-icon" src="static/img/source/${signal.source}.png"
-                     alt="${signal.source}" onerror="this.replaceWith(Object.assign(document.createElement('span'), {className:'material-symbols-outlined risk-source-fallback', textContent:'travel_explore'}))">
+                     onerror="this.replaceWith(Object.assign(document.createElement('span'), {className:'material-symbols-outlined risk-source-fallback', textContent:'travel_explore'}))">
                 <span class="risk-name">${signal.name}</span>
                 <span class="risk-asset">${signal.asset}</span>
                 <span class="risk-accepted">accepted ${Workspace.date(signal.updated)}</span>

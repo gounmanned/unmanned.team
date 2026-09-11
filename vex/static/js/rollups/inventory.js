@@ -64,7 +64,7 @@ class InventoryRollup {
                 </td>
                 <td class="asset-source"><img src="static/img/source/${a.source}.png" alt="" title="${a.source}"></td>
                 <td class="asset-source">
-                    ${a.metadata?.platform ? `<img src="static/img/source/${a.metadata.platform}.png" alt="" title="${a.metadata.platform}">` : '—'}
+                    ${a.metadata?.platform ? `<img src="static/img/platform/${a.metadata.platform}.png" title="${a.metadata.platform}">` : '—'}
                 </td>
                 <td class="asset-value">${a.name}</td>
                 <td class="asset-signals">${a.signals}</td>

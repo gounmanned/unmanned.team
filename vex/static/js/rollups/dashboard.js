@@ -338,7 +338,7 @@ class DashboardRollup {
                     <div class="dashboard-strength-hero-name" title="${signal.name}">${signal.name}</div>
                     <div class="dashboard-strength-hero-meta">
                         <span class="dashboard-strength-hero-meta-item">
-                            <img class="dashboard-strength-hero-source-logo" src="static/img/source/${signal.source}.png" alt="${signal.source}" />
+                            <img class="dashboard-strength-hero-source-logo" src="static/img/source/${signal.source}.png" />
                             ${signal.source}
                         </span>
                         <span class="dashboard-strength-hero-meta-item">
@@ -369,7 +369,7 @@ class DashboardRollup {
                 ${vendors.map(vendor => `
                     <div class="dashboard-monitor-card">
                         <span class="dashboard-monitor-status is-on"></span>
-                        <img class="dashboard-monitor-logo" src="static/img/source/${vendor}.png" alt="${vendor}" />
+                        <img class="dashboard-monitor-logo" src="static/img/source/${vendor}.png" />
                         <span class="dashboard-monitor-name">${vendor}</span>
                     </div>
                 `).join('')}

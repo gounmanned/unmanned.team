@@ -8,7 +8,6 @@ class MonitorRollup {
 
         this.pickerOpen = false;
         this.connectingKey = null;
-        this.credsExpanded = false;
         this.connecting = false;
         this.available = {};
 
@@ -32,7 +31,6 @@ class MonitorRollup {
         Object.values(this.available).forEach(s => { s.instances = []; });
         this.pickerOpen = false;
         this.connectingKey = null;
-        this.credsExpanded = false;
         this.connecting = false;
         this._renderCallout();
         this._render();
@@ -134,24 +132,17 @@ class MonitorRollup {
             `;
         }
 
-        const showCredField = this.credsExpanded;
-
         return `
             <div class="monitor-picker">
                 <div class="monitor-connect-header">${this._icon(key)}<span class="monitor-name">${s.name}</span></div>
-                ${!showCredField ? `<p class="monitor-connect-note">Connects instantly for outage monitoring. Add credentials for full monitoring.</p>` : ''}
-                ${showCredField ? `
-                    <textarea data-cred rows="2" placeholder="Paste your API key or credentials"></textarea>
-                    <p class="monitor-connect-error" data-cred-error hidden>Enter your credentials first.</p>
-                ` : ''}
+                <p class="monitor-connect-note">Credentials are required for monitoring.</p>
+                <textarea data-cred rows="2" placeholder="Paste your API key or credentials"></textarea>
+                <p class="monitor-connect-error" data-cred-error hidden>Enter your credentials first.</p>
                 <div class="monitor-connect-actions">
                     <a href="docs/${key}.html" target="_blank" class="docs-link">Setup docs →</a>
                     <div class="monitor-connect-actions-right">
                         <button class="btn ghost" data-back>Back</button>
-                        ${showCredField
-                            ? `<button class="btn primary" data-submit>Connect</button>`
-                            : `<button class="btn ghost" data-expand-creds>Add credentials</button>
-                               <button class="btn primary" data-submit-empty>Connect</button>`}
+                        <button class="btn primary" data-submit>Connect</button>
                     </div>
                 </div>
             </div>
@@ -168,7 +159,6 @@ class MonitorRollup {
     _resetPicker() {
         this.pickerOpen = false;
         this.connectingKey = null;
-        this.credsExpanded = false;
         this.connecting = false;
     }
 
@@ -203,24 +193,13 @@ class MonitorRollup {
             }
             if (ev.target.closest('[data-back]')) {
                 this.connectingKey = null;
-                this.credsExpanded = false;
                 return this._render();
             }
 
             const pick = ev.target.closest('[data-pick]');
             if (pick) {
                 this.connectingKey = pick.dataset.pick;
-                this.credsExpanded = false;
                 return this._render();
-            }
-
-            if (ev.target.closest('[data-expand-creds]')) {
-                this.credsExpanded = true;
-                return this._render();
-            }
-
-            if (ev.target.closest('[data-submit-empty]')) {
-                return this._connect(this.connectingKey, '{}');
             }
 
             const disconnect = ev.target.closest('[data-disconnect]');

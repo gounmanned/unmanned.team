@@ -82,7 +82,11 @@ class Banner {
             if (!card) continue;
 
             const vendor = matchedByStep.get(id);
-            const isDone = id === 'endpoint' ? (TenantScreen.endpoint || !!vendor) : !!vendor;
+            let isDone = !!vendor;
+
+            if (id === 'endpoint') {
+                isDone = (TenantScreen.endpoint || !!vendor) && endpointCount > 0;
+            }
 
             card.classList.toggle('done', isDone);
         }

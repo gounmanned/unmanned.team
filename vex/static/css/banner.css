@@ -29,6 +29,7 @@
   opacity: 0.5;
   cursor: pointer;
   border-radius: 6px;
+  overflow: hidden;
   transition: transform 0.12s ease, box-shadow 0.12s ease;
 }
 
@@ -73,6 +74,10 @@
   cursor: pointer;
 }
 
+.gs-card.done .gs-card-main {
+  display: none;
+}
+
 .gs-card-top {
   display: flex;
   align-items: center;
@@ -85,12 +90,6 @@
   color: var(--gray-line, #d1d5db);
   flex-shrink: 0;
   transition: color 0.15s, font-size 0.15s;
-}
-
-.gs-card.done .gs-check {
-  font-variation-settings: 'FILL' 1;
-  font-size: 17px;
-  color: #4b9e82;
 }
 
 .gs-title {
@@ -106,7 +105,7 @@
   color: var(--text-muted);
 }
 
-/* ── banner controls (toggle + dashboard link) ───────────────── */
+/* ── banner controls (dashboard link) ───────────────── */
 
 .gs-controls {
   position: absolute;
@@ -137,15 +136,11 @@
   background: var(--gray-line);
 }
 
-.gs-toggle[aria-pressed="true"] {
-  color: #4b9e82;
-}
-
 .gs-toggle .material-symbols-outlined {
   font-size: 16px;
 }
 
-/* ── stats mode: centered stat, icon bled left-of-center ──────── */
+/* ── per-card stat swap: centered stat, icon bled left-of-center ──────── */
 
 .gs-stat-block {
   display: none;
@@ -158,16 +153,15 @@
   text-align: center;
 }
 
+.gs-card.done .gs-stat-block {
+  display: flex;
+}
+
 .gs-stat-value,
 .gs-stat-label,
 .gs-stat-notif-logo {
   position: relative;
   z-index: 1;
-}
-
-#getting-started.stats-loading .gs-stat-notif-logo,
-#getting-started.stats-loading .gs-stat-notif-empty {
-    visibility: hidden;
 }
 
 .gs-stat-block-notif {
@@ -213,27 +207,21 @@
   user-select: none;
 }
 
-#getting-started.stats-mode .gs-card {
-  opacity: 1;
-  overflow: hidden;
-}
+/* ── loading state (scoped to done cards, since only those show a stat) ── */
 
-#getting-started.stats-mode .gs-card-main {
-  display: none;
-}
-
-#getting-started.stats-mode .gs-stat-block {
-  display: flex;
-}
-
-#getting-started.stats-loading .gs-stat-value {
+#getting-started.loading .gs-card.done .gs-stat-value {
   visibility: hidden;
 }
 
-#getting-started.stats-loading .gs-stat-value::after {
+#getting-started.loading .gs-card.done .gs-stat-value::after {
   content: '…';
   visibility: visible;
   position: absolute;
   left: 0;
   right: 0;
+}
+
+#getting-started.loading .gs-stat-notif-logo,
+#getting-started.loading .gs-stat-notif-empty {
+  visibility: hidden;
 }

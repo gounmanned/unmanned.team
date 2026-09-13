@@ -24,10 +24,8 @@ class Banner {
     async toggleStats() {
         const btn = document.getElementById("gs-toggle");
         const next = !this.el.classList.contains("stats-mode");
-
         this.el.classList.toggle("stats-mode", next);
         btn.setAttribute("aria-pressed", String(next));
-
         if (next) await this.loadStats();
     }
 
@@ -68,9 +66,12 @@ class Banner {
         const notifLogo = document.getElementById('gs-stat-notifications-logo');
         const notifEmpty = document.getElementById('gs-stat-notifications-empty');
 
+        if (notifVendor && notifLogo) {
+            notifLogo.src = `static/img/source/${notifVendor}.png`;
+        }
+
         notifLogo?.toggleAttribute('hidden', !notifVendor);
         notifEmpty?.toggleAttribute('hidden', !!notifVendor);
-        if (notifVendor && notifLogo) notifLogo.src = `static/img/source/${notifVendor}.png`;
 
         this.el.classList.remove("loading");
     }

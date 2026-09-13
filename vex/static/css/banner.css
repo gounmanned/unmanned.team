@@ -165,6 +165,25 @@
   z-index: 1;
 }
 
+#getting-started.stats-loading .gs-stat-notif-logo,
+#getting-started.stats-loading .gs-stat-notif-empty {
+    visibility: hidden;
+}
+
+.gs-stat-block-notif {
+  gap: 6px;
+}
+
+.gs-stat-notif-logo {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+}
+
+.gs-stat-notif-empty {
+  font-size: 13px;
+}
+
 .gs-stat-value {
   font-size: 26px;
   font-weight: 700;
@@ -217,20 +236,4 @@
   position: absolute;
   left: 0;
   right: 0;
-}
-
-/* ── notifications box: logo (or "not connected") in place of the value ─ */
-
-.gs-stat-block-notif {
-  gap: 6px;
-}
-
-.gs-stat-notif-logo {
-  width: 36px;
-  height: 36px;
-  object-fit: contain;
-}
-
-.gs-stat-notif-empty {
-  font-size: 13px;
 }

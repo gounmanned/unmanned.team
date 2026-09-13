@@ -40,58 +40,8 @@ main {
   box-sizing: border-box;
 }
 
-button:active {
-  transform: translateY(-1px);
-}
-
-ol, ul {
-  list-style: none;
-}
-
-hr {
-  width: 95%;
-  border: none;
-  border-top: 1px solid var(--gray-line);
-  margin: 100px 0;
-  margin-left: auto;
-  margin-right: auto;
-  opacity: 0.2;
-}
-
-table {
-  width: 100%;
-  border-spacing: 0 3px;
-  border-collapse: separate;
-}
-
-table th {
-  text-align: left;
-}
-
-table tbody tr {
-  background-color: white;
-  border-radius: 12px;
-  transition: background-color 0.15s ease;
-}
-
-table tbody tr:hover {
-  background-color: var(--gray-hover);
-}
-
-table td {
-  font-size: 14px;
-  padding: 5px 6px;
-  cursor: pointer;
-}
-
-table td img {
-  border: 1px solid var(--gray-line);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-  border-radius: 50%;
-  height: 30px;
-}
-
 /** scrollbars **/
+
 *::-webkit-scrollbar {
   display: none;
 }

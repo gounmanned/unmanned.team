@@ -1,22 +1,15 @@
 class InventoryRollup {
-    static classify(asset) {
-        const group = asset.metadata?.group;
-        if (group === 'identity' || group === 'domain') return group;
-        return 'other';
-    }
-
     constructor(state) {
         this.state = state;
         this.api = state.api.inventory;
         this.wrap = document.getElementById('asset-table-wrap');
         this.tbody = document.querySelector('#asset-table tbody');
-        this.toggle = document.getElementById('asset-scope-toggle');
         this.search = document.getElementById('asset-search');
+        this.total = document.getElementById('asset-total');
 
         this.assets = [];
-        this.scope = 'domain';
         this.query = '';
-        this.labels = { domain: 'domains', identity: 'identities', other: 'assets' };
+
         this.listen();
     }
 
@@ -24,33 +17,41 @@ class InventoryRollup {
         this.assets = [];
         this.query = '';
         this.search.value = '';
-        this.render();
+
+        this.tbody.innerHTML = '';
+        this.wrap.classList.add('empty');
+        document.getElementById('asset-empty-label').textContent = 'No assets';
+        if (this.total) this.total.textContent = '';
     }
 
     async reload() {
-        this.assets = (await this.api.list()).map(a => ({ ...a, type: InventoryRollup.classify(a) }));
+        const raw = await this.api.list();
+        this.assets = raw.map(a => ({ ...a, type: a.metadata?.group || 'other' }));
         this.render();
     }
 
     render() {
-        Object.keys(this.labels).forEach(type => {
-            const el = document.getElementById(`asset-count-${type}`);
-            if (el) el.textContent = this.assets.filter(a => a.type === type).length;
+        const q = this.query;
+        const rows = this.assets.filter(a => {
+            if (!q) return true;
+            return a.name.toLowerCase().includes(q)
+                || (a.source || '').toLowerCase().includes(q)
+                || a.type.toLowerCase().includes(q);
         });
 
         const open = Object.values(this.state.signals?.[this.state.account()] ?? {}).filter(s => s.status.startsWith('O'));
+        const withSignals = rows.map(a => ({ ...a, signals: open.filter(s => s.asset == a.name).length }));
 
-        const rows = this.assets
-            .filter(a => a.type === this.scope)
-            .filter(a => !this.query || a.name.toLowerCase().includes(this.query) || (a.source || '').toLowerCase().includes(this.query))
-            .map(a => ({ ...a, signals: open.filter(s => s.asset == a.name).length }));
+        this.wrap.classList.toggle('empty', withSignals.length === 0);
+        document.getElementById('asset-empty-label').textContent = q
+            ? `No assets match "${q}"`
+            : 'No assets';
 
-        this.wrap.classList.toggle('empty', rows.length === 0);
-        document.getElementById('asset-empty-label').textContent = this.query
-            ? `No ${this.labels[this.scope]} match "${this.query}"`
-            : `No ${this.labels[this.scope]}`;
+        if (this.total) {
+            this.total.textContent = `${this.assets.length} asset${this.assets.length === 1 ? '' : 's'}`;
+        }
 
-        this.tbody.innerHTML = rows.map(a => `
+        this.tbody.innerHTML = withSignals.map(a => `
             <tr data-id="${a.id ?? a.name}" class="${a.status.startsWith('A') ? '' : 'asset-suspended'}">
                 <td class="asset-status">
                     <button class="star-btn ${a.status.startsWith("A") ? '' : 'active'}" data-field="status" type="button" aria-label="Toggle status">
@@ -66,23 +67,15 @@ class InventoryRollup {
                 <td class="asset-source">
                     ${a.metadata?.platform ? `<img src="static/img/platform/${a.metadata.platform}.png" title="${a.metadata.platform}">` : '—'}
                 </td>
+                <td class="asset-group"><span class="group-badge">${a.type}</span></td>
                 <td class="asset-value">${a.name}</td>
                 <td class="asset-signals">${a.signals}</td>
-                <td class="asset-seen">${a.updated ? new Date(a.updated).toLocaleDateString() : '—'}</td>          
+                <td class="asset-seen">${a.updated ? new Date(a.updated).toLocaleDateString() : '—'}</td>
             </tr>
         `).join('');
     }
 
     listen() {
-        this.toggle.addEventListener('click', ev => {
-            const btn = ev.target.closest('.scope-btn');
-            if (!btn) return;
-
-            this.scope = btn.dataset.scope;
-            this.toggle.dataset.scope = this.scope;
-            this.render();
-        });
-
         this.search.addEventListener('input', ev => {
             this.query = ev.target.value.trim().toLowerCase();
             this.render();

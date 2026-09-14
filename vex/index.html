@@ -315,25 +315,11 @@
     </div>
 
     <div class="asset-toolbar">
-      <div class="scope-toggle" id="asset-scope-toggle" data-scope="domain">
-        <div class="thumb"></div>
-        <button class="scope-btn" data-scope="domain" type="button">
-          <span class="material-symbols-outlined">domain</span>
-          Domains <span class="count" id="asset-count-domain">0</span>
-        </button>
-        <button class="scope-btn" data-scope="identity" type="button">
-          <span class="material-symbols-outlined">alternate_email</span>
-          Identities <span class="count" id="asset-count-identity">0</span>
-        </button>
-        <button class="scope-btn" data-scope="other" type="button">
-          <span class="material-symbols-outlined">device_unknown</span>
-          Other <span class="count" id="asset-count-other">0</span>
-        </button>
-      </div>
+      <span class="asset-total" id="asset-total"></span>
 
       <div class="asset-search">
         <span class="material-symbols-outlined">search</span>
-        <input type="text" id="asset-search" placeholder="Search value or source…">
+        <input type="text" id="asset-search" placeholder="Search value, source, or group…">
       </div>
     </div>
 
@@ -345,6 +331,7 @@
             <th>Priority</th>
             <th>Source</th>
             <th>Platform</th>
+            <th>Group</th>
             <th>Name</th>
             <th>Signals</th>
             <th>Last seen</th>

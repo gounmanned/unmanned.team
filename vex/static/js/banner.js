@@ -3,9 +3,9 @@ class Banner {
 
     static STEP_VENDORS = {
         email:         ['google', 'microsoft'],
-        endpoint:      ['level', 'crowdstrike', 'sentinelone'],
-        domain:        ['cloudflare', 'squarespace'],
-        notifications: ['slack', 'teams', 'jira'],
+        endpoint:      ['level'],
+        domain:        ['cloudflare'],
+        notifications: ['slack', 'teams', 'jira', 'rapid7'],
     };
 
     static VENDOR_TO_STEP = new Map(

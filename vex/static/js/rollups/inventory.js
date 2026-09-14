@@ -1,11 +1,13 @@
 class InventoryRollup {
+    static PALETTE = ['#e01280', '#2563eb', '#16a34a', '#f59e0b', '#7c3aed', '#0891b2'];
+
     constructor(state) {
         this.state = state;
         this.api = state.api.inventory;
         this.wrap = document.getElementById('asset-table-wrap');
         this.tbody = document.querySelector('#asset-table tbody');
         this.search = document.getElementById('asset-search');
-        this.total = document.getElementById('asset-total');
+        this.legend = document.getElementById('asset-legend');
 
         this.assets = [];
         this.query = '';
@@ -21,7 +23,7 @@ class InventoryRollup {
         this.tbody.innerHTML = '';
         this.wrap.classList.add('empty');
         document.getElementById('asset-empty-label').textContent = 'No assets';
-        if (this.total) this.total.textContent = '';
+        if (this.legend) this.legend.innerHTML = '';
     }
 
     async reload() {
@@ -47,9 +49,7 @@ class InventoryRollup {
             ? `No assets match "${q}"`
             : 'No assets';
 
-        if (this.total) {
-            this.total.textContent = `${this.assets.length} asset${this.assets.length === 1 ? '' : 's'}`;
-        }
+        if (this.legend) this.legend.innerHTML = this.renderLegend();
 
         this.tbody.innerHTML = withSignals.map(a => `
             <tr data-id="${a.id ?? a.name}" class="${a.status.startsWith('A') ? '' : 'asset-suspended'}">
@@ -73,6 +73,31 @@ class InventoryRollup {
                 <td class="asset-seen">${a.updated ? new Date(a.updated).toLocaleDateString() : '—'}</td>
             </tr>
         `).join('');
+    }
+
+    renderLegend() {
+        const counts = {};
+        this.assets.forEach(a => { counts[a.type] = (counts[a.type] || 0) + 1; });
+
+        const groups = Object.keys(counts).sort((a, b) =>
+            a === 'other' ? 1 : b === 'other' ? -1 : a.localeCompare(b)
+        );
+
+        const total = this.assets.length;
+        const totalChip = `<span class="legend-chip legend-total">${total} asset${total === 1 ? '' : 's'}</span>`;
+
+        const groupChips = groups.map((g, i) => {
+            const color = InventoryRollup.PALETTE[i % InventoryRollup.PALETTE.length];
+            return `
+                <span class="legend-chip">
+                    <span class="legend-dot" style="background:${color}"></span>
+                    ${g}
+                    <span class="legend-count">${counts[g]}</span>
+                </span>
+            `;
+        }).join('');
+
+        return totalChip + groupChips;
     }
 
     listen() {

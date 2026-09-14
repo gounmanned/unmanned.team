@@ -50,7 +50,8 @@ class Banner {
         }
 
         let emailCount = 0, endpointCount = 0, domainCount = 0, otherCount = 0;
-        for (const { metadata: md = {} } of assets) {
+        for (const asset of assets) {
+            const md = asset.metadata ?? {};
             if (md.group === 'identity') emailCount++;
             if (md.platform) endpointCount++;
             if (md.group === 'domain') domainCount++;

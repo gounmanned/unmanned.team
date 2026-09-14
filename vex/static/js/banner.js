@@ -49,11 +49,12 @@ class Banner {
             TenantScreen.endpoint = true;
         }
 
-        let emailCount = 0, endpointCount = 0, domainCount = 0;
+        let emailCount = 0, endpointCount = 0, domainCount = 0, otherCount = 0;
         for (const { metadata: md = {} } of assets) {
             if (md.group === 'identity') emailCount++;
             if (md.platform) endpointCount++;
             if (md.group === 'domain') domainCount++;
+            if (md.group !== 'identity' && md.group !== 'domain') otherCount++;
         }
 
         const setStat = (id, value) => {
@@ -64,7 +65,7 @@ class Banner {
         setStat('email', emailCount);
         setStat('endpoint', endpointCount);
         setStat('domain', domainCount);
-        setStat('saas', monitors.length);
+        setStat('saas', otherCount);
 
         const notifVendor = matchedByStep.get('notifications')
             ?? Banner.firstVendorMatch(monitors, new Set(Banner.STEP_VENDORS.notifications));

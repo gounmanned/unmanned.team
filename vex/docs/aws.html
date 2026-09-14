@@ -118,24 +118,6 @@
     <div class="container">
         <h1>Amazon Web Services</h1>
         <p>This guide walks you through deploying a read-only IAM role in your AWS account using CloudFormation. This role allows Vex to securely connect to your AWS environment to monitor security findings, inventory resources, and perform other read-only operations.</p>
-        <ul>
-            <li>AWS Security Hub findings</li>
-            <li>GuardDuty alerts</li>
-            <li>EC2 instance and volume inventory</li>
-            <li>IAM user and role auditing</li>
-            <li>CloudTrail event lookup</li>
-            <li>S3 bucket configuration (not object contents)</li>
-        </ul>
-
-        <div class="note">
-            Vex is granted <strong>read-only access only</strong>. It cannot modify, delete, or create any resources in your account. Secret values and encryption keys are explicitly denied.
-        </div>
-
-        <h2>Prerequisites</h2>
-        <ul>
-            <li>You have access to the <strong>AWS Management Console</strong></li>
-            <li>Your IAM user or role has permission to create IAM roles and deploy CloudFormation stacks</li>
-        </ul>
 
         <h2>Step 1: Download the CloudFormation Template</h2>
         <p>Copy the template below. You will upload it to CloudFormation in the next step.</p>
@@ -185,15 +167,14 @@ Outputs:
         <h2>Step 3: Upload the Template</h2>
         <ol>
             <li>Under <strong>Specify template</strong>, select <strong>"Upload a template file"</strong>.</li>
-            <li>Save the template you copied in Step 1 as a file named <code>vex-role.yml</code> on your computer.</li>
-            <li>Click <strong>"Choose file"</strong> and select <code>vex-role.yml</code>.</li>
+            <li>Save the template you copied in Step 1 as a file named <code>vex.yml</code> on your computer.</li>
+            <li>Click <strong>"Choose file"</strong> and select <code>vex.yml</code>.</li>
             <li>Click <strong>"Next"</strong>.</li>
         </ol>
 
         <h2>Step 4: Configure the Stack</h2>
         <ol>
-            <li>Set the <strong>Stack name</strong> to <code>monitor</code>.</li>
-            <li>Leave the <strong>VexAccountId</strong> parameter as-is — it is pre-filled with Pink Duck's account ID.</li>
+            <li>Set the <strong>Stack name</strong> to <code>vex</code>.</li>
             <li>Click <strong>"Next"</strong>.</li>
             <li>Click <strong>"Next"</strong> again on the Configure stack options page (no changes needed).</li>
             <li>On the Review page, scroll to the bottom and check the box acknowledging that CloudFormation may create IAM resources.</li>

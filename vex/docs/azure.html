@@ -116,10 +116,8 @@
         </ol>
 
         <h2>Step 2: Assign the Reader Role</h2>
-        <p>This is the step that's specific to Azure — it's a role assignment on the subscription, not a Graph permission on the app.</p>
         <ol>
-            <li>Decide the scope: an individual <strong>subscription</strong>, or a <strong>management group</strong> if you want every subscription underneath it covered in one step.</li>
-            <li>Navigate to that subscription (or management group) in the Azure Portal.</li>
+            <li>Navigate to management group in the Azure Portal.</li>
             <li>Select <strong>"Access control (IAM)"</strong> in the left menu.</li>
             <li>Click <strong>"Add"</strong> → <strong>"Add role assignment"</strong>.</li>
             <li>Under <strong>"Role"</strong>, search for and select <strong>"Reader"</strong>. This is a built-in Azure role that grants read-only visibility into every resource type in-scope — VMs, storage accounts, function apps, networking, and more.</li>
@@ -130,7 +128,7 @@
 
         <h2>Step 3: Connect Vex</h2>
         <ol>
-            <li>Using the values from the Vex app registration, create a JSON object with this structure:</li>
+            <li>Using the values from the app registration, create a JSON object with this structure:</li>
         </ol>
         <pre>
 {

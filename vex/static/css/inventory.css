@@ -43,6 +43,7 @@
   color: var(--text-muted);
   white-space: nowrap;
   text-transform: capitalize;
+  cursor: pointer;
 }
 
 #inventory-screen .legend-total {

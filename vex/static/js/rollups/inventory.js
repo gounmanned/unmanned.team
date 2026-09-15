@@ -49,8 +49,7 @@ class InventoryRollup {
             ? `No assets match "${q}"`
             : 'No assets';
 
-        if (this.legend) this.legend.innerHTML = this.renderLegend();
-
+        this.legend.innerHTML = this.renderLegend();
         this.tbody.innerHTML = withSignals.map(a => `
             <tr data-id="${a.id ?? a.name}" class="${a.status.startsWith('A') ? '' : 'asset-suspended'}">
                 <td class="asset-status">

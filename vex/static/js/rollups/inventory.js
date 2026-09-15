@@ -67,7 +67,7 @@ class InventoryRollup {
                 <td class="asset-source">
                     ${a.metadata?.platform ? `<img src="static/img/platform/${a.metadata.platform}.png" title="${a.metadata.platform}">` : '—'}
                 </td>
-                <td class="asset-group"><span class="group-badge">${a.type}</span></td>
+                <td class="asset-group"><span class="group-badge" data-group="${a.type}">${a.type}</span></td>
                 <td class="asset-value">${a.name}</td>
                 <td class="asset-signals">${a.signals}</td>
                 <td class="asset-seen">${a.updated ? new Date(a.updated).toLocaleDateString() : '—'}</td>
@@ -89,7 +89,7 @@ class InventoryRollup {
         const groupChips = groups.map((g, i) => {
             const color = InventoryRollup.PALETTE[i % InventoryRollup.PALETTE.length];
             return `
-                <span class="legend-chip">
+                <span class="legend-chip legend-chip-clickable" data-group="${g}">
                     <span class="legend-dot" style="background:${color}"></span>
                     ${g}
                     <span class="legend-count">${counts[g]}</span>
@@ -107,8 +107,36 @@ class InventoryRollup {
         });
 
         this.tbody.addEventListener('click', ev => {
-            this.handleStatusClick(ev) || this.handlePriorityClick(ev);
+            this.handleGroupBadgeClick(ev)
+                || this.handleStatusClick(ev)
+                || this.handlePriorityClick(ev);
         });
+
+        if (this.legend) {
+            this.legend.addEventListener('click', ev => this.handleLegendChipClick(ev));
+        }
+    }
+
+    filterByGroup(group) {
+        this.search.value = group;
+        this.query = group.trim().toLowerCase();
+        this.render();
+    }
+
+    handleLegendChipClick(ev) {
+        const chip = ev.target.closest('.legend-chip[data-group]');
+        if (!chip) return false;
+
+        this.filterByGroup(chip.dataset.group);
+        return true;
+    }
+
+    handleGroupBadgeClick(ev) {
+        const badge = ev.target.closest('.group-badge[data-group]');
+        if (!badge) return false;
+
+        this.filterByGroup(badge.dataset.group);
+        return true;
     }
 
     handleStatusClick(ev) {

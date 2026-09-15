@@ -121,6 +121,11 @@ class InventoryRollup {
         if (!asset) return true;
 
         const value = asset.status.startsWith('A') ? 'X0' : 'A0';
+        const action = value === 'X0' ? 'lock' : 'unlock';
+
+        if (!window.confirm(`Are you sure you want to ${action} "${asset.name}"?`)) {
+            return true;
+        }
 
         SiteSpinner.withLoading(async () => {
             await this.api.update(id, {}, value);

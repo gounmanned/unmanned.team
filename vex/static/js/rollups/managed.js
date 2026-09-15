@@ -171,7 +171,7 @@ class ManagedRollup {
                                     </svg>
                                 </div>
                                 <span class="material-symbols-outlined">radar</span>
-                                <p>No open signals</p>
+                                <p>No signals</p>
                             </div>
                         `}
                     </div>

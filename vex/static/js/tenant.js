@@ -16,10 +16,6 @@ class TenantScreen {
         const filter = this.month ? `date=${this.month.toISOString().slice(0, 7)}` : "";
         await this.api.signals.list(filter, new CustomEvent("signal:account"));
         await this.api.signals.list(`status=O`, new CustomEvent("signal:account"));
-
-        // refresh add-ons
-        this.notifications.refresh();
-        this.banner.refresh();        
     }
 
     async reset() {
@@ -29,6 +25,9 @@ class TenantScreen {
             this.table.watermark(true);
             this.generateChokepoint();
             this.count();
+        }).then(() => {
+            this.banner.refresh();
+            this.notifications.refresh();
         });
     }
 

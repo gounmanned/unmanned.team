@@ -61,6 +61,10 @@ class AssetApi extends Gateway {
         return await this.call("GET", `asset`);
     }
 
+    async get(name) {
+        return await this.call("GET", `asset/${name}`);
+    }
+
     async update(name, metadata = {}, status = "") {
         const patch = { metadata: metadata, status: status };
         return await this.call("PATCH", `asset/${name}`, patch);

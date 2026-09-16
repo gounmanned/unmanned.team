@@ -323,34 +323,64 @@
       </div>
     </div>
 
-    <div class="table-wrap" id="asset-table-wrap">
-      <table id="asset-table">
-        <thead>
-          <tr>
-            <th>Status</th>
-            <th>Priority</th>
-            <th>Source</th>
-            <th>Platform</th>
-            <th>Group</th>
-            <th>Name</th>
-            <th>Licenses</th>
-            <th>Signals</th>
-            <th>Last seen</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
+    <div class="asset-split" id="asset-split">
+      <div class="table-wrap" id="asset-table-wrap">
+        <table id="asset-table">
+          <thead>
+            <tr>
+              <th>Status</th>
+              <th>Priority</th>
+              <th>Source</th>
+              <th>Platform</th>
+              <th>Group</th>
+              <th>Name</th>
+              <th>Signals</th>
+              <th>Last seen</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
 
-      <div class="signal-radar-watermark">
-        <div class="signal-radar" aria-hidden="true">
-          <svg viewBox="0 0 800 800"><use href="#radar-rings"></use></svg>
+        <div class="signal-radar-watermark">
+          <div class="signal-radar" aria-hidden="true">
+            <svg viewBox="0 0 800 800"><use href="#radar-rings"></use></svg>
+          </div>
+          <div class="corner tl signal-radar-corner"></div>
+          <div class="corner tr signal-radar-corner"></div>
+          <div class="corner bl signal-radar-corner"></div>
+          <div class="corner br signal-radar-corner"></div>
+          <span class="material-symbols-outlined">inventory_2</span>
+          <p id="asset-empty-label">No assets</p>
         </div>
-        <div class="corner tl signal-radar-corner"></div>
-        <div class="corner tr signal-radar-corner"></div>
-        <div class="corner bl signal-radar-corner"></div>
-        <div class="corner br signal-radar-corner"></div>
-        <span class="material-symbols-outlined">inventory_2</span>
-        <p id="asset-empty-label">No assets</p>
+      </div>
+
+      <div class="asset-profile" id="asset-profile">
+        <button class="asset-profile-close" id="asset-profile-close" type="button" aria-label="Close">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+
+        <div class="asset-profile-header">
+          <img class="asset-profile-avatar" id="asset-profile-avatar" src="" alt="">
+          <div class="asset-profile-name" id="asset-profile-name"></div>
+          <span class="asset-profile-status" id="asset-profile-status"></span>
+        </div>
+
+        <div class="asset-profile-meta">
+          <div class="asset-profile-meta-row">
+            <span class="label">Last seen</span>
+            <span class="value" id="asset-profile-updated"></span>
+          </div>
+          <div class="asset-profile-meta-row" id="asset-profile-platform-row">
+            <span class="label">Platform</span>
+            <span class="value" id="asset-profile-platform"></span>
+          </div>
+        </div>
+
+        <div class="asset-profile-signals">
+          <div class="asset-profile-section-title">Signals</div>
+          <ul id="asset-profile-signal-list"></ul>
+        </div>
       </div>
     </div>
   </site-rollup>

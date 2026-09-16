@@ -198,3 +198,93 @@
   opacity: 0.4;
   filter: grayscale(1);
 }
+
+/** asset profile popout **/
+
+#inventory-screen .asset-split { display: flex; gap: 14px; min-height: 0; }
+#inventory-screen .asset-split #asset-table-wrap { flex: 1 1 100%; min-width: 0; transition: flex-basis 0.2s ease; }
+#inventory-screen .asset-split.profile-open #asset-table-wrap { flex: 1 1 75%; }
+
+#inventory-screen .asset-profile {
+  position: relative;
+  flex: 0 0 0%;
+  width: 0;
+  overflow: hidden;
+  opacity: 0;
+  border: 1px solid var(--gray-line);
+  border-radius: 10px;
+  background: white;
+  transition: flex-basis 0.2s ease, opacity 0.15s ease;
+}
+#inventory-screen .asset-split.profile-open .asset-profile {
+  flex: 0 0 25%;
+  width: 25%;
+  opacity: 1;
+  overflow-y: auto;
+}
+
+#inventory-screen .asset-profile-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  border: none;
+  background: none;
+  color: var(--text-faint);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 6px;
+}
+#inventory-screen .asset-profile-close:hover { background: var(--gray-hover); color: var(--ink, #111827); }
+
+#inventory-screen .asset-profile-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  padding: 20px 16px 16px;
+  border-bottom: 1px solid var(--gray-line);
+}
+#inventory-screen .asset-profile-avatar {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  border-radius: 10px;
+  background: var(--gray-panel);
+  padding: 8px;
+}
+#inventory-screen .asset-profile-name { font-weight: 700; font-size: 14px; color: var(--ink, #111827); word-break: break-word; }
+#inventory-screen .asset-profile-status { display: inline-flex; padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; }
+#inventory-screen .asset-profile-status.is-active { background: rgba(22,163,74,0.12); color: #16a34a; }
+#inventory-screen .asset-profile-status.is-disabled { background: rgba(220,38,38,0.12); color: #dc2626; }
+
+#inventory-screen .asset-profile-meta { padding: 14px 16px; border-bottom: 1px solid var(--gray-line); display: flex; flex-direction: column; gap: 8px; }
+#inventory-screen .asset-profile-meta-row { display: flex; justify-content: space-between; font-size: 12px; }
+#inventory-screen .asset-profile-meta-row .label { color: var(--text-muted); }
+#inventory-screen .asset-profile-meta-row .value { color: var(--ink, #111827); font-weight: 600; }
+
+#inventory-screen .asset-profile-section-title {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 14px 16px 8px;
+}
+
+#inventory-screen #asset-profile-signal-list { list-style: none; margin: 0; padding: 0 16px 16px; }
+#inventory-screen .profile-signal { display: flex; align-items: flex-start; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--gray-line); }
+#inventory-screen .profile-signal-dot { width: 7px; height: 7px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+#inventory-screen .profile-signal.is-open .profile-signal-dot { background: #dc2626; }
+#inventory-screen .profile-signal.is-closed .profile-signal-dot { background: #9ca3af; }
+#inventory-screen .profile-signal-name { font-size: 12px; font-weight: 600; color: var(--ink, #111827); }
+#inventory-screen .profile-signal-meta { display: flex; gap: 8px; font-size: 10.5px; color: var(--text-muted); margin-top: 2px; }
+#inventory-screen .profile-signal.is-open .profile-signal-status { color: #dc2626; font-weight: 700; }
+#inventory-screen .profile-signal.is-closed .profile-signal-status { color: #6b7280; font-weight: 700; }
+#inventory-screen .asset-profile-signals-empty { font-size: 12px; color: var(--text-faint); padding: 8px 16px; }
+
+#inventory-screen #asset-table tbody tr { cursor: pointer; }
+#inventory-screen #asset-table tbody tr.asset-row-active { background: var(--gray-hover); outline: 1px solid var(--pink); outline-offset: -1px; }
+#inventory-screen .asset-open { width: 32px; }
+#inventory-screen .asset-open-btn { border: none; background: none; color: var(--text-faint); display: inline-flex; padding: 3px; }
+#inventory-screen #asset-table tbody tr:hover .asset-open-btn { color: var(--pink); }

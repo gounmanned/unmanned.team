@@ -50,28 +50,32 @@ class InventoryRollup {
             : 'No assets';
 
         this.legend.innerHTML = this.renderLegend();
-        this.tbody.innerHTML = withSignals.map(a => `
-            <tr data-id="${a.id ?? a.name}" class="${a.status.startsWith('A') ? '' : 'asset-suspended'}">
-                <td class="asset-status">
-                    <button class="star-btn ${a.status.startsWith("A") ? '' : 'active'}" data-field="status" type="button" aria-label="Toggle status">
-                        <span class="material-symbols-outlined">pause_circle</span>
-                    </button>
-                </td>
-                <td class="asset-priority">
-                    <button class="star-btn ${a.metadata?.priority === '1' ? 'active' : ''}" data-field="priority" type="button" aria-label="Toggle priority">
-                        <span class="material-symbols-outlined">star</span>
-                    </button>
-                </td>
-                <td class="asset-source"><img src="static/img/source/${a.source}.png" alt="" title="${a.source}"></td>
-                <td class="asset-source">
-                    ${a.metadata?.platform ? `<img src="static/img/platform/${a.metadata.platform}.png" title="${a.metadata.platform}">` : '—'}
-                </td>
-                <td class="asset-group"><span class="group-badge" data-group="${a.type}">${a.type}</span></td>
-                <td class="asset-value">${a.name}</td>
-                <td class="asset-signals">${a.signals}</td>
-                <td class="asset-seen">${a.updated ? new Date(a.updated).toLocaleDateString() : '—'}</td>
-            </tr>
-        `).join('');
+        this.tbody.innerHTML = withSignals.map(a => {
+            const licenses = a.metadata?.licenses ? JSON.parse(a.metadata.licenses).length : 0;
+            return `
+                <tr data-id="${a.id ?? a.name}" class="${a.status.startsWith('A') ? '' : 'asset-suspended'}">
+                    <td class="asset-status">
+                        <button class="star-btn ${a.status.startsWith("A") ? '' : 'active'}" data-field="status" type="button" aria-label="Toggle status">
+                            <span class="material-symbols-outlined">pause_circle</span>
+                        </button>
+                    </td>
+                    <td class="asset-priority">
+                        <button class="star-btn ${a.metadata?.priority === '1' ? 'active' : ''}" data-field="priority" type="button" aria-label="Toggle priority">
+                            <span class="material-symbols-outlined">star</span>
+                        </button>
+                    </td>
+                    <td class="asset-source"><img src="static/img/source/${a.source}.png" alt="" title="${a.source}"></td>
+                    <td class="asset-source">
+                        ${a.metadata?.platform ? `<img src="static/img/platform/${a.metadata.platform}.png" title="${a.metadata.platform}">` : '—'}
+                    </td>
+                    <td class="asset-group"><span class="group-badge" data-group="${a.type}">${a.type}</span></td>
+                    <td class="asset-value">${a.name}</td>
+                    <td class="asset-cost">${licenses}</td>
+                    <td class="asset-signals">${a.signals}</td>
+                    <td class="asset-seen">${a.updated ? new Date(a.updated).toLocaleDateString() : '—'}</td>
+                </tr>
+            `;
+        }).join('');
     }
 
     renderLegend() {

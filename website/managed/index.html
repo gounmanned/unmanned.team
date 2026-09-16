@@ -26,6 +26,7 @@
     --db-ink:#f3f3f0;
     --db-mid:#8a8a8e;
     --header-h:85px;
+    --classbar-h:24px;
   }
   *{box-sizing:border-box;}
   html{overflow-x:hidden;scroll-behavior:smooth;}
@@ -114,9 +115,19 @@
   /* ---------- HERO ---------- */
   .hero{
     position:relative;overflow:hidden;display:flex;align-items:center;
-    min-height:100vh;
-    min-height:100dvh; /* accounts for mobile browser chrome */
+    /* subtract the sticky header + fixed classbar, both of which sit
+       above the hero but outside its own box, so centering lines up
+       with the actual visible viewport instead of just the hero's box */
+    min-height:calc(100vh - var(--header-h) - var(--classbar-h));
+    min-height:calc(100dvh - var(--header-h) - var(--classbar-h)); /* accounts for mobile browser chrome */
     padding:70px 0;
+  }
+  @media (max-width:700px){
+    /* .site-header is hidden on mobile, so only the classbar offsets the hero */
+    .hero{
+      min-height:calc(100vh - var(--classbar-h));
+      min-height:calc(100dvh - var(--classbar-h));
+    }
   }
   .hero-bg{
     position:absolute;top:0;bottom:0;right:-8%;width:64%;min-width:520px;z-index:1;pointer-events:none;

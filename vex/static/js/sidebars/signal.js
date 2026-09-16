@@ -31,6 +31,7 @@ class SignalSidebar {
         document.getElementById("signal-severity").value = signal.severity;
         document.getElementById("signal-status").value = signal.status;
         document.getElementById("signal-asset").value = signal.asset;
+        document.getElementById("signal-asset").required = true;
         document.getElementById("signal-source").value = signal.source;
 
         const banner = document.getElementById("severity-banner");
@@ -61,9 +62,22 @@ class SignalSidebar {
         document.getElementById("updates").querySelector('li:last-child').scrollIntoView({ behavior: 'smooth' });
     }
 
+    validateAsset() {
+        const input = document.getElementById("signal-asset");
+        const asset = (this.signal.asset || "").trim();
+
+        if (!asset) {
+            input.reportValidity ? input.reportValidity() : input.focus();
+            return false;
+        }
+        return true;
+    }
+
     listen() {
         document.getElementById('signal-save').addEventListener('click', async (e) => {
             e.preventDefault();
+
+            if (!this.validateAsset()) return;
 
             await SiteSpinner.withLoading(async () => {
                 const comment = document.getElementById("response").value;
@@ -113,6 +127,8 @@ class SignalSidebar {
         document.getElementById('signal-asset').addEventListener('change', async (ev) => {
             this.signal.asset = ev.target.value;
             if (!this.signal?.id) return;
+
+            if (!this.validateAsset()) return;
 
             await SiteSpinner.withLoading(async () => {
                 const signal = await this.api.signals.patch(this.signal.id, { asset: this.signal.asset });

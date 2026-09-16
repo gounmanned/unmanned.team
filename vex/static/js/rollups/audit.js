@@ -40,7 +40,7 @@ class AuditRollup {
         );
 
         this.body.classList.toggle('empty', rows.length === 0);
-        this.emptyLabel.textContent = q ? `No logs match "${q}"` : 'No logs recorded';
+        this.emptyLabel.textContent = q ? `No logs match "${q}"` : 'No logs';
 
         this.list.innerHTML = rows.map(log => `
             <li class="audit-entry">

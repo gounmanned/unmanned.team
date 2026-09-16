@@ -17,7 +17,6 @@
       <link rel="stylesheet" href="static/css/notification.css?v=${v}">
       <link rel="stylesheet" href="static/css/banner.css?v=${v}">
       <link rel="stylesheet" href="static/css/managed.css?v=${v}">
-      <link rel="stylesheet" href="static/css/dashboard.css?v=${v}">
       <link rel="stylesheet" href="static/css/inventory.css?v=${v}">
       <link rel="stylesheet" href="static/css/tenant.css?v=${v}">
       <link rel="stylesheet" href="static/css/monitors.css?v=${v}">
@@ -62,12 +61,6 @@
 
   <main class="container">
     <div class="getting-started" id="getting-started">
-      <div class="gs-controls">
-        <button class="gs-toggle" id="open-dashboard-rollup" type="button" aria-label="Open dashboard">
-          <span class="material-symbols-outlined">open_in_new</span>
-        </button>
-      </div>
-
       <div class="gs-grid">
         <div class="gs-card" id="gs-email">
           <div class="gs-card-main">
@@ -410,10 +403,6 @@
     </div>
   </site-rollup>
 
-  <site-rollup id="dashboard-screen">
-    <div id="dashboard-root"></div>
-  </site-rollup>
-  
   <!--Sidebars-->
 
   <site-sidebar id="signal-sidebar">
@@ -573,7 +562,6 @@
     <script src="static/js/rollups/managed.js?v=${v}"><\/script>
     <script src="static/js/rollups/monitors.js?v=${v}"><\/script>
     <script src="static/js/rollups/inventory.js?v=${v}"><\/script>
-    <script src="static/js/rollups/dashboard.js?v=${v}"><\/script>
   `);
 </script>
 

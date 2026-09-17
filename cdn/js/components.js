@@ -14,7 +14,7 @@ class SiteHeader extends HTMLElement {
           left: 0; right: 0;
           height: 52px;
           z-index: 10;
-          background: var(--gray-panel, #eeeeee);
+          background: var(--surface-1, #eeeeee);
           border-bottom: 1px solid var(--line-2, #dcdcd8);
         }
         .header-container {

@@ -306,27 +306,17 @@ tr[data-status="CV"] td.autoclose {
   text-decoration: none;
   white-space: nowrap;
   cursor: pointer;
-  transition: background 0.12s, color 0.12s;
-}
-
-.links a:not(:first-of-type)::before {
-  content: '';
-  position: absolute;
-  left: -1px;
-  top: 50%;
-  width: 1px;
-  height: 14px;
-  background: var(--gray-mid);
-  transform: translateY(-50%);
 }
 
 .links a.cta {
-  color: var(--pink);
-  font-weight: 600;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
+  margin-left: 8px;
+  padding: 6px 12px 6px 9px;
+  background: var(--pink);
+  color: #fff;
+  font-weight: 500;
 }
+
+.links a.cta .material-symbols-outlined { font-size: 16px; }
 
 .links .count {
   font-size: 12px;

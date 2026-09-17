@@ -9,7 +9,7 @@
   --gray-panel:#eeeeee;
   --gray-hover:#e4e4e4;
   --pink:#e01280;
-  --pink-dim:rgba(224,18,128,0.45);
+  --accent:rgba(224,18,128,0.45);
   --brand: var(--pink);
   --background:#FAF9F6;
   --db-ink:#f3f3f0;

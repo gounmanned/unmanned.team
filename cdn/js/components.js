@@ -417,12 +417,15 @@ class SiteRollup extends HTMLElement {
           height: 90%;
           display: flex;
           flex-direction: column;
-          background-color: var(--gray-soft, #f4f4f4);
+          background-color: var(--canvas, #f4f4f4);
+          border-top: 1px solid var(--line, #E3E8F0);
           box-shadow: 0 0 5px rgba(224, 18, 128, 0.5), 0 0 40px rgba(224, 18, 128, 0.2);
+          border-radius: 12px 12px 0 0;
           z-index: 1000;
           visibility: hidden;
           transform: translateY(100%);
           overflow: hidden;
+          transition: transform 0.26s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0.26s;
         }
         .rollup.open {
           visibility: visible;

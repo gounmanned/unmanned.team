@@ -7,7 +7,7 @@
 .monitor-callout { flex-shrink: 0; margin: 16px 18px; }
 .monitor-callout-text { margin: 0 0 4px; font-size: 12px; line-height: 1.6; color: var(--text-muted); }
 .monitor-callout-address { margin: 0; font-size: 11.5px; color: var(--text-strong); }
-.monitor-callout-address:hover { color: var(--pink); }
+.monitor-callout-address:hover { color: var(--brand); }
 
 #monitor-screen .table-wrap { padding: 0 18px; overflow-y: auto; }
 
@@ -26,9 +26,9 @@
   cursor: pointer;
   white-space: nowrap;
 }
-.btn.ghost { background: white; border-color: var(--gray-line); color: var(--text-muted); }
-.btn.ghost:hover { border-color: var(--pink); color: var(--pink); }
-.btn.primary { background: var(--pink); color: #fff; }
+.btn.ghost { background: white; border-color: var(--line-2); color: var(--text-muted); }
+.btn.ghost:hover { border-color: var(--brand); color: var(--brand); }
+.btn.primary { background: var(--brand); color: #fff; }
 .btn.primary:hover { background: #c9106f; }
 
 /* connected monitors: one row shape, so every row is the same size */
@@ -38,7 +38,7 @@
   align-items: center;
   gap: 10px;
   padding: 10px 4px;
-  border-top: 1px solid var(--gray-line);
+  border-top: 1px solid var(--line-2);
 }
 .monitor-row:first-child { border-top: none; }
 .monitor-row .monitor-name { flex: 1; }
@@ -80,14 +80,14 @@
   gap: 9px;
   padding: 10px 4px;
   border: none;
-  border-top: 1px solid var(--gray-line);
+  border-top: 1px solid var(--line-2);
   background: transparent;
   cursor: pointer;
   text-align: left;
   font: inherit;
   color: var(--text-muted);
 }
-.monitor-add-toggle:hover { color: var(--pink); background: var(--gray-hover); }
+.monitor-add-toggle:hover { color: var(--brand); background: var(--gray-hover); }
 .monitor-add-toggle .material-symbols-outlined { font-size: 18px; }
 
 /* picker / connect form: tinted so it visually pops as its own step */
@@ -108,7 +108,7 @@
   align-items: center;
   gap: 7px;
   padding: 8px 9px;
-  border: 1px solid var(--gray-line);
+  border: 1px solid var(--line-2);
   border-radius: 6px;
   background: white;
   cursor: pointer;
@@ -118,7 +118,7 @@
   color: var(--text-body);
 }
 .monitor-source-option span:not(.monitor-icon) { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.monitor-source-option:hover { border-color: var(--pink); color: var(--pink); }
+.monitor-source-option:hover { border-color: var(--brand); color: var(--brand); }
 
 .monitor-connect-header { display: flex; align-items: center; gap: 9px; margin-bottom: 8px; }
 .monitor-connect-note { margin: 0 0 10px; font-size: 11.5px; line-height: 1.5; color: var(--text-muted); }
@@ -131,18 +131,18 @@
   width: 100%;
   box-sizing: border-box;
   padding: 8px 10px;
-  border: 1px solid var(--gray-line);
+  border: 1px solid var(--line-2);
   border-radius: 6px;
   background: white;
   font-size: 12px;
   font-family: inherit;
   resize: vertical;
 }
-.monitor-picker textarea:focus { outline: none; border-color: var(--pink); box-shadow: 0 0 0 3px rgba(224, 18, 128, 0.07); }
+.monitor-picker textarea:focus { outline: none; border-color: var(--brand); box-shadow: 0 0 0 3px rgba(224, 18, 128, 0.07); }
 
 .monitor-connect-error { margin: 6px 0 0; font-size: 11.5px; color: #dc2626; }
 .monitor-connect-actions { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 10px; }
 .monitor-connect-actions-right { display: flex; align-items: center; gap: 8px; }
 
 .docs-link { font-size: 11px; font-weight: 500; color: var(--text-muted); text-decoration: none; white-space: nowrap; }
-.docs-link:hover { color: var(--pink); text-decoration: underline; }
+.docs-link:hover { color: var(--brand); text-decoration: underline; }

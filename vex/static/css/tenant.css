@@ -27,7 +27,7 @@
   width: min(420px, 85%);
   height: min(420px, 85%);
   z-index: 0;
-  color: var(--gray-line, #d1d5db);
+  color: var(--line-2, #d1d5db);
 }
 
 .signal-radar-corner { --corner-size: 20px; z-index: 1; opacity: 0.6; }
@@ -86,8 +86,8 @@
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--text-muted, #9ca3af);
-  background: var(--background);
-  border-bottom: 1px solid var(--gray-line);
+  background: var(--canvas);
+  border-bottom: 1px solid var(--line-2);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -105,14 +105,14 @@
   height: 24px;
   padding: 0 8px;
   box-sizing: border-box;
-  border: 1px solid var(--gray-line);
+  border: 1px solid var(--line-2);
   border-radius: 7px;
   background: var(--gray-panel);
   transition: border-color 0.12s, background 0.12s;
 }
 
 .signal-search:focus-within {
-  border-color: var(--pink);
+  border-color: var(--brand);
   background: var(--gray-panel, #fff);
 }
 
@@ -190,7 +190,7 @@ tr.unread td.name::before {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: var(--pink);
+  background: var(--brand);
   margin-right: 8px;
   vertical-align: middle;
   flex-shrink: 0;
@@ -244,7 +244,7 @@ tr[data-status="CV"] td.autoclose {
   width: 3px;
   height: 40%;
   border-radius: 1px;
-  background: var(--gray-line);
+  background: var(--line-2);
   transition: background 0.15s, height 0.15s;
 }
 
@@ -260,7 +260,7 @@ tr[data-status="CV"] td.autoclose {
 .strength-bar:nth-child(10) { height: 100%; }
 
 .strength-bar.lit {
-  background: var(--pink);
+  background: var(--brand);
 }
 
 .strength-value {
@@ -271,7 +271,7 @@ tr[data-status="CV"] td.autoclose {
 }
 
 .strength-meter.maxed .strength-value {
-  color: var(--pink);
+  color: var(--brand);
 }
 
 /* ═════════════════════════════════════════════════════════════════
@@ -291,7 +291,7 @@ tr[data-status="CV"] td.autoclose {
   justify-content: flex-end;
   gap: 8px;
   background: var(--gray-panel);
-  border-top: 1px solid var(--gray-line);
+  border-top: 1px solid var(--line-2);
   box-sizing: border-box;
 }
 
@@ -311,7 +311,7 @@ tr[data-status="CV"] td.autoclose {
 .links a.cta {
   margin-left: 8px;
   padding: 6px 12px 6px 9px;
-  background: var(--pink);
+  background: var(--brand);
   color: #fff;
   font-weight: 500;
 }
@@ -351,9 +351,9 @@ tr[data-status="CV"] td.autoclose {
   width: 32px;
   height: 18px;
   flex-shrink: 0;
-  border: 1px solid var(--gray-line);
+  border: 1px solid var(--line-2);
   border-radius: 8px;
-  background: var(--gray-line);
+  background: var(--line-2);
   transition: background 0.2s, border-color 0.2s;
 }
 
@@ -376,7 +376,7 @@ tr[data-status="CV"] td.autoclose {
 
 .links .toggle-btn.active .knob::after {
   transform: translateX(13px);
-  background: var(--pink);
+  background: var(--brand);
 }
 
 /* ═════════════════════════════════════════════════════════════════
@@ -394,7 +394,7 @@ tr[data-status="CV"] td.autoclose {
   background: white;
   box-sizing: border-box;
   border-radius: 12px;
-  border: 1px solid var(--gray-line);
+  border: 1px solid var(--line-2);
   cursor: pointer;
   overflow: hidden;
   isolation: isolate;
@@ -449,7 +449,7 @@ tr[data-status="CV"] td.autoclose {
   position: absolute;
   inset: -6px;
   border-radius: 50%;
-  border: 1px solid color-mix(in srgb, var(--pink) 45%, var(--gray-line));
+  border: 1px solid color-mix(in srgb, var(--brand) 45%, var(--line-2));
   animation: chokepoint-pulse 2.2s ease-out infinite;
 }
 
@@ -482,7 +482,7 @@ tr[data-status="CV"] td.autoclose {
   font-weight: 800;
   letter-spacing: 0.6px;
   text-transform: uppercase;
-  color: var(--pink);
+  color: var(--brand);
 }
 
 .chokepoint-name {
@@ -510,7 +510,7 @@ tr[data-status="CV"] td.autoclose {
   width: 3px;
   height: 3px;
   border-radius: 50%;
-  background: var(--gray-line);
+  background: var(--line-2);
   display: inline-block;
 }
 

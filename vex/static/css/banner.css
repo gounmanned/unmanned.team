@@ -3,7 +3,7 @@
   width: 100%;
   margin-bottom: 20px;
   padding-bottom: 16px;
-  border-bottom: 1px solid var(--gray-line);
+  border-bottom: 1px solid var(--line-2);
 }
 
 .gs-grid {
@@ -47,8 +47,8 @@
 .gs-card:not(.done) {
   padding-left: 22px;
   padding-right: 20px;
-  background: color-mix(in srgb, var(--pink) 6%, transparent);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--pink) 25%, transparent);
+  background: color-mix(in srgb, var(--brand) 6%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--brand) 25%, transparent);
 }
 
 .gs-card:not(.done):first-child {
@@ -56,17 +56,17 @@
 }
 
 .gs-card:not(.done):hover {
-  background: color-mix(in srgb, var(--pink) 10%, transparent);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--pink) 40%, transparent),
+  background: color-mix(in srgb, var(--brand) 10%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--brand) 40%, transparent),
               0 2px 6px rgba(0, 0, 0, 0.06);
 }
 
 .gs-card:not(.done) .gs-title {
-  color: var(--pink);
+  color: var(--brand);
 }
 
 .gs-card:not(.done) .gs-check {
-  color: var(--pink);
+  color: var(--brand);
   animation: gs-pulse 2s ease-in-out infinite;
 }
 
@@ -84,7 +84,7 @@
   top: 2px;
   bottom: 2px;
   width: 1px;
-  background: var(--gray-line);
+  background: var(--line-2);
   opacity: 1;
   transition: opacity 0.12s ease;
 }
@@ -120,7 +120,7 @@
 
 .gs-check {
   font-size: 16px;
-  color: var(--gray-line, #d1d5db);
+  color: var(--line-2, #d1d5db);
   flex-shrink: 0;
   transition: color 0.15s, font-size 0.15s;
 }
@@ -166,7 +166,7 @@
 
 .gs-toggle:hover {
   color: var(--text-strong);
-  background: var(--gray-line);
+  background: var(--line-2);
 }
 
 .gs-toggle .material-symbols-outlined {

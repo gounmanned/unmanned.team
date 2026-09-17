@@ -226,6 +226,14 @@
   <!-- Managed -->
 
   <site-rollup id="managed-screen">
+    <div class="rollup-head">
+      <span class="material-symbols-outlined rollup-head-icon">group</span>
+      <div class="rollup-head-text">
+        <h2>Accounts</h2>
+        <p>Switch between the accounts you manage, or invite a new one.</p>
+      </div>
+    </div>
+
     <div class="managed-body">
       <div class="managed-left">
         <div class="managed-accounts-wrap">
@@ -263,11 +271,14 @@
   <!-- Rollups -->
 
   <site-rollup id="audit-screen">
-    <div class="monitor-intro">
-      <span class="material-symbols-outlined">terminal</span>
-      <p>Vex maintains an unlimited audit history.</p>
+    <div class="rollup-head">
+      <span class="material-symbols-outlined rollup-head-icon">terminal</span>
+      <div class="rollup-head-text">
+        <h2>Logs</h2>
+        <p>Every action Vex takes, kept forever. Filter by source or message.</p>
+      </div>
     </div>
-
+    
     <div class="audit-terminal" id="audit-terminal">
       <div class="audit-terminal-header">
         <div class="audit-search">
@@ -302,9 +313,12 @@
   </site-rollup>
 
   <site-rollup id="inventory-screen">
-    <div class="monitor-intro">
-      <span class="material-symbols-outlined">inventory_2</span>
-      <p>Vex maps every discovered asset into a single inventory.</p>
+    <div class="rollup-head">
+      <span class="material-symbols-outlined rollup-head-icon">inventory_2</span>
+      <div class="rollup-head-text">
+        <h2>Assets</h2>
+        <p>Every identity, domain, and device Vex has discovered, in one inventory.</p>
+      </div>
     </div>
 
     <div class="asset-toolbar">
@@ -379,9 +393,12 @@
   </site-rollup>
 
   <site-rollup id="monitor-screen">
-    <div class="monitor-intro">
-        <span class="material-symbols-outlined">radar</span>
-        <p>Vex collects signals from every connected integration.</p>
+    <div class="rollup-head">
+      <span class="material-symbols-outlined rollup-head-icon">radar</span>
+      <div class="rollup-head-text">
+        <h2>Monitors</h2>
+        <p>Connected sources Vex collects signals from.</p>
+      </div>
     </div>
 
     <div id="monitor-callout" class="monitor-callout"></div>

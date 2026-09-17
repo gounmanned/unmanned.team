@@ -15,7 +15,7 @@ class SiteHeader extends HTMLElement {
           height: 52px;
           z-index: 10;
           background: var(--gray-panel, #eeeeee);
-          border-bottom: 1px solid var(--gray-line, #dcdcd8);
+          border-bottom: 1px solid var(--line-2, #dcdcd8);
         }
         .header-container {
           display: flex;
@@ -130,8 +130,8 @@ class SiteSpinner extends HTMLElement {
       .spinner {
         width: 60px;
         height: 60px;
-        border: 6px solid var(--gray-line, #dcdcd8);
-        border-top: 6px solid var(--pink, #e01280);
+        border: 6px solid var(--line-2, #dcdcd8);
+        border-top: 6px solid var(--brand, #e01280);
         border-radius: 50%;
         animation: spin 1s linear infinite;
         display: flex;
@@ -139,7 +139,7 @@ class SiteSpinner extends HTMLElement {
         justify-content: center;
       }
       .spinner.success {
-        border: 6px solid var(--pink, #e01280);
+        border: 6px solid var(--brand, #e01280);
         animation: none;
       }
       .checkmark {
@@ -157,7 +157,7 @@ class SiteSpinner extends HTMLElement {
 
       <div id="spinner" class="spinner-overlay">
         <div class="spinner">
-          <svg class="checkmark" viewBox="0 0 24 24" fill="none" stroke="var(--pink, #e01280)" stroke-width="3">
+          <svg class="checkmark" viewBox="0 0 24 24" fill="none" stroke="var(--brand, #e01280)" stroke-width="3">
             <polyline points="20 6 9 17 4 12"></polyline>
           </svg>
         </div>
@@ -285,7 +285,7 @@ class SiteModal extends HTMLElement {
         width: var(--modal-width, 40%);
         max-height: 90vh;
         flex-direction: column;
-        background-color: var(--white, #fcfcfa);
+        background-color: var(--surface-1, #fcfcfa);
         z-index: 1002;
         opacity: 0;
         pointer-events: none;
@@ -349,7 +349,7 @@ class SiteSidebar extends HTMLElement {
         display: flex;
         justify-content: center;
         flex-direction: column;
-        background-color: var(--background, #FAF9F6);
+        background-color: var(--canvas, #FAF9F6);
         box-shadow: 0 0 5px rgba(224, 18, 128, 0.5), 0 0 40px rgba(224, 18, 128, 0.2);
         z-index: 1001;
         transform: translateX(100%);

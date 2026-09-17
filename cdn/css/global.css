@@ -28,12 +28,6 @@
   --font-sans:    'Inter', system-ui, sans-serif;
   --font-display: 'Space Grotesk', var(--font-sans);
   --font-mono:    'JetBrains Mono', monospace;
-
-  /* --- compatibility aliases --- */
-  --pink:       var(--brand);
-  --white:      var(--surface-1);
-  --background: var(--canvas);
-  --gray-line:  var(--line-1);
 }
 
 body {

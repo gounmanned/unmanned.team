@@ -163,30 +163,25 @@
     <div class="table-wrap" id="signal-table-wrap">
       <table id="signal-table">
         <colgroup>
-          <col style="width: 3%">    <!-- icon -->
+          <col style="width: 5%">    <!-- icon -->
           <col style="width: 7%">    <!-- severity -->
           <col style="width: 33%">   <!-- name -->
           <col style="width: 10%">   <!-- id -->
           <col style="width: 8%">    <!-- strength -->
           <col style="width: 16%">   <!-- source -->
-          <col style="width: 8%">    <!-- autoclosed -->
-          <col style="width: 15%">   <!-- created -->
+          <col style="width: 15%">   <!-- autoclosed -->
+          <col style="width: 6%">    <!-- created -->
         </colgroup>
         <thead>
           <tr>
             <th></th>
-            <th></th>
+            <th>Severity</th>
             <th>Name</th>
             <th>ID</th>
             <th>Strength</th>
             <th>Asset</th>
-            <th>Autoclosed</th>
-            <th class="signal-filter-cell">
-              <div class="signal-search">
-                <span class="material-symbols-outlined">search</span>
-                <input type="text" id="signal-filter" placeholder="Filter…" autocomplete="off">
-              </div>
-            </th>
+            <th>Detected</th>
+            <th>Autoclose</th>
           </tr>
         </thead>
         <tbody></tbody>
@@ -278,7 +273,7 @@
         <p>Every action Vex takes, kept forever. Filter by source or message.</p>
       </div>
     </div>
-    
+
     <div class="audit-terminal" id="audit-terminal">
       <div class="audit-terminal-header">
         <div class="audit-search">
@@ -304,7 +299,7 @@
           <div class="corner bl signal-radar-corner"></div>
           <div class="corner br signal-radar-corner"></div>
           <span class="material-symbols-outlined">terminal</span>
-          <p id="audit-empty-label">No logs recorded</p>
+          <p id="audit-empty-label">No logs</p>
         </div>
       </div>
 

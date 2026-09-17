@@ -4,7 +4,6 @@ class TenantScreen {
         this.api = state.api;
         this.table = new Table('signal-table');
         this.month = new Date();
-        this.filterTerm = '';
         this.listen();
 
         // add-ons
@@ -36,17 +35,6 @@ class TenantScreen {
         const open = rows.filter(r => !r.classList.contains('closed')).length;
         const footnote = `${rows.length.toLocaleString()} signals ${open ? `(${open.toLocaleString()} open)` : ''}`;
         document.getElementById('signal-count').textContent = footnote;
-    }
-
-    filter(term) {
-        const q = (term ?? '').trim().toLowerCase();
-        const rows = Array.from(this.table.body.children);
-
-        rows.forEach(row => {
-            const icon = row.querySelector('img');
-            const haystack = `${row.textContent} ${icon?.alt ?? ''}`.toLowerCase();
-            row.classList.toggle('signal-row-hidden', !(!q || haystack.includes(q)));
-        });
     }
 
     strength(value) {
@@ -127,8 +115,8 @@ class TenantScreen {
                 <td class="id">#${signal.id}</td>
                 <td class="strength">${this.strength(signal.metadata?.strength ?? 0)}</td>
                 <td class="source">${signal.asset}</td>
-                <td class="autoclose"></td>
                 <td class="created">${Workspace.date(signal.created)}</td>
+                <td class="autoclose"></td>
             `;
 
             row.addEventListener('click', async (e) => {
@@ -140,13 +128,7 @@ class TenantScreen {
             });
 
             upsert(row, signal);
-            this.filter(this.filterTerm);
             this.count();
-        });
-
-        document.getElementById('signal-filter').addEventListener('input', (e) => {
-            this.filterTerm = e.target.value;
-            this.filter(this.filterTerm);
         });
 
         document.getElementById('toggle').addEventListener('click', async () => {

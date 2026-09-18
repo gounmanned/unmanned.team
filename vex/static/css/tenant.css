@@ -26,12 +26,6 @@
   color: var(--line-2, #d1d5db);
 }
 
-.signal-radar-corner { --corner-size: 20px; z-index: 1; opacity: 0.6; }
-.signal-radar-corner.tl { top: 8px; left: 8px; }
-.signal-radar-corner.tr { top: 8px; right: 8px; }
-.signal-radar-corner.bl { bottom: 8px; left: 8px; }
-.signal-radar-corner.br { bottom: 8px; right: 8px; }
-
 .signal-radar-watermark .material-symbols-outlined,
 #breach-screen .breach-detail-empty .material-symbols-outlined {
   position: relative; z-index: 2;
@@ -52,6 +46,8 @@
 /* ── table ──────────────── */
 
 #signal-table-wrap {
+  flex: 1;
+  min-height: 0;
   overflow-x: hidden;
   overflow-y: auto;
 }
@@ -333,7 +329,7 @@ tr[data-status="CV"] td.autoclose {
   height: auto;
   min-height: 0;
   margin-bottom: 24px;
-  padding: 40px;
+  padding: 20px;
   background: white;
   box-sizing: border-box;
   border-radius: 12px;
@@ -376,6 +372,7 @@ tr[data-status="CV"] td.autoclose {
 /* ── icon / logo ────────────────────────────────────────────────── */
 
 .chokepoint-icon {
+  background-color: white;
   position: relative;
   display: flex;
   align-items: center;

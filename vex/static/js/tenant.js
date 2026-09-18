@@ -83,11 +83,11 @@ class TenantScreen {
         document.getElementById('chokepoint-updated').textContent = Workspace.date(this.chokepoint.updated);
 
         const logo = document.getElementById('chokepoint-logo');
+        logo.onerror = () => { logo.src = 'static/img/source/vex.png'; };
         logo.src = `static/img/source/${this.chokepoint.source}.png`;
-        logo.alt = this.chokepoint.source;
         callout.style.display = 'flex';
     }
-    
+
     listen() {
         document.addEventListener('signal:account', (ev) => {
             const upsert = (row, signal) => {

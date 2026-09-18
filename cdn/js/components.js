@@ -359,7 +359,7 @@ class SiteSidebar extends HTMLElement {
         transform: translateX(0);
       }
 
-      ::slotted(.sidebar-container) {
+      ::slotted(.container) {
         flex: 1;
         overflow-y: auto;
         min-height: 0;

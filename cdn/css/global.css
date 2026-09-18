@@ -40,3 +40,7 @@
   --sev-4: #3B82F6;
   --sev-5: #6B7280;
 }
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+}

@@ -1,25 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
 :root{
-  /* backgrounds */
   --surface: #FFFFFF;
   --surface-alt:#f2f2f2;
-
-  /* lines */
   --line: #CBD4E1;
-
-  /* brand */
-  --brand:#e01280;
-  --accent:rgba(224,18,128,0.45);
-
-  /* text */
   --text-body: #0b0c0d;
   --text-faint: #c4c4c4;
-
-  /* fonts */
   --font-sans: 'Inter', system-ui, sans-serif;
-
-  /** severity levels **/
+  --brand: #e01280;
+  --accent:rgba(224,18,128,0.45);
   --sev-1: #DC2626; 
   --sev-2: #F97316;
   --sev-3: #EAB308;

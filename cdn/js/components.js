@@ -34,8 +34,8 @@ class SiteHeader extends HTMLElement {
           flex-shrink: 0;
         }
         .logo-area img {
-          height: 32px;
-          width: 32px;
+          height: 24px;
+          width: 24px;
           object-fit: contain;
         }
         .brand {
@@ -49,6 +49,10 @@ class SiteHeader extends HTMLElement {
           font-size: 0.95rem;
           font-weight: 700;
           letter-spacing: 0.01em;
+        }
+        .brand-logo {
+          height: 40px;
+          width: 40px;
         }
         .divider {
           width: 1px;

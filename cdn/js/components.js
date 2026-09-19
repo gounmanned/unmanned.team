@@ -27,13 +27,34 @@ class SiteHeader extends HTMLElement {
         .logo-area {
           display: flex;
           align-items: center;
-          gap: 10px;
+          gap: 14px;
           flex-shrink: 0;
         }
         .logo-area img {
           height: 24px;
           width: 24px;
           object-fit: contain;
+        }
+        .brand {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          text-decoration: none;
+          color: var(--ink, #0b0c0d);
+        }
+        .brand-name {
+          font-size: 0.95rem;
+          font-weight: 700;
+          letter-spacing: 0.01em;
+        }
+        .divider {
+          width: 1px;
+          height: 24px;
+          background: var(--line-2, #dcdcd8);
+          flex-shrink: 0;
+        }
+        .account-logo:not([src]) {
+          display: none;
         }
         .account-group {
           display: flex;
@@ -79,7 +100,12 @@ class SiteHeader extends HTMLElement {
 
       <div class="header-container">
         <div class="logo-area">
-          <img />
+          <a class="brand" href="/">
+            <img class="brand-logo" src="https://cdn.unmanned.team/img/logo.png"/>
+            <span class="brand-name">Vex</span>
+          </a>
+          <span class="divider"></span>
+          <img class="account-logo"/>
           <span class="account-group">
             <span class="account-name"></span>
             <slot name="account-switcher"></slot>
@@ -101,7 +127,7 @@ class SiteHeader extends HTMLElement {
 
   setAccount(name, logo) {
     this.shadowRoot.querySelector('.account-name').textContent = name;
-    this.shadowRoot.querySelector('.logo-area img').src = logo;
+    this.shadowRoot.querySelector('.account-logo').src = logo;
   }
 }
 

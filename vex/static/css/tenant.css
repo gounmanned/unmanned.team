@@ -172,7 +172,7 @@ tr[data-status="CV"] td.autoclose {
 .severity-chip[data-severity="2"] { background: rgba(249,115,22,0.1); color: var(--sev-2); } /* High */
 .severity-chip[data-severity="3"] { background: rgba(234,179,8,0.1);  color: var(--sev-3); } /* Medium */
 .severity-chip[data-severity="4"] { background: rgba(59,130,246,0.1); color: var(--sev-4); } /* Low */
-.severity-chip[data-severity="5"] { background: var(--gray-soft);     color: var(--sev-5); } /* Info */
+.severity-chip[data-severity="5"] { background: var(--surface-alt);     color: var(--sev-5); } /* Info */
 
 /* ── strength meter ─────────────────────────────────────────────── */
 

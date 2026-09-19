@@ -3,8 +3,8 @@
 :root{
   /* backgrounds */
   --surface: #FFFFFF;
-  --gray-mid:#6c6c70;
-  --gray-soft:#f4f4f4;
+  --surface-alt:#f4f4f4;
+  --surface-dark:#6c6c70;
 
   /* lines */
   --line: #CBD4E1;

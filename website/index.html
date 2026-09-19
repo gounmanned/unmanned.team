@@ -21,7 +21,7 @@
     --pink:#e01280;
     --pink-dim:rgba(224,18,128,0.45);
     --gray-line:#dcdcd8;
-    --gray-mid:#6c6c70;
+    --surface-dark:#6c6c70;
     --db-ink:#f3f3f0;
     --db-mid:#8a8a8e;
   }
@@ -69,7 +69,7 @@
 
   .eyebrow-label{
     font-size:11px;letter-spacing:0.18em;text-transform:uppercase;
-    color:var(--gray-mid);display:flex;align-items:center;gap:11px;
+    color:var(--surface-dark);display:flex;align-items:center;gap:11px;
   }
   .dark-frame .eyebrow-label{color:var(--db-mid);}
 
@@ -172,7 +172,7 @@
   .tagline-row{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:16px;margin-top:34px;}
   .tagline{font-size:clamp(24px,3vw,36px);letter-spacing:0.01em;color:var(--ink);font-weight:400;max-width:640px;margin:0;}
   .hero-sub{
-    font-size:14px;color:var(--gray-mid);max-width:420px;line-height:1.6;
+    font-size:14px;color:var(--surface-dark);max-width:420px;line-height:1.6;
   }
   .hero-sub b{color:var(--ink);font-weight:600;}
 
@@ -193,7 +193,7 @@
   .divider{
     position:relative;border-top:1px solid var(--gray-line);
     display:flex;justify-content:space-between;padding:14px 56px;
-    font-size:10px;color:var(--gray-mid);
+    font-size:10px;color:var(--surface-dark);
   }
   .dark-frame + .divider, .divider.on-dark{
     border-top-color:rgba(255,255,255,0.14);color:var(--db-mid);background:#0b0c0d;
@@ -246,11 +246,11 @@
   /* holes sit at the same 5 stops the reticle visits, and flash as it locks on */
   .hole{
     position:absolute;width:13px;height:13px;margin:-6.5px 0 0 -6.5px;
-    border-radius:50%;border:1px dashed var(--gray-mid);
+    border-radius:50%;border:1px dashed var(--surface-dark);
   }
   .hole::after{
     content:'';position:absolute;top:50%;left:50%;width:3px;height:3px;
-    margin:-1.5px 0 0 -1.5px;border-radius:50%;background:var(--gray-mid);
+    margin:-1.5px 0 0 -1.5px;border-radius:50%;background:var(--surface-dark);
   }
   .hole-a{ top:56px; left:6%;  animation:holeFlashA 17s ease-in-out infinite; }
   .hole-b{ top:56px; left:88%; animation:holeFlashB 17s ease-in-out infinite; }
@@ -259,29 +259,29 @@
   .hole-e{ top:calc(100% - 60px); left:86%; animation:holeFlashE 17s ease-in-out infinite; }
 
   @keyframes holeFlashA{
-    0%,100%{ opacity:0.5; transform:scale(1); border-color:var(--gray-mid); box-shadow:none; }
+    0%,100%{ opacity:0.5; transform:scale(1); border-color:var(--surface-dark); box-shadow:none; }
     4%     { opacity:1;   transform:scale(1.5); border-color:var(--pink); box-shadow:0 0 7px rgba(224,18,128,0.55); }
-    11%    { opacity:0.5; transform:scale(1); border-color:var(--gray-mid); box-shadow:none; }
+    11%    { opacity:0.5; transform:scale(1); border-color:var(--surface-dark); box-shadow:none; }
   }
   @keyframes holeFlashB{
-    0%,20%,100%{ opacity:0.5; transform:scale(1); border-color:var(--gray-mid); box-shadow:none; }
+    0%,20%,100%{ opacity:0.5; transform:scale(1); border-color:var(--surface-dark); box-shadow:none; }
     25%        { opacity:1;   transform:scale(1.5); border-color:var(--pink); box-shadow:0 0 7px rgba(224,18,128,0.55); }
-    30%        { opacity:0.5; transform:scale(1); border-color:var(--gray-mid); box-shadow:none; }
+    30%        { opacity:0.5; transform:scale(1); border-color:var(--surface-dark); box-shadow:none; }
   }
   @keyframes holeFlashC{
-    0%,39%,100%{ opacity:0.5; transform:scale(1); border-color:var(--gray-mid); box-shadow:none; }
+    0%,39%,100%{ opacity:0.5; transform:scale(1); border-color:var(--surface-dark); box-shadow:none; }
     44%        { opacity:1;   transform:scale(1.5); border-color:var(--pink); box-shadow:0 0 7px rgba(224,18,128,0.55); }
-    49%        { opacity:0.5; transform:scale(1); border-color:var(--gray-mid); box-shadow:none; }
+    49%        { opacity:0.5; transform:scale(1); border-color:var(--surface-dark); box-shadow:none; }
   }
   @keyframes holeFlashD{
-    0%,58%,100%{ opacity:0.5; transform:scale(1); border-color:var(--gray-mid); box-shadow:none; }
+    0%,58%,100%{ opacity:0.5; transform:scale(1); border-color:var(--surface-dark); box-shadow:none; }
     63%        { opacity:1;   transform:scale(1.5); border-color:var(--pink); box-shadow:0 0 7px rgba(224,18,128,0.55); }
-    68%        { opacity:0.5; transform:scale(1); border-color:var(--gray-mid); box-shadow:none; }
+    68%        { opacity:0.5; transform:scale(1); border-color:var(--surface-dark); box-shadow:none; }
   }
   @keyframes holeFlashE{
-    0%,77%,100%{ opacity:0.5; transform:scale(1); border-color:var(--gray-mid); box-shadow:none; }
+    0%,77%,100%{ opacity:0.5; transform:scale(1); border-color:var(--surface-dark); box-shadow:none; }
     82%        { opacity:1;   transform:scale(1.5); border-color:var(--pink); box-shadow:0 0 7px rgba(224,18,128,0.55); }
-    87%        { opacity:0.5; transform:scale(1); border-color:var(--gray-mid); box-shadow:none; }
+    87%        { opacity:0.5; transform:scale(1); border-color:var(--surface-dark); box-shadow:none; }
   }
 
   /* ---------- HOW VEX WORKS: VERTICAL TIMELINE ---------- */
@@ -301,7 +301,7 @@
     border:1.5px solid var(--gray-line);display:flex;align-items:center;justify-content:center;
     position:relative;
   }
-  .timeline-index{font-size:12px;color:var(--gray-mid);}
+  .timeline-index{font-size:12px;color:var(--surface-dark);}
   .timeline-step--hot .timeline-node{width:84px;height:84px;border-color:var(--pink);}
   .timeline-node-ring{
     position:absolute;inset:-10px;border:1px solid var(--pink-dim);border-radius:50%;
@@ -313,7 +313,7 @@
   .choke-node{fill:var(--pink);}
 
   .timeline-content{flex:1;padding-top:8px;}
-  .timeline-tag{font-size:11px;letter-spacing:0.13em;text-transform:uppercase;color:var(--gray-mid);}
+  .timeline-tag{font-size:11px;letter-spacing:0.13em;text-transform:uppercase;color:var(--surface-dark);}
   .timeline-tag.hot{color:var(--pink);font-weight:600;}
   .timeline-heading{
     font-weight:500;
@@ -390,7 +390,7 @@
   footer{
     border-top:1px solid var(--gray-line);padding:28px 56px 40px;
     display:flex;justify-content:space-between;align-items:center;
-    font-size:10.5px;color:var(--gray-mid);text-transform:uppercase;letter-spacing:0.08em;
+    font-size:10.5px;color:var(--surface-dark);text-transform:uppercase;letter-spacing:0.08em;
   }
   footer a{text-decoration:none;}
   footer a:hover{color:var(--ink);}

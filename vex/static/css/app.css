@@ -154,7 +154,7 @@ table tbody tr {
 }
 
 table tbody tr:hover {
-  background-color: var(--gray-soft);
+  background-color: var(--surface-alt);
 }
 
 table tr:hover img {

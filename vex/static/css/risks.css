@@ -3,7 +3,7 @@
   overflow: hidden;
   flex-shrink: 0;
   padding: 16px 18px;
-  background: var(--gray-soft);
+  background: var(--surface-alt);
   border-bottom: 1px solid var(--line);
 }
 
@@ -60,7 +60,7 @@
   transition: background 0.1s;
 }
 
-#risk-sidebar .entry-risk:hover { background: var(--gray-soft); }
+#risk-sidebar .entry-risk:hover { background: var(--surface-alt); }
 
 #risk-sidebar .risk-source-icon,
 #risk-sidebar .risk-source-fallback {
@@ -93,7 +93,7 @@
   padding: 1px 6px;
   font-size: 10px;
   color: var(--text-faint);
-  background: var(--gray-soft);
+  background: var(--surface-alt);
   border: 1px solid var(--line);
   border-radius: 3px;
   white-space: nowrap;
@@ -123,7 +123,7 @@
 }
 
 #risk-sidebar .risk-remove:hover {
-  background: var(--gray-soft);
+  background: var(--surface-alt);
   color: var(--brand);
 }
 

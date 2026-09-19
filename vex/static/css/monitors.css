@@ -87,7 +87,7 @@
   font: inherit;
   color: var(--text-faint);
 }
-.monitor-add-toggle:hover { color: var(--brand); background: var(--gray-soft); }
+.monitor-add-toggle:hover { color: var(--brand); background: var(--surface-alt); }
 .monitor-add-toggle .material-symbols-outlined { font-size: 18px; }
 
 /* picker / connect form: tinted so it visually pops as its own step */

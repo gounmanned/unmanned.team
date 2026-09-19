@@ -9,7 +9,7 @@
   overflow: hidden;
   flex-shrink: 0;
   padding: 16px 18px;
-  background: var(--gray-soft);
+  background: var(--surface-alt);
   border-bottom: 1px solid var(--line);
 }
 
@@ -66,7 +66,7 @@
   gap: 4px;
   flex-shrink: 0;
   padding: 8px 18px;
-  background: var(--gray-soft);
+  background: var(--surface-alt);
   border-bottom: 1px solid var(--line);
   font-size: 11px;
   color: var(--text-faint);
@@ -112,7 +112,7 @@
   transition: background 0.1s;
 }
 
-#backup-sidebar .entry:hover { background: var(--gray-soft); }
+#backup-sidebar .entry:hover { background: var(--surface-alt); }
 
 #backup-sidebar .entry .file-icon {
   font-size: 17px;

@@ -22,7 +22,7 @@
     --pink:#e01280;
     --pink-dim:rgba(224,18,128,0.45);
     --gray-line:#dcdcd8;
-    --gray-mid:#6c6c70;
+    --surface-dark:#6c6c70;
     --db-ink:#f3f3f0;
     --db-mid:#8a8a8e;
     --header-h:85px;
@@ -54,7 +54,7 @@
     70%{box-shadow:0 0 0 8px rgba(224,18,128,0);}
     100%{box-shadow:0 0 0 0 rgba(224,18,128,0);}
   }
-  .eyebrow-label{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--gray-mid);display:flex;align-items:center;gap:11px;}
+  .eyebrow-label{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--surface-dark);display:flex;align-items:center;gap:11px;}
 
   .corner{position:absolute;width:var(--corner-size,28px);height:var(--corner-size,28px);border-color:var(--ink);opacity:0.55;}
   .corner.tl{border-top:1.5px solid;border-left:1.5px solid;}
@@ -86,11 +86,11 @@
   .site-header{position:sticky;top:25px;z-index:30;background:var(--surface);border-bottom:1px solid var(--gray-line);}
   .header-inner{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:18px 0;}
   .brand{display:flex;align-items:center;gap:9px;font-size:16px;font-weight:600;letter-spacing:0.01em;text-decoration:none;}
-  .brand .sub{color:var(--gray-mid);font-weight:500;font-size:13px;}
+  .brand .sub{color:var(--surface-dark);font-weight:500;font-size:13px;}
   .header-nav{display:flex;align-items:center;gap:30px;margin:0 auto 0 48px;}
   .header-nav a{
     font-size:12px;font-weight:500;letter-spacing:0.07em;text-transform:uppercase;
-    text-decoration:none;color:var(--gray-mid);
+    text-decoration:none;color:var(--surface-dark);
   }
   .header-nav a:hover{color:var(--ink);}
   .btn{
@@ -121,7 +121,7 @@
 
   .divider{
     position:relative;border-top:1px solid var(--gray-line);display:flex;justify-content:space-between;
-    padding:14px 56px;font-size:10px;color:var(--gray-mid);
+    padding:14px 56px;font-size:10px;color:var(--surface-dark);
   }
   @media (max-width:700px){.divider{padding:14px 20px;}}
 
@@ -200,7 +200,7 @@
   /* ---------- FOOTER ---------- */
   footer{
     border-top:1px solid var(--gray-line);padding:28px 56px 40px;display:flex;justify-content:space-between;
-    align-items:center;font-size:10.5px;color:var(--gray-mid);text-transform:uppercase;letter-spacing:0.08em;
+    align-items:center;font-size:10.5px;color:var(--surface-dark);text-transform:uppercase;letter-spacing:0.08em;
   }
   footer a{text-decoration:none;}
   footer a:hover{color:var(--ink);}

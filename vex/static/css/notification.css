@@ -22,7 +22,7 @@
 }
 
 .bell-btn:hover {
-  background: var(--gray-soft);
+  background: var(--surface-alt);
   color: var(--text-body);
 }
 
@@ -65,7 +65,7 @@
   width: 320px;
   max-height: 420px;
   overflow-y: auto;
-  background: var(--gray-soft);
+  background: var(--surface-alt);
   border: 1px solid var(--line);
   border-radius: 10px;
   box-shadow: 0 12px 32px -12px rgba(0, 0, 0, 0.28);

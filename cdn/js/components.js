@@ -41,6 +41,7 @@ class SiteHeader extends HTMLElement {
         .brand {
           display: flex;
           align-items: center;
+          padding-right: 8px;
           gap: 4px;
           text-decoration: none;
           color: var(--text-body);

@@ -22,7 +22,7 @@
 }
 
 .bell-btn:hover {
-  background: var(--gray-hover);
+  background: var(--gray-panel);
   color: var(--ink);
 }
 

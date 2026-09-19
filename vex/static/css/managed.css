@@ -100,7 +100,7 @@
   transition: background 0.1s;
 }
 
-#managed-screen .managed-account-item:hover { background: var(--gray-hover); }
+#managed-screen .managed-account-item:hover { background: var(--gray-panel); }
 #managed-screen .managed-account-item.pending { opacity: 0.4; pointer-events: none; }
 
 #managed-screen .managed-badge-content {

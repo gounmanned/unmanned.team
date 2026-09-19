@@ -10,12 +10,13 @@ class SiteHeader extends HTMLElement {
         :host {
           display: block;
           position: fixed;
-          top: var(--header-offset, 0);
-          left: 0; right: 0;
+          top: 0;
+          left: 0; 
+          right: 0;
           height: 52px;
           z-index: 10;
-          background: var(--surface-1, #eeeeee);
-          border-bottom: 1px solid var(--line-2, #dcdcd8);
+          background: var(--surface-1);
+          border-bottom: 1px solid var(--line-2);
         }
         .header-container {
           display: flex;
@@ -40,7 +41,7 @@ class SiteHeader extends HTMLElement {
           align-items: center;
           gap: 8px;
           text-decoration: none;
-          color: var(--ink, #0b0c0d);
+          color: var(--ink);
         }
         .brand-name {
           font-size: 0.95rem;
@@ -50,7 +51,7 @@ class SiteHeader extends HTMLElement {
         .divider {
           width: 1px;
           height: 24px;
-          background: var(--line-2, #dcdcd8);
+          background: var(--line-2);
           flex-shrink: 0;
         }
         .account-logo:not([src]) {
@@ -66,12 +67,12 @@ class SiteHeader extends HTMLElement {
           transition: background 0.15s;
         }
         .account-group:hover {
-          background: var(--gray-hover, #e4e4e4);
+          background: var(--gray-panel);
         }
         .account-name {
           font-size: 0.95rem;
           font-weight: 600;
-          color: var(--ink, #0b0c0d);
+          color: var(--ink);
         }
         ::slotted([slot="account-switcher"]) {
           display: flex;
@@ -156,8 +157,8 @@ class SiteSpinner extends HTMLElement {
       .spinner {
         width: 60px;
         height: 60px;
-        border: 6px solid var(--line-2, #dcdcd8);
-        border-top: 6px solid var(--brand, #e01280);
+        border: 6px solid var(--line-2);
+        border-top: 6px solid var(--brand);
         border-radius: 50%;
         animation: spin 1s linear infinite;
         display: flex;
@@ -165,7 +166,7 @@ class SiteSpinner extends HTMLElement {
         justify-content: center;
       }
       .spinner.success {
-        border: 6px solid var(--brand, #e01280);
+        border: 6px solid var(--brand);
         animation: none;
       }
       .checkmark {
@@ -183,7 +184,7 @@ class SiteSpinner extends HTMLElement {
 
       <div id="spinner" class="spinner-overlay">
         <div class="spinner">
-          <svg class="checkmark" viewBox="0 0 24 24" fill="none" stroke="var(--brand, #e01280)" stroke-width="3">
+          <svg class="checkmark" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="3">
             <polyline points="20 6 9 17 4 12"></polyline>
           </svg>
         </div>
@@ -308,10 +309,10 @@ class SiteModal extends HTMLElement {
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%) scale(0.95);
-        width: var(--modal-width, 40%);
+        width: 40%;
         max-height: 90vh;
         flex-direction: column;
-        background-color: var(--surface-1, #fcfcfa);
+        background-color: var(--surface-1);
         z-index: 1002;
         opacity: 0;
         pointer-events: none;
@@ -319,7 +320,7 @@ class SiteModal extends HTMLElement {
         border-radius: 8px;
         box-shadow: 0 0 20px rgba(224, 18, 128, 0.5), 0 0 40px rgba(224, 18, 128, 0.2);
         overflow: hidden;
-        color: var(--ink, #0b0c0d);
+        color: var(--ink);
       }
 
       .modal.open {
@@ -375,7 +376,7 @@ class SiteSidebar extends HTMLElement {
         display: flex;
         justify-content: center;
         flex-direction: column;
-        background-color: var(--canvas, #FAF9F6);
+        background-color: var(--canvas);
         box-shadow: 0 0 5px rgba(224, 18, 128, 0.5), 0 0 40px rgba(224, 18, 128, 0.2);
         z-index: 1001;
         transform: translateX(100%);
@@ -443,8 +444,8 @@ class SiteRollup extends HTMLElement {
           height: 90%;
           display: flex;
           flex-direction: column;
-          background-color: var(--canvas, #f4f4f4);
-          border-top: 1px solid var(--line, #E3E8F0);
+          background-color: var(--canvas);
+          border-top: 1px solid var(--line-1);
           box-shadow: 0 0 5px rgba(224, 18, 128, 0.5), 0 0 40px rgba(224, 18, 128, 0.2);
           border-radius: 12px 12px 0 0;
           z-index: 1000;

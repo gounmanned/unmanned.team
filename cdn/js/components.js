@@ -45,14 +45,14 @@ class SiteHeader extends HTMLElement {
           text-decoration: none;
           color: var(--text-body);
         }
-        .brand-name {
+        .brand img {
+          height: 40px;
+          width: 40px;
+        }
+        .brand span {
           font-size: 0.95rem;
           font-weight: 700;
           letter-spacing: 0.01em;
-        }
-        .brand-logo {
-          height: 40px;
-          width: 40px;
         }
         .divider {
           width: 1px;

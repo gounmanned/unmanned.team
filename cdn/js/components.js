@@ -30,7 +30,7 @@ class SiteHeader extends HTMLElement {
         .logo-area {
           display: flex;
           align-items: center;
-          gap: 16px;
+          gap: 12px;
           flex-shrink: 0;
         }
         .logo-area img {

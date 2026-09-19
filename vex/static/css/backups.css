@@ -10,7 +10,7 @@
   flex-shrink: 0;
   padding: 16px 18px;
   background: var(--gray-panel);
-  border-bottom: 1px solid var(--line-2);
+  border-bottom: 1px solid var(--line);
 }
 
 #backup-sidebar .backups-banner-scan {
@@ -67,7 +67,7 @@
   flex-shrink: 0;
   padding: 8px 18px;
   background: var(--gray-panel);
-  border-bottom: 1px solid var(--line-2);
+  border-bottom: 1px solid var(--line);
   font-size: 11px;
   color: var(--text-muted);
 }
@@ -81,7 +81,7 @@
 
 #backup-sidebar .crumb-link:hover { opacity: 0.75; }
 #backup-sidebar .crumb-active { color: var(--text-body); font-weight: 600; }
-#backup-sidebar .crumb-sep { color: var(--line-2); }
+#backup-sidebar .crumb-sep { color: var(--line); }
 
 /* ── File list ───────────────────────────────────────────────────────────── */
 
@@ -105,7 +105,7 @@
   align-items: center;
   gap: 9px;
   padding: 8px 18px;
-  border-bottom: 1px solid var(--line-2);
+  border-bottom: 1px solid var(--line);
   font-size: 12.5px;
   line-height: 1.3;
   cursor: pointer;
@@ -132,7 +132,7 @@
 #backup-sidebar .entry-chevron {
   margin-left: auto;
   font-size: 16px;
-  color: var(--line-2);
+  color: var(--line);
 }
 
 /* ── Empty state (uses global .signal-radar-watermark) ──────────────────── */

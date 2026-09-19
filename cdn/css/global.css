@@ -2,13 +2,10 @@
 
 :root{
   /* backgrounds */
-  --surface-1:   #FFFFFF;
-  --surface-2:   #F8FAFC;
-  --surface-3:   #EEF2F7;
+  --surface: #FFFFFF;
 
   /* lines */
-  --line-1:      #E3E8F0;
-  --line-2:      #CBD4E1;
+  --line: #CBD4E1;
 
   /* brand */
   --brand:#e01280;
@@ -44,7 +41,7 @@ h1, h2, h3, h4 {
 
 body {
   font-family: var(--font-sans);
-  background: var(--surface-1);
+  background: var(--surface);
   color: var(--ink);
   font-size: 16px;
   line-height: 1.5;

@@ -82,8 +82,8 @@
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--ink, #9ca3af);
-  background: var(--surface-1);
-  border-bottom: 1px solid var(--line-1);
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -193,7 +193,7 @@ tr[data-status="CV"] td.autoclose {
   width: 3px;
   height: 40%;
   border-radius: 1px;
-  background: var(--line-2);
+  background: var(--line);
   transition: background 0.15s, height 0.15s;
 }
 
@@ -237,8 +237,8 @@ tr[data-status="CV"] td.autoclose {
   align-items: center;
   justify-content: flex-end;
   gap: 8px;
-  background: var(--surface-1);
-  border-top: 1px solid var(--line-2);
+  background: var(--surface);
+  border-top: 1px solid var(--line);
   box-sizing: border-box;
 }
 
@@ -298,9 +298,9 @@ tr[data-status="CV"] td.autoclose {
   width: 32px;
   height: 18px;
   flex-shrink: 0;
-  border: 1px solid var(--line-2);
+  border: 1px solid var(--line);
   border-radius: 8px;
-  background: var(--line-2);
+  background: var(--line);
   transition: background 0.2s, border-color 0.2s;
 }
 
@@ -341,7 +341,7 @@ tr[data-status="CV"] td.autoclose {
   background: white;
   box-sizing: border-box;
   border-radius: 12px;
-  border: 1px solid var(--line-2);
+  border: 1px solid var(--line);
   cursor: pointer;
   overflow: visible;
   isolation: isolate;
@@ -398,7 +398,7 @@ tr[data-status="CV"] td.autoclose {
   position: absolute;
   inset: -6px;
   border-radius: 50%;
-  border: 1px solid color-mix(in srgb, var(--brand) 45%, var(--line-2));
+  border: 1px solid color-mix(in srgb, var(--brand) 45%, var(--line));
   animation: chokepoint-pulse 2.2s ease-out infinite;
 }
 
@@ -459,7 +459,7 @@ tr[data-status="CV"] td.autoclose {
   width: 3px;
   height: 3px;
   border-radius: 50%;
-  background: var(--line-2);
+  background: var(--line);
   display: inline-block;
 }
 

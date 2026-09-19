@@ -67,7 +67,7 @@
 
 #signal-sidebar .sidebar-actions {
   background: white;
-  border-top: 1px solid var(--line-2);
+  border-top: 1px solid var(--line);
 }
 
 #signal-sidebar .button-row {
@@ -100,9 +100,9 @@
   min-width: 0;
   height: 30px;
   padding: 5px 10px;
-  border: 1px solid var(--line-2);
+  border: 1px solid var(--line);
   border-radius: 6px;
-  background: var(--surface-1);
+  background: var(--surface);
   font-size: 12px;
   font-family: inherit;
   color: #24292f;
@@ -125,9 +125,9 @@
   width: 30px;
   height: 30px;
   padding: 0;
-  border: 1px solid var(--line-2);
+  border: 1px solid var(--line);
   border-radius: 6px;
-  background: var(--surface-1);
+  background: var(--surface);
   font-family: inherit;
   color: var(--text-muted);
   cursor: pointer;
@@ -210,7 +210,7 @@
   height: 96px;
   margin: 10px 0 10px;
   padding: 13px 40px 13px 14px;
-  border: 1px solid var(--line-2);
+  border: 1px solid var(--line);
   border-radius: 10px;
   background: white;
   font-size: 13.5px;
@@ -258,7 +258,7 @@
 }
 
 #signal-sidebar .new-message .send-btn:disabled {
-  background: var(--line-2);
+  background: var(--line);
   color: var(--text-faint);
   cursor: default;
 }

@@ -26,7 +26,7 @@
   cursor: pointer;
   white-space: nowrap;
 }
-.btn.ghost { background: white; border-color: var(--line-2); color: var(--text-muted); }
+.btn.ghost { background: white; border-color: var(--line); color: var(--text-muted); }
 .btn.ghost:hover { border-color: var(--brand); color: var(--brand); }
 .btn.primary { background: var(--brand); color: #fff; }
 .btn.primary:hover { background: #c9106f; }
@@ -38,7 +38,7 @@
   align-items: center;
   gap: 10px;
   padding: 10px 4px;
-  border-top: 1px solid var(--line-2);
+  border-top: 1px solid var(--line);
 }
 .monitor-row:first-child { border-top: none; }
 .monitor-row .monitor-name { flex: 1; }
@@ -80,7 +80,7 @@
   gap: 9px;
   padding: 10px 4px;
   border: none;
-  border-top: 1px solid var(--line-2);
+  border-top: 1px solid var(--line);
   background: transparent;
   cursor: pointer;
   text-align: left;
@@ -108,7 +108,7 @@
   align-items: center;
   gap: 7px;
   padding: 8px 9px;
-  border: 1px solid var(--line-2);
+  border: 1px solid var(--line);
   border-radius: 6px;
   background: white;
   cursor: pointer;
@@ -131,7 +131,7 @@
   width: 100%;
   box-sizing: border-box;
   padding: 8px 10px;
-  border: 1px solid var(--line-2);
+  border: 1px solid var(--line);
   border-radius: 6px;
   background: white;
   font-size: 12px;

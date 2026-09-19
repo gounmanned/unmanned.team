@@ -82,7 +82,7 @@
   top: 2px;
   bottom: 2px;
   width: 1px;
-  background: var(--line-2);
+  background: var(--line);
   opacity: 1;
   transition: opacity 0.12s ease;
 }
@@ -164,7 +164,7 @@
 
 .gs-toggle:hover {
   color: var(--text-strong);
-  background: var(--line-2);
+  background: var(--line);
 }
 
 .gs-toggle .material-symbols-outlined {

@@ -154,7 +154,7 @@
 
 #managed-screen .managed-account-name {
   flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-  font-size: 12px; font-weight: 500; color: var(--text-strong);
+  font-size: 12px; font-weight: 500; color: var(--text-body);
 }
 
 #managed-screen .managed-account-item:hover .managed-account-name,
@@ -234,7 +234,7 @@
   display: flex; align-items: center; gap: 9px;
   margin-bottom: 16px;
   font-size: 10.5px; letter-spacing: 0.16em;
-  color: var(--text-muted);
+  color: var(--text-faint);
 }
 
 #managed-screen .managed-intro-text {

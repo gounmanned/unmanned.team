@@ -40,7 +40,7 @@
   border: 1px solid var(--line);
   font-size: 11.5px;
   font-weight: 600;
-  color: var(--text-muted);
+  color: var(--text-faint);
   white-space: nowrap;
   text-transform: capitalize;
   cursor: pointer;
@@ -67,7 +67,7 @@
   padding: 0 4px;
   border-radius: 5px;
   background: var(--gray-soft);
-  color: var(--text-muted);
+  color: var(--text-faint);
   font-size: 10px;
   font-weight: 700;
 }
@@ -111,7 +111,7 @@
   font-weight: 700;
   letter-spacing: 0.5px;
   text-transform: uppercase;
-  color: var(--text-muted);
+  color: var(--text-faint);
   background: var(--gray-panel);
   border-bottom: 1px solid var(--line);
   user-select: none;
@@ -142,7 +142,7 @@
   background: var(--gray-soft);
   font-size: 11px;
   font-weight: 600;
-  color: var(--text-muted);
+  color: var(--text-faint);
   white-space: nowrap;
   text-transform: capitalize;
 }
@@ -190,7 +190,7 @@
 }
 
 #inventory-screen #asset-table tbody tr.asset-suspended .asset-value {
-  color: var(--text-muted);
+  color: var(--text-faint);
   text-decoration: line-through;
   text-decoration-color: rgba(220,38,38,0.4);
 }
@@ -260,7 +260,7 @@
 
 #inventory-screen .asset-profile-meta { padding: 14px 16px; border-bottom: 1px solid var(--line); display: flex; flex-direction: column; gap: 8px; }
 #inventory-screen .asset-profile-meta-row { display: flex; justify-content: space-between; font-size: 12px; }
-#inventory-screen .asset-profile-meta-row .label { color: var(--text-muted); }
+#inventory-screen .asset-profile-meta-row .label { color: var(--text-faint); }
 #inventory-screen .asset-profile-meta-row .value { color: var(--ink, #111827); font-weight: 600; }
 
 #inventory-screen .asset-profile-section-title {
@@ -268,7 +268,7 @@
   font-weight: 700;
   letter-spacing: 0.5px;
   text-transform: uppercase;
-  color: var(--text-muted);
+  color: var(--text-faint);
   padding: 14px 16px 8px;
 }
 
@@ -278,7 +278,7 @@
 #inventory-screen .profile-signal.is-open .profile-signal-dot { background: #dc2626; }
 #inventory-screen .profile-signal.is-closed .profile-signal-dot { background: #9ca3af; }
 #inventory-screen .profile-signal-name { font-size: 12px; font-weight: 600; color: var(--ink, #111827); }
-#inventory-screen .profile-signal-meta { display: flex; gap: 8px; font-size: 10.5px; color: var(--text-muted); margin-top: 2px; }
+#inventory-screen .profile-signal-meta { display: flex; gap: 8px; font-size: 10.5px; color: var(--text-faint); margin-top: 2px; }
 #inventory-screen .profile-signal.is-open .profile-signal-status { color: #dc2626; font-weight: 700; }
 #inventory-screen .profile-signal.is-closed .profile-signal-status { color: #6b7280; font-weight: 700; }
 #inventory-screen .asset-profile-signals-empty { font-size: 12px; color: var(--text-faint); padding: 8px 16px; }

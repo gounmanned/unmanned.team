@@ -5,8 +5,8 @@
   min-height: 0;
 }
 .monitor-callout { flex-shrink: 0; margin: 16px 18px; }
-.monitor-callout-text { margin: 0 0 4px; font-size: 12px; line-height: 1.6; color: var(--text-muted); }
-.monitor-callout-address { margin: 0; font-size: 11.5px; color: var(--text-strong); }
+.monitor-callout-text { margin: 0 0 4px; font-size: 12px; line-height: 1.6; color: var(--text-faint); }
+.monitor-callout-address { margin: 0; font-size: 11.5px; color: var(--text-body); }
 .monitor-callout-address:hover { color: var(--brand); }
 
 #monitor-screen .table-wrap { padding: 0 18px; overflow-y: auto; }
@@ -26,7 +26,7 @@
   cursor: pointer;
   white-space: nowrap;
 }
-.btn.ghost { background: white; border-color: var(--line); color: var(--text-muted); }
+.btn.ghost { background: white; border-color: var(--line); color: var(--text-faint); }
 .btn.ghost:hover { border-color: var(--brand); color: var(--brand); }
 .btn.primary { background: var(--brand); color: #fff; }
 .btn.primary:hover { background: #c9106f; }
@@ -85,7 +85,7 @@
   cursor: pointer;
   text-align: left;
   font: inherit;
-  color: var(--text-muted);
+  color: var(--text-faint);
 }
 .monitor-add-toggle:hover { color: var(--brand); background: var(--gray-panel); }
 .monitor-add-toggle .material-symbols-outlined { font-size: 18px; }
@@ -99,7 +99,7 @@
   background: rgba(224, 18, 128, 0.045);
   border: 1px solid rgba(224, 18, 128, 0.12);
 }
-.monitor-picker-label { margin: 0 0 8px; font-size: 11px; color: var(--text-muted); }
+.monitor-picker-label { margin: 0 0 8px; font-size: 11px; color: var(--text-faint); }
 
 .monitor-source-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 10px; }
 .monitor-source-option {
@@ -121,7 +121,7 @@
 .monitor-source-option:hover { border-color: var(--brand); color: var(--brand); }
 
 .monitor-connect-header { display: flex; align-items: center; gap: 9px; margin-bottom: 8px; }
-.monitor-connect-note { margin: 0 0 10px; font-size: 11.5px; line-height: 1.5; color: var(--text-muted); }
+.monitor-connect-note { margin: 0 0 10px; font-size: 11.5px; line-height: 1.5; color: var(--text-faint); }
 
 .monitor-picker-connecting { text-align: center; }
 .monitor-picker-connecting .monitor-connect-header { justify-content: center; margin-bottom: 4px; }
@@ -144,5 +144,5 @@
 .monitor-connect-actions { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 10px; }
 .monitor-connect-actions-right { display: flex; align-items: center; gap: 8px; }
 
-.docs-link { font-size: 11px; font-weight: 500; color: var(--text-muted); text-decoration: none; white-space: nowrap; }
+.docs-link { font-size: 11px; font-weight: 500; color: var(--text-faint); text-decoration: none; white-space: nowrap; }
 .docs-link:hover { color: var(--brand); text-decoration: underline; }

@@ -54,7 +54,7 @@
 #backup-sidebar .backups-banner-desc {
   margin-top: 2px;
   font-size: 11px;
-  color: var(--text-muted);
+  color: var(--text-faint);
 }
 
 /* ── Breadcrumb ──────────────────────────────────────────────────────────── */
@@ -69,7 +69,7 @@
   background: var(--gray-panel);
   border-bottom: 1px solid var(--line);
   font-size: 11px;
-  color: var(--text-muted);
+  color: var(--text-faint);
 }
 
 #backup-sidebar .crumb-link {
@@ -116,7 +116,7 @@
 
 #backup-sidebar .entry .file-icon {
   font-size: 17px;
-  color: var(--text-strong);
+  color: var(--text-body);
 }
 
 #backup-sidebar .entry-folder .file-icon { color: var(--brand); }

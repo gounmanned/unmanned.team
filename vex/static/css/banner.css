@@ -126,14 +126,14 @@
 .gs-title {
   font-size: 12px;
   font-weight: 600;
-  color: var(--text-strong);
+  color: var(--text-body);
 }
 
 .gs-desc {
   margin: 0;
   font-size: 10.5px;
   line-height: 1.4;
-  color: var(--text-muted);
+  color: var(--text-faint);
 }
 
 /* ── banner controls (dashboard link) ───────────────── */
@@ -157,13 +157,13 @@
   border: none;
   background: transparent;
   border-radius: 4px;
-  color: var(--text-muted);
+  color: var(--text-faint);
   cursor: pointer;
   transition: color 0.15s, background 0.15s;
 }
 
 .gs-toggle:hover {
-  color: var(--text-strong);
+  color: var(--text-body);
   background: var(--line);
 }
 
@@ -213,7 +213,7 @@
   font-size: 26px;
   font-weight: 700;
   line-height: 1;
-  color: var(--text-strong);
+  color: var(--text-body);
 }
 
 .gs-stat-label {
@@ -221,7 +221,7 @@
   font-weight: 600;
   letter-spacing: 0.4px;
   text-transform: uppercase;
-  color: var(--text-muted);
+  color: var(--text-faint);
 }
 
 .gs-stat-icon-bg {
@@ -232,7 +232,7 @@
   transform: translate(-50%, -50%);
   font-size: 110px;
   line-height: 1;
-  color: var(--text-muted);
+  color: var(--text-faint);
   opacity: 0.12;
   pointer-events: none;
   user-select: none;

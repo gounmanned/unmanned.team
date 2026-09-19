@@ -17,9 +17,7 @@
   --text-faint: #c4c4c4;
 
   /* fonts */
-  --font-sans:    'Inter', system-ui, sans-serif;
-  --font-display: 'Space Grotesk', var(--font-sans);
-  --font-mono:    'JetBrains Mono', monospace;
+  --font-sans: 'Inter', system-ui, sans-serif;
 
   /** severity levels **/
   --sev-1: #DC2626; 
@@ -27,10 +25,6 @@
   --sev-3: #EAB308;
   --sev-4: #3B82F6;
   --sev-5: #6B7280;
-}
-
-h1, h2, h3, h4 {
-  font-family: var(--font-display);
 }
 
 body {

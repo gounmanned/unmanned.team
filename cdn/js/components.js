@@ -41,7 +41,7 @@ class SiteHeader extends HTMLElement {
           align-items: center;
           gap: 8px;
           text-decoration: none;
-          color: var(--ink);
+          color: var(--text-body);
         }
         .brand-name {
           font-size: 0.95rem;
@@ -72,7 +72,7 @@ class SiteHeader extends HTMLElement {
         .account-name {
           font-size: 0.95rem;
           font-weight: 600;
-          color: var(--ink);
+          color: var(--text-body);
         }
         ::slotted([slot="account-switcher"]) {
           display: flex;
@@ -320,7 +320,7 @@ class SiteModal extends HTMLElement {
         border-radius: 8px;
         box-shadow: 0 0 20px rgba(224, 18, 128, 0.5), 0 0 40px rgba(224, 18, 128, 0.2);
         overflow: hidden;
-        color: var(--ink);
+        color: var(--text-body);
       }
 
       .modal.open {

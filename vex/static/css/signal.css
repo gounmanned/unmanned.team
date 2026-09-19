@@ -216,7 +216,7 @@
   font-size: 13.5px;
   font-family: inherit;
   line-height: 1.55;
-  color: var(--ink);
+  color: var(--text-body);
   resize: none;
   box-sizing: border-box;
   outline: none;

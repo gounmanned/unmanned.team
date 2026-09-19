@@ -60,7 +60,7 @@ class SiteHeader extends HTMLElement {
         .account-group {
           display: flex;
           align-items: center;
-          gap: 6px;
+          gap: 2px;
           padding: 6px 8px;
           border-radius: 6px;
           cursor: pointer;

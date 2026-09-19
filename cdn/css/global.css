@@ -3,8 +3,6 @@
 :root{
   /* backgrounds */
   --surface: #FFFFFF;
-  --glass-opacity: 72%;
-  --glass-blur: blur(24px) saturate(180%);
 
   /* lines */
   --line: #CBD4E1;

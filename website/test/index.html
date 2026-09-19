@@ -27,7 +27,7 @@
   *{ box-sizing:border-box; }
   body{
     margin:0;
-    background:var(--white);
+    background:var(--surface);
     color:var(--ink);
     font-family:'Inter',sans-serif;
   }
@@ -137,7 +137,7 @@
   .hero-ctas{ display:flex; align-items:center; gap:22px; flex-wrap:wrap; }
   .btn-primary{
     display:inline-flex; align-items:center; gap:10px;
-    background:var(--ink); color:var(--white);
+    background:var(--ink); color:var(--surface);
     font-family:'JetBrains Mono',monospace; font-size:12.5px; font-weight:500;
     letter-spacing:0.1em; text-transform:uppercase;
     padding:15px 26px; text-decoration:none;
@@ -237,7 +237,7 @@
   /* light inversion — swaps the two custom properties everything else reads from,
      so no two dark-frame sections ever sit back-to-back */
   .dark-frame.invert-light{
-    background:var(--white); color:var(--ink);
+    background:var(--surface); color:var(--ink);
     --db-ink:#0b0c0d; --db-mid:#6b6b70;
   }
 
@@ -367,7 +367,7 @@
 
   /* ---------- CTA ---------- */
   .cta-frame{
-    background:var(--white); color:var(--ink);
+    background:var(--surface); color:var(--ink);
     padding:130px 24px 150px; text-align:center;
   }
   @media (max-width:700px){ .cta-frame{ padding:96px 20px 110px; } }

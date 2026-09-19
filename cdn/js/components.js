@@ -314,9 +314,7 @@ class SiteModal extends HTMLElement {
         width: 40%;
         max-height: 90vh;
         flex-direction: column;
-        background: color-mix(in srgb, var(--surface) var(--glass-opacity, 72%), transparent);
-        -webkit-backdrop-filter: var(--glass-blur, blur(24px) saturate(180%));
-        backdrop-filter: var(--glass-blur, blur(24px) saturate(180%));
+        background-color: var(--surface);
         z-index: 1002;
         opacity: 0;
         pointer-events: none;
@@ -380,9 +378,7 @@ class SiteSidebar extends HTMLElement {
         display: flex;
         justify-content: center;
         flex-direction: column;
-        background: color-mix(in srgb, var(--surface) var(--glass-opacity, 72%), transparent);
-        -webkit-backdrop-filter: var(--glass-blur, blur(24px) saturate(180%));
-        backdrop-filter: var(--glass-blur, blur(24px) saturate(180%));
+        background-color: var(--surface);
         box-shadow: 0 0 5px rgba(224, 18, 128, 0.5), 0 0 40px rgba(224, 18, 128, 0.2);
         z-index: 1001;
         transform: translateX(100%);
@@ -450,9 +446,7 @@ class SiteRollup extends HTMLElement {
           height: 90%;
           display: flex;
           flex-direction: column;
-          background: color-mix(in srgb, var(--surface) var(--glass-opacity, 72%), transparent);
-          -webkit-backdrop-filter: var(--glass-blur, blur(24px) saturate(180%));
-          backdrop-filter: var(--glass-blur, blur(24px) saturate(180%));
+          background-color: var(--surface);
           border-top: 1px solid var(--line);
           box-shadow: 0 0 5px rgba(224, 18, 128, 0.5), 0 0 40px rgba(224, 18, 128, 0.2);
           border-radius: 12px 12px 0 0;

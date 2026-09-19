@@ -376,7 +376,7 @@ class SiteSidebar extends HTMLElement {
         display: flex;
         justify-content: center;
         flex-direction: column;
-        background-color: var(--canvas);
+        background-color: var(--surface-1);
         box-shadow: 0 0 5px rgba(224, 18, 128, 0.5), 0 0 40px rgba(224, 18, 128, 0.2);
         z-index: 1001;
         transform: translateX(100%);
@@ -444,7 +444,7 @@ class SiteRollup extends HTMLElement {
           height: 90%;
           display: flex;
           flex-direction: column;
-          background-color: var(--canvas);
+          background-color: var(--surface-1);
           border-top: 1px solid var(--line-1);
           box-shadow: 0 0 5px rgba(224, 18, 128, 0.5), 0 0 40px rgba(224, 18, 128, 0.2);
           border-radius: 12px 12px 0 0;

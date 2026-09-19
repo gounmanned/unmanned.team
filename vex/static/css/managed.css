@@ -193,7 +193,7 @@
 
 #managed-screen .managed-right {
   position: relative; flex: 1; min-height: 0;
-  overflow: hidden; background: var(--canvas);
+  overflow: hidden; background: var(--surface-1);
 }
 
 /* Intro watermark (first load, before an account is selected) */
@@ -338,7 +338,7 @@
 #managed-screen .managed-row-item {
   display: flex; align-items: center; gap: 9px;
   padding: 6px 10px;
-  background: var(--canvas);
+  background: var(--surface-1);
   border: 1px solid var(--line-2);
   border-radius: 5px;
   font-size: 12px; color: var(--text-body);
@@ -373,7 +373,7 @@
 #managed-screen .managed-row-sev {
   width: 7px; height: 7px; flex-shrink: 0;
   border-radius: 50%;
-  background: var(--canvas);
+  background: var(--surface-1);
 }
 #managed-screen .managed-row-sev--1 { background: #dc2626; }
 #managed-screen .managed-row-sev--2 { background: #f97316; }

@@ -14,7 +14,7 @@
     justify-content: space-between;
     padding: 0;
     border-bottom: 1px solid var(--line);
-    background: var(--gray-panel);
+    background: var(--gray-soft);
 }
 
 #audit-screen .audit-search {
@@ -82,7 +82,7 @@
     transition: background 0.1s;
 }
 
-#audit-screen .audit-entry:hover { background: var(--gray-panel); }
+#audit-screen .audit-entry:hover { background: var(--gray-soft); }
 
 #audit-screen .audit-entry .audit-prompt {
     color: var(--brand);
@@ -103,7 +103,7 @@
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.3px;
-    background: var(--gray-panel);
+    background: var(--gray-soft);
     color: var(--text-body);
     border: 1px solid var(--line);
 }
@@ -126,7 +126,7 @@
     gap: 6px;
     padding: 8px 16px;
     border-top: 1px solid var(--line);
-    background: var(--gray-panel);
+    background: var(--gray-soft);
     font-size: 11.5px;
     color: var(--text-faint);
 }

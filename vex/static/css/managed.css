@@ -50,7 +50,7 @@
 #managed-screen .managed-left {
   width: 300px; flex-shrink: 0;
   display: flex; flex-direction: column;
-  background: var(--gray-panel);
+  background: var(--gray-soft);
   border-right: 1px solid var(--line);
 }
 
@@ -100,7 +100,7 @@
   transition: background 0.1s;
 }
 
-#managed-screen .managed-account-item:hover { background: var(--gray-panel); }
+#managed-screen .managed-account-item:hover { background: var(--gray-soft); }
 #managed-screen .managed-account-item.pending { opacity: 0.4; pointer-events: none; }
 
 #managed-screen .managed-badge-content {
@@ -132,7 +132,7 @@
   height: 10px;
   border-radius: 50%;
   background: var(--brand);
-  border: 2px solid var(--gray-panel);
+  border: 2px solid var(--gray-soft);
   box-sizing: border-box;
 }
 

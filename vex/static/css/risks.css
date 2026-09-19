@@ -3,7 +3,7 @@
   overflow: hidden;
   flex-shrink: 0;
   padding: 16px 18px;
-  background: var(--gray-panel);
+  background: var(--gray-soft);
   border-bottom: 1px solid var(--line);
 }
 

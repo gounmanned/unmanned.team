@@ -30,12 +30,12 @@ class SiteHeader extends HTMLElement {
         .logo-area {
           display: flex;
           align-items: center;
-          gap: 14px;
+          gap: 16px;
           flex-shrink: 0;
         }
         .logo-area img {
-          height: 24px;
-          width: 24px;
+          height: 32px;
+          width: 32px;
           object-fit: contain;
         }
         .brand {

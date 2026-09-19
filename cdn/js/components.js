@@ -60,7 +60,7 @@ class SiteHeader extends HTMLElement {
         .account-group {
           display: flex;
           align-items: center;
-          gap: 2px;
+          gap: 6px;
           padding: 6px 8px;
           border-radius: 6px;
           cursor: pointer;
@@ -106,11 +106,11 @@ class SiteHeader extends HTMLElement {
             <span class="brand-name">Vex</span>
           </a>
           <span class="divider"></span>
-          <img class="account-logo"/>
           <span class="account-group">
+            <img class="account-logo"/>
             <span class="account-name"></span>
-            <slot name="account-switcher"></slot>
-          </span>
+              <slot name="account-switcher"></slot>
+            </span>
         </div>
         <nav>
           <slot></slot>

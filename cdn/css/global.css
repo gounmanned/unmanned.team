@@ -36,7 +36,7 @@ h1, h2, h3, h4 {
 body {
   font-family: var(--font-sans);
   background: var(--surface);
-  color: var(--ink);
+  color: var(--text-body);
   font-size: 16px;
   line-height: 1.5;
 }

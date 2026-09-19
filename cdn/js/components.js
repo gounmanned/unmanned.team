@@ -69,7 +69,7 @@ class SiteHeader extends HTMLElement {
           transition: background 0.15s;
         }
         .account-group:hover {
-          background: var(--line);
+          background: var(--surface-alt);
         }
         .account-name {
           font-size: 0.95rem;

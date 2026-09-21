@@ -214,14 +214,17 @@ footer{padding:20px 0;background:var(--ink);border-top:1px solid #26262a;color:#
             <div class="code-header"><span class="code-filename">response</span><span class="code-lang">JSON</span></div>
             <pre><code>{
    <span class="t-key">"AuthenticationResult"</span> : {
+      <span class="t-key">"IdToken"</span> : <span class="t-str">"eyJraWQiOi..."</span>,
       <span class="t-key">"AccessToken"</span> : <span class="t-str">"eyJraWQiOi..."</span>,
-      <span class="t-key">"TokenType"</span> : <span class="t-str">"Bearer"</span>
+      <span class="t-key">"RefreshToken"</span> : <span class="t-str">"eyJjdHkiOi..."</span>,
+      <span class="t-key">"TokenType"</span> : <span class="t-str">"Bearer"</span>,
+      <span class="t-key">"ExpiresIn"</span> : <span class="t-num">28800</span>
    },
    <span class="t-key">"ChallengeParameters"</span> : {}
 }</code></pre>
           </div>
         </div>
-        <p class="aside-note">Tokens are short-lived on purpose. Cache the <code class="mono">AccessToken</code> until it expires, then call this again — don't request a fresh token on every API call.</p>
+        <p class="aside-note">Cognito also returns <code class="mono">AccessToken</code> and <code class="mono">RefreshToken</code> alongside <code class="mono">IdToken</code> — Vex only checks <code class="mono">IdToken</code>, so the other two can be ignored for these examples. Tokens are short-lived on purpose. Cache the <code class="mono">IdToken</code> until it expires, then call this again — don't request a fresh token on every API call.</p>
       </div>
 
       <div class="endpoint" id="use-auth-token">
@@ -238,7 +241,7 @@ footer{padding:20px 0;background:var(--ink);border-top:1px solid #26262a;color:#
   -H <span class="t-str">"Content-Type: application/x-amz-json-1.1"</span> \
   -H <span class="t-str">"X-Amz-Target: AWSCognitoIdentityProviderService.InitiateAuth"</span> \
   -d <span class="t-str">'{"AuthFlow": "USER_PASSWORD_AUTH", "ClientId": "2314edi18c3o3t8sroh2u2hucf", "AuthParameters": {"USERNAME": "you@yourcompany.com", "PASSWORD": "your-password"}}'</span> \
-  | jq -r <span class="t-str">'.AuthenticationResult.AccessToken'</span>)</code></pre>
+  | jq -r <span class="t-str">'.AuthenticationResult.IdToken'</span>)</code></pre>
         </div>
         <p class="aside-note">Every curl example in this reference assumes <code class="mono">$VEX_TOKEN</code> is already set this way — run it once per session and the rest just work.</p>
         <div class="code-block">

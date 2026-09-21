@@ -76,7 +76,7 @@ class ManagedApi extends Gateway {
         super();
     }
 
-    async list(event = null) {
+    async signals(event = null) {
         const resp = await this.call("GET", "managed/signal");
 
         resp?.forEach(signal => {
@@ -85,6 +85,15 @@ class ManagedApi extends Gateway {
         });
     }
     
+    async assets(event = null) {
+        const resp = await this.call("GET", "managed/asset");
+
+        resp?.forEach(asset => {
+            event.asset = asset;
+            document.dispatchEvent(event);
+        });
+    }
+
     async overview(account) {
         return await this.call('GET', `managed/overview?account=${account}`);
     }

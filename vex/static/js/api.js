@@ -94,10 +94,6 @@ class ManagedApi extends Gateway {
         });
     }
 
-    async overview(account) {
-        return await this.call('GET', `managed/overview?account=${account}`);
-    }
-
     async grants(who) {
         return await this.call('GET', `managed/grants?for=${who}`);
     }

@@ -1,3 +1,117 @@
+class ManagedSummary {
+    constructor(state) {
+        this.state = state;
+        this._resetCounts();
+        this.listen();
+    }
+
+    reset() {
+        this._resetCounts();
+        this._setLoading();
+    }
+
+    resetSignals() {
+        this.signals = { open: 0, unread: 0, bySeverity: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 } };
+    }
+
+    resetAssets() {
+        this.assets = { total: 0, identity: 0, byPlatform: { windows: 0, mac: 0, chrome: 0 } };
+    }
+
+    setAccountCount(count) {
+        const value = document.getElementById('managed-summary-accounts-value');
+        if (value) value.textContent = count;
+    }
+
+    _resetCounts() {
+        this.resetSignals();
+        this.resetAssets();
+    }
+
+    _setLoading() {
+        const ids = [
+            'managed-summary-accounts-value',
+            'managed-summary-signals-value',
+            'managed-summary-identity-value',
+        ];
+        ids.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.innerHTML = '<span class="managed-badge-spinner"></span>';
+        });
+    }
+
+    renderSignals() {
+        const value = document.getElementById('managed-summary-signals-value');
+        const unread = document.getElementById('managed-summary-signals-unread');
+        const stat = document.getElementById('managed-summary-signals');
+        const severity = document.getElementById('managed-summary-severity');
+        if (!value || !unread || !stat || !severity) return;
+
+        value.textContent = this.signals.open;
+        unread.textContent = `${this.signals.unread} unread`;
+        stat.classList.toggle('has-unread', this.signals.unread > 0);
+
+        severity.innerHTML = [1, 2, 3, 4, 5]
+            .map(sev => {
+                const count = this.signals.bySeverity[sev];
+                return `
+                    <span class="managed-summary-sev${count === 0 ? ' is-zero' : ''}">
+                        <span class="managed-summary-sev-dot sev--${sev}"></span>${count}
+                    </span>
+                `;
+            }).join('');
+    }
+
+    renderAssets() {
+        const identity = document.getElementById('managed-summary-identity-value');
+        const total = document.getElementById('managed-summary-assets-total');
+        if (identity && total) {
+            identity.textContent = this.assets.identity;
+            total.textContent = `${this.assets.total} total assets`;
+        }
+
+        const endpointsValue = document.getElementById('managed-summary-endpoints-value');
+        const platforms = document.getElementById('managed-summary-platforms');
+        if (!endpointsValue || !platforms) return;
+
+        const platformLabels = { windows: 'Windows', mac: 'Mac', chrome: 'Chrome' };
+        const endpointsTotal = Object.values(this.assets.byPlatform).reduce((a, b) => a + b, 0);
+
+        endpointsValue.textContent = endpointsTotal;
+
+        platforms.innerHTML = Object.entries(this.assets.byPlatform)
+            .filter(([, count]) => count > 0)
+            .map(([platform, count]) => `
+                <span class="managed-summary-platform">
+                    <img src="static/img/platform/${platform}.png" alt="${platformLabels[platform]}" title="${platformLabels[platform]}">${count}
+                </span>
+            `).join('');
+    }
+
+    listen() {
+        document.addEventListener("signal:managed", (ev) => {
+            if (!ev.signal.status.startsWith('O')) return;
+
+            this.signals.open++;
+            if (!ev.signal.read) this.signals.unread++;
+            if (this.signals.bySeverity[ev.signal.severity] !== undefined) {
+                this.signals.bySeverity[ev.signal.severity]++;
+            }
+        });
+
+        document.addEventListener("managed:asset", (ev) => {
+            this.assets.total++;
+            if (ev.asset?.metadata?.group === "identity") {
+                this.assets.identity++;
+            }
+            const platform = ev.asset?.metadata?.platform;
+            if (platform && this.assets.byPlatform[platform] !== undefined) {
+                this.assets.byPlatform[platform]++;
+            }
+        });
+    }
+}
+
 class ManagedRollup {
     constructor(state) {
         this.state = state;
@@ -5,6 +119,7 @@ class ManagedRollup {
         this.screen = document.getElementById('managed-screen');
         this.list = document.getElementById('managed-accounts');
         this.members = new Map();
+        this.summary = new ManagedSummary(state);
         this.listen();
     }
 
@@ -13,14 +128,25 @@ class ManagedRollup {
             this._setBadgeLoading(domain);
             this._setUnread(domain, false);
         });
+        this.summary.reset();
     }
 
     async reload() {
         await this.load();
 
         (async () => {
+            this.summary.resetSignals();
+
             await this.api.managed.signals(new CustomEvent("signal:managed"));
             this.members.forEach((_, domain) => this._settleBadge(domain));
+            this.summary.renderSignals();
+        })();
+
+        (async () => {
+            this.summary.resetAssets();
+
+            await this.api.managed.assets(new CustomEvent("managed:asset"));
+            this.summary.renderAssets();
         })();
     }
 
@@ -37,6 +163,7 @@ class ManagedRollup {
         });
 
         this._updateEmptyState();
+        this.summary.setAccountCount(this.members.size);
     }
 
     _midnight() {

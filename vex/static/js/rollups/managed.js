@@ -11,11 +11,11 @@ class ManagedSummary {
     }
 
     resetSignals() {
-        this.signals = { open: 0, unread: 0 };
+        this.signals = { open: 0 };
     }
 
     resetAssets() {
-        this.assets = { total: 0, identity: 0, byPlatform: { windows: 0, mac: 0, chrome: 0 } };
+        this.assets = { identity: 0 };
     }
 
     setAccountCount(count) {
@@ -42,58 +42,27 @@ class ManagedSummary {
 
     renderSignals() {
         const value = document.getElementById('managed-summary-signals-value');
-        const unread = document.getElementById('managed-summary-signals-unread');
-        const stat = document.getElementById('managed-summary-signals');
-        if (!value || !unread || !stat) return;
+        if (!value) return;
 
         value.textContent = this.signals.open;
-        unread.textContent = `${this.signals.unread} unread`;
-        stat.classList.toggle('has-unread', this.signals.unread > 0);
     }
 
     renderAssets() {
         const identity = document.getElementById('managed-summary-identity-value');
-        const total = document.getElementById('managed-summary-assets-total');
-        if (identity && total) {
+        if (identity) {
             identity.textContent = this.assets.identity;
-            total.textContent = `${this.assets.total} total assets`;
         }
-
-        const endpointsValue = document.getElementById('managed-summary-endpoints-value');
-        const platforms = document.getElementById('managed-summary-platforms');
-        if (!endpointsValue || !platforms) return;
-
-        const platformLabels = { windows: 'Windows', mac: 'Mac', chrome: 'Chrome' };
-        const endpointsTotal = Object.values(this.assets.byPlatform).reduce((a, b) => a + b, 0);
-
-        endpointsValue.textContent = endpointsTotal;
-
-        platforms.innerHTML = Object.entries(this.assets.byPlatform)
-            .filter(([, count]) => count > 0)
-            .map(([platform, count]) => `
-                <span class="managed-summary-platform">
-                    <img src="static/img/platform/${platform}.png" alt="${platformLabels[platform]}" title="${platformLabels[platform]}">${count}
-                </span>
-            `).join('');
     }
 
     listen() {
         document.addEventListener("signal:managed", (ev) => {
             if (!ev.signal.status.startsWith('O')) return;
-
             this.signals.open++;
-            if (!ev.signal.read) this.signals.unread++;
         });
 
         document.addEventListener("managed:asset", (ev) => {
-            this.assets.total++;
-            if (ev.asset?.metadata?.group === "identity") {
-                this.assets.identity++;
-            }
-            const platform = ev.asset?.metadata?.platform;
-            if (platform && this.assets.byPlatform[platform] !== undefined) {
-                this.assets.byPlatform[platform]++;
-            }
+            if (ev.asset?.metadata?.group != "identity") return;
+            this.assets.identity++;
         });
     }
 }

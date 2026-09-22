@@ -97,7 +97,6 @@
   padding: 8px 10px;
   border-radius: 5px;
   cursor: pointer;
-  transition: background 0.1s;
 }
 
 #managed-screen .managed-account-item:hover { background: var(--surface); }
@@ -119,7 +118,6 @@
   border-radius: 50%;
   background: var(--line);
   font-size: 9.5px; font-weight: 700; color: var(--text-body);
-  transition: background 0.15s, color 0.15s;
   position: relative;
 }
 
@@ -184,7 +182,6 @@
   display: flex; align-items: center; justify-content: center;
   border: none; border-left: 1px solid var(--line);
   background: transparent; color: var(--brand); cursor: pointer;
-  transition: background 0.15s;
 }
 #managed-screen #managed-invite-btn:hover { background: #fff5f9; }
 #managed-screen #managed-invite-btn .material-symbols-outlined { font-size: 16px; }
@@ -309,7 +306,6 @@
   display: flex; align-items: center; justify-content: center;
   border: none; border-left: 1px solid var(--line);
   background: transparent; color: var(--brand); cursor: pointer;
-  transition: background 0.15s;
 }
 #managed-screen .managed-footer-btn:hover { background: #fff5f9; }
 #managed-screen .managed-footer-btn .material-symbols-outlined { font-size: 15px; }
@@ -322,7 +318,7 @@
   border: none; border-radius: 0;
   background: var(--brand);
   font-size: 11.5px; font-weight: 600; font-family: inherit; letter-spacing: 0.2px;
-  color: #fff; cursor: pointer; transition: background 0.15s;
+  color: #fff; cursor: pointer;
 }
 #managed-screen .managed-enter-btn:hover { background: #c9106f; }
 #managed-screen .managed-enter-btn .material-symbols-outlined { font-size: 14px; }
@@ -342,7 +338,6 @@
   border: 1px solid var(--line);
   border-radius: 5px;
   font-size: 12px; color: var(--text-body);
-  transition: border-color 0.12s;
 }
 #managed-screen .managed-row-item:hover { border-color: #d1d5db; }
 
@@ -404,7 +399,6 @@
   display: flex; align-items: center; justify-content: center;
   width: 20px; height: 20px; border-radius: 3px;
   color: #d1d5db; cursor: pointer;
-  transition: color 0.12s, background 0.12s;
 }
 #managed-screen .managed-row-action:hover { color: #ef4444; background: #fef2f2; }
 #managed-screen .managed-row-action .material-symbols-outlined { font-size: 13px; }
@@ -525,26 +519,11 @@
   color: var(--text-faint);
 }
 
-#managed-screen .managed-summary-stat-total {
+#managed-screen .managed-summary-stat-total,
+#managed-screen .managed-summary-unread {
   font-size: 11px;
   color: var(--text-faint);
   margin-left: 2px;
-}
-
-#managed-screen .managed-summary-unread {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  padding: 2px 7px;
-  border-radius: 999px;
-  background: var(--line);
-  color: var(--text-faint);
-  transition: background 0.15s, color 0.15s;
-}
-
-#managed-screen #managed-summary-signals.has-unread .managed-summary-unread {
-  background: var(--brand);
-  color: #fff;
 }
 
 #managed-screen .managed-summary-divider {
@@ -560,7 +539,6 @@
   font-size: 10.5px;
   font-weight: 600;
   color: var(--text-faint);
-  transition: opacity 0.15s;
 }
 
 #managed-screen .managed-summary-sev.is-zero {
@@ -639,7 +617,6 @@
   color: var(--text-body);
   cursor: pointer;
   flex-shrink: 0;
-  transition: color 0.15s;
 }
 
 #managed-screen .rollup-head-action:hover {
@@ -652,7 +629,6 @@
 
 #managed-screen .rollup-head-action .material-symbols-outlined {
   font-size: 13px;
-  transition: transform 0.15s;
 }
 
 #managed-screen .rollup-head-action-badge {

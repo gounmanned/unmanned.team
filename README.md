@@ -2,7 +2,7 @@
   <img src="https://cdn.unmanned.team/img/logo.png" alt="Vex" width="96" />
 </p>
 
-<h1 align="center">Vex</h1>
+<h1 align="center">VEX</h1>
 <p align="center"><b>Autonomous Offensive Security</b></p>
 
 <p align="center">
@@ -14,9 +14,9 @@
 
 ---
 
-## About Vex
+## About VEX
 
-Vex is an always-on red team that collects and analyzes security signals to prevent, detect and respond to cyberattacks.
+VEX is an always-on red team that collects and analyzes security signals to prevent, detect and respond to cyberattacks.
 
 ## What is this?
 
@@ -30,13 +30,13 @@ There is no build step, no bundler, and no framework. You edit files, you refres
 
 > ### Light clients
 >
-> At Unmanned, we don't think every product needs React, a bundler, a state management library, and a 400MB `node_modules` folder to render a dashboard. Every dependency you add is code you didn't write, running with the same trust as code you did. So Vex's frontend is built with **plain HTML, CSS, and JavaScript**, structured like a *light client*: the browser renders state and calls an API.
+> At Unmanned, we don't think every product needs React, a bundler, a state management library, and a 400MB `node_modules` folder to render a dashboard. Every dependency you add is code you didn't write, running with the same trust as code you did. So VEX's frontend is built with **plain HTML, CSS, and JavaScript**, structured like a *light client*: the browser renders state and calls an API.
 >
 ---
 
 ## Quickstart
 
-Clone the repo, then run the Vex frontend against the **production backend** using your normal account:
+Clone the repo, then run the VEX frontend against the **production backend** using your normal account:
 
 ```bash
 git clone https://github.com/gounmanned/unmanned.team.git
@@ -44,7 +44,7 @@ cd unmanned.team/vex
 python -m http.server 8080
 ```
 
-Then open [http://localhost:8080](http://localhost:8080) and log in with your normal Vex credentials. You're now running your own local copy of the Vex client, talking to the same backend as everyone else.
+Then open [http://localhost:8080](http://localhost:8080) and log in with your normal VEX credentials. You're now running your own local copy of the VEX client, talking to the same backend as everyone else.
 
 ---
 
@@ -54,9 +54,9 @@ This repository holds three top-level areas:
 
 ```
 .
-├── vex/        # Vex application code — this is what you'll clone and modify
+├── vex/        # VEX application code — this is what you'll clone and modify
 ├── website/    # unmanned.team corporate website
-└── cdn/        # Shared global styles used across Vex and other Unmanned apps
+└── cdn/        # Shared global styles used across VEX and other Unmanned apps
 ```
 
 The primary structure in `vex/`:
@@ -75,7 +75,7 @@ The primary structure in `vex/`:
 
 ## White Label
 
-Vex is designed to be forked and rebranded. You can modify **any** front end source code — logo, colors, copy, layout, screens — and deploy it to your own stack for your own customers.
+VEX is designed to be forked and rebranded. You can modify **any** front end source code — logo, colors, copy, layout, screens — and deploy it to your own stack for your own customers.
 
 A typical white-label flow:
 

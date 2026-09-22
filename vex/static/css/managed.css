@@ -553,15 +553,6 @@
   background: var(--line);
 }
 
-#managed-screen .managed-summary-severity {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  margin-left: 3px;
-  padding-left: 9px;
-  border-left: 1px solid var(--line);
-}
-
 #managed-screen .managed-summary-sev {
   display: flex;
   align-items: center;
@@ -616,12 +607,6 @@
 @media (max-width: 900px) {
   #managed-screen .managed-summary-endpoints,
   #managed-screen #managed-summary-endpoints-divider {
-    display: none;
-  }
-}
-
-@media (max-width: 760px) {
-  #managed-screen .managed-summary-severity {
     display: none;
   }
 }

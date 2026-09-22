@@ -11,7 +11,7 @@ class ManagedSummary {
     }
 
     resetSignals() {
-        this.signals = { open: 0, unread: 0, bySeverity: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 } };
+        this.signals = { open: 0, unread: 0 };
     }
 
     resetAssets() {
@@ -44,22 +44,11 @@ class ManagedSummary {
         const value = document.getElementById('managed-summary-signals-value');
         const unread = document.getElementById('managed-summary-signals-unread');
         const stat = document.getElementById('managed-summary-signals');
-        const severity = document.getElementById('managed-summary-severity');
-        if (!value || !unread || !stat || !severity) return;
+        if (!value || !unread || !stat) return;
 
         value.textContent = this.signals.open;
         unread.textContent = `${this.signals.unread} unread`;
         stat.classList.toggle('has-unread', this.signals.unread > 0);
-
-        severity.innerHTML = [1, 2, 3, 4, 5]
-            .map(sev => {
-                const count = this.signals.bySeverity[sev];
-                return `
-                    <span class="managed-summary-sev${count === 0 ? ' is-zero' : ''}">
-                        <span class="managed-summary-sev-dot sev--${sev}"></span>${count}
-                    </span>
-                `;
-            }).join('');
     }
 
     renderAssets() {
@@ -94,9 +83,6 @@ class ManagedSummary {
 
             this.signals.open++;
             if (!ev.signal.read) this.signals.unread++;
-            if (this.signals.bySeverity[ev.signal.severity] !== undefined) {
-                this.signals.bySeverity[ev.signal.severity]++;
-            }
         });
 
         document.addEventListener("managed:asset", (ev) => {
@@ -280,7 +266,7 @@ class ManagedRollup {
                                 ${signals.map(t => `
                                     <li class="managed-row-item managed-row-item--signal">
                                         <img class="managed-row-avatar managed-row-avatar--square" src="${Workspace.avatar(t.source)}"/>
-                                        <span class="managed-row-sev managed-row-sev--${t.severity}" title="Severity ${t.severity}"></span>
+                                        <span class="managed-row-sev managed-row-sev--${t.severity}"></span>
                                         <span class="managed-row-label">${t.name}</span>
                                         ${t.asset ? `<span class="managed-row-asset"><span class="material-symbols-outlined">my_location</span>${t.asset}</span>` : ''}
                                         ${t.source ? `<span class="managed-row-source">${t.source}</span>` : ''}

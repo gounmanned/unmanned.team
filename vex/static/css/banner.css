@@ -4,9 +4,13 @@
   margin-bottom: 20px;
 }
 
+.getting-started[hidden] {
+  display: none;
+}
+
 .gs-grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 12px;
 }
 
@@ -34,10 +38,6 @@
 .gs-card:hover {
   transform: translateY(-1px);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
-}
-
-.gs-card.done {
-  opacity: 1;
 }
 
 /* ── highlight the incomplete (not-done) card ───────────── */
@@ -73,6 +73,22 @@
   50% { opacity: 0.4; }
 }
 
+/* ── completed card ─────────────────────────────────────── */
+
+.gs-card.done {
+  opacity: 0.7;
+}
+
+.gs-card.done .gs-check {
+  color: #16a34a;
+  animation: none;
+}
+
+.gs-card.done .gs-title {
+  text-decoration: line-through;
+  text-decoration-color: var(--text-faint);
+}
+
 .gs-card:first-child { padding-left: 0; }
 
 .gs-card:not(:first-child)::before {
@@ -103,10 +119,6 @@
   flex: 1;
   min-width: 0;
   cursor: pointer;
-}
-
-.gs-card.done .gs-card-main {
-  display: none;
 }
 
 .gs-card-top {
@@ -171,88 +183,9 @@
   font-size: 16px;
 }
 
-/* ── per-card stat swap: centered stat, icon bled left-of-center ──────── */
+/* ── loading state ───────────────────────────────────────── */
 
-.gs-stat-block {
-  display: none;
-  position: relative;
-  width: 100%;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  text-align: center;
-}
-
-.gs-card.done .gs-stat-block {
-  display: flex;
-}
-
-.gs-stat-value,
-.gs-stat-label,
-.gs-stat-notif-logo {
-  position: relative;
-  z-index: 1;
-}
-
-.gs-stat-block-notif {
-  gap: 6px;
-}
-
-.gs-stat-notif-logo {
-  width: 36px;
-  height: 36px;
-  object-fit: contain;
-}
-
-.gs-stat-notif-empty {
-  font-size: 13px;
-}
-
-.gs-stat-value {
-  font-size: 26px;
-  font-weight: 700;
-  line-height: 1;
-  color: var(--text-body);
-}
-
-.gs-stat-label {
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.4px;
-  text-transform: uppercase;
-  color: var(--text-faint);
-}
-
-.gs-stat-icon-bg {
-  position: absolute;
-  z-index: 0;
-  top: 50%;
-  left: 25%;
-  transform: translate(-50%, -50%);
-  font-size: 110px;
-  line-height: 1;
-  color: var(--text-faint);
-  opacity: 0.12;
+#getting-started.loading .gs-card {
+  opacity: 0.6;
   pointer-events: none;
-  user-select: none;
-}
-
-/* ── loading state (scoped to done cards, since only those show a stat) ── */
-
-#getting-started.loading .gs-card.done .gs-stat-value {
-  visibility: hidden;
-}
-
-#getting-started.loading .gs-card.done .gs-stat-value::after {
-  content: '…';
-  visibility: visible;
-  position: absolute;
-  left: 0;
-  right: 0;
-}
-
-#getting-started.loading .gs-stat-notif-logo,
-#getting-started.loading .gs-stat-notif-empty {
-  visibility: hidden;
 }

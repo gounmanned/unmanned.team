@@ -12,21 +12,11 @@ class Banner {
         Object.entries(Banner.STEP_VENDORS).flatMap(([id, vendors]) => vendors.map(v => [v, id]))
     );
 
-    static KNOWN_VENDORS = new Set(Object.values(Banner.STEP_VENDORS).flat());
-
     constructor(state) {
         this.state = state;
         this.api = state.api;
         this.el = document.getElementById("getting-started");
         this.listen();
-    }
-
-    static firstVendorMatch(monitors, vendors) {
-        for (const key of monitors) {
-            const vendor = key.split('/').filter(Boolean)[1];
-            if (vendor && vendors.has(vendor)) return vendor;
-        }
-        return null;
     }
 
     async refresh() {
@@ -41,7 +31,7 @@ class Banner {
         for (const key of monitors) {
             const vendor = key.split('/').filter(Boolean)[1];
             if (!vendor) continue;
-            const id = Banner.VENDOR_TO_STEP.get(vendor) ?? (!Banner.KNOWN_VENDORS.has(vendor) ? 'saas' : null);
+            const id = Banner.VENDOR_TO_STEP.get(vendor);
             if (id && !matchedByStep.has(id)) matchedByStep.set(id, vendor);
         }
 
@@ -49,37 +39,15 @@ class Banner {
             TenantScreen.endpoint = true;
         }
 
-        let emailCount = 0, endpointCount = 0, domainCount = 0, otherCount = 0;
+        let endpointCount = 0;
         for (const asset of assets) {
             const md = asset.metadata ?? {};
-            if (md.group === 'identity') emailCount++;
             if (md.platform) endpointCount++;
-            if (md.group === 'domain') domainCount++;
-            if (md.group !== 'identity' && md.group !== 'domain') otherCount++;
         }
 
-        const setStat = (id, value) => {
-            const el = document.getElementById(`gs-stat-${id}`);
-            if (el) el.textContent = value;
-        };
+        let allDone = true;
 
-        setStat('email', emailCount);
-        setStat('endpoint', endpointCount);
-        setStat('domain', domainCount);
-        setStat('saas', otherCount);
-
-        const notifVendor = matchedByStep.get('notifications')
-            ?? Banner.firstVendorMatch(monitors, new Set(Banner.STEP_VENDORS.notifications));
-        const notifLogo = document.getElementById('gs-stat-notifications-logo');
-        const notifEmpty = document.getElementById('gs-stat-notifications-empty');
-
-        if (notifVendor && notifLogo) {
-            notifLogo.src = `static/img/source/${notifVendor}.png`;
-        }
-        notifLogo?.toggleAttribute('hidden', !notifVendor);
-        notifEmpty?.toggleAttribute('hidden', !!notifVendor);
-
-        for (const id of [...Object.keys(Banner.STEP_VENDORS), 'saas']) {
+        for (const id of Object.keys(Banner.STEP_VENDORS)) {
             const card = document.getElementById(`gs-${id}`);
             if (!card) continue;
 
@@ -91,8 +59,14 @@ class Banner {
             }
 
             card.classList.toggle('done', isDone);
+
+            const check = card.querySelector('.gs-check');
+            if (check) check.textContent = isDone ? 'check_circle' : 'radio_button_unchecked';
+
+            if (!isDone) allDone = false;
         }
 
+        this.el.hidden = allDone;
         this.el.classList.remove("loading");
     }
 

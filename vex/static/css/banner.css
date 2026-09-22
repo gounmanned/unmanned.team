@@ -85,7 +85,6 @@
 }
 
 .gs-card.done .gs-title {
-  text-decoration: line-through;
   text-decoration-color: var(--text-faint);
 }
 

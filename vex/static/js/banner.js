@@ -1,6 +1,4 @@
 class Banner {
-    static endpoint = false;
-
     static STEP_VENDORS = {
         email:         ['google', 'microsoft'],
         endpoint:      ['level'],
@@ -35,15 +33,7 @@ class Banner {
             if (id && !matchedByStep.has(id)) matchedByStep.set(id, vendor);
         }
 
-        if (matchedByStep.has('endpoint')) {
-            TenantScreen.endpoint = true;
-        }
-
-        let endpointCount = 0;
-        for (const asset of assets) {
-            const md = asset.metadata ?? {};
-            if (md.platform) endpointCount++;
-        }
+        const hasEndpoints = assets.some(a => a.metadata?.platform);
 
         let allDone = true;
 
@@ -51,12 +41,9 @@ class Banner {
             const card = document.getElementById(`gs-${id}`);
             if (!card) continue;
 
-            const vendor = matchedByStep.get(id);
-            let isDone = !!vendor;
-
-            if (id === 'endpoint') {
-                isDone = (TenantScreen.endpoint || !!vendor) && endpointCount > 0;
-            }
+            const isDone = id === 'endpoint'
+                ? hasEndpoints
+                : matchedByStep.has(id);
 
             card.classList.toggle('done', isDone);
 

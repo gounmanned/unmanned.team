@@ -331,6 +331,12 @@ class ManagedRollup {
             this._settleBadge(ev.signal.account);
         });
 
+        document.getElementById('managed-root-btn').addEventListener('click', () => {
+            this.state.delegate = null;
+            document.dispatchEvent(new CustomEvent('page:reset'));
+            document.querySelector('site-overlay').click();
+        });
+
         document.getElementById('managed-invite-btn').addEventListener('click', async () => {
             const input = document.getElementById('managed-invite-input');
             const email = input.value.trim();

@@ -621,3 +621,68 @@
     display: none;
   }
 }
+
+/* ── ROLLUP HEAD — ROOT ACCOUNT ACTION ─────────────────────────────────── */
+
+#managed-screen .rollup-head-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-left: auto;
+  padding: 0;
+  border: none;
+  background: none;
+  font-size: 11.5px;
+  font-weight: 600;
+  font-family: inherit;
+  letter-spacing: 0.2px;
+  color: var(--text-body);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: color 0.15s;
+}
+
+#managed-screen .rollup-head-action:hover {
+  color: var(--brand);
+}
+
+#managed-screen .rollup-head-action:hover .material-symbols-outlined {
+  transform: translateX(2px);
+}
+
+#managed-screen .rollup-head-action .material-symbols-outlined {
+  font-size: 13px;
+  transition: transform 0.15s;
+}
+
+#managed-screen .rollup-head-action-badge {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 0 0 rgba(224,18,128,0.45);
+  animation: rollup-action-pulse 2.2s infinite;
+}
+
+#managed-screen .rollup-head-action-badge img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+@keyframes rollup-action-pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(224,18,128,0.45); }
+  70%  { box-shadow: 0 0 0 6px rgba(224,18,128,0); }
+  100% { box-shadow: 0 0 0 0 rgba(224,18,128,0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #managed-screen .rollup-head-action-badge {
+    animation: none;
+  }
+}

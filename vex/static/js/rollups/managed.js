@@ -1,72 +1,3 @@
-class ManagedSummary {
-    constructor(state) {
-        this.state = state;
-        this._resetCounts();
-        this.listen();
-    }
-
-    reset() {
-        this._resetCounts();
-        this._setLoading();
-    }
-
-    resetSignals() {
-        this.signals = { open: 0 };
-    }
-
-    resetAssets() {
-        this.assets = { identity: 0 };
-    }
-
-    setAccountCount(count) {
-        const value = document.getElementById('managed-summary-accounts-value');
-        if (value) value.textContent = count;
-    }
-
-    _resetCounts() {
-        this.resetSignals();
-        this.resetAssets();
-    }
-
-    _setLoading() {
-        const ids = [
-            'managed-summary-accounts-value',
-            'managed-summary-signals-value',
-            'managed-summary-identity-value',
-        ];
-        ids.forEach(id => {
-            const el = document.getElementById(id);
-            if (el) el.innerHTML = '<span class="managed-badge-spinner"></span>';
-        });
-    }
-
-    renderSignals() {
-        const value = document.getElementById('managed-summary-signals-value');
-        if (!value) return;
-
-        value.textContent = this.signals.open;
-    }
-
-    renderAssets() {
-        const identity = document.getElementById('managed-summary-identity-value');
-        if (identity) {
-            identity.textContent = this.assets.identity;
-        }
-    }
-
-    listen() {
-        document.addEventListener("signal:managed", (ev) => {
-            if (!ev.signal.status.startsWith('O')) return;
-            this.signals.open++;
-        });
-
-        document.addEventListener("managed:asset", (ev) => {
-            if (ev.asset?.metadata?.group != "identity") return;
-            this.assets.identity++;
-        });
-    }
-}
-
 class ManagedRollup {
     constructor(state) {
         this.state = state;
@@ -317,6 +248,75 @@ class ManagedRollup {
             }).finally(() => {
                 input.value = '';
             });
+        });
+    }
+}
+
+class ManagedSummary {
+    constructor(state) {
+        this.state = state;
+        this._resetCounts();
+        this.listen();
+    }
+
+    reset() {
+        this._resetCounts();
+        this._setLoading();
+    }
+
+    resetSignals() {
+        this.signals = { open: 0 };
+    }
+
+    resetAssets() {
+        this.assets = { identity: 0 };
+    }
+
+    setAccountCount(count) {
+        const value = document.getElementById('managed-summary-accounts-value');
+        if (value) value.textContent = count;
+    }
+
+    _resetCounts() {
+        this.resetSignals();
+        this.resetAssets();
+    }
+
+    _setLoading() {
+        const ids = [
+            'managed-summary-accounts-value',
+            'managed-summary-signals-value',
+            'managed-summary-identity-value',
+        ];
+        ids.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.innerHTML = '<span class="managed-badge-spinner"></span>';
+        });
+    }
+
+    renderSignals() {
+        const value = document.getElementById('managed-summary-signals-value');
+        if (!value) return;
+
+        value.textContent = this.signals.open;
+    }
+
+    renderAssets() {
+        const identity = document.getElementById('managed-summary-identity-value');
+        if (identity) {
+            identity.textContent = this.assets.identity;
+        }
+    }
+
+    listen() {
+        document.addEventListener("signal:managed", (ev) => {
+            if (!ev.signal.status.startsWith('O')) return;
+            this.signals.open++;
+        });
+
+        document.addEventListener("managed:asset", (ev) => {
+            if (ev.asset?.metadata?.group != "identity") return;
+            this.assets.identity++;
         });
     }
 }

@@ -29,9 +29,7 @@ class MonitorRollup {
     async reset() {
         await this.ready;
         Object.values(this.available).forEach(s => { s.instances = []; });
-        this.pickerOpen = false;
-        this.connectingKey = null;
-        this.connecting = false;
+        this._resetPicker();
         this._renderCallout();
         this._render();
     }
@@ -39,7 +37,9 @@ class MonitorRollup {
     async reload() {
         await this.ready;
         const monitors = await this.api.monitors.list();
+        Object.values(this.available).forEach(s => { s.instances = []; });
         monitors.forEach(monitor => this.add(monitor));
+        this._render();
     }
 
     add(monitor) {
@@ -49,13 +49,31 @@ class MonitorRollup {
         if (source && !source.instances.includes(index)) {
             source.instances.push(index);
             source.instances.sort((a, b) => a - b);
-            this._render();
         }
     }
 
-    _nextIndex(key) {
-        const instances = this.available[key].instances;
-        return instances.length ? Math.max(...instances) + 1 : 0;
+    async _connect(key, value) {
+        this.connecting = true;
+        this._render();
+
+        try {
+            // Backend assigns the index; send only the source name (e.g. "google")
+            await this.api.monitors.connect(key, value);
+        } catch {
+            this.connecting = false;
+            alert("Invalid JSON. Verify your quotes are correct.");
+            this._render();
+            return;
+        } finally {
+            document.dispatchEvent(new CustomEvent('page:reset'));
+        }
+
+        this._resetPicker();
+        try {
+            await this.reload();
+        } catch {
+            this._render();
+        }
     }
 
     _allInstances() {
@@ -84,14 +102,15 @@ class MonitorRollup {
     }
 
     _monitorRow(key, idx, source) {
-        const label = source.instances.length > 1 ? `${source.name} #${idx + 1}` : source.name;
+        const multi = source.instances.length > 1;
+        const id = multi ? `<span class="monitor-id">${idx}</span>` : '';
 
         return `
             <div class="monitor-row">
                 ${this._icon(key)}
-                <span class="monitor-name">${label}</span>
+                <span class="monitor-name">${source.name}${id}</span>
                 <span class="monitor-status"><span class="monitor-dot"></span>Connected</span>
-                <button class="icon-btn" data-disconnect="${key}/${idx}" aria-label="Disconnect ${label}">×</button>
+                <button class="icon-btn" data-disconnect="${key}/${idx}" aria-label="Disconnect ${source.name}${multi ? ` ${idx}` : ''}">×</button>
             </div>
         `;
     }
@@ -160,25 +179,6 @@ class MonitorRollup {
         this.pickerOpen = false;
         this.connectingKey = null;
         this.connecting = false;
-    }
-
-    _connect(key, value) {
-        const idx = this._nextIndex(key);
-        this.connecting = true;
-        this._render();
-
-        return this.api.monitors.connect(`${key}/${idx}`, value).then(() => {
-            this.available[key].instances.push(idx);
-            this.available[key].instances.sort((a, b) => a - b);
-            this._resetPicker();
-            this._render();
-        }).catch(() => {
-            this.connecting = false;
-            alert("Invalid JSON. Verify your quotes are correct.");
-            this._render();
-        }).finally(() => {
-            document.dispatchEvent(new CustomEvent('page:reset'));
-        });
     }
 
     listen() {

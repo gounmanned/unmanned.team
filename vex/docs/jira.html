@@ -108,11 +108,11 @@
 <body>
     <div class="container">
         <h1>Jira</h1>
-        <p>This guide walks you through creating an Atlassian API token scoped to your Jira site, and storing it so Vex can periodically create tickets in your projects.</p>
+        <p>This guide walks you through creating an Atlassian API token scoped to your Jira site, and storing it so VEX can periodically create tickets in your projects.</p>
 
         <h2>Prerequisites</h2>
         <ul>
-            <li>You have access to a <strong>Jira Queue</strong> whose projects you want Vex to create tickets in.</li>
+            <li>You have access to a <strong>Jira Queue</strong> whose projects you want VEX to create tickets in.</li>
             <li>If your organization restricts API token creation, an org admin may need to allow it (see Step 3).</li>
         </ul>
 
@@ -126,16 +126,16 @@
         <hr class="step-divider" />
         <h2>Step 2: Configure the Token</h2>
         <ol>
-            <li>Set the <strong>Token name</strong> to <code>Vex Ticket Creator</code>.</li>
+            <li>Set the <strong>Token name</strong> to <code>VEX Ticket Creator</code>.</li>
             <li>Set an <strong>Expiration</strong>. Scoped tokens cannot be non-expiring &mdash; expiration is capped at 365 days, so choose the maximum and plan to rotate it before it lapses.</li>
             <li>Under <strong>App</strong>, select <strong>Jira</strong>.</li>
-            <li>Under <strong>Scopes</strong>, grant only what Vex needs:</li>
+            <li>Under <strong>Scopes</strong>, grant only what VEX needs:</li>
         </ol>
 
         <pre><code>Jira work items: Read
 Jira work items: Write</code></pre>
 
-        <p class="important-note">Grant <strong>Write</strong> access &mdash; Vex needs it to create tickets. Read-only scopes will let Vex see your projects but not create anything in them.</p>
+        <p class="important-note">Grant <strong>Write</strong> access &mdash; VEX needs it to create tickets. Read-only scopes will let VEX see your projects but not create anything in them.</p>
 
         <ol start="5">
             <li>Click <strong>"Generate"</strong>.</li>
@@ -157,8 +157,8 @@ Jira work items: Write</code></pre>
         </ol>
 
         <hr class="step-divider" />
-        <h2>Step 5: Save to Vex</h2>
-        <p>Inside Vex, add your credential in the following JSON format, including your Jira site's base URL and the key of the project you want tickets created in:</p>
+        <h2>Step 5: Save</h2>
+        <p>Inside VEX, add your credential in the following JSON format, including your Jira site's base URL and the key of the project you want tickets created in:</p>
         <pre>{
   "email": "you@example.com",
   "api_token": "$JIRA_TOKEN",
@@ -166,7 +166,7 @@ Jira work items: Write</code></pre>
   "project_key": "QUEUENAME"
 }</pre>
         <p><code>project_key</code> is the short, uppercase identifier for the Jira project you want tickets created in (for example, <code>OPS</code> or <code>SUP</code>). You can find it in the URL of any issue in that project, or under <strong>Project settings &rarr; Details</strong>.</p>
-        <p>Once registered, Vex will create tickets in the specified Jira project using this token.</p>
+        <p>Once registered, VEX will create tickets in the specified Jira project using this token.</p>
     </div>
 </body>
 </html>

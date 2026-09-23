@@ -114,7 +114,7 @@
 <body>
     <div class="container">
         <h1>Cloudflare</h1>
-        <p>This guide walks you through creating a Cloudflare API token so Vex can monitor security events across your zones. There are two approaches below: a <strong>full access token</strong> that's quick to set up, and a <strong>restricted token</strong> that's scoped to only what Vex needs. Pick whichever fits your risk tolerance.</p>
+        <p>This guide walks you through creating a Cloudflare API token so VEX can monitor security events across your zones. There are two approaches below: a <strong>full access token</strong> that's quick to set up, and a <strong>restricted token</strong> that's scoped to only what VEX needs. Pick whichever fits your risk tolerance.</p>
 
         <h2>Prerequisites</h2>
         <ul>
@@ -127,12 +127,12 @@
             <li>Log into your <a href="https://dash.cloudflare.com" target="_blank">Cloudflare Dashboard</a>.</li>
             <li>Navigate to the <strong>Manage Account -> Account API tokens</strong> section</li>
             <li>Under <strong>"Create token"</strong>, click <strong>"Get started"</strong>.</li>
-            <li>Set the <strong>Token name</strong> to <code>Vex</code>.</li>
+            <li>Set the <strong>Token name</strong> to <code>VEX</code>.</li>
         </ol>
 
         <h2>Step 2, Option A: Full Access Token</h2>
         <div class="important-note">
-            <strong>Note:</strong> This token can read and write every resource in the account. It's the fastest way to get Vex connected, but treat it like a master key &mdash; store it accordingly. Use Option B below if you'd rather scope it down.
+            <strong>Note:</strong> This token can read and write every resource in the account. It's the fastest way to get VEX connected, but treat it like a master key &mdash; store it accordingly. Use Option B below if you'd rather scope it down.
         </div>
         <ol>
             <li>Select the <strong>"Read all resources"</strong> template &mdash; this populates one permission policy row per resource group, each set to <strong>Read</strong></li>
@@ -145,7 +145,7 @@
 
         <h2>Step 2, Option B: Restricted Token</h2>
         <div class="important-note">
-            <strong>Note:</strong> This token is scoped to only the permissions Vex actually uses: account-wide read visibility, domain and analytics read access, and read/write access to DNS, zone settings, and WAF rules.
+            <strong>Note:</strong> This token is scoped to only the permissions VEX actually uses: account-wide read visibility, domain and analytics read access, and read/write access to DNS, zone settings, and WAF rules.
         </div>
         <ol>
             <li>Check "Read all resources" under permission policies</li>
@@ -165,8 +165,8 @@
             <li>Click "Create token"</li>
         </ol>
 
-        <h2>Step 3: Connect Vex</h2>
-        <p>Add the following JSON to Vex, using the token from whichever option you chose above:</p>
+        <h2>Step 3: Save</h2>
+        <p>Add the following JSON to VEX, using the token from whichever option you chose above:</p>
         <pre>
 {
     "account_id": "your_cloudflare_account_id",

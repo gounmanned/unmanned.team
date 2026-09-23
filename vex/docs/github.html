@@ -108,7 +108,7 @@
 <body>
     <div class="container">
         <h1>GitHub</h1>
-        <p>This guide walks you through creating a fine-grained personal access token scoped to your GitHub organization, and storing it so Vex can periodically scan your repositories for security flaws.</p>
+        <p>This guide walks you through creating a fine-grained personal access token scoped to your GitHub organization, and storing it so VEX can periodically scan your repositories for security flaws.</p>
 
         <h2>Prerequisites</h2>
         <ul>
@@ -127,18 +127,18 @@
         <hr class="step-divider" />
         <h2>Step 2: Configure the Token</h2>
         <ol>
-            <li>Set the <strong>Token name</strong> to <code>Vex Security Scanner</code>.</li>
+            <li>Set the <strong>Token name</strong> to <code>VEX Security Scanner</code>.</li>
             <li>Set an <strong>Expiration</strong>. Fine-grained tokens cannot be non-expiring &mdash; choose the maximum (1 year) and plan to rotate it before it lapses.</li>
             <li>Under <strong>Resource owner</strong>, select your organization instead of your personal account. If your organization does not appear, it may not have fine-grained PAT access enabled.</li>
             <li>Under <strong>Repository access</strong>, select <strong>"All repositories"</strong> so newly created repos are covered automatically, or <strong>"Only select repositories"</strong> to scope it manually.</li>
-            <li>Under <strong>Permissions</strong>, grant only what Vex needs:</li>
+            <li>Under <strong>Permissions</strong>, grant only what VEX needs:</li>
         </ol>
 
         <pre><code>Contents: Read-only
 Metadata: Read-only
 Security events: Read and write</code></pre>
 
-        <p class="important-note">Grant <strong>Security events: Read and write</strong> only if Vex will publish findings back as GitHub code scanning alerts. Otherwise, Read-only permissions are sufficient.</p>
+        <p class="important-note">Grant <strong>Security events: Read and write</strong> only if VEX will publish findings back as GitHub code scanning alerts. Otherwise, Read-only permissions are sufficient.</p>
 
         <ol start="6">
             <li>Click <strong>"Generate token"</strong>.</li>
@@ -160,10 +160,10 @@ Security events: Read and write</code></pre>
         </ol>
 
         <hr class="step-divider" />
-        <h2>Step 5: Save to Vex</h2>
-        <p>Inside Vex, add your credential in the following JSON format:</p>
+        <h2>Step 5: Save</h2>
+        <p>Inside VEX, add your credential in the following JSON format:</p>
         <pre>{"token": "$GITHUB_TOKEN"}</pre>
-        <p>Once registered, Vex will run periodic security scans across your organization's repositories using this token.</p>
+        <p>Once registered, VEX will run periodic security scans across your organization's repositories using this token.</p>
     </div>
 </body>
 </html>

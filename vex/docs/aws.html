@@ -117,7 +117,7 @@
 <body>
     <div class="container">
         <h1>Amazon Web Services</h1>
-        <p>This guide walks you through deploying a read-only IAM role in your AWS account using CloudFormation. This role allows Vex to securely connect to your AWS environment to monitor security findings, inventory resources, and perform other read-only operations.</p>
+        <p>This guide walks you through deploying a read-only IAM role in your AWS account using CloudFormation. This role allows VEX to securely connect to your AWS environment to monitor security findings, inventory resources, and perform other read-only operations.</p>
 
         <h2>Step 1: Download the CloudFormation Template</h2>
         <p>Copy the template below. You will upload it to CloudFormation in the next step.</p>
@@ -130,7 +130,7 @@ Parameters:
   VexAccountId:
     Type: String
     Default: 418606469629
-    Description: Vex AWS Account ID
+    Description: VEX AWS Account ID
 
 Resources:
   Vex:
@@ -154,7 +154,7 @@ Resources:
 Outputs:
   RoleArn:
     Value: !GetAtt Vex.Arn
-    Description: Paste this Role ARN into Vex
+    Description: Paste this Role ARN into VEX
 </pre>
 
         <h2>Step 2: Open CloudFormation</h2>

@@ -108,11 +108,11 @@
         <h1>Azure</h1>
         <p>This guide walks you through grantingaccess to your Azure subscriptions so it can inventory your cloud resources.</p>
 
-        <h2>Step 1: Locate the Vex App Registration</h2>
+        <h2>Step 1: Locate the VEX App Registration</h2>
         <ol>
             <li>Go to <a href="https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationsListBlade" target="_blank">Azure Portal → App registrations</a>.</li>
-            <li>Select the <code>Vex</code> app registration created during Microsoft 365 setup.</li>
-            <li>If it doesn't exist yet, click <strong>"New registration"</strong>, name it <code>Vex</code>, select <strong>"Single tenant only"</strong>, leave <strong>"Redirect URI"</strong> blank, and click <strong>"Register"</strong>. Then create a client secret under <strong>"Certificates & secrets"</strong> as described in the Microsoft 365 guide.</li>
+            <li>Select the <code>VEX</code> app registration created during Microsoft 365 setup.</li>
+            <li>If it doesn't exist yet, click <strong>"New registration"</strong>, name it <code>VEX</code>, select <strong>"Single tenant only"</strong>, leave <strong>"Redirect URI"</strong> blank, and click <strong>"Register"</strong>. Then create a client secret under <strong>"Certificates & secrets"</strong> as described in the Microsoft 365 guide.</li>
         </ol>
 
         <h2>Step 2: Assign the Reader Role</h2>
@@ -122,11 +122,11 @@
             <li>Click <strong>"Add"</strong> → <strong>"Add role assignment"</strong>.</li>
             <li>Under <strong>"Role"</strong>, search for and select <strong>"Reader"</strong>. This is a built-in Azure role that grants read-only visibility into every resource type in-scope — VMs, storage accounts, function apps, networking, and more.</li>
             <li>Click <strong>"Next"</strong>. Under <strong>"Assign access to"</strong>, choose <strong>"User, group, or service principal"</strong>.</li>
-            <li>Click <strong>"+ Select members"</strong>, search for <code>Vex</code>, select the app registration, and click <strong>"Select"</strong>.</li>
+            <li>Click <strong>"+ Select members"</strong>, search for <code>VEX</code>, select the app registration, and click <strong>"Select"</strong>.</li>
             <li>Click <strong>"Review + assign"</strong> twice to confirm.</li>
         </ol>
 
-        <h2>Step 3: Connect Vex</h2>
+        <h2>Step 3: Save</h2>
         <ol>
             <li>Using the values from the app registration, create a JSON object with this structure:</li>
         </ol>
@@ -142,7 +142,7 @@
             <li><strong>tenant_id:</strong> The Directory (tenant) ID from the app registration's Overview page</li>
             <li><strong>client_id:</strong> The Application (client) ID from the app registration's Overview page</li>
             <li><strong>client_secret:</strong> The secret value created under "Certificates & secrets"</li>
-            <li>Paste this JSON in the credentials input for the Azure integration inside Vex.</li>
+            <li>Paste this JSON in the credentials input for the Azure integration inside VEX.</li>
             <li>Click Connect.</li>
         </ol>
     </div>

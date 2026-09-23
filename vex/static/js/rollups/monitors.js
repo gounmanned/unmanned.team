@@ -182,7 +182,7 @@ class MonitorRollup {
     }
 
     listen() {
-        this.list.addEventListener('click', ev => {
+        this.list.addEventListener('click', async ev => {
             if (ev.target.closest('[data-open-picker]')) {
                 this.pickerOpen = true;
                 return this._render();
@@ -206,7 +206,17 @@ class MonitorRollup {
             if (disconnect) {
                 const [key, idxStr] = disconnect.dataset.disconnect.split('/');
                 const idx = parseInt(idxStr, 10);
-                this.api.monitors.disconnect(`${key}/${idx}`);
+                // Instance 0 is stored without an index suffix (see add()), so
+                // the key we disconnect with has to match that exactly.
+                const monitorKey = idx === 0 ? key : `${key}/${idx}`;
+
+                try {
+                    await this.api.monitors.disconnect(monitorKey);
+                } catch {
+                    alert("Failed to disconnect. Please try again.");
+                    return;
+                }
+
                 this.available[key].instances = this.available[key].instances.filter(i => i !== idx);
                 return this._render();
             }

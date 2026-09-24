@@ -1,3 +1,40 @@
+const DEMO_MODE = {
+    enabled: true,
+
+    passthrough: new Set([
+        'cycurion.com',
+        'leekimball.com',
+        'revupconsults.com',
+    ]),
+
+    accounts: [
+        'elastic.co',
+        'nike.com',
+        'pinkduckcompany.com',
+        'vexpoint.ai',
+        'turbineone.com',
+        'nbtc.com',
+        'anderson.mypcd.org',
+        'duckduckgo.com',
+        'thegp.com',
+        'servicenow.com',
+    ],
+
+    allows(domain) {
+        return !this.enabled || this.passthrough.has(domain);
+    },
+
+    apply(grants) {
+        if (!this.enabled) return grants;
+
+        const out = Object.fromEntries(
+            Object.entries(grants).filter(([domain]) => this.allows(domain))
+        );
+        this.accounts.forEach((domain) => out[domain] ??= []);
+        return out;
+    },
+};
+
 class ManagedRollup {
     constructor(state) {
         this.state = state;
@@ -22,7 +59,6 @@ class ManagedRollup {
 
         (async () => {
             this.summary.resetSignals();
-
             await this.api.managed.signals(new CustomEvent("signal:managed"));
             this.members.forEach((_, domain) => this._settleBadge(domain));
             this.summary.renderSignals();
@@ -30,14 +66,13 @@ class ManagedRollup {
 
         (async () => {
             this.summary.resetAssets();
-
             await this.api.managed.assets(new CustomEvent("managed:asset"));
             this.summary.renderAssets();
         })();
     }
 
     async load() {
-        const grants = await this.api.managed.grants(this.state.user.email);
+        const grants = DEMO_MODE.apply(await this.api.managed.grants(this.state.user.email));
         Object.entries(grants).forEach(([domain, members]) => {
             this._add(domain, members);
         });
@@ -45,7 +80,7 @@ class ManagedRollup {
         const pending = await this.api.managed.grants("pending");
         (pending ?? []).forEach((email) => {
             const domain = email.split("@")[1];
-            this._add(domain, [domain], false);
+            if (DEMO_MODE.allows(domain)) this._add(domain, [domain], false);
         });
 
         this._updateEmptyState();
@@ -310,6 +345,7 @@ class ManagedSummary {
 
     listen() {
         document.addEventListener("signal:managed", (ev) => {
+            if (!DEMO_MODE.allows(ev.signal.account)) return;
             if (!ev.signal.status.startsWith('O')) return;
             this.signals.open++;
         });

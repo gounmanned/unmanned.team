@@ -8,24 +8,24 @@ class SignalSidebar {
     reset() {
         document.getElementById("updates").innerHTML = "";
     }
-    
+
     reload() {
-        this.signal = { id: null, severity: 5, status: "OA", asset: "", source: "helpdesk" };
+        this.signal = { id: null, severity: 4, status: "OA", asset: "", source: "helpdesk" };
         this.render(this.signal, true);
     }
 
     inject(signal, updates) {
         this.signal = this.state.signals[signal.account][signal.id]
         this.render(this.signal, false);
-
         this.add(this.signal);
+
         updates.sort((a, b) => new Date(a.updated) - new Date(b.updated)).forEach((update) => {
             this.add(update);
         });
 
         document.dispatchEvent(new CustomEvent('page:reload'));
     }
-   
+
     render(signal, empty = false) {
         document.getElementById("updates-wrap").classList.toggle("empty", empty);
         document.getElementById("signal-severity").value = signal.severity;

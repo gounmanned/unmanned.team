@@ -40,6 +40,13 @@
             margin-bottom: 1rem;
         }
 
+        h3 {
+            font-size: 1.1rem;
+            color: var(--brand);
+            margin-top: 1.75rem;
+            margin-bottom: 0.75rem;
+        }
+
         p {
             line-height: 1.6;
         }
@@ -99,6 +106,19 @@
             border-radius: 0 4px 4px 0;
         }
 
+        .option-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin: 1.5rem 0 0.5rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .option-tab {
+            padding: 0.6rem 1.2rem;
+            font-weight: bold;
+            color: var(--brand);
+        }
+
         @media (max-width: 768px) {
             body {
             padding: 1rem;
@@ -114,11 +134,17 @@
 <body>
     <div class="container">
         <h1>Slack</h1>
-        <p>This guide walks you through creating a Slack incoming webhook so Vex can send events to a channel of your choice.</p>
+        <p>This guide walks you through connecting Slack so Vex can send events to a channel of your choice. Vex supports two ways to connect: an <strong>incoming webhook</strong> or a <strong>bot</strong>. Pick whichever fits your setup &mdash; you only need one.</p>
 
         <div class="important-note">
-            <strong>Notification integration:</strong> Slack is a <strong>notification integration</strong>, not a security monitor. It doesn't scan or find issues on its own — it delivers events (alerts, status changes, connection updates, etc.) from your other security monitors into Slack in real time. Set up a security monitor separately to generate the events this integration will notify you about.
+            <strong>Notification integration:</strong> Slack is a <strong>notification integration</strong>, not a security monitor. It doesn't scan or find issues on its own &mdash; it delivers events (alerts, status changes, connection updates, etc.) from your other security monitors into Slack in real time. Set up a security monitor separately to generate the events this integration will notify you about.
         </div>
+
+        <h2>Which should I use?</h2>
+        <ul>
+            <li><strong>Webhook</strong> &mdash; fastest to set up, posts to a single fixed channel chosen when you create the webhook. Good if you only need notifications in one place.</li>
+            <li><strong>Bot</strong> &mdash; slightly more setup, but the channel is configurable and can be changed later without recreating the connection. Also required if you want threaded replies (e.g. a follow-up "resolved" notification posted under the original alert).</li>
+        </ul>
 
         <h2>Prerequisites</h2>
         <ul>
@@ -126,7 +152,9 @@
             <li>You've identified the <strong>channel</strong> you want notifications sent to.</li>
         </ul>
 
-        <h2>Step 1: Create a Slack App</h2>
+        <h2>Option A: Webhook</h2>
+
+        <h3>Step 1: Create a Slack App</h3>
         <ol>
             <li>Go to <a href="https://api.slack.com/apps" target="_blank">api.slack.com/apps</a> and log into your workspace.</li>
             <li>Click <strong>"Create New App"</strong>.</li>
@@ -135,20 +163,20 @@
             <li>Click <strong>"Create App"</strong>.</li>
         </ol>
 
-        <h2>Step 2: Enable Incoming Webhooks</h2>
+        <h3>Step 2: Enable Incoming Webhooks</h3>
         <ol>
             <li>From your app's settings page, select <strong>"Incoming Webhooks"</strong> under Features.</li>
             <li>Toggle <strong>"Activate Incoming Webhooks"</strong> to on.</li>
             <li>Click <strong>"Add New Webhook to Workspace"</strong> at the bottom of the page.</li>
         </ol>
 
-        <h2>Step 3: Choose a Channel</h2>
+        <h3>Step 3: Choose a Channel</h3>
         <ol>
             <li>Select the channel you want Vex to post notifications to.</li>
             <li>Click <strong>"Allow"</strong>.</li>
         </ol>
 
-        <h2>Step 4: Copy the Webhook URL</h2>
+        <h3>Step 4: Copy the Webhook URL</h3>
         <ol>
             <li>Back on the "Incoming Webhooks" page, find the webhook listed under <strong>"Webhook URLs for Your Workspace"</strong>.</li>
             <li>Click <strong>"Copy"</strong> to copy the URL. It will look like:</li>
@@ -158,7 +186,7 @@
             <strong>Treat this URL as a secret.</strong> Anyone who has it can post messages to your channel. Don't commit it to source control or share it outside your team.
         </div>
 
-        <h2>Step 5: Upload Webhook to Vex</h2>
+        <h3>Step 5: Upload Webhook to Vex</h3>
         <ol>
             <li>Create a new text file and name it <code>slack.json</code>.</li>
             <li>Using the URL from Step 4, create a JSON object with this structure:</li>
@@ -166,6 +194,71 @@
         <pre>
 {
     "webhook": "https://hooks.slack.com/services/your-webhook-path-here"
+}
+        </pre>
+        <ol start="3">
+            <li>Save this in Vex</li>
+        </ol>
+
+        <h2>Option B: Bot</h2>
+
+        <div class="important-note">
+            <strong>Already created a Slack app for the webhook above?</strong> You can reuse it &mdash; there's no need for a second app. Skip to <strong>Step 2</strong> and add the bot scope to your existing "Vex Notifications" app instead.
+        </div>
+
+        <h3>Step 1: Create a Slack App</h3>
+        <ol>
+            <li>Go to <a href="https://api.slack.com/apps" target="_blank">api.slack.com/apps</a> and log into your workspace.</li>
+            <li>Click <strong>"Create New App"</strong>.</li>
+            <li>Choose <strong>"From scratch"</strong>.</li>
+            <li>Set the <strong>App Name</strong> to <code>Vex Notifications</code> and select your workspace.</li>
+            <li>Click <strong>"Create App"</strong>.</li>
+        </ol>
+
+        <h3>Step 2: Add the Bot Token Scope</h3>
+        <ol>
+            <li>From your app's settings page, select <strong>"OAuth &amp; Permissions"</strong> under Features.</li>
+            <li>Scroll to <strong>"Scopes"</strong> and, under <strong>"Bot Token Scopes"</strong>, click <strong>"Add an OAuth Scope"</strong>.</li>
+            <li>Add <code>chat:write</code>.</li>
+        </ol>
+
+        <h3>Step 3: Install the App</h3>
+        <ol>
+            <li>Scroll back to the top of the "OAuth &amp; Permissions" page.</li>
+            <li>Click <strong>"Install to Workspace"</strong>, review the permissions, and click <strong>"Allow"</strong>.</li>
+        </ol>
+
+        <h3>Step 4: Copy the Bot Token</h3>
+        <ol>
+            <li>After installing, you'll land back on "OAuth &amp; Permissions".</li>
+            <li>Copy the <strong>"Bot User OAuth Token"</strong> at the top of the page. It starts with <code>xoxb-</code>.</li>
+        </ol>
+
+        <div class="important-note">
+            <strong>Treat this token as a secret.</strong> Anyone who has it can post messages as your bot. Don't commit it to source control or share it outside your team.
+        </div>
+
+        <h3>Step 5: Choose a Channel</h3>
+        <ol>
+            <li>Decide which channel you want Vex to post notifications to, and note its name (e.g. <code>#security-alerts</code>).</li>
+            <li>In Slack, open that channel and invite the bot with:
+                <pre>/invite @Vex Notifications</pre>
+            </li>
+        </ol>
+
+        <div class="important-note">
+            <strong>The bot must be a member of the channel.</strong> If it isn't invited, Vex won't be able to post there and connection testing will fail with <code>not_in_channel</code>.
+        </div>
+
+        <h3>Step 6: Upload Bot Credentials to Vex</h3>
+        <ol>
+            <li>Create a new text file and name it <code>slack.json</code>.</li>
+            <li>Using the token from Step 4 and the channel from Step 5, create a JSON object with this structure:</li>
+        </ol>
+        <pre>
+{
+    "token": "xoxb-your-bot-token-here",
+    "channel": "#security-alerts"
 }
         </pre>
         <ol start="3">

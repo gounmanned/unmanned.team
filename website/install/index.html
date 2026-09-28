@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vex / Install</title>
+<meta name="description" content="Download the VEX agent and get your computer set up.">
+<script>document.documentElement.classList.replace('no-js', 'js');</script>
+
+<link rel="icon" type="image/png" href="https://cdn.unmanned.team/img/logo.png">
+<link rel="apple-touch-icon" href="https://cdn.unmanned.team/img/logo.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400&display=swap">
+<link rel="stylesheet" href="https://cdn.unmanned.team/css/global.css">
+
+<style>
+  /* --surface, --surface-alt and --font-sans come from global.css */
+  :root {
+    --ink: #0b0c0d;
+    --pink: #e01280;
+    --pink-text: #d1107a;   /* pink for text on light backgrounds (passes 4.5:1) */
+    --gray-line: #dcdcd8;
+    --gray-faint: #c4c4c4;
+    --surface-dark: #6c6c70;
+    --body: #2b2b2b;
+    --classbar-h: 26px;
+    --ease-out: cubic-bezier(0.4, 0, 0.2, 1);
+    --ease-in: cubic-bezier(0.49, 0.025, 0.685, 1);
+  }
+
+  /* ---------- BASE ---------- */
+  *, *::before, *::after { box-sizing: border-box; }
+  html { overflow-x: hidden; scroll-behavior: smooth; scroll-padding-top: 40px; }
+  body {
+    margin: 0;
+    padding-top: var(--classbar-h);
+    background: var(--surface);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, p { margin: 0; }
+  a { color: inherit; }
+  ::selection { background: var(--pink); color: #fff; }
+  a:focus-visible, button:focus-visible { outline: 1.5px solid var(--pink); outline-offset: 4px; }
+  .wrap { width: min(1100px, calc(100% - 48px)); margin: 0 auto; }
+  .visually-hidden {
+    position: absolute; width: 1px; height: 1px;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
+  }
+
+  /* ---------- CLASSIFICATION BAR ---------- */
+  .classbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 60;
+    padding: 6px 0;
+    background: var(--ink); color: var(--gray-faint);
+    font-size: 9.5px; line-height: 1.5; letter-spacing: 0.16em;
+    text-transform: uppercase; text-align: center;
+    transition: transform 0.4s var(--ease-in), opacity 0.4s var(--ease-in);
+  }
+
+  /* ---------- STICKY HEADER ---------- */
+  .site-header {
+    position: sticky; top: var(--classbar-h); z-index: 50;
+    background: var(--surface);
+    border-bottom: 1px solid var(--gray-line);
+    transition: transform 0.3s var(--ease-out);
+  }
+  .header-inner { display: flex; align-items: center; gap: 16px; padding: 18px 0; }
+  .brand {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 16px; font-weight: 800; line-height: 1.5; letter-spacing: 0.01em;
+  }
+  .brand-tag {
+    font-size: 11px; line-height: 1.5; letter-spacing: 0.18em;
+    text-transform: uppercase; white-space: nowrap; color: var(--surface-dark);
+  }
+
+  /* Scrolling down slides the class bar and header out of view; scrolling up
+     brings them back. The script toggles html.header-hidden. */
+  html.header-hidden .classbar { transform: translateY(-100%); opacity: 0; }
+  html.header-hidden .site-header { transform: translateY(calc(-100% - var(--classbar-h))); }
+
+  /* ---------- STATUS DOT ---------- */
+  .status-dot {
+    flex-shrink: 0; display: inline-block;
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--pink);
+    animation: pulse 2.2s 2;  /* ripples twice, then rests */
+  }
+  @keyframes pulse {
+    0%   { box-shadow: 0 0 0 0 rgba(224, 18, 128, 0.45); }
+    70%  { box-shadow: 0 0 0 8px rgba(224, 18, 128, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(224, 18, 128, 0); }
+  }
+
+  /* ---------- BUTTONS ---------- */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 15px 30px;
+    background: var(--pink); color: #fff; border: none; cursor: pointer;
+    font-weight: 600; font-size: 15px; line-height: 1.5;
+    text-decoration: none; white-space: nowrap;
+    transition: opacity 0.2s ease;
+  }
+  .btn:hover { opacity: 0.8; }
+
+  /* ---------- PAGE BACKDROP ---------- */
+  .install { position: relative; overflow: hidden; }
+  .install-rings, .install-backdrop { position: absolute; left: 50%; pointer-events: none; }
+  .install-rings { top: -200px; margin-left: -450px; }
+  .install-backdrop { top: 0; margin-left: -1468px; }
+
+  /* ---------- HERO ---------- */
+  .hero {
+    position: relative; z-index: 1;
+    display: flex; flex-direction: column; align-items: center; gap: 32px;
+    padding: 64px 24px; text-align: center;
+  }
+  .hero h1 { font-weight: 600; font-size: clamp(34px, 6vw, 48px); line-height: 1.1; letter-spacing: -0.02em; }
+  .hero-sub { margin-top: 24px; font-size: 14px; line-height: 1.55; color: var(--body); }
+  .download-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; }
+  .download-row .btn { width: 240px; }
+  .lede { max-width: 680px; font-size: 16px; line-height: 1.75; color: var(--body); }
+
+  /* ---------- INSTRUCTIONS ---------- */
+  .instructions {
+    position: relative; z-index: 1;
+    display: flex; flex-direction: column; align-items: center; gap: 24px;
+    padding: 0 24px 64px;
+  }
+  .instructions h2 {
+    font-weight: 500; font-size: clamp(24px, 4vw, 30px); line-height: 1.5;
+    letter-spacing: -0.01em; text-align: center;
+  }
+
+  .os-picker { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .os-picker-label { font-size: 14px; line-height: 1.55; }
+  .os-toggle { display: inline-flex; gap: 2px; padding: 4px; background: var(--surface-alt); border-radius: 8px; }
+  .os-toggle button {
+    padding: 4px 16px; border: none; border-radius: 6px;
+    background: transparent; color: var(--surface-dark); cursor: pointer;
+    font: inherit; font-weight: 500; font-size: 17px; line-height: 1.5;
+  }
+  .os-toggle button[aria-pressed="true"] {
+    background: var(--surface); color: var(--ink);
+    box-shadow: 0 1px 1px rgba(23, 23, 28, 0.1);
+  }
+
+  .install-steps { width: 100%; max-width: 680px; margin: 0; padding: 0; list-style: none; counter-reset: step; }
+  .install-step {
+    display: flex; align-items: flex-start; gap: 16px;
+    padding: 20px 0; border-top: 1px solid var(--gray-line);
+    counter-increment: step;
+  }
+  .install-step[hidden] { display: none; }  /* display:flex would otherwise override [hidden] */
+  .step-num {
+    flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+    width: 20px; height: 20px; margin-top: 5px;
+    border: 1.5px solid var(--pink); border-radius: 50%;
+    font-weight: 600; font-size: 13px; line-height: 1; color: var(--pink-text);
+  }
+  .step-num::before { content: counter(step); }
+  .install-step-body { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 16px; }
+  .install-step h3 { font-weight: 600; font-size: 20px; line-height: 1.5; letter-spacing: -0.01em; }
+  .step-copy { display: flex; flex-direction: column; gap: 12px; }
+  .step-copy p, .step-copy li { font-size: 16px; line-height: 1.75; color: var(--body); }
+  .step-copy ul { margin: 0; padding-left: 24px; list-style: disc; }  /* overrides global.css */
+  .step-note { font-size: 13.5px; line-height: 1.6; color: var(--body); }
+  b { font-weight: 600; }
+  strong { font-weight: 700; }
+
+  /* ---------- INSTALL KEY ---------- */
+  .install-key {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px;
+    font-size: 16px; line-height: 1.75; color: var(--body);
+  }
+  .install-key-value { display: inline-flex; align-items: center; gap: 4px; }
+  .install-key code {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 16px; line-height: 1.5; letter-spacing: 0.04em; word-break: break-all;
+  }
+  .install-key-error { font-size: 14px; line-height: 1.55; color: var(--body); }
+  .install-key-error a { color: var(--pink-text); }
+
+  .copy-btn {
+    position: relative; flex-shrink: 0; display: flex;
+    padding: 2px; border: none; border-radius: 4px;
+    background: none; cursor: pointer;
+  }
+  .copy-btn:hover:not(:disabled) { background: var(--surface-alt); }
+  .copy-btn:disabled { cursor: default; opacity: 0.4; }
+  .copy-btn img { display: block; width: 20px; height: 20px; }
+
+  /* Tooltip under the copy button: shows on hover / keyboard focus, and says "Copied" after a click */
+  .tooltip {
+    position: absolute; top: calc(100% + 12px); left: 50%; z-index: 5;
+    padding: 8px 12px; border-radius: 4px;
+    background: var(--surface-dark); color: #fff;
+    font-family: var(--font-sans); font-size: 13px; line-height: normal; white-space: nowrap;
+    filter: drop-shadow(0 6px 4px rgba(0, 0, 0, 0.16));
+    opacity: 0; visibility: hidden; pointer-events: none;
+    transform: translateX(-50%) translateY(-4px);
+    transition: opacity 0.15s ease, transform 0.15s ease, visibility 0s linear 0.15s;
+  }
+  .tooltip::before {
+    content: ''; position: absolute; bottom: 100%; left: 50%; margin-left: -8px;
+    border: 8px solid transparent; border-top: 0; border-bottom-color: var(--surface-dark);
+  }
+  .copy-btn:hover:not(:disabled) .tooltip,
+  .copy-btn:focus-visible .tooltip,
+  .copy-btn.is-copied .tooltip {
+    opacity: 1; visibility: visible;
+    transform: translateX(-50%) translateY(0);
+    transition: opacity 0.15s ease, transform 0.15s ease, visibility 0s;
+  }
+
+  /* ---------- FOOTER ---------- */
+  footer {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 28px 56px 40px; border-top: 1px solid var(--gray-line);
+    font-size: 10.5px; line-height: 1.5; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--surface-dark);
+  }
+  footer a { text-decoration: none; }
+  footer a:hover { color: var(--ink); }
+  .fmark { font-weight: 500; color: var(--ink); }
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width: 700px) {
+    .classbar { font-size: 8px; }
+    footer { flex-direction: column; gap: 10px; padding: 22px 20px 36px; text-align: center; }
+  }
+  @media (max-width: 560px) {
+    .brand-tag { display: none; }
+    .download-row { flex-direction: column; align-self: stretch; }
+    .download-row .btn { width: 100%; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .status-dot { animation: none; }
+    .classbar, .site-header { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="classbar">Unmanned · Simply secure</div>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <!-- Not a link: this page is only reached from a personal install link -->
+    <span class="brand"><span class="status-dot"></span>VEX</span>
+    <span class="brand-tag">Don’t get hacked</span>
+  </div>
+</header>
+
+<main class="install">
+  <img class="install-rings" src="static/radar-rings-900.svg" width="900" height="900" alt="">
+  <img class="install-backdrop" src="static/glow-grid-bg.svg" width="2936" height="258" alt="">
+
+  <!-- ========== HERO / DOWNLOAD ========== -->
+  <section class="hero">
+    <div>
+      <h1>Let’s get you set up</h1>
+      <p class="hero-sub">Download your security agent below to set up your computer.</p>
+    </div>
+    <div class="download-row">
+      <a class="btn" href="https://downloads.level.io/stable/level-darwin-bundle-arm64.pkg" data-os-select="mac">Download for Mac</a>
+      <a class="btn" href="https://downloads.level.io/level.msi" data-os-select="windows">Download for Windows</a>
+    </div>
+    <p class="lede">Once installed, VEX keeps your computer patched and up to date, provides antivirus and behavioral threat protection, and connects you to your security team 24/7.</p>
+  </section>
+
+  <!-- ========== INSTRUCTIONS ==========
+       The Mac / Windows toggle shows elements marked data-os="mac" or
+       data-os="windows". Elements without data-os show for both. -->
+  <section class="instructions">
+    <h2>Installation instructions</h2>
+
+    <div class="os-picker">
+      <span class="os-picker-label" id="os-label">Select your computer type</span>
+      <div class="os-toggle" role="group" aria-labelledby="os-label">
+        <button type="button" data-os-select="mac" aria-pressed="true">Mac</button>
+        <button type="button" data-os-select="windows" aria-pressed="false">Windows</button>
+      </div>
+    </div>
+
+    <ol class="install-steps">
+      <li class="install-step">
+        <span class="step-num" aria-hidden="true"></span>
+        <div class="install-step-body">
+          <h3>Download the installer</h3>
+          <div class="step-copy">
+            <p data-os="mac">Click the “<b>Download for Mac</b>” button above.</p>
+            <p data-os="windows" hidden>Click the “<b>Download for Windows</b>” button above.</p>
+            <p>It saves a small file to your Downloads folder.</p>
+          </div>
+        </div>
+      </li>
+
+      <li class="install-step">
+        <span class="step-num" aria-hidden="true"></span>
+        <div class="install-step-body">
+          <h3>Run the installer</h3>
+          <div class="step-copy">
+            <p>Open the downloaded file and follow the prompts.</p>
+            <p>If your computer asks whether to allow it to run, choose <strong>Yes</strong> or <strong>Allow</strong> — that’s expected.</p>
+          </div>
+          <div class="install-key">
+            <strong>When prompted, enter install key:</strong>
+            <span class="install-key-value">
+              <code id="install-key">Loading…</code>
+              <button class="copy-btn" id="copy-key" type="button" aria-label="Copy install key to clipboard" disabled>
+                <img src="static/icon-copy.svg" width="20" height="20" alt="">
+                <span class="tooltip" id="copy-tooltip" aria-hidden="true">Copy to clipboard</span>
+              </button>
+              <span class="visually-hidden" id="copy-status" role="status"></span>
+            </span>
+          </div>
+          <p class="install-key-error" id="install-key-error" hidden>We couldn’t load your install key. Email <a href="mailto:security@vex.unmanned.team">security@vex.unmanned.team</a> and we’ll send it to you.</p>
+        </div>
+      </li>
+
+      <li class="install-step" data-os="mac">
+        <span class="step-num" aria-hidden="true"></span>
+        <div class="install-step-body">
+          <h3>Allow necessary permissions</h3>
+          <div class="step-copy">
+            <p>You may be asked to enter your computer password during installation.</p>
+            <p><b>When prompted, allow Level these three permissions:</b></p>
+            <ul>
+              <li>Screen Recording</li>
+              <li>Accessibility</li>
+              <li>Full Disk Access</li>
+            </ul>
+          </div>
+          <p class="step-note"><b>Don’t see the prompts?</b> Open System Settings → Privacy &amp; Security and enable the permissions above for Level.</p>
+        </div>
+      </li>
+
+      <li class="install-step">
+        <span class="step-num" aria-hidden="true"></span>
+        <div class="install-step-body">
+          <h3>You’re covered</h3>
+          <div class="step-copy">
+            <p>All done. Our Security Operations Center can now protect your computer, 24/7. Each month, we’ll send you a simple update on how things are looking.</p>
+          </div>
+        </div>
+      </li>
+    </ol>
+  </section>
+</main>
+
+<footer>
+  <span class="fmark">Unmanned</span>
+  <a href="https://gounmanned.substack.com/" target="_blank" rel="noopener noreferrer">Read our blog</a>
+</footer>
+
+<script>
+  /* ---------- Hide-on-scroll header ---------- */
+  (function () {
+    var root = document.documentElement;
+    var header = document.querySelector('.site-header');
+    var classbar = document.querySelector('.classbar');
+    if (!header) return;
+
+    var lastY = window.scrollY;
+    var ticking = false;
+
+    function update() {
+      ticking = false;
+      var y = window.scrollY;
+      var showZone = header.offsetHeight + classbar.offsetHeight; // always show near the top
+      if (y <= showZone) {
+        root.classList.remove('header-hidden');
+      } else if (Math.abs(y - lastY) >= 6) {                      // ignore tiny scroll jitters
+        root.classList.toggle('header-hidden', y > lastY);
+      } else {
+        return;
+      }
+      lastY = y;
+    }
+
+    window.addEventListener('scroll', function () {
+      if (!ticking) { ticking = true; requestAnimationFrame(update); }
+    }, { passive: true });
+
+    // Keyboard users tabbing into the header should always see it
+    header.addEventListener('focusin', function () { root.classList.remove('header-hidden'); });
+  })();
+
+  /* ---------- Mac / Windows toggle ---------- */
+  (function () {
+    var toggles = document.querySelectorAll('.os-toggle [data-os-select]');
+    var downloads = document.querySelectorAll('.download-row [data-os-select]');
+    var blocks = document.querySelectorAll('[data-os]');
+
+    function setOS(os) {
+      blocks.forEach(function (el) { el.hidden = el.dataset.os !== os; });
+      toggles.forEach(function (btn) { btn.setAttribute('aria-pressed', String(btn.dataset.osSelect === os)); });
+    }
+
+    // Toggle buttons switch the steps; clicking a download link also switches them to match
+    [].forEach.call(toggles, bind);
+    [].forEach.call(downloads, bind);
+    function bind(el) { el.addEventListener('click', function () { setOS(el.dataset.osSelect); }); }
+
+    // Start on the visitor's own computer type when we can tell (Mac is the default)
+    if (/Windows/i.test(navigator.userAgent)) setOS('windows');
+  })();
+
+  /* ---------- Install key ----------
+     The last segment of this page's path (/install/<code>) is looked up at
+     https://us.unmanned.team/install/<code>, which returns { "key": "..." }. */
+  (function () {
+    var KEY_API = 'https://us.unmanned.team/install/';
+    var EXAMPLE_KEY = 'ZXYtq12ABCDgHjkl45MnOP67:john'; // local preview only
+
+    var keyEl = document.getElementById('install-key');
+    var copyBtn = document.getElementById('copy-key');
+    var tooltip = document.getElementById('copy-tooltip');
+    var status = document.getElementById('copy-status');
+    var errorEl = document.getElementById('install-key-error');
+    if (!keyEl || !copyBtn) return;
+
+    function showKey(key) {
+      keyEl.textContent = key;
+      copyBtn.disabled = false;
+    }
+    function showError() {
+      keyEl.textContent = 'Unavailable';
+      errorEl.hidden = false;
+    }
+
+    var isLocal = /^(localhost|127\.0\.0\.1)$/.test(location.hostname) || location.protocol === 'file:';
+    var parts = location.pathname.split('/').filter(function (p) { return p && p !== 'index.html'; });
+    var code = parts[parts.length - 1];
+
+    // Local testing: /install/?code=abc123 acts like the live link /install/abc123
+    var testCode = new URLSearchParams(location.search).get('code');
+    if (isLocal && testCode) code = testCode;
+
+    if (!code || code === 'install') {
+      isLocal ? showKey(EXAMPLE_KEY) : showError();
+    } else {
+      fetch(KEY_API + encodeURIComponent(code))
+        .then(function (res) { if (!res.ok) throw new Error(res.status); return res.json(); })
+        .then(function (data) { data && data.key ? showKey(String(data.key)) : showError(); })
+        .catch(showError);
+    }
+
+    /* Copy to clipboard */
+    var timer;
+    function copied() {
+      tooltip.textContent = 'Copied';
+      status.textContent = 'Install key copied';
+      copyBtn.classList.add('is-copied');
+      clearTimeout(timer);
+      timer = setTimeout(function () {
+        copyBtn.classList.remove('is-copied');
+        tooltip.textContent = 'Copy to clipboard';
+        status.textContent = '';
+      }, 1600);
+    }
+
+    // Older browsers, or pages not on https: copy through a hidden text box
+    function fallbackCopy() {
+      var box = document.createElement('textarea');
+      box.value = keyEl.textContent;
+      box.setAttribute('readonly', '');
+      box.style.cssText = 'position:fixed;opacity:0;';
+      document.body.appendChild(box);
+      box.select();
+      try { if (document.execCommand('copy')) copied(); } catch (e) {}
+      document.body.removeChild(box);
+    }
+
+    copyBtn.addEventListener('click', function () {
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(keyEl.textContent).then(copied, fallbackCopy);
+      } else {
+        fallbackCopy();
+      }
+    });
+  })();
+</script>
+</body>
+</html>

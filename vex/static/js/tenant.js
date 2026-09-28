@@ -22,6 +22,7 @@ class TenantScreen {
             this.table.clear();
             this.table.watermark(true);
             this.renderTrend();
+            this.renderSpotlight();
             this.count();
         }).then(() => {
             this.notifications.refresh();
@@ -64,6 +65,7 @@ class TenantScreen {
         this._trendFrame = requestAnimationFrame(() => {
             this._trendFrame = null;
             this.renderTrend();
+            this.renderSpotlight();
         });
     }
 
@@ -132,6 +134,26 @@ class TenantScreen {
         `;
     }
 
+    renderSpotlight() {
+        const signal = Object.values(this.state.signals?.[this.state.account()] ?? {}).find(s =>
+            Number(s.severity) === 1 && s.source === 'vex' && String(s.status).startsWith('O')
+        );
+
+        this._spotlight = signal;
+        document.getElementById('spotlight-section').hidden = !signal;
+        if (!signal) return;
+
+        const day = value => new Date(value).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+        const set = (id, text) => document.getElementById(id).textContent = text;
+
+        set('spotlight-name', signal.name);
+        set('spotlight-value', signal.value?.match(/^.*?[.!?](?=\s|$)/s)?.[0] ?? signal.value);
+        set('spotlight-asset', signal.asset);
+        set('spotlight-created', day(signal.created));
+        set('spotlight-updated', day(signal.updated ?? signal.created));
+        document.getElementById('spotlight-img').src = `static/img/source/${signal.source}.png`;
+    }
+
     listen() {
         document.addEventListener('signal:account', (ev) => {
             const upsert = (row, signal) => {
@@ -186,6 +208,11 @@ class TenantScreen {
                 await this.reset();
                 await this.reload();
             });
+        });
+
+        document.getElementById('spotlight').addEventListener('click', async () => {
+            if (!this._spotlight) return;
+            await this.open(this._spotlight);
         });
     }
 }

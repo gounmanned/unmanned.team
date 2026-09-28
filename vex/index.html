@@ -66,7 +66,30 @@
         <svg id="trend-svg" preserveAspectRatio="none"></svg>
       </div>
     </section>
-    
+
+    <section id="spotlight-section" hidden>
+      <button type="button" class="spotlight" id="spotlight">
+        <div class="spotlight-logo">
+          <span class="spotlight-pulse"></span>
+          <span class="spotlight-pulse delay"></span>
+          <img id="spotlight-img" alt="">
+        </div>
+
+        <div class="spotlight-body">
+          <div class="spotlight-label"><span class="spotlight-dot"></span>Critical · found by VEX</div>
+          <h3 class="spotlight-name" id="spotlight-name"></h3>
+          <p class="spotlight-value" id="spotlight-value"></p>
+          <div class="spotlight-meta">
+            <span><span class="material-symbols-outlined">dns</span><span id="spotlight-asset"></span></span>
+            <span><span class="material-symbols-outlined">flag</span>Found <span id="spotlight-created"></span></span>
+            <span><span class="material-symbols-outlined">update</span>Updated <span id="spotlight-updated"></span></span>
+          </div>
+        </div>
+
+        <span class="material-symbols-outlined spotlight-arrow">arrow_forward</span>
+      </button>
+    </section>
+
     <section id="signal-section">
       <div class="table-wrap" id="signal-table-wrap">
         <table id="signal-table">

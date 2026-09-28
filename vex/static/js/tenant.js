@@ -85,12 +85,6 @@ class TenantScreen {
         const counts = new Array(days).fill(0);
         signals.forEach(s => counts[new Date(s.created).getDate() - 1]++);
 
-        // stat box
-        const auto = signals.filter(s => s.status === 'CV').length;
-        document.getElementById('autoclose-rate').textContent =
-            signals.length ? `${Math.round(auto / signals.length * 100)}%` : '—';
-        document.getElementById('autoclose-sub').textContent =
-            `${auto.toLocaleString()} of ${signals.length.toLocaleString()} signals`;
         document.getElementById('trend-month').textContent =
             now.toLocaleString(undefined, { month: 'long', year: 'numeric' });
 

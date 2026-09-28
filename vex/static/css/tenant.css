@@ -54,20 +54,26 @@
 /* ── trend ──────────────────────────────────────────────────────── */
 
 #trend-section {
-  display: flex;
-  gap: 12px;
   margin-bottom: 24px;
 }
 
-.trend-stat,
 .trend-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 14px 8px;
   border: 1px solid var(--line);
   border-radius: 12px;
   background: var(--surface);
   box-sizing: border-box;
 }
 
-.trend-stat-label,
+.trend-chart-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
 .trend-chart-label {
   font-size: 10.5px;
   font-weight: 800;
@@ -76,68 +82,10 @@
   color: var(--brand);
 }
 
-.trend-stat-sub,
 .trend-chart-month {
   font-size: 11.5px;
   color: var(--text-faint);
   font-variant-numeric: tabular-nums;
-}
-
-/* ── autoclose stat ─────────────────────────────────────────────── */
-
-.trend-stat {
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
-  flex: 0 0 160px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  padding: 12px 18px 16px;
-}
-
-.trend-stat > * { position: relative; }
-
-.trend-stat::after {
-  content: '';
-  position: absolute;
-  right: -28px;
-  bottom: -28px;
-  width: 120px;
-  height: 120px;
-  background: url(https://cdn.unmanned.team/img/sparkle.svg) no-repeat center / contain;
-  opacity: 0.08;
-  transform: rotate(-12deg);
-  pointer-events: none;
-  z-index: -1;
-}
-
-.trend-stat-value {
-  margin-top: auto;
-  font-size: 30px;
-  font-weight: 700;
-  line-height: 1;
-  color: var(--text-body);
-  font-variant-numeric: tabular-nums;
-}
-
-.trend-stat .trend-stat-sub { margin-bottom: auto; }
-
-/* ── line chart ─────────────────────────────────────────────────── */
-
-.trend-chart {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  padding: 12px 14px 8px;
-}
-
-.trend-chart-head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
 }
 
 #trend-svg {
@@ -185,11 +133,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   #trend-svg .trend-today-pulse { animation: none; opacity: 0; }
-}
-
-@media (max-width: 640px) {
-  #trend-section { flex-direction: column; }
-  .trend-stat { flex-basis: auto; }
 }
 
 /* ── table ──────────────────────────────────────────────────────── */

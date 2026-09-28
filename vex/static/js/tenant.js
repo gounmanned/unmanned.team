@@ -6,8 +6,7 @@ class TenantScreen {
         this.month = new Date();
         this.listen();
 
-        new ResizeObserver(() => this.renderTrend())
-            .observe(document.getElementById('trend-svg'));
+        new ResizeObserver(() => this.renderTrend()).observe(document.getElementById('trend-svg'));
 
         // add-ons
         this.notifications = new Notifications(this.state);

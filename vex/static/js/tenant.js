@@ -4,9 +4,9 @@ class TenantScreen {
         this.api = state.api;
         this.table = new Table('signal-table');
         this.month = new Date();
-        this.trendFrame = null;
         this.listen();
 
+        this.trendFrame = null;
         new ResizeObserver(() => this.trend()).observe(document.getElementById('trend-svg'));
 
         // add-ons
@@ -27,10 +27,10 @@ class TenantScreen {
             this.table.watermark(true);
             this.trend();
             this.count();
+        }).then(() => {
+            this.banner.refresh();
+            this.notifications.refresh();
         });
-
-        this.banner.refresh();
-        this.notifications.refresh();
     }
 
     count() {

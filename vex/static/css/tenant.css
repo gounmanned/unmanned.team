@@ -310,10 +310,6 @@ td.id {
   font-variant-numeric: tabular-nums;
 }
 
-td.strength {
-  white-space: nowrap;
-}
-
 td.source {
   white-space: nowrap;
   overflow: hidden;
@@ -382,54 +378,54 @@ tr[data-status="CV"] td.autoclose {
 .severity-chip[data-severity="4"] { background: rgba(59,130,246,0.1); color: var(--sev-4); } /* Low */
 .severity-chip[data-severity="5"] { background: var(--surface-alt);     color: var(--sev-5); } /* Info */
 
-/* ── strength meter ─────────────────────────────────────────────── */
+/* ── metadata col ──────────────────────────────────────────────── */
 
-.strength-meter {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
+td.metadata { white-space: nowrap; }
+
+.metadata-hover {
+  position: relative;
+  display: inline-block;
 }
 
-.strength-bars {
-  display: inline-flex;
-  align-items: flex-end;
-  gap: 2px;
-  height: 12px;
-}
-
-.strength-bar {
-  width: 3px;
-  height: 40%;
-  border-radius: 1px;
-  background: var(--line);
-  transition: background 0.15s, height 0.15s;
-}
-
-.strength-bar:nth-child(1)  { height: 20%; }
-.strength-bar:nth-child(2)  { height: 30%; }
-.strength-bar:nth-child(3)  { height: 40%; }
-.strength-bar:nth-child(4)  { height: 50%; }
-.strength-bar:nth-child(5)  { height: 60%; }
-.strength-bar:nth-child(6)  { height: 70%; }
-.strength-bar:nth-child(7)  { height: 80%; }
-.strength-bar:nth-child(8)  { height: 90%; }
-.strength-bar:nth-child(9)  { height: 95%; }
-.strength-bar:nth-child(10) { height: 100%; }
-
-.strength-bar.lit {
-  background: var(--brand);
-}
-
-.strength-value {
-  font-size: 10.5px;
-  font-weight: 600;
-  color: var(--text-faint);
-  font-variant-numeric: tabular-nums;
-}
-
-.strength-meter.maxed .strength-value {
+.metadata-icon {
+  font-size: 18px;
+  vertical-align: middle;
   color: var(--brand);
+  cursor: help;
 }
+
+.metadata-icon.empty {
+  color: var(--text-faint);
+  opacity: 0.35;
+  cursor: default;
+}
+
+.metadata-tooltip {
+  display: none;
+  position: absolute;
+  right: calc(100% + 8px);
+  top: -6px;
+  z-index: 2;
+  grid-template-columns: auto 1fr;
+  gap: 4px 14px;
+  margin: 0;
+  width: max-content;
+  max-width: 320px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #111827;
+  color: #f9fafb;
+  font-size: 11.5px;
+  font-weight: 400;
+  line-height: 1.45;
+  white-space: normal;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+}
+
+.metadata-hover:hover .metadata-tooltip { display: grid; }
+
+.metadata-tooltip dt { color: #9ca3af; font-weight: 600; white-space: nowrap; }
+.metadata-tooltip dd { margin: 0; word-break: break-word; }
 
 /* ── footer ─────────────────────────────────────────────────────── */
 

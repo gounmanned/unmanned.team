@@ -36,19 +36,20 @@ class TenantScreen {
         document.getElementById('signal-count').textContent = footnote;
     }
 
-    strength(value) {
-        const lit = Math.min(value, 10);
-        const maxed = value >= 10;
+    metadata(meta) {
+        const entries = Object.entries(meta ?? {});
+        if (!entries.length) {
+            return `<span class="material-symbols-outlined metadata-icon empty">data_object</span>`;
+        }
 
-        const bars = Array.from({ length: 10 }, (_, i) =>
-            `<span class="strength-bar${i < lit ? ' lit' : ''}"></span>`
-        ).join('');
+        const esc = s => String(s).replace(/[&<>"']/g, c => `&#${c.charCodeAt(0)};`);
+        const rows = entries.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('');
 
         return `
-            <div class="strength-meter${maxed ? ' maxed' : ''}">
-            <span class="strength-bars">${bars}</span>
-            <span class="strength-value">${value}${maxed ? '+' : ''}</span>
-            </div>
+            <span class="metadata-hover">
+                <span class="material-symbols-outlined metadata-icon">data_object</span>
+                <dl class="metadata-tooltip">${rows}</dl>
+            </span>
         `;
     }
 
@@ -179,7 +180,7 @@ class TenantScreen {
                 <td class="severity"></td>
                 <td class="name" title="${signal.name}">${signal.name.substring(0, 99)}</td>
                 <td class="id">#${signal.id}</td>
-                <td class="strength">${this.strength(signal.metadata?.strength ?? 0)}</td>
+                <td class="metadata">${this.metadata(signal.metadata)}</td>
                 <td class="source">${signal.asset}</td>
                 <td class="created">${Workspace.date(signal.created)}</td>
                 <td class="autoclose"></td>

@@ -51,7 +51,91 @@
   color: var(--text-faint, #9ca3af);
 }
 
-/* ── table ──────────────── */
+/* ── trend ──────────────────────────────────────────────────────── */
+
+#trend-section {
+  margin-bottom: 24px;
+}
+
+.trend-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 14px 8px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  box-sizing: border-box;
+}
+
+.trend-chart-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.trend-chart-label {
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--brand);
+}
+
+.trend-chart-month {
+  font-size: 11.5px;
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+#trend-svg {
+  display: block;
+  width: 100%;
+  height: 100px;
+  overflow: visible;
+}
+
+#trend-svg .trend-baseline {
+  stroke: var(--line);
+  stroke-width: 1;
+}
+
+#trend-svg .trend-line {
+  fill: none;
+  stroke: var(--brand);
+  stroke-width: 1.75;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+#trend-svg .trend-axis text,
+#trend-svg .trend-max {
+  font-size: 9.5px;
+  fill: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+#trend-svg .trend-today,
+#trend-svg .trend-today-pulse {
+  fill: var(--brand);
+}
+
+#trend-svg .trend-today-pulse {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: trend-pulse 2s ease-out infinite;
+}
+
+@keyframes trend-pulse {
+  0%   { transform: scale(1);   opacity: 0.5; }
+  100% { transform: scale(3.5); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #trend-svg .trend-today-pulse { animation: none; opacity: 0; }
+}
+
+/* ── table ──────────────────────────────────────────────────────── */
 
 #signal-table-wrap {
   flex: 1;
@@ -223,7 +307,7 @@ tr[data-status="CV"] td.autoclose {
   color: var(--brand);
 }
 
-/* ── footer ──────────────── */
+/* ── footer ─────────────────────────────────────────────────────── */
 
 .links {
   position: fixed;
@@ -324,154 +408,4 @@ tr[data-status="CV"] td.autoclose {
 .links .toggle-btn.active .knob::after {
   transform: translateX(13px);
   background: var(--brand);
-}
-
-/* ── choke point ──────────────── */
-
-.chokepoint-callout {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  width: 100%;
-  height: auto;
-  min-height: 0;
-  margin-bottom: 20px;
-  padding: 20px;
-  background: white;
-  box-sizing: border-box;
-  border-radius: 12px;
-  border: 1px solid var(--line);
-  cursor: pointer;
-  overflow: visible;
-  isolation: isolate;
-  box-sizing: border-box;
-  transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
-}
-
-.chokepoint-callout::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  padding: 1px;
-  border-radius: inherit;
-  background: white;
-  background-size: 220% 220%;
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask-composite: exclude;
-  pointer-events: none;
-  animation: chokepoint-sheen 4s ease-in-out infinite;
-}
-
-@keyframes chokepoint-sheen {
-  0%   { background-position: 0% 50%; }
-  100% { background-position: 200% 50%; }
-}
-
-.chokepoint-callout:hover {
-  transform: translateY(-1px);
-  border-color: rgba(224,18,128,0.45);
-  box-shadow: 0 8px 24px -12px rgba(224,18,128,0.35);
-}
-
-.chokepoint-callout:active { transform: translateY(0); }
-
-/* ── icon / logo ────────────────────────────────────────────────── */
-
-.chokepoint-icon {
-  background-color: white;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  z-index: 1;
-}
-
-.chokepoint-icon::after {
-  content: '';
-  position: absolute;
-  inset: -6px;
-  border-radius: 50%;
-  border: 1px solid color-mix(in srgb, var(--brand) 45%, var(--line));
-  animation: chokepoint-pulse 2.2s ease-out infinite;
-}
-
-@keyframes chokepoint-pulse {
-  0%   { transform: scale(0.75); opacity: 0.9; }
-  80%  { transform: scale(1.35); opacity: 0; }
-  100% { transform: scale(1.35); opacity: 0; }
-}
-
-.chokepoint-logo {
-  width: 24px;
-  height: 24px;
-  object-fit: contain;
-  z-index: 2;
-}
-
-/* ── body / text ────────────────────────────────────────────────── */
-
-.chokepoint-body { flex: 1; min-width: 0; z-index: 1; }
-
-.chokepoint-title-row {
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.chokepoint-label {
-  font-size: 10.5px;
-  font-weight: 800;
-  letter-spacing: 0.6px;
-  text-transform: uppercase;
-  color: var(--brand);
-}
-
-.chokepoint-name {
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--text-body);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.chokepoint-meta {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 4px 12px;
-  margin-top: 4px;
-  font-size: 11.5px;
-  color: var(--text-faint);
-}
-
-.chokepoint-meta .cp-field { color: var(--text-body); font-weight: 600; }
-
-.chokepoint-meta .cp-dot {
-  width: 3px;
-  height: 3px;
-  border-radius: 50%;
-  background: var(--line);
-  display: inline-block;
-}
-
-.chokepoint-explainer {
-  margin: 6px 0 4px;
-  font-size: 11.5px;
-  line-height: 1.4;
-  color: var(--text-faint);
-  max-width: 640px;
-}
-
-@media (max-width: 640px) {
-  .chokepoint-callout { flex-wrap: wrap; }
-  .chokepoint-explainer { max-width: 100%; }
 }

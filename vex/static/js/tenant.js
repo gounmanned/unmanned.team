@@ -6,9 +6,8 @@ class TenantScreen {
         this.month = new Date();
         this.listen();
 
-        // add-ons
+        new ResizeObserver(() => this.renderTrend()).observe(document.getElementById('trend-svg'));
         this.notifications = new Notifications(this.state);
-        this.banner = new Banner(this.state);
     }
 
     async reload() {
@@ -22,10 +21,9 @@ class TenantScreen {
             this.api.reset();
             this.table.clear();
             this.table.watermark(true);
-            this.generateChokepoint();
+            this.renderTrend();
             this.count();
         }).then(() => {
-            this.banner.refresh();
             this.notifications.refresh();
         });
     }
@@ -61,31 +59,77 @@ class TenantScreen {
         });
     }
 
-    generateChokepoint() {
-        const callout = document.getElementById('chokepoint-callout');
-        if (!callout) return;
+    scheduleTrend() {
+        if (this._trendFrame) return;
+        this._trendFrame = requestAnimationFrame(() => {
+            this._trendFrame = null;
+            this.renderTrend();
+        });
+    }
 
-        const candidates = Object.values(this.state.signals[this.state.account()] ?? {})
-            .filter(s => s.status?.startsWith('O') && s.metadata?.chokepoint);
+    renderTrend() {
+        const now = new Date();
+        const year = now.getFullYear(), month = now.getMonth(), today = now.getDate();
+        const days = new Date(year, month + 1, 0).getDate();
 
-        if (!candidates.length) {
-            callout.style.display = 'none';
-            this.chokepoint = null;
-            return;
-        }
+        const signals = Object.values(this.state.signals?.[this.state.account()] ?? {}).filter(s => {
+            const d = new Date(s.created);
+            return d.getFullYear() === year && d.getMonth() === month;
+        });
 
-        this.chokepoint = candidates.sort((a, b) =>
-            new Date(b.metadata.chokepoint) - new Date(a.metadata.chokepoint)
-        )[0];
+        const counts = new Array(days).fill(0);
+        signals.forEach(s => counts[new Date(s.created).getDate() - 1]++);
 
-        document.getElementById('chokepoint-name').textContent = this.chokepoint.name;
-        document.getElementById('chokepoint-created').textContent = Workspace.date(this.chokepoint.created);
-        document.getElementById('chokepoint-updated').textContent = Workspace.date(this.chokepoint.updated);
+        document.getElementById('trend-month').textContent =
+            now.toLocaleString(undefined, { month: 'long', year: 'numeric' });
 
-        const logo = document.getElementById('chokepoint-logo');
-        logo.onerror = () => { logo.src = 'static/img/source/vex.png'; };
-        logo.src = `static/img/source/${this.chokepoint.source}.png`;
-        callout.style.display = 'flex';
+        // chart
+        const svg = document.getElementById('trend-svg');
+        const W = svg.clientWidth, H = svg.clientHeight;
+        if (!W || !H) return;
+
+        const pad = { t: 10, r: 6, b: 18, l: 6 };
+        const max = Math.max(1, ...counts);
+        const step = (W - pad.l - pad.r) / (days - 1);
+        const x = i => pad.l + i * step;
+        const y = v => pad.t + (1 - v / max) * (H - pad.t - pad.b);
+        const base = y(0);
+
+        // x-axis spans the whole month; the line stops at today
+        const pts = counts.slice(0, today).map((v, i) => [x(i), y(v)]);
+        const line = pts.map(([px, py], i) => `${i ? 'L' : 'M'}${px.toFixed(1)},${py.toFixed(1)}`).join(' ');
+        const [lx, ly] = pts.at(-1);
+        const area = `${line} L${lx.toFixed(1)},${base} L${pts[0][0].toFixed(1)},${base} Z`;
+
+        const ticks = [1, 8, 15, 22, days].map(d => {
+            const anchor = d === 1 ? 'start' : d === days ? 'end' : 'middle';
+            return `<text x="${x(d - 1)}" y="${H - 4}" text-anchor="${anchor}">${d}</text>`;
+        }).join('');
+
+        const hits = counts.map((v, i) => {
+            const label = new Date(year, month, i + 1).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+            return `<rect x="${x(i) - step / 2}" y="0" width="${step}" height="${H}" fill="transparent">
+                      <title>${label}: ${v} signal${v === 1 ? '' : 's'}</title>
+                    </rect>`;
+        }).join('');
+
+        svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+        svg.innerHTML = `
+            <defs>
+              <linearGradient id="trend-fill" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" style="stop-color:var(--brand);stop-opacity:.18"/>
+                <stop offset="100%" style="stop-color:var(--brand);stop-opacity:0"/>
+              </linearGradient>
+            </defs>
+            <line class="trend-baseline" x1="${pad.l}" x2="${W - pad.r}" y1="${base}" y2="${base}"/>
+            <text class="trend-max" x="${W - pad.r}" y="${pad.t - 2}" text-anchor="end">peak ${max}</text>
+            <path d="${area}" fill="url(#trend-fill)"/>
+            <path class="trend-line" d="${line}"/>
+            <circle class="trend-today-pulse" cx="${lx}" cy="${ly}" r="3"/>
+            <circle class="trend-today" cx="${lx}" cy="${ly}" r="3"/>
+            <g class="trend-axis">${ticks}</g>
+            ${hits}
+        `;
     }
 
     listen() {
@@ -93,7 +137,7 @@ class TenantScreen {
             const upsert = (row, signal) => {
                 this.table.add(row, signal);
                 this.table.watermark(false);
-                this.generateChokepoint();
+                this.scheduleTrend();
             };
 
             this.state.track(ev.signal);
@@ -142,10 +186,6 @@ class TenantScreen {
                 await this.reset();
                 await this.reload();
             });
-        });
-
-        document.getElementById('chokepoint-callout').addEventListener('click', () => {
-            if (this.chokepoint) this.open(this.chokepoint);
         });
     }
 }

@@ -139,3 +139,27 @@
     width: auto;
   }
 }
+
+/** onboarding steps **/
+
+#notification-panel-list li.notification-setup {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+#notification-panel-list li.notification-setup:hover {
+    background: var(--surface);
+}
+
+.notification-setup-icon {
+    font-size: 18px;
+    color: var(--brand);
+    margin-top: 2px;
+}
+
+#notification-panel-list .notification-setup .notification-name {
+    color: var(--brand);
+}

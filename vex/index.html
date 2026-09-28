@@ -13,7 +13,6 @@
       <link rel="stylesheet" href="static/css/app.css?v=${v}">
       <link rel="stylesheet" href="static/css/audit.css?v=${v}">
       <link rel="stylesheet" href="static/css/notification.css?v=${v}">
-      <link rel="stylesheet" href="static/css/banner.css?v=${v}">
       <link rel="stylesheet" href="static/css/managed.css?v=${v}">
       <link rel="stylesheet" href="static/css/inventory.css?v=${v}">
       <link rel="stylesheet" href="static/css/tenant.css?v=${v}">
@@ -58,53 +57,6 @@
   </site-header>
 
   <main class="container">
-    <section id="banner-section">
-      <div class="getting-started" id="getting-started">
-        <div class="gs-grid">
-          <div class="gs-card" id="gs-email">
-            <div class="gs-card-main">
-              <div class="gs-card-top">
-                <span class="material-symbols-outlined gs-check">radio_button_unchecked</span>
-                <span class="gs-title">Connect identity</span>
-              </div>
-              <p class="gs-desc">Monitor your identity provider for incidents, gaps, and to build an asset inventory.</p>
-            </div>
-          </div>
-
-          <div class="gs-card" id="gs-domain">
-            <div class="gs-card-main">
-              <div class="gs-card-top">
-                <span class="material-symbols-outlined gs-check">radio_button_unchecked</span>
-                <span class="gs-title">Connect registrar</span>
-              </div>
-              <p class="gs-desc">Track DNS changes, domain renewal notices, and security alerts from DDoS attacks.</p>
-            </div>
-          </div>
-
-          <div class="gs-card" id="gs-endpoint">
-            <div class="gs-card-main">
-              <div class="gs-card-top">
-                <span class="material-symbols-outlined gs-check">radio_button_unchecked</span>
-                <span class="gs-title">Connect endpoints</span>
-              </div>
-              <p class="gs-desc">Pull signals directly from your EDR or RMM to catch suspicious device activity.</p>
-            </div>
-          </div>
-
-          <div class="gs-card" id="gs-notifications">
-            <div class="gs-card-main">
-              <div class="gs-card-top">
-                <span class="material-symbols-outlined gs-check">radio_button_unchecked</span>
-                <span class="gs-title">Connect notifications</span>
-              </div>
-              <p class="gs-desc">Choose where you want to receive real-time alerts when new signals are discovered.</p>
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </section>
-
     <section id="trend-section">
       <div class="trend-chart">
         <div class="trend-chart-head">
@@ -591,7 +543,6 @@
     <script src="static/js/workspace.js?v=${v}"><\/script>
     <script src="static/js/table.js?v=${v}"><\/script>
     <script src="static/js/notification.js?v=${v}"><\/script>
-    <script src="static/js/banner.js?v=${v}"><\/script>
     <script src="static/js/tenant.js?v=${v}"><\/script>
     <script src="static/js/sidebars/signal.js?v=${v}"><\/script>
     <script src="static/js/sidebars/backup.js?v=${v}"><\/script>

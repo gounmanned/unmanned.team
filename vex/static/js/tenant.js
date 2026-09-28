@@ -7,10 +7,7 @@ class TenantScreen {
         this.listen();
 
         new ResizeObserver(() => this.renderTrend()).observe(document.getElementById('trend-svg'));
-
-        // add-ons
         this.notifications = new Notifications(this.state);
-        this.banner = new Banner(this.state);
     }
 
     async reload() {
@@ -27,7 +24,6 @@ class TenantScreen {
             this.renderTrend();
             this.count();
         }).then(() => {
-            this.banner.refresh();
             this.notifications.refresh();
         });
     }

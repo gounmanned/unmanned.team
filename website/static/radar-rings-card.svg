@@ -1,0 +1,9 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="300" height="300" viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Radar rings" opacity="0.2">
+<circle id="ring-120" cx="150" cy="150" r="44.5" stroke="#DCDCD8"/>
+<circle id="ring-240" cx="150" cy="150" r="105.25" stroke="#DCDCD8"/>
+<circle id="ring-360" cx="150" cy="150" r="134.5" stroke="#DCDCD8"/>
+<rect id="tick" x="150" y="7.5" width="0.333333" height="285" stroke="#DCDCD8"/>
+<rect id="tick_2" x="7.5" y="150" width="285" height="0.333333" stroke="#DCDCD8"/>
+</g>
+</svg>

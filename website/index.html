@@ -5,635 +5,641 @@
 <script>document.documentElement.classList.replace('no-js','js');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Unmanned</title>
-<meta name="description" content="Vex is an autonomous red team that plugs into your business, finds your choke points, and hacks you before anyone else gets the chance.">
+<meta name="description" content="Can your defense catch one attack? VEX runs one real attack and gives you a verified result: caught or missed, and how fast.">
 <link rel="apple-touch-icon" href="https://cdn.unmanned.team/img/logo.png">
 <link rel="icon" type="image/png" href="https://cdn.unmanned.team/img/logo.png">
 <meta property="og:title" content="VEX — Unmanned, Inc." />
-<meta property="og:description" content="An autonomous red team that finds your choke points before an attacker does." />
+<meta property="og:description" content="Can your defense catch one attack? One real attack. One clock. One verified answer." />
 <meta property="og:url" content="https://unmanned.team" />
 <meta property="og:type" content="website" />
 <link rel="stylesheet" href="https://cdn.unmanned.team/css/global.css">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;800&display=swap" rel="stylesheet">
 <style>
   :root{
     --ink:#0b0c0d;
     --white:#fcfcfa;
     --pink:#e01280;
-    --pink-dim:rgba(224,18,128,0.45);
+    --pink-text:#d1107a;     /* pink for TEXT on light backgrounds (passes 4.5:1) */
+    --pink-on-dark:#e81385;  /* pink for TEXT on dark backgrounds */
     --gray-line:#dcdcd8;
+    --gray-faint:#c4c4c4;
     --surface-dark:#6c6c70;
+    --surface-gray:#f7f7f7;
+    --body:#2b2b2b;
+    --body-soft:#4b4c52;
+    --nav-link:#6b7280;      /* header links (4.8:1 on white) */
     --db-ink:#f3f3f0;
     --db-mid:#8a8a8e;
+    --classbar-h:26px;
   }
   *{box-sizing:border-box;}
-  html{overflow-x:hidden;scroll-behavior:smooth;}
-  body{
-    margin:0;
-    background:var(--surface);
-    color:var(--ink);
-    -webkit-font-smoothing:antialiased;
-  }
+  html{overflow-x:hidden;scroll-behavior:smooth;scroll-padding-top:40px;scrollbar-gutter:stable;}
+  body{margin:0;padding-top:var(--classbar-h);background:var(--surface);color:var(--ink);-webkit-font-smoothing:antialiased;}
+  h1,h2,h3,p{margin:0;}
   .mono{letter-spacing:0.04em;}
   a{color:inherit;}
   ::selection{background:var(--pink);color:#fff;}
-
-  /* ---------- GRID BACKDROP ---------- */
-  .grid-bg{
-    position:absolute; inset:0;
-    background-image:
-      linear-gradient(to right, rgba(11,12,13,0.045) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(11,12,13,0.045) 1px, transparent 1px);
-    background-size:44px 44px;
-    mask-image:radial-gradient(ellipse 70% 60% at 50% 35%, #000 40%, transparent 90%);
-    pointer-events:none;
-  }
-  .dark-frame .grid-bg{
-    background-image:
-      linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px);
-  }
+  a:focus-visible,button:focus-visible{outline:1.5px solid var(--pink);outline-offset:4px;}
+  .wrap{width:min(1100px,calc(100% - 48px));margin:0 auto;}
 
   /* ---------- STATUS DOT ---------- */
   .status-dot{
-    width:6px;height:6px;border-radius:50%;
-    background:var(--pink);
-    box-shadow:0 0 0 0 rgba(224,18,128,0.5);
-    animation:pulse 2.2s infinite;
-    flex-shrink:0;display:inline-block;
+    width:8px;height:8px;border-radius:50%;background:var(--pink);
+    box-shadow:0 0 0 0 rgba(224,18,128,0.5);animation:pulse 2.2s infinite;flex-shrink:0;display:inline-block;
   }
   @keyframes pulse{
     0%{box-shadow:0 0 0 0 rgba(224,18,128,0.45);}
     70%{box-shadow:0 0 0 8px rgba(224,18,128,0);}
     100%{box-shadow:0 0 0 0 rgba(224,18,128,0);}
   }
-
-  .eyebrow-label{
-    font-size:11px;letter-spacing:0.18em;text-transform:uppercase;
-    color:var(--surface-dark);display:flex;align-items:center;gap:11px;
-  }
+  .eyebrow-label{font-size:11px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;color:var(--surface-dark);display:flex;align-items:center;gap:11px;}
   .dark-frame .eyebrow-label{color:var(--db-mid);}
 
   /* ---------- CORNER MARKS ---------- */
-  .corner{
-    position:absolute;
-    width:var(--corner-size,28px);height:var(--corner-size,28px);
-    border-color:var(--ink);opacity:0.55;
-  }
-  .dark-frame .corner{border-color:var(--db-ink);}
-  .corner.tl{border-top:1.5px solid;border-left:1.5px solid;}
-  .corner.tr{border-top:1.5px solid;border-right:1.5px solid;}
-  .corner.bl{border-bottom:1.5px solid;border-left:1.5px solid;}
-  .corner.br{border-bottom:1.5px solid;border-right:1.5px solid;}
+  .corner{position:absolute;width:var(--corner-size,28px);height:var(--corner-size,28px);border-color:var(--ink);opacity:0.55;}
+  .corner.tl{border-top:1px solid;border-left:1px solid;}
+  .corner.tr{border-top:1px solid;border-right:1px solid;}
+  .corner.bl{border-bottom:1px solid;border-left:1px solid;}
+  .corner.br{border-bottom:1px solid;border-right:1px solid;}
 
-  .hud-frame{position:fixed;inset:0;pointer-events:none;z-index:40;}
-  .hud-frame .corner.tl{top:46px;left:20px;}
-  .hud-frame .corner.tr{top:46px;right:20px;}
-  .hud-frame .corner.bl{bottom:20px;left:20px;}
-  .hud-frame .corner.br{bottom:20px;right:20px;}
-
-  .hud-box{position:relative;}
-  .hud-box .corner{--corner-size:18px;}
-  .hud-box .corner.tl{top:0;left:0;}
-  .hud-box .corner.tr{top:0;right:0;}
-  .hud-box .corner.bl{bottom:0;left:0;}
-  .hud-box .corner.br{bottom:0;right:0;}
-
-  /* ---------- WORDMARK RETICLE ---------- */
-  .wordmark-frame{position:relative;display:inline-block;}
-  .wordmark-frame .corner{
-    --corner-size:26px;border-color:var(--pink);
-    opacity:0;transform:scale(1.5);
-    animation:lockOn 0.9s cubic-bezier(0.2,0.7,0.2,1) 0.5s forwards;
+  /* ---------- HUD CORNERS ----------
+     Four corner marks fixed to the screen. The top two sit just under the header and
+     slide up and down with it (hide on scroll); the bottom two stay put.
+     --hud-inset is the gap from the edges, --hud-size the length of each line. */
+  .hud-frame{--hud-inset:12px;--hud-size:12px;position:fixed;top:0;right:0;bottom:0;left:0;z-index:40;pointer-events:none;}
+  .hud-frame .corner{--corner-size:var(--hud-size);border-color:var(--gray-faint);border-width:2px;opacity:0.75;}
+  .hud-frame .corner.tl,.hud-frame .corner.tr{
+    top:calc(var(--classbar-h) + var(--top-h, 61px) + var(--hud-inset));
+    transition:transform 0.3s cubic-bezier(0.4,0,0.2,1); /* same timing as the header */
   }
-  .wordmark-frame .corner.tl{top:-16px;left:-22px;}
-  .wordmark-frame .corner.tr{top:-16px;right:-22px;animation-delay:0.58s;}
-  .wordmark-frame .corner.bl{bottom:-12px;left:-22px;animation-delay:0.66s;}
-  .wordmark-frame .corner.br{bottom:-12px;right:-22px;animation-delay:0.74s;}
-  @keyframes lockOn{
-    0%{opacity:0;transform:scale(1.5);}
-    60%{opacity:0.9;}
-    100%{opacity:0.75;transform:scale(1);}
+  .hud-frame .corner.tl,.hud-frame .corner.bl{left:var(--hud-inset);}
+  .hud-frame .corner.tr,.hud-frame .corner.br{right:var(--hud-inset);}
+  .hud-frame .corner.bl,.hud-frame .corner.br{bottom:var(--hud-inset);}
+  html.header-hidden .hud-frame .corner.tl,html.header-hidden .hud-frame .corner.tr{
+    transform:translateY(calc(-1 * (var(--classbar-h) + var(--top-h, 61px))));
   }
-
-  /* ---------- SCANLINE (one pass, on load) ---------- */
-  .scan-sweep{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:1;}
-  .scan-sweep::after{
-    content:'';position:absolute;left:0;right:0;height:120px;top:-120px;
-    background:linear-gradient(to bottom, rgba(224,18,128,0) 0%, rgba(224,18,128,0.07) 50%, rgba(224,18,128,0) 100%);
-    animation:sweep 2.4s cubic-bezier(0.4,0,0.2,1) 1;
-  }
-  @keyframes sweep{0%{top:-120px;}100%{top:100%;}}
+  @media (max-width:700px){.hud-frame{--hud-inset:8px;--hud-size:6px;}}
+  /* When the script is running (.is-tracking), the corners frame the section you're looking at instead:
+     the script moves them up and down with transform. Without JavaScript they stay at the screen corners. */
+  .hud-frame.is-tracking .corner{top:0;bottom:auto;transition:border-color 0.3s ease, opacity 0.3s ease;will-change:transform;}
+  .hud-frame.on-dark .corner{border-color:var(--pink);opacity:1;} /* framing a dark section (the Get started CTA): brand pink */
 
   /* ---------- CLASSIFICATION BAR ---------- */
   .classbar{
-    position:fixed;top:0;left:0;right:0;z-index:60;
-    background:#0b0c0d;color:#87878c;
-    font-size:9.5px;
-    letter-spacing:0.16em;text-transform:uppercase;text-align:center;padding:6px 0;
+    position:fixed;top:0;left:0;right:0;z-index:60;background:var(--ink);color:var(--gray-faint);
+    font-size:9.5px;line-height:1.5;letter-spacing:0.16em;text-transform:uppercase;text-align:center;padding:6px 0;
   }
 
+  /* ---------- STICKY HEADER ---------- */
+  .site-top{position:sticky;top:var(--classbar-h);z-index:50;}
+
+  .site-header{background:var(--surface);border-bottom:1px solid var(--gray-line);}
+  .site-top .site-header{box-shadow:0 4px 8px -4px rgba(11,12,13,0.1);} /* very slight shadow, bottom edge only (the negative spread hides it on the sides) */
+  .header-inner{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:18px 0;}
+  .header-left{display:flex;align-items:center;gap:16px;min-width:0;}
+  .brand{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:800;line-height:1.5;letter-spacing:0.01em;text-decoration:none;color:var(--ink);}
+  .brand .status-dot{animation-iteration-count:2;} /* header logo dot ripples twice, then rests */
+  .brand-tag{font-size:11px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;color:var(--surface-dark);white-space:nowrap;}
+  .menu-btn{flex-shrink:0;width:32px;height:32px;padding:0;border:none;background:none;cursor:pointer;display:flex;}
+  .menu-btn img{width:32px;height:32px;display:block;}
+
+  /* header links on desktop; on mobile they're swapped for the menu button */
+  .header-links{display:flex;align-items:center;gap:32px;}
+  .header-link{display:inline-flex;align-items:center;gap:4px;font-weight:600;font-size:15px;line-height:1.5;color:var(--nav-link);text-decoration:none;transition:color 0.2s ease;}
+  .header-link:hover{color:var(--ink);}
+  .header-link[aria-current="page"]{color:var(--ink);} /* the page you're on */
+  .header-link--cta{border-bottom:1px solid var(--pink);}
+  .header-link--cta img{width:16px;height:16px;transition:transform 0.2s ease;}
+  .header-link--cta:hover img{transform:translateX(3px);}
+  .site-top .menu-btn{display:none;}
   @media (max-width:700px){
-    .hud-frame .corner{width:16px;height:16px;}
-    .hud-frame .corner.tl,.hud-frame .corner.tr{top:60px;}
-    .hud-frame .corner.bl,.hud-frame .corner.br{bottom:12px;}
-    .hud-frame .corner.tl,.hud-frame .corner.bl{left:12px;}
-    .hud-frame .corner.tr,.hud-frame .corner.br{right:12px;}
+    .header-links{display:none;}
+    .site-top .menu-btn{display:flex;}
+  }
+
+  /* ---------- HIDE ON SCROLL ----------
+     Scrolling down slides the class bar, promo banner and header up out of view;
+     scrolling up brings them back. Each piece has its own timing so they move
+     together but slightly independently. The script at the bottom toggles
+     html.header-hidden. */
+  .classbar{transition:transform 0.4s cubic-bezier(0.49,0.025,0.685,1), opacity 0.4s cubic-bezier(0.49,0.025,0.685,1);}
+  .site-top .site-header{position:relative;z-index:1;transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);}
+  html.header-hidden .classbar{transform:translateY(-100%);opacity:0;}
+  html.header-hidden .site-top .site-header{transform:translateY(calc(-100% - var(--classbar-h) - var(--banner-h, 0px)));}
+
+  /* ---------- NAV MENU (opened by the menu button) ---------- */
+  /* slides down from under the class bar; visibility keeps closed links out of the tab order */
+  .nav-panel{
+    position:fixed;top:var(--classbar-h);left:0;right:0;bottom:0;z-index:55;background:var(--surface);
+    overflow-y:auto;overscroll-behavior:contain;
+    transform:translateY(-100%);visibility:hidden;
+    transition:transform 0.3s cubic-bezier(0.4,0,0.2,1), visibility 0s linear 0.3s;
+  }
+  .nav-panel.is-open{transform:translateY(0);visibility:visible;transition:transform 0.3s cubic-bezier(0.2,0.8,0.2,1), visibility 0s;}
+  html.nav-open,html.nav-open body{overflow:hidden;}
+  .nav-list{list-style:none;margin:0;padding:32px 0;display:flex;flex-direction:column;gap:13px;}
+  .nav-list li{padding-bottom:13px;border-bottom:1px solid var(--surface-alt);}
+  .nav-list a{display:flex;flex-direction:column;gap:4px;text-decoration:none;}
+  .nav-link{font-size:24px;line-height:1.5;letter-spacing:0.02em;color:var(--ink);}
+  .nav-sub{font-size:13.5px;line-height:1.5;color:var(--surface-dark);}
+  .nav-list a:hover .nav-link{color:var(--pink-text);}
+
+  @media (max-width:700px){
     .classbar{font-size:8px;}
+      .nav-link{font-size:20px;}
   }
+  @media (max-width:560px){.brand-tag{display:none;}}
 
-  /* ---------- HERO ---------- */
-  .hero{
-    position:relative;min-height:100svh;
-    display:flex;flex-direction:column;align-items:center;justify-content:center;
-    text-align:center;padding:150px 24px 70px;overflow:hidden;
-  }
-  .radar,.radar-echo{
-    position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;
-  }
-  .radar{width:min(900px,140vw);height:min(900px,140vw);z-index:0;}
-  .radar-echo{width:min(760px,140vw);height:min(760px,140vw);opacity:0.55;z-index:1;}
-  .radar svg,.radar-echo svg{width:100%;height:100%;}
-  .radar-ring{fill:none;stroke:var(--gray-line);stroke-width:1;stroke-opacity:0.45;animation:ringGlow 7.5s ease-in-out infinite;}
-  .radar-ring.r2{animation-delay:-2.5s;}
-  .radar-ring.r3{animation-delay:-5s;}
-  @keyframes ringGlow{
-    0%,100%{stroke:var(--gray-line);stroke-opacity:0.4;stroke-width:1;filter:none;}
-    50%{stroke:rgba(224,18,128,0.5);stroke-opacity:0.75;stroke-width:1.15;filter:drop-shadow(0 0 4px rgba(224,18,128,0.28));}
-  }
-  .radar-tick{stroke:var(--gray-line);stroke-width:1;}
-
-  .hero-eyebrow{position:relative;z-index:2;margin-bottom:26px;justify-content:center;}
-  h1.wordmark{
-    position:relative;z-index:2;
-    font-weight:700;
-    font-size:clamp(96px,19vw,260px);
-    letter-spacing:-0.02em;line-height:0.86;color:var(--ink);margin:0;
-  }
-  .tagline-row{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:16px;margin-top:34px;}
-  .tagline{font-size:clamp(24px,3vw,36px);letter-spacing:0.01em;color:var(--ink);font-weight:400;max-width:640px;margin:0;}
-  .hero-sub{
-    font-size:14px;color:var(--surface-dark);max-width:420px;line-height:1.6;
-  }
-  .hero-sub b{color:var(--ink);font-weight:600;}
-
-  @media (max-width:700px){
-    .hero{padding:130px 20px 60px;min-height:100vh;}
-    .radar{width:170vw;height:170vw;max-width:640px;max-height:640px;}
-    h1.wordmark{font-size:clamp(84px,40vw,220px);}
-    .wordmark-frame .corner{--corner-size:16px;}
-    .wordmark-frame .corner.tl,.wordmark-frame .corner.tr{top:-10px;}
-    .wordmark-frame .corner.bl,.wordmark-frame .corner.br{bottom:-6px;}
-    .wordmark-frame .corner.tl,.wordmark-frame .corner.bl{left:-10px;}
-    .wordmark-frame .corner.tr,.wordmark-frame .corner.br{right:-10px;}
-    .tagline-row{margin-top:20px;}
-    .tagline{font-size:24px;}
-  }
-  @media (max-width:400px){h1.wordmark{font-size:clamp(76px,38vw,170px);}}
-
+  /* ---------- DIVIDER ---------- */
   .divider{
-    position:relative;border-top:1px solid var(--gray-line);
-    display:flex;justify-content:space-between;padding:14px 56px;
-    font-size:10px;color:var(--surface-dark);
-  }
-  .dark-frame + .divider, .divider.on-dark{
-    border-top-color:rgba(255,255,255,0.14);color:var(--db-mid);background:#0b0c0d;
+    position:relative;border-top:1px solid var(--gray-line);display:flex;justify-content:space-between;gap:16px;
+    padding:14px 56px;font-size:10px;line-height:1.5;color:var(--surface-dark);
   }
   @media (max-width:700px){.divider{padding:14px 20px;}}
 
   /* ---------- SECTION SHELLS ---------- */
-  .section{position:relative;padding:150px 24px 150px;max-width:900px;margin:0 auto;}
-  @media (max-width:820px){.section{padding:96px 24px 110px;}}
-  .section-label{margin-bottom:26px;justify-content:flex-start;}
-  .section h2{
-    font-weight:500;
-    font-size:clamp(34px,4.2vw,52px);line-height:1.14;letter-spacing:-0.01em;margin:0 0 14px;
-  }
-  .section .subhead{
-    font-weight:500;font-size:clamp(17px,1.8vw,20px);
-    color:var(--pink);margin:0 0 28px;
-  }
-  .section p.lede{font-size:16px;line-height:1.75;color:#2b2b2b;max-width:640px;}
-  .section p.lede + p.lede{margin-top:16px;}
+  .band{position:relative;background:var(--surface);}
+  .band--gray{background:var(--surface-gray);}
+  /* 900px column with a 24px left gutter, matching the design grid (content starts at x=294 on a 1440 screen) */
+  .section{position:relative;max-width:900px;margin:0 auto;padding:52px 0 96px 24px;}
+  @media (max-width:948px){.section{padding-right:24px;}}
+  .section-head{display:flex;flex-direction:column;gap:16px;}
+  .section h2{font-weight:500;font-size:clamp(34px,4.2vw,52px);line-height:1.14;letter-spacing:-0.01em;}
+  .lede{font-size:16px;line-height:1.75;color:var(--body);max-width:680px;}
+  .lede b{font-weight:700;}
+  .section-head .lede{margin-top:8px;}
+  @media (max-width:820px){.section{padding-top:44px;padding-bottom:72px;}}
 
-  .dark-frame{background:#0b0c0d;color:var(--db-ink);}
-  .dark-frame p.lede{color:#c7c7ca;}
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:600;font-size:15px;line-height:1.5;
+    padding:15px 30px;text-decoration:none;background:var(--pink);color:#fff;border:none;cursor:pointer;white-space:nowrap;transition:opacity 0.2s ease;
+  }
+  .btn:hover{opacity:0.8;}
+  .text-link{display:inline-flex;align-items:center;gap:4px;font-size:18px;line-height:1.5;letter-spacing:0.02em;color:var(--pink-text);text-decoration:none;}
+  .text-link img{width:20px;height:20px;transition:transform 0.2s ease;}
+  .text-link:hover img{transform:translateY(3px);}
 
-  /* ---------- WHAT VEX DOES: ROAMING RETICLE + SECURITY HOLES ---------- */
-  .roam-field{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:3;}
-  .roam-reticle{
-    position:absolute;width:38px;height:38px;margin:-19px 0 0 -19px;
-    animation:roamMove 17s ease-in-out infinite, roamPulse 3.4s ease-in-out infinite;
+  /* ---------- HERO: THE QUESTION ---------- */
+  /* On tall screens the hero stretches to fill the first screen (minus the class bar and header),
+     leaving --hero-peek of the next section in view as a hint to scroll. It's a MINIMUM height,
+     so on shorter screens the hero keeps its natural height. --top-h is measured by the script at the bottom. */
+  .hero{
+    --hero-peek:24px;
+    position:relative;overflow:hidden;background:var(--surface);padding:39px 0;
+    display:flex;flex-direction:column;justify-content:center;
+    min-height:calc(100vh - var(--classbar-h) - var(--top-h, 60px) - var(--hero-peek));
+    min-height:calc(100svh - var(--classbar-h) - var(--top-h, 60px) - var(--hero-peek)); /* svh accounts for mobile browser bars */
   }
-  .roam-reticle .corner{--corner-size:12px;border-color:var(--pink);}
-  .roam-reticle .corner.tl{top:0;left:0;}
-  .roam-reticle .corner.tr{top:0;right:0;}
-  .roam-reticle .corner.bl{bottom:0;left:0;}
-  .roam-reticle .corner.br{bottom:0;right:0;}
-  @keyframes roamMove{
-    0%,13%  { top:56px; left:6%; }
-    19%,32% { top:56px; left:88%; }
-    38%,51% { top:calc(100% - 60px); left:14%; }
-    57%,70% { top:calc(100% - 60px); left:52%; }
-    76%,89% { top:calc(100% - 60px); left:86%; }
-    95%,100%{ top:56px; left:6%; }
+  .hero .section{width:100%;padding-top:52px;padding-bottom:56px;}
+  .hero-backdrop{position:absolute;top:0;left:50%;margin-left:-1468px;pointer-events:none;}
+  /* the two big ring sets share one center with the small rings inside the black card (behind the "1"),
+     so they hang off the card's wrapper and stay lined up at any screen width */
+  .proof-slot{position:relative;display:flex;}
+  .proof-slot > .proof-card{flex:1;}
+  .hero-rings{position:absolute;pointer-events:none;z-index:-1;}
+  .hero-rings--lg{top:-341px;left:-392px;}
+  .hero-rings--sm{top:-141px;left:-192px;}
+  .hero-body{position:relative;z-index:1;}
+  .hero h1{
+    margin-top:16px;font-weight:600;
+    font-size:clamp(40px,6vw,70px);line-height:0.99;letter-spacing:-0.03em;
   }
-  @keyframes roamPulse{
-    0%,72%  { transform:scale(1);    opacity:0.5; filter:none; }
-    86%     { transform:scale(1.45); opacity:1;   filter:drop-shadow(0 0 7px rgba(224,18,128,0.6)); }
-    100%    { transform:scale(1);    opacity:0.5; filter:none; }
-  }
+  .hero-lede{margin-top:24px;max-width:680px;font-size:18px;font-weight:300;line-height:1.75;color:var(--ink);}
+  .hero-lede b{font-weight:700;}
 
-  /* holes sit at the same 5 stops the reticle visits, and flash as it locks on */
-  .hole{
-    position:absolute;width:13px;height:13px;margin:-6.5px 0 0 -6.5px;
-    border-radius:50%;border:1px dashed var(--surface-dark);
-  }
-  .hole::after{
-    content:'';position:absolute;top:50%;left:50%;width:3px;height:3px;
-    margin:-1.5px 0 0 -1.5px;border-radius:50%;background:var(--surface-dark);
-  }
-  .hole-a{ top:56px; left:6%;  animation:holeFlashA 17s ease-in-out infinite; }
-  .hole-b{ top:56px; left:88%; animation:holeFlashB 17s ease-in-out infinite; }
-  .hole-c{ top:calc(100% - 60px); left:14%; animation:holeFlashC 17s ease-in-out infinite; }
-  .hole-d{ top:calc(100% - 60px); left:52%; animation:holeFlashD 17s ease-in-out infinite; }
-  .hole-e{ top:calc(100% - 60px); left:86%; animation:holeFlashE 17s ease-in-out infinite; }
+  .proof-cards{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:64px;}
+  .proof-card{position:relative;overflow:hidden;border-radius:4px;padding:36px;display:flex;flex-direction:column;justify-content:center;gap:14px;}
+  .proof-card--vendor{background:var(--white);border:1px solid var(--db-mid);color:var(--surface-dark);}
+  .proof-card--vex{background:var(--ink);color:#fff;box-shadow:0 0 12px -1px rgba(224,18,128,0.5);}
+  .proof-card > *{position:relative;z-index:1;}
+  .proof-card .proof-rings{position:absolute;left:-92px;top:-41px;z-index:0;pointer-events:none;opacity: .5;}
+  .proof-label{font-size:11px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;}
+  .proof-card--vex .proof-label{color:var(--pink-on-dark);}
+  .proof-num{position:relative;font-family:'JetBrains Mono',monospace;line-height:normal;letter-spacing:-0.03em;}
+  .proof-card--vendor .proof-num{height:90px;display:flex;align-items:center;font-weight:500;font-size:44px;text-decoration:line-through;white-space:nowrap;}
+  .proof-card--vex .proof-num{align-self:flex-start;font-weight:800;font-size:68px;}
+  .proof-num .reticle{position:absolute;left:-23px;right:-28px;top:9px;bottom:18px;pointer-events:none;}
+  .proof-num .corner{--corner-size:8px;border-color:var(--pink-on-dark);opacity:0.75;}
+  .proof-num .corner.tl{top:0;left:0;}
+  .proof-num .corner.tr{top:0;right:0;}
+  .proof-num .corner.bl{bottom:0;left:0;}
+  .proof-num .corner.br{bottom:0;right:0;}
+  .proof-desc{font-size:16px;line-height:1.5;}
 
-  @keyframes holeFlashA{
-    0%,100%{ opacity:0.5; transform:scale(1); border-color:var(--surface-dark); box-shadow:none; }
-    4%     { opacity:1;   transform:scale(1.5); border-color:var(--pink); box-shadow:0 0 7px rgba(224,18,128,0.55); }
-    11%    { opacity:0.5; transform:scale(1); border-color:var(--surface-dark); box-shadow:none; }
-  }
-  @keyframes holeFlashB{
-    0%,20%,100%{ opacity:0.5; transform:scale(1); border-color:var(--surface-dark); box-shadow:none; }
-    25%        { opacity:1;   transform:scale(1.5); border-color:var(--pink); box-shadow:0 0 7px rgba(224,18,128,0.55); }
-    30%        { opacity:0.5; transform:scale(1); border-color:var(--surface-dark); box-shadow:none; }
-  }
-  @keyframes holeFlashC{
-    0%,39%,100%{ opacity:0.5; transform:scale(1); border-color:var(--surface-dark); box-shadow:none; }
-    44%        { opacity:1;   transform:scale(1.5); border-color:var(--pink); box-shadow:0 0 7px rgba(224,18,128,0.55); }
-    49%        { opacity:0.5; transform:scale(1); border-color:var(--surface-dark); box-shadow:none; }
-  }
-  @keyframes holeFlashD{
-    0%,58%,100%{ opacity:0.5; transform:scale(1); border-color:var(--surface-dark); box-shadow:none; }
-    63%        { opacity:1;   transform:scale(1.5); border-color:var(--pink); box-shadow:0 0 7px rgba(224,18,128,0.55); }
-    68%        { opacity:0.5; transform:scale(1); border-color:var(--surface-dark); box-shadow:none; }
-  }
-  @keyframes holeFlashE{
-    0%,77%,100%{ opacity:0.5; transform:scale(1); border-color:var(--surface-dark); box-shadow:none; }
-    82%        { opacity:1;   transform:scale(1.5); border-color:var(--pink); box-shadow:0 0 7px rgba(224,18,128,0.55); }
-    87%        { opacity:0.5; transform:scale(1); border-color:var(--surface-dark); box-shadow:none; }
-  }
+  .find-out{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;margin-top:48px;}
+  .find-out p{font-weight:600;font-size:18px;line-height:1.5;}
 
-  /* ---------- HOW VEX WORKS: VERTICAL TIMELINE ---------- */
-  .timeline{position:relative;margin-top:64px;}
-  .timeline::before{
-    content:'';position:absolute;top:0;bottom:0;left:31px;width:1px;
-    background:var(--gray-line);z-index:0;
-  }
-  .timeline-step{position:relative;z-index:1;display:flex;gap:30px;padding:44px 0;}
-  .timeline-step:first-child{padding-top:0;}
-  .timeline-step:last-child{padding-bottom:0;}
-  .timeline-step + .timeline-step{border-top:1px solid var(--gray-line);}
-
-  .timeline-rail{flex:0 0 64px;display:flex;justify-content:center;}
-  .timeline-node{
-    width:64px;height:64px;border-radius:50%;background:var(--surface);
-    border:1.5px solid var(--gray-line);display:flex;align-items:center;justify-content:center;
-    position:relative;
-  }
-  .timeline-index{font-size:12px;color:var(--surface-dark);}
-  .timeline-step--hot .timeline-node{width:84px;height:84px;border-color:var(--pink);}
-  .timeline-node-ring{
-    position:absolute;inset:-10px;border:1px solid var(--pink-dim);border-radius:50%;
-    animation:ringGlow 4s ease-in-out infinite;
-  }
-  .timeline-choke-svg{width:60%;height:60%;}
-  .choke-line{stroke:var(--gray-line);stroke-width:1.2;}
-  .choke-dot{fill:var(--ink);}
-  .choke-node{fill:var(--pink);}
-
-  .timeline-content{flex:1;padding-top:8px;}
-  .timeline-tag{font-size:11px;letter-spacing:0.13em;text-transform:uppercase;color:var(--surface-dark);}
-  .timeline-tag.hot{color:var(--pink);font-weight:600;}
-  .timeline-heading{
-    font-weight:500;
-    font-size:clamp(20px,2.4vw,27px);letter-spacing:-0.01em;margin:8px 0 12px;
-  }
-  .timeline-desc{font-size:14.5px;line-height:1.75;color:#2b2b2b;max-width:480px;}
-  .timeline-icons{display:flex;gap:16px;margin-top:18px;}
-  .timeline-icons .channel-icon{width:22px;height:22px;object-fit:contain;}
-
-  @media (max-width:560px){
-    .timeline::before{left:23px;}
-    .timeline-step{gap:18px;padding:34px 0;}
-    .timeline-rail{flex-basis:48px;}
-    .timeline-node{width:48px;height:48px;}
-    .timeline-step--hot .timeline-node{width:64px;height:64px;}
-    .timeline-heading{margin:6px 0 8px;}
-  }
-
-  /* ---------- MANAGED BANNER (thin, full width, dark) ---------- */
-  .banner{
-    position:relative;background:#0b0c0d;color:var(--db-ink);overflow:hidden;
-    padding:76px 24px;
-  }
-  .banner-inner{position:relative;z-index:1;max-width:900px;margin:0 auto;display:flex;gap:48px;align-items:center;flex-wrap:wrap;}
-  .banner-graphic{
-    position:absolute;top:50%;left:0;transform:translate(-38%,-50%);
-    width:min(920px,90vw);height:min(920px,90vw);opacity:0.4;pointer-events:none;z-index:0;
-  }
-  .banner-graphic svg{width:100%;height:100%;}
-  .banner-content{flex:1 1 340px;min-width:260px;}
-  .banner h2{
-    font-weight:500;font-size:clamp(30px,3.6vw,42px);
-    letter-spacing:-0.01em;margin:0 0 18px;line-height:1.12;
-  }
-  .banner-body p{font-size:15.5px;line-height:1.75;color:#c7c7ca;margin:0 0 14px;}
-  .banner-link{
-    display:inline-flex;align-items:baseline;gap:8px;margin-top:4px;
-    font-weight:500;
-    font-size:15px;letter-spacing:0;color:var(--db-ink);text-decoration:none;
-    border-bottom:1px solid var(--pink);padding-bottom:4px;transition:opacity 0.2s ease;
-  }
-  .banner-link:hover{opacity:0.65;}
-  .banner-link .arrow{color:var(--pink);transition:transform 0.2s ease;display:inline-block;}
-  .banner-link:hover .arrow{transform:translateX(3px);}
   @media (max-width:700px){
-    .banner{padding:56px 20px;}
-    .banner-inner{gap:28px;}
-    .banner-graphic{opacity:0.25;}
+    .hero{padding:0;}
+    .proof-cards{grid-template-columns:1fr;margin-top:48px;}
+    .proof-card{padding:28px;}
+    .proof-card--vendor .proof-num{height:auto;font-size:clamp(24px,8vw,44px);}
+    .hero-rings--sm{display:none;}
+  }
+
+  /* ---------- HOW IT WORKS: VERTICAL TIMELINE ---------- */
+  .timeline{--rail:138px;--rail-gap:32px;position:relative;margin-top:64px;max-width:589px;}
+  .timeline::before{content:'';position:absolute;top:47px;bottom:76px;left:calc(var(--rail) / 2 - 1px);width:1px;background:var(--gray-line);}
+  .timeline-tag{
+    display:block;width:var(--rail);padding-bottom:8px;text-align:center;
+    font-size:11px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;color:var(--pink-text);
+  }
+  .timeline-step{position:relative;z-index:1;display:grid;grid-template-columns:var(--rail) minmax(0,1fr);column-gap:var(--rail-gap);align-items:start;padding-bottom:44px;}
+  .timeline-node{
+    justify-self:center;width:64px;height:64px;border-radius:50%;background:var(--surface);
+    border:1.5px solid var(--gray-faint);box-shadow:0 2px 3px rgba(0,0,0,0.16);
+    display:flex;align-items:center;justify-content:center;
+    font-size:11px;line-height:1.5;letter-spacing:0.18em;padding-left:0.18em;color:var(--ink);
+  }
+  .timeline-heading{font-weight:500;font-size:clamp(20px,2.4vw,27px);line-height:1.5;letter-spacing:-0.01em;}
+  .timeline-desc{font-size:14.5px;line-height:1.75;color:var(--body);}
+  .timeline-step--clock{align-items:center;}
+  .timeline-clock{position:relative;justify-self:center;width:140px;height:141.5px;}
+  .timeline-clock img{position:absolute;left:-17.25px;top:-15.22px;}
+  .timeline-clock .clock-readout{
+    position:absolute;left:18px;top:77px;width:101px;text-align:center;
+    font-family:'JetBrains Mono',monospace;font-weight:800;font-size:16px;line-height:1.5;letter-spacing:0.02em;color:var(--ink);
+  }
+  @media (max-width:560px){
+    .timeline{--rail:98px;--rail-gap:18px;}
+    .timeline-clock{transform:scale(0.7);margin:-21px;}
+  }
+
+  /* ---------- SCORECARD ---------- */
+  .metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin:48px 0;background:var(--surface);border:1px solid var(--gray-line);border-radius:4px;}
+  .metric{display:flex;flex-direction:column;gap:10px;padding:28px;}
+  .metric + .metric{border-left:1px solid var(--gray-line);}
+  .metric-label{font-size:11px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;color:var(--surface-dark);}
+  .metric-value{display:flex;align-items:center;gap:10px;font-family:'JetBrains Mono',monospace;font-weight:500;font-size:24px;line-height:normal;letter-spacing:-0.02em;}
+  .metric-value img{width:32px;height:32px;}
+  .metric--missed{position:relative;box-shadow:0 0 7px 2px #b3242f;}
+  .metric--missed .metric-value{color:var(--sev-1);}
+  .metric + .metric--missed{border-left-color:transparent;}
+  .scorecard-note{max-width:664px;}
+  @media (max-width:760px){
+    .metrics{grid-template-columns:repeat(2,minmax(0,1fr));}
+    .metric:nth-child(3){border-left:none;}
+    .metric:nth-child(n+3){border-top:1px solid var(--gray-line);}
+    .metric{padding:22px;}
+    .metric-value{font-size:20px;}
+  }
+
+  /* ---------- WHERE THIS COMES FROM ---------- */
+  .about .section{padding-top:64px;padding-bottom:64px;}
+  .about-body{margin-top:8px;max-width:700px;}
+  .about-body .lede{max-width:none;}
+  .about-body .lede b{font-weight:600;}
+
+  /* team cards: photo + role + name, with a thin line between cards */
+  .team{margin-top:24px;display:flex;flex-direction:column;gap:16px;}
+  .team-intro{font-weight:600;font-size:16px;line-height:1.75;color:var(--body);}
+  .team-list{list-style:none;margin:0;padding:0;display:flex;gap:48px;}
+  .team-list[hidden]{display:none;}
+  .team-card{position:relative;flex:0 0 252px;display:flex;flex-direction:column;gap:8px;}
+  .team-card + .team-card::before{content:'';position:absolute;top:0;bottom:0;left:-24px;border-left:1px solid var(--gray-line);}
+  .team-person{display:flex;align-items:center;gap:12px;}
+  .team-photo{flex-shrink:0;width:88px;height:88px;background:var(--surface-alt);overflow:hidden;}
+  .team-photo img{display:block;width:88px;height:88px;object-fit:cover;}
+  .team-role{font-size:11px;line-height:1.5;letter-spacing:0.13em;text-transform:uppercase;color:var(--body);}
+  .team-name{margin-top:4px;font-weight:600;font-size:16px;line-height:normal;color:var(--body);}
+  .team-detail{font-size:12px;line-height:1.5;letter-spacing:0.03em;color:var(--body-soft);}
+  @media (max-width:820px){
+    .team-list{flex-direction:column;gap:24px;}
+    .team-card{flex-basis:auto;}
+    .team-card + .team-card{padding-top:24px;}
+    .team-card + .team-card::before{top:0;bottom:auto;left:0;right:0;border-left:none;border-top:1px solid var(--gray-line);}
   }
 
   /* ---------- CONTACT ---------- */
-  .contact-statement{
-    font-weight:500;font-size:clamp(26px,6.4vw,64px);
-    letter-spacing:-0.02em;line-height:1;margin:0 0 44px;color:var(--db-ink);white-space:nowrap;
+  .dark-frame{background:var(--ink);color:var(--db-ink);}
+  .contact-section{position:relative;overflow:hidden;padding:96px 24px;text-align:center;}
+  .contact-section .body-wrap{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:36px;}
+  .radar-echo{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:1;opacity:0.1;pointer-events:none;}
+  .contact-statement{font-weight:600;font-size:clamp(34px,6vw,58px);line-height:1.06;letter-spacing:-0.03em;color:var(--db-ink);}
+  @media (max-width:700px){.contact-section{padding:72px 20px;}}
+
+  /* ---------- CROSS-SELL BANNER ---------- */
+  .cross-sell{border-top:3px solid var(--pink);background:var(--surface);padding:48px 0;}
+  .cross-sell-inner{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:24px 48px;padding:10px 48px;}
+  .cross-sell-copy{flex:1 1 420px;display:flex;flex-direction:column;gap:16px;}
+  .cross-sell h2{font-weight:500;font-size:30px;line-height:1.12;letter-spacing:-0.01em;}
+  .cross-sell p{max-width:609px;font-weight:300;font-size:20px;line-height:1.3;letter-spacing:-0.01em;}
+  .cross-sell p b{font-weight:600;}
+  .banner-link{
+    display:inline-flex;align-items:baseline;gap:8px;font-weight:500;font-size:15px;line-height:1.5;color:var(--ink);
+    text-decoration:none;border-bottom:1px solid var(--pink-on-dark);padding-bottom:4px;white-space:nowrap;transition:opacity 0.2s ease;
   }
-  .contact-cta{
-    display:inline-flex;align-items:baseline;gap:10px;
-    font-size:clamp(18px,2.6vw,24px);letter-spacing:0.02em;
-    color:var(--db-ink);text-decoration:none;border-bottom:1px solid var(--pink);padding-bottom:6px;
-    transition:opacity 0.2s ease;
+  .banner-link:hover{opacity:0.65;}
+  .banner-link .arrow{color:var(--pink-text);transition:transform 0.2s ease;display:inline-block;}
+  .banner-link:hover .arrow{transform:translateX(3px);}
+  @media (max-width:700px){
+    .cross-sell{padding:40px 0;}
+    .cross-sell-inner{padding:0;}
+    .cross-sell h2{font-size:26px;}
+    .cross-sell p{font-size:18px;}
   }
-  .contact-cta:hover{opacity:0.65;}
-  .contact-cta .arrow{color:var(--pink);transition:transform 0.2s ease;display:inline-block;}
-  .contact-cta:hover .arrow{transform:translateX(3px);}
-  a:focus-visible,.contact-cta:focus-visible{outline:1.5px solid var(--pink);outline-offset:4px;}
-  .contact-section{
-    padding:160px 24px 170px;text-align:center;position:relative;overflow:hidden;
-  }
-  .contact-section .body-wrap{position:relative;z-index:2;}
-  .contact-section .eyebrow-row{justify-content:center;margin-bottom:36px;}
-  @media (max-width:700px){.contact-section{padding:110px 20px 120px;}}
 
   /* ---------- FOOTER ---------- */
   footer{
-    border-top:1px solid var(--gray-line);padding:28px 56px 40px;
-    display:flex;justify-content:space-between;align-items:center;
-    font-size:10.5px;color:var(--surface-dark);text-transform:uppercase;letter-spacing:0.08em;
+    border-top:1px solid var(--gray-line);padding:28px 56px 40px;display:flex;justify-content:space-between;align-items:center;
+    font-size:10.5px;line-height:1.5;color:var(--surface-dark);text-transform:uppercase;letter-spacing:0.08em;
   }
   footer a{text-decoration:none;}
   footer a:hover{color:var(--ink);}
   footer .fmark{color:var(--ink);font-weight:500;}
   @media (max-width:700px){footer{padding:22px 20px 36px;flex-direction:column;gap:10px;text-align:center;}}
 
-  /* ---------- SCROLL REVEAL ---------- */
-  .js .reveal{opacity:0;transform:translateY(14px);transition:opacity 0.6s ease, transform 0.6s ease;}
-  .js .reveal.in-view{opacity:1;transform:translateY(0);}
+  /* ---------- SCROLL REVEAL ----------
+     .reveal        fades up one element as it scrolls into view
+     .reveal-group  fades up each child on its own (timeline steps, cards, rows);
+                    children that sit side by side come in one after another */
+  .js .reveal,.js .reveal-group > *{opacity:0;transform:translateY(18px);transition:opacity 0.6s ease, transform 0.6s ease;}
+  .js .reveal.in-view,.js .reveal-group > .in-view{opacity:1;transform:translateY(0);}
+  .reveal-group > :nth-child(2){transition-delay:0.1s;}
+  .reveal-group > :nth-child(3){transition-delay:0.2s;}
+  .reveal-group > :nth-child(4){transition-delay:0.3s;}
+  .timeline.reveal-group > *,.steps.reveal-group > *{transition-delay:0s;}
 
   @media (prefers-reduced-motion: reduce){
-    .status-dot,.radar-ring,.timeline-node-ring{animation:none;opacity:0.85;}
-    .roam-reticle{animation:none;top:56px;left:6%;opacity:0.7;}
-    .hole{animation:none;opacity:0.5;}
-    .wordmark-frame .corner{animation:none;opacity:0.65;transform:scale(1);}
-    .scan-sweep::after{animation:none;display:none;}
-    .js .reveal{opacity:1 !important;transform:none !important;transition:none !important;}
+    html{scroll-behavior:auto;}
+    .status-dot{animation:none;}
+    .classbar,.site-top .site-header,.hud-frame .corner{transition:none;}
+    .nav-panel,.nav-panel.is-open{transition:none;}
+    .js .reveal,.js .reveal-group > *{opacity:1 !important;transform:none !important;transition:none !important;}
   }
 </style>
 </head>
 <body>
 
-  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
-    <defs>
-      <g id="radar-rings">
-        <circle class="radar-ring r1" cx="400" cy="400" r="120"></circle>
-        <circle class="radar-ring r2" cx="400" cy="400" r="240"></circle>
-        <circle class="radar-ring r3" cx="400" cy="400" r="360"></circle>
-      </g>
-    </defs>
-  </svg>
+  <div class="classbar">UNMANNED · SIMPLY SECURE</div>
 
-  <div class="classbar">UNMANNED · OFFENSIVE SECURITY · PUBLIC RELEASE</div>
-
-  <div class="hud-frame">
-    <div class="corner tl"></div>
-    <div class="corner tr"></div>
-    <div class="corner bl"></div>
-    <div class="corner br"></div>
+  <div class="hud-frame" aria-hidden="true">
+    <span class="corner tl"></span>
+    <span class="corner tr"></span>
+    <span class="corner bl"></span>
+    <span class="corner br"></span>
   </div>
 
   <!-- ============================================================
-       HERO
+       HEADER (sticky)
+       ============================================================ -->
+  <div class="site-top">
+    <header class="site-header">
+      <div class="wrap header-inner">
+        <div class="header-left">
+          <a href="/" class="brand"><span class="status-dot"></span>VEX</a>
+          <span class="brand-tag">Don’t get hacked</span>
+        </div>
+        <nav class="header-links" aria-label="Main">
+          <a class="header-link" href="/managed">Managed Vex</a>
+          <a class="header-link header-link--cta" href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener">Schedule a test <img src="static/icon-arrow-right-pink.svg" width="16" height="16" alt=""></a>
+        </nav>
+        <button class="menu-btn" type="button" aria-label="Open menu" aria-controls="site-nav" aria-expanded="false"><img src="static/icon-menu.svg" width="32" height="32" alt=""></button>
+      </div>
+    </header>
+  </div>
+
+  <!-- ============================================================
+       NAV MENU
+       ============================================================ -->
+  <div class="nav-panel" id="site-nav">
+    <div class="site-header">
+      <div class="wrap header-inner">
+        <a href="/" class="brand"><span class="status-dot"></span>VEX</a>
+        <button class="menu-btn menu-close" type="button" aria-label="Close menu"><img src="static/icon-close.svg" width="32" height="32" alt=""></button>
+      </div>
+    </div>
+    <nav class="wrap" aria-label="Menu">
+      <ul class="nav-list">
+        <li><a href="/"><span class="nav-link">Home</span></a></li>
+        <li><a href="/managed"><span class="nav-link">Managed VEX</span><span class="nav-sub">Continuous prevention, detection and response</span></a></li>
+        <li><a href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener"><span class="nav-link">Take the test</span><span class="nav-sub">Schedule a test and find out if your defenses find an attack.</span></a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <main>
+
+  <!-- ============================================================
+       HERO — THE QUESTION
        ============================================================ -->
   <section class="hero">
-    <div class="grid-bg" aria-hidden="true"></div>
-    <div class="radar" aria-hidden="true">
-      <svg viewBox="0 0 800 800">
-        <use href="#radar-rings"></use>
-        <line class="radar-tick" x1="400" y1="20" x2="400" y2="780"></line>
-        <line class="radar-tick" x1="20" y1="400" x2="780" y2="400"></line>
-      </svg>
-    </div>
+    <img class="hero-backdrop" src="static/glow-grid-bg.svg" width="2936" height="258" alt="" aria-hidden="true">
+    <div class="section">
+      <div class="hero-body">
+        <div class="eyebrow-label"><span class="status-dot"></span>The question</div>
+        <h1>Can your defense catch<br>one attack?</h1>
+        <p class="hero-lede">Security tools report billions of blocked events. The number that matters is one: <b>the attacker who gets in, whether they're caught, and how fast</b>.</p>
 
-    <div class="wordmark-frame">
-      <div class="corner tl"></div>
-      <div class="corner tr"></div>
-      <div class="corner bl"></div>
-      <div class="corner br"></div>
-      <h1 class="wordmark">VEX</h1>
-    </div>
-    <div class="tagline-row">
-      <p class="tagline">Don't Get Hacked</p>
-    </div>
-  </section>
-
-  <div class="divider mono">
-    <span>REC · 00:00:00</span>
-    <span>AUTOPILOT ENGAGED</span>
-  </div>
-
-  <!-- ============================================================
-       WHAT VEX DOES
-       ============================================================ -->
-  <section class="section" id="about">
-    <div class="roam-field" aria-hidden="true">
-      <div class="hole hole-a"></div>
-      <div class="hole hole-b"></div>
-      <div class="hole hole-c"></div>
-      <div class="hole hole-d"></div>
-      <div class="hole hole-e"></div>
-      <div class="roam-reticle">
-        <span class="corner tl"></span>
-        <span class="corner tr"></span>
-        <span class="corner bl"></span>
-        <span class="corner br"></span>
-      </div>
-    </div>
-    <div class="section-label eyebrow-label mono"><span class="status-dot"></span>What Vex does</div>
-    <h2>We hack you first</h2>
-    <p class="subhead">Don't wait for a malicious AI to find your security holes.</p>
-    <p class="lede">
-      Vex is an autonomous red team that plugs directly into your business — from computers to email.
-      Once connected, it runs continuously, mapping the seams between your systems and identifying the most probable way a hacker will strike.
-    </p>
-  </section>
-
-  <div class="divider mono">
-    <span>REC · 00:00:01</span>
-    <span>SIGNAL ACQUIRED</span>
-  </div>
-
-  <!-- ============================================================
-       HOW VEX WORKS
-       ============================================================ -->
-  <section class="section" id="choke">
-    <div class="section-label eyebrow-label mono"><span class="status-dot"></span>How Vex works</div>
-    <h2>One fix. Stop the hack.</h2>
-    <p class="lede">
-      When several attack paths trace back to the same underlying weakness, we call it a choke point. Fix that one thing and every path behind it closes.
-    </p>
-
-    <div class="timeline reveal">
-      <div class="timeline-step">
-        <div class="timeline-rail"><div class="timeline-node"><span class="timeline-index mono">01</span></div></div>
-        <div class="timeline-content">
-          <span class="timeline-tag mono">Connect</span>
-          <h3 class="timeline-heading">Connect your business</h3>
-          <p class="timeline-desc">Google Workspace, Microsoft 365, Cloudflare, your endpoints, and 20+ more integrations — set up in minutes.</p>
-        </div>
-      </div>
-
-      <div class="timeline-step">
-        <div class="timeline-rail"><div class="timeline-node"><span class="status-dot"></span></div></div>
-        <div class="timeline-content">
-          <span class="timeline-tag mono">Hunt</span>
-          <h3 class="timeline-heading">Find the weakness</h3>
-          <p class="timeline-desc">Vex taps into your systems and hunts for the most probable breach scenario before anyone else.</p>
-        </div>
-      </div>
-
-      <div class="timeline-step timeline-step--hot">
-        <div class="timeline-rail">
-          <div class="timeline-node">
-            <span class="timeline-node-ring" aria-hidden="true"></span>
-            <svg class="timeline-choke-svg" viewBox="0 0 160 120" aria-hidden="true">
-              <line class="choke-line" x1="20" y1="18" x2="80" y2="92"></line>
-              <line class="choke-line" x1="58" y1="18" x2="80" y2="92"></line>
-              <line class="choke-line" x1="102" y1="18" x2="80" y2="92"></line>
-              <line class="choke-line" x1="140" y1="18" x2="80" y2="92"></line>
-              <circle class="choke-dot" cx="20" cy="18" r="4"></circle>
-              <circle class="choke-dot" cx="58" cy="18" r="4"></circle>
-              <circle class="choke-dot" cx="102" cy="18" r="4"></circle>
-              <circle class="choke-dot" cx="140" cy="18" r="4"></circle>
-              <circle class="choke-node" cx="80" cy="92" r="7"></circle>
-            </svg>
+        <div class="proof-cards">
+          <div class="proof-card proof-card--vendor">
+            <p class="proof-label">What vendors report</p>
+            <p class="proof-num">1,000,000,000</p>
+            <p class="proof-desc">Events blocked. Can’t be verified.</p>
+          </div>
+          <div class="proof-slot">
+            <img class="hero-rings hero-rings--lg" src="static/radar-rings-900.svg" width="900" height="900" alt="" aria-hidden="true">
+            <img class="hero-rings hero-rings--sm" src="static/radar-rings-500.svg" width="500" height="500" alt="" aria-hidden="true">
+            <div class="proof-card proof-card--vex">
+              <img class="proof-rings" src="static/radar-rings-card.svg" width="300" height="300" alt="" aria-hidden="true">
+              <p class="proof-label">What VEX proves</p>
+              <p class="proof-num">1<span class="reticle" aria-hidden="true"><span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span></span></p>
+              <p class="proof-desc">Real attack. Verified result.</p>
+            </div>
           </div>
         </div>
-        <div class="timeline-content">
-          <span class="timeline-tag mono hot">Resolve</span>
-          <h3 class="timeline-heading">Fix what matters</h3>
-          <p class="timeline-desc">When multiple attack paths trace back to the same weakness — a stale credential, an exposed config — that's the choke point. You don't need to fix everything Vex finds. Just this.</p>
+
+        <div class="find-out">
+          <p>There’s one way to find out.</p>
+          <a class="text-link" href="#how">See how it works <img src="static/icon-arrow-down.svg" width="20" height="20" alt=""></a>
         </div>
       </div>
+    </div>
+  </section>
 
-      <div class="timeline-step">
-        <div class="timeline-rail"><div class="timeline-node"><span class="timeline-index mono">04</span></div></div>
-        <div class="timeline-content">
-          <span class="timeline-tag mono">Notify</span>
-          <h3 class="timeline-heading">Tell your team</h3>
-          <p class="timeline-desc">When a choke point is found, send it wherever your team works: SOC, text, email or messaging platform.</p>
-          <div class="timeline-icons">
-            <img class="channel-icon" src="static/slack.png" alt="Slack" loading="lazy">
-            <img class="channel-icon" src="static/teams.png" alt="Microsoft Teams" loading="lazy">
-            <img class="channel-icon" src="static/jira.png" alt="Jira" loading="lazy">
-            <img class="channel-icon" src="static/servicenow.png" alt="ServiceNow" loading="lazy">
-            <img class="channel-icon" src="static/rapid7.png" alt="Rapid7" loading="lazy">
+  <!-- ============================================================
+       HOW IT WORKS
+       ============================================================ -->
+  <section class="band band--gray" id="how">
+    <div class="divider mono">
+      <span>REC · 00:00:01</span>
+      <span>LAUNCHING ATTACK</span>
+    </div>
+    <div class="section">
+      <div class="section-head">
+        <div class="eyebrow-label"><span class="status-dot"></span>How it works</div>
+        <h2>One attack. One clock.<br>One answer.</h2>
+        <p class="lede">One real attack, launched when you say. Your defenses respond as they normally would. <b>The clock starts</b>.</p>
+      </div>
+
+      <div class="timeline reveal-group">
+        <span class="timeline-tag">Setup</span>
+        <div class="timeline-step">
+          <div class="timeline-node">01</div>
+          <div>
+            <h3 class="timeline-heading">VEX learns your environment</h3>
+            <p class="timeline-desc">Connect it, and in about an hour VEX has the data it needs.</p>
+          </div>
+        </div>
+        <div class="timeline-step">
+          <div class="timeline-node">02</div>
+          <div>
+            <h3 class="timeline-heading">VEX finds the likely breach</h3>
+            <p class="timeline-desc">It surfaces the single most probable way an attacker gets into your business right now.</p>
+          </div>
+        </div>
+
+        <span class="timeline-tag">Attack</span>
+        <div class="timeline-step timeline-step--clock">
+          <div class="timeline-clock" aria-hidden="true">
+            <img src="static/clock-timeline.svg" width="173" height="173" alt="">
+            <span class="clock-readout">T+14:22:06</span>
+          </div>
+          <div>
+            <h3 class="timeline-heading">You start the clock</h3>
+            <p class="timeline-desc">You — or anyone on your team — click to launch that attack. The clock starts now.</p>
+          </div>
+        </div>
+        <div class="timeline-step">
+          <div class="timeline-node">04</div>
+          <div>
+            <h3 class="timeline-heading">Your defense hunts</h3>
+            <p class="timeline-desc">Whatever protects your business goes on watch looking for where it happened and what it was — Your SOC. Your MDR. Your security tools. Or VEX.</p>
+          </div>
+        </div>
+
+        <span class="timeline-tag">Result</span>
+        <div class="timeline-step">
+          <div class="timeline-node">05</div>
+          <div>
+            <h3 class="timeline-heading">Make the call</h3>
+            <p class="timeline-desc">Name where it happened and what it was. VEX verifies it and stops the clock — a provable time to detect.</p>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <div class="divider mono">
-    <span>REC · 00:00:02</span>
-    <span>CHOKE POINT LOCATED</span>
-  </div>
+  <!-- ============================================================
+       THE SCORECARD
+       ============================================================ -->
+  <section class="band">
+    <div class="divider mono">
+      <span>REC · 00:00:02</span>
+      <span>RESULTS READY</span>
+    </div>
+    <div class="section">
+      <div class="section-head">
+        <div class="eyebrow-label"><span class="status-dot"></span>The scorecard</div>
+        <h2>Proof, not promises.</h2>
+        <p class="lede">Every exercise ends with a verified result you can put in front of the board: caught or missed, and how long it took.</p>
+      </div>
+
+      <div class="metrics reveal-group">
+        <div class="metric">
+          <span class="metric-label">Time to detect</span>
+          <span class="metric-value">14:32</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Where</span>
+          <span class="metric-value">Located</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">What</span>
+          <span class="metric-value">Identified</span>
+        </div>
+        <div class="metric metric--missed">
+          <span class="metric-label">Result</span>
+          <span class="metric-value"><img src="static/icon-warning-octagon.svg" width="32" height="32" alt="">Missed</span>
+        </div>
+      </div>
+
+      <p class="lede scorecard-note"><b>Missed it?</b> You’ll see exactly where the trail went cold — and VEX shows you the one fix that closes the gap.</p>
+    </div>
+  </section>
 
   <!-- ============================================================
-       MANAGED VEX — thin dark banner
+       WHERE THIS COMES FROM
        ============================================================ -->
-  <section class="banner">
-    <div class="grid-bg" aria-hidden="true"></div>
-    <div class="scan-sweep" aria-hidden="true"></div>
-    <div class="banner-graphic" aria-hidden="true">
-      <svg viewBox="0 0 800 800">
-        <use href="#radar-rings"></use>
-        <line class="radar-tick" x1="400" y1="20" x2="400" y2="780"></line>
-        <line class="radar-tick" x1="20" y1="400" x2="780" y2="400"></line>
-      </svg>
-    </div>
-    <div class="banner-inner">
-      <div class="banner-content">
-        <h2>A fully managed solution.</h2>
-        <div class="banner-body">
-          <p>
-            Managed Vex pairs the platform with an elite security operations team behind it. We don't just show you the choke point — we close it. Every finding is reviewed and fixed by the same hackers who built and run Vex.
-          </p>
-          <a class="banner-link" href="/managed">Read more about Managed Vex <span class="arrow">→</span></a>
-        </div>
+  <section class="band band--gray about" id="about">
+    <div class="section">
+      <div class="section-head">
+        <div class="eyebrow-label"><span class="status-dot"></span>Where this comes from</div>
+        <h2>It started in an auditorium.</h2>
+      </div>
+      <div class="about-body">
+        <p class="lede">For years, our founder <b>David Hunt</b> ran a simple exercise with U.S. Army cyber defenders: one attack, one endpoint, 100+ defenders. The first to find it rang a bell. The point wasn't the score. It was finding out whether the defense worked when it mattered.</p>
+      </div>
+
+      <div class="team">
+        <p class="team-intro">VEX is built by people who've spent their careers on both sides of the attack.</p>
+        <!-- Team bios: hidden until photos and final copy are ready. To show them, delete the word "hidden" below.
+             Photos: replace icon-user-circle.svg with a square headshot (at least 176×176px) and add the person's name as alt text -->
+        <ul class="team-list reveal-group" hidden>
+          <li class="team-card">
+            <div class="team-person">
+              <div class="team-photo"><img src="static/icon-user-circle.svg" width="88" height="88" alt=""></div>
+              <div>
+                <p class="team-role">Founder</p>
+                <p class="team-name">David Hunt</p>
+              </div>
+            </div>
+            <p class="team-detail">MITRE • Mandiant • USG</p>
+          </li>
+          <li class="team-card">
+            <div class="team-person">
+              <div class="team-photo"><img src="static/icon-user-circle.svg" width="88" height="88" alt=""></div>
+              <div>
+                <p class="team-role">Head engineer</p>
+                <p class="team-name">Phil Urquhart</p>
+              </div>
+            </div>
+            <p class="team-detail">10 years vulnerability assessment</p>
+          </li>
+          <li class="team-card">
+            <div class="team-person">
+              <div class="team-photo"><img src="static/icon-user-circle.svg" width="88" height="88" alt=""></div>
+              <div>
+                <p class="team-role">Head of security</p>
+                <p class="team-name">John Jackman</p>
+              </div>
+            </div>
+            <p class="team-detail">Relevant expertise • Relevant expertise</p>
+          </li>
+        </ul>
       </div>
     </div>
   </section>
-
-  <div class="divider mono">
-    <span>REC · 00:00:03</span>
-    <span>OPERATOR VERIFIED</span>
-  </div>
-
-  <!-- ============================================================
-       TEAM
-       ============================================================ -->
-  <section class="section" id="team">
-    <div class="section-label eyebrow-label mono"><span class="status-dot"></span>About us</div>
-    <h2>Built by an elite team of hackers.</h2>
-    <p class="lede" style="max-width:none;">
-      Unmanned was built by elite offensive security operators who spent their careers finding the ways in—not writing about them.
-      Our founder spent 20 years in U.S. government operations, built CALDERA (a government adversary emulation platform), served as a distinguished engineer at Rapid7, held CTO roles across multiple security startups, and literally wrote <a href="https://www.amazon.com/dp/B0CSH2Z9DL?lv=shuf&channelId=500&plpRedirect=mhFallback" target="_blank">the book</a> on continuous security.
-    </p>
-  </section>
-
-  <div class="divider mono">
-    <span>REC · 00:00:04</span>
-    <span>COMMS ESTABLISHED</span>
-  </div>
 
   <!-- ============================================================
        CONTACT
        ============================================================ -->
   <section class="dark-frame contact-section" id="contact">
-    <div class="grid-bg" aria-hidden="true"></div>
-    <div class="scan-sweep" aria-hidden="true"></div>
-    <div class="radar-echo" aria-hidden="true">
-      <svg viewBox="0 0 800 800"><use href="#radar-rings"></use></svg>
-    </div>
+    <img class="radar-echo" src="static/radar-circles.svg" width="903" height="903" alt="" aria-hidden="true">
     <div class="body-wrap">
-      <div class="eyebrow-row eyebrow-label mono"><span class="status-dot"></span>Get a free account</div>
-      <h2 class="contact-statement">Don't get hacked.</h2>
-      <a class="contact-cta" href="mailto:go@unmanned.team?subject=Please%20create%20a%20free%20Vex%20account%20for%20me">Request invite <span class="arrow">→</span></a>
+      <div class="eyebrow-label"><span class="status-dot"></span>Get started</div>
+      <h2 class="contact-statement">Start the clock</h2>
+      <a class="btn" data-hud-target href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener">Schedule a test</a>
     </div>
   </section>
 
-  <footer class="mono">
+  <!-- ============================================================
+       CROSS-SELL — MANAGED VEX
+       ============================================================ -->
+  <section class="cross-sell">
+    <div class="wrap cross-sell-inner">
+      <div class="cross-sell-copy">
+        <h2>Need a defense?</h2>
+        <p><b>Managed VEX</b> — continuous prevention, detection and response, backed by the operators who built it.</p>
+      </div>
+      <a class="banner-link" href="/managed">Explore Managed VEX <span class="arrow">→</span></a>
+    </div>
+  </section>
+
+  </main>
+
+  <footer>
     <span class="fmark">UNMANNED</span>
     <span>© 2026 UNMANNED, INC.</span>
     <a href="https://gounmanned.substack.com/" target="_blank" rel="noopener noreferrer">READ OUR BLOG</a>
@@ -641,7 +647,189 @@
 
   <script>
     (function(){
-      var els = document.querySelectorAll('.reveal');
+      // hide-on-scroll header: see HIDE ON SCROLL in the styles
+      var root = document.documentElement;
+      var top = document.querySelector('.site-top');
+      var classbar = document.querySelector('.classbar');
+      if(!top){ return; }
+      var banner = top.querySelector('.promo-banner');
+      function measure(){
+        root.style.setProperty('--banner-h', (banner ? banner.offsetHeight : 0) + 'px');
+        root.style.setProperty('--top-h', top.offsetHeight + 'px'); // header height, used by the hero's min-height
+      }
+      measure();
+      window.addEventListener('resize', measure);
+      var lastY = window.scrollY;
+      var ticking = false;
+      function update(){
+        ticking = false;
+        var y = window.scrollY;
+        var showZone = top.offsetHeight + (classbar ? classbar.offsetHeight : 0); // always show near the top
+        if(root.classList.contains('nav-open')){ lastY = y; return; }
+        if(y <= showZone){ root.classList.remove('header-hidden'); lastY = y; return; }
+        if(Math.abs(y - lastY) < 6){ return; } // ignore tiny scroll jitters
+        root.classList.toggle('header-hidden', y > lastY);
+        lastY = y;
+      }
+      window.addEventListener('scroll', function(){
+        if(!ticking){ ticking = true; requestAnimationFrame(update); }
+      }, { passive:true });
+      // keyboard users tabbing into the header should always see it
+      top.addEventListener('focusin', function(){ root.classList.remove('header-hidden'); });
+    })();
+
+    (function(){
+      // HUD corners frame the section you're looking at (see HUD CORNERS in the styles).
+      // Top corners sit just inside the section's top edge, bottom corners just inside its bottom edge,
+      // each waiting at the header / screen edge when the section runs past it. When the frame squeezes
+      // to MIN_GAP (the section is nearly scrolled away) the corners glide to the next section.
+      // In a section with a [data-hud-target] element (the final CTA button), the corners pause at the
+      // section's corners, then close in around that element.
+      var hud = document.querySelector('.hud-frame');
+      var header = document.querySelector('.site-top .site-header');
+      var sections = document.querySelectorAll('main > section:not(.cross-sell)'); // the frame's last stop is the dark CTA
+      if(!hud || !header || !sections.length){ return; }
+      var corners = { tl:hud.querySelector('.tl'), tr:hud.querySelector('.tr'), bl:hud.querySelector('.bl'), br:hud.querySelector('.br') };
+
+      var MIN_GAP = 150;     // frame height that triggers the move to the next section
+      var GLIDE = 0.9;       // glide speed: closer to 1 = slower (0.8 is quick, 0.93 is lazy)
+      var PAUSE = 500;       // ms the corners rest at the CTA section's corners before closing in
+      var TARGET_GAP = 8;    // space between the corners and the CTA button
+
+      var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var current = 0, inset = 12, size = 12;
+      var shown = null;                 // where the corners are drawn right now { top, bottom, left, right }
+      var gliding = false, lastActivity = 0, running = false, lastFrame = 0;
+      var onTarget = false, settledAt = 0, waitingForTarget = false;
+
+      function readSizes(){
+        var cs = getComputedStyle(hud);
+        inset = parseFloat(cs.getPropertyValue('--hud-inset')) || 12;
+        size = parseFloat(cs.getPropertyValue('--hud-size')) || 12;
+      }
+      function screenWidth(){ return document.documentElement.clientWidth; }
+      // the frame for section i, kept between the header and the bottom of the screen
+      function frameFor(i, viewTop, viewBottom){
+        var r = sections[i].getBoundingClientRect();
+        return { top:Math.max(r.top + inset, viewTop), bottom:Math.min(r.bottom - inset, viewBottom),
+                 left:inset, right:screenWidth() - inset, edgeTop:r.top + inset, edgeBottom:r.bottom - inset };
+      }
+      function moveTo(i){
+        current = i; gliding = !!shown && !reduceMotion; onTarget = false; settledAt = 0;
+      }
+      function update(){
+        var now = performance.now();
+        var viewTop = Math.max(header.getBoundingClientRect().bottom, 0) + inset;
+        var viewBottom = window.innerHeight - inset;
+        var f = frameFor(current, viewTop, viewBottom);
+        // hand off while the frame is squeezed: down if its bottom edge came up, up if its top edge came down
+        for(var tries = 0; tries < sections.length && f.bottom - f.top < MIN_GAP; tries++){
+          var next = f.edgeBottom < viewBottom && current < sections.length - 1 ? current + 1
+                   : f.edgeTop > viewTop && current > 0 ? current - 1 : current;
+          if(next === current){ break; }
+          moveTo(next);
+          f = frameFor(current, viewTop, viewBottom);
+        }
+        // at the very bottom of the page the last sections can't scroll far enough to squeeze the frame,
+        // so move on to any following section that's fully on screen
+        var atEnd = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2;
+        while(atEnd && current < sections.length - 1 && sections[current + 1].getBoundingClientRect().bottom - inset <= viewBottom){
+          moveTo(current + 1);
+          f = frameFor(current, viewTop, viewBottom);
+        }
+        // the CTA moment: after resting at the section's corners, close in around the target (while it's on screen)
+        var target = sections[current].querySelector('[data-hud-target]');
+        var t = target && target.getBoundingClientRect();
+        var targetVisible = t && t.top - TARGET_GAP >= viewTop && t.bottom + TARGET_GAP <= viewBottom;
+        if(!targetVisible){
+          if(onTarget){ onTarget = false; gliding = !reduceMotion; settledAt = 0; } // button scrolled away: back out to the section
+        }
+        else if(!onTarget && settledAt && now - settledAt >= PAUSE){ onTarget = true; gliding = !reduceMotion; }
+        if(onTarget){
+          f = { top:t.top - TARGET_GAP, bottom:t.bottom + TARGET_GAP, left:t.left - TARGET_GAP, right:t.right + TARGET_GAP };
+        }
+
+        if(!shown || !gliding){ shown = { top:f.top, bottom:f.bottom, left:f.left, right:f.right }; }
+        else {
+          // glide: close part of the gap each frame (timed, so it's the same speed on 60Hz and 120Hz screens),
+          // then snap once it's close enough
+          var dt = Math.min(now - (lastFrame || now - 16), 64);
+          var k = 1 - Math.pow(GLIDE, dt / 16.7);
+          shown.top += (f.top - shown.top) * k;
+          shown.bottom += (f.bottom - shown.bottom) * k;
+          shown.left += (f.left - shown.left) * k;
+          shown.right += (f.right - shown.right) * k;
+          if(Math.abs(f.top - shown.top) < 1 && Math.abs(f.bottom - shown.bottom) < 1 &&
+             Math.abs(f.left - shown.left) < 1 && Math.abs(f.right - shown.right) < 1){
+            shown = { top:f.top, bottom:f.bottom, left:f.left, right:f.right }; gliding = false;
+          }
+        }
+        if(!gliding && !settledAt){ settledAt = now; } // start the rest before closing in on a target
+        waitingForTarget = !!targetVisible && !onTarget;
+        lastFrame = now;
+
+        hud.classList.toggle('on-dark', sections[current].classList.contains('dark-frame'));
+        // corners are pinned to the screen edges in CSS; shift them from there
+        var leftX = shown.left - inset, rightX = shown.right - (screenWidth() - inset);
+        var topY = shown.top, bottomY = shown.bottom - size;
+        corners.tl.style.transform = 'translate(' + leftX.toFixed(1) + 'px,' + topY.toFixed(1) + 'px)';
+        corners.tr.style.transform = 'translate(' + rightX.toFixed(1) + 'px,' + topY.toFixed(1) + 'px)';
+        corners.bl.style.transform = 'translate(' + leftX.toFixed(1) + 'px,' + bottomY.toFixed(1) + 'px)';
+        corners.br.style.transform = 'translate(' + rightX.toFixed(1) + 'px,' + bottomY.toFixed(1) + 'px)';
+      }
+      // runs every frame while scrolling (plus a moment after, for the header's slide), while gliding,
+      // and while resting before closing in on a target
+      function loop(){
+        update();
+        if(gliding || waitingForTarget || performance.now() - lastActivity < 500){ requestAnimationFrame(loop); }
+        else { running = false; }
+      }
+      function wake(){
+        lastActivity = performance.now();
+        if(!running){ running = true; requestAnimationFrame(loop); }
+      }
+      readSizes();
+      hud.classList.add('is-tracking');
+      update();
+      wake();
+      window.addEventListener('scroll', wake, { passive:true });
+      window.addEventListener('resize', function(){ readSizes(); wake(); });
+      window.addEventListener('load', wake);
+    })();
+
+    (function(){
+      var openBtn = document.querySelector('.menu-btn[aria-controls="site-nav"]');
+      var panel = document.getElementById('site-nav');
+      if(!openBtn || !panel){ return; }
+      var closeBtn = panel.querySelector('.menu-close');
+      function openNav(){
+        panel.classList.add('is-open');
+        document.documentElement.classList.add('nav-open'); // locks the page behind the menu
+        openBtn.setAttribute('aria-expanded','true');
+        closeBtn.focus({ preventScroll:true });
+      }
+      function closeNav(returnFocus){
+        panel.classList.remove('is-open');
+        document.documentElement.classList.remove('nav-open');
+        openBtn.setAttribute('aria-expanded','false');
+        if(returnFocus){ openBtn.focus({ preventScroll:true }); }
+      }
+      openBtn.addEventListener('click', openNav);
+      closeBtn.addEventListener('click', function(){ closeNav(true); });
+      document.addEventListener('keydown', function(e){
+        if(e.key === 'Escape' && panel.classList.contains('is-open')){ closeNav(true); }
+      });
+      panel.addEventListener('click', function(e){
+        if(e.target.closest('a')){ closeNav(false); }
+      });
+      // the menu is mobile-only: close it if the window is widened past the mobile size
+      var wide = window.matchMedia('(min-width:701px)');
+      function onWide(){ if(wide.matches && panel.classList.contains('is-open')){ closeNav(false); } }
+      if(wide.addEventListener){ wide.addEventListener('change', onWide); } else { wide.addListener(onWide); }
+    })();
+
+    (function(){
+      var els = document.querySelectorAll('.reveal, .reveal-group > *');
       if(!els.length){ return; }
       var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       if(!('IntersectionObserver' in window) || reduceMotion){
@@ -650,12 +838,11 @@
       }
       var io = new IntersectionObserver(function(entries){
         entries.forEach(function(entry){
-          if(entry.isIntersecting){
-            entry.target.classList.add('in-view');
-            io.unobserve(entry.target);
-          }
+          // shown once it rises above a line near the bottom of the screen; hidden again
+          // (so it can replay) when you scroll back up and it drops below that line
+          entry.target.classList.toggle('in-view', entry.isIntersecting);
         });
-      }, { threshold:0.25 });
+      }, { threshold:0, rootMargin:'100000px 0px -10% 0px' }); // the zone reaches far above the screen, so items you've scrolled past stay shown
       els.forEach(function(el){ io.observe(el); });
     })();
   </script>

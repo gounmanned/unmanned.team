@@ -1,9 +1,8 @@
 class Notifications {
     static ONBOARDING = [
-        { id: 'email',         icon: 'badge',         title: 'Connect your identity provider', vendors: ['google', 'microsoft'] },
-        { id: 'domain',        icon: 'dns',           title: 'Connect your registrar', vendors: ['cloudflare'] },
-        { id: 'endpoint',      icon: 'laptop_mac',    title: 'Connect your endpoints', vendors: ['level'] },
-        { id: 'notifications', icon: 'notifications', title: 'Get push notifications', vendors: ['slack', 'teams', 'jira', 'rapid7'] },
+        { id: 'email',    icon: 'badge',      title: 'Connect your identity provider', done: ctx => ['google', 'microsoft'].some(v => ctx.vendors.has(v)) },
+        { id: 'domain',   icon: 'dns',        title: 'Connect your registrar',         done: ctx => ctx.vendors.has('cloudflare') },
+        { id: 'endpoint', icon: 'laptop_mac', title: 'Connect your endpoints',         done: ctx => ctx.hasEndpoints },
     ];
 
     constructor(state) {
@@ -34,17 +33,11 @@ class Notifications {
     }
 
     pendingSetup(assets, monitors) {
-        const vendors = new Set(
-            monitors.map(key => key.split('/').filter(Boolean)[1]).filter(Boolean)
-        );
-        const hasEndpoints = assets.some(a => a.metadata?.platform);
-
-        return Notifications.ONBOARDING.filter(step => {
-            const done = step.id === 'endpoint'
-                ? hasEndpoints
-                : step.vendors.some(v => vendors.has(v));
-            return !done;
-        });
+        const ctx = {
+            vendors: new Set(monitors.map(key => key.split('/').filter(Boolean)[1]).filter(Boolean)),
+            hasEndpoints: assets.some(a => a.metadata?.platform),
+        };
+        return Notifications.ONBOARDING.filter(step => !step.done(ctx));
     }
 
     render() {

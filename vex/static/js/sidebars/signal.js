@@ -46,7 +46,12 @@ class SignalSidebar {
         const source = update.source || this.signal.source;
         message.innerHTML = `
             <div class="message-row">
-                <div class="avatar"><img class="message-avatar" src="${Workspace.avatar(source)}" /></div>
+                <div class="avatar">
+                    <img class="message-avatar"
+                         src="${Workspace.avatar(source)}"
+                         onerror="this.onerror=null; this.src='static/img/source/slack.png';"
+                    />
+                </div>
                 <div class="message-content">
                     <div class="header">
                         <div class="sender">${source}</div>

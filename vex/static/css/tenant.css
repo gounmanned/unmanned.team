@@ -432,8 +432,6 @@ td.metadata { white-space: nowrap; }
 td.elapsed {
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: 12px;
   font-variant-numeric: tabular-nums;
   color: var(--text-faint);

@@ -427,6 +427,23 @@ td.metadata { white-space: nowrap; }
 .metadata-tooltip dt { color: #9ca3af; font-weight: 600; white-space: nowrap; }
 .metadata-tooltip dd { margin: 0; word-break: break-word; }
 
+/* ── elapsed clock ──────────────────────────────────────────────── */
+
+td.elapsed {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-faint);
+}
+
+td.elapsed.live {
+  color: var(--brand);
+  font-weight: 600;
+}
+
 /* ── footer ─────────────────────────────────────────────────────── */
 
 .links {

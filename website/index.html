@@ -127,6 +127,7 @@
   .site-top .site-header{position:relative;z-index:1;transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);}
   html.header-hidden .classbar{transform:translateY(-100%);opacity:0;}
   html.header-hidden .site-top .site-header{transform:translateY(calc(-100% - var(--classbar-h) - var(--banner-h, 0px)));}
+  html.header-hidden .site-top{pointer-events:none;} /* the hidden header's empty box stays put; let taps reach what's under it */
 
   /* ---------- NAV MENU (opened by the menu button) ---------- */
   /* slides down from under the class bar; visibility keeps closed links out of the tab order */

@@ -75,6 +75,7 @@
   .site-top .site-header{position:relative;z-index:1;transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);}
   html.header-hidden .classbar{transform:translateY(-100%);opacity:0;}
   html.header-hidden .site-top .site-header{transform:translateY(calc(-100% - var(--classbar-h)));}
+  html.header-hidden .site-top{pointer-events:none;} /* the hidden header's empty box stays put; let taps reach what's under it */
 
   @media (max-width:700px){
     :root{--classbar-h:24px;} /* the top bar is shorter on phones (smaller text) */
@@ -310,7 +311,7 @@
         <p class="jump-label">On this page</p>
         <button class="jump-toggle" type="button" aria-expanded="false" aria-controls="jump-list">
           <span class="jump-toggle-text"><span class="jump-toggle-label">On this page</span><span class="jump-current">Authentication</span></span>
-          <img src="../static/icon-arrow-down.svg" width="20" height="20" alt="">
+          <img src="../static/icon-chevron-down.svg" width="20" height="20" alt="">
         </button>
         <ul class="jump-list" id="jump-list">
           <li><a class="jump-link" href="#auth">Authentication</a></li>

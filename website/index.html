@@ -79,7 +79,7 @@
   html.header-hidden .hud-frame .corner.tl,html.header-hidden .hud-frame .corner.tr{
     transform:translateY(calc(-1 * (var(--classbar-h) + var(--top-h, 61px))));
   }
-  @media (max-width:700px){.hud-frame{--hud-inset:8px;--hud-size:6px;}}
+  @media (max-width:700px){.hud-frame{--hud-inset:8px;--hud-size:8px;}}
   /* When the script is running (.is-tracking), the corners frame the section you're looking at instead:
      the script moves them up and down with transform. Without JavaScript they stay at the screen corners. */
   .hud-frame.is-tracking .corner{top:0;bottom:auto;transition:border-color 0.3s ease, opacity 0.3s ease;will-change:transform;}
@@ -146,6 +146,7 @@
   .nav-list a:hover .nav-link{color:var(--pink-text);}
 
   @media (max-width:700px){
+    :root{--classbar-h:24px;} /* the top bar is shorter on phones (smaller text) */
     .classbar{font-size:8px;}
       .nav-link{font-size:20px;}
   }
@@ -299,15 +300,15 @@
   .team-card{position:relative;flex:0 0 252px;display:flex;flex-direction:column;gap:8px;}
   .team-card + .team-card::before{content:'';position:absolute;top:0;bottom:0;left:-24px;border-left:1px solid var(--gray-line);}
   .team-person{display:flex;align-items:center;gap:12px;}
-  .team-photo{flex-shrink:0;width:88px;height:88px;background:var(--surface-alt);overflow:hidden;}
-  .team-photo img{display:block;width:88px;height:88px;object-fit:cover;}
+  .team-photo{flex-shrink:0;width:104px;height:104px;background:var(--surface-alt);border:1px solid var(--gray-faint);border-radius:2px;overflow:hidden;}
+  .team-photo img{display:block;width:100%;height:100%;object-fit:cover;}
   .team-role{font-size:11px;line-height:1.5;letter-spacing:0.13em;text-transform:uppercase;color:var(--body);}
   .team-name{margin-top:4px;font-weight:600;font-size:16px;line-height:normal;color:var(--body);}
   .team-detail{font-size:12px;line-height:1.5;letter-spacing:0.03em;color:var(--body-soft);}
   @media (max-width:820px){
-    .team-list{flex-direction:column;gap:24px;}
+    .team-list{flex-direction:column;gap:16px;}
     .team-card{flex-basis:auto;}
-    .team-card + .team-card{padding-top:24px;}
+    .team-card + .team-card{padding-top:16px;}
     .team-card + .team-card::before{top:0;bottom:auto;left:0;right:0;border-left:none;border-top:1px solid var(--gray-line);}
   }
 
@@ -412,9 +413,9 @@
     </div>
     <nav class="wrap" aria-label="Menu">
       <ul class="nav-list">
-        <li><a href="/"><span class="nav-link">Home</span></a></li>
+        <li><a href="/"><span class="nav-link">Home</span><span class="nav-sub">Can your defense catch a single attack?</span></a></li>
         <li><a href="/managed"><span class="nav-link">Managed VEX</span><span class="nav-sub">Continuous prevention, detection and response</span></a></li>
-        <li><a href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener"><span class="nav-link">Take the test</span><span class="nav-sub">Schedule a test and find out if your defenses find an attack.</span></a></li>
+        <li><a href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener"><span class="nav-link">Schedule a chat</span></a></li>
       </ul>
     </nav>
   </div>
@@ -574,12 +575,12 @@
 
       <div class="team">
         <p class="team-intro">VEX is built by people who've spent their careers on both sides of the attack.</p>
-        <!-- Team bios: hidden until photos and final copy are ready. To show them, delete the word "hidden" below.
-             Photos: replace icon-user-circle.svg with a square headshot (at least 176×176px) and add the person's name as alt text -->
-        <ul class="team-list reveal-group" hidden>
+        <!-- Team bios. Photos are square black-and-white headshots, saved at 208×208px (twice the 104px display size).
+             To hide the whole row again, add the word "hidden" to the <ul> tag below. -->
+        <ul class="team-list reveal-group">
           <li class="team-card">
             <div class="team-person">
-              <div class="team-photo"><img src="static/icon-user-circle.svg" width="88" height="88" alt=""></div>
+              <div class="team-photo"><img src="static/team-david-hunt.jpg" width="104" height="104" alt="David Hunt"></div>
               <div>
                 <p class="team-role">Founder</p>
                 <p class="team-name">David Hunt</p>
@@ -589,23 +590,23 @@
           </li>
           <li class="team-card">
             <div class="team-person">
-              <div class="team-photo"><img src="static/icon-user-circle.svg" width="88" height="88" alt=""></div>
-              <div>
-                <p class="team-role">Head engineer</p>
-                <p class="team-name">Phil Urquhart</p>
-              </div>
-            </div>
-            <p class="team-detail">10 years vulnerability assessment</p>
-          </li>
-          <li class="team-card">
-            <div class="team-person">
-              <div class="team-photo"><img src="static/icon-user-circle.svg" width="88" height="88" alt=""></div>
+              <div class="team-photo"><img src="static/team-john-jackman.jpg" width="104" height="104" alt="John Jackman"></div>
               <div>
                 <p class="team-role">Head of security</p>
                 <p class="team-name">John Jackman</p>
               </div>
             </div>
-            <p class="team-detail">Relevant expertise • Relevant expertise</p>
+            <p class="team-detail">REDLattice • DoD</p>
+          </li>
+          <li class="team-card">
+            <div class="team-person">
+              <div class="team-photo"><img src="static/team-phil-urquhart.jpg" width="104" height="104" alt="Phil Urquhart"></div>
+              <div>
+                <p class="team-role">Head engineer</p>
+                <p class="team-name">Phil Urquhart</p>
+              </div>
+            </div>
+            <p class="team-detail">Mandiant • DoD</p>
           </li>
         </ul>
       </div>
@@ -692,8 +693,8 @@
       var corners = { tl:hud.querySelector('.tl'), tr:hud.querySelector('.tr'), bl:hud.querySelector('.bl'), br:hud.querySelector('.br') };
 
       var MIN_GAP = 150;     // frame height that triggers the move to the next section
-      var GLIDE = 0.9;       // glide speed: closer to 1 = slower (0.8 is quick, 0.93 is lazy)
-      var PAUSE = 500;       // ms the corners rest at the CTA section's corners before closing in
+      var GLIDE = 0.93;       // glide speed: closer to 1 = slower (0.8 is quick, 0.93 is lazy)
+      var PAUSE = 200;       // ms the corners rest at the CTA section's corners before closing in
       var TARGET_GAP = 8;    // space between the corners and the CTA button
 
       var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;

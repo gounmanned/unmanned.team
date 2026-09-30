@@ -8,6 +8,7 @@ class TenantScreen {
 
         new ResizeObserver(() => this.renderTrend()).observe(document.getElementById('trend-svg'));
         this.notifications = new Notifications(this.state);
+        setInterval(() => this.tick(), 1000);
     }
 
     async reload() {
@@ -155,6 +156,27 @@ class TenantScreen {
         document.getElementById('spotlight-img').src = `static/img/source/${signal.source}.png`;
     }
 
+    tick() {
+        const signals = this.state.signals[this.state.account()];
+        const utc = v => Date.parse(/[zZ]|[+-]\d\d:?\d\d$/.test(v) ? v : `${v}Z`);
+        const now = Date.now();
+
+        this.table.body.querySelectorAll('tr').forEach(row => {
+            const signal = signals[row.id];
+            const cell = row.querySelector('td.elapsed');
+            if (!signal || !cell) return;
+
+            const live = signal.status === 'OA';
+            const end = live ? now : utc(signal.updated ?? signal.created);
+            const t = Math.max(0, Math.floor((end - utc(signal.created)) / 1000));
+
+            cell.classList.toggle('live', live);
+            cell.textContent = [t / 3600, (t % 3600) / 60, t % 60]
+                .map(n => String(Math.floor(n)).padStart(2, '0'))
+                .join(':');
+        });
+    }
+
     listen() {
         document.addEventListener('signal:account', (ev) => {
             const upsert = (row, signal) => {
@@ -183,6 +205,7 @@ class TenantScreen {
                 <td class="metadata">${this.metadata(signal.metadata)}</td>
                 <td class="source">${signal.asset}</td>
                 <td class="created">${Workspace.date(signal.created)}</td>
+                <td class="elapsed">00:00:00</td>
                 <td class="autoclose"></td>
             `;
 

@@ -57,10 +57,9 @@ class AssetApi extends Gateway {
 
     constructor(){
         super();
-        this.cache = new Map(); // account -> { at, promise }
+        this.cache = new Map();
     }
 
-    // cached per account; concurrent callers share one in-flight request
     async list({ fresh = false } = {}) {
         const key = this.headers.account;
         const hit = this.cache.get(key);

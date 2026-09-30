@@ -1,218 +1,360 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="no-js">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<script>document.documentElement.classList.replace('no-js','js');</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unmanned / API</title>
+<meta name="description" content="Every Vex endpoint: monitors, signals, and alerts. Base URL, auth, and the actual request bodies.">
 <link rel="apple-touch-icon" href="https://cdn.unmanned.team/img/logo.png">
 <link rel="icon" type="image/png" href="https://cdn.unmanned.team/img/logo.png">
-<title>Unmanned / API</title>
-<link rel="stylesheet" href="https://cdn.unmanned.team/css/global.css">
-<meta name="description" content="Every Vex endpoint: monitors, signals, and alerts. Base URL, auth, and the actual request bodies.">
 <meta property="og:title" content="Vex: API Reference" />
 <meta property="og:description" content="Every Vex endpoint: monitors, signals, and alerts. Base URL, auth, and the actual request bodies." />
 <meta property="og:url" content="https://vex.unmanned.team/api" />
 <meta property="og:type" content="website" />
-
+<link rel="stylesheet" href="https://cdn.unmanned.team/css/global.css">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;800&display=swap" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Space+Grotesk:wght@700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+  :root{
+    --ink:#0b0c0d;
+    --white:#fcfcfa;
+    --pink:#e01280;
+    --pink-text:#d1107a;     /* pink for TEXT on light backgrounds (passes 4.5:1) */
+    --gray-line:#dcdcd8;
+    --gray-faint:#c4c4c4;
+    --surface-dark:#6c6c70;
+    --surface-gray:#f7f7f7;
+    --body:#2b2b2b;
+    --go-text:#0e7c52;       /* green for text / GET badges (passes 4.5:1) */
+    --classbar-h:26px;
+    --mono:'JetBrains Mono',ui-monospace,monospace;
+  }
+  *{box-sizing:border-box;}
+  html{overflow-x:hidden;scroll-behavior:smooth;scrollbar-gutter:stable;}
+  body{margin:0;padding-top:var(--classbar-h);background:var(--surface);color:var(--ink);-webkit-font-smoothing:antialiased;}
+  h1,h2,h3,p{margin:0;}
+  a{color:inherit;}
+  ::selection{background:var(--pink);color:#fff;}
+  a:focus-visible,button:focus-visible{outline:1.5px solid var(--pink);outline-offset:4px;}
+  .wrap{width:min(1100px,calc(100% - 48px));margin:0 auto;}
+  code{font-family:var(--mono);font-size:0.92em;color:var(--ink);}
 
-:root{
-  --paper:#f4f5f2;
-  --paper-2:#eceae4;
-  --ink:#12131a;
-  --muted:#6b6e76;
-  --line:#dcdbd5;
-  --blood:#b3242f;
-  --neon:#e31c79;
-  --go:#16b378;
-  --max:1120px;
-  --header-h:64px;
-}
+  /* ---------- STATUS DOT ---------- */
+  .status-dot{
+    width:8px;height:8px;border-radius:50%;background:var(--pink);
+    box-shadow:0 0 0 0 rgba(224,18,128,0.5);animation:pulse 2.2s infinite;flex-shrink:0;display:inline-block;
+  }
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(224,18,128,0.45);}
+    70%{box-shadow:0 0 0 8px rgba(224,18,128,0);}
+    100%{box-shadow:0 0 0 0 rgba(224,18,128,0);}
+  }
+  .eyebrow-label{font-size:11px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;color:var(--surface-dark);display:flex;align-items:center;gap:11px;}
 
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{
-  margin:0;
-  background:var(--paper);
-  color:var(--ink);
-  -webkit-font-smoothing:antialiased;
-  overflow-x:hidden;
-}
-a{color:inherit}
-.wrap{width:min(var(--max),calc(100% - 40px));margin:auto;position:relative;z-index:1}
+  /* ---------- CLASSIFICATION BAR ---------- */
+  .classbar{
+    position:fixed;top:0;left:0;right:0;z-index:60;background:var(--ink);color:var(--gray-faint);
+    font-size:9.5px;line-height:1.5;letter-spacing:0.16em;text-transform:uppercase;text-align:center;padding:6px 0;
+  }
 
-.grain{position:fixed;inset:-10%;z-index:40;pointer-events:none;opacity:.05;mix-blend-mode:overlay;
-  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
-  background-size:140px 140px;
-}
+  /* ---------- STICKY HEADER ----------
+     Same header as the other pages. On this page the logo isn't a link and there are no nav links (for now). */
+  .site-top{position:sticky;top:var(--classbar-h);z-index:50;}
+  .site-header{background:var(--surface);border-bottom:1px solid var(--gray-line);box-shadow:0 4px 8px -4px rgba(11,12,13,0.1);}
+  .header-inner{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:18px 0;}
+  .header-left{display:flex;align-items:center;gap:16px;min-width:0;}
+  .brand{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:800;line-height:1.5;letter-spacing:0.01em;color:var(--ink);}
+  .brand .status-dot{animation-iteration-count:2;} /* header logo dot ripples twice, then rests */
+  .brand-tag{font-size:11px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;color:var(--surface-dark);white-space:nowrap;}
 
-/* Header */
-header{
-  height:var(--header-h);display:flex;align-items:center;
-  border-bottom:1px solid var(--line);
-  background:rgba(244,245,242,.9);
-  backdrop-filter:blur(10px);
-  position:sticky;top:0;z-index:50;
-  transition:box-shadow .2s ease;
-}
-.nav{display:flex;align-items:center;justify-content:space-between;gap:24px}
-.logo{display:flex;align-items:center;gap:8px;font:700 20px/1 "Space Grotesk",sans-serif;letter-spacing:-.04em;text-decoration:none;color:var(--ink);flex:0 0 auto}
-.logo i{width:7px;height:7px;border-radius:50%;background:var(--neon);display:block}
-.nav-links{display:flex;align-items:center;gap:28px;flex:0 0 auto}
-.nav-links a{font-size:11.5px;font-weight:600;text-decoration:none;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
-.nav-links a:hover{color:var(--ink)}
-.nav-links a.current{color:var(--ink)}
+  /* ---------- HIDE ON SCROLL ----------
+     Scrolling down slides the class bar and header up out of view; scrolling up brings them back.
+     The script at the bottom toggles html.header-hidden. */
+  .classbar{transition:transform 0.4s cubic-bezier(0.49,0.025,0.685,1), opacity 0.4s cubic-bezier(0.49,0.025,0.685,1);}
+  .site-top .site-header{position:relative;z-index:1;transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);}
+  html.header-hidden .classbar{transform:translateY(-100%);opacity:0;}
+  html.header-hidden .site-top .site-header{transform:translateY(calc(-100% - var(--classbar-h)));}
 
-.kicker{display:flex;align-items:center;gap:9px;margin-bottom:16px;color:var(--muted);font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase}
-.kicker i{width:7px;height:7px;border-radius:50%;background:var(--neon);display:block;flex-shrink:0}
+  @media (max-width:700px){
+    :root{--classbar-h:24px;} /* the top bar is shorter on phones (smaller text) */
+    .classbar{font-size:8px;}
+  }
+  @media (max-width:560px){.brand-tag{display:none;}}
 
-/* API hero */
-.api-hero{padding:88px 0 56px;border-bottom:1px solid var(--line)}
-.api-hero h1{margin:0 0 20px;font:400 clamp(42px,7vw,80px)/1.02 "Bebas Neue",Impact,sans-serif;letter-spacing:.005em;text-transform:uppercase;color:var(--ink)}
-.api-hero-copy{max-width:600px;margin:0 0 28px;color:#4b4c52;font-size:16.5px;line-height:1.75}
-.base-url{display:inline-flex;align-items:center;gap:10px;padding:12px 18px;background:var(--paper-2);border:1px solid var(--line);border-radius:4px;font:500 13.5px "IBM Plex Mono",monospace;color:var(--ink);margin-bottom:28px}
-.base-url span{color:var(--muted);font-size:10px;letter-spacing:.12em;text-transform:uppercase;font-weight:600}
+  /* ---------- HERO ---------- */
+  .hero{position:relative;overflow:hidden;padding:96px 0 72px;}
+  .hero-backdrop{position:absolute;top:0;left:50%;margin-left:-1468px;pointer-events:none;}
+  .hero .wrap{position:relative;z-index:1;display:flex;flex-direction:column;align-items:flex-start;gap:24px;}
+  .hero h1{font-weight:600;font-size:clamp(40px,6vw,70px);line-height:0.99;letter-spacing:-0.03em;}
+  .lede{font-size:16px;line-height:1.75;color:var(--body);max-width:680px;}
+  .base-url{
+    display:flex;align-items:center;gap:12px;padding:12px 12px 12px 16px;max-width:100%;
+    background:var(--surface-alt);border:1px solid var(--gray-line);border-radius:4px;
+  }
+  .base-url-label{font-size:11px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;color:var(--surface-dark);white-space:nowrap;}
+  .base-url code{font-weight:500;font-size:14px;line-height:1.5;overflow-wrap:anywhere;}
+  @media (max-width:700px){
+    .hero{padding:48px 0;}
+    .base-url{flex-wrap:wrap;align-items:flex-start;gap:4px 12px;}
+    .base-url-label{flex-basis:100%;order:-1;}
+    .base-url code{flex:1;font-size:13px;}
+  }
 
-/* Sections */
-.api-section{padding:64px 0;border-bottom:1px solid var(--line)}
-.api-section:last-of-type{border-bottom:none}
-.api-section-head h2{margin:0;font:400 clamp(28px,4vw,40px)/1.05 "Bebas Neue",Impact,sans-serif;letter-spacing:.005em;text-transform:uppercase;color:var(--ink)}
-.api-section-intro{max-width:640px;margin:14px 0 0;color:#4b4c52;font-size:15.5px;line-height:1.75}
+  /* ---------- COPY BUTTON (same pattern as the install page) ----------
+     Copies the base URL or a code panel's code. The tooltip shows on hover / keyboard focus
+     and says "Copied" for a moment after a click. */
+  .copy-btn{position:relative;flex-shrink:0;display:flex;padding:2px;border:none;background:none;cursor:pointer;border-radius:4px;}
+  .copy-btn:hover{background:rgba(11,12,13,0.06);}
+  .copy-btn img{width:20px;height:20px;display:block;}
+  .tooltip{
+    position:absolute;top:calc(100% + 12px);left:50%;transform:translateX(-50%) translateY(-4px);
+    padding:8px 12px;border-radius:4px;background:var(--surface-dark);color:#fff;
+    font-family:var(--font-sans);font-size:13px;line-height:normal;white-space:nowrap;
+    filter:drop-shadow(0 6px 4px rgba(0,0,0,0.16));
+    opacity:0;visibility:hidden;pointer-events:none;
+    transition:opacity 0.15s ease, transform 0.15s ease, visibility 0s linear 0.15s;z-index:5;
+  }
+  .tooltip::before{
+    content:'';position:absolute;bottom:100%;left:50%;margin-left:-8px;
+    border:8px solid transparent;border-top:0;border-bottom-color:var(--surface-dark);
+  }
+  .copy-btn:hover .tooltip,.copy-btn:focus-visible .tooltip,.copy-btn.is-copied .tooltip{
+    opacity:1;visibility:visible;transform:translateX(-50%) translateY(0);transition:opacity 0.15s ease, transform 0.15s ease, visibility 0s;
+  }
+  .visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
+  .code-head .tooltip{left:auto;right:-6px;transform:translateY(-4px);} /* keep the tooltip inside the panel */
+  .code-head .tooltip::before{left:auto;right:8px;margin-left:0;}
+  .code-head .copy-btn:hover .tooltip,.code-head .copy-btn:focus-visible .tooltip,.code-head .copy-btn.is-copied .tooltip{transform:translateY(0);}
 
-/* Endpoints */
-.endpoint{margin-top:44px;padding-top:40px;border-top:1px solid var(--line)}
-.endpoint:first-of-type{margin-top:36px;padding-top:0;border-top:none}
-.endpoint-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
-.method-pill{font:700 11px "IBM Plex Mono",monospace;letter-spacing:.06em;padding:4px 10px;border-radius:3px;text-transform:uppercase;color:#fff;flex-shrink:0}
-.method-pill.get{background:var(--go)}
-.method-pill.post{background:var(--neon)}
-.method-pill.delete{background:var(--blood)}
-.endpoint-path{font:600 15.5px "IBM Plex Mono",monospace;color:var(--ink)}
-.status-code{margin-left:auto;font:500 11px "IBM Plex Mono",monospace;color:var(--muted)}
-.endpoint-desc{max-width:660px;color:var(--muted);font-size:14.5px;line-height:1.75;margin:0 0 8px}
-.endpoint-desc code{font-size:12.5px;color:var(--neon);background:rgba(227,28,121,.07);padding:1px 5px;border-radius:2px}
+  /* ---------- BODY: JUMP MENU + CONTENT ---------- */
+  .api-body{border-top:1px solid var(--gray-line);}
+  .api-layout{display:grid;grid-template-columns:240px minmax(0,804px);justify-content:space-between;padding-bottom:96px;}
 
-/* Param tables */
-.param-table{width:100%;max-width:760px;border-collapse:collapse;margin:20px 0 4px;font-size:13px}
-.param-table th{text-align:left;font:600 10px "IBM Plex Mono",monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:8px 16px 8px 0;border-bottom:1px solid var(--line)}
-.param-table td{padding:11px 16px 11px 0;border-bottom:1px solid var(--line);vertical-align:top;color:#4b4c52;line-height:1.5}
-.param-table td:first-child{color:var(--ink);font-weight:600;white-space:nowrap}
-.param-table td.type{color:var(--muted);white-space:nowrap;font-size:12px}
-.req{color:var(--neon);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
-.opt{color:var(--muted);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+  /* jump menu, desktop: a sidebar that stays in view below the header (and moves up when the header hides) */
+  .jump{position:sticky;top:calc(var(--classbar-h) + var(--top-h, 61px) - 40px);align-self:start;padding-top:64px;transition:top 0.3s cubic-bezier(0.4,0,0.2,1);}
+  html.header-hidden .jump{top:-40px;}
+  .jump-label{font-size:11px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;color:var(--surface-dark);margin-bottom:16px;}
+  .jump-toggle{display:none;}
+  .jump-list{list-style:none;margin:0;padding:0;}
+  .jump-link{
+    display:block;padding:10px 0 12px 16px;border-left:1px solid var(--gray-line);
+    font-weight:500;font-size:14px;line-height:1.5;color:var(--body);text-decoration:none;transition:color 0.2s ease;
+  }
+  .jump-link:hover{color:var(--pink-text);}
+  .jump-link.is-active{border-left:2px solid var(--pink);padding-left:15px;font-weight:600;color:var(--ink);} /* the section you're reading */
 
-/* Code blocks (shared with the main site) */
-.code-block{margin-top:18px;border:1px solid var(--line);border-radius:4px;overflow:hidden;background:#fff;box-shadow:0 1px 2px rgba(18,19,26,.04);max-width:760px}
-.code-block + .code-block{margin-top:12px}
-.code-pair{display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:none}
-.code-pair .code-block{max-width:none}
-.code-header{display:flex;align-items:center;justify-content:space-between;padding:9px 18px;border-bottom:1px solid var(--line);background:var(--paper-2)}
-.code-filename{font:600 11.5px/1 "IBM Plex Mono",monospace;color:var(--ink);letter-spacing:.04em}
-.code-lang{font:600 9px/1 "IBM Plex Mono",monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--neon);opacity:.75}
-.code-block pre{margin:0;padding:18px 20px;overflow-x:auto;font-size:12.5px;line-height:1.7;color:var(--ink);tab-size:2}
-.code-block pre::-webkit-scrollbar{height:3px}
-.code-block pre::-webkit-scrollbar-thumb{background:var(--line)}
-.t-kw{color:#c11868}
-.t-str{color:#0d8f5f}
-.t-cmnt{color:rgba(18,19,26,.42);font-style:italic}
-.t-fn{color:#2f5f96}
-.t-num{color:#a97815}
-.t-key{color:#7a3fc4}
+  /* ---------- SECTIONS ---------- */
+  .api-section{display:flex;flex-direction:column;gap:56px;padding:64px 0 40px;scroll-margin-top:calc(var(--classbar-h) + var(--top-h, 61px) - 40px);}
+  .api-section + .api-section{border-top:1px solid var(--gray-line);}
+  .section-head{display:flex;flex-direction:column;gap:16px;}
+  .section-head h2{font-weight:500;font-size:clamp(34px,4.2vw,52px);line-height:1.14;letter-spacing:-0.01em;}
 
-.aside-note{max-width:660px;margin-top:16px;color:var(--muted);font-size:13.5px;line-height:1.7;font-style:italic}
+  .endpoint{display:flex;flex-direction:column;gap:20px;}
+  .endpoint-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+  .method{padding:4px 8px;border-radius:2px;font-family:var(--mono);font-weight:700;font-size:11px;line-height:1.5;letter-spacing:0.04em;color:#fff;}
+  .method--get{background:var(--go-text);}
+  .method--post{background:var(--pink);}
+  .method--delete{background:var(--sev-1);}
+  .endpoint-path{font-family:var(--mono);font-weight:500;font-size:20px;line-height:1.4;overflow-wrap:anywhere;}
+  .endpoint-title{font-weight:600;font-size:20px;line-height:1.5;letter-spacing:-0.01em;}
+  .endpoint-status{margin-left:auto;font-family:var(--mono);font-weight:500;font-size:12px;color:var(--surface-dark);white-space:nowrap;}
+  .endpoint-desc{font-size:14.5px;line-height:1.75;color:var(--body);}
+  .note{font-size:13.5px;line-height:1.5;color:var(--surface-dark);}
+  .note code{color:var(--body);}
 
-/* Callouts */
-.callout{margin-top:28px;padding:20px 22px;background:var(--paper-2);border:1px solid var(--line);border-left:3px solid var(--neon);border-radius:4px;max-width:760px}
-.callout-title{display:flex;align-items:center;gap:8px;font:700 11px "IBM Plex Mono",monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);margin-bottom:10px}
-.callout-title i{width:7px;height:7px;border-radius:50%;background:var(--neon);display:block;flex-shrink:0}
-.callout p{margin:0 0 10px;color:#4b4c52;font-size:14px;line-height:1.7}
-.callout p:last-child{margin-bottom:0}
-.callout code{font-size:12.5px;color:var(--neon);background:rgba(227,28,121,.07);padding:1px 5px;border-radius:2px}
+  /* callout card */
+  .callout{display:flex;flex-direction:column;gap:12px;padding:20px 24px;background:var(--white);border:1px solid var(--gray-line);border-radius:4px;}
+  .callout p{font-size:14.5px;line-height:1.75;color:var(--body);}
 
-/* Errors table section */
-.error-row{display:flex;gap:20px;padding:16px 0;border-top:1px solid var(--line);align-items:baseline}
-.error-row:first-child{border-top:none}
-.error-code{font:600 15px "IBM Plex Mono",monospace;color:var(--ink);min-width:64px;flex-shrink:0}
-.error-desc{color:var(--muted);font-size:14px;line-height:1.6}
+  /* tables */
+  table{width:100%;border-collapse:collapse;}
+  th{padding:0 16px 8px 0;text-align:left;font-weight:400;font-size:11px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;color:var(--surface-dark);}
+  td{padding:12px 16px 12px 0;border-top:1px solid var(--gray-line);vertical-align:top;font-size:13px;line-height:1.5;color:var(--body);}
+  th:last-child,td:last-child{padding-right:0;}
+  td:first-child{font-family:var(--mono);font-weight:500;color:var(--ink);}
+  .param-table th:nth-child(1){width:150px;}
+  .param-table th:nth-child(2){width:156px;}
+  .param-table th:nth-child(3){width:146px;}
+  .param-table th:nth-child(4){width:100px;}
+  .value-table th:first-child{width:72px;}
+  .value-table th:nth-child(2):not(:last-child){width:140px;}
+  .req,.opt{font-weight:600;font-size:12px;}
+  .req{color:var(--pink-text);}
+  .opt{color:var(--surface-dark);}
 
-/* Footer */
-footer{padding:20px 0;background:var(--ink);border-top:1px solid #26262a;color:#66666b;font-size:10px}
-.footer{display:flex;justify-content:space-between;gap:20px}
-.footer a{color:#88888d;text-decoration:none}
-.footer a:hover{color:#fff}
+  /* code panel: gray header (file, language, copy) over a light code body */
+  .code-panel{border:1px solid var(--gray-line);border-radius:4px;background:var(--surface-gray);}
+  .code-head{display:flex;align-items:center;gap:10px;padding:8px 10px 8px 16px;background:var(--surface-alt);border-bottom:1px solid var(--gray-line);border-radius:4px 4px 0 0;}
+  .code-file{font-family:var(--mono);font-weight:500;font-size:12px;color:var(--ink);}
+  .code-lang{flex:1;font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--pink-text);}
+  .code-panel pre{margin:0;padding:16px 16px 18px;overflow-x:auto;} /* long lines scroll sideways inside the panel */
+  .code-panel pre code{font-size:12.5px;line-height:1.7;white-space:pre;}
+  /* code colours (all pass 4.5:1 on the light panel) */
+  .t-fn{color:#2f5f96;}
+  .t-kw{color:var(--pink-text);}
+  .t-str{color:var(--go-text);}
+  .t-num{color:#8a5a00;}
+  .t-key{color:#7a3fc4;}
+  .t-cmnt{color:var(--surface-dark);font-style:italic;}
 
-@media(max-width:860px){
-  .nav-links{display:none}
-  .code-pair{grid-template-columns:1fr}
-}
-@media(max-width:560px){
-  .wrap{width:min(var(--max),calc(100% - 28px))}
-  .api-hero{padding:64px 0 40px}
-  .api-section{padding:44px 0}
-  .endpoint-head{gap:10px}
-  .status-code{margin-left:0;width:100%}
-}
+  /* ---------- JUMP MENU + TABLES ON SMALLER SCREENS ---------- */
+  @media (max-width:900px){
+    .api-layout{grid-template-columns:minmax(0,1fr);}
+    /* the menu becomes a sticky bar under the header; tapping it opens the list */
+    .jump,html.header-hidden .jump{z-index:40;}
+    .jump{top:calc(var(--classbar-h) + var(--top-h, 61px));margin:0 calc(50% - 50vw);padding:0;background:var(--surface-gray);border-bottom:1px solid var(--gray-line);}
+    .jump-label{display:none;}
+    .jump-toggle{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;
+      padding:10px 24px;border:none;background:none;cursor:pointer;text-align:left;font:inherit;color:var(--ink);
+    }
+    .jump-toggle-text{display:flex;flex-direction:column;}
+    .jump-toggle-label{font-size:10px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;color:var(--surface-dark);}
+    .jump-current{font-weight:600;font-size:14px;line-height:1.5;}
+    .jump-toggle img{width:20px;height:20px;transition:transform 0.2s ease;}
+    .jump.is-open .jump-toggle img{transform:rotate(180deg);}
+    .jump-list{
+      display:none;position:absolute;top:100%;left:0;right:0;max-height:calc(100vh - 160px);overflow-y:auto;overscroll-behavior:contain;
+      padding:8px 24px 16px;background:var(--surface);border-bottom:1px solid var(--gray-line);box-shadow:0 12px 24px -12px rgba(11,12,13,0.18);
+    }
+    .jump.is-open .jump-list{display:block;}
+    .jump-link{padding:12px 0 12px 16px;}
+    .jump-link.is-active{padding-left:15px;}
+    html.header-hidden .jump{top:0;}
+    .api-section{scroll-margin-top:calc(var(--classbar-h) + var(--top-h, 61px) + 64px);}
+    /* 4) the page behind the open menu doesn't scroll */
+    html.jump-open{overflow:hidden;} /* lock html only: locking body too would break the sticky bar */
+  }
+  @media (max-width:700px){
+    .api-section{gap:40px;padding:40px 0 32px;}
+    .endpoint-path{font-size:16px;}
+    .endpoint-head .method{order:-2;}
+    .endpoint-status{order:-1;margin-left:0;}
+    .endpoint-path,.endpoint-title{flex-basis:100%;}
+    /* parameter tables become a stacked list: name + Required/Optional, then "in · type", then the description */
+    .param-table thead{display:none;}
+    .param-table tr{display:grid;grid-template-columns:auto auto 1fr;column-gap:6px;padding:12px 0;border-top:1px solid var(--gray-line);}
+    .param-table td{border:0;padding:0;}
+    .param-table td:nth-child(1){grid-column:1 / 3;}
+    .param-table td:nth-child(4){grid-column:3;grid-row:1;justify-self:end;}
+    .param-table td:nth-child(2),.param-table td:nth-child(3){grid-row:2;font-size:12px;color:var(--surface-dark);}
+    .param-table td:nth-child(3)::before{content:'· ';}
+    .param-table td:nth-child(5){grid-column:1 / -1;padding-top:4px;}
+    .callout{padding:16px;}
+  }
+
+  /* ---------- FOOTER ---------- */
+  footer{
+    border-top:1px solid var(--gray-line);padding:28px 56px 40px;display:flex;justify-content:space-between;align-items:center;
+    font-size:10.5px;line-height:1.5;color:var(--surface-dark);text-transform:uppercase;letter-spacing:0.08em;
+  }
+  footer a{text-decoration:none;}
+  footer a:hover{color:var(--ink);}
+  footer .fmark{color:var(--ink);font-weight:500;}
+  @media (max-width:700px){footer{padding:22px 20px 36px;flex-direction:column;gap:10px;text-align:center;}}
+
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    .status-dot{animation:none;}
+    .classbar,.site-top .site-header,.jump,.jump-toggle img{transition:none;}
+  }
 </style>
 </head>
 <body>
 
-<div class="grain" aria-hidden="true"></div>
+  <div class="classbar">UNMANNED · SIMPLY SECURE</div>
 
-<header>
-  <div class="wrap nav">
-    <a class="logo" href="index.html"><i></i>VEX</a>
-    <nav class="nav-links">
-      <a href="#signals">Signals</a>
-      <a href="#monitors">Monitors</a>
-      <a href="#assets">Assets</a>
-      <a href="#notifications">Notifications</a>
-      <a href="#files">Files</a>
-      <a href="#audit">Audit</a>
-    </nav>
+  <!-- ============================================================
+       HEADER (sticky) — no nav links on this page for now
+       ============================================================ -->
+  <div class="site-top">
+    <header class="site-header">
+      <div class="wrap header-inner">
+        <div class="header-left">
+          <span class="brand"><span class="status-dot"></span>VEX</span>
+          <span class="brand-tag">Don’t get hacked</span>
+        </div>
+      </div>
+    </header>
   </div>
-</header>
 
-<main>
+  <main>
 
-  <section class="api-hero">
+  <!-- ============================================================
+       HERO
+       ============================================================ -->
+  <section class="hero">
+    <img class="hero-backdrop" src="../static/glow-grid-bg.svg" width="2936" height="258" alt="" aria-hidden="true">
     <div class="wrap">
-      <div class="kicker"><i></i>For developers</div>
+      <div class="eyebrow-label"><span class="status-dot"></span>For developers</div>
       <h1>The actual API.</h1>
-      <p class="api-hero-copy">Everything from the previous page, minus the doors and the dramatic lighting. Resource groups, a handful of endpoints, and none of them require you to believe in metaphors.</p>
-      <div class="base-url"><span>Base URL</span> https://4ycv63am8b.execute-api.us-east-2.amazonaws.com</div>
+      <p class="lede">Everything from the previous page, minus the doors and the dramatic lighting. Resource groups, a handful of endpoints, and none of them require you to believe in metaphors.</p>
+      <div class="base-url">
+        <span class="base-url-label">Base URL</span>
+        <code id="base-url">https://4ycv63am8b.execute-api.us-east-2.amazonaws.com</code>
+        <button class="copy-btn" type="button" aria-label="Copy base URL to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button>
+      </div>
     </div>
   </section>
 
-  <!-- AUTHENTICATION -->
-  <section class="api-section" id="auth">
-    <div class="wrap">
-      <div class="api-section-head"><h2>Authentication</h2></div>
-      <p class="api-section-intro">Two steps: trade your username and password for a token, then send that token on everything else. Nothing exotic — a standard AWS Cognito exchange.</p>
+  <!-- ============================================================
+       JUMP MENU + REFERENCE
+       The jump menu lists every section below. To add a section, add a <section class="api-section" id="…">
+       and a matching link here; the script picks both up automatically.
+       ============================================================ -->
+  <div class="api-body">
+    <div class="wrap api-layout">
 
+      <nav class="jump" id="jump" aria-label="On this page">
+        <p class="jump-label">On this page</p>
+        <button class="jump-toggle" type="button" aria-expanded="false" aria-controls="jump-list">
+          <span class="jump-toggle-text"><span class="jump-toggle-label">On this page</span><span class="jump-current">Authentication</span></span>
+          <img src="../static/icon-arrow-down.svg" width="20" height="20" alt="">
+        </button>
+        <ul class="jump-list" id="jump-list">
+          <li><a class="jump-link" href="#auth">Authentication</a></li>
+          <li><a class="jump-link" href="#signals">Signals</a></li>
+          <li><a class="jump-link" href="#monitors">Monitors</a></li>
+          <li><a class="jump-link" href="#assets">Assets</a></li>
+          <li><a class="jump-link" href="#notifications">Notifications</a></li>
+          <li><a class="jump-link" href="#files">Files</a></li>
+          <li><a class="jump-link" href="#audit">Audit</a></li>
+        </ul>
+      </nav>
+
+      <div class="api-content">
+
+    <section class="api-section" id="auth">
+      <div class="section-head">
+        <h2>Authentication</h2>
+        <p class="lede">Two steps: trade your username and password for a token, then send that token on everything else. Nothing exotic — a standard AWS Cognito exchange.</p>
+      </div>
       <div class="endpoint" id="post-auth-token">
         <div class="endpoint-head">
-          <span class="method-pill post">POST</span>
-          <span class="endpoint-path">cognito-idp.us-east-2.amazonaws.com</span>
-          <span class="status-code">200 OK</span>
+          <span class="method method--post">POST</span>
+          <h3 class="endpoint-path">cognito-idp.us-east-2.amazonaws.com</h3>
+          <span class="endpoint-status">200 OK</span>
         </div>
-        <p class="endpoint-desc">Exchanges your username and password for a bearer token via AWS Cognito. This call goes straight to Cognito, not the Vex base URL. Email <code class="mono">go@unmanned.team</code> to get credentials if you don't have them yet — this is the first call you'll ever make.</p>
+        <p class="endpoint-desc">Exchanges your username and password for a bearer token via AWS Cognito. This call goes straight to Cognito, not the Vex base URL. Email <code>go@unmanned.team</code> to get credentials if you don't have them yet — this is the first call you'll ever make.</p>
         <table class="param-table">
-          <tr><th>Parameter</th><th>In</th><th>Type</th><th></th><th>Description</th></tr>
-          <tr><td>ClientId</td><td class="type">body</td><td class="type">string</td><td><span class="req">Required</span></td><td>Identifies your workspace.</td></tr>
-          <tr><td>USERNAME</td><td class="type">body, AuthParameters</td><td class="type">string</td><td><span class="req">Required</span></td><td>Your Vex account email.</td></tr>
-          <tr><td>PASSWORD</td><td class="type">body, AuthParameters</td><td class="type">string</td><td><span class="req">Required</span></td><td>Keep this out of client-side code. Same rules as any other secret.</td></tr>
+          <thead><tr><th>Parameter</th><th>In</th><th>Type</th><th></th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>ClientId</td><td>body</td><td>string</td><td><span class="req">Required</span></td><td>Identifies your workspace.</td></tr>
+            <tr><td>USERNAME</td><td>body, AuthParameters</td><td>string</td><td><span class="req">Required</span></td><td>Your Vex account email.</td></tr>
+            <tr><td>PASSWORD</td><td>body, AuthParameters</td><td>string</td><td><span class="req">Required</span></td><td>Keep this out of client-side code. Same rules as any other secret.</td></tr>
+          </tbody>
         </table>
-        <div class="code-pair">
-          <div class="code-block">
-            <div class="code-header"><span class="code-filename">request</span><span class="code-lang">Shell</span></div>
-            <pre><code><span class="t-fn">curl</span> https://cognito-idp.us-east-2.amazonaws.com/ \
+        <div class="code-panel">
+          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy request to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
+          <pre><code><span class="t-fn">curl</span> https://cognito-idp.us-east-2.amazonaws.com/ \
   -H <span class="t-str">"Content-Type: application/x-amz-json-1.1"</span> \
   -H <span class="t-str">"X-Amz-Target: AWSCognitoIdentityProviderService.InitiateAuth"</span> \
   -d <span class="t-str">'{"AuthFlow": "USER_PASSWORD_AUTH", "ClientId": "2314edi18c3o3t8sroh2u2hucf", "AuthParameters": {"USERNAME": "you@yourcompany.com", "PASSWORD": "your-password"}}'</span></code></pre>
-          </div>
-          <div class="code-block">
-            <div class="code-header"><span class="code-filename">response</span><span class="code-lang">JSON</span></div>
-            <pre><code>{
+        </div>
+        <div class="code-panel">
+          <div class="code-head"><span class="code-file">response</span><span class="code-lang">JSON</span><button class="copy-btn" type="button" aria-label="Copy response to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
+          <pre><code>{
    <span class="t-key">"AuthenticationResult"</span> : {
       <span class="t-key">"IdToken"</span> : <span class="t-str">"eyJraWQiOi..."</span>,
       <span class="t-key">"AccessToken"</span> : <span class="t-str">"eyJraWQiOi..."</span>,
@@ -222,117 +364,112 @@ footer{padding:20px 0;background:var(--ink);border-top:1px solid #26262a;color:#
    },
    <span class="t-key">"ChallengeParameters"</span> : {}
 }</code></pre>
-          </div>
         </div>
-        <p class="aside-note">Cognito also returns <code class="mono">AccessToken</code> and <code class="mono">RefreshToken</code> alongside <code class="mono">IdToken</code> — Vex only checks <code class="mono">IdToken</code>, so the other two can be ignored for these examples. Tokens are short-lived on purpose. Cache the <code class="mono">IdToken</code> until it expires, then call this again — don't request a fresh token on every API call.</p>
+        <p class="note">Cognito also returns <code>AccessToken</code> and <code>RefreshToken</code> alongside <code>IdToken</code> — Vex only checks <code>IdToken</code>, so the other two can be ignored for these examples. Tokens are short-lived on purpose. Cache the <code>IdToken</code> until it expires, then call this again — don't request a fresh token on every API call.</p>
       </div>
-
       <div class="endpoint" id="use-auth-token">
         <div class="endpoint-head">
-          <span class="endpoint-path">Using the token</span>
+          <h3 class="endpoint-title">Using the token</h3>
         </div>
         <p class="endpoint-desc">Every other request in this reference carries that token as a bearer header. Scoped to one workspace — no per-request signing, no separate keys per endpoint.</p>
-        <div class="code-block">
-          <div class="code-header">
-            <span class="code-filename">save-token.sh</span>
-            <span class="code-lang">Shell</span>
-          </div>
+        <div class="code-panel">
+          <div class="code-head"><span class="code-file">save-token.sh</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy save-token.sh to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code><span class="t-fn">export</span> VEX_TOKEN=$(<span class="t-fn">curl</span> https://cognito-idp.us-east-2.amazonaws.com/ \
   -H <span class="t-str">"Content-Type: application/x-amz-json-1.1"</span> \
   -H <span class="t-str">"X-Amz-Target: AWSCognitoIdentityProviderService.InitiateAuth"</span> \
   -d <span class="t-str">'{"AuthFlow": "USER_PASSWORD_AUTH", "ClientId": "2314edi18c3o3t8sroh2u2hucf", "AuthParameters": {"USERNAME": "you@yourcompany.com", "PASSWORD": "your-password"}}'</span> \
   | jq -r <span class="t-str">'.AuthenticationResult.IdToken'</span>)</code></pre>
         </div>
-        <p class="aside-note">Every curl example in this reference assumes <code class="mono">$VEX_TOKEN</code> is already set this way — run it once per session and the rest just work.</p>
-        <div class="code-block">
-          <div class="code-header">
-            <span class="code-filename">auth-header.sh</span>
-            <span class="code-lang">Shell</span>
-          </div>
+        <p class="note">Every curl example in this reference assumes <code>$VEX_TOKEN</code> is already set this way — run it once per session and the rest just work.</p>
+        <div class="code-panel">
+          <div class="code-head"><span class="code-file">auth-header.sh</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy auth-header.sh to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code><span class="t-fn">curl</span> https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/monitor \
   -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span></code></pre>
         </div>
-        <p class="aside-note">Tokens expire on their own; there's no need to rotate them by hand. Rotate your password if it ever leaks.</p>
+        <p class="note">Tokens expire on their own; there's no need to rotate them by hand. Rotate your password if it ever leaks.</p>
       </div>
-
       <div class="endpoint" id="account-delegation">
         <div class="endpoint-head">
-          <span class="endpoint-path">Delegating into an account</span>
+          <h3 class="endpoint-title">Delegating into an account</h3>
         </div>
         <p class="endpoint-desc">By default every call in this reference runs against your root tenant account — the one tied to your own account domain. If you manage other accounts, you can redirect any call to one of them.</p>
         <div class="callout">
-          <div class="callout-title"><i></i>Account header</div>
+          <div class="eyebrow-label"><span class="status-dot"></span>Account header</div>
           <p>Pass an <code>account</code> header on any request in this doc and Vex delegates that call into the named account instead of your root tenant. Accounts are named after domains — <code>example.com</code>, not an internal ID.</p>
           <p>You need permission to manage the account you're delegating into. Omit the header and everything runs against your own account domain, same as always.</p>
         </div>
         <table class="param-table">
-          <tr><th>Header</th><th>In</th><th>Type</th><th></th><th>Description</th></tr>
-          <tr><td>account</td><td class="type">header</td><td class="type">string, domain</td><td><span class="opt">Optional</span></td><td>The customer account to delegate into, e.g. <code class="mono">example.com</code>. Requires permission on that account. Omit to run against your root tenant.</td></tr>
+          <thead><tr><th>Header</th><th>In</th><th>Type</th><th></th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>account</td><td>header</td><td>string, domain</td><td><span class="opt">Optional</span></td><td>The customer account to delegate into, e.g. <code>example.com</code>. Requires permission on that account. Omit to run against your root tenant.</td></tr>
+          </tbody>
         </table>
-        <div class="code-block">
-          <div class="code-header"><span class="code-filename">delegate.sh</span><span class="code-lang">Shell</span></div>
+        <div class="code-panel">
+          <div class="code-head"><span class="code-file">delegate.sh</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy delegate.sh to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code><span class="t-cmnt"># Runs against example.com instead of your own account</span>
 <span class="t-fn">curl</span> https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/monitor \
   -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span> \
   -H <span class="t-str">"account: example.com"</span></code></pre>
         </div>
-        <p class="aside-note">This applies to every endpoint in this reference the same way — monitors, signals, assets, files, all of it. One header, no separate delegated tokens to manage.</p>
+        <p class="note">This applies to every endpoint in this reference the same way — monitors, signals, assets, files, all of it. One header, no separate delegated tokens to manage.</p>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- SIGNALS -->
-  <section class="api-section" id="signals">
-    <div class="wrap">
-      <div class="api-section-head"><h2>Signals</h2></div>
-      <p class="api-section-intro">Everything a monitor noticed, and whether Vex thinks it's part of something bigger. Signals represent actionable security weaknesses.</p>
-
+    <section class="api-section" id="signals">
+      <div class="section-head">
+        <h2>Signals</h2>
+        <p class="lede">Everything a monitor noticed, and whether Vex thinks it's part of something bigger. Signals represent actionable security weaknesses.</p>
+      </div>
       <div class="callout">
-        <div class="callout-title"><i></i>Signal status values</div>
+        <div class="eyebrow-label"><span class="status-dot"></span>Signal status values</div>
         <p>The <code>status</code> field tracks where a signal sits in the help desk workflow, from first appearing to however it eventually gets closed out.</p>
-        <table class="param-table">
-          <tr><th>Code</th><th>Label</th><th>Description</th></tr>
-          <tr><td>OP</td><td class="type">Open</td><td>Actively being worked. Default help desk queue view.</td></tr>
-          <tr><td>OB</td><td class="type">Blocked</td><td>Waiting on the customer before work can continue.</td></tr>
-          <tr><td>CH</td><td class="type">Resolved</td><td>Confirmed resolved and archived.</td></tr>
-          <tr><td>CI</td><td class="type">False positive</td><td>Nothing actionable to complete.</td></tr>
-          <tr><td>CR</td><td class="type">Accepted risk</td><td>Customer accepted the risk on this ticket.</td></tr>
-          <tr><td>CS</td><td class="type">Auto-closed</td><td>Sam closed with high confidence.</td></tr>
+        <table class="value-table">
+          <thead><tr><th>Code</th><th>Label</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>OP</td><td>Open</td><td>Actively being worked. Default help desk queue view.</td></tr>
+            <tr><td>OB</td><td>Blocked</td><td>Waiting on the customer before work can continue.</td></tr>
+            <tr><td>CH</td><td>Resolved</td><td>Confirmed resolved and archived.</td></tr>
+            <tr><td>CI</td><td>False positive</td><td>Nothing actionable to complete.</td></tr>
+            <tr><td>CR</td><td>Accepted risk</td><td>Customer accepted the risk on this ticket.</td></tr>
+            <tr><td>CS</td><td>Auto-closed</td><td>Sam closed with high confidence.</td></tr>
+          </tbody>
         </table>
       </div>
-
       <div class="callout">
-        <div class="callout-title"><i></i>Signal severity values</div>
+        <div class="eyebrow-label"><span class="status-dot"></span>Signal severity values</div>
         <p>The <code>severity</code> field is a 1–5 scale, most urgent first.</p>
-        <table class="param-table">
-          <tr><th>Value</th><th>Label</th></tr>
-          <tr><td>1</td><td class="type">critical</td></tr>
-          <tr><td>2</td><td class="type">high</td></tr>
-          <tr><td>3</td><td class="type">medium</td></tr>
-          <tr><td>4</td><td class="type">low</td></tr>
-          <tr><td>5</td><td class="type">info</td></tr>
+        <table class="value-table">
+          <thead><tr><th>Value</th><th>Label</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>critical</td></tr>
+            <tr><td>2</td><td>high</td></tr>
+            <tr><td>3</td><td>medium</td></tr>
+            <tr><td>4</td><td>low</td></tr>
+            <tr><td>5</td><td>info</td></tr>
+          </tbody>
         </table>
       </div>
-
       <div class="endpoint" id="get-signal">
         <div class="endpoint-head">
-          <span class="method-pill get">GET</span>
-          <span class="endpoint-path">/signal</span>
-          <span class="status-code">200 OK</span>
+          <span class="method method--get">GET</span>
+          <h3 class="endpoint-path">/signal</h3>
+          <span class="endpoint-status">200 OK</span>
         </div>
         <p class="endpoint-desc">Every signal Vex has collected, newest first. Query params exist so you don't have to scroll forever.</p>
         <table class="param-table">
-          <tr><th>Parameter</th><th>In</th><th>Type</th><th></th><th>Description</th></tr>
-          <tr><td>date</td><td class="type">query</td><td class="type">string, ISO 8601</td><td><span class="opt">Optional</span></td><td>Only return signals detected on this date.</td></tr>
-          <tr><td>status</td><td class="type">query</td><td class="type">string</td><td><span class="opt">Optional</span></td><td>Only return signals with this status code, e.g. <code class="mono">OP</code>.</td></tr>
+          <thead><tr><th>Parameter</th><th>In</th><th>Type</th><th></th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>date</td><td>query</td><td>string, ISO 8601</td><td><span class="opt">Optional</span></td><td>Only return signals detected on this date.</td></tr>
+            <tr><td>status</td><td>query</td><td>string</td><td><span class="opt">Optional</span></td><td>Only return signals with this status code, e.g. <code>OP</code>.</td></tr>
+          </tbody>
         </table>
-        <div class="code-block">
-          <div class="code-header"><span class="code-filename">request</span><span class="code-lang">Shell</span></div>
+        <div class="code-panel">
+          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy request to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code><span class="t-fn">curl</span> <span class="t-str">"https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/signal?date=2026-08-27"</span> \
   -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span></code></pre>
         </div>
-        <div class="code-block">
-          <div class="code-header"><span class="code-filename">response</span><span class="code-lang">JSON</span></div>
+        <div class="code-panel">
+          <div class="code-head"><span class="code-file">response</span><span class="code-lang">JSON</span><button class="copy-btn" type="button" aria-label="Copy response to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code>[
   {
     <span class="t-key">"id"</span>: <span class="t-num">482910736244</span>,
@@ -371,21 +508,20 @@ footer{padding:20px 0;background:var(--ink);border-top:1px solid #26262a;color:#
 ]</code></pre>
         </div>
       </div>
-
       <div class="endpoint" id="get-signal-id">
         <div class="endpoint-head">
-          <span class="method-pill get">GET</span>
-          <span class="endpoint-path">/signal/{id}</span>
-          <span class="status-code">200 OK</span>
+          <span class="method method--get">GET</span>
+          <h3 class="endpoint-path">/signal/{id}</h3>
+          <span class="endpoint-status">200 OK</span>
         </div>
         <p class="endpoint-desc">The full detail on one signal.</p>
-        <div class="code-block">
-          <div class="code-header"><span class="code-filename">request</span><span class="code-lang">Shell</span></div>
+        <div class="code-panel">
+          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy request to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code><span class="t-fn">curl</span> https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/signal/719203845561 \
   -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span></code></pre>
         </div>
-        <div class="code-block">
-          <div class="code-header"><span class="code-filename">response</span><span class="code-lang">JSON</span></div>
+        <div class="code-panel">
+          <div class="code-head"><span class="code-file">response</span><span class="code-lang">JSON</span><button class="copy-btn" type="button" aria-label="Copy response to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code>{
   <span class="t-key">"id"</span>: <span class="t-num">719203845561</span>,
   <span class="t-key">"source"</span>: <span class="t-str">"microsoft"</span>,
@@ -407,74 +543,69 @@ footer{padding:20px 0;background:var(--ink);border-top:1px solid #26262a;color:#
       </div>
       <div class="endpoint" id="get-managed-signal">
         <div class="endpoint-head">
-          <span class="method-pill get">GET</span>
-          <span class="endpoint-path">/managed/signal</span>
-          <span class="status-code">200 OK</span>
+          <span class="method method--get">GET</span>
+          <h3 class="endpoint-path">/managed/signal</h3>
+          <span class="endpoint-status">200 OK</span>
         </div>
         <p class="endpoint-desc">Every open signal across every account you manage, in one call.</p>
         <div class="callout">
-          <div class="callout-title"><i></i>Multi-tenant shortcut</div>
+          <div class="eyebrow-label"><span class="status-dot"></span>Multi-tenant shortcut</div>
           <p>If you manage several accounts, this is the one call worth knowing about: it returns every open signal across all of them in a single response, so you don't have to loop over each account with the <code>account</code> header just to check for open work.</p>
         </div>
-        <div class="code-block">
-          <div class="code-header"><span class="code-filename">request</span><span class="code-lang">Shell</span></div>
+        <div class="code-panel">
+          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy request to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code><span class="t-fn">curl</span> https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/managed/signal \
   -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span></code></pre>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- MONITORS -->
-  <section class="api-section" id="monitors">
-    <div class="wrap">
-      <div class="api-section-head"><h2>Monitors</h2></div>
-      <p class="api-section-intro">Connect, check, and disconnect the things watching your business. Slugs match the site: <code class="mono">google</code>, <code class="mono">microsoft</code>, <code class="mono">aws</code>, <code class="mono">cloudflare</code>, <code class="mono">level</code>, <code class="mono">shopify</code>, <code class="mono">quickbooks</code>, <code class="mono">hubspot</code>, <code class="mono">constant-contact</code>, <code class="mono">slack</code>, <code class="mono">squarespace</code>, and the many more we didn't have room to list here either.</p>
-
+    <section class="api-section" id="monitors">
+      <div class="section-head">
+        <h2>Monitors</h2>
+        <p class="lede">Connect, check, and disconnect the things watching your business. Slugs match the site: <code>google</code>, <code>microsoft</code>, <code>aws</code>, <code>cloudflare</code>, <code>level</code>, <code>shopify</code>, <code>quickbooks</code>, <code>hubspot</code>, <code>constant-contact</code>, <code>slack</code>, <code>squarespace</code>, and the many more we didn't have room to list here either.</p>
+      </div>
       <div class="callout">
-        <div class="callout-title"><i></i>Monitor keys</div>
+        <div class="eyebrow-label"><span class="status-dot"></span>Monitor keys</div>
         <p>Every monitor is identified by a three-part key: <code>account/vendor/index</code> — e.g. <code>acmecorp.com/google/0</code>.</p>
         <p>The <code>account</code> is the domain the monitor belongs to, and <code>vendor</code> is the slug for what it's watching (<code>google</code>, <code>microsoft</code>, and so on). The <code>index</code> is what lets you connect more than one of the same vendor — say, two separate Microsoft 365 tenants — by giving each its own <code>index</code> under the same vendor slug.</p>
       </div>
-
       <div class="endpoint" id="get-monitor">
         <div class="endpoint-head">
-          <span class="method-pill get">GET</span>
-          <span class="endpoint-path">/monitor</span>
-          <span class="status-code">200 OK</span>
+          <span class="method method--get">GET</span>
+          <h3 class="endpoint-path">/monitor</h3>
+          <span class="endpoint-status">200 OK</span>
         </div>
         <p class="endpoint-desc">Lists every monitor currently connected to your account. This is the "yes, it's still working" button.</p>
-        <div class="code-block">
-          <div class="code-header"><span class="code-filename">request</span><span class="code-lang">Shell</span></div>
+        <div class="code-panel">
+          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy request to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code><span class="t-fn">curl</span> https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/monitor \
   -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span></code></pre>
         </div>
-        <div class="code-block">
-          <div class="code-header"><span class="code-filename">response</span><span class="code-lang">JSON</span></div>
+        <div class="code-panel">
+          <div class="code-head"><span class="code-file">response</span><span class="code-lang">JSON</span><button class="copy-btn" type="button" aria-label="Copy response to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code>[
   <span class="t-str">"/acmecorp.com/google/0"</span>,
   <span class="t-str">"/acmecorp.com/slack/0"</span>
 ]</code></pre>
         </div>
       </div>
-
       <div class="endpoint" id="post-monitor">
         <div class="endpoint-head">
-          <span class="method-pill post">POST</span>
-          <span class="endpoint-path">/monitor/{name}</span>
-          <span class="status-code">201 Created</span>
+          <span class="method method--post">POST</span>
+          <h3 class="endpoint-path">/monitor/{name}</h3>
+          <span class="endpoint-status">201 Created</span>
         </div>
         <p class="endpoint-desc">Connects a new monitor. It wants credentials, not your firstborn.</p>
         <table class="param-table">
-          <tr><th>Parameter</th><th>In</th><th>Type</th><th></th><th>Description</th></tr>
-          <tr><td>name</td><td class="type">path</td><td class="type">string</td><td><span class="req">Required</span></td><td>Monitor slug with index, e.g. <code class="mono">google/0</code> or <code class="mono">microsoft/0</code>.</td></tr>
+          <thead><tr><th>Parameter</th><th>In</th><th>Type</th><th></th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>name</td><td>path</td><td>string</td><td><span class="req">Required</span></td><td>Monitor slug with index, e.g. <code>google/0</code> or <code>microsoft/0</code>.</td></tr>
+          </tbody>
         </table>
-        <p class="aside-note">Body shape depends on the provider. The two most common patterns:</p>
-        <div class="code-block">
-          <div class="code-header">
-            <span class="code-filename">connect-monitor.sh</span>
-            <span class="code-lang">Shell</span>
-          </div>
+        <p class="note">Body shape depends on the provider. The two most common patterns:</p>
+        <div class="code-panel">
+          <div class="code-head"><span class="code-file">connect-monitor.sh</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy connect-monitor.sh to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code><span class="t-cmnt"># Google Workspace: service account JSON key</span>
 <span class="t-fn">curl</span> -X POST https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/monitor/google/0 \
   -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span> \
@@ -497,48 +628,45 @@ footer{padding:20px 0;background:var(--ink);border-top:1px solid #26262a;color:#
     "client_secret": "your-app-secret"
   }'</span></code></pre>
         </div>
-        <div class="code-block">
-          <div class="code-header"><span class="code-filename">response</span><span class="code-lang">JSON</span></div>
+        <div class="code-panel">
+          <div class="code-head"><span class="code-file">response</span><span class="code-lang">JSON</span><button class="copy-btn" type="button" aria-label="Copy response to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code><span class="t-kw">null</span></code></pre>
         </div>
       </div>
-
       <div class="endpoint" id="delete-monitor">
         <div class="endpoint-head">
-          <span class="method-pill delete">DELETE</span>
-          <span class="endpoint-path">/monitor/{name}</span>
-          <span class="status-code">204 No Content</span>
+          <span class="method method--delete">DELETE</span>
+          <h3 class="endpoint-path">/monitor/{name}</h3>
+          <span class="endpoint-status">204 No Content</span>
         </div>
         <p class="endpoint-desc">Disconnects a monitor. Vex stops watching that surface immediately. We'll miss it more than you will.</p>
-        <div class="code-block">
-          <div class="code-header"><span class="code-filename">request</span><span class="code-lang">Shell</span></div>
+        <div class="code-panel">
+          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy request to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code><span class="t-fn">curl</span> -X DELETE https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/monitor/google/0 \
   -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span></code></pre>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ASSETS -->
-  <section class="api-section" id="assets">
-    <div class="wrap">
-      <div class="api-section-head"><h2>Assets</h2></div>
-      <p class="api-section-intro">The inventory Vex has built of your business from the monitors you've connected: domains, identities, endpoints, whatever else showed up. This is what "surface" actually refers to everywhere else in this reference.</p>
-
+    <section class="api-section" id="assets">
+      <div class="section-head">
+        <h2>Assets</h2>
+        <p class="lede">The inventory Vex has built of your business from the monitors you've connected: domains, identities, endpoints, whatever else showed up. This is what "surface" actually refers to everywhere else in this reference.</p>
+      </div>
       <div class="endpoint" id="get-asset">
         <div class="endpoint-head">
-          <span class="method-pill get">GET</span>
-          <span class="endpoint-path">/asset</span>
-          <span class="status-code">200 OK</span>
+          <span class="method method--get">GET</span>
+          <h3 class="endpoint-path">/asset</h3>
+          <span class="endpoint-status">200 OK</span>
         </div>
         <p class="endpoint-desc">Every asset Vex currently knows about, across every connected monitor. No filtering needed to get the full picture — this is the full picture.</p>
-        <div class="code-block">
-          <div class="code-header"><span class="code-filename">request</span><span class="code-lang">Shell</span></div>
+        <div class="code-panel">
+          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy request to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code><span class="t-fn">curl</span> https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/asset \
   -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span></code></pre>
         </div>
-        <div class="code-block">
-          <div class="code-header"><span class="code-filename">response</span><span class="code-lang">JSON</span></div>
+        <div class="code-panel">
+          <div class="code-head"><span class="code-file">response</span><span class="code-lang">JSON</span><button class="copy-btn" type="button" aria-label="Copy response to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code>[
   {
     <span class="t-key">"account"</span>: <span class="t-str">"acmecorp.com"</span>,
@@ -566,31 +694,29 @@ footer{padding:20px 0;background:var(--ink);border-top:1px solid #26262a;color:#
   }
 ]</code></pre>
         </div>
-        <p class="aside-note">Assets accumulate as monitors connect, and expire on their own via <code class="mono">ttl</code> if they haven't been seen in a while — no need to remove them by hand.</p>
+        <p class="note">Assets accumulate as monitors connect, and expire on their own via <code>ttl</code> if they haven't been seen in a while — no need to remove them by hand.</p>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- NOTIFICATIONS -->
-  <section class="api-section" id="notifications">
-    <div class="wrap">
-      <div class="api-section-head"><h2>Notifications</h2></div>
-      <p class="api-section-intro">Not signals about your business — signals about Vex itself. Expired credentials, a monitor that stopped checking in, anything that means the watching has a gap in it.</p>
-
+    <section class="api-section" id="notifications">
+      <div class="section-head">
+        <h2>Notifications</h2>
+        <p class="lede">Not signals about your business — signals about Vex itself. Expired credentials, a monitor that stopped checking in, anything that means the watching has a gap in it.</p>
+      </div>
       <div class="endpoint" id="get-notification">
         <div class="endpoint-head">
-          <span class="method-pill get">GET</span>
-          <span class="endpoint-path">/notification</span>
-          <span class="status-code">200 OK</span>
+          <span class="method method--get">GET</span>
+          <h3 class="endpoint-path">/notification</h3>
+          <span class="endpoint-status">200 OK</span>
         </div>
         <p class="endpoint-desc">Every open notification about your Vex setup: broken auth, a stalled monitor, anything worth fixing before it becomes a blind spot.</p>
-        <div class="code-block">
-          <div class="code-header"><span class="code-filename">request</span><span class="code-lang">Shell</span></div>
+        <div class="code-panel">
+          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy request to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code><span class="t-fn">curl</span> https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/notification \
   -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span></code></pre>
         </div>
-        <div class="code-block">
-          <div class="code-header"><span class="code-filename">response</span><span class="code-lang">JSON</span></div>
+        <div class="code-panel">
+          <div class="code-head"><span class="code-file">response</span><span class="code-lang">JSON</span><button class="copy-btn" type="button" aria-label="Copy response to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code>[
   {
     <span class="t-key">"account"</span>: <span class="t-str">"acmecorp.com"</span>,
@@ -602,35 +728,35 @@ footer{padding:20px 0;background:var(--ink);border-top:1px solid #26262a;color:#
   }
 ]</code></pre>
         </div>
-        <p class="aside-note">These are about the plumbing, not the threat landscape — see Threat and Signals for that.</p>
+        <p class="note">These are about the plumbing, not the threat landscape — see Threat and Signals for that.</p>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- FILES -->
-  <section class="api-section" id="files">
-    <div class="wrap">
-      <div class="api-section-head"><h2>Files</h2></div>
-      <p class="api-section-intro">Reports, exports, and anything else Vex generates and hands back to you, organized into namespaces the same way you'd organize a directory tree.</p>
-
+    <section class="api-section" id="files">
+      <div class="section-head">
+        <h2>Files</h2>
+        <p class="lede">Reports, exports, and anything else Vex generates and hands back to you, organized into namespaces the same way you'd organize a directory tree.</p>
+      </div>
       <div class="endpoint" id="get-file-namespace">
         <div class="endpoint-head">
-          <span class="method-pill get">GET</span>
-          <span class="endpoint-path">/file/{namespace}</span>
-          <span class="status-code">200 OK</span>
+          <span class="method method--get">GET</span>
+          <h3 class="endpoint-path">/file/{namespace}</h3>
+          <span class="endpoint-status">200 OK</span>
         </div>
-        <p class="endpoint-desc">Lists the files inside a namespace. <code class="mono">namespace</code> is optional — omit it to list from the root.</p>
+        <p class="endpoint-desc">Lists the files inside a namespace. <code>namespace</code> is optional — omit it to list from the root.</p>
         <table class="param-table">
-          <tr><th>Parameter</th><th>In</th><th>Type</th><th></th><th>Description</th></tr>
-          <tr><td>namespace</td><td class="type">path</td><td class="type">string</td><td><span class="opt">Optional</span></td><td>Directory-style path, e.g. <code class="mono">signal/</code>. Omit for the root namespace.</td></tr>
+          <thead><tr><th>Parameter</th><th>In</th><th>Type</th><th></th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>namespace</td><td>path</td><td>string</td><td><span class="opt">Optional</span></td><td>Directory-style path, e.g. <code>signal/</code>. Omit for the root namespace.</td></tr>
+          </tbody>
         </table>
-        <div class="code-block">
-          <div class="code-header"><span class="code-filename">request</span><span class="code-lang">Shell</span></div>
+        <div class="code-panel">
+          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy request to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code><span class="t-fn">curl</span> https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/file/signal/ \
   -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span></code></pre>
         </div>
-        <div class="code-block">
-          <div class="code-header"><span class="code-filename">response</span><span class="code-lang">JSON</span></div>
+        <div class="code-panel">
+          <div class="code-head"><span class="code-file">response</span><span class="code-lang">JSON</span><button class="copy-btn" type="button" aria-label="Copy response to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code>[
   <span class="t-str">"signal/4827193650228"</span>,
   <span class="t-str">"signal/9013758204461"</span>,
@@ -638,59 +764,60 @@ footer{padding:20px 0;background:var(--ink);border-top:1px solid #26262a;color:#
 ]</code></pre>
         </div>
       </div>
-
       <div class="endpoint" id="get-file-download">
         <div class="endpoint-head">
-          <span class="method-pill get">GET</span>
-          <span class="endpoint-path">/file/{namespace}?name={file}</span>
-          <span class="status-code">200 OK</span>
+          <span class="method method--get">GET</span>
+          <h3 class="endpoint-path">/file/{namespace}?name={file}</h3>
+          <span class="endpoint-status">200 OK</span>
         </div>
-        <p class="endpoint-desc">Returns a pre-signed, time-limited download URL for a specific file. Add the <code class="mono">name</code> query param and the response becomes this URL instead of a listing.</p>
+        <p class="endpoint-desc">Returns a pre-signed, time-limited download URL for a specific file. Add the <code>name</code> query param and the response becomes this URL instead of a listing.</p>
         <table class="param-table">
-          <tr><th>Parameter</th><th>In</th><th>Type</th><th></th><th>Description</th></tr>
-          <tr><td>namespace</td><td class="type">path</td><td class="type">string</td><td><span class="opt">Optional</span></td><td>Directory-style path the file lives in.</td></tr>
-          <tr><td>name</td><td class="type">query</td><td class="type">string</td><td><span class="req">Required</span></td><td>The file name inside that namespace.</td></tr>
+          <thead><tr><th>Parameter</th><th>In</th><th>Type</th><th></th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>namespace</td><td>path</td><td>string</td><td><span class="opt">Optional</span></td><td>Directory-style path the file lives in.</td></tr>
+            <tr><td>name</td><td>query</td><td>string</td><td><span class="req">Required</span></td><td>The file name inside that namespace.</td></tr>
+          </tbody>
         </table>
-        <div class="code-block">
-          <div class="code-header"><span class="code-filename">request</span><span class="code-lang">Shell</span></div>
+        <div class="code-panel">
+          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy request to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code><span class="t-fn">curl</span> <span class="t-str">"https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/file/signal?name=4827193650228"</span> \
   -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span></code></pre>
         </div>
-        <div class="code-block">
-          <div class="code-header"><span class="code-filename">response</span><span class="code-lang">JSON</span></div>
+        <div class="code-panel">
+          <div class="code-head"><span class="code-file">response</span><span class="code-lang">JSON</span><button class="copy-btn" type="button" aria-label="Copy response to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code>{
   <span class="t-key">"url"</span>: <span class="t-str">"https://vex-file-system.s3.us-east-2.amazonaws.com/acmecorp.com/signal/4827193650228?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Checksum-Mode=ENABLED&X-Amz-Credential=..."</span>
 }</code></pre>
         </div>
-        <p class="aside-note">The actual file lives at the returned <code class="mono">url</code> — it's a pre-signed, time-limited S3 URL, so fetch it directly (no auth header needed) to download the file itself.</p>
+        <p class="note">The actual file lives at the returned <code>url</code> — it's a pre-signed, time-limited S3 URL, so fetch it directly (no auth header needed) to download the file itself.</p>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- AUDIT -->
-  <section class="api-section" id="audit">
-    <div class="wrap">
-      <div class="api-section-head"><h2>Audit</h2></div>
-      <p class="api-section-intro">Raw SIEM log lines, for whoever needs to look at the actual record instead of Vex's take on it.</p>
-
+    <section class="api-section" id="audit">
+      <div class="section-head">
+        <h2>Audit</h2>
+        <p class="lede">Raw SIEM log lines, for whoever needs to look at the actual record instead of Vex's take on it.</p>
+      </div>
       <div class="endpoint" id="get-audit">
         <div class="endpoint-head">
-          <span class="method-pill get">GET</span>
-          <span class="endpoint-path">/audit</span>
-          <span class="status-code">200 OK</span>
+          <span class="method method--get">GET</span>
+          <h3 class="endpoint-path">/audit</h3>
+          <span class="endpoint-status">200 OK</span>
         </div>
         <p class="endpoint-desc">SIEM log entries collected across your connected monitors over the requested window.</p>
         <table class="param-table">
-          <tr><th>Parameter</th><th>In</th><th>Type</th><th></th><th>Description</th></tr>
-          <tr><td>hours</td><td class="type">query</td><td class="type">integer</td><td><span class="opt">Optional</span></td><td>How many hours back to pull logs for. Defaults to <code class="mono">24</code>.</td></tr>
+          <thead><tr><th>Parameter</th><th>In</th><th>Type</th><th></th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>hours</td><td>query</td><td>integer</td><td><span class="opt">Optional</span></td><td>How many hours back to pull logs for. Defaults to <code>24</code>.</td></tr>
+          </tbody>
         </table>
-        <div class="code-block">
-          <div class="code-header"><span class="code-filename">request</span><span class="code-lang">Shell</span></div>
+        <div class="code-panel">
+          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy request to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code><span class="t-fn">curl</span> <span class="t-str">"https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/audit?hours=24"</span> \
   -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span></code></pre>
         </div>
-        <div class="code-block">
-          <div class="code-header"><span class="code-filename">response</span><span class="code-lang">JSON</span></div>
+        <div class="code-panel">
+          <div class="code-head"><span class="code-file">response</span><span class="code-lang">JSON</span><button class="copy-btn" type="button" aria-label="Copy response to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code>[
   {
     <span class="t-key">"message"</span>: <span class="t-str">"dmarc |  | spoof attempt on acmecorp.com from 203.0.113.10 x1 — dkim:pass spf:fail disposition:none"</span>,
@@ -702,25 +829,152 @@ footer{padding:20px 0;background:var(--ink);border-top:1px solid #26262a;color:#
   }
 ]</code></pre>
         </div>
-        <p class="aside-note">This is the unfiltered feed — expect volume. Use Signals if you want Vex's opinion on which of these lines actually matter.</p>
+        <p class="note">This is the unfiltered feed — expect volume. Use Signals if you want Vex's opinion on which of these lines actually matter.</p>
+      </div>
+    </section>
+
       </div>
     </div>
-  </section>
-
-</main>
-
-<footer>
-  <div class="wrap footer">
-    <span class="mono">VEX · BY UNMANNED</span>
-    <span><a href="mailto:go@unmanned.team">go@unmanned.team</a></span>
   </div>
-</footer>
 
-<script>
-const header = document.querySelector('header');
-window.addEventListener('scroll', () => {
-  header.style.boxShadow = window.scrollY > 20 ? '0 1px 0 rgba(18,19,26,.06)' : 'none';
-}, { passive: true });
-</script>
+  </main>
+
+  <footer>
+    <span class="fmark">UNMANNED</span>
+    <span>© 2026 UNMANNED, INC.</span>
+    <a href="https://gounmanned.substack.com/" target="_blank" rel="noopener noreferrer">OUR RESEARCH</a>
+  </footer>
+
+  <span class="visually-hidden" id="copy-status" role="status"></span>
+
+  <script>
+    (function(){
+      // hide-on-scroll header: see HIDE ON SCROLL in the styles
+      var root = document.documentElement;
+      var top = document.querySelector('.site-top');
+      var classbar = document.querySelector('.classbar');
+      if(!top){ return; }
+      function measure(){ root.style.setProperty('--top-h', top.offsetHeight + 'px'); } // header height, used by the sticky jump menu
+      measure();
+      window.addEventListener('resize', measure);
+      var lastY = window.scrollY;
+      var ticking = false;
+      function update(){
+        ticking = false;
+        var y = window.scrollY;
+        var showZone = top.offsetHeight + (classbar ? classbar.offsetHeight : 0); // always show near the top
+        if(root.classList.contains('jump-open')){ lastY = y; return; }
+        if(y <= showZone){ root.classList.remove('header-hidden'); lastY = y; return; }
+        if(Math.abs(y - lastY) < 6){ return; } // ignore tiny scroll jitters
+        root.classList.toggle('header-hidden', y > lastY);
+        lastY = y;
+      }
+      window.addEventListener('scroll', function(){
+        if(!ticking){ ticking = true; requestAnimationFrame(update); }
+      }, { passive:true });
+      top.addEventListener('focusin', function(){ root.classList.remove('header-hidden'); });
+    })();
+
+    (function(){
+      // jump menu: highlights the section you're reading, scrolls to a section when clicked,
+      // and on smaller screens opens / closes from the sticky "On this page" bar
+      var nav = document.getElementById('jump');
+      if(!nav){ return; }
+      var root = document.documentElement;
+      var links = [].slice.call(nav.querySelectorAll('.jump-link'));
+      var sections = links.map(function(a){ return document.getElementById(a.getAttribute('href').slice(1)); });
+      var toggle = nav.querySelector('.jump-toggle');
+      var current = nav.querySelector('.jump-current');
+      var narrow = window.matchMedia('(max-width:900px)');
+
+      function setActive(i){
+        links.forEach(function(a, j){
+          a.classList.toggle('is-active', j === i);
+          if(j === i){ a.setAttribute('aria-current', 'location'); } else { a.removeAttribute('aria-current'); }
+        });
+        current.textContent = links[i].textContent;
+      }
+      // the active section is the last one whose top has passed a line a little below the sticky header / bar
+      var ticking = false;
+      function spy(){
+        ticking = false;
+        var line = (narrow.matches ? nav.getBoundingClientRect().bottom : 0) + 140;
+        var active = 0;
+        sections.forEach(function(s, i){ if(s.getBoundingClientRect().top <= line){ active = i; } });
+        // at the very bottom of the page, the last section counts as read
+        if(window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2){ active = sections.length - 1; }
+        setActive(active);
+      }
+      window.addEventListener('scroll', function(){ if(!ticking){ ticking = true; requestAnimationFrame(spy); } }, { passive:true });
+      window.addEventListener('resize', spy);
+      spy();
+
+      function openMenu(){ nav.classList.add('is-open'); root.classList.add('jump-open'); toggle.setAttribute('aria-expanded','true'); }
+      function closeMenu(){ nav.classList.remove('is-open'); root.classList.remove('jump-open'); toggle.setAttribute('aria-expanded','false'); }
+      toggle.addEventListener('click', function(){ nav.classList.contains('is-open') ? closeMenu() : openMenu(); });
+      document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && nav.classList.contains('is-open')){ closeMenu(); toggle.focus(); } });
+      document.addEventListener('click', function(e){ if(nav.classList.contains('is-open') && !nav.contains(e.target)){ closeMenu(); } });
+      var wide = function(){ if(!narrow.matches){ closeMenu(); } };
+      if(narrow.addEventListener){ narrow.addEventListener('change', wide); } else { narrow.addListener(wide); }
+
+      // scroll so the section's heading lands 24px below whatever is fixed at the top of the screen:
+      // jumping down, the header hides (only the phone bar stays); jumping up, the header comes back
+      var header = document.querySelector('.site-top');
+      var classbar = document.querySelector('.classbar');
+      var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      function scrollToSection(s){
+        var r = s.getBoundingClientRect();
+        var goingDown = r.top > 0;
+        root.classList.toggle('header-hidden', goingDown); // set the header now, so the landing spot is right from the start
+        var covered = (goingDown ? 0 : header.offsetHeight + classbar.offsetHeight) + (narrow.matches ? nav.offsetHeight : 0);
+        var headingOffset = parseFloat(getComputedStyle(s).paddingTop);
+        window.scrollTo({ top: window.scrollY + r.top + headingOffset - covered - 24, behavior: reduceMotion ? 'auto' : 'smooth' });
+      }
+
+      links.forEach(function(a, i){
+        a.addEventListener('click', function(e){
+          e.preventDefault();
+          closeMenu();
+          setActive(i);
+          scrollToSection(sections[i]);
+          if(history.replaceState){ history.replaceState(null, '', a.getAttribute('href')); }
+        });
+      });
+    })();
+
+    (function(){
+      // copy buttons: the base URL, and every code panel's code
+      var status = document.getElementById('copy-status');
+      function copyText(text, done){
+        if(navigator.clipboard && window.isSecureContext){
+          navigator.clipboard.writeText(text).then(done, function(){ fallback(text, done); });
+        } else { fallback(text, done); }
+      }
+      // older browsers, or pages not on https: copy through a hidden text box instead
+      function fallback(text, done){
+        var box = document.createElement('textarea');
+        box.value = text; box.setAttribute('readonly', '');
+        box.style.position = 'fixed'; box.style.opacity = '0';
+        document.body.appendChild(box); box.select();
+        try { if(document.execCommand('copy')){ done(); } } catch(e){}
+        document.body.removeChild(box);
+      }
+      [].forEach.call(document.querySelectorAll('.copy-btn'), function(btn){
+        var timer;
+        var tip = btn.querySelector('.tooltip');
+        btn.addEventListener('click', function(){
+          var panel = btn.closest('.code-panel');
+          var text = panel ? panel.querySelector('pre').textContent : document.getElementById('base-url').textContent;
+          copyText(text.trim(), function(){
+            tip.textContent = 'Copied';
+            status.textContent = 'Copied to clipboard';
+            btn.classList.add('is-copied');
+            clearTimeout(timer);
+            timer = setTimeout(function(){ btn.classList.remove('is-copied'); tip.textContent = 'copy to clipboard'; status.textContent = ''; }, 1600);
+          });
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

@@ -64,13 +64,13 @@ class Notifications {
     }
 
     listen() {
-        this.bell.addEventListener('click', async (e) => {
+        this.bell.addEventListener('click', (e) => {
             e.stopPropagation();
             const opening = !this.panel.classList.contains('open');
-            if (opening) {
-                await this.refresh();
-            }
             this.panel.classList.toggle('open', opening);
+            if (opening) {
+                this.refresh();
+            }
         });
 
         this.list.addEventListener('click', (e) => {

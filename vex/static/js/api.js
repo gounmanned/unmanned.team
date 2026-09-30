@@ -53,12 +53,34 @@ class MonitorApi extends Gateway {
 }
 
 class AssetApi extends Gateway {
+    static TTL = 60000;
+
     constructor(){
         super();
+        this.cache = new Map(); // account -> { at, promise }
     }
 
-    async list() {
-        return await this.call("GET", `asset`);
+    // cached per account; concurrent callers share one in-flight request
+    async list({ fresh = false } = {}) {
+        const key = this.headers.account;
+        const hit = this.cache.get(key);
+        if (!fresh && hit && Date.now() - hit.at < AssetApi.TTL) {
+            return hit.promise;
+        }
+
+        const entry = { at: Date.now() };
+        entry.promise = this.call("GET", `asset`).then(resp => {
+            // don't hold on to failures
+            if (resp == null && this.cache.get(key) === entry) this.cache.delete(key);
+            return resp;
+        });
+
+        this.cache.set(key, entry);
+        return entry.promise;
+    }
+
+    invalidate() {
+        this.cache.delete(this.headers.account);
     }
 
     async get(name) {
@@ -67,7 +89,9 @@ class AssetApi extends Gateway {
 
     async update(name, metadata = {}, status = "") {
         const patch = { metadata: metadata, status: status };
-        return await this.call("PATCH", `asset/${name}`, patch);
+        const resp = await this.call("PATCH", `asset/${name}`, patch);
+        this.invalidate();
+        return resp;
     }
 }
 

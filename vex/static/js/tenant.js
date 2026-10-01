@@ -138,7 +138,7 @@ class TenantScreen {
 
     renderSpotlight() {
         const signal = Object.values(this.state.signals?.[this.state.account()] ?? {}).find(s =>
-            Number(s.severity) === 1 && s.source === 'vex' && String(s.status).startsWith('O')
+            Number(s.severity) === 1 && String(s.status).startsWith('O')
         );
 
         this._spotlight = signal;

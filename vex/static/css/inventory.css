@@ -13,6 +13,8 @@
   padding-right: 16px;
 }
 
+#inventory-screen #asset-table tbody td { background: var(--surface); }
+
 #inventory-screen .asset-toolbar {
   display: flex;
   align-items: center;
@@ -24,6 +26,7 @@
 }
 
 #inventory-screen .asset-legend {
+  background: var(--surface);
   display: flex;
   align-items: center;
   flex-wrap: wrap;
@@ -86,6 +89,8 @@
   color: var(--text-faint);
 }
 #inventory-screen .asset-search input {
+  background: var(--surface); 
+  color: var(--ink, #111827);
   width: 100%;
   height: 34px;
   box-sizing: border-box;
@@ -213,7 +218,7 @@
   opacity: 0;
   border: 1px solid var(--line);
   border-radius: 10px;
-  background: white;
+  background: var(--surface);
   transition: flex-basis 0.2s ease, opacity 0.15s ease;
 }
 #inventory-screen .asset-split.profile-open .asset-profile {

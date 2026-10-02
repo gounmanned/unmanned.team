@@ -48,7 +48,7 @@
   flex-shrink: 0;
   font-size: 13px;
   font-weight: 600;
-  color: #111827;
+  color: var(--text-body); 
 }
 
 #signal-sidebar .email-thread .timestamp {
@@ -66,7 +66,6 @@
 }
 
 #signal-sidebar .sidebar-actions {
-  background: white;
   border-top: 1px solid var(--line);
 }
 
@@ -105,7 +104,7 @@
   background: var(--surface);
   font-size: 12px;
   font-family: inherit;
-  color: #24292f;
+  color: var(--text-body);
   box-sizing: border-box;
   transition: border-color 0.15s;
 }
@@ -212,7 +211,6 @@
   padding: 13px 40px 13px 14px;
   border: 1px solid var(--line);
   border-radius: 10px;
-  background: white;
   font-size: 13.5px;
   font-family: inherit;
   line-height: 1.55;

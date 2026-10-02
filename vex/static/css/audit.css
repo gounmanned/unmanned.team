@@ -4,7 +4,6 @@
     height: 100%;
     border: 1px solid var(--line);
     border-radius: 10px;
-    background: white;
     overflow: hidden;
 }
 
@@ -43,12 +42,12 @@
 #audit-screen .audit-search input::placeholder { color: var(--text-faint); }
 
 #audit-screen #audit-range {
+    background: var(--surface);
     flex: 0 0 auto;
     margin-right: 14px;
     padding: 3px 6px;
     border: 1px solid var(--line);
     border-radius: 6px;
-    background: white;
     font-size: 11.5px;
     color: var(--text-body);
 }

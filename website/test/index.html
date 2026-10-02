@@ -5,656 +5,567 @@
 <script>document.documentElement.classList.replace('no-js','js');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>24-hour security test</title>
-<meta name="description" content="A 24-hour security test run by Vex. Know exactly where you're exposed before someone else finds out first.">
+<meta name="description" content="A 24-hour security test run by VEX. Know exactly where you're exposed before someone else finds out first.">
 <link rel="apple-touch-icon" href="https://cdn.unmanned.team/img/logo.png">
 <link rel="icon" type="image/png" href="https://cdn.unmanned.team/img/logo.png">
 <meta property="og:title" content="24-hour security test" />
-<meta property="og:description" content="A 24-hour security test run by Vex. Know exactly where you're exposed before someone else finds out first." />
+<meta property="og:description" content="A 24-hour security test run by VEX. Know exactly where you're exposed before someone else finds out first." />
+<meta property="og:url" content="https://unmanned.team/test" />
 <meta property="og:type" content="website" />
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.unmanned.team/css/global.css">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --white:#fcfcfa;
     --ink:#0b0c0d;
+    --white:#fcfcfa;
     --pink:#e01280;
+    --pink-text:#d1107a;     /* pink for TEXT on light backgrounds (passes 4.5:1) */
     --gray-line:#dcdcd8;
+    --gray-faint:#c4c4c4;
     --surface-dark:#6c6c70;
+    --surface-gray:#f7f7f7;
+    --body:#2b2b2b;
+    --body-soft:#4b4c52;
+    --db-ink:#f3f3f0;
+    --db-mid:#8a8a8e;
+    --db-body:#c7c7ca;
+    --classbar-h:26px;
+    --mono:'JetBrains Mono',ui-monospace,monospace;
   }
-  html{ overflow-x:hidden; }
-  *{ box-sizing:border-box; }
-  body{
-    margin:0;
-    background:var(--surface);
-    color:var(--ink);
-    font-family:'Inter',sans-serif;
-  }
-  .mono{ font-family:'JetBrains Mono',monospace; letter-spacing:0.04em; }
+  *{box-sizing:border-box;}
+  html{overflow-x:hidden;scroll-behavior:smooth;scrollbar-gutter:stable;}
+  body{margin:0;padding-top:var(--classbar-h);background:var(--surface);color:var(--ink);-webkit-font-smoothing:antialiased;}
+  h1,h2,h3,h4,p{margin:0;}
+  .mono{letter-spacing:0.04em;}
+  a{color:inherit;}
+  ::selection{background:var(--pink);color:#fff;}
+  a:focus-visible,button:focus-visible{outline:1.5px solid var(--pink);outline-offset:4px;}
+  .wrap{width:min(1100px,calc(100% - 48px));margin:0 auto;}
 
-  /* ---------- SHARED HUD VOCABULARY (matches unmanned.team) ---------- */
+  /* ---------- STATUS DOT ---------- */
   .status-dot{
-    width:6px;height:6px;border-radius:50%;
-    background:var(--pink);
-    box-shadow:0 0 0 0 rgba(224,18,128,0.5);
-    animation:pulse 2.2s infinite;
-    flex-shrink:0; display:inline-block;
+    width:8px;height:8px;border-radius:50%;background:var(--pink);
+    box-shadow:0 0 0 0 rgba(224,18,128,0.5);animation:pulse 2.2s infinite;flex-shrink:0;display:inline-block;
   }
   @keyframes pulse{
     0%{box-shadow:0 0 0 0 rgba(224,18,128,0.45);}
     70%{box-shadow:0 0 0 8px rgba(224,18,128,0);}
     100%{box-shadow:0 0 0 0 rgba(224,18,128,0);}
   }
-  .eyebrow-label{
-    font-size:11px; letter-spacing:0.18em; text-transform:uppercase;
-    color:var(--surface-dark); display:flex; align-items:center; gap:11px;
-  }
-  .corner{
-    position:absolute;
-    width:var(--corner-size, 28px); height:var(--corner-size, 28px);
-    border-color:var(--ink); opacity:0.55;
-  }
-  .corner.tl{border-top:1.5px solid;border-left:1.5px solid;}
-  .corner.tr{border-top:1.5px solid;border-right:1.5px solid;}
-  .corner.bl{border-bottom:1.5px solid;border-left:1.5px solid;}
-  .corner.br{border-bottom:1.5px solid;border-right:1.5px solid;}
+  .eyebrow-label{font-size:11px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;color:var(--surface-dark);display:flex;align-items:center;gap:11px;}
+  .dark-frame .eyebrow-label{color:var(--db-mid);}
 
-  .hud-frame{ position:fixed; inset:0; pointer-events:none; z-index:40; }
-  .hud-frame .corner.tl{top:46px;left:20px;}
-  .hud-frame .corner.tr{top:46px;right:20px;}
-  .hud-frame .corner.bl{bottom:20px;left:20px;}
-  .hud-frame .corner.br{bottom:20px;right:20px;}
-
-  .hud-box{ position:relative; }
-  .hud-box .corner{ --corner-size:20px; }
-  .hud-box .corner.tl{top:0;left:0;}
-  .hud-box .corner.tr{top:0;right:0;}
-  .hud-box .corner.bl{bottom:0;left:0;}
-  .hud-box .corner.br{bottom:0;right:0;}
-
-  .scan-sweep{ position:absolute; inset:0; pointer-events:none; overflow:hidden; z-index:1; }
-  .scan-sweep::after{
-    content:''; position:absolute; left:0;right:0; height:120px; top:-120px;
-    background:linear-gradient(to bottom, rgba(224,18,128,0) 0%, rgba(224,18,128,0.06) 50%, rgba(224,18,128,0) 100%);
-    animation:sweep 2.6s cubic-bezier(0.4,0,0.2,1) 1;
-  }
-  @keyframes sweep{ 0%{top:-120px;} 100%{top:100%;} }
-
+  /* ---------- CLASSIFICATION BAR ---------- */
   .classbar{
-    position:fixed; top:0; left:0; right:0; z-index:60;
-    background:#0b0c0d; color:#87878c;
-    font-family:'JetBrains Mono',monospace; font-size:9.5px;
-    letter-spacing:0.16em; text-transform:uppercase; text-align:center;
-    padding:6px 0;
+    position:fixed;top:0;left:0;right:0;z-index:60;background:var(--ink);color:var(--gray-faint);
+    font-size:9.5px;line-height:1.5;letter-spacing:0.16em;text-transform:uppercase;text-align:center;padding:6px 0;
   }
+
+  /* ---------- STICKY HEADER ----------
+     Same header as the other pages. This page stands alone (nothing links to it yet), so the logo isn't a link and there are no nav links. */
+  .site-top{position:sticky;top:var(--classbar-h);z-index:50;}
+  .site-header{background:var(--surface);border-bottom:1px solid var(--gray-line);box-shadow:0 4px 8px -4px rgba(11,12,13,0.1);}
+  .header-inner{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:18px 0;}
+  .header-left{display:flex;align-items:center;gap:16px;min-width:0;}
+  .brand{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:800;line-height:1.5;letter-spacing:0.01em;text-decoration:none;color:var(--ink);}
+  .brand .status-dot{animation-iteration-count:2;} /* header logo dot ripples twice, then rests */
+  .brand-tag{font-size:11px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;color:var(--surface-dark);white-space:nowrap;}
+
+  /* ---------- HIDE ON SCROLL ----------
+     Scrolling down slides the class bar and header up out of view; scrolling up brings them back.
+     The script at the bottom toggles html.header-hidden. */
+  .classbar{transition:transform 0.4s cubic-bezier(0.49,0.025,0.685,1), opacity 0.4s cubic-bezier(0.49,0.025,0.685,1);}
+  .site-top .site-header{position:relative;z-index:1;transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);}
+  html.header-hidden .classbar{transform:translateY(-100%);opacity:0;}
+  html.header-hidden .site-top .site-header{transform:translateY(calc(-100% - var(--classbar-h)));}
+  html.header-hidden .site-top{pointer-events:none;} /* the hidden header's empty box stays put; let taps reach what's under it */
 
   @media (max-width:700px){
-    .hud-frame .corner{width:18px;height:18px;}
-    .hud-frame .corner.tl,.hud-frame .corner.tr{top:64px;}
-    .hud-frame .corner.bl,.hud-frame .corner.br{bottom:12px;}
-    .hud-frame .corner.tl,.hud-frame .corner.bl{left:12px;}
-    .hud-frame .corner.tr,.hud-frame .corner.br{right:12px;}
-    .classbar{font-size:8.5px;}
+    :root{--classbar-h:24px;} /* the top bar is shorter on phones (smaller text) */
+    .classbar{font-size:8px;}
   }
+  @media (max-width:560px){.brand-tag{display:none;}}
 
-  /* ---------- HERO — signature element: the 24hr mission clock ---------- */
-  .hero{
-    position:relative;
-    overflow:hidden;
-    min-height:100vh;
-    min-height:100svh;
-    display:flex; align-items:center; justify-content:center;
-    padding:48px 24px;
-  }
-  .grid-bg{
-    position:absolute;inset:0;pointer-events:none;z-index:1;
-    background-image:
-      linear-gradient(to right, rgba(11,12,13,0.045) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(11,12,13,0.045) 1px, transparent 1px);
-    background-size:44px 44px;
-    mask-image:radial-gradient(ellipse 70% 60% at 50% 35%, #000 40%, transparent 90%);
-    -webkit-mask-image:radial-gradient(ellipse 70% 60% at 50% 35%, #000 40%, transparent 90%);
-  }
-  .hero-inner{
-    position:relative; z-index:2;
-    max-width:1080px; margin:0 auto; width:100%;
-    display:grid; grid-template-columns:1.05fr 0.95fr;
-    gap:64px; align-items:center;
-  }
-  .hero-eyebrow{ margin-bottom:22px; }
-  .hero h1{
-    font-family:'Space Grotesk',sans-serif; font-weight:600;
-    font-size:clamp(38px, 5vw, 60px);
-    line-height:1.06; letter-spacing:-0.015em;
-    margin-bottom:22px;
-  }
-  .hero h1 em{ font-style:normal; color:var(--pink); }
-  .hero-sub{
-    font-size:17.5px; line-height:1.75; color:#39393c;
-    max-width:480px; margin-bottom:34px;
-  }
-  .hero-ctas{ display:flex; align-items:center; gap:22px; flex-wrap:wrap; }
-  .btn-primary{
-    display:inline-flex; align-items:center; gap:10px;
-    background:var(--ink); color:var(--surface);
-    font-family:'JetBrains Mono',monospace; font-size:12.5px; font-weight:500;
-    letter-spacing:0.1em; text-transform:uppercase;
-    padding:15px 26px; text-decoration:none;
-    transition:background 0.2s;
-  }
-  .btn-primary:hover{ background:var(--pink); }
-  .btn-primary .arrow{ transition:transform 0.2s; display:inline-block; }
-  .btn-primary:hover .arrow{ transform:translateX(3px); }
-
-  /* clock dial */
-  .clock-wrap{ display:flex; justify-content:center; align-items:center; position:relative; }
-  .clock-dial{ width:min(340px, 82vw); height:min(340px, 82vw); position:relative; }
-  .clock-dial svg{ width:100%; height:100%; display:block; }
-  .clock-track{ fill:none; stroke:var(--gray-line); stroke-width:1.5; }
-  .clock-tick{ stroke:var(--gray-line); stroke-width:1; }
-  .clock-tick.major{ stroke:var(--ink); stroke-opacity:0.4; stroke-width:1.5; }
-  .clock-arc{ fill:none; stroke-linecap:round; }
-  .clock-arc.scan{ stroke:rgba(224,18,128,0.32); stroke-width:3; }
-  .clock-arc.probe{ stroke:rgba(224,18,128,0.7); stroke-width:3; }
-  .clock-hand{
-    stroke:var(--pink); stroke-width:2; stroke-linecap:round;
-    transform-origin:150px 150px;
-    animation:sweepHand 18s linear infinite;
-  }
-  @keyframes sweepHand{ from{ transform:rotate(0deg); } to{ transform:rotate(360deg); } }
-  .clock-marker{ fill:var(--ink); }
-  .clock-label{
-    font-family:'JetBrains Mono',monospace; font-size:9px;
-    fill:var(--surface-dark); letter-spacing:0.06em;
-  }
-  .clock-center{
-    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
-    text-align:center; pointer-events:none;
-  }
-  .clock-readout{
-    font-family:'JetBrains Mono',monospace; font-weight:500;
-    font-size:clamp(20px, 3vw, 26px); letter-spacing:0.02em; color:var(--ink);
-  }
-  .clock-readout-label{
-    font-family:'JetBrains Mono',monospace; font-size:9.5px;
-    letter-spacing:0.16em; text-transform:uppercase; color:var(--pink);
-    margin-top:4px;
-  }
-
-  @media (max-width:860px){
-    .hero-inner{ grid-template-columns:1fr; gap:48px; }
-    .hero{ padding:120px 20px 64px; min-height:auto; }
-    .clock-wrap{ order:-1; }
-  }
-
+  /* ---------- DIVIDER ---------- */
   .divider{
-    position:relative; border-top:1px solid var(--gray-line);
-    display:flex; justify-content:space-between;
-    padding:14px 56px; font-size:10px; color:var(--surface-dark);
+    position:relative;border-top:1px solid var(--gray-line);display:flex;justify-content:space-between;gap:16px;
+    padding:14px 56px;font-size:10px;line-height:1.5;color:var(--surface-dark);
   }
-  @media (max-width:700px){ .divider{padding:14px 20px;} }
+  @media (max-width:700px){.divider{padding:14px 20px;}}
 
-  /* ---------- WHY IT MATTERS ---------- */
-  .matters{
-    padding:150px 24px 150px;
-    max-width:900px; margin:0 auto;
-  }
-  @media (max-width:820px){ .matters{padding:96px 24px 110px;} }
-  .matters-label{ margin-bottom:26px; }
-  .matters h2{
-    font-family:'Space Grotesk',sans-serif; font-weight:500;
-    font-size:clamp(34px, 4.2vw, 52px); line-height:1.14; letter-spacing:-0.01em;
-    margin:0 0 14px;
-  }
-  .matters p.lede{ font-size:16px; line-height:1.75; color:#2b2b2b; max-width:640px; }
-  .matters p.lede + p.lede{ margin-top:16px; }
-  .matters p.lede strong{ color:var(--ink); font-weight:600; }
+  /* ---------- SECTION SHELLS ---------- */
+  .band{position:relative;background:var(--surface);}
+  .band--gray{background:var(--surface-gray);}
+  /* 900px column with a 24px left gutter, matching the design grid (content starts at x=294 on a 1440 screen) */
+  .section{position:relative;max-width:900px;margin:0 auto;padding:52px 0 96px 24px;}
+  .section--even{padding-right:24px;} /* how it works: 24px gutter on both sides */
+  @media (max-width:948px){.section{padding-right:24px;}}
+  .section-head{display:flex;flex-direction:column;gap:16px;}
+  .section h2{font-weight:500;font-size:clamp(34px,4.2vw,52px);line-height:1.14;letter-spacing:-0.01em;}
+  .lede{font-size:16px;line-height:1.75;color:var(--body);max-width:680px;}
+  .lede b{font-weight:700;}
+  .section-head .lede{margin-top:4px;}
+  @media (max-width:820px){.section{padding-top:44px;padding-bottom:72px;}}
 
-  /* ---------- DARK FRAME (shared) ---------- */
-  .dark-frame{
-    --db-ink:#f3f3f0; --db-mid:#8a8a8e;
-    background:#0b0c0d; color:var(--db-ink);
-    position:relative; padding:140px 24px 150px; overflow:hidden;
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:600;font-size:15px;line-height:1.5;
+    padding:15px 30px;text-decoration:none;background:var(--pink);color:#fff;border:none;cursor:pointer;white-space:nowrap;transition:opacity 0.2s ease;
   }
-  .dark-frame .eyebrow-row{ margin-bottom:40px; }
-  .dark-frame .eyebrow-row.mono{ color:var(--db-mid); }
-  .dark-frame .body-wrap{ position:relative; z-index:2; max-width:1080px; margin:0 auto; }
-  @media (max-width:700px){ .dark-frame{padding:96px 20px 110px;} }
+  .btn:hover{opacity:0.8;}
 
-  .dark-frame .section-statement{
-    max-width:760px; margin:0 0 22px;
-    font-family:'Space Grotesk',sans-serif; font-weight:500;
-    font-size:clamp(28px, 3.6vw, 42px); line-height:1.14; letter-spacing:-0.015em;
-    color:var(--db-ink);
+  /* ---------- HERO ---------- */
+  .hero{position:relative;overflow:hidden;background:var(--surface);}
+  .hero .section{padding-top:120px;padding-bottom:128px;}
+  .hero-backdrop{position:absolute;top:0;left:50%;margin-left:-1468px;pointer-events:none;}
+  /* copy on the left, clock on the right. On wide screens the clock reaches up to 80px past the
+     900px column (as in the design); the margin shrinks to 0 as the screen narrows */
+  .hero-grid{
+    position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr) 330px;
+    grid-template-areas:"copy clock" "cta clock";align-content:center;gap:24px 48px;
+    margin-right:calc(-1 * clamp(0px, (100vw - 948px) / 2, 80px));
   }
-  .dark-frame .section-statement em{ color:var(--pink); font-style:normal; }
-  .dark-frame .section-lead{
-    max-width:620px; font-size:16px; line-height:1.75; color:var(--db-mid);
-    margin-bottom:64px;
+  .hero-copy{grid-area:copy;display:flex;flex-direction:column;gap:24px;}
+  .hero h1{font-weight:600;font-size:clamp(40px,6vw,70px);line-height:0.99;letter-spacing:-0.03em;}
+  .hero-cta{grid-area:cta;justify-self:start;}
+  .hero .clock{grid-area:clock;align-self:center;}
+  /* tablets and phones: the copy runs full width, then the button with a smaller clock right beside it */
+  @media (max-width:900px){
+    .hero .section{padding-top:64px;padding-bottom:72px;}
+    .hero-grid{grid-template-columns:auto minmax(0,1fr);grid-template-areas:"copy copy" "cta clock";align-items:center;margin-right:0;}
+    .hero .clock{justify-self:start;width:min(clamp(150px,42vw,260px),100%);} /* never wider than the space beside the button */
   }
-
-  /* light inversion — swaps the two custom properties everything else reads from,
-     so no two dark-frame sections ever sit back-to-back */
-  .dark-frame.invert-light{
-    background:var(--surface); color:var(--ink);
-    --db-ink:#0b0c0d; --db-mid:#6b6b70;
-  }
-
-  /* ---------- ENGAGEMENT TIMELINE ---------- */
-  .eng-track{
-    position:relative; width:100%; height:8px;
-    background:rgba(255,255,255,0.06);
-    margin-bottom:8px;
-  }
-  .eng-seg{ position:absolute; top:0; bottom:0; }
-  .eng-seg.connect, .eng-seg.report{
-    width:3px; background:var(--pink);
-    box-shadow:0 0 8px rgba(224,18,128,0.6);
-  }
-  .eng-seg.scan{ background:rgba(224,18,128,0.28); }
-  .eng-seg.probe{ background:rgba(224,18,128,0.6); }
-  .eng-seg.fill{
-    transform-origin:left center; transform:scaleX(0);
-    animation:fillSeg 1.4s cubic-bezier(0.2,0.7,0.2,1) forwards;
-  }
-  @keyframes fillSeg{ to{ transform:scaleX(1); } }
-
-  .eng-ticks{ position:relative; height:20px; margin-bottom:56px; }
-  .eng-tick{
-    position:absolute; top:0; transform:translateX(-50%);
-    font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--db-mid);
+  @media (max-width:560px){.hero-grid{column-gap:24px;}}
+  @media (max-width:340px){ /* very narrow phones: the clock drops under the button */
+    .hero-grid{grid-template-columns:1fr;grid-template-areas:"copy" "cta" "clock";}
+    .hero .clock{justify-self:center;}
   }
 
-  .eng-steps{
-    display:grid; grid-template-columns:repeat(4, 1fr);
-    gap:1px; background:rgba(255,255,255,0.08);
-  }
-  .eng-step{
-    background:#0b0c0d; padding:30px 24px; position:relative;
-    display:flex; flex-direction:column;
-  }
-  .eng-step-tag{
-    font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:500;
-    letter-spacing:0.14em; color:var(--pink); text-transform:uppercase;
-    margin-bottom:14px; opacity:0.85;
-  }
-  .eng-step h3{
-    font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:19px;
-    letter-spacing:-0.005em; margin-bottom:10px;
-  }
-  .eng-step p{
-    font-size:14px; line-height:1.65; color:var(--db-mid);
-    flex:1 1 auto;
-  }
-  .eng-pill{
-    display:inline-block; align-self:flex-start;
-    margin-top:16px;
-    padding:5px 9px;
-    font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:500;
-    letter-spacing:0.1em; text-transform:uppercase;
-    border:1px solid rgba(224,18,128,0.35); color:var(--pink);
-  }
-  @media (max-width:860px){
-    .eng-steps{ grid-template-columns:1fr 1fr; }
-  }
-  @media (max-width:560px){
-    .eng-steps{ grid-template-columns:1fr; }
+  /* ---------- MISSION CLOCK ----------
+     Drawn at 330px wide; every size inside is a multiple of --u (1/330 of the clock's width),
+     so the whole clock scales together when it's smaller on phones. The script at the bottom
+     counts the readout up from T+00:00:00 and steps the red hand once a second
+     (one turn a minute, so each of the 12 ticks is 5 seconds). */
+  .clock{container-type:inline-size;width:330px;--u:calc(100cqw / 330);display:flex;flex-direction:column;align-items:center;}
+  .clock-cap{display:flex;flex-direction:column;align-items:center;width:calc(48 * var(--u));}
+  .clock-cap::before{content:'';width:100%;height:calc(9 * var(--u));border-radius:calc(8 * var(--u));background:var(--surface-dark);}
+  .clock-cap::after{content:'';width:calc(8 * var(--u));height:calc(4 * var(--u));background:#87878c;}
+  .clock-face{position:relative;width:100%;margin-top:calc(2 * var(--u));aspect-ratio:330 / 312;}
+  .clock-face > *{position:absolute;}
+  .clock-face img{display:block;max-width:none;}
+  .clock-face .face{left:calc(17 * var(--u));top:calc(7.49 * var(--u));width:calc(308.71 * var(--u));height:calc(308.71 * var(--u));}
+  .clock-face .ring-pink{left:calc(11 * var(--u));top:calc(1.49 * var(--u));width:calc(307.71 * var(--u));height:calc(307.71 * var(--u));}
+  .clock-face .ring-gray{left:calc(17.16 * var(--u));top:calc(7.8 * var(--u));width:calc(295.71 * var(--u));height:calc(295.71 * var(--u));}
+  .clock-face .ticks{left:calc(11 * var(--u));top:calc(2.71 * var(--u));width:calc(307.65 * var(--u));height:calc(306.65 * var(--u));}
+  .clock-num{width:calc(21 * var(--u));font-family:var(--mono);font-size:calc(17.143 * var(--u));line-height:normal;text-align:center;color:var(--surface-dark);}
+  .clock-num--00{left:calc(151.8 * var(--u));top:calc(27.9 * var(--u));}
+  .clock-num--03{left:calc(270 * var(--u));top:calc(142.1 * var(--u));}
+  .clock-num--06{left:calc(151.8 * var(--u));top:calc(264.4 * var(--u));}
+  .clock-num--09{left:calc(33.5 * var(--u));top:calc(142.1 * var(--u));}
+  .clock-text{left:calc(165 * var(--u));top:calc(107.5 * var(--u));transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:calc(9 * var(--u));font-family:var(--mono);line-height:1.5;white-space:nowrap;}
+  .clock-readout{font-weight:500;font-size:calc(32 * var(--u));letter-spacing:0.02em;color:var(--body);}
+  .clock-label{font-size:calc(20 * var(--u));letter-spacing:0.02em;color:var(--pink-text);}
+  /* the hand pivots on the dial's center; it's short on purpose so it never crosses the readout */
+  .clock-hand{left:calc(165 * var(--u));top:calc(155.65 * var(--u));width:0;height:0;transition:transform 0.2s cubic-bezier(0.4,0,0.2,1);}
+  .clock-hand img{position:absolute;}
+  .clock-hand .arm{left:min(-0.5px, calc(-0.5 * var(--u)));top:calc(-125.5 * var(--u));width:max(1px, calc(1 * var(--u)));height:calc(28.88 * var(--u));}
+  .clock-hand .tip{left:calc(-5 * var(--u));top:calc(-120.6 * var(--u));width:calc(10 * var(--u));height:calc(10 * var(--u));}
+
+  /* ---------- WHY THIS MATTERS: THREE CARDS ---------- */
+  .why{display:flex;flex-direction:column;gap:24px;}
+  .door-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;}
+  .door-card{display:flex;flex-direction:column;filter:drop-shadow(-4px 4px 1px rgba(224,18,128,0.1));}
+  .door-card .card-tab{display:block;width:100%;height:5px;}
+  .door-card-body{display:flex;flex-direction:column;gap:8px;flex:1;padding:24px 24px 28px;background:var(--surface);border:1px solid var(--db-mid);border-radius:2px;}
+  .door-kind{font-size:11px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;color:var(--pink-text);}
+  .door-card h3{font-weight:600;font-size:20px;line-height:1.5;letter-spacing:-0.01em;}
+  .door-desc{font-size:14.5px;line-height:1.75;color:var(--body-soft);}
+  /* one column: the cards join into a single panel, with the top edge only on the first,
+     shared borders between them, and one shadow around the whole stack */
+  @media (max-width:760px){
+    .door-cards{grid-template-columns:1fr;gap:0;filter:drop-shadow(-4px 4px 1px rgba(224,18,128,0.1));}
+    .door-card{filter:none;}
+    .door-card + .door-card .card-tab{display:none;}
+    .door-card-body{border-radius:0;}
+    .door-card:not(:last-child) .door-card-body{border-bottom:0;}
+    .door-card:first-child .door-card-body{border-radius:2px 2px 0 0;}
+    .door-card:last-child .door-card-body{border-radius:0 0 2px 2px;}
   }
 
-  /* ---------- SECURITY HOLES — same roaming-reticle treatment as the
-     homepage's "What Vex does" section, just scaled up. ---------- */
-  .roam-field{ position:absolute; inset:0; overflow:hidden; pointer-events:none; z-index:3; }
-  .roam-reticle{
-    position:absolute; width:70px; height:70px; margin:-35px 0 0 -35px;
-    animation:roamMove 17s ease-in-out infinite, roamPulse 3.4s ease-in-out infinite;
+  /* ---------- HOW IT WORKS: TWO PHASES ----------
+     Phase 01 (hours 1–20) and phase 02 (21–24) side by side at every size, split by a dashed "handoff" line,
+     so the 20 machine hours read against the 4 human ones. Each phase shares its rows with the other
+     (subgrid), so the scales, titles and steps line up across the line even when one side wraps more. */
+  .how{display:flex;flex-direction:column;gap:32px;}
+  .how .lede{color:var(--body-soft);max-width:721px;}
+  .process{position:relative;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto auto auto auto;gap:24px 48px;}
+  .process::before{ /* the handoff line, 2px dashes with 5px gaps */
+    content:'';position:absolute;top:14px;bottom:0;left:50%;width:1px;
+    background:repeating-linear-gradient(to bottom,var(--gray-faint) 0 2px,transparent 2px 7px);
   }
-  .roam-reticle .corner{ --corner-size:20px; border-color:var(--pink); }
-  .roam-reticle .corner.tl{ top:0; left:0; }
-  .roam-reticle .corner.tr{ top:0; right:0; }
-  .roam-reticle .corner.bl{ bottom:0; left:0; }
-  .roam-reticle .corner.br{ bottom:0; right:0; }
-  @keyframes roamMove{
-    0%,15%  { top:76px; left:12%; }
-    21%,36% { top:76px; left:80%; }
-    42%,57% { top:calc(100% - 84px); left:24%; }
-    63%,78% { top:calc(100% - 84px); left:72%; }
-    84%,100%{ top:76px; left:12%; }
+  .handoff{grid-column:1 / -1;grid-row:1;position:relative;justify-self:center;}
+  .handoff span{
+    display:block;position:relative;padding:4px 8px;background:var(--white);border:1px solid var(--gray-faint);
+    font-size:11px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;color:var(--surface-dark);
   }
-  @keyframes roamPulse{
-    0%,72%  { transform:scale(1);    opacity:0.5; filter:none; }
-    86%     { transform:scale(1.4);  opacity:1;   filter:drop-shadow(0 0 9px rgba(224,18,128,0.6)); }
-    100%    { transform:scale(1);    opacity:0.5; filter:none; }
-  }
-
-  .hole{
-    position:absolute; width:30px; height:30px; margin:-15px 0 0 -15px;
-    border-radius:50%; border:1.5px dashed var(--db-mid);
-  }
-  .hole::after{
-    content:''; position:absolute; top:50%; left:50%; width:7px; height:7px;
-    margin:-3.5px 0 0 -3.5px; border-radius:50%; background:var(--db-mid);
-  }
-  .hole-a{ top:76px; left:12%; animation:holeFlashA 17s ease-in-out infinite; }
-  .hole-b{ top:76px; left:80%; animation:holeFlashB 17s ease-in-out infinite; }
-  .hole-c{ top:calc(100% - 84px); left:24%; animation:holeFlashC 17s ease-in-out infinite; }
-  .hole-d{ top:calc(100% - 84px); left:72%; animation:holeFlashD 17s ease-in-out infinite; }
-
-  @keyframes holeFlashA{
-    0%,100%{ opacity:0.5; transform:scale(1); border-color:var(--db-mid); box-shadow:none; }
-    6%     { opacity:1;   transform:scale(1.5); border-color:var(--pink); box-shadow:0 0 9px rgba(224,18,128,0.55); }
-    13%    { opacity:0.5; transform:scale(1); border-color:var(--db-mid); box-shadow:none; }
-  }
-  @keyframes holeFlashB{
-    0%,27%,100%{ opacity:0.5; transform:scale(1); border-color:var(--db-mid); box-shadow:none; }
-    33%        { opacity:1;   transform:scale(1.5); border-color:var(--pink); box-shadow:0 0 9px rgba(224,18,128,0.55); }
-    39%        { opacity:0.5; transform:scale(1); border-color:var(--db-mid); box-shadow:none; }
-  }
-  @keyframes holeFlashC{
-    0%,49%,100%{ opacity:0.5; transform:scale(1); border-color:var(--db-mid); box-shadow:none; }
-    55%        { opacity:1;   transform:scale(1.5); border-color:var(--pink); box-shadow:0 0 9px rgba(224,18,128,0.55); }
-    61%        { opacity:0.5; transform:scale(1); border-color:var(--db-mid); box-shadow:none; }
-  }
-  @keyframes holeFlashD{
-    0%,71%,100%{ opacity:0.5; transform:scale(1); border-color:var(--db-mid); box-shadow:none; }
-    77%        { opacity:1;   transform:scale(1.5); border-color:var(--pink); box-shadow:0 0 9px rgba(224,18,128,0.55); }
-    83%        { opacity:0.5; transform:scale(1); border-color:var(--db-mid); box-shadow:none; }
-  }
-  @media (prefers-reduced-motion: reduce){
-    .roam-reticle{ animation:none; top:76px; left:12%; opacity:0.7; }
-    .hole{ animation:none; opacity:0.5; }
-  }
-
-  /* ---------- CTA ---------- */
-  .cta-frame{
-    background:var(--surface); color:var(--ink);
-    padding:130px 24px 150px; text-align:center;
-  }
-  @media (max-width:700px){ .cta-frame{ padding:96px 20px 110px; } }
-  .cta-inner{ max-width:640px; margin:0 auto; }
-  .cta-inner .eyebrow-label{ justify-content:center; margin-bottom:30px; }
-  .cta-statement{
-    font-family:'Space Grotesk',sans-serif; font-weight:500;
-    font-size:clamp(28px, 4vw, 44px); letter-spacing:-0.015em; line-height:1.15;
-    margin-bottom:18px;
-  }
-  .cta-statement em{ color:var(--pink); font-style:normal; }
-  .cta-sub{ font-size:16px; color:var(--surface-dark); margin-bottom:40px; }
-  .cta-cta{
-    display:inline-flex; align-items:baseline; gap:10px;
-    font-family:'JetBrains Mono',monospace; font-size:clamp(16px, 2.2vw, 20px);
-    letter-spacing:0.02em; color:var(--ink); text-decoration:none;
-    border-bottom:1px solid var(--pink); padding-bottom:6px;
-    transition:opacity 0.2s ease;
-  }
-  .cta-cta:hover{ opacity:0.6; }
-  .cta-cta .arrow{ color:var(--pink); transition:transform 0.2s ease; display:inline-block; }
-  .cta-cta:hover .arrow{ transform:translateX(3px); }
-
-  a:focus-visible, .cta-cta:focus-visible, .btn-primary:focus-visible{
-    outline:1.5px solid var(--pink); outline-offset:4px;
-  }
-
-  @media (prefers-reduced-motion: reduce){
-    .status-dot{ animation:none; opacity:0.9; }
-    .clock-hand{ animation:none; }
-    .scan-sweep::after{ animation:none; display:none; }
-    .eng-seg.fill{ animation:none; transform:scaleX(1); }
-    .js .hud-box.reveal .corner{
-      opacity:1 !important; transform:none !important; animation:none !important; transition:none !important;
-    }
-  }
-
-  .js .hud-box.reveal .corner{ opacity:0; transform:scale(1.4); }
-  .js .hud-box.reveal.in-view .corner{ animation:lockOn 0.7s cubic-bezier(0.2,0.7,0.2,1) forwards; }
-  .js .hud-box.reveal.in-view .corner.tr{ animation-delay:0.06s; }
-  .js .hud-box.reveal.in-view .corner.bl{ animation-delay:0.12s; }
-  .js .hud-box.reveal.in-view .corner.br{ animation-delay:0.18s; }
-  @keyframes lockOn{
-    0%{opacity:0;transform:scale(1.4);}
-    60%{opacity:0.9;}
-    100%{opacity:0.75;transform:scale(1);}
-  }
-
-  footer{
-    border-top:1px solid var(--gray-line);
-    padding:28px 56px 40px;
-    display:flex; justify-content:space-between; align-items:center;
-    font-size:10.5px; color:var(--surface-dark);
-    text-transform:uppercase; letter-spacing:0.08em;
-  }
-  footer a{ color:inherit; text-decoration:none; }
-  footer a:hover{ color:var(--ink); }
-  footer .fmark{ color:var(--ink); font-weight:500; }
+  .phase{display:grid;grid-row:2 / span 3;grid-template-rows:subgrid;row-gap:24px;min-width:0;} /* rows: scale, intro, steps */
+  .phase--ai{grid-column:1;}
+  .phase--human{grid-column:2;}
+  .phase-scale{display:flex;flex-direction:column;gap:8px;font-family:var(--mono);text-transform:uppercase;color:var(--surface-dark);}
+  .phase--human .phase-scale{color:var(--pink-text);}
+  .phase-name{font-weight:500;font-size:12.5px;line-height:1.5;letter-spacing:0.1em;}
+  .phase-scale b{font-weight:700;}
+  .hours{display:flex;gap:4px;height:40px;}
+  .hours span{flex:1;background:var(--surface-dark);}
+  .hours .is-now{background:var(--pink);} /* hour 1: the clock starts */
+  .phase--human .hours span{background:var(--pink);opacity:0.7;}
+  .phase--human .hours .is-fix{opacity:1;}
+  .hour-notes{display:flex;justify-content:space-between;font-size:11px;line-height:1.5;letter-spacing:0.18em;}
+  .phase--human .hour-notes{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;}
+  .phase--human .hour-notes span:last-child{grid-column:4;}
+  .phase-intro{display:flex;flex-direction:column;gap:4px;}
+  .phase-intro h3{font-weight:500;font-size:30px;line-height:1.14;letter-spacing:-0.01em;}
+  .phase--human .phase-intro h3{color:var(--pink-text);}
+  .phase-intro p{font-size:20px;line-height:1.5;color:var(--surface-dark);}
+  .phase-steps{display:grid;grid-template-columns:1fr 1fr;align-content:start;gap:32px;padding-top:31px;border-top:1px solid var(--gray-line);}
+  .step{display:flex;flex-direction:column;gap:8px;}
+  .step-hours{font-size:11px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;color:var(--surface-dark);}
+  .phase--human .step-hours{color:var(--pink-text);}
+  .step h4{font-weight:600;font-size:20px;line-height:1.5;letter-spacing:-0.01em;}
+  .step--fix h4{color:var(--pink-text);}
+  .step-desc{font-size:14px;line-height:1.6;color:var(--surface-dark);}
+  .step-desc b{font-weight:700;}
+  /* phones: tighter columns, shorter hour bars, and each phase's two steps stack */
   @media (max-width:700px){
-    footer{ padding:22px 20px 36px; flex-direction:column; gap:10px; text-align:center; }
+    .process{column-gap:24px;}
+    .phase{row-gap:16px;}
+    .phase-scale{margin-bottom:8px;} /* 24px from the scale to the title */
+    .hours{gap:2px;height:24px;}
+    .phase-steps{grid-template-columns:1fr;gap:24px;padding-top:16px;}
+  }
+
+  /* ---------- WHAT YOU GET ---------- */
+  .get{display:flex;flex-direction:column;gap:16px;}
+  .get h2{margin-bottom:8px;}
+  .get-item{display:flex;gap:8px;align-items:flex-start;max-width:545px;}
+  .get-item img{flex-shrink:0;width:64px;height:64px;}
+  .get-item > div{display:flex;flex-direction:column;gap:8px;}
+  .get-item p{font-size:16px;line-height:1.75;color:var(--body);}
+  .get-item b{font-weight:700;}
+  .get-item .get-note{font-size:12px;line-height:normal;}
+
+  /* ---------- CONTACT ---------- */
+  .dark-frame{background:var(--ink);color:var(--db-ink);}
+  .contact-section{position:relative;overflow:hidden;padding:96px 24px;text-align:center;}
+  .contact-section .body-wrap{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:36px;}
+  .radar-echo{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:1;opacity:0.1;pointer-events:none;}
+  .contact-statement{font-weight:600;font-size:clamp(34px,6vw,58px);line-height:1.06;letter-spacing:-0.03em;color:var(--db-ink);}
+  .contact-sub{font-size:16px;line-height:1.75;color:var(--db-body);}
+  @media (max-width:700px){.contact-section{padding:72px 20px;}}
+
+  /* ---------- FOOTER ---------- */
+  footer{
+    border-top:1px solid var(--gray-line);padding:28px 56px 40px;display:flex;justify-content:space-between;align-items:center;
+    font-size:10.5px;line-height:1.5;color:var(--surface-dark);text-transform:uppercase;letter-spacing:0.08em;
+  }
+  footer a{text-decoration:none;}
+  footer a:hover{color:var(--ink);}
+  footer .fmark{color:var(--ink);font-weight:500;}
+  @media (max-width:700px){footer{padding:22px 20px 36px;flex-direction:column;gap:10px;text-align:center;}}
+
+  /* ---------- SCROLL REVEAL ----------
+     .reveal        fades up one element as it scrolls into view
+     .reveal-group  fades up each child on its own (cards, phases, rows);
+                    children that sit side by side come in one after another */
+  .js .reveal,.js .reveal-group > *{opacity:0;transform:translateY(18px);transition:opacity 0.6s ease, transform 0.6s ease;}
+  .js .reveal.in-view,.js .reveal-group > .in-view{opacity:1;transform:translateY(0);}
+  .reveal-group > :nth-child(2){transition-delay:0.1s;}
+  .reveal-group > :nth-child(3){transition-delay:0.2s;}
+  .reveal-group > :nth-child(4){transition-delay:0.3s;}
+
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    .status-dot{animation:none;}
+    .classbar,.site-top .site-header,.clock-hand{transition:none;}
+    .js .reveal,.js .reveal-group > *{opacity:1 !important;transform:none !important;transition:none !important;}
   }
 </style>
 </head>
 <body>
 
-  <div class="classbar">UNMANNED · 24-HOUR · SECURITY TEST</div>
+  <div class="classbar">UNMANNED · SIMPLY SECURE</div>
 
-  <div class="hud-frame">
-    <div class="corner tl"></div>
-    <div class="corner tr"></div>
-    <div class="corner bl"></div>
-    <div class="corner br"></div>
+  <!-- ============================================================
+       HEADER (sticky)
+       ============================================================ -->
+  <div class="site-top">
+    <header class="site-header">
+      <div class="wrap header-inner">
+        <div class="header-left">
+          <span class="brand"><span class="status-dot"></span>VEX</span>
+          <span class="brand-tag">Don’t get hacked</span>
+        </div>
+      </div>
+    </header>
   </div>
 
+  <main>
+
+  <!-- ============================================================
+       HERO — THE 24-HOUR CLOCK
+       ============================================================ -->
   <section class="hero">
-    <div class="grid-bg" aria-hidden="true"></div>
-    <div class="hero-inner">
-      <div class="hero-left">
-        <div class="hero-eyebrow eyebrow-label mono"><span class="status-dot"></span>24-hour security test</div>
-        <h1>Are you safe from an <em>adversarial AI</em>?</h1>
-        <p class="hero-sub">Attackers don't open with something sophisticated. They walk the perimeter and test every door — quietly, at scale, before you know they were there. Vex runs that same sweep on you first.</p>
-        <div class="hero-ctas">
-          <a class="btn-primary" href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener">Schedule test <span class="arrow">→</span></a>
+    <img class="hero-backdrop" src="../static/glow-grid-bg.svg" width="2936" height="258" alt="" aria-hidden="true">
+    <div class="section">
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <div class="eyebrow-label"><span class="status-dot"></span>24-hour security test</div>
+          <h1>Are you safe from<br>an adversarial AI?</h1>
+          <p class="lede">Attackers don’t open with something sophisticated. They walk the perimeter and test every door. They do it quietly, at scale, before you know they’re there. VEX runs that same sweep on you first.</p>
         </div>
-      </div>
-      <div class="clock-wrap">
-        <div class="clock-dial">
-          <svg viewBox="0 0 300 300" aria-hidden="true">
-            <circle class="clock-track" cx="150" cy="150" r="120"></circle>
-            <path class="clock-arc scan" d="M 132.9 32.4 A 120 120 0 1 1 32.4 167.1"></path>
-            <path class="clock-arc probe" d="M 45.9 244.9 A 120 120 0 0 1 22.2 138.5"></path>
-            <g id="clockTicks"></g>
-            <line class="clock-hand" x1="150" y1="150" x2="150" y2="38"></line>
-            <circle class="clock-marker" cx="150" cy="30" r="3.5"></circle>
-          </svg>
-        </div>
-        <div class="clock-center">
-          <div class="clock-readout mono" id="clockReadout">T+00:00:00</div>
-          <div class="clock-readout-label">24-hr recon window</div>
+        <a class="btn hero-cta" href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener">Schedule test</a>
+        <div class="clock" aria-hidden="true">
+          <div class="clock-cap"></div>
+          <div class="clock-face">
+            <img class="face" src="../static/clock-face.svg" width="309" height="309" alt="">
+            <img class="ring-pink" src="../static/clock-ring-pink.svg" width="308" height="308" alt="">
+            <img class="ring-gray" src="../static/clock-ring-gray.svg" width="296" height="296" alt="">
+            <span class="clock-num clock-num--00">00</span>
+            <span class="clock-num clock-num--03">03</span>
+            <span class="clock-num clock-num--06">06</span>
+            <span class="clock-num clock-num--09">09</span>
+            <img class="ticks" src="../static/clock-ticks.svg" width="308" height="307" alt="">
+            <div class="clock-text">
+              <span class="clock-readout" id="clock-readout">T+00:00:00</span>
+              <span class="clock-label">24-HOUR RECON</span>
+            </div>
+            <div class="clock-hand" id="clock-hand">
+              <img class="arm" src="../static/clock-hand.svg" width="1" height="29" alt="">
+              <img class="tip" src="../static/clock-hand-dot.svg" width="10" height="10" alt="">
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <div class="divider mono">
-    <span>LOG · 00:00:01</span>
-    <span>PERIMETER MAPPED</span>
-  </div>
-
-  <section class="matters">
-    <div class="matters-label eyebrow-label mono"><span class="status-dot"></span>Why this matters</div>
-    <h2>Attackers find open doors</h2>
-    <p class="lede">Before anyone tries anything sophisticated, they do what any operative does first: <strong>walk the perimeter and test every door</strong>. The unlocked one wins. In your business, that's a forgotten ex-employee account, an email system with no spam filtering, or a domain anyone can impersonate.</p>
-    <p class="lede">Most breaches aren't clever. They're opportunistic — someone found something obvious that nobody had closed. Often something that takes ten minutes to fix, once you know it's there.</p>
-    <p class="lede">Most business owners have never seen this view of their own company. Not because it's hidden — it's public information, sitting in DNS records and login pages anyone can reach — but because nobody's ever pointed a flashlight at it and told them what they were looking at.</p>
-    <p class="lede">The goal isn't to be bulletproof. <strong>Just close the doors.</strong> The next section walks through exactly what happens over the 24 hours.</p>
+  <!-- ============================================================
+       WHY THIS MATTERS
+       ============================================================ -->
+  <section class="band band--gray">
+    <div class="divider mono">
+      <span>LOG · 00:00:01</span>
+      <span>PERIMETER MAPPED</span>
+    </div>
+    <div class="section why">
+      <div class="section-head">
+        <div class="eyebrow-label"><span class="status-dot"></span>Why this matters</div>
+        <h2>Attackers find open doors.</h2>
+        <p class="lede">Before anyone tries anything sophisticated, <b>they test every door</b>. The unlocked one wins. In most businesses, it’s one of these:</p>
+      </div>
+      <div class="door-cards reveal-group">
+        <div class="door-card">
+          <img class="card-tab" src="../static/card-tab.svg" width="281" height="5" alt="">
+          <div class="door-card-body">
+            <p class="door-kind">Identity</p>
+            <h3>Old logins</h3>
+            <p class="door-desc">An ex-employee’s login that still works.</p>
+          </div>
+        </div>
+        <div class="door-card">
+          <img class="card-tab" src="../static/card-tab.svg" width="281" height="5" alt="">
+          <div class="door-card-body">
+            <p class="door-kind">Email</p>
+            <h3>Open inboxes</h3>
+            <p class="door-desc">Phishing walks straight into inboxes.</p>
+          </div>
+        </div>
+        <div class="door-card">
+          <img class="card-tab" src="../static/card-tab.svg" width="281" height="5" alt="">
+          <div class="door-card-body">
+            <p class="door-kind">Domain</p>
+            <h3>Copycat email</h3>
+            <p class="door-desc">Anyone can send email that looks like it came from you.</p>
+          </div>
+        </div>
+      </div>
+      <p class="lede">Most breaches aren’t clever. They’re opportunistic, and the fix often takes ten minutes, once you know it’s there.</p>
+    </div>
   </section>
 
-  <div class="divider mono">
-    <span>LOG · 00:00:02</span>
-    <span>ENGAGEMENT STARTED</span>
-  </div>
+  <!-- ============================================================
+       HOW IT WORKS
+       ============================================================ -->
+  <section class="band">
+    <div class="divider mono">
+      <span>LOG · 00:00:02</span>
+      <span>ENGAGEMENT STARTED</span>
+    </div>
+    <div class="section section--even how">
+      <div class="section-head">
+        <div class="eyebrow-label"><span class="status-dot"></span>How it works</div>
+        <h2>Human-augmented. 100% signal.</h2>
+        <p class="lede">VEX handles discovery at machine speed. Our people handle the nuance, the manual validation, and the judgment calls a scanner can’t make.</p>
+      </div>
+      <div class="process reveal-group">
+        <div class="phase phase--ai">
+          <div class="phase-scale">
+            <p class="phase-name">Phase 01 · <b>AI</b></p>
+            <div class="hours" aria-hidden="true">
+              <span class="is-now"></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+              <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+            </div>
+            <p class="hour-notes"><span><b>HR</b> 1</span><span>20</span></p>
+          </div>
+          <div class="phase-intro">
+            <h3>Machine discovery</h3>
+            <p>Breadth, at machine speed.</p>
+          </div>
+          <div class="phase-steps">
+            <div class="step">
+              <p class="step-hours">HR 1</p>
+              <h4>Connect</h4>
+              <p class="step-desc">VEX connects to your Microsoft 365 or Google Workspace, a few lightweight agents go out, and the clock starts.</p>
+            </div>
+            <div class="step">
+              <p class="step-hours">HR 2–20</p>
+              <h4>Hunt</h4>
+              <p class="step-desc">VEX sweeps every DNS record, application, and mail-routing rule, and flags anything unusual.</p>
+            </div>
+          </div>
+        </div>
+        <div class="handoff"><span>Handoff</span></div>
+        <div class="phase phase--human">
+          <div class="phase-scale">
+            <p class="phase-name">Phase 02 · <b>Human</b></p>
+            <div class="hours" aria-hidden="true">
+              <span></span><span></span><span></span><span class="is-fix"></span>
+            </div>
+            <p class="hour-notes"><span>21</span><span>24 <b>Fix</b></span></p>
+          </div>
+          <div class="phase-intro">
+            <h3>Human judgment</h3>
+            <p>Depth, where it counts.</p>
+          </div>
+          <div class="phase-steps">
+            <div class="step">
+              <p class="step-hours">HR 21–23</p>
+              <h4>Review</h4>
+              <p class="step-desc">Analysts with offensive security backgrounds review the findings and go deeper.</p>
+            </div>
+            <div class="step step--fix">
+              <p class="step-hours">HR 24</p>
+              <h4>Fix</h4>
+              <p class="step-desc">You get a clear rundown of your exposure. Straightforward fixes are <b>often closed live</b> on the call.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-  <section class="dark-frame engagement">
-    <div class="scan-sweep" aria-hidden="true"></div>
+  <!-- ============================================================
+       WHAT YOU GET
+       ============================================================ -->
+  <section class="band band--gray">
+    <div class="divider mono">
+      <span>LOG · 00:00:03</span>
+      <span>FINDINGS COMPILED</span>
+    </div>
+    <div class="section get">
+      <div class="eyebrow-label"><span class="status-dot"></span>What you get</div>
+      <h2>We’ll fix it all.</h2>
+      <div class="get-item reveal">
+        <img src="../static/icon-file-lock.svg" width="64" height="64" alt="">
+        <div>
+          <p>Anything we can close live, <b>we close</b>, before you hang up.</p>
+          <p class="get-note">Anything else, you get a plain-English list of your exposure, ranked by what actually matters. Not a 40-page technical PDF.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       CONTACT
+       ============================================================ -->
+  <section class="dark-frame contact-section">
+    <img class="radar-echo" src="../static/radar-circles.svg" width="903" height="903" alt="" aria-hidden="true">
     <div class="body-wrap">
-      <div class="eyebrow-row eyebrow-label mono"><span class="status-dot"></span>How it works</div>
-      <h2 class="section-statement">Human-augmented. <em>100% signal.</em></h2>
-      <p class="section-lead">Not just an automated scan with a pretty PDF. Vex — our proprietary platform — handles discovery at machine speed. Our people handle the nuance, the manual validation, and the judgment calls a scanner can't make.</p>
-
-      <div class="eng-track" aria-hidden="true">
-        <div class="eng-seg connect" style="left:0%;"></div>
-        <div class="eng-seg scan fill" style="left:4.2%; width:62.5%;"></div>
-        <div class="eng-seg probe fill" style="left:66.7%; width:29.1%; animation-delay:0.3s;"></div>
-        <div class="eng-seg report" style="left:calc(100% - 3px);"></div>
-      </div>
-      <div class="eng-ticks mono" aria-hidden="true">
-        <span class="eng-tick" style="left:0%;">H0</span>
-        <span class="eng-tick" style="left:25%;">H6</span>
-        <span class="eng-tick" style="left:50%;">H12</span>
-        <span class="eng-tick" style="left:75%;">H18</span>
-        <span class="eng-tick" style="left:100%;">H24</span>
-      </div>
-
-      <div class="eng-steps">
-        <div class="eng-step">
-          <div class="eng-step-tag">Hour 1</div>
-          <h3>Connect</h3>
-          <p>Vex connects to your Microsoft 365 or Google Workspace via API, a few lightweight agents go out, and the clock starts.</p>
-          <span class="eng-pill">AI</span>
-        </div>
-        <div class="eng-step">
-          <div class="eng-step-tag">Hours 2–20</div>
-          <h3>Hunt</h3>
-          <p>Vex sweeps the environment: every DNS record, every application, every mail-routing rule. Anomalies get flagged.</p>
-          <span class="eng-pill">AI</span>
-        </div>
-        <div class="eng-step">
-          <div class="eng-step-tag">Hours 21–23</div>
-          <h3>Review</h3>
-          <p>Analysts with offensive security backgrounds review Vex's findings and go deeper. This is where judgment matters.</p>
-          <span class="eng-pill">Human</span>
-        </div>
-        <div class="eng-step">
-          <div class="eng-step-tag">Hour 24</div>
-          <h3>Fix</h3>
-          <p>You get a clear rundown of your actual exposure. Straightforward fixes are often closed live on the debrief call.</p>
-          <span class="eng-pill">Human</span>
-        </div>
-      </div>
+      <div class="eyebrow-label"><span class="status-dot"></span>Get started</div>
+      <h2 class="contact-statement">Know if you’re exposed.<br>In 24 hours.</h2>
+      <p class="contact-sub">One call to scope. One day to run.</p>
+      <a class="btn" href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener">Schedule test</a>
     </div>
   </section>
 
-  <div class="divider mono">
-    <span>LOG · 00:00:03</span>
-    <span>FINDINGS COMPILED</span>
-  </div>
+  </main>
 
-  <section class="dark-frame deliverable invert-light">
-    <div class="scan-sweep" aria-hidden="true"></div>
-    <div class="roam-field" aria-hidden="true">
-      <div class="hole hole-a"></div>
-      <div class="hole hole-b"></div>
-      <div class="hole hole-c"></div>
-      <div class="hole hole-d"></div>
-      <div class="roam-reticle">
-        <span class="corner tl"></span>
-        <span class="corner tr"></span>
-        <span class="corner bl"></span>
-        <span class="corner br"></span>
-      </div>
-    </div>
-    <div class="body-wrap">
-      <div class="eyebrow-row eyebrow-label mono"><span class="status-dot"></span>What you get</div>
-      <h2 class="section-statement">No noise. <em>A short list of fixes.</em></h2>
-      <p class="section-lead">A short, plain-English list of your exposure — ranked by what actually matters. Not a 40-page technical PDF. Anything we can close live, we close live — before you hang up.</p>
-    </div>
-  </section>
-
-  <div class="divider mono">
-    <span>LOG · 00:00:04</span>
-    <span>ENGAGEMENT COMPLETE</span>
-  </div>
-
-  <section class="cta-frame">
-    <div class="cta-inner">
-      <div class="eyebrow-label mono"><span class="status-dot"></span>Get started</div>
-      <h2 class="cta-statement">Know if you're <em>exposed</em>.<br>In 24 hours.</h2>
-      <p class="cta-sub">One call to scope. One day to run.</p>
-      <a class="cta-cta" href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener">Schedule test <span class="arrow">→</span></a>
-    </div>
-  </section>
-
-  <footer class="mono">
+  <footer>
     <span class="fmark">UNMANNED</span>
     <span>© 2026 UNMANNED, INC.</span>
-    <a href="https://gounmanned.substack.com/" target="_blank" rel="noopener noreferrer">READ OUR BLOG</a>
+    <a href="https://gounmanned.substack.com/" target="_blank" rel="noopener noreferrer">OUR RESEARCH</a>
   </footer>
 
   <script>
     (function(){
-      var g = document.getElementById('clockTicks');
-      if(!g) return;
-      var cx = 150, cy = 150, rOuter = 120, rInner = 113, rMajorInner = 108, rLabel = 96;
-      var NS = 'http://www.w3.org/2000/svg';
-      for (var h = 0; h < 24; h++){
-        var angle = (-90 + h * 15) * Math.PI / 180;
-        var isMajor = (h % 6 === 0);
-        var x1 = cx + Math.cos(angle) * rOuter;
-        var y1 = cy + Math.sin(angle) * rOuter;
-        var x2 = cx + Math.cos(angle) * (isMajor ? rMajorInner : rInner);
-        var y2 = cy + Math.sin(angle) * (isMajor ? rMajorInner : rInner);
-        var line = document.createElementNS(NS, 'line');
-        line.setAttribute('x1', x1); line.setAttribute('y1', y1);
-        line.setAttribute('x2', x2); line.setAttribute('y2', y2);
-        line.setAttribute('class', 'clock-tick' + (isMajor ? ' major' : ''));
-        g.appendChild(line);
-        if (isMajor){
-          var lx = cx + Math.cos(angle) * rLabel;
-          var ly = cy + Math.sin(angle) * rLabel;
-          var text = document.createElementNS(NS, 'text');
-          text.setAttribute('x', lx); text.setAttribute('y', ly + 3);
-          text.setAttribute('text-anchor', 'middle');
-          text.setAttribute('class', 'clock-label mono');
-          text.textContent = (h < 10 ? '0' : '') + h;
-          g.appendChild(text);
-        }
+      // hide-on-scroll header: see HIDE ON SCROLL in the styles
+      var root = document.documentElement;
+      var top = document.querySelector('.site-top');
+      var classbar = document.querySelector('.classbar');
+      if(!top){ return; }
+      var lastY = window.scrollY;
+      var ticking = false;
+      function update(){
+        ticking = false;
+        var y = window.scrollY;
+        var showZone = top.offsetHeight + (classbar ? classbar.offsetHeight : 0); // always show near the top
+        if(y <= showZone){ root.classList.remove('header-hidden'); lastY = y; return; }
+        if(Math.abs(y - lastY) < 6){ return; } // ignore tiny scroll jitters
+        root.classList.toggle('header-hidden', y > lastY);
+        lastY = y;
       }
+      window.addEventListener('scroll', function(){
+        if(!ticking){ ticking = true; requestAnimationFrame(update); }
+      }, { passive:true });
+      // keyboard users tabbing into the header should always see it
+      top.addEventListener('focusin', function(){ root.classList.remove('header-hidden'); });
     })();
 
     (function(){
-      var el = document.getElementById('clockReadout');
-      if(!el) return;
-      var totalSeconds = 24 * 60 * 60;
-      var loopMs = 18000;
-      var start = performance.now();
-      function frame(now){
-        var elapsed = (now - start) % loopMs;
-        var frac = elapsed / loopMs;
-        var s = Math.floor(frac * totalSeconds);
-        var hh = Math.floor(s / 3600);
-        var mm = Math.floor((s % 3600) / 60);
-        var ss = s % 60;
-        function pad(n){ return (n < 10 ? '0' : '') + n; }
-        el.textContent = 'T+' + pad(hh) + ':' + pad(mm) + ':' + pad(ss);
-        requestAnimationFrame(frame);
+      // mission clock: counts up in real time from when the page opens, and stops at T+24:00:00.
+      // The hand steps 6° a second (a full turn each minute). Its angle keeps growing past 360°
+      // so the step from :59 to :00 still turns forward instead of spinning back.
+      var readout = document.getElementById('clock-readout');
+      var hand = document.getElementById('clock-hand');
+      if(!readout || !hand){ return; }
+      var END = 24 * 60 * 60;
+      var start = Date.now();
+      function pad(n){ return (n < 10 ? '0' : '') + n; }
+      function tick(){
+        var s = Math.min(END, Math.floor((Date.now() - start) / 1000));
+        readout.textContent = 'T+' + pad(Math.floor(s / 3600)) + ':' + pad(Math.floor(s % 3600 / 60)) + ':' + pad(s % 60);
+        hand.style.transform = 'rotate(' + (s * 6) + 'deg)';
+        if(s < END){ setTimeout(tick, 1000 - (Date.now() - start) % 1000); } // line up with the next whole second
       }
-      requestAnimationFrame(frame);
+      tick();
     })();
 
     (function(){
-      var boxes = document.querySelectorAll('.hud-box.reveal');
-      if(!boxes.length){ return; }
+      var els = document.querySelectorAll('.reveal, .reveal-group > *');
+      if(!els.length){ return; }
       var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       if(!('IntersectionObserver' in window) || reduceMotion){
-        boxes.forEach(function(el){ el.classList.add('in-view'); });
+        els.forEach(function(el){ el.classList.add('in-view'); });
         return;
       }
       var io = new IntersectionObserver(function(entries){
         entries.forEach(function(entry){
-          if(entry.isIntersecting){
-            entry.target.classList.add('in-view');
-            io.unobserve(entry.target);
-          }
+          // shown once it rises above a line near the bottom of the screen; hidden again
+          // (so it can replay) when you scroll back up and it drops below that line
+          entry.target.classList.toggle('in-view', entry.isIntersecting);
         });
-      }, { threshold:0.35 });
-      boxes.forEach(function(el){ io.observe(el); });
+      }, { threshold:0, rootMargin:'100000px 0px -10% 0px' }); // the zone reaches far above the screen, so items you've scrolled past stay shown
+      els.forEach(function(el){ io.observe(el); });
     })();
   </script>
 </body>

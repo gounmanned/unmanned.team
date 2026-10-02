@@ -1,0 +1,12 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="FileLock">
+<g id="Vector">
+</g>
+<path id="Vector_2" opacity="0.2" d="M30 46H12V56H30V46Z" fill="#343330"/>
+<path id="Vector_3" d="M30 46H12V56H30V46Z" stroke="#343330" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Vector_4" d="M16 46V43C16 41.6739 16.5268 40.4021 17.4645 39.4645C18.4021 38.5268 19.6739 38 21 38C22.3261 38 23.5979 38.5268 24.5355 39.4645C25.4732 40.4021 26 41.6739 26 43V46" stroke="#343330" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Vector_5" opacity="0.2" d="M38 8V22H52L38 8Z" fill="#343330"/>
+<path id="Vector_6" d="M38 8V22H52" stroke="#343330" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Vector_7" d="M40 56H50C50.5304 56 51.0391 55.7893 51.4142 55.4142C51.7893 55.0391 52 54.5304 52 54V22L38 8H14C13.4696 8 12.9609 8.21071 12.5858 8.58579C12.2107 8.96086 12 9.46957 12 10V32" stroke="#343330" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</svg>

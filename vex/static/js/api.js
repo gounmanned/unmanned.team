@@ -151,8 +151,8 @@ class AttackApi extends Gateway {
         super();
     }
 
-    async run(asset) {
-        await this.call("POST", `attack?target=${asset}`);
+    async run(asset, procedure = "phish") {
+        await this.call("POST", `attack/${procedure}?target=${asset}`);
     }
 }
 

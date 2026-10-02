@@ -72,12 +72,12 @@ body.attack {
 body.attack #overview-section { display:none; }
 
 body.attack #signal-table tbody td {
-  background:var(--surface) !important;
+  background-color:var(--surface) !important;
   color:var(--text-body);
   border-color:var(--line);
 }
 body.attack #signal-table tbody tr:hover td {
-  background:var(--surface-alt) !important;
+  background-color:var(--surface-alt) !important;
 }
 
 /* ── attack:dark — component patches ────────────────────────────── */

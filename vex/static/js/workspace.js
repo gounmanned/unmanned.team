@@ -31,6 +31,7 @@ class Api {
         this.file = new FileApi(state);
         this.monitors = new MonitorApi(state);
         this.notification = new NotificationApi(state);
+        this.attack = new AttackApi(state);
     }
 
     reset(){
@@ -41,6 +42,7 @@ class Api {
         this.file.set("account", this.state.account());
         this.monitors.set("account", this.state.account());
         this.notification.set("account", this.state.account());
+        this.attack.set("account", this.state.account());
     }
 }
 

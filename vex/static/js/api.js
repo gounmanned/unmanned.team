@@ -146,6 +146,16 @@ class NotificationApi extends Gateway {
     }
 }
 
+class AttackApi extends Gateway {
+    constructor(){
+        super();
+    }
+
+    async run(asset) {
+        await this.call("POST", `attack?target=${asset}`);
+    }
+}
+
 class Auth {
     static async init(code) {
         const backend = "us.unmanned.team";

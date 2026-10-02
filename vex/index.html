@@ -14,6 +14,7 @@
       <link rel="stylesheet" href="static/css/audit.css?v=${v}">
       <link rel="stylesheet" href="static/css/notification.css?v=${v}">
       <link rel="stylesheet" href="static/css/managed.css?v=${v}">
+      <link rel="stylesheet" href="static/css/attack.css?v=${v}">
       <link rel="stylesheet" href="static/css/inventory.css?v=${v}">
       <link rel="stylesheet" href="static/css/tenant.css?v=${v}">
       <link rel="stylesheet" href="static/css/monitors.css?v=${v}">
@@ -47,6 +48,11 @@
     <button id="notification-bell" class="bell-btn" type="button" aria-label="Notifications">
       <span class="material-symbols-outlined">notifications</span>
       <span class="bell-dot"></span>
+    </button>
+
+    <button id="attack-toggle" class="attack-toggle" type="button"
+            aria-label="Attack mode" title="Enter attack mode">
+      <span class="material-symbols-outlined">swords</span>
     </button>
 
     <div class="notification-panel" id="notification-panel">
@@ -88,6 +94,49 @@
 
         <span class="material-symbols-outlined spotlight-arrow">arrow_forward</span>
       </button>
+    </section>
+
+    <section id="attack-section" hidden>
+      <div class="attack-panel">
+
+        <!-- launch view -->
+        <div class="attack-launch" id="attack-launch">
+          <div class="attack-card">
+            <img class="attack-card-img" id="attack-launch-img" alt="">
+
+            <div class="attack-card-hero">
+              <div class="attack-card-body">
+                <div class="attack-card-label"><span class="attack-dot"></span>Available test</div>
+                <h3 class="attack-card-title" id="attack-launch-title"></h3>
+                <p class="attack-card-desc" id="attack-launch-desc"></p>
+              </div>
+            </div>
+
+            <div class="attack-card-footer">
+              <label class="attack-field">
+                <span>Target</span>
+                <select id="attack-target"></select>
+              </label>
+              <button type="button" class="attack-start" id="attack-start">
+                <span class="material-symbols-outlined">bolt</span> Start
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- in-progress view -->
+        <div class="attack-progress" id="attack-progress" hidden>
+          <div class="attack-clock" id="attack-clock">00:00:00</div>
+          <div class="attack-progress-detail">
+            <img class="attack-progress-img" id="attack-progress-img" alt="">
+            <div>
+              <div class="attack-card-label live"><span class="attack-dot"></span>Test in progress</div>
+              <h3 class="attack-card-title" id="attack-progress-title"></h3>
+              <p class="attack-card-desc" id="attack-progress-desc"></p>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
 
     <section id="signal-section">
@@ -558,6 +607,14 @@
 
   <div class="notification-stack" id="notification-stack"></div>
 
+  <div class="attack-boot" id="attack-boot" aria-hidden="true">
+    <div class="attack-boot-radar">
+      <svg viewBox="0 0 800 800"><use href="#radar-rings"></use></svg>
+      <span class="attack-boot-sweep"></span>
+      <span class="material-symbols-outlined">swords</span>
+    </div>
+    <div class="attack-boot-text">Entering attack mode<span class="attack-boot-caret"></span></div>
+  </div>
 </body>
 
 <script src="https://cdn.unmanned.team/js/components.js"></script>
@@ -569,6 +626,7 @@
     <script src="static/js/table.js?v=${v}"><\/script>
     <script src="static/js/notification.js?v=${v}"><\/script>
     <script src="static/js/tenant.js?v=${v}"><\/script>
+    <script src="static/js/attack.js?v=${v}"><\/script>
     <script src="static/js/sidebars/signal.js?v=${v}"><\/script>
     <script src="static/js/sidebars/backup.js?v=${v}"><\/script>
     <script src="static/js/sidebars/risk.js?v=${v}"><\/script>

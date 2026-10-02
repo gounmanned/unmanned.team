@@ -8,6 +8,7 @@ class TenantScreen {
 
         new ResizeObserver(() => this.renderTrend()).observe(document.getElementById('trend-svg'));
         this.notifications = new Notifications(this.state);
+        this.attack = new AttackMode(this.state, () => this.reload());
         setInterval(() => this.tick(), 1000);
     }
 
@@ -87,7 +88,6 @@ class TenantScreen {
         document.getElementById('trend-month').textContent =
             now.toLocaleString(undefined, { month: 'long', year: 'numeric' });
 
-        // chart
         const svg = document.getElementById('trend-svg');
         const W = svg.clientWidth, H = svg.clientHeight;
         if (!W || !H) return;
@@ -98,8 +98,6 @@ class TenantScreen {
         const x = i => pad.l + i * step;
         const y = v => pad.t + (1 - v / max) * (H - pad.t - pad.b);
         const base = y(0);
-
-        // x-axis spans the whole month; the line stops at today
         const pts = counts.slice(0, today).map((v, i) => [x(i), y(v)]);
         const line = pts.map(([px, py], i) => `${i ? 'L' : 'M'}${px.toFixed(1)},${py.toFixed(1)}`).join(' ');
         const [lx, ly] = pts.at(-1);
@@ -183,6 +181,7 @@ class TenantScreen {
                 this.table.add(row, signal);
                 this.table.watermark(false);
                 this.scheduleTrend();
+                this.attack.onSignal(signal);
             };
 
             this.state.track(ev.signal);

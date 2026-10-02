@@ -99,6 +99,7 @@ body.attack .delete-btn:hover {
   border-color:var(--sev-1);
   color:var(--sev-1);
 }
+body.attack .links a.cta { background: var(--sev-1); }
 
 body.attack .sidebar-actions,
 body.attack .audit-terminal { background:var(--surface); }
@@ -112,12 +113,6 @@ body.attack tbody tr:hover { background:var(--surface-alt); }
 #attack-section {
   position:relative;
   margin-bottom:18px;
-  padding-bottom:18px;
-  border-bottom:1px solid var(--line);
-}
-#attack-section::after {
-  content:''; position:absolute; left:0; bottom:-1px;
-  width:120px; height:2px; background:var(--sev-1);
 }
 
 .attack-panel { display:flex; flex-direction:column; gap:14px; }
@@ -129,11 +124,12 @@ body.attack tbody tr:hover { background:var(--surface-alt); }
   display:flex; flex-direction:column;
   border:1px solid var(--line); border-radius:12px;
   background:radial-gradient(120% 140% at 85% 50%,
-            color-mix(in srgb, var(--sev-1) 22%, var(--surface)) 0%, var(--surface) 60%);
+            color-mix(in srgb, var(--brand) 22%, var(--surface)) 0%, var(--surface) 60%);
 }
 .attack-card-img {
   position:absolute; right:-30px; top:50%; transform:translateY(-50%);
   height:180%; max-width:none; object-fit:contain; opacity:.9; pointer-events:none;
+  filter:grayscale(1);
   -webkit-mask-image:linear-gradient(90deg, transparent, #000 45%);
           mask-image:linear-gradient(90deg, transparent, #000 45%);
 }
@@ -144,6 +140,10 @@ body.attack tbody tr:hover { background:var(--surface-alt); }
 .attack-card-label { display:flex; align-items:center; gap:6px; font-size:10px;
   font-weight:700; letter-spacing:.8px; text-transform:uppercase; color:var(--sev-1); }
 .attack-dot { width:6px; height:6px; border-radius:50%; background:var(--sev-1); }
+
+.attack-start { display:flex; align-items:center; gap:6px; padding:10px 18px;
+  border:none; border-radius:8px; background:var(--sev-1); color:#fff;
+  font-size:13px; font-weight:600; cursor:pointer; transition:filter .15s; }
 .attack-card-label.live .attack-dot { animation:spotlight-pulse 1.6s ease-out infinite; }
 .attack-card-title { margin:6px 0; font-size:18px; font-weight:700; color:var(--text-body); }
 .attack-card-desc { margin:0; font-size:13px; line-height:1.5; color:var(--text-faint); }
@@ -169,9 +169,6 @@ body.attack tbody tr:hover { background:var(--surface-alt); }
   padding:9px 10px; border:1px solid var(--line); border-radius:8px;
   background:var(--surface-alt); color:var(--text-body); font-size:13px; font-weight:500;
 }
-.attack-start { display:flex; align-items:center; gap:6px; padding:10px 18px;
-  border:none; border-radius:8px; background:var(--sev-1); color:#fff;
-  font-size:13px; font-weight:600; cursor:pointer; transition:filter .15s; }
 .attack-start:hover { filter:brightness(1.1); }
 .attack-start .material-symbols-outlined { font-size:16px; }
 

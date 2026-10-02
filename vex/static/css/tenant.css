@@ -67,7 +67,6 @@
   transition: border-color 0.2s;
 }
 
-/* soft red glow the frosted footer blurs over */
 .overview::before {
   content: '';
   position: absolute;

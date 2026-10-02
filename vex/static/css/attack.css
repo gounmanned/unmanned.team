@@ -69,8 +69,7 @@ body.attack {
   background:#15171c;
 }
 
-body.attack #trend-section,
-body.attack #spotlight-section { display:none !important; }
+body.attack #overview-section { display:none; }
 
 body.attack #signal-table tbody td {
   background:var(--surface) !important;

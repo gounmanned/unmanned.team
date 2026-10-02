@@ -23,8 +23,8 @@ class TenantScreen {
             this.api.reset();
             this.table.clear();
             this.table.watermark(true);
-            this.renderTrend();
             this.renderSpotlight();
+            this.renderTrend();
             this.count();
         }).then(() => {
             this.notifications.refresh();
@@ -67,8 +67,8 @@ class TenantScreen {
         if (this._trendFrame) return;
         this._trendFrame = requestAnimationFrame(() => {
             this._trendFrame = null;
-            this.renderTrend();
             this.renderSpotlight();
+            this.renderTrend();
         });
     }
 
@@ -115,6 +115,16 @@ class TenantScreen {
                     </rect>`;
         }).join('');
 
+        const crit = this._spotlight && new Date(this._spotlight.created);
+        let marker = '';
+        if (crit && crit.getFullYear() === year && crit.getMonth() === month) {
+            const i = crit.getDate() - 1;
+            marker = `
+                <line class="trend-critical-rule" x1="${x(i)}" x2="${x(i)}" y1="${pad.t}" y2="${base}"/>
+                <circle class="trend-critical" cx="${x(i)}" cy="${y(counts[i])}" r="3.5"/>
+            `;
+        }
+
         svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
         svg.innerHTML = `
             <defs>
@@ -127,6 +137,7 @@ class TenantScreen {
             <text class="trend-max" x="${W - pad.r}" y="${pad.t - 2}" text-anchor="end">peak ${max}</text>
             <path d="${area}" fill="url(#trend-fill)"/>
             <path class="trend-line" d="${line}"/>
+            ${marker}
             <circle class="trend-today-pulse" cx="${lx}" cy="${ly}" r="3"/>
             <circle class="trend-today" cx="${lx}" cy="${ly}" r="3"/>
             <g class="trend-axis">${ticks}</g>
@@ -135,20 +146,18 @@ class TenantScreen {
     }
 
     renderSpotlight() {
-        const signal = Object.values(this.state.signals?.[this.state.account()] ?? {}).find(s =>
-            Number(s.severity) === 1 && String(s.status).startsWith('O')
-        );
+        const signal = Object.values(this.state.signals[this.state.account()])
+            .filter(s => Number(s.severity) === 1 && String(s.status).startsWith('O'))
+            .sort((a, b) => new Date(b.created) - new Date(a.created))[0];
 
         this._spotlight = signal;
-        document.getElementById('spotlight-section').hidden = !signal;
+        document.getElementById('overview').classList.toggle('critical', !!signal);
         if (!signal) return;
 
-        const day = value => new Date(value).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+        const day = value => new Date(value).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
         const set = (id, text) => document.getElementById(id).textContent = text;
 
         set('spotlight-name', signal.name);
-        set('spotlight-value', signal.value?.match(/^.*?[.!?](?=\s|$)/s)?.[0] ?? signal.value);
-        set('spotlight-asset', signal.asset);
         set('spotlight-created', day(signal.created));
         set('spotlight-updated', day(signal.updated ?? signal.created));
         document.getElementById('spotlight-img').src = `static/img/source/${signal.source}.png`;

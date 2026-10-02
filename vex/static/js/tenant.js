@@ -135,7 +135,7 @@ class TenantScreen {
     }
 
     renderSpotlight() {
-        const signal = Object.values(this.state.signals[this.state.account()])
+        const signal = Object.values(this.state.signals?.[this.state.account()] ?? {})
             .filter(s => Number(s.severity) === 1 && String(s.status).startsWith('O'))
             .sort((a, b) => new Date(b.created) - new Date(a.created))[0];
 

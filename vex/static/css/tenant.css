@@ -148,15 +148,6 @@
   animation: trend-pulse 2s ease-out infinite;
 }
 
-#trend-svg .trend-critical { fill: var(--sev-1); }
-
-#trend-svg .trend-critical-rule {
-  stroke: var(--sev-1);
-  stroke-width: 1;
-  stroke-dasharray: 2 3;
-  opacity: 0.6;
-}
-
 @keyframes trend-pulse {
   from { transform: scale(1);   opacity: 0.5; }
   to   { transform: scale(3.5); opacity: 0; }

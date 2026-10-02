@@ -1,7 +1,7 @@
 class AttackMode {
     static TEST = {
         title: 'Credential Phishing',
-        description: 'Launches a real phishing campaign against the selected identity to measure detection and response.',
+        description: 'Launches a phishing campaign against the selected identity to measure detection and response.',
         img: 'static/img/test/phish.png',
     };
 

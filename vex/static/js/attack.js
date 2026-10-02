@@ -1,93 +1,107 @@
 class AttackMode {
-    static TEST = {
-        title: 'Credential Phishing',
-        description: 'Launch a phishing campaign against the selected identity to measure detection and response.',
-        img: 'static/img/test/phish.png',
+  static TEST = {
+    title: 'Credential Phishing',
+    description: 'Launch a phishing campaign against the selected identity to measure detection and response.',
+    img: 'static/img/test/phish.png',
+  };
+
+  constructor(state, reload) {
+    this.state  = state;
+    this.api    = state.api;
+    this.reload = reload;
+    this.on     = false;
+    this.test   = null;
+    this.timer  = null;
+
+    this.el = {
+      btn:      document.getElementById('attack-toggle'),
+      section:  document.getElementById('attack-section'),
+      boot:     document.getElementById('attack-boot'),
+      launch:   document.getElementById('attack-launch'),
+      progress: document.getElementById('attack-progress'),
+      target:   document.getElementById('attack-target'),
+      clock:    document.getElementById('attack-clock'),
     };
 
-    constructor(state, reload) {
-        this.state  = state;
-        this.api    = state.api;
-        this.reload = reload;
-        this.on     = false;
-        this.test   = null;
+    this.el.btn.addEventListener('click', () => this.toggle());
+    document.getElementById('attack-start').addEventListener('click', () => this.start());
+  }
 
-        this.el = {
-            btn:      document.getElementById('attack-toggle'),
-            section:  document.getElementById('attack-section'),
-            boot:     document.getElementById('attack-boot'),
-            launch:   document.getElementById('attack-launch'),
-            progress: document.getElementById('attack-progress'),
-            target:   document.getElementById('attack-target'),
-            clock:    document.getElementById('attack-clock'),
-        };
+  toggle() { return this.on ? this.close() : this.open(); }
 
-        this.el.btn.addEventListener('click', () => this.toggle());
-        document.getElementById('attack-start').addEventListener('click', () => this.start());
-    }
+  async open() {
+    this.on = true;
+    this.el.btn.classList.add('active');
+    this.boot(true);
+    document.body.classList.add('attack');
+    this.el.section.hidden = false;
 
-    toggle() { return this.on ? this.close() : this.open(); }
+    await Promise.all([this.render(), new Promise(r => setTimeout(r, 900))]);
+    this.boot(false);
+  }
 
-    async open() {
-        this.on = true;
-        this.el.btn.classList.add('active');
-        this.boot(true);
-        document.body.classList.add('attack');
-        this.el.section.hidden = false;
+  close() {
+    this.on = false;
+    this.el.btn.classList.remove('active');
+    this.el.section.hidden = true;
+    document.body.classList.remove('attack');
+    clearInterval(this.timer);
+  }
 
-        await Promise.all([this.render(), new Promise(r => setTimeout(r, 900))]);
-        this.boot(false);
-    }
+  boot(show) {
+    this.el.boot.classList.toggle('show', show);
+    this.el.boot.setAttribute('aria-hidden', String(!show));
+  }
 
-    close() {
-        this.on = false;
-        this.el.btn.classList.remove('active');
-        this.el.section.hidden = true;
-        document.body.classList.remove('attack');
-    }
+  current() {
+    const signals = this.state.signals[this.state.account()];
+    return Object.values(signals).find(s => s.metadata?.test);
+  }
 
-    boot(show) {
-        this.el.boot.classList.toggle('show', show);
-        this.el.boot.setAttribute('aria-hidden', String(!show));
-    }
+  fill(view, test) {
+    document.getElementById(`attack-${view}-title`).textContent = test.title;
+    document.getElementById(`attack-${view}-desc`).textContent  = test.description;
+    document.getElementById(`attack-${view}-img`).src           = test.img;
+  }
 
-    current() {
-        const signals = this.state.signals?.[this.state.account()] ?? {};
-        return Object.values(signals).find(s =>
-            s.source === 'test' && String(s.status).startsWith('O'));
-    }
+  async render(test = this.current()) {
+    this.test = test;
+    const running = !!test;
 
-    fill(view, test) {
-        document.getElementById(`attack-${view}-title`).textContent = test.title;
-        document.getElementById(`attack-${view}-desc`).textContent  = test.description;
-        document.getElementById(`attack-${view}-img`).src           = test.img;
-    }
+    this.el.launch.hidden   = running;
+    this.el.progress.hidden = !running;
 
-    async render() {
-        this.test = this.current();
-        const running = !!this.test;
+    this.fill(running ? 'progress' : 'launch', AttackMode.TEST);
+    clearInterval(this.timer);
+    if (running) return this.tick();
 
-        this.el.launch.hidden   = running;
-        this.el.progress.hidden = !running;
+    const assets = await this.api.inventory.list();
+    this.el.target.innerHTML = assets.map(a => `<option value="${a.name}">${a.name}</option>`).join('');
+  }
 
-        this.fill(running ? 'progress' : 'launch', AttackMode.TEST);
-        if (running) return;
+  tick() {
+    const start = new Date(this.test.created);
+    const p = n => String(Math.floor(n)).padStart(2, '0');
+    const draw = () => {
+      const s = (Date.now() - start) / 1000;
+      this.el.clock.textContent = `${p(s / 3600)}:${p(s / 60 % 60)}:${p(s % 60)}`;
+    };
+    draw();
+    this.timer = setInterval(draw, 1000);
+  }
 
-        const assets = await this.api.inventory.list();
-        this.el.target.innerHTML =
-            assets.map(a => `<option value="${a.name}">${a.name}</option>`).join('');
-    }
+  async start() {
+    const name = this.el.target.value;
+    if (!name) return;
 
-    async start() {
-        const name = this.el.target.value;
-        if (!name) return;
-        await SiteSpinner.withLoading(async () => {
-            await this.api.attack.run(name);
-            await this.reload();
-        });
-    }
+    await SiteSpinner.withLoading(async () => {
+      const test = await this.api.attack.run(name);
+      await this.reload();
+      await this.render(test);
+    });
+  }
 
-    onSignal(signal) {
-        if (this.on && signal.source === 'test') this.render();
-    }
+  onSignal(signal) {
+    if (this.on && signal.metadata?.test) this.render();
+  }
 }

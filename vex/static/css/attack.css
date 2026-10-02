@@ -115,6 +115,7 @@ body.attack tbody tr:hover { background:var(--surface-alt); }
   margin-bottom:18px;
 }
 
+#attack-section img { filter:grayscale(1); }
 .attack-panel { display:flex; flex-direction:column; gap:14px; }
 
 /* ── attack:card (launch) ───────────────────────────────────────── */
@@ -129,9 +130,6 @@ body.attack tbody tr:hover { background:var(--surface-alt); }
 .attack-card-img {
   position:absolute; right:-30px; top:50%; transform:translateY(-50%);
   height:180%; max-width:none; object-fit:contain; opacity:.9; pointer-events:none;
-  filter:grayscale(1);
-  -webkit-mask-image:linear-gradient(90deg, transparent, #000 45%);
-          mask-image:linear-gradient(90deg, transparent, #000 45%);
 }
 
 .attack-card-hero { display:flex; align-items:center; min-height:140px; }
@@ -174,7 +172,7 @@ body.attack tbody tr:hover { background:var(--surface-alt); }
 
 /* ── attack:progress ────────────────────────────────────────────── */
 
-.attack-progress { display:flex; align-items:center; gap:28px; padding:6px 4px; }
+.attack-progress { flex-direction:row; align-items:center; gap:28px; padding:20px 22px; }
 .attack-clock { font-size:46px; font-weight:700; line-height:1; letter-spacing:1px;
   font-variant-numeric:tabular-nums; color:var(--sev-1); }
 .attack-progress-detail { flex:1; display:flex; align-items:center; gap:16px; }

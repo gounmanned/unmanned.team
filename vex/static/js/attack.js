@@ -55,7 +55,7 @@ class AttackMode {
 
   current() {
     const signals = this.state.signals[this.state.account()];
-    return Object.values(signals).find(s => s.metadata?.test);
+    return Object.values(signals).find(s => s.metadata?.test && s.status?.startsWith('O'));
   }
 
   fill(view, test) {

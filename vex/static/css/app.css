@@ -149,7 +149,7 @@ table th {
 }
 
 table tbody tr {
-  background-color: white;
+  background-color: var(--surface);
   border-radius: 12px;
   transition: background-color 0.15s ease;
 }

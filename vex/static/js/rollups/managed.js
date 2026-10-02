@@ -25,6 +25,7 @@ class ManagedRollup {
 
             await this.api.managed.signals(new CustomEvent("signal:managed"));
             this.members.forEach((_, domain) => this._settleBadge(domain));
+            this._sortAccounts();
             this.summary.renderSignals();
         })();
 
@@ -92,6 +93,15 @@ class ManagedRollup {
     _setUnread(domain, unread) {
         const badge = document.getElementById(`managed-badge-${domain}`);
         if (badge) badge.classList.toggle('has-unread', unread);
+    }
+
+    _sortAccounts() {
+        const count = (li) => Object.values(this.state.signals[li.id.replace('managed-account-', '')] ?? {})
+            .filter(t => t.status.startsWith('O')).length;
+
+        [...this.list.children]
+            .sort((a, b) => count(b) - count(a))
+            .forEach(li => this.list.appendChild(li));
     }
 
     _add(domain, members = [], enabled = true) {

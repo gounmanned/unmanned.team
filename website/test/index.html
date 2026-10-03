@@ -103,6 +103,9 @@
   @media (max-width:948px){.section{padding-right:24px;}}
   .section-head{display:flex;flex-direction:column;gap:16px;}
   .section h2{font-weight:500;font-size:clamp(34px,4.2vw,52px);line-height:1.14;letter-spacing:-0.01em;}
+  /* 30px sub-heads (phase titles, "What you get") stay 30/52 of the section headline at every width,
+     so they shrink together and the size difference between them holds */
+  .sub-head{font-weight:500;font-size:clamp(34px * 30 / 52, 4.2vw * 30 / 52, 30px);line-height:1.14;letter-spacing:-0.01em;}
   .lede{font-size:16px;line-height:1.75;color:var(--body);max-width:680px;}
   .lede b{font-weight:700;}
   .section-head .lede{margin-top:4px;}
@@ -225,7 +228,6 @@
   .phase--human .hour-notes{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;}
   .phase--human .hour-notes span:last-child{grid-column:4;}
   .phase-intro{display:flex;flex-direction:column;gap:4px;}
-  .phase-intro h3{font-weight:500;font-size:30px;line-height:1.14;letter-spacing:-0.01em;}
   .phase--human .phase-intro h3{color:var(--pink-text);}
   .phase-intro p{font-size:20px;line-height:1.5;color:var(--surface-dark);}
   .phase-steps{display:grid;grid-template-columns:1fr 1fr;align-content:start;gap:32px;padding-top:31px;border-top:1px solid var(--gray-line);}
@@ -243,7 +245,6 @@
     .phase-scale{margin-bottom:8px;} /* 24px from the scale to the title */
     .hours{gap:2px;height:24px;}
     .phase-steps{grid-template-columns:1fr;gap:24px;padding-top:16px;}
-    .phase-intro h3{font-size:clamp(22px,7.4vw,30px);} /* "discovery" has to fit half the screen */
     .phase-intro p{font-size:clamp(16px,5.2vw,20px);}
   }
   @media (max-width:360px){.phase-name b{display:block;}} /* both names on two lines, so the hour bars stay level */
@@ -257,7 +258,7 @@
     display:grid;grid-template-columns:minmax(0,451px) 298px;grid-template-areas:"title report" "desc report";
     align-content:center;gap:12px 24px;
   }
-  .get-title{grid-area:title;align-self:end;font-weight:500;font-size:30px;line-height:1.14;letter-spacing:-0.01em;}
+  .get-title{grid-area:title;align-self:end;}
   .get-desc{grid-area:desc;font-size:16px;line-height:1.75;color:var(--body);}
   /* the report: a page outline with the VEX logo and three checked lines, sliding out of a slot.
      The slot is a soft shadow across the bottom of the page, clipped so only its top edge shows */
@@ -437,7 +438,7 @@
             <p class="hour-notes"><span><b>HR</b> 1</span><span>20</span></p>
           </div>
           <div class="phase-intro">
-            <h3>Machine discovery</h3>
+            <h3 class="sub-head">Machine discovery</h3>
             <p>Breadth, at machine speed.</p>
           </div>
           <div class="phase-steps">
@@ -463,7 +464,7 @@
             <p class="hour-notes"><span>21</span><span>24 <b>Fix</b></span></p>
           </div>
           <div class="phase-intro">
-            <h3>Human judgment</h3>
+            <h3 class="sub-head">Human judgment</h3>
             <p>Depth, where it counts.</p>
           </div>
           <div class="phase-steps">
@@ -495,7 +496,7 @@
       <div class="eyebrow-label"><span class="status-dot"></span>What you get</div>
       <h2>We’ll fix it all.</h2>
       <div class="get-body">
-        <h3 class="get-title">Anything we can close live, we close, before you hang up</h3>
+        <h3 class="sub-head get-title">Anything we can close live, we close, before you hang up.</h3>
         <!-- the report coming out of the "printer": on phones it sits between the title and the paragraph -->
         <div class="report reveal" aria-hidden="true">
           <img class="report-doc" src="../static/report-doc.svg" width="247" height="136" alt="">

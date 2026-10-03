@@ -136,9 +136,10 @@
     .hero .clock{justify-self:start;width:min(clamp(150px,42vw,260px),100%);} /* never wider than the space beside the button */
   }
   @media (max-width:560px){.hero-grid{column-gap:24px;}}
-  @media (max-width:340px){ /* very narrow phones: the clock drops under the button */
+  @media (max-width:480px){.hero h1 br{display:none;}} /* let the headline wrap on its own */
+  @media (max-width:340px){ /* very narrow screens (or zoomed-in text): the clock drops under the button, lined up with it */
     .hero-grid{grid-template-columns:1fr;grid-template-areas:"copy" "cta" "clock";}
-    .hero .clock{justify-self:center;}
+    .hero .clock{width:min(220px,100%);} /* it has its own row now, so it can be a bit bigger */
   }
 
   /* ---------- MISSION CLOCK ----------
@@ -198,7 +199,7 @@
      (subgrid), so the scales, titles and steps line up across the line even when one side wraps more. */
   .how{display:flex;flex-direction:column;gap:32px;}
   .how .lede{color:var(--body-soft);max-width:721px;}
-  .process{position:relative;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto auto auto auto;gap:24px 48px;}
+  .process{position:relative;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:auto auto auto auto;gap:24px 48px;}
   .process::before{ /* the handoff line, 2px dashes with 5px gaps */
     content:'';position:absolute;top:14px;bottom:0;left:50%;width:1px;
     background:repeating-linear-gradient(to bottom,var(--gray-faint) 0 2px,transparent 2px 7px);
@@ -208,7 +209,7 @@
     display:block;position:relative;padding:4px 8px;background:var(--white);border:1px solid var(--gray-faint);
     font-size:11px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;color:var(--surface-dark);
   }
-  .phase{display:grid;grid-row:2 / span 3;grid-template-rows:subgrid;row-gap:24px;min-width:0;} /* rows: scale, intro, steps */
+  .phase{display:grid;grid-row:2 / span 3;grid-template-rows:subgrid;grid-template-columns:minmax(0,1fr);row-gap:24px;min-width:0;} /* rows: scale, intro, steps */
   .phase--ai{grid-column:1;}
   .phase--human{grid-column:2;}
   .phase-scale{display:flex;flex-direction:column;gap:8px;font-family:var(--mono);text-transform:uppercase;color:var(--surface-dark);}
@@ -242,17 +243,35 @@
     .phase-scale{margin-bottom:8px;} /* 24px from the scale to the title */
     .hours{gap:2px;height:24px;}
     .phase-steps{grid-template-columns:1fr;gap:24px;padding-top:16px;}
+    .phase-intro h3{font-size:clamp(22px,7.4vw,30px);} /* "discovery" has to fit half the screen */
+    .phase-intro p{font-size:clamp(16px,5.2vw,20px);}
   }
+  @media (max-width:360px){.phase-name b{display:block;}} /* both names on two lines, so the hour bars stay level */
 
-  /* ---------- WHAT YOU GET ---------- */
+  /* ---------- WHAT YOU GET ----------
+     Desktop: title and paragraph on the left, the report graphic on the right.
+     Phones: one column, with the graphic moved between the title and the paragraph (same HTML, grid order). */
   .get{display:flex;flex-direction:column;gap:16px;}
   .get h2{margin-bottom:8px;}
-  .get-item{display:flex;gap:8px;align-items:flex-start;max-width:545px;}
-  .get-item img{flex-shrink:0;width:64px;height:64px;}
-  .get-item > div{display:flex;flex-direction:column;gap:8px;}
-  .get-item p{font-size:16px;line-height:1.75;color:var(--body);}
-  .get-item b{font-weight:700;}
-  .get-item .get-note{font-size:12px;line-height:normal;}
+  .get-body{
+    display:grid;grid-template-columns:minmax(0,451px) 298px;grid-template-areas:"title report" "desc report";
+    align-content:center;gap:12px 24px;
+  }
+  .get-title{grid-area:title;align-self:end;font-weight:500;font-size:30px;line-height:1.14;letter-spacing:-0.01em;}
+  .get-desc{grid-area:desc;font-size:16px;line-height:1.75;color:var(--body);}
+  /* the report: a page outline with the VEX logo and three checked lines, sliding out of a slot.
+     The slot is a soft shadow across the bottom of the page, clipped so only its top edge shows */
+  .report{grid-area:report;justify-self:center;position:relative;width:245px;height:149px;}
+  .report-doc{position:absolute;left:-1px;top:-1px;display:block;}
+  .report-lines{position:absolute;left:34.5px;top:22px;width:127px;display:flex;flex-direction:column;gap:10px;}
+  .report-line{display:flex;align-items:center;gap:7px;}
+  .report-line img{display:block;flex-shrink:0;}
+  .report-line::after{content:'';flex:1;height:5px;border-radius:2px;background:#d9d9d9;}
+  .report-slot{position:absolute;left:-26.5px;top:112px;width:298px;height:23px;overflow:hidden;}
+  .report-slot::after{content:'';position:absolute;left:15.45px;top:23px;width:267.1px;height:14px;box-shadow:0 -2px 8px 3px rgba(0,0,0,0.15);}
+  @media (max-width:700px){
+    .get-body{grid-template-columns:minmax(0,1fr);grid-template-areas:"title" "report" "desc";gap:24px;}
+  }
 
   /* ---------- CONTACT ---------- */
   .dark-frame{background:var(--ink);color:var(--db-ink);}
@@ -320,7 +339,7 @@
       <div class="hero-grid">
         <div class="hero-copy">
           <div class="eyebrow-label"><span class="status-dot"></span>24-hour security test</div>
-          <h1>Are you safe from<br>an adversarial AI?</h1>
+          <h1>Are you safe from <br>an adversarial AI?</h1>
           <p class="lede">Attackers don’t open with something sophisticated. They walk the perimeter and test every door. They do it quietly, at scale, before you know they’re there. VEX runs that same sweep on you first.</p>
         </div>
         <a class="btn hero-cta" href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener">Schedule test</a>
@@ -475,12 +494,20 @@
     <div class="section get">
       <div class="eyebrow-label"><span class="status-dot"></span>What you get</div>
       <h2>We’ll fix it all.</h2>
-      <div class="get-item reveal">
-        <img src="../static/icon-file-lock.svg" width="64" height="64" alt="">
-        <div>
-          <p>Anything we can close live, <b>we close</b>, before you hang up.</p>
-          <p class="get-note">Anything else, you get a plain-English list of your exposure, ranked by what actually matters. Not a 40-page technical PDF.</p>
+      <div class="get-body">
+        <h3 class="get-title">Anything we can close live, we close, before you hang up</h3>
+        <!-- the report coming out of the "printer": on phones it sits between the title and the paragraph -->
+        <div class="report reveal" aria-hidden="true">
+          <img class="report-doc" src="../static/report-doc.svg" width="247" height="136" alt="">
+          <div class="report-lines">
+            <span class="brand"><span class="status-dot"></span>VEX</span>
+            <span class="report-line"><img src="../static/icon-check.svg" width="16" height="16" alt=""></span>
+            <span class="report-line"><img src="../static/icon-check.svg" width="16" height="16" alt=""></span>
+            <span class="report-line"><img src="../static/icon-check.svg" width="16" height="16" alt=""></span>
+          </div>
+          <div class="report-slot"></div>
         </div>
+        <p class="get-desc">If there is anything else, you’ll get a plain-English list of your exposure, ranked by what actually matters.</p>
       </div>
     </div>
   </section>

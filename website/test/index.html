@@ -121,28 +121,30 @@
   .hero{position:relative;overflow:hidden;background:var(--surface);}
   .hero .section{padding-top:120px;padding-bottom:128px;}
   .hero-backdrop{position:absolute;top:0;left:50%;margin-left:-1468px;pointer-events:none;}
-  /* copy on the left, clock on the right. On wide screens the clock reaches up to 80px past the
-     900px column (as in the design); the margin shrinks to 0 as the screen narrows */
+  /* copy on the left, clock on the right, down to 650px wide. On wide screens the clock reaches up to 80px
+     past the 900px column (as in the design); the margin shrinks to 0 as the screen narrows, and below
+     ~970px the clock itself shrinks (330px → 220px) so the copy keeps a readable width */
   .hero-grid{
-    position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr) 330px;
-    grid-template-areas:"copy clock" "cta clock";align-content:center;gap:24px 48px;
+    position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr) auto;
+    grid-template-areas:"eyebrow clock" "title clock" "lede clock" "cta clock";align-content:center;gap:24px 48px;
     margin-right:calc(-1 * clamp(0px, (100vw - 948px) / 2, 80px));
   }
-  .hero-copy{grid-area:copy;display:flex;flex-direction:column;gap:24px;}
-  .hero h1{font-weight:600;font-size:clamp(40px,6vw,70px);line-height:0.99;letter-spacing:-0.03em;}
+  .hero-eyebrow{grid-area:eyebrow;}
+  .hero-lede{grid-area:lede;}
+  .hero h1{grid-area:title;font-weight:600;font-size:clamp(40px,6vw,70px);line-height:0.99;letter-spacing:-0.03em;}
   .hero-cta{grid-area:cta;justify-self:start;}
-  .hero .clock{grid-area:clock;align-self:center;}
-  /* tablets and phones: the copy runs full width, then the button with a smaller clock right beside it */
-  @media (max-width:900px){
-    .hero .section{padding-top:64px;padding-bottom:72px;}
-    .hero-grid{grid-template-columns:auto minmax(0,1fr);grid-template-areas:"copy copy" "cta clock";align-items:center;margin-right:0;}
+  .hero .clock{grid-area:clock;align-self:center;width:clamp(220px,34vw,330px);}
+  @media (max-width:900px){.hero .section{padding-top:64px;padding-bottom:72px;}}
+  /* phones: the copy runs full width, then the button with a smaller clock right beside it */
+  @media (max-width:650px){
+    .hero-grid{grid-template-columns:auto minmax(0,1fr);grid-template-areas:"eyebrow eyebrow" "title title" "lede lede" "cta clock";align-items:center;margin-right:0;}
     .hero .clock{justify-self:start;width:min(clamp(150px,42vw,260px),100%);} /* never wider than the space beside the button */
   }
   @media (max-width:560px){.hero-grid{column-gap:24px;}}
   @media (max-width:480px){.hero h1 br{display:none;}} /* let the headline wrap on its own */
-  @media (max-width:340px){ /* very narrow screens (or zoomed-in text): the clock drops under the button, lined up with it */
-    .hero-grid{grid-template-columns:1fr;grid-template-areas:"copy" "cta" "clock";}
-    .hero .clock{width:min(220px,100%);} /* it has its own row now, so it can be a bit bigger */
+  @media (max-width:340px){ /* very narrow screens (or zoomed-in text): no room beside the button, so the clock moves up under the headline */
+    .hero-grid{grid-template-columns:1fr;grid-template-areas:"eyebrow" "title" "clock" "lede" "cta";}
+    .hero .clock{justify-self:center;width:min(220px,100%);} /* its own row, so it can be a bit bigger */
   }
 
   /* ---------- MISSION CLOCK ----------
@@ -338,11 +340,9 @@
     <img class="hero-backdrop" src="../static/glow-grid-bg.svg" width="2936" height="258" alt="" aria-hidden="true">
     <div class="section">
       <div class="hero-grid">
-        <div class="hero-copy">
-          <div class="eyebrow-label"><span class="status-dot"></span>24-hour security test</div>
-          <h1>Are you safe from <br>an adversarial AI?</h1>
-          <p class="lede">Attackers don’t open with something sophisticated. They walk the perimeter and test every door. They do it quietly, at scale, before you know they’re there. VEX runs that same sweep on you first.</p>
-        </div>
+        <div class="eyebrow-label hero-eyebrow"><span class="status-dot"></span>24-hour security test</div>
+        <h1>Are you safe from <br>an adversarial AI?</h1>
+        <p class="lede hero-lede">Attackers don’t open with something sophisticated. They walk the perimeter and test every door. They do it quietly, at scale, before you know they’re there. VEX runs that same sweep on you first.</p>
         <a class="btn hero-cta" href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener">Schedule test</a>
         <div class="clock" aria-hidden="true">
           <div class="clock-cap"></div>

@@ -1,8 +1,8 @@
 class AttackMode {
   static TEST = {
-    title: 'Credential Phishing',
-    description: 'Launch a phishing campaign against the selected identity to measure detection and response.',
-    img: 'static/img/test/phish.png',
+    title: 'Impossible travel',
+    description: 'Launch an impossible travel test against any identity to measure detection and response.',
+    img: 'static/img/test/T1078.png',
   };
 
   constructor(state, reload) {

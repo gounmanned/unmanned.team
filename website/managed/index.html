@@ -5,11 +5,11 @@
 <script>document.documentElement.classList.replace('no-js','js');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VEX / MDR</title>
-<meta name="description" content="A complete managed security service: we prevent, detect, and respond to attacks. You don’t need a security team of your own.">
+<meta name="description" content="Complete managed security, backed by a US-based team, 24/7. You don’t need a security team of your own.">
 <link rel="apple-touch-icon" href="https://cdn.unmanned.team/img/logo.png">
 <link rel="icon" type="image/png" href="https://cdn.unmanned.team/img/logo.png">
 <meta property="og:title" content="VEX MDR — Unmanned, Inc." />
-<meta property="og:description" content="A complete managed security service: we prevent, detect, and respond to attacks. You don’t need a security team of your own." />
+<meta property="og:description" content="Complete managed security, backed by a US-based team, 24/7. You don’t need a security team of your own." />
 <meta property="og:url" content="https://unmanned.team/managed" />
 <meta property="og:type" content="website" />
 <link rel="stylesheet" href="https://cdn.unmanned.team/css/global.css">
@@ -280,9 +280,10 @@
   /* ---------- THE VEX DIFFERENCE: FOUR CARDS ----------
      Desktop: a 2×2 grid. Phones: the same four cards become a swipe carousel that bleeds off the right
      edge (the next card peeks in), snaps card by card, and has tabs above it to jump to each card. */
-  .diff{display:flex;flex-direction:column;gap:32px;}
-  .diff h2{font-weight:400;line-height:1.15;letter-spacing:-0.02em;color:var(--card-ink);}
-  .diff h2 strong{font-weight:600;color:var(--pink);}
+  .diff{display:flex;flex-direction:column;gap:40px;}
+  .diff .included{margin-top:-16px;} /* 24px under the cards */
+  .diff h2{font-weight:400;font-size:clamp(34px,3.55vw,44px);line-height:1.15;letter-spacing:-0.02em;color:var(--card-ink);}
+  .diff h2 strong{font-weight:600;}
   .feature-tabs{display:none;}
   .feature-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;}
   .feature-card{
@@ -290,7 +291,7 @@
     border:1px solid var(--db-mid);border-radius:2px;box-shadow:4px 4px 2px rgba(0,0,0,0.15);
   }
   .feature-kind{font-size:11px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;color:var(--surface-dark);}
-  .feature-card h3{font-weight:400;font-size:clamp(34px * 34 / 52, 4.2vw * 34 / 52, 34px);line-height:1.1;letter-spacing:-0.02em;color:var(--card-ink);} /* stays 34/52 of the section headline as both shrink */
+  .feature-card h3{font-weight:400;font-size:clamp(34px * 32 / 44, 3.55vw * 32 / 44, 32px);line-height:1.1;letter-spacing:-0.02em;color:var(--card-ink);} /* stays 32/44 of the section headline as both shrink */
   .feature-card h3 em{font-style:normal;font-weight:500;color:var(--pink);}
   .feature-head{display:flex;align-items:center;gap:16px;}
   .feature-head h3{flex:1;}
@@ -385,6 +386,7 @@
   /* phones: the swipe carousel */
   @media (max-width:767px){
     .diff{gap:24px;}
+    .diff .included{margin-top:8px;} /* 24px under the cards (the scroller gives up 8px to the card shadows) */
     .feature-tabs{
       display:flex;margin:0 calc(-1 * var(--gutter));padding:0 var(--gutter);overflow-x:auto;scrollbar-width:none;
     }
@@ -570,7 +572,7 @@
             <div class="status-row"><div><p class="status-name">Respond</p><p>Threats contained, no incidents</p></div><span class="status-light"></span></div>
           </div>
         </div>
-        <p class="lede">A complete managed security service: we prevent, detect, and respond to attacks. You don’t need a security team of your own.</p>
+        <p class="lede">Complete managed security, backed by a US-based team, 24/7. You don’t need a security team of your own.</p>
         <a class="btn" href="mailto:go@unmanned.team?subject=VEX%20MDR">Talk to us</a>
       </div>
     </div>

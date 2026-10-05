@@ -57,11 +57,9 @@ class TenantScreen {
     }
 
     async open(signal) {
-        await SiteSpinner.withLoading(async () => {
-            Workspace.sidebars.signal.reset();
-            Workspace.sidebars.signal.inject(signal, await this.api.signals.get(signal.id));
-            document.getElementById('signal-sidebar').show();
-        });
+        Workspace.sidebars.signal.reset();
+        document.getElementById('signal-sidebar').show();
+        Workspace.sidebars.signal.inject(signal, await this.api.signals.get(signal.id));
     }
 
     scheduleTrend() {

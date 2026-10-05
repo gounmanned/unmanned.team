@@ -26,6 +26,7 @@ class TenantScreen {
             this.renderSpotlight();
             this.renderTrend();
             this.count();
+            this.attack.reset();
         }).then(() => {
             this.notifications.refresh();
         });

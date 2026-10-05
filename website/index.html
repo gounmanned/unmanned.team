@@ -183,9 +183,10 @@
   .text-link:hover img{transform:translateY(3px);}
 
   /* ---------- HERO: THE QUESTION ---------- */
-  /* On tall screens the hero stretches to fill the first screen (minus the class bar and header),
+  /* On landscape screens the hero stretches to fill the first screen (minus the class bar and header),
      leaving --hero-peek of the next section in view as a hint to scroll. It's a MINIMUM height,
-     so on shorter screens the hero keeps its natural height. --top-h is measured by the script at the bottom. */
+     so on shorter screens the hero keeps its natural height. On portrait screens (phones, upright tablets)
+     filling the screen would only add empty space, so the page just flows. --top-h is measured by the script at the bottom. */
   .hero{
     --hero-peek:24px;
     position:relative;overflow:hidden;background:var(--surface);padding:39px 0;
@@ -194,6 +195,7 @@
     min-height:calc(100svh - var(--classbar-h) - var(--top-h, 60px) - var(--hero-peek)); /* svh accounts for mobile browser bars */
   }
   .hero .section{width:100%;padding-top:52px;padding-bottom:56px;}
+  @media (orientation:portrait){.hero{min-height:0;}}
   .hero-backdrop{position:absolute;top:0;left:50%;margin-left:-1468px;pointer-events:none;}
   /* the two big ring sets share one center with the small rings inside the black card (behind the "1"),
      so they hang off the card's wrapper and stay lined up at any screen width */

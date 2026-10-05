@@ -5,47 +5,52 @@
 <script>document.documentElement.classList.replace('no-js','js');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VEX / Managed</title>
-<meta name="description" content="Vex is a managed, 24/7 offensive security SOC — finding, chaining, and closing attack paths before an attacker does.">
+<meta name="description" content="A complete managed security service: we prevent, detect, and respond to attacks. You don’t need a security team of your own.">
 <link rel="apple-touch-icon" href="https://cdn.unmanned.team/img/logo.png">
 <link rel="icon" type="image/png" href="https://cdn.unmanned.team/img/logo.png">
-<meta property="og:title" content="Managed Vex — Unmanned, Inc." />
-<meta property="og:description" content="Vex is a managed, 24/7 offensive security SOC — finding, chaining, and closing attack paths before an attacker does." />
+<meta property="og:title" content="Managed VEX — Unmanned, Inc." />
+<meta property="og:description" content="A complete managed security service: we prevent, detect, and respond to attacks. You don’t need a security team of your own." />
 <meta property="og:url" content="https://unmanned.team/managed" />
 <meta property="og:type" content="website" />
 <link rel="stylesheet" href="https://cdn.unmanned.team/css/global.css">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root{
     --ink:#0b0c0d;
+    --white:#fcfcfa;
     --pink:#e01280;
+    --pink-text:#d1107a;     /* pink for TEXT on light backgrounds (passes 4.5:1) */
     --gray-line:#dcdcd8;
     --gray-faint:#c4c4c4;
     --surface-dark:#6c6c70;
+    --surface-gray:#f7f7f7;
+    --body:#2b2b2b;
+    --body-soft:#4b4c52;
+    --card-ink:#17171c;      /* feature card headings */
+    --card-body:#52525c;     /* feature card text */
+    --nav-link:#6b7280;      /* header links (4.8:1 on white) */
+    --go:#15a871;            /* green status dots (not for text) */
+    --go-text:#0e7c52;       /* green behind or as small text (passes 4.5:1) */
+    --done:#138a4e;          /* "Done" / "Connected" labels */
     --db-ink:#f3f3f0;
     --db-mid:#8a8a8e;
-    --pink-text:#d1107a;     /* pink for TEXT on light backgrounds (passes 4.5:1) */
-    --nav-link:#6b7280;      /* header links (4.8:1 on white) */
     --classbar-h:26px;
+    --gutter:24px;           /* page side margins; 16px on phones */
+    --mono:'JetBrains Mono',ui-monospace,monospace;
   }
   *{box-sizing:border-box;}
-  html{overflow-x:hidden;scroll-behavior:smooth;scrollbar-gutter:stable;}
-  body{margin:0;padding-top:var(--classbar-h);background:var(--surface);color:var(--ink);-webkit-font-smoothing:antialiased;} /* room for the fixed class bar, so the header starts below it */
+  html{overflow-x:hidden;scroll-behavior:smooth;scroll-padding-top:40px;scrollbar-gutter:stable;}
+  body{margin:0;padding-top:var(--classbar-h);background:var(--surface);color:var(--ink);-webkit-font-smoothing:antialiased;}
+  h1,h2,h3,h4,p{margin:0;}
   .mono{letter-spacing:0.04em;}
   a{color:inherit;}
   ::selection{background:var(--pink);color:#fff;}
-  .wrap{width:min(1100px,calc(100% - 48px));margin:0 auto;}
+  a:focus-visible,button:focus-visible{outline:1.5px solid var(--pink);outline-offset:4px;}
+  .wrap{width:min(1100px,calc(100% - 2 * var(--gutter)));margin:0 auto;}
+  @media (max-width:700px){:root{--gutter:16px;}}
 
-  .grid-bg{
-    position:absolute;inset:0;z-index:0;
-    background-image:
-      linear-gradient(to right, rgba(11,12,13,0.045) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(11,12,13,0.045) 1px, transparent 1px);
-    background-size:44px 44px;
-    mask-image:radial-gradient(ellipse 70% 60% at 50% 35%, #000 40%, transparent 90%);
-    pointer-events:none;
-  }
-
+  /* ---------- STATUS DOT ---------- */
   .status-dot{
     width:8px;height:8px;border-radius:50%;background:var(--pink);
     box-shadow:0 0 0 0 rgba(224,18,128,0.5);animation:pulse 2.2s infinite;flex-shrink:0;display:inline-block;
@@ -55,14 +60,30 @@
     70%{box-shadow:0 0 0 8px rgba(224,18,128,0);}
     100%{box-shadow:0 0 0 0 rgba(224,18,128,0);}
   }
-  .eyebrow-label{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--surface-dark);display:flex;align-items:center;gap:11px;}
+  .eyebrow-label{font-size:11px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;color:var(--surface-dark);display:flex;align-items:center;gap:11px;}
   .dark-frame .eyebrow-label{color:var(--db-mid);}
 
+  /* ---------- ICONS ----------
+     One SVG per icon, drawn in the text color (currentColor) through a CSS mask,
+     so the same file works in any color and size. */
+  .icon{display:inline-block;flex-shrink:0;width:26px;height:26px;background:currentColor;-webkit-mask:var(--icon) center/contain no-repeat;mask:var(--icon) center/contain no-repeat;}
+  .i-laptop{--icon:url(../static/icon-laptop.svg);}
+  .i-users{--icon:url(../static/icon-users.svg);}
+  .i-globe{--icon:url(../static/icon-globe.svg);}
+  .i-envelope{--icon:url(../static/icon-envelope.svg);}
+  .i-robot{--icon:url(../static/icon-robot.svg);}
+  .i-shield{--icon:url(../static/icon-shield.svg);}
+  .i-headset{--icon:url(../static/icon-headset.svg);}
+  .i-detective{--icon:url(../static/icon-detective.svg);}
+  .i-building{--icon:url(../static/icon-building.svg);}
+  .i-check{--icon:url(../static/icon-check.svg);width:16px;height:16px;}
+
+  /* ---------- CORNER MARKS ---------- */
   .corner{position:absolute;width:var(--corner-size,28px);height:var(--corner-size,28px);border-color:var(--ink);opacity:0.55;}
-  .corner.tl{border-top:1.5px solid;border-left:1.5px solid;}
-  .corner.tr{border-top:1.5px solid;border-right:1.5px solid;}
-  .corner.bl{border-bottom:1.5px solid;border-left:1.5px solid;}
-  .corner.br{border-bottom:1.5px solid;border-right:1.5px solid;}
+  .corner.tl{border-top:1px solid;border-left:1px solid;}
+  .corner.tr{border-top:1px solid;border-right:1px solid;}
+  .corner.bl{border-bottom:1px solid;border-left:1px solid;}
+  .corner.br{border-bottom:1px solid;border-right:1px solid;}
 
   /* ---------- HUD CORNERS ----------
      Four corner marks fixed to the screen. The top two sit just under the header and
@@ -86,31 +107,20 @@
   .hud-frame.is-tracking .corner{top:0;bottom:auto;transition:border-color 0.3s ease, opacity 0.3s ease;will-change:transform;}
   .hud-frame.on-dark .corner{border-color:var(--pink);opacity:1;} /* framing a dark section (the Get started CTA): brand pink */
 
-  .scan-sweep{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:1;}
-  .scan-sweep::after{
-    content:'';position:absolute;left:0;right:0;height:120px;top:-120px;
-    background:linear-gradient(to bottom, rgba(224,18,128,0) 0%, rgba(224,18,128,0.07) 50%, rgba(224,18,128,0) 100%);
-    animation:sweep 2.4s cubic-bezier(0.4,0,0.2,1) 1;
-  }
-  @keyframes sweep{0%{top:-120px;}100%{top:100%;}}
-
+  /* ---------- CLASSIFICATION BAR ---------- */
   .classbar{
     position:fixed;top:0;left:0;right:0;z-index:60;background:var(--ink);color:var(--gray-faint);
-    font-size:9.5px;letter-spacing:0.16em;
-    text-transform:uppercase;text-align:center;padding:6px 0;
-  }
-  @media (max-width:700px){
-    :root{--classbar-h:24px;} /* the top bar is shorter on phones (smaller text) */
-    .classbar{font-size:8px;}
+    font-size:9.5px;line-height:1.5;letter-spacing:0.16em;text-transform:uppercase;text-align:center;padding:6px 0;
   }
 
   /* ---------- STICKY HEADER ---------- */
+  .site-top{position:sticky;top:var(--classbar-h);z-index:50;}
   .site-header{background:var(--surface);border-bottom:1px solid var(--gray-line);}
-  header.site-header{position:sticky;top:var(--classbar-h);z-index:30;box-shadow:0 4px 8px -4px rgba(11,12,13,0.1);} /* very slight shadow, bottom edge only */
+  .site-top .site-header{box-shadow:0 4px 8px -4px rgba(11,12,13,0.1);} /* very slight shadow, bottom edge only (the negative spread hides it on the sides) */
   .header-inner{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:18px 0;}
   .header-left{display:flex;align-items:center;gap:16px;min-width:0;}
   .brand{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:800;line-height:1.5;letter-spacing:0.01em;text-decoration:none;color:var(--ink);}
-  .brand .status-dot{width:8px;height:8px;animation-iteration-count:2;} /* header logo dot ripples twice, then rests */
+  .brand .status-dot{animation-iteration-count:2;} /* header logo dot ripples twice, then rests */
   .brand-tag{font-size:11px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;color:var(--surface-dark);white-space:nowrap;}
   .menu-btn{flex-shrink:0;width:32px;height:32px;padding:0;border:none;background:none;cursor:pointer;display:flex;}
   .menu-btn img{width:32px;height:32px;display:block;}
@@ -123,12 +133,20 @@
   .header-link--cta{border-bottom:1px solid var(--pink);}
   .header-link--cta img{width:16px;height:16px;transition:transform 0.2s ease;}
   .header-link--cta:hover img{transform:translateX(3px);}
-  header.site-header .menu-btn{display:none;}
+  .site-top .menu-btn{display:none;}
   @media (max-width:700px){
     .header-links{display:none;}
-    header.site-header .menu-btn{display:flex;}
+    .site-top .menu-btn{display:flex;}
   }
-  @media (max-width:560px){.brand-tag{display:none;}}
+
+  /* ---------- HIDE ON SCROLL ----------
+     Scrolling down slides the class bar and header up out of view; scrolling up brings them back.
+     The script at the bottom toggles html.header-hidden. */
+  .classbar{transition:transform 0.4s cubic-bezier(0.49,0.025,0.685,1), opacity 0.4s cubic-bezier(0.49,0.025,0.685,1);}
+  .site-top .site-header{position:relative;z-index:1;transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);}
+  html.header-hidden .classbar{transform:translateY(-100%);opacity:0;}
+  html.header-hidden .site-top .site-header{transform:translateY(calc(-100% - var(--classbar-h)));}
+  html.header-hidden .site-top{pointer-events:none;} /* the hidden header's empty box stays put; let taps reach what's under it */
 
   /* ---------- NAV MENU (opened by the menu button) ---------- */
   /* slides down from under the class bar; visibility keeps closed links out of the tab order */
@@ -147,162 +165,310 @@
   .nav-sub{font-size:13.5px;line-height:1.5;color:var(--surface-dark);}
   .nav-list a:hover .nav-link{color:var(--pink-text);}
 
-  @media (max-width:700px){.nav-link{font-size:20px;}}
-
-  /* ---------- HIDE ON SCROLL ----------
-     Scrolling down slides the class bar and header up out of view; scrolling up brings them back.
-     Each piece has its own timing so they move together but slightly independently.
-     The script at the bottom toggles html.header-hidden. */
-  .classbar{transition:transform 0.4s cubic-bezier(0.49,0.025,0.685,1), opacity 0.4s cubic-bezier(0.49,0.025,0.685,1);}
-  header.site-header{transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);}
-  html.header-hidden .classbar{transform:translateY(-100%);opacity:0;}
-  html.header-hidden header.site-header{transform:translateY(calc(-100% - var(--classbar-h)));}
-
-  /* ---------- HERO ---------- */
-  .hero{
-    position:relative;overflow:hidden;display:flex;align-items:center;
-    /* subtract the sticky header + fixed classbar, both of which sit
-       above the hero but outside its own box, so centering lines up
-       with the actual visible viewport instead of just the hero's box */
-    min-height:calc(100vh - var(--top-h, 61px) - var(--classbar-h));
-    min-height:calc(100dvh - var(--top-h, 61px) - var(--classbar-h)); /* accounts for mobile browser chrome */
-    padding:70px 0;
+  @media (max-width:700px){
+    :root{--classbar-h:24px;} /* the top bar is shorter on phones (smaller text) */
+    .classbar{font-size:8px;}
+    .nav-link{font-size:20px;}
   }
-  .hero-bg{
-    position:absolute;top:0;bottom:0;right:-8%;width:64%;min-width:520px;z-index:1;pointer-events:none;
-    opacity:0.65;
-    mask-image:radial-gradient(ellipse 66% 78% at 62% 50%, #000 45%, transparent 95%);
-    -webkit-mask-image:radial-gradient(ellipse 66% 78% at 62% 50%, #000 45%, transparent 95%);
-  }
-  .hero-bg img{width:100%;height:100%;object-fit:cover;display:block;}
-  .hero-inner{position:relative;z-index:2;max-width:580px;}
-  .hero-eyebrow{margin-bottom:22px;}
-  .hero h1{
-    margin:0;font-weight:600;
-    font-size:clamp(40px,6vw,70px);line-height:0.99;letter-spacing:-0.03em;
-  }
-  .hero h1 span{color:var(--pink);}
-  .hero-copy{max-width:500px;margin:26px 0 0;color:#4b4c52;font-size:16.5px;line-height:1.7;}
-  @media (max-width:900px){.hero-bg{display:none;}}
+  @media (max-width:560px){.brand-tag{display:none;}}
 
+  /* ---------- DIVIDER ---------- */
   .divider{
-    position:relative;border-top:1px solid var(--gray-line);display:flex;justify-content:space-between;
-    padding:14px 56px;font-size:10px;color:var(--surface-dark);
+    position:relative;border-top:1px solid var(--gray-line);display:flex;justify-content:space-between;gap:16px;
+    padding:14px 56px;font-size:10px;line-height:1.5;color:var(--surface-dark);
   }
-  @media (max-width:700px){.divider{padding:14px 20px;}}
+  @media (max-width:700px){.divider{padding:14px var(--gutter);}}
 
-  /* ---------- SECTION SHELL ---------- */
-  .section{position:relative;padding:96px 0 116px;}
-  @media (max-width:820px){.section{padding:64px 0 80px;}}
-  .section h2{
-    margin:0 0 16px;font-weight:500;
-    font-size:clamp(30px,3.8vw,46px);letter-spacing:-0.01em;line-height:1.14;
-  }
-  .section p.lede{font-size:16px;line-height:1.8;color:#2b2b2b;max-width:680px;}
-  .section p.lede + p.lede{margin-top:16px;}
+  /* ---------- SECTION SHELLS ---------- */
+  .band{position:relative;background:var(--surface);}
+  .band--gray{background:var(--surface-gray);}
+  /* 900px column with a 24px left gutter, matching the design grid (content starts at x=294 on a 1440 screen) */
+  .section{position:relative;max-width:900px;margin:0 auto;padding:52px 0 96px var(--gutter);}
+  @media (max-width:948px){.section{padding-right:var(--gutter);}}
+  .section-head{display:flex;flex-direction:column;gap:16px;}
+  .section h2{font-weight:500;font-size:clamp(34px,4.2vw,52px);line-height:1.14;letter-spacing:-0.01em;}
+  .lede{font-size:16px;line-height:1.75;color:var(--body);max-width:680px;}
+  @media (max-width:820px){.section{padding-top:44px;padding-bottom:72px;}}
 
-  /* ---------- WHY VEX ---------- */
-  .why-section{border-bottom:1px solid var(--gray-line);}
-  .why-grid{margin-top:0;display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:start;}
-  @media (max-width:900px){.why-grid{grid-template-columns:1fr;gap:44px;}}
-
-  .why-copy h2{
-    margin:0 0 20px;font-weight:500;
-    font-size:clamp(30px,3.6vw,44px);letter-spacing:-0.01em;line-height:1.12;
-  }
-  .why-copy p{font-size:16px;line-height:1.75;color:#2b2b2b;max-width:460px;margin:0;}
-  .why-copy p + p{margin-top:14px;}
-
-  .intrusion-panel{position:relative;border:1px solid var(--gray-line);background:#fbfbf9;padding:22px 22px 20px;}
-  .intrusion-panel .corner{width:14px;height:14px;opacity:0.4;}
-  .intrusion-panel .corner.tl{top:-1px;left:-1px;}
-  .intrusion-panel .corner.tr{top:-1px;right:-1px;}
-  .intrusion-panel .corner.bl{bottom:-1px;left:-1px;}
-  .intrusion-panel .corner.br{bottom:-1px;right:-1px;}
-  .intrusion-head{font-size:10px;color:var(--surface-dark);margin-bottom:14px;}
-  .intrusion-svg{width:100%;height:auto;display:block;}
-  .node-normal{fill:var(--gray-line);}
-  .node-flag{fill:var(--pink);}
-  .node-ring{fill:none;stroke:var(--pink);stroke-width:1;opacity:0.55;}
-  .node-ring.pulse{animation:ringGlow 3s ease-in-out infinite;}
-  .intrusion-tag{font-size:10px;fill:var(--pink);letter-spacing:0.04em;}
-  .intrusion-lead{stroke:var(--pink);stroke-width:1;opacity:0.55;}
-
-  /* ---------- STAT CALLOUTS ---------- */
-  .stat-row{margin-top:56px;display:flex;border-top:1px solid var(--gray-line);border-bottom:1px solid var(--gray-line);}
-  .stat-card{flex:1;padding:32px 30px;}
-  .stat-card + .stat-card{border-left:1px solid var(--gray-line);}
-  .stat-num{display:block;font-size:36px;color:var(--pink);margin-bottom:14px;letter-spacing:-0.01em;}
-  .stat-card h3{margin:0 0 8px;font-weight:600;font-size:17px;}
-  .stat-card p{margin:0;font-size:13.5px;line-height:1.6;color:var(--surface-dark);}
-  @media (max-width:760px){
-    .stat-row{flex-direction:column;}
-    .stat-card + .stat-card{border-left:none;border-top:1px solid var(--gray-line);}
-  }
-
-  /* ---------- STEPS (JOURNEY) ---------- */
-  .steps-list{margin-top:56px;counter-reset:step;}
-  .step{
-    position:relative;display:grid;grid-template-columns:88px minmax(0,1fr) minmax(0,340px);
-    gap:36px;align-items:start;padding:44px 0;border-top:1px solid var(--gray-line);
-    counter-increment:step;
-  }
-  .steps-list .step:last-child{border-bottom:1px solid var(--gray-line);}
-  .step-index{font-size:13px;color:var(--pink);padding-top:2px;}
-  .step-index::before{content:counter(step, decimal-leading-zero);}
-  .step-body h3{
-    margin:0 0 10px;font-weight:600;
-    font-size:20px;letter-spacing:-0.01em;
-  }
-  .step-body p{margin:0;font-size:14.5px;line-height:1.75;color:#3a3a3d;max-width:480px;}
-  .step-body p + p{margin-top:12px;}
-
-  .step-media{
-    position:relative;border:1px solid var(--gray-line);background:#fbfbf9;
-    aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;padding:30px;
-  }
-  .step-media .corner{width:12px;height:12px;opacity:0.4;}
-  .step-media .corner.tl{top:-1px;left:-1px;}
-  .step-media .corner.tr{top:-1px;right:-1px;}
-  .step-media .corner.bl{bottom:-1px;left:-1px;}
-  .step-media .corner.br{bottom:-1px;right:-1px;}
-  .step-icon{width:100%;height:100%;max-width:180px;max-height:180px;}
-
-  @media (max-width:900px){
-    .step{grid-template-columns:56px 1fr;}
-    .step-media{grid-column:1 / -1;max-width:420px;}
-  }
-  @media (max-width:560px){
-    .step{grid-template-columns:1fr;gap:16px;padding:32px 0;}
-    .step-index{padding-top:0;}
-    .step-media{max-width:none;}
-  }
-
-  /* ---------- CONTACT ---------- */
-  .contact-section{padding:150px 0 160px;text-align:center;position:relative;overflow:hidden;background:#0b0c0d;color:var(--db-ink);}
-  .contact-section .body-wrap{position:relative;z-index:2;}
-  .contact-section .eyebrow-row{justify-content:center;margin-bottom:36px;}
-  .radar-echo{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:min(760px,140vw);height:min(760px,140vw);opacity:0.5;z-index:1;pointer-events:none;}
-  .radar-echo svg{width:100%;height:100%;}
-  .radar-ring{fill:none;stroke:var(--gray-line);stroke-width:1;stroke-opacity:0.45;animation:ringGlow 7.5s ease-in-out infinite;}
-  .radar-ring.r2{animation-delay:-2.5s;}
-  .radar-ring.r3{animation-delay:-5s;}
-  @keyframes ringGlow{
-    0%,100%{stroke:var(--gray-line);stroke-opacity:0.4;stroke-width:1;filter:none;}
-    50%{stroke:rgba(224,18,128,0.5);stroke-opacity:0.75;stroke-width:1.15;filter:drop-shadow(0 0 4px rgba(224,18,128,0.28));}
-  }
-  .contact-statement{
-    font-weight:600;font-size:clamp(30px,6vw,58px);
-    letter-spacing:-0.03em;line-height:1.06;margin:0 0 44px;color:var(--db-ink);
-  }
-  .contact-statement span{color:var(--pink);}
   .btn{
     display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:600;font-size:15px;line-height:1.5;
     padding:15px 30px;text-decoration:none;background:var(--pink);color:#fff;border:none;cursor:pointer;white-space:nowrap;transition:opacity 0.2s ease;
   }
   .btn:hover{opacity:0.8;}
-  a:focus-visible{outline:1.5px solid var(--pink);outline-offset:4px;}
-  @media (max-width:700px){.contact-section{padding:110px 0 120px;}}
+
+  /* ---------- HERO ----------
+     On landscape screens the hero fills the first screen (minus the class bar and header), leaving --hero-peek
+     of the next section in view. It's a MINIMUM height, so shorter screens keep the natural height.
+     On portrait screens (phones, upright tablets) it just takes its natural height.
+     Copy on the left, the status card on the right, down to 701px (where the menu button takes over);
+     the card and the gap narrow a little below ~1000px. Phones: the copy reads as one block, then the
+     card and its animation below the button (same HTML, grid order). */
+  .hero{
+    --hero-peek:24px;
+    position:relative;overflow:hidden;background:var(--surface);
+    display:flex;flex-direction:column;justify-content:center;
+    min-height:calc(100vh - var(--classbar-h) - var(--top-h, 60px) - var(--hero-peek));
+    min-height:calc(100svh - var(--classbar-h) - var(--top-h, 60px) - var(--hero-peek)); /* svh accounts for mobile browser bars */
+  }
+  .hero .section{width:100%;padding-top:96px;padding-bottom:96px;}
+  @media (orientation:portrait){.hero{min-height:0;}}
+  .hero-backdrop{position:absolute;top:0;left:50%;margin-left:-1468px;pointer-events:none;}
+  .hero-grid{
+    position:relative;display:grid;grid-template-columns:minmax(0,439px) clamp(280px,36vw,360px);
+    grid-template-areas:"eyebrow card" "title card" "lede card" "cta card";align-content:center;gap:24px clamp(32px,4.8vw,48px);
+  }
+  .hero .eyebrow-label{grid-area:eyebrow;}
+  .hero h1{grid-area:title;font-weight:600;font-size:clamp(40px,6vw,70px);line-height:0.99;letter-spacing:-0.03em;}
+  .hero .lede{grid-area:lede;}
+  .hero .btn{grid-area:cta;justify-self:start;}
+  .hero-card-wrap{grid-area:card;align-self:center;position:relative;}
+  .hero-grid > :not(.hero-card-wrap){position:relative;z-index:2;} /* the copy stays above the animation's dots */
+  @media (max-width:700px){
+    .hero .section{padding-top:44px;padding-bottom:72px;}
+    .hero-grid{grid-template-columns:minmax(0,1fr);grid-template-areas:"eyebrow" "title" "lede" "cta" "card";}
+    .hero h1{margin-top:-8px;} /* 16px under the eyebrow */
+    .hero-card-wrap{justify-self:center;width:100%;max-width:424px;padding:24px 32px;margin-top:-12px;} /* 36px under the button; the padding stays even so the animation stays centered on the card */
+  }
+
+  /* status card */
+  .status-card{position:relative;z-index:1;background:#fff;border:1px solid var(--surface-dark);border-radius:2px;box-shadow:4px 4px 2px rgba(0,0,0,0.15);}
+  .status-card[role="button"]{cursor:pointer;} /* the script makes the card replay its animation when clicked */
+  .status-card:focus-visible{outline:1.5px solid var(--pink);outline-offset:4px;}
+  .status-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px;background:var(--body-soft);border-bottom:1px solid var(--gray-line);}
+  .status-head p{font-weight:600;font-size:17px;line-height:1.5;color:#fff;}
+  .status-pill{padding:4px 10px;border-radius:99px;background:var(--go-text);font-size:11px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;color:#fff;}
+  .status-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px;border-bottom:1px solid var(--gray-line);transition:background-color 0.4s ease;}
+  .status-row > div{transition:opacity 0.4s ease;}
+  .status-row .status-name{font-weight:600;font-size:17px;line-height:1.5;color:var(--pink-text);}
+  .status-row p{font-size:13.5px;line-height:1.5;color:var(--body-soft);}
+  .status-light{flex-shrink:0;width:10px;height:10px;border-radius:50%;background:var(--go);transition:background-color 0.3s ease, transform 0.3s ease;}
+  /* while the animation runs, each row is muted (gray light) until its step, highlighted while the step runs
+     (pink light), then back to full with a green light. Without the animation every row shows as done. */
+  .status-row.is-muted > div{opacity:0.4;}
+  .status-row.is-muted .status-light{background:var(--gray-faint);transform:scale(0.8);}
+  .status-row.is-active{background:rgba(224,18,128,0.06);}
+  .status-row.is-active .status-light{background:var(--pink);}
+  @media (max-width:900px){
+    .status-head{padding:8px 16px;}
+    .status-head p{font-size:16px;}
+    .status-row{padding:8px 16px;}
+    .status-row .status-name{font-size:16px;}
+    .status-row p{font-size:12px;}
+  }
+
+  /* ---------- HERO ANIMATION ----------
+     Rings around the status card, plus the moving pieces the script adds, one step per card row:
+     prevent (pink dots fly in and bounce off the card), detect (a radar sweep finds dots around it) and
+     respond (those dots turn green). Everything is placed from the card's center, so it fits the card at
+     any size; --fx-k scales the distances (smaller on tablets and phones). */
+  .hero-fx{--fx-k:1;position:absolute;left:50%;top:50%;width:0;height:0;pointer-events:none;}
+  .hero-ring{position:absolute;border-radius:50%;border:2px solid var(--pink);transform:translate(-50%,-50%);}
+  .hero-ring:nth-child(1){width:calc(398px * var(--fx-k));height:calc(398px * var(--fx-k));opacity:0.06;}
+  .hero-ring:nth-child(2){width:calc(578px * var(--fx-k));height:calc(578px * var(--fx-k));opacity:0.045;}
+  .hero-ring:nth-child(3){width:calc(762px * var(--fx-k));height:calc(762px * var(--fx-k));opacity:0.03;}
+  .fx-sweep{
+    position:absolute;width:calc(762px * var(--fx-k));height:calc(762px * var(--fx-k));left:calc(-381px * var(--fx-k));top:calc(-381px * var(--fx-k));
+    border-radius:50%;opacity:0;background:conic-gradient(from -50deg, rgba(224,18,128,0) 0deg, rgba(224,18,128,0.2) 50deg, rgba(224,18,128,0) 50.5deg);
+  }
+  .fx-dot{position:absolute;left:-5px;top:-5px;width:10px;height:10px;border-radius:50%;background:var(--pink);opacity:0;}
+  .fx-dot.is-green{background:var(--go);}
+  .fx-ring{position:absolute;left:-12px;top:-12px;width:24px;height:24px;border-radius:50%;border:1.5px solid var(--pink);opacity:0;}
+  .fx-ring.is-green{left:-14px;top:-14px;width:28px;height:28px;border-color:var(--go);}
+  @media (max-width:900px){.hero-fx{--fx-k:0.8;}}
+  @media (max-width:700px){.hero-fx{--fx-k:0.55;}}
+
+  /* ---------- THE VEX DIFFERENCE: FOUR CARDS ----------
+     Desktop: a 2×2 grid. Phones: the same four cards become a swipe carousel that bleeds off the right
+     edge (the next card peeks in), snaps card by card, and has tabs above it to jump to each card. */
+  .diff{display:flex;flex-direction:column;gap:32px;}
+  .diff h2{font-weight:400;line-height:1.15;letter-spacing:-0.02em;color:var(--card-ink);}
+  .diff h2 strong{font-weight:600;color:var(--pink);}
+  .feature-tabs{display:none;}
+  .feature-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;}
+  .feature-card{
+    display:flex;flex-direction:column;gap:16px;min-width:0;padding:24px;background:#fff;
+    border:1px solid var(--db-mid);border-radius:2px;box-shadow:4px 4px 2px rgba(0,0,0,0.15);
+  }
+  .feature-kind{font-size:11px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;color:var(--surface-dark);}
+  .feature-card h3{font-weight:400;font-size:clamp(34px * 34 / 52, 4.2vw * 34 / 52, 34px);line-height:1.1;letter-spacing:-0.02em;color:var(--card-ink);} /* stays 34/52 of the section headline as both shrink */
+  .feature-card h3 em{font-style:normal;font-weight:500;color:var(--pink);}
+  .feature-head{display:flex;align-items:center;gap:16px;}
+  .feature-head h3{flex:1;}
+  .feature-head img{flex-shrink:0;width:40px;height:40px;}
+  .feature-desc{font-size:16px;line-height:1.5;color:var(--card-body);}
+  .feature-desc b{font-weight:700;}
+  /* the illustration box: a faint dot grid that fades out toward the edges */
+  .visual{
+    position:relative;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:24px;background:var(--white);border:1px solid var(--gray-line);border-radius:2px;overflow:hidden;
+  }
+  .visual::before{
+    content:'';position:absolute;inset:0;pointer-events:none;
+    background:radial-gradient(circle, rgba(196,196,196,0.7) 0.8px, transparent 1.2px) 0 0/10.2px 10.2px;
+    -webkit-mask:radial-gradient(ellipse at center, #000 35%, transparent 90%);mask:radial-gradient(ellipse at center, #000 35%, transparent 90%);
+  }
+  .visual > *{position:relative;}
+
+  /* 01: tiles */
+  .tiles{display:grid;grid-template-columns:repeat(4,auto);gap:10px;}
+  .tile{display:flex;padding:16px;background:#fff;border:1px solid var(--gray-faint);border-radius:8px;color:var(--ink);}
+  /* 02: done list */
+  .done-list{width:100%;display:flex;flex-direction:column;gap:8px;list-style:none;margin:0;padding:0;}
+  .done-list li{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#fff;border:1px solid var(--gray-faint);border-radius:8px;}
+  .done-check{flex-shrink:0;display:flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:var(--done);color:#fff;}
+  .done-check .icon{width:12px;height:12px;}
+  .done-list s{flex:1;min-width:0;font-size:14px;color:#6b6b78;}
+  .done-list span:last-child{font-weight:600;font-size:12px;color:var(--done);}
+  /* 03: attack diagram (drawn at 144px; --d scales it) and the attack readout */
+  .attack{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:16px 32px;}
+  .attack-map{--d:1px;position:relative;flex-shrink:0;width:calc(144 * var(--d));height:calc(144 * var(--d));}
+  .attack-map span{position:absolute;width:calc(16 * var(--d));height:calc(16 * var(--d));border-radius:50%;background:rgba(47,95,150,0.3);}
+  .attack-map .n{left:calc(64 * var(--d));top:0;}
+  .attack-map .s{left:calc(64 * var(--d));top:calc(128 * var(--d));}
+  .attack-map .e{left:calc(128 * var(--d));top:calc(64 * var(--d));}
+  .attack-map .w{left:0;top:calc(64 * var(--d));}
+  .attack-map .nw{left:calc(18.74 * var(--d));top:calc(18.74 * var(--d));}
+  .attack-map .sw{left:calc(18.74 * var(--d));top:calc(109.25 * var(--d));}
+  .attack-map .se{left:calc(109.25 * var(--d));top:calc(109.25 * var(--d));}
+  .attack-map .hit{left:calc(109.25 * var(--d));top:calc(18.74 * var(--d));background:var(--pink);}
+  .attack-map .hit::after{content:'';position:absolute;inset:calc(-4.38 * var(--d));border-radius:50%;border:1px solid rgba(224,18,128,0.45);}
+  .attack-map .target{
+    position:absolute;left:calc(40 * var(--d));top:calc(40 * var(--d));width:calc(64 * var(--d));height:calc(64 * var(--d));
+    display:flex;align-items:center;justify-content:center;background:#fff;border:1px solid var(--pink);border-radius:calc(8 * var(--d));color:#2f5f96;
+  }
+  .attack-map .target .icon{width:calc(38 * var(--d));height:calc(38 * var(--d));}
+  .attack-log{display:flex;flex-direction:column;gap:16px;font-family:var(--mono);line-height:1.75;}
+  .attack-log p{font-size:12px;color:var(--ink);}
+  .attack-log b{font-weight:700;}
+  .attack-time{font-weight:700;font-size:16px !important;color:var(--body-soft) !important;white-space:nowrap;}
+  .attack-caught{display:flex;align-items:center;gap:4px;font-weight:700;color:var(--body-soft) !important;}
+  .attack-caught .icon{color:#0d8f5f;}
+  /* when the box is narrow (the 2-column grid on tablets, the phone carousel), a smaller diagram and gap
+     keep the readout beside it; it only drops underneath on very narrow screens */
+  .visual{container-type:inline-size;}
+  @container (max-width:300px){
+    .attack{gap:16px 20px;}
+    .attack-map{--d:0.833px;}
+    .done-list li{gap:8px;padding:4px 8px;border-radius:4px;}
+    .done-check{width:18px;height:18px;}
+  }
+  /* 04: chat */
+  .chat{width:100%;display:flex;flex-direction:column;gap:10px;}
+  .msg{display:flex;align-items:flex-start;gap:10px;}
+  .avatar{
+    flex-shrink:0;display:flex;align-items:center;justify-content:center;width:36px;height:36px;border:1px solid var(--gray-faint);border-radius:8px;
+    font-weight:700;font-size:14px;color:#fff;
+  }
+  .avatar--vex{background:#fff;}
+  .avatar--vex::after{content:'';width:16px;height:16px;border-radius:50%;background:#e6007e;}
+  .avatar--j{background:#6b6e76;}
+  .avatar--c{background:var(--pink);}
+  .bubble{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px;padding:8px 12px;background:#fff;border:1px solid var(--gray-faint);border-radius:8px;}
+  .bubble-name{display:flex;flex-wrap:wrap;align-items:center;gap:2px 6px;font-size:12px;color:#868686;}
+  .bubble-name b{font-weight:700;font-size:14px;color:#1d1c1d;}
+  .badge{padding:1px 4px;border-radius:3px;background:#eee;font-weight:600;font-size:10px;color:#616061;}
+  .bubble p{font-size:13px;line-height:1.4;color:var(--card-body);}
+  .bubble p.is-alert{font-weight:700;}
+  /* between full desktop and the carousel the cards narrow; 11px keeps these lines from wrapping
+     (inside the box is 328px at full desktop, so anything narrower gets the smaller size) */
+  @container (max-width:327px){
+    .done-list s,.done-list span:last-child,.bubble-name,.bubble p{font-size:11px;}
+    .bubble-name b{font-size:12px;}
+  }
+
+  /* "boring stuff included" */
+  .included{display:flex;flex-wrap:wrap;align-items:center;gap:12px 16px;padding-top:24px;border-top:1px solid #e3e3e8;list-style:none;margin:0;padding-left:0;font-size:12px;color:var(--card-body);}
+  .included li:first-child{font-weight:600;color:var(--card-ink);}
+  .included li{display:flex;align-items:center;gap:4px;}
+  .included .icon{color:#e6007e;}
+
+  /* phones: the swipe carousel */
+  @media (max-width:767px){
+    .diff{gap:24px;}
+    .feature-tabs{
+      display:flex;margin:0 calc(-1 * var(--gutter));padding:0 var(--gutter);overflow-x:auto;scrollbar-width:none;
+    }
+    .feature-tabs::-webkit-scrollbar{display:none;}
+    .feature-tab{
+      flex-shrink:0;padding:4px 12px;border-bottom:1px solid var(--gray-line);
+      font-weight:500;font-size:14px;line-height:1.5;color:var(--body);text-decoration:none;white-space:nowrap;
+    }
+    .feature-tab.is-active{padding-bottom:3px;border-bottom:2px solid var(--pink);font-weight:600;color:var(--ink);}
+    /* full-bleed scroller: the first card lines up with the page gutter, the last one keeps a gutter of space after it,
+       and the bottom padding keeps the cards' shadows from being cut off */
+    .feature-cards{
+      display:flex;gap:16px;margin:0 calc(-1 * var(--gutter)) -8px;padding:0 var(--gutter) 8px;
+      overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding:0 var(--gutter);overscroll-behavior-x:contain;scrollbar-width:none;
+    }
+    .feature-cards::-webkit-scrollbar{display:none;}
+    .feature-card{flex:0 0 min(calc(100vw - 64px), 420px);scroll-snap-align:start;padding:16px;}
+    .feature-card h3{font-size:20px;}
+    .feature-desc{font-size:14px;}
+    .feature-desc .lead-in{display:none;} /* "Less to-do list. More done list." is desktop only */
+    .feature-head img{width:32px;height:32px;}
+    .visual{padding:12px;}
+    .tile{padding:8px;}
+    .done-list li{gap:8px;padding:4px 8px;border-radius:4px;}
+    .done-check{width:18px;height:18px;}
+    .done-list s,.done-list span:last-child{font-size:11px;}
+    .avatar{width:28px;height:28px;border-radius:4px;font-size:12px;}
+    .avatar--vex::after{width:12px;height:12px;}
+    .bubble{padding:4px 8px;border-radius:4px;}
+    .msg{gap:8px;}
+    .bubble-name{font-size:11px;}
+    .bubble-name b{font-size:12px;}
+    .bubble p{font-size:11px;}
+    /* one line each, so the cards stay short; on very narrow screens a long line ends in "…" */
+    .done-list s,.bubble p{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  }
+
+  /* ---------- EASY SETUP ---------- */
+  .setup{display:flex;flex-direction:column;gap:24px;}
+  .setup-steps{
+    display:grid;grid-template-columns:minmax(0,1fr) 1px minmax(0,1fr);gap:48px;padding:24px 16px;
+    background:var(--white);border:1px solid var(--gray-faint);border-radius:2px;filter:drop-shadow(4px 4px 1px rgba(0,0,0,0.15));
+  }
+  .setup-steps::before{content:'';grid-column:2;grid-row:1;background:var(--gray-line);} /* the divider between the steps */
+  .setup-step{display:flex;flex-direction:column;gap:16px;}
+  .setup-step:first-child{grid-column:1;}
+  .setup-step:last-child{grid-column:3;grid-row:1;}
+  .step-text{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 10px;}
+  .step-num{grid-row:span 2;padding-top:3px;font-weight:900;font-size:20px;letter-spacing:-0.01em;color:#0d8f5f;}
+  .step-text h3{font-weight:600;font-size:20px;line-height:1.5;letter-spacing:-0.01em;}
+  .step-text p{font-size:14.5px;line-height:1.75;color:var(--body);}
+  .step-art{padding-left:19px;}
+  .setup-step:first-child .step-art{flex:1;display:flex;align-items:flex-end;}
+  /* invitation email */
+  .email{display:flex;flex-direction:column;gap:10px;padding:16px;background:#fff;border:0.5px solid var(--db-mid);border-radius:4px;font-size:10px;}
+  .email-from{display:flex;align-items:center;gap:5px;}
+  .email-av{display:flex;padding:4px;border-radius:4px;background:#e6007e;font-weight:700;font-size:11px;line-height:1;color:#fff;}
+  .email-from b{display:block;font-weight:600;color:var(--db-mid);}
+  .email-from span{color:#6b6b78;}
+  .email-subject{font-weight:600;font-size:11px;color:var(--db-mid);}
+  .email-foot{display:flex;align-items:flex-start;gap:24px;}
+  .email-lines{display:flex;flex-direction:column;gap:6px;width:94px;}
+  .email-lines i{height:4px;border-radius:2px;background:var(--gray-line);}
+  .email-lines i:last-child{width:70px;}
+  .email-btn{padding:4px 8px;border-radius:3px;background:var(--surface-dark);font-weight:600;font-size:11px;color:#fff;}
+  /* connections */
+  .connections{display:flex;flex-direction:column;gap:6px;width:min(235px,100%);list-style:none;margin:0;padding:0;}
+  .connections li{display:flex;align-items:center;gap:12px;padding:4px 8px;background:#fff;border:0.5px solid var(--db-mid);border-radius:4px;font-weight:600;font-size:11px;color:var(--db-mid);}
+  .connections .icon{width:16px;height:16px;color:var(--card-body);}
+  .connections span{flex:1;min-width:0;}
+  .connections em{display:flex;align-items:center;gap:3px;font-style:normal;color:var(--done);}
+  .connections em .icon{width:12px;height:12px;color:var(--done);}
+  @media (max-width:767px){
+    .setup-steps{grid-template-columns:minmax(0,1fr);grid-template-rows:auto 1px auto;gap:24px;}
+    .setup-steps::before{grid-column:1;grid-row:2;}
+    .setup-step:last-child{grid-column:1;grid-row:3;}
+  }
+
+  /* ---------- CONTACT ---------- */
+  .dark-frame{background:var(--ink);color:var(--db-ink);}
+  .contact-section{position:relative;overflow:hidden;padding:96px var(--gutter);text-align:center;}
+  .contact-section .body-wrap{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:36px;}
+  .radar-echo{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:1;opacity:0.1;pointer-events:none;}
+  .contact-statement{font-weight:600;font-size:clamp(34px,6vw,58px);line-height:1.06;letter-spacing:-0.03em;color:var(--db-ink);}
 
   /* ---------- FOOTER ---------- */
   footer{
@@ -312,30 +478,28 @@
   footer a{text-decoration:none;}
   footer a:hover{color:var(--ink);}
   footer .fmark{color:var(--ink);font-weight:500;}
-  @media (max-width:700px){footer{padding:22px 20px 36px;flex-direction:column;gap:10px;text-align:center;}}
+  @media (max-width:700px){footer{padding:22px var(--gutter) 36px;flex-direction:column;gap:10px;text-align:center;}}
 
-  .js .reveal{opacity:0;transform:translateY(14px);transition:opacity 0.6s ease, transform 0.6s ease;}
-  .js .reveal.in-view{opacity:1;transform:translateY(0);}
+  /* ---------- SCROLL REVEAL ----------
+     .reveal        fades up one element as it scrolls into view
+     .reveal-group  fades up each child on its own; children that sit side by side come in one after another */
+  .js .reveal,.js .reveal-group > *{opacity:0;transform:translateY(18px);transition:opacity 0.6s ease, transform 0.6s ease;}
+  .js .reveal.in-view,.js .reveal-group > .in-view{opacity:1;transform:translateY(0);}
+  .reveal-group > :nth-child(2){transition-delay:0.1s;}
+  .reveal-group > :nth-child(3){transition-delay:0.2s;}
+  .reveal-group > :nth-child(4){transition-delay:0.3s;}
 
   @media (prefers-reduced-motion: reduce){
-    .status-dot,.radar-ring{animation:none;opacity:0.85;}
-    .scan-sweep::after{animation:none;display:none;}
-    .classbar,header.site-header,.hud-frame .corner,.nav-panel,.nav-panel.is-open{transition:none;}
-    .js .reveal{opacity:1 !important;transform:none !important;transition:none !important;}
+    html{scroll-behavior:auto;}
+    .status-dot{animation:none;}
+    .classbar,.site-top .site-header,.hud-frame .corner{transition:none;}
+    .nav-panel,.nav-panel.is-open{transition:none;}
+    .status-row,.status-light{transition:none;}
+    .js .reveal,.js .reveal-group > *{opacity:1 !important;transform:none !important;transition:none !important;}
   }
 </style>
 </head>
 <body>
-
-  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
-    <defs>
-      <g id="radar-rings">
-        <circle class="radar-ring r1" cx="400" cy="400" r="120"></circle>
-        <circle class="radar-ring r2" cx="400" cy="400" r="240"></circle>
-        <circle class="radar-ring r3" cx="400" cy="400" r="360"></circle>
-      </g>
-    </defs>
-  </svg>
 
   <div class="classbar">UNMANNED · SIMPLY SECURE</div>
 
@@ -346,19 +510,24 @@
     <span class="corner br"></span>
   </div>
 
-  <header class="site-header">
-    <div class="wrap header-inner">
-      <div class="header-left">
-        <a href="/" class="brand"><span class="status-dot"></span>VEX</a>
-        <span class="brand-tag">Don’t get hacked</span>
+  <!-- ============================================================
+       HEADER (sticky)
+       ============================================================ -->
+  <div class="site-top">
+    <header class="site-header">
+      <div class="wrap header-inner">
+        <div class="header-left">
+          <a href="/" class="brand"><span class="status-dot"></span>VEX</a>
+          <span class="brand-tag">Don’t get hacked</span>
+        </div>
+        <nav class="header-links" aria-label="Main">
+          <a class="header-link" href="/managed" aria-current="page">Managed VEX</a>
+          <a class="header-link header-link--cta" href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener">Schedule a chat <img src="../static/icon-arrow-right-pink.svg" width="16" height="16" alt=""></a>
+        </nav>
+        <button class="menu-btn" type="button" aria-label="Open menu" aria-controls="site-nav" aria-expanded="false"><img src="../static/icon-menu.svg" width="32" height="32" alt=""></button>
       </div>
-      <nav class="header-links" aria-label="Main">
-        <a class="header-link" href="/managed" aria-current="page">Managed Vex</a>
-        <a class="header-link header-link--cta" href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener">Schedule a chat <img src="../static/icon-arrow-right-pink.svg" width="16" height="16" alt=""></a>
-      </nav>
-      <button class="menu-btn" type="button" aria-label="Open menu" aria-controls="site-nav" aria-expanded="false"><img src="../static/icon-menu.svg" width="32" height="32" alt=""></button>
-    </div>
-  </header>
+    </header>
+  </div>
 
   <!-- ============================================================
        NAV MENU
@@ -373,7 +542,7 @@
     <nav class="wrap" aria-label="Menu">
       <ul class="nav-list">
         <li><a href="/"><span class="nav-link">Home</span><span class="nav-sub">Can your defense catch a single attack?</span></a></li>
-        <li><a href="/managed"><span class="nav-link">Managed VEX</span><span class="nav-sub">Continuous prevention, detection and response</span></a></li>
+        <li><a href="/managed" aria-current="page"><span class="nav-link">Managed VEX</span><span class="nav-sub">Continuous prevention, detection and response</span></a></li>
         <li><a href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener"><span class="nav-link">Schedule a chat</span></a></li>
       </ul>
     </nav>
@@ -382,226 +551,179 @@
   <main>
 
   <!-- ============================================================
-       HERO
+       HERO — SECURITY, HANDLED
        ============================================================ -->
   <section class="hero">
-    <div class="grid-bg" aria-hidden="true"></div>
-    <div class="hero-bg" aria-hidden="true"><img src="static/dashboard.png" alt=""></div>
-    <div class="wrap">
-      <div class="hero-inner">
-        <div class="hero-eyebrow eyebrow-label mono"><span class="status-dot"></span>Managed Vex</div>
-        <h1>The hacker<br>who <span>heals.</span></h1>
-        <p class="hero-copy">Vex isn't just an AI hacker finding a way in — it's a complete managed security service. We prevent, detect, and respond to any attack that comes your way, so you don't need a security team of your own.</p>
+    <img class="hero-backdrop" src="../static/glow-grid-bg.svg" width="2936" height="258" alt="" aria-hidden="true">
+    <div class="section">
+      <div class="hero-grid">
+        <div class="eyebrow-label"><span class="status-dot"></span>Managed VEX</div>
+        <h1>Security, handled.</h1>
+        <div class="hero-card-wrap">
+          <div class="hero-fx" aria-hidden="true">
+            <span class="hero-ring"></span><span class="hero-ring"></span><span class="hero-ring"></span>
+          </div>
+          <div class="status-card">
+            <div class="status-head"><p>Your business</p><span class="status-pill">Protected</span></div>
+            <div class="status-row"><div><p class="status-name">Prevent</p><p>Fix problems before they’re incidents</p></div><span class="status-light"></span></div>
+            <div class="status-row"><div><p class="status-name">Detect</p><p>Watched by trained US experts, 24/7</p></div><span class="status-light"></span></div>
+            <div class="status-row"><div><p class="status-name">Respond</p><p>Threats contained, no incidents</p></div><span class="status-light"></span></div>
+          </div>
+        </div>
+        <p class="lede">A complete managed security service: we prevent, detect, and respond to attacks. You don’t need a security team of your own.</p>
+        <a class="btn" href="mailto:go@unmanned.team?subject=Managed%20VEX">Talk to us</a>
       </div>
     </div>
   </section>
-
-  <div class="divider mono">
-    <span>REC · 00:00:00</span>
-    <span>THREAT MODEL LOADED</span>
-  </div>
 
   <!-- ============================================================
-       WHY VEX / POSITIONING
+       THE VEX DIFFERENCE
        ============================================================ -->
-  <section class="section why-section" id="why">
-    <div class="wrap">
-      <div class="section-label eyebrow-label mono"><span class="status-dot"></span>The difference</div>
-
-      <div class="why-grid reveal">
-        <div class="why-copy">
-          <h2>Vex notices when a hacker gets in.</h2>
-          <p>
-            Vex spends every day breaking into your business — testing accounts, endpoints, and apps the way a real attacker would. So when a second, uninvited hacker tries the same door, Vex is already there.
-          </p>
-          <p>
-            That's the difference between managed Vex and a typical security tool: we're responsible for the outcome, not just the software. Keeping attackers out and shutting them down fast — that's on us.
-          </p>
-        </div>
-
-        <div class="intrusion-panel">
-          <div class="corner tl"></div>
-          <div class="corner tr"></div>
-          <div class="corner bl"></div>
-          <div class="corner br"></div>
-          <div class="intrusion-head mono">LIVE ENVIRONMENT · 341 IDENTITIES MONITORED</div>
-
-          <svg class="intrusion-svg" viewBox="0 0 380 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Grid representing every identity in your environment, with one flagged as an unauthorized session Vex has detected.">
-            <circle class="node-normal" cx="24" cy="24" r="4"/><circle class="node-normal" cx="72" cy="24" r="4"/><circle class="node-normal" cx="120" cy="24" r="4"/><circle class="node-normal" cx="168" cy="24" r="4"/><circle class="node-normal" cx="216" cy="24" r="4"/><circle class="node-normal" cx="264" cy="24" r="4"/><circle class="node-normal" cx="312" cy="24" r="4"/>
-
-            <circle class="node-normal" cx="24" cy="72" r="4"/><circle class="node-normal" cx="72" cy="72" r="4"/><circle class="node-normal" cx="120" cy="72" r="4"/><circle class="node-normal" cx="168" cy="72" r="4"/><circle class="node-normal" cx="216" cy="72" r="4"/><circle class="node-normal" cx="264" cy="72" r="4"/><circle class="node-normal" cx="312" cy="72" r="4"/>
-
-            <circle class="node-normal" cx="24" cy="120" r="4"/><circle class="node-normal" cx="72" cy="120" r="4"/><circle class="node-normal" cx="120" cy="120" r="4"/><circle class="node-normal" cx="168" cy="120" r="4"/>
-            <circle class="node-ring pulse" cx="216" cy="120" r="14"/>
-            <circle class="node-flag" cx="216" cy="120" r="4.5"/>
-            <circle class="node-normal" cx="264" cy="120" r="4"/><circle class="node-normal" cx="312" cy="120" r="4"/>
-
-            <circle class="node-normal" cx="24" cy="168" r="4"/><circle class="node-normal" cx="72" cy="168" r="4"/><circle class="node-normal" cx="120" cy="168" r="4"/><circle class="node-normal" cx="168" cy="168" r="4"/><circle class="node-normal" cx="216" cy="168" r="4"/><circle class="node-normal" cx="264" cy="168" r="4"/><circle class="node-normal" cx="312" cy="168" r="4"/>
-
-            <line class="intrusion-lead" x1="228" y1="132" x2="246" y2="150"/>
-            <text class="intrusion-tag" x="250" y="145">UNAUTHORIZED</text>
-            <text class="intrusion-tag" x="250" y="158">SESSION FLAGGED</text>
-          </svg>
-        </div>
+  <section class="band band--gray">
+    <div class="divider mono">
+      <span>REC · 00:00:01</span>
+      <span>MEET VEX</span>
+    </div>
+    <div class="section diff">
+      <div class="section-head">
+        <div class="eyebrow-label"><span class="status-dot"></span>The VEX difference</div>
+        <h2>Most security tools hand you homework. <strong>VEX handles it.</strong></h2>
       </div>
-
-      <div class="stat-row reveal">
-        <div class="stat-card">
-          <span class="stat-num mono">++</span>
-          <h3>Prevent incidents</h3>
-          <p>Our analysts continuously tune your tech to stop attacks proactively.</p>
-        </div>
-        <div class="stat-card">
-          <span class="stat-num mono">24/7</span>
-          <h3>Detect evil</h3>
-          <p>Our human experts and AI SOC monitor your account, day and night.</p>
-        </div>
-        <div class="stat-card">
-          <span class="stat-num mono">&lt;1s</span>
-          <h3>Respond instantly</h3>
-          <p>Breached accounts are suspended by Vex, followed by human review.</p>
-        </div>
+      <nav class="feature-tabs" aria-label="The VEX difference">
+        <a class="feature-tab is-active" href="#see-more" aria-current="true">See more</a>
+        <a class="feature-tab" href="#fix-it">Fix it</a>
+        <a class="feature-tab" href="#attack-first">Attack first</a>
+        <a class="feature-tab" href="#talk-to-us">Talk to us</a>
+      </nav>
+      <div class="feature-cards reveal">
+        <article class="feature-card" id="see-more">
+          <p class="feature-kind">01: See more</p>
+          <h3>Your business is<br><em>more than just laptops.</em></h3>
+          <p class="feature-desc">VEX watches people, accounts, devices and services that sign in, across every app your business runs on.</p>
+          <div class="visual" aria-hidden="true">
+            <div class="tiles">
+              <span class="tile"><i class="icon i-laptop"></i></span>
+              <span class="tile"><i class="icon i-users"></i></span>
+              <span class="tile"><i class="icon i-globe"></i></span>
+              <span class="tile"><i class="icon i-envelope"></i></span>
+              <span class="tile"><i class="icon i-robot"></i></span>
+              <span class="tile"><i class="icon i-shield"></i></span>
+              <span class="tile"><i class="icon i-headset"></i></span>
+              <span class="tile"><i class="icon i-detective"></i></span>
+            </div>
+          </div>
+        </article>
+        <article class="feature-card" id="fix-it">
+          <p class="feature-kind">02: Fix it</p>
+          <h3>Found. Fixed.<br><em>Handled.</em></h3>
+          <p class="feature-desc"><b class="lead-in">Less to-do list. More done list. </b>VEX fixes what it safely can and checks that it worked. When it’s a judgment call, one of our analysts steps in.</p>
+          <div class="visual" aria-hidden="true">
+            <ul class="done-list">
+              <li><span class="done-check"><i class="icon i-check"></i></span><s>Add a missing DMARC record</s><span>Done</span></li>
+              <li><span class="done-check"><i class="icon i-check"></i></span><s>Remove an ex-employee’s login</s><span>Done</span></li>
+              <li><span class="done-check"><i class="icon i-check"></i></span><s>Patch Chrome on 12 laptops</s><span>Done</span></li>
+              <li><span class="done-check"><i class="icon i-check"></i></span><s>Turn on MFA for 3 accounts</s><span>Done</span></li>
+            </ul>
+          </div>
+        </article>
+        <article class="feature-card" id="attack-first">
+          <p class="feature-kind">03: Attack first</p>
+          <h3>We hack you.<br><em>On purpose.</em></h3>
+          <p class="feature-desc">VEX sends real attacks at your accounts and devices to find the same openings an attacker would, before they do.</p>
+          <div class="visual" aria-hidden="true">
+            <div class="attack">
+              <div class="attack-map">
+                <span class="n"></span><span class="s"></span><span class="e"></span><span class="w"></span>
+                <span class="nw"></span><span class="sw"></span><span class="se"></span><span class="hit"></span>
+                <div class="target"><i class="icon i-building"></i></div>
+              </div>
+              <div class="attack-log">
+                <p><b>Attack</b><br>Sent: 10:03</p>
+                <p class="attack-time">00:42 sec</p>
+                <p class="attack-caught"><i class="icon i-check"></i>Caught</p>
+              </div>
+            </div>
+          </div>
+        </article>
+        <article class="feature-card" id="talk-to-us">
+          <p class="feature-kind">04: Talk to us</p>
+          <div class="feature-head">
+            <h3>A security team <em>you can Slack off with.</em></h3>
+            <img src="../static/slack-logo.svg" width="40" height="40" alt="">
+          </div>
+          <p class="feature-desc">Work where your team already does. Ask a question, comment, or bring us in without opening another tool.</p>
+          <div class="visual" aria-hidden="true">
+            <div class="chat">
+              <div class="msg"><span class="avatar avatar--vex"></span><div class="bubble"><p class="bubble-name"><b>VEX</b><span class="badge">APP</span>3 minutes ago</p><p class="is-alert">Windows Defender Threat</p></div></div>
+              <div class="msg"><span class="avatar avatar--j">J</span><div class="bubble"><p class="bubble-name"><b>Jason</b>9:52 AM</p><p>Caleb can you take a look at this?</p></div></div>
+              <div class="msg"><span class="avatar avatar--c">C</span><div class="bubble"><p class="bubble-name"><b>Caleb</b><span class="badge">Unmanned</span>9:58 AM</p><p>Yes, I see it. I’ll handle it.</p></div></div>
+            </div>
+          </div>
+        </article>
       </div>
+      <ul class="included">
+        <li>Boring stuff included:</li>
+        <li><i class="icon i-check"></i>Backups on by default</li>
+        <li><i class="icon i-check"></i>Forever audit logs</li>
+        <li><i class="icon i-check"></i>Accepted risks, on the record</li>
+        <li><i class="icon i-check"></i>Priced per identity, no minimums</li>
+      </ul>
     </div>
   </section>
-
-  <div class="divider mono">
-    <span>REC · 00:00:01</span>
-    <span>ONBOARDING PATH</span>
-  </div>
 
   <!-- ============================================================
-       JOURNEY / EXPERIENCE
+       EASY SETUP
        ============================================================ -->
-  <section class="section" id="journey">
-    <div class="wrap">
-      <div class="section-label eyebrow-label mono"><span class="status-dot"></span>The journey</div>
-      <h2>What to expect, from day one</h2>
-      <p class="lede">From your first invitation email to a fully monitored, actively defended business — here's exactly what happens and when. You won't need a security team of your own, and you won't need to watch a dashboard.</p>
-
-      <div class="steps-list">
-
-        <!-- STEP: invitation -->
-        <div class="step reveal">
-          <div class="step-index mono"></div>
-          <div class="step-body">
-            <h3>Accept your invitation</h3>
-            <p>We'll send you an email invitation to get started. Once you click to accept it, we're able to start managing your account.</p>
-          </div>
-          <div class="step-media">
-            <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
-            <svg class="step-icon" viewBox="0 0 180 180" style="stroke:var(--ink);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round" aria-hidden="true">
-              <rect x="18" y="42" width="120" height="82" />
-              <path d="M18 42 L78 90 L138 42" />
-              <circle cx="132" cy="120" r="16" style="stroke:var(--pink)" />
-              <path d="M124 120 L130 126 L140 114" style="stroke:var(--pink)" />
-            </svg>
-          </div>
-        </div>
-
-        <!-- STEP: monitors -->
-        <div class="step reveal">
-          <div class="step-index mono"></div>
-          <div class="step-body">
-            <h3>Connect your monitors</h3>
-            <p>We'll work with you to set up <b>monitors</b> — integrations that plug into your identity platform (Microsoft 365 or Google Workspace), your registrar (usually Cloudflare), and any other services you rely on, like HubSpot. The more you connect, the more visibility Vex has.</p>
-          </div>
-          <div class="step-media">
-            <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
-            <svg class="step-icon" viewBox="0 0 180 180" style="stroke:var(--ink);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round" aria-hidden="true">
-              <line x1="90" y1="90" x2="34" y2="40" />
-              <line x1="90" y1="90" x2="146" y2="40" />
-              <line x1="90" y1="90" x2="34" y2="140" />
-              <line x1="90" y1="90" x2="146" y2="140" />
-              <line x1="90" y1="90" x2="90" y2="150" />
-              <circle cx="34" cy="40" r="7" />
-              <circle cx="146" cy="40" r="7" />
-              <circle cx="34" cy="140" r="7" />
-              <circle cx="146" cy="140" r="7" />
-              <circle cx="90" cy="150" r="7" />
-              <circle cx="90" cy="90" r="13" style="stroke:var(--pink)" />
-              <circle cx="90" cy="90" r="4" style="stroke:none;fill:var(--pink)" />
-            </svg>
-          </div>
-        </div>
-
-        <!-- STEP: endpoint agents -->
-        <div class="step reveal">
-          <div class="step-index mono"></div>
-          <div class="step-body">
-            <h3>Install endpoint agents</h3>
-            <p>Next, we deploy lightweight agents across all employee computers. These agents apply patches automatically and send event logs and security alerts straight to the SOC.
-          </div>
-          <div class="step-media">
-            <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
-            <svg class="step-icon" viewBox="0 0 180 180" style="stroke:var(--ink);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round" aria-hidden="true">
-              <rect x="30" y="34" width="120" height="78" />
-              <rect x="40" y="44" width="100" height="58" style="stroke:var(--surface-dark)" />
-              <path d="M14 130 h152 l-12 20 h-128 z" />
-              <circle cx="132" cy="120" r="18" style="stroke:var(--pink)" />
-              <path d="M124 120 L130 126 L141 112" style="stroke:var(--pink)" />
-            </svg>
-          </div>
-        </div>
-
-        <!-- STEP: soc monitoring -->
-        <div class="step reveal">
-          <div class="step-index mono"></div>
-          <div class="step-body">
-            <h3>We take it from here</h3>
-            <p>We monitor your account day and night, applying proactive adjustments — always tuning — and responding directly to any cyberattack.</p>
-          </div>
-          <div class="step-media">
-            <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
-            <svg class="step-icon" viewBox="0 0 180 180" style="stroke:var(--ink);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round" aria-hidden="true">
-              <path d="M90 20 L150 42 V92 C150 128 124 152 90 162 C56 152 30 128 30 92 V42 Z" />
-              <path d="M68 92 L84 108 L114 72" style="stroke:var(--pink)" />
-            </svg>
-          </div>
-        </div>
-
-        <!-- STEP: monthly report -->
-        <div class="step reveal">
-          <div class="step-index mono"></div>
-          <div class="step-body">
-            <h3>Get your monthly rundown</h3>
-            <p>Every month, you'll get an email with a rundown of your account — what was prevented, detected, and responded to, in plain language. Oh, and from a real human.</p>
-          </div>
-          <div class="step-media">
-            <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
-            <svg class="step-icon" viewBox="0 0 180 180" style="stroke:var(--ink);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round" aria-hidden="true">
-              <rect x="34" y="24" width="112" height="132" />
-              <line x1="52" y1="52" x2="128" y2="52" />
-              <line x1="52" y1="72" x2="128" y2="72" />
-              <line x1="52" y1="92" x2="102" y2="92" />
-              <circle cx="130" cy="122" r="24" style="stroke:var(--pink)" />
-              <path d="M130 110 v14 l10 8" style="stroke:var(--pink)" />
-            </svg>
-          </div>
-        </div>
-
+  <section class="band">
+    <div class="section setup">
+      <div class="section-head">
+        <div class="eyebrow-label"><span class="status-dot"></span>Onboarding</div>
+        <h2>Easy setup</h2>
       </div>
+      <p class="lede">No dashboard to learn. We connect your environment and deploy VEX.</p>
+      <div class="setup-steps reveal">
+        <div class="setup-step">
+          <div class="step-text">
+            <span class="step-num">1</span>
+            <h3>Accept invitation</h3>
+            <p>One email, one click, and your account is ready for us to manage.</p>
+          </div>
+          <div class="step-art" aria-hidden="true">
+            <div class="email">
+              <div class="email-from"><span class="email-av">U</span><div><b>Unmanned</b><span>to you</span></div></div>
+              <p class="email-subject">You’re invited to Managed VEX</p>
+              <div class="email-foot"><div class="email-lines"><i></i><i></i><i></i></div><span class="email-btn">Accept</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="setup-step">
+          <div class="step-text">
+            <span class="step-num">2</span>
+            <h3>Connect services and devices</h3>
+            <p>Microsoft 365 or Google Workspace, your domain, and a lightweight agent on each computer.</p>
+          </div>
+          <div class="step-art" aria-hidden="true">
+            <ul class="connections">
+              <li><i class="icon i-users"></i><span>Microsoft 365</span><em><i class="icon i-check"></i>Connected</em></li>
+              <li><i class="icon i-globe"></i><span>yourcompany.com</span><em><i class="icon i-check"></i>Connected</em></li>
+              <li><i class="icon i-laptop"></i><span>12 of 12 computers</span><em><i class="icon i-check"></i>Protected</em></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <p class="lede">We take it from there.</p>
     </div>
   </section>
-
-  <div class="divider mono">
-    <span>REC · 00:00:03</span>
-    <span>COMMS ESTABLISHED</span>
-  </div>
 
   <!-- ============================================================
        CONTACT
        ============================================================ -->
   <section class="dark-frame contact-section" id="contact">
-    <div class="grid-bg" aria-hidden="true"></div>
-    <div class="scan-sweep" aria-hidden="true"></div>
-    <div class="radar-echo" aria-hidden="true">
-      <svg viewBox="0 0 800 800"><use href="#radar-rings"></use></svg>
-    </div>
-    <div class="wrap body-wrap">
-      <div class="eyebrow-row eyebrow-label mono"><span class="status-dot"></span>Get started</div>
-      <h2 class="contact-statement">Ready when your<br>next <span>attacker</span>  is.</h2>
-      <a class="btn" data-hud-target href="mailto:go@unmanned.team?subject=Vex%20Security%20Assessment">Talk to us</a>
+    <img class="radar-echo" src="../static/radar-circles.svg" width="903" height="903" alt="" aria-hidden="true">
+    <div class="body-wrap">
+      <div class="eyebrow-label"><span class="status-dot"></span>Get started</div>
+      <h2 class="contact-statement">Ready when your<br>next attacker is.</h2>
+      <a class="btn" data-hud-target href="mailto:go@unmanned.team?subject=Managed%20VEX">Talk to us</a>
     </div>
   </section>
 
@@ -617,12 +739,10 @@
     (function(){
       // hide-on-scroll header: see HIDE ON SCROLL in the styles
       var root = document.documentElement;
-      var top = document.querySelector('header.site-header');
+      var top = document.querySelector('.site-top');
       var classbar = document.querySelector('.classbar');
       if(!top){ return; }
-      function measure(){
-        root.style.setProperty('--top-h', top.offsetHeight + 'px'); // header height, used by the hero's min-height and the corners
-      }
+      function measure(){ root.style.setProperty('--top-h', top.offsetHeight + 'px'); } // header height, used by the hero's min-height
       measure();
       window.addEventListener('resize', measure);
       var lastY = window.scrollY;
@@ -652,8 +772,8 @@
       // In a section with a [data-hud-target] element (the final CTA button), the corners pause at the
       // section's corners, then close in around that element.
       var hud = document.querySelector('.hud-frame');
-      var header = document.querySelector('header.site-header');
-      var sections = document.querySelectorAll('main > section'); // the frame's last stop is the dark CTA
+      var header = document.querySelector('.site-top .site-header');
+      var sections = document.querySelectorAll('main > section');
       if(!hud || !header || !sections.length){ return; }
       var corners = { tl:hud.querySelector('.tl'), tr:hud.querySelector('.tr'), bl:hud.querySelector('.bl'), br:hud.querySelector('.br') };
 
@@ -795,7 +915,171 @@
     })();
 
     (function(){
-      var els = document.querySelectorAll('.reveal');
+      // hero animation (see HERO ANIMATION in the styles). A ~10-second run that walks the card's rows in order.
+      // Each step: highlight its row, short pause, run its animation, short pause, row turns green, next step.
+      //   prevent  pink dots fly at the card and bounce off its edge
+      //   detect   a radar sweep turns once, finding dots around the card
+      //   respond  those dots turn green, one after another
+      // It plays once, the first time the card comes into view, and stays on "all done". Clicking or tapping the
+      // card (or Enter / Space on it) plays it again. With reduced motion it holds still in its finished state.
+      var wrap = document.querySelector('.hero-card-wrap');
+      var fx = wrap && wrap.querySelector('.hero-fx');
+      var card = wrap && wrap.querySelector('.status-card');
+      if(!fx || !card){ return; }
+      var rows = [].slice.call(card.querySelectorAll('.status-row'));
+      var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      // the timeline, in seconds: when each row is highlighted, when its animation runs, when it's done
+      var STEPS = [
+        { on:0.6, run:1.1, end:3.4, done:3.8 },   // prevent
+        { on:4.3, run:4.8, end:6.8, done:7.2 },   // detect
+        { on:7.7, run:8.2, end:9.8, done:10.2 }   // respond
+      ];
+      var END = 10.6;                             // all three rows done, dots gone: the animation stops here
+
+      // dot spots, designed around the desktop card (360 × 292), as [x, y] from the card's center
+      var CARD_W = 180, CARD_H = 146;
+      var PREVENT = [[-172,228],[-208,-321],[163,292],[379,-7],[-60,-188],[163,-244]];
+      var DETECT = [[-180,-262],[25,-188],[270,-20],[302,168],[82,166],[-80,284],[-238,-70],[-188,196]];
+
+      // keep each spot in the same direction from the card, the same (scaled) distance past its edge,
+      // whatever size the card is now
+      function edge(ux, uy, w, h){ return Math.min(ux ? w / Math.abs(ux) : 1e9, uy ? h / Math.abs(uy) : 1e9); }
+      function fit(p, w, h, k){
+        var len = Math.sqrt(p[0] * p[0] + p[1] * p[1]), ux = p[0] / len, uy = p[1] / len;
+        var e = edge(ux, uy, w, h), d = e + (len - edge(ux, uy, CARD_W, CARD_H)) * k;
+        return { x:ux * d, y:uy * d, ex:ux * (e + 5), ey:uy * (e + 5), ix:ux * e, iy:uy * e, ang:(Math.atan2(ux, -uy) * 180 / Math.PI + 360) % 360 };
+      }
+      function make(cls){ var el = document.createElement('span'); el.className = cls; fx.appendChild(el); return el; }
+      var sweep = make('fx-sweep');
+      var pDots = PREVENT.map(function(){ return { dot:make('fx-dot'), ring:make('fx-ring') }; });
+      var dDots = DETECT.map(function(){ return { dot:make('fx-dot'), ring:make('fx-ring is-green') }; });
+      var spots = {}, greenOrder = [];
+      function measure(){
+        var w = card.offsetWidth / 2, h = card.offsetHeight / 2;
+        var k = parseFloat(getComputedStyle(fx).getPropertyValue('--fx-k')) || 1;
+        spots.p = PREVENT.map(function(p){ return fit(p, w, h, k); });
+        spots.d = DETECT.map(function(p){ return fit(p, w, h, k); });
+        // respond turns the dots green clockwise, in the order the sweep found them
+        var byAngle = spots.d.map(function(s, i){ return i; }).sort(function(a, b){ return spots.d[a].ang - spots.d[b].ang; });
+        byAngle.forEach(function(i, rank){ greenOrder[i] = rank; });
+      }
+      function clamp(x){ return Math.max(0, Math.min(1, x)); }
+      function seg(u, a, b){ return clamp((u - a) / (b - a)); }
+      function ein(x){ return x * x * x; }
+      function eout(x){ return 1 - Math.pow(1 - x, 3); }
+      function lerp(a, b, p){ return a + (b - a) * p; }
+      function put(el, x, y, op, scale){
+        el.style.opacity = op;
+        el.style.transform = 'translate(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px)' + (scale ? ' scale(' + scale.toFixed(2) + ')' : '');
+      }
+
+      function draw(t){
+        var P = STEPS[0], D = STEPS[1], R = STEPS[2];
+        // prevent: dots appear, fly in one after another, hit the edge (ripple), bounce most of the way back and fade
+        pDots.forEach(function(d, i){
+          var s = spots.p[i], sk = P.run + 0.3 + i * 0.18;
+          var appear = seg(t, P.run + i * 0.08, P.run + 0.3 + i * 0.08), a = seg(t, sk, sk + 0.45), b = seg(t, sk + 0.45, sk + 1.05);
+          var x = b > 0 ? lerp(s.ex, lerp(s.ex, s.x, 0.7), eout(b)) : lerp(s.x, s.ex, ein(a));
+          var y = b > 0 ? lerp(s.ey, lerp(s.ey, s.y, 0.7), eout(b)) : lerp(s.y, s.ey, ein(a));
+          put(d.dot, x, y, appear * (1 - b));
+          var r = seg(t, sk + 0.45, sk + 0.85);
+          put(d.ring, s.ix, s.iy, r > 0 && r < 1 ? 1 - r : 0, lerp(0.3, 1.5, eout(r)));
+        });
+        // detect: the sweep turns once; each dot appears (with a ping) as the sweep passes it
+        var sweepLen = D.end - D.run;
+        sweep.style.opacity = seg(t, D.run, D.run + 0.2) * (1 - seg(t, D.end, D.end + 0.3));
+        sweep.style.transform = 'rotate(' + (seg(t, D.run, D.end) * 360).toFixed(1) + 'deg)';
+        // respond: the found dots turn green one by one (green ripple), then fade away
+        var greenGap = (R.end - R.run - 0.6) / (DETECT.length - 1);
+        dDots.forEach(function(d, i){
+          var s = spots.d[i], found = D.run + s.ang / 360 * sweepLen, ga = R.run + greenOrder[i] * greenGap;
+          var op = seg(t, found, found + 0.3) * (1 - seg(t, R.end, R.end + 0.4));
+          d.dot.classList.toggle('is-green', t >= ga);
+          put(d.dot, s.x, s.y, op);
+          var gr = seg(t, ga, ga + 0.6);
+          put(d.ring, s.x, s.y, gr > 0 && gr < 1 ? 1 - gr : 0, lerp(0.3, 1.6, eout(gr)));
+        });
+        // the card: muted until its step, highlighted while it runs, then green
+        rows.forEach(function(row, i){
+          var step = STEPS[i];
+          row.classList.toggle('is-muted', t < step.on);
+          row.classList.toggle('is-active', t >= step.on && t < step.done);
+        });
+      }
+
+      var start = 0, raf = 0;
+      function frame(now){
+        var t = Math.min((now - start) / 1000, END);
+        draw(t);
+        raf = t < END ? requestAnimationFrame(frame) : 0;
+      }
+      function play(){ // from the top (also restarts it if it's mid-run)
+        start = performance.now();
+        if(!raf){ raf = requestAnimationFrame(frame); }
+      }
+      measure();
+      window.addEventListener('resize', measure);
+      if(reduceMotion || !('IntersectionObserver' in window)){
+        // the still version: dots resting around the card, every row green
+        pDots.forEach(function(d, i){ put(d.dot, spots.p[i].x, spots.p[i].y, 1); });
+        return;
+      }
+      draw(0); // start muted, so the card doesn't flash "all done" before the animation begins
+      var io = new IntersectionObserver(function(entries){
+        if(entries[0].isIntersecting){ io.disconnect(); play(); } // the first time it's on screen
+      });
+      io.observe(wrap);
+      // replay: click or tap the card, or Tab to it and press Enter / Space
+      card.setAttribute('role', 'button');
+      card.setAttribute('tabindex', '0');
+      card.setAttribute('aria-label', 'Your business: protected. Prevent, detect, respond. Play the animation again');
+      card.addEventListener('click', play);
+      card.addEventListener('keydown', function(e){
+        if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); play(); }
+      });
+    })();
+
+    (function(){
+      // the four feature cards on phones: tabs jump to a card, and the tab follows whichever card
+      // is mostly in view as you swipe. On desktop the cards are a grid and the tabs are hidden.
+      var scroller = document.querySelector('.feature-cards');
+      var tabs = [].slice.call(document.querySelectorAll('.feature-tab'));
+      if(!scroller || !tabs.length){ return; }
+      var cards = tabs.map(function(tab){ return document.getElementById(tab.getAttribute('href').slice(1)); });
+      var tabRow = tabs[0].parentNode;
+      var phone = window.matchMedia('(max-width:767px)');
+      var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var behavior = reduceMotion ? 'auto' : 'smooth';
+
+      function setActive(i){
+        tabs.forEach(function(tab, j){
+          tab.classList.toggle('is-active', j === i);
+          if(j === i){ tab.setAttribute('aria-current', 'true'); } else { tab.removeAttribute('aria-current'); }
+        });
+        // if the tabs don't all fit (narrow or zoomed-in screens), keep the active one in view
+        if(tabRow.scrollWidth > tabRow.clientWidth){ tabRow.scrollTo({ left:tabs[i].offsetLeft - tabs[0].offsetLeft, behavior:behavior }); }
+      }
+      tabs.forEach(function(tab, i){
+        tab.addEventListener('click', function(e){
+          if(!phone.matches){ return; }
+          e.preventDefault();
+          setActive(i);
+          scroller.scrollTo({ left:cards[i].offsetLeft - cards[0].offsetLeft, behavior:behavior });
+        });
+      });
+      if(!('IntersectionObserver' in window)){ return; }
+      var seen = cards.map(function(){ return 0; });
+      var io = new IntersectionObserver(function(entries){
+        if(!phone.matches){ return; }
+        entries.forEach(function(entry){ seen[cards.indexOf(entry.target)] = entry.intersectionRatio; });
+        setActive(seen.indexOf(Math.max.apply(null, seen)));
+      }, { root:scroller, threshold:[0, 0.25, 0.5, 0.75, 1] });
+      cards.forEach(function(c){ io.observe(c); });
+    })();
+
+    (function(){
+      var els = document.querySelectorAll('.reveal, .reveal-group > *');
       if(!els.length){ return; }
       var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       if(!('IntersectionObserver' in window) || reduceMotion){
@@ -804,12 +1088,11 @@
       }
       var io = new IntersectionObserver(function(entries){
         entries.forEach(function(entry){
-          if(entry.isIntersecting){
-            entry.target.classList.add('in-view');
-            io.unobserve(entry.target);
-          }
+          // shown once it rises above a line near the bottom of the screen; hidden again
+          // (so it can replay) when you scroll back up and it drops below that line
+          entry.target.classList.toggle('in-view', entry.isIntersecting);
         });
-      }, { threshold:0, rootMargin:'0px 0px 150px 0px' });
+      }, { threshold:0, rootMargin:'100000px 0px -10% 0px' }); // the zone reaches far above the screen, so items you've scrolled past stay shown
       els.forEach(function(el){ io.observe(el); });
     })();
   </script>

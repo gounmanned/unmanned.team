@@ -10,7 +10,7 @@ class SignalSidebar {
     }
 
     reload() {
-        this.signal = { id: null, severity: 4, status: "OA", asset: "", source: "helpdesk" };
+        this.signal = { id: null, severity: 4, status: "OA", asset: "", source: "email" };
         this.render(this.signal, true);
     }
 

@@ -37,6 +37,10 @@
   html{overflow-x:hidden;scroll-behavior:smooth;scroll-padding-top:40px;scrollbar-gutter:stable;}
   body{margin:0;padding-top:var(--classbar-h);background:var(--surface);color:var(--ink);-webkit-font-smoothing:antialiased;}
   h1,h2,h3,p{margin:0;}
+  /* line breaks: headlines get even line lengths, body text avoids a single word alone on its last line
+     (browsers that don't support these just wrap as before) */
+  h1,h2,h3,h4{text-wrap:balance;}
+  p,li{text-wrap:pretty;}
   .mono{letter-spacing:0.04em;}
   a{color:inherit;}
   ::selection{background:var(--pink);color:#fff;}
@@ -224,6 +228,7 @@
   .proof-card--vendor .proof-num{height:90px;display:flex;align-items:center;font-weight:500;font-size:44px;text-decoration:line-through;white-space:nowrap;}
   .proof-card--vex .proof-num{align-self:flex-start;font-weight:800;font-size:68px;}
   .proof-num .reticle{position:absolute;left:-23px;right:-28px;top:9px;bottom:18px;pointer-events:none;}
+  .proof-num .reticle{display:none;} /* hidden for now; delete this line to bring the reticle back */
   .proof-num .corner{--corner-size:8px;border-color:var(--pink-on-dark);opacity:0.75;}
   .proof-num .corner.tl{top:0;left:0;}
   .proof-num .corner.tr{top:0;right:0;}

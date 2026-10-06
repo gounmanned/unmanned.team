@@ -22,6 +22,7 @@
     --pink:#e01280;
     --pink-text:#d1107a;     /* pink for TEXT on light backgrounds (passes 4.5:1) */
     --pink-on-dark:#e81385;  /* pink for TEXT on dark backgrounds */
+    --sev-1:#dc2626;         /* red: "missed" / DELETE (white text on it passes 4.5:1) */
     --gray-line:#dcdcd8;
     --gray-faint:#c4c4c4;
     --surface-dark:#6c6c70;
@@ -213,17 +214,18 @@
     margin-top:16px;font-weight:600;
     font-size:clamp(40px,6vw,70px);line-height:0.99;letter-spacing:-0.03em;
   }
+  @media (max-width:480px){.hero h1 br{display:none;}} /* small phones: let the headline wrap on its own */
   .hero-lede{margin-top:24px;max-width:680px;font-size:18px;font-weight:300;line-height:1.75;color:var(--ink);}
   .hero-lede b{font-weight:700;}
 
   .proof-cards{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:64px;}
-  .proof-card{position:relative;overflow:hidden;border-radius:4px;padding:36px;display:flex;flex-direction:column;justify-content:center;gap:14px;}
+  .proof-card{position:relative;overflow:hidden;border-radius:2px;padding:36px;display:flex;flex-direction:column;justify-content:center;gap:14px;}
   .proof-card--vendor{background:var(--white);border:1px solid var(--db-mid);color:var(--surface-dark);}
-  .proof-card--vex{background:var(--ink);color:#fff;box-shadow:0 0 12px -1px rgba(224,18,128,0.5);}
+  .proof-card--vex{background:var(--ink);color:#fff;box-shadow:0 0 14px rgba(224,18,128,0.6), 4px 4px 2px rgba(224,18,128,0.25);}
   .proof-card > *{position:relative;z-index:1;}
   .proof-card .proof-rings{position:absolute;left:-92px;top:-41px;z-index:0;pointer-events:none;opacity: .5;}
   .proof-label{font-size:11px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;}
-  .proof-card--vex .proof-label{color:var(--pink-on-dark);}
+  .proof-card--vex .proof-label{font-weight:700;color:var(--pink-on-dark);}
   .proof-num{position:relative;font-family:'JetBrains Mono',monospace;line-height:normal;letter-spacing:-0.03em;}
   .proof-card--vendor .proof-num{height:90px;display:flex;align-items:center;font-weight:500;font-size:44px;text-decoration:line-through;white-space:nowrap;}
   .proof-card--vex .proof-num{align-self:flex-start;font-weight:800;font-size:68px;}
@@ -261,29 +263,51 @@
     display:flex;align-items:center;justify-content:center;
     font-size:11px;line-height:1.5;letter-spacing:0.18em;padding-left:0.18em;color:var(--ink);
   }
-  .timeline-heading{font-weight:500;font-size:clamp(20px,2.4vw,27px);line-height:1.5;letter-spacing:-0.01em;}
+  .timeline-heading{font-weight:500;font-size:clamp(34px * 27 / 52, 4.2vw * 27 / 52, 27px);line-height:1.5;letter-spacing:-0.01em;} /* stays 27/52 of the section headline */
   .timeline-desc{font-size:14.5px;line-height:1.75;color:var(--body);}
   .timeline-step--clock{align-items:center;}
-  .timeline-clock{position:relative;justify-self:center;width:140px;height:141.5px;}
-  .timeline-clock img{position:absolute;left:-17.25px;top:-15.22px;}
-  .timeline-clock .clock-readout{
-    position:absolute;left:18px;top:77px;width:101px;text-align:center;
-    font-family:'JetBrains Mono',monospace;font-weight:800;font-size:16px;line-height:1.5;letter-spacing:0.02em;color:var(--ink);
-  }
+  .timeline-step--clock .clock{justify-self:center;width:140px;}
+
+  /* ---------- MISSION CLOCK (same clock as the /test page) ----------
+     Drawn at 330px wide; every size inside is a multiple of --u (1/330 of the clock's width),
+     so the whole clock scales with its width. When it scrolls into view the script counts the readout
+     up from T+00:00:00 and steps the red hand once a second (one turn a minute). */
+  .clock{container-type:inline-size;width:330px;--u:calc(100cqw / 330);display:flex;flex-direction:column;align-items:center;}
+  .clock-cap{display:flex;flex-direction:column;align-items:center;width:calc(48 * var(--u));}
+  .clock-cap::before{content:'';width:100%;height:calc(9 * var(--u));border-radius:calc(8 * var(--u));background:var(--surface-dark);}
+  .clock-cap::after{content:'';width:calc(8 * var(--u));height:calc(4 * var(--u));background:#87878c;}
+  .clock-face{position:relative;width:100%;margin-top:calc(2 * var(--u));aspect-ratio:330 / 312;}
+  .clock-face > *{position:absolute;}
+  .clock-face img{display:block;max-width:none;}
+  .clock-face .face{left:calc(17 * var(--u));top:calc(7.49 * var(--u));width:calc(308.71 * var(--u));height:calc(308.71 * var(--u));}
+  .clock-face .ring-pink{left:calc(11 * var(--u));top:calc(1.49 * var(--u));width:calc(307.71 * var(--u));height:calc(307.71 * var(--u));}
+  .clock-face .ring-gray{left:calc(17.16 * var(--u));top:calc(7.8 * var(--u));width:calc(295.71 * var(--u));height:calc(295.71 * var(--u));}
+  .clock-face .ticks{left:calc(11 * var(--u));top:calc(2.71 * var(--u));width:calc(307.65 * var(--u));height:calc(306.65 * var(--u));}
+  .clock-num{width:calc(21 * var(--u));font-family:'JetBrains Mono',monospace;font-size:calc(17.143 * var(--u));line-height:normal;text-align:center;color:var(--surface-dark);}
+  .clock-num--00{left:calc(151.8 * var(--u));top:calc(27.9 * var(--u));}
+  .clock-num--03{left:calc(270 * var(--u));top:calc(142.1 * var(--u));}
+  .clock-num--06{left:calc(151.8 * var(--u));top:calc(264.4 * var(--u));}
+  .clock-num--09{left:calc(33.5 * var(--u));top:calc(142.1 * var(--u));}
+  /* same spot as on /test (above the 09 / 03 numbers); this page just doesn't show the label under it */
+  .clock-readout{left:calc(165 * var(--u));top:calc(107.5 * var(--u));transform:translateX(-50%);font-family:'JetBrains Mono',monospace;font-weight:500;font-size:calc(32 * var(--u));line-height:1.5;letter-spacing:0.02em;white-space:nowrap;color:var(--body);}
+  /* the hand pivots on the dial's center; it's short on purpose so it never crosses the readout */
+  .clock-hand{left:calc(165 * var(--u));top:calc(155.65 * var(--u));width:0;height:0;transition:transform 0.2s cubic-bezier(0.4,0,0.2,1);}
+  .clock-hand img{position:absolute;}
+  .clock-hand .arm{left:min(-0.5px, calc(-0.5 * var(--u)));top:calc(-125.5 * var(--u));width:max(1px, calc(1 * var(--u)));height:calc(28.88 * var(--u));}
+  .clock-hand .tip{left:calc(-5 * var(--u));top:calc(-120.6 * var(--u));width:calc(10 * var(--u));height:calc(10 * var(--u));}
   @media (max-width:560px){
     .timeline{--rail:98px;--rail-gap:18px;}
-    .timeline-clock{transform:scale(0.7);margin:-21px;}
+    .timeline-step--clock .clock{width:98px;}
   }
 
   /* ---------- SCORECARD ---------- */
-  .metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin:48px 0;background:var(--surface);border:1px solid var(--gray-line);border-radius:4px;}
+  .metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin:48px 0;background:var(--white);border:1px solid var(--gray-line);border-radius:2px;filter:drop-shadow(4px 4px 1px rgba(0,0,0,0.15));}
   .metric{display:flex;flex-direction:column;gap:10px;padding:28px;}
   .metric + .metric{border-left:1px solid var(--gray-line);}
   .metric-label{font-size:11px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;color:var(--surface-dark);}
   .metric-value{display:flex;align-items:center;gap:10px;font-family:'JetBrains Mono',monospace;font-weight:500;font-size:24px;line-height:normal;letter-spacing:-0.02em;}
   .metric-value img{width:32px;height:32px;}
-  .metric--missed{position:relative;box-shadow:0 0 7px 2px #b3242f;}
-  .metric--missed .metric-value{color:var(--sev-1);}
+  .metric--missed{position:relative;background:var(--surface);box-shadow:0 0 0 1px var(--sev-1), 0 0 10px rgba(220,38,38,0.8);} /* a 1px red outline (as a shadow, so nothing shifts) plus the glow */
   .metric + .metric--missed{border-left-color:transparent;}
   .scorecard-note{max-width:664px;}
   @media (max-width:760px){
@@ -370,12 +394,23 @@
   .reveal-group > :nth-child(4){transition-delay:0.3s;}
   .timeline.reveal-group > *,.steps.reveal-group > *{transition-delay:0s;}
 
+  /* ---------- GLITCH (the headline's "single attack") ----------
+     One burst, 2–3 seconds after the page opens. The words are drawn as horizontal strips that jump
+     sideways in 4px steps, with a pink and a gray outline copy: line art in the site's colors, no blur. */
+  .glitch{position:relative;display:inline-block;}
+  .glitch .strip,.glitch .ghost{position:absolute;inset:0;pointer-events:none;opacity:0;}
+  .glitch.active .base{opacity:0;}                       /* the strips carry the words during a burst */
+  .glitch.active .strip,.glitch.active .ghost{opacity:1;}
+  .glitch .ghost{color:transparent;-webkit-text-stroke:1.5px var(--pink);}
+  .glitch .ghost--gray{-webkit-text-stroke-color:var(--db-mid);}
+
   @media (prefers-reduced-motion: reduce){
     html{scroll-behavior:auto;}
     .status-dot{animation:none;}
     .classbar,.site-top .site-header,.hud-frame .corner{transition:none;}
     .nav-panel,.nav-panel.is-open{transition:none;}
     .js .reveal,.js .reveal-group > *{opacity:1 !important;transform:none !important;transition:none !important;}
+    .clock-hand{transition:none;}
   }
 </style>
 </head>
@@ -438,8 +473,8 @@
     <div class="section">
       <div class="hero-body">
         <div class="eyebrow-label"><span class="status-dot"></span>The question</div>
-        <h1>Can your defense catch<br>a single attack?</h1>
-        <p class="hero-lede">Security tools promise billions of blocked events. But there's only one number that matters: <b>your response time</b>.</p>
+        <h1>Can your defense catch <br>a <span class="glitch" data-glitch-delay="2500-4000" data-glitch-count="1" data-glitch-duration="900-1200" data-glitch-gap="4000-8000">single attack</span>?</h1>
+        <p class="hero-lede">Security tools promise billions of blocked events. But there’s only one number that matters: <b>your response time</b>.</p>
 
         <div class="proof-cards">
           <div class="proof-card proof-card--vendor">
@@ -501,20 +536,34 @@
 
         <span class="timeline-tag">Attack</span>
         <div class="timeline-step timeline-step--clock">
-          <div class="timeline-clock" aria-hidden="true">
-            <img src="static/clock-timeline.svg" width="173" height="173" alt="">
-            <span class="clock-readout">T+14:22:06</span>
+          <div class="clock" aria-hidden="true">
+            <div class="clock-cap"></div>
+            <div class="clock-face">
+              <img class="face" src="static/clock-face.svg" width="309" height="309" alt="">
+              <img class="ring-pink" src="static/clock-ring-pink.svg" width="308" height="308" alt="">
+              <img class="ring-gray" src="static/clock-ring-gray.svg" width="296" height="296" alt="">
+              <span class="clock-num clock-num--00">00</span>
+              <span class="clock-num clock-num--03">03</span>
+              <span class="clock-num clock-num--06">06</span>
+              <span class="clock-num clock-num--09">09</span>
+              <img class="ticks" src="static/clock-ticks.svg" width="308" height="307" alt="">
+              <span class="clock-readout" id="clock-readout">T+00:00:00</span>
+              <div class="clock-hand" id="clock-hand">
+                <img class="arm" src="static/clock-hand.svg" width="1" height="29" alt="">
+                <img class="tip" src="static/clock-hand-dot.svg" width="10" height="10" alt="">
+              </div>
+            </div>
           </div>
           <div>
             <h3 class="timeline-heading">You start the clock</h3>
-            <p class="timeline-desc">You — or anyone on your team — click to launch that attack. The clock starts now.</p>
+            <p class="timeline-desc">You or anyone on your team can click to launch that attack. <b>The clock starts now</b>.</p>
           </div>
         </div>
         <div class="timeline-step">
           <div class="timeline-node">04</div>
           <div>
             <h3 class="timeline-heading">Your defense hunts</h3>
-            <p class="timeline-desc">Whatever protects your business goes on watch looking for where it happened and what it was — Your SOC. Your MDR. Your security tools. Or VEX.</p>
+            <p class="timeline-desc">Whatever protects your business goes on watch looking for where it happened and what it was: your SOC, your MDR, your security tools or VEX.</p>
           </div>
         </div>
 
@@ -523,7 +572,7 @@
           <div class="timeline-node">05</div>
           <div>
             <h3 class="timeline-heading">Make the call</h3>
-            <p class="timeline-desc">Name where it happened and what it was. VEX verifies it and stops the clock — a provable time to respond.</p>
+            <p class="timeline-desc">Name where it happened and what it was. VEX verifies it and stops the clock: a provable response time.</p>
           </div>
         </div>
       </div>
@@ -564,7 +613,7 @@
         </div>
       </div>
 
-      <p class="lede scorecard-note"><b>Missed it?</b> You’ll see exactly where the trail went cold — and VEX shows you the one fix that closes the gap.</p>
+      <p class="lede scorecard-note"><b>Missed it?</b> You’ll see exactly where the trail went cold and VEX shows you the one fix that closes the gap.</p>
     </div>
   </section>
 
@@ -578,11 +627,11 @@
         <h2>It started in an auditorium.</h2>
       </div>
       <div class="about-body">
-        <p class="lede">For years, our founder <b>David Hunt</b> ran a simple exercise with U.S. Army cyber defenders: one attack, one endpoint, 100+ defenders. The first to find it rang a bell. The point wasn't the score. It was finding out whether the defense worked when it mattered.</p>
+        <p class="lede">For years, our founder <b>David Hunt</b> ran a simple exercise with U.S. Army cyber defenders: one attack, one endpoint, 100+ defenders. The first to find it rang a bell. The point wasn’t the score. It was finding out whether the defense worked when it mattered.</p>
       </div>
 
       <div class="team">
-        <p class="team-intro">VEX is built by people who've spent their careers on both sides of the attack.</p>
+        <p class="team-intro">VEX is built by people who’ve spent their careers on both sides of the attack.</p>
         <!-- Team bios. Photos are square black-and-white headshots, saved at 208×208px (twice the 104px display size).
              To hide the whole row again, add the word "hidden" to the <ul> tag below. -->
         <ul class="team-list reveal-group">
@@ -835,6 +884,101 @@
       var wide = window.matchMedia('(min-width:701px)');
       function onWide(){ if(wide.matches && panel.classList.contains('is-open')){ closeNav(false); } }
       if(wide.addEventListener){ wide.addEventListener('change', onWide); } else { wide.addListener(onWide); }
+    })();
+
+    (function(){
+      // the timeline clock: counts up in real time from T+00:00:00 once it scrolls into view ("the clock
+      // starts now") and stops at T+24:00:00. The hand steps 6° a second; its angle keeps growing past 360°
+      // so the step from :59 to :00 still turns forward. With reduced motion it stays at T+00:00:00.
+      var readout = document.getElementById('clock-readout');
+      var hand = document.getElementById('clock-hand');
+      if(!readout || !hand || !('IntersectionObserver' in window)){ return; }
+      if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){ return; }
+      var END = 24 * 60 * 60, start = 0;
+      function pad(n){ return (n < 10 ? '0' : '') + n; }
+      function tick(){
+        var s = Math.min(END, Math.floor((Date.now() - start) / 1000));
+        readout.textContent = 'T+' + pad(Math.floor(s / 3600)) + ':' + pad(Math.floor(s % 3600 / 60)) + ':' + pad(s % 60);
+        hand.style.transform = 'rotate(' + (s * 6) + 'deg)';
+        if(s < END){ setTimeout(tick, 1000 - (Date.now() - start) % 1000); } // line up with the next whole second
+      }
+      var io = new IntersectionObserver(function(entries){
+        if(entries[0].isIntersecting){ io.disconnect(); start = Date.now(); tick(); }
+      }, { threshold:0.6 });
+      io.observe(hand.closest('.clock'));
+    })();
+
+    (function(){
+      // the headline glitch (see GLITCH in the styles). Settings live on the element, in milliseconds;
+      // a single number ("2500") or a random range ("2000-3000"):
+      //   data-glitch-delay     wait before the first burst
+      //   data-glitch-count     how many bursts: 1, 3, … or "infinite"
+      //   data-glitch-duration  how long each burst lasts
+      //   data-glitch-gap       wait between bursts (only matters when count is more than 1)
+      // The extra copies it draws with exist only during a burst, so the rest of the time the
+      // headline is just its plain text (for screen readers, search engines and copy-paste).
+      var el = document.querySelector('.glitch');
+      if(!el || (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)){ return; }
+      var original = el.textContent;
+      function range(v, fallback){
+        var p = String(v || fallback).split('-').map(Number);
+        if(!p.every(function(n){ return isFinite(n) && n >= 0; })){ p = fallback.split('-').map(Number); }
+        return [Math.min(p[0], p[p.length - 1]), Math.max(p[0], p[p.length - 1])];
+      }
+      var countAttr = String(el.getAttribute('data-glitch-count') || '1').toLowerCase();
+      var remaining = countAttr === 'infinite' ? Infinity : Math.max(0, Math.floor(Number(countAttr) || 0));
+      var delay = range(el.getAttribute('data-glitch-delay'), '2000-3000');
+      var duration = range(el.getAttribute('data-glitch-duration'), '500-900');
+      var gap = range(el.getAttribute('data-glitch-gap'), '4000-8000');
+      var STRIPS = 5, STEP = 4, GLYPHS = '/\\|+-·:_';
+      var base, strips, ghosts;
+      function rnd(a, b){ return a + Math.random() * (b - a); }
+      function snap(max){ return Math.round(rnd(-max, max) / STEP) * STEP; }   // whole 4px steps only
+      function mk(cls){ var s = document.createElement('span'); s.className = cls; s.textContent = original; s.setAttribute('aria-hidden', 'true'); el.appendChild(s); return s; }
+      function build(){
+        el.textContent = '';
+        base = mk('base');
+        strips = [];
+        for(var i = 0; i < STRIPS; i++){
+          var strip = mk('strip'), top = (100 / STRIPS) * i;
+          strip.style.clipPath = 'inset(' + top + '% 0 ' + (100 - top - 100 / STRIPS) + '% 0)';
+          strips.push(strip);
+        }
+        ghosts = [mk('ghost'), mk('ghost ghost--gray')];
+      }
+      function scramble(amount){
+        return original.split('').map(function(ch){ return ch === ' ' || Math.random() >= amount ? ch : GLYPHS.charAt(Math.floor(Math.random() * GLYPHS.length)); }).join('');
+      }
+      function setText(t){ base.textContent = t; strips.concat(ghosts).forEach(function(n){ n.textContent = t; }); }
+      function frame(intensity){
+        setText(Math.random() < 0.2 ? scramble(intensity * 0.12) : original);   // a letter or two, now and then
+        strips.forEach(function(s){ s.style.transform = Math.random() < 0.45 ? 'none' : 'translateX(' + snap(16 * intensity) + 'px)'; });
+        ghosts.forEach(function(g){
+          var top = Math.floor(rnd(0, 4)) * 20, h = Math.floor(rnd(2, 4)) * 20;   // each outline shows one thick band
+          g.style.clipPath = 'inset(' + top + '% 0 ' + Math.max(0, 100 - top - h) + '% 0)';
+          g.style.transform = 'translate(' + (snap(14 * intensity) || STEP * 2) + 'px,' + snap(4) + 'px)';
+        });
+      }
+      function rest(){ el.classList.remove('active'); setText(original); strips.concat(ghosts).forEach(function(n){ n.style.transform = ''; }); }
+      function burst(){
+        if(remaining <= 0){ return; }
+        remaining--;
+        var total = rnd(duration[0], duration[1]), intensity = rnd(0.6, 1.1), start = performance.now();
+        build();
+        el.classList.add('active');
+        (function tick(){
+          var t = (performance.now() - start) / total;
+          if(t >= 1){   // back to plain text, then wait for the next burst (if any)
+            el.classList.remove('active'); el.textContent = original;
+            if(remaining > 0){ setTimeout(burst, rnd(gap[0], gap[1])); }
+            return;
+          }
+          if(Math.random() < 0.18){ rest(); el.classList.add('active'); }   // a brief clean flash mid-burst
+          else { frame(intensity * (1 - t) + 0.25); }
+          setTimeout(tick, rnd(60, 120));   // held frames, more like drawn animation than video
+        })();
+      }
+      if(remaining > 0){ setTimeout(burst, rnd(delay[0], delay[1])); }
     })();
 
     (function(){

@@ -227,7 +227,8 @@
     .hero .section{padding-top:44px;padding-bottom:72px;}
     .hero-grid{grid-template-columns:minmax(0,1fr);grid-template-areas:"eyebrow" "title" "lede" "cta" "card";}
     .hero h1{margin-top:-8px;} /* 16px under the eyebrow */
-    .hero-card-wrap{justify-self:center;width:100%;max-width:424px;padding:24px 32px;margin-top:-12px;} /* 36px under the button; the padding stays even so the animation stays centered on the card */
+    .hero-card-wrap{justify-self:left;width:100%;max-width:424px;padding:24px 24px 24px 0;margin-top:-12px;} /* 36px under the button, lined up with the copy on the left */
+    .hero-card-wrap .hero-fx{left:calc(50% - 12px);} /* the padding is 24px on the right only, so center the animation on the card itself */
   }
 
   /* status card */
@@ -301,7 +302,7 @@
   /* the illustration box: a faint dot grid that fades out toward the edges */
   .visual{
     position:relative;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
-    padding:24px;background:var(--white);border:1px solid var(--gray-line);border-radius:2px;overflow:hidden;
+    padding:24px;background:var(--surface-alt);border:1px solid var(--gray-line);border-radius:2px;overflow:hidden;
   }
   .visual::before{
     content:'';position:absolute;inset:0;pointer-events:none;
@@ -441,7 +442,7 @@
   .step-art{padding-left:19px;}
   .setup-step:first-child .step-art{flex:1;display:flex;align-items:flex-end;}
   /* invitation email */
-  .email{display:flex;flex-direction:column;gap:10px;padding:16px;background:#fff;border:0.5px solid var(--db-mid);border-radius:4px;font-size:10px;}
+  .email{display:flex;flex-direction:column;gap:10px;padding:16px;background:#fff;border:1px solid var(--db-mid);border-radius:4px;font-size:10px;}
   .email-from{display:flex;align-items:center;gap:5px;}
   .email-av{display:flex;padding:4px;border-radius:4px;background:#e6007e;font-weight:700;font-size:11px;line-height:1;color:#fff;}
   .email-from b{display:block;font-weight:600;color:var(--db-mid);}
@@ -454,7 +455,7 @@
   .email-btn{padding:4px 8px;border-radius:3px;background:var(--surface-dark);font-weight:600;font-size:11px;color:#fff;}
   /* connections */
   .connections{display:flex;flex-direction:column;gap:6px;width:min(235px,100%);list-style:none;margin:0;padding:0;}
-  .connections li{display:flex;align-items:center;gap:12px;padding:4px 8px;background:#fff;border:0.5px solid var(--db-mid);border-radius:4px;font-weight:600;font-size:11px;color:var(--db-mid);}
+  .connections li{display:flex;align-items:center;gap:12px;padding:4px 8px;background:#fff;border:1px solid var(--db-mid);border-radius:4px;font-weight:600;font-size:11px;color:var(--db-mid);}
   .connections .icon{width:16px;height:16px;color:var(--card-body);}
   .connections span{flex:1;min-width:0;}
   .connections em{display:flex;align-items:center;gap:3px;font-style:normal;color:var(--done);}

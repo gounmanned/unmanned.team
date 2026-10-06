@@ -362,18 +362,49 @@
 }
 
 #signal-table-wrap.searching .signal-search-results { display: block; }
-
 .signal-search-results li {
+  --row-bg: var(--surface);
+  position: relative;
   padding: 7px 8px;
   border-bottom: 1px solid var(--line);
   color: var(--text-body);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  cursor: pointer;
 }
 
 .signal-search-results li:hover {
-  background: color-mix(in srgb, var(--brand) 4%, transparent);
+  --row-bg: color-mix(in srgb, var(--brand) 4%, var(--surface));
+  background: var(--row-bg);
+}
+
+.signal-search-results li::after {
+  content: 'more';
+  position: absolute;
+  top: 7px;
+  right: 8px;
+  padding-left: 24px;
+  background: linear-gradient(to right, transparent, var(--row-bg) 20px);
+  font: 700 10px/1.55 system-ui, sans-serif;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--brand);
+  opacity: 0;
+}
+
+.signal-search-results li:hover::after { opacity: 1; }
+
+.signal-search-results li.expanded {
+  white-space: pre-wrap;
+  word-break: break-all;
+  padding-right: 52px;
+}
+
+.signal-search-results li.expanded::after {
+  content: 'less';
+  opacity: 1;
+  background: none;
 }
 
 .signal-search-results mark {
@@ -392,7 +423,10 @@
   text-align: center;
   text-transform: uppercase;
   color: var(--text-faint);
+  cursor: default;
 }
+
+.signal-search-results li.search-empty::after { display: none; }
 
 /* ── signal table ───────────────────────────────────────────────── */
 

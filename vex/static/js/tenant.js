@@ -270,19 +270,22 @@ class TenantScreen {
             await this.open(this._spotlight);
         });
 
-        const input = document.getElementById('signal-search-input');
-
         document.getElementById('signal-search').addEventListener('submit', (e) => {
             e.preventDefault();
-            this.search(input.value);
+            this.search(document.getElementById('signal-search-input').value);
         });
 
-        input.addEventListener('input', () => {
-            if (!input.value.trim() && this.query) this.clearSearch();
+        document.getElementById('signal-search-input').addEventListener('input', () => {
+            if (!document.getElementById('signal-search-input').value.trim() && this.query) this.clearSearch();
         });
 
-        input.addEventListener('keydown', (e) => {
+        document.getElementById('signal-search-input').addEventListener('keydown', (e) => {
             if (e.key === 'Escape') this.clearSearch();
+        });
+
+        document.getElementById('signal-search-results').addEventListener('click', (e) => {
+            if (getSelection().toString()) return;
+            e.target.closest('li:not(.search-empty)')?.classList.toggle('expanded');
         });
     }
 }

@@ -9,11 +9,10 @@
   --font-sans: 'Inter', system-ui, sans-serif;
   --brand: #e01280;
   --accent:rgba(224,18,128,0.45);
-  --sev-1: #DC2626; 
-  --sev-2: #F97316;
-  --sev-3: #EAB308;
-  --sev-4: #3B82F6;
-  --sev-5: #6B7280;
+  --kind-1: #DC2626; 
+  --kind-2: #F97316;
+  --kind-3: #EAB308;
+  --kind-4: #3B82F6;
 }
 
 body {

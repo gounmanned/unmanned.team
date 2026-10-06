@@ -30,6 +30,10 @@
   *, *::before, *::after { box-sizing: border-box; }
   body { margin: 0; padding-top: var(--classbar-h); background: var(--surface); color: var(--ink); -webkit-font-smoothing: antialiased; }
   h1, h2, h3, p { margin: 0; }
+  /* line breaks: headlines get even line lengths, body text avoids a single word alone on its last line
+     (browsers that don't support these just wrap as before) */
+  h1, h2, h3, h4 { text-wrap: balance; }
+  p, li { text-wrap: pretty; }
   a { color: inherit; }
   b { font-weight: 600; }
   strong { font-weight: 700; }

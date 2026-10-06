@@ -67,7 +67,6 @@ class Workspace {
                     managed: new ManagedRollup(state),
                     monitor: new MonitorRollup(state),
                     inventory: new InventoryRollup(state),
-                    audit: new AuditRollup(state),
                 };
 
                 this.sidebars = {

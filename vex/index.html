@@ -137,11 +137,8 @@
     <section id="signal-section">
       <form class="signal-search" id="signal-search" role="search" autocomplete="off">
         <span class="material-symbols-outlined">search</span>
-        <input type="text" id="signal-search-input" placeholder="Search logs…"
+        <input type="text" id="signal-search-input" placeholder="Search audit logs"
               enterkeyhint="search" spellcheck="false" aria-label="Search logs">
-        <button type="button" id="signal-search-clear" class="signal-search-clear" hidden aria-label="Clear search">
-          <span class="material-symbols-outlined">close</span>
-        </button>
       </form>
 
       <div class="table-wrap" id="signal-table-wrap">
@@ -322,48 +319,6 @@
   </site-rollup>
 
   <!-- Rollups -->
-
-  <site-rollup id="audit-screen">
-    <div class="rollup-head">
-      <span class="material-symbols-outlined rollup-head-icon">terminal</span>
-      <div class="rollup-head-text">
-        <h2>Logs</h2>
-        <p>Every action VEX takes, kept forever. Filter by source or message.</p>
-      </div>
-    </div>
-
-    <div class="audit-terminal" id="audit-terminal">
-      <div class="audit-terminal-header">
-        <div class="audit-search">
-            <span class="material-symbols-outlined">search</span>
-            <input type="text" id="audit-filter" placeholder="grep logs…" autocomplete="off">
-        </div>
-        <select id="audit-range">
-            <option value="1" selected>1h</option>
-            <option value="8">8h</option>
-            <option value="24">24h</option>
-        </select>
-      </div>
-
-      <div class="audit-terminal-body" id="audit-terminal-body">
-        <ul id="audit-list"></ul>
-
-        <div class="signal-radar-watermark" id="audit-empty">
-          <div class="signal-radar" aria-hidden="true">
-            <svg viewBox="0 0 800 800"><use href="#radar-rings"></use></svg>
-          </div>
-          <div class="corner tl signal-radar-corner"></div>
-          <div class="corner tr signal-radar-corner"></div>
-          <div class="corner bl signal-radar-corner"></div>
-          <div class="corner br signal-radar-corner"></div>
-          <span class="material-symbols-outlined">terminal</span>
-          <p id="audit-empty-label">No logs</p>
-        </div>
-      </div>
-
-      <div class="audit-terminal-footer" id="audit-terminal-footer"></div>
-    </div>
-  </site-rollup>
 
   <site-rollup id="inventory-screen">
     <div class="rollup-head">

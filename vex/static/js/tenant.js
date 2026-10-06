@@ -72,7 +72,6 @@ class TenantScreen {
 
         const query = this.query;
         document.getElementById('signal-table-wrap').classList.add('searching');
-        document.getElementById('signal-search-clear').hidden = false;
 
         let logs = [];
         await SiteSpinner.withLoading(async () => {
@@ -92,7 +91,6 @@ class TenantScreen {
         this.query = '';
         this.results = [];
         document.getElementById('signal-search-input').value = '';
-        document.getElementById('signal-search-clear').hidden = true;
         document.getElementById('signal-search-results').innerHTML = '';
         document.getElementById('signal-table-wrap').classList.remove('searching');
         this.count(this.table.body.children.length);
@@ -285,11 +283,6 @@ class TenantScreen {
 
         input.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') this.clearSearch();
-        });
-
-        document.getElementById('signal-search-clear').addEventListener('click', () => {
-            this.clearSearch();
-            input.focus();
         });
     }
 }

@@ -35,7 +35,7 @@ class TenantScreen {
     }
 
     count(n) {
-        document.getElementById('signal-count').textContent = `Showing ${n.toLocaleString()}`;
+        document.getElementById('signal-count').textContent = `Showing ${n.toLocaleString()} results`;
     }
 
     esc(s) {

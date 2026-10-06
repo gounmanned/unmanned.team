@@ -141,7 +141,7 @@
 
 #signal-sidebar .delete-btn .material-symbols-outlined { font-size: 16px; }
 
-#signal-sidebar .severity-banner {
+#signal-sidebar .kind-banner {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -155,54 +155,20 @@
   color: #fff;
 }
 
-#signal-sidebar .severity-banner .banner-icon {
+#signal-sidebar .kind-banner .banner-icon {
   font-size: 16px;
   width: 16px;
   height: 16px;
   filter: brightness(0) invert(1);
 }
 
-#signal-sidebar .severity-banner[data-severity="1"] { background: var(--sev-1) } /* Critical */
-#signal-sidebar .severity-banner[data-severity="2"] { background: var(--sev-2) } /* High */
-#signal-sidebar .severity-banner[data-severity="3"] { background: var(--sev-3) } /* Medium */
-#signal-sidebar .severity-banner[data-severity="4"] { background: var(--sev-4) } /* Low */
-#signal-sidebar .severity-banner[data-severity="5"] { background: var(--sev-5) } /* Info */
-#signal-sidebar .severity-banner[data-severity="6"] { background: var(--sev-6) } /* Support */
+#signal-sidebar .kind-banner[data-kind="1"] { background: var(--sev-1) } /* Alert */
+#signal-sidebar .kind-banner[data-kind="2"] { background: var(--sev-2) } /* Log */
+#signal-sidebar .kind-banner[data-kind="3"] { background: var(--sev-3) } /* Prevention */
+#signal-sidebar .kind-banner[data-kind="4"] { background: var(--sev-4) } /* Helpdesk */
+#signal-sidebar .kind-banner[data-kind="5"] { background: var(--sev-5) } /* Test */
 
-#signal-sidebar .severity-banner select.banner-status-select {
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  flex: 1;
-  background: transparent;
-  border: none;
-  margin: 0;
-  padding: 0 18px 0 0;
-  color: #fff;
-  font-size: 11.5px;
-  font-weight: 700;
-  letter-spacing: 0.6px;
-  text-transform: uppercase;
-  font-family: inherit;
-  cursor: pointer;
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
-  background-repeat: no-repeat;
-  background-position: right center;
-  background-size: 14px;
-}
-
-#signal-sidebar .severity-banner select.banner-status-select:focus {
-  outline: none;
-}
-
-#signal-sidebar .severity-banner select.banner-status-select option,
-#signal-sidebar .severity-banner select.banner-status-select optgroup {
-  color: #111827;
-  background: #fff;
-  text-transform: none;
-  font-weight: 500;
-  letter-spacing: normal;
-}
+#signal-sidebar .kind-banner .banner-kind-label { flex: 1; }
 
 #signal-sidebar .new-message .modern-textbox {
   width: 100%;

@@ -49,12 +49,12 @@ class Api {
 class Workspace {
     static #instance;
 
-    static SEVERITY = {
-        1: 'Critical',
-        2: 'High',
-        3: 'Medium',
-        4: 'Low',
-        5: 'Info',
+    static KIND = {
+        1: { label: 'Security alert',    icon: 'gpp_maybe' },
+        2: { label: 'Event log',         icon: 'receipt_long' },
+        3: { label: 'Prevention',        icon: 'shield' },
+        4: { label: 'Helpdesk ticket',   icon: 'support_agent' },
+        5: { label: 'Red team test',     icon: 'swords' },
     };
 
     async render(code) {

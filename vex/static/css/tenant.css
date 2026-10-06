@@ -325,11 +325,6 @@
   border-color: color-mix(in srgb, var(--brand) 25%, var(--line));
 }
 
-.signal-search:focus-within {
-  border-color: color-mix(in srgb, var(--brand) 55%, var(--line));
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand) 10%, transparent);
-}
-
 .signal-search > .material-symbols-outlined {
   font-size: 20px;
   color: var(--text-faint);

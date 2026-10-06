@@ -62,7 +62,7 @@ site-rollup {
   stroke: var(--line);
   stroke-width: 1;
   stroke-opacity: 0.5;
-  animation: managed-ring-glow 7.5s ease-in-out infinite; /* keyframe lives in managed-screen.css */
+  animation: managed-ring-glow 7.5s ease-in-out infinite;
 }
 .signal-radar .radar-ring.r2 { animation-delay: -2.5s; }
 .signal-radar .radar-ring.r3 { animation-delay: -5s; }

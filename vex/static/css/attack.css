@@ -83,11 +83,15 @@ body.attack #signal-table tbody tr:hover td {
 /* ── attack:dark — component patches ────────────────────────────── */
 
 body.attack .modern-textbox,
+body.attack .modern-textbox:focus,
 body.attack input[type="text"],
+body.attack input[type="text"]:focus,
 body.attack select,
-body.attack textarea {
-  background:var(--surface-alt);
-  color:var(--text-body);
+body.attack select:focus,
+body.attack textarea,
+body.attack textarea:focus {
+  background: transparent;
+  color: var(--text-body);
 }
 
 body.attack .btn.ghost,
@@ -102,7 +106,6 @@ body.attack .delete-btn:hover {
 body.attack .links a.cta { background: var(--kind-1); }
 
 body.attack .sidebar-actions,
-body.attack .audit-terminal { background:var(--surface); }
 body.attack thead th { background:var(--surface-alt); color:var(--text-faint); }
 body.attack tbody tr:hover { background:var(--surface-alt); }
 

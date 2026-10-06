@@ -51,10 +51,9 @@ class Workspace {
 
     static KIND = {
         1: { label: 'Security alert',    icon: 'gpp_maybe' },
-        2: { label: 'Event log',         icon: 'receipt_long' },
-        3: { label: 'Prevention',        icon: 'shield' },
-        4: { label: 'Helpdesk ticket',   icon: 'support_agent' },
-        5: { label: 'Red team test',     icon: 'swords' },
+        2: { label: 'Recommendation',    icon: 'shield' },
+        3: { label: 'Helpdesk',          icon: 'support_agent' },
+        4: { label: 'Security test',     icon: 'swords' },
     };
 
     async render(code) {

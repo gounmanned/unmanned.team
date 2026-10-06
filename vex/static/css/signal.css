@@ -162,11 +162,10 @@
   filter: brightness(0) invert(1);
 }
 
-#signal-sidebar .kind-banner[data-kind="1"] { background: var(--sev-1) } /* Alert */
-#signal-sidebar .kind-banner[data-kind="2"] { background: var(--sev-2) } /* Log */
-#signal-sidebar .kind-banner[data-kind="3"] { background: var(--sev-3) } /* Prevention */
-#signal-sidebar .kind-banner[data-kind="4"] { background: var(--sev-4) } /* Helpdesk */
-#signal-sidebar .kind-banner[data-kind="5"] { background: var(--sev-5) } /* Test */
+#signal-sidebar .kind-banner[data-kind="1"] { background: var(--kind-1) } /* Alert */
+#signal-sidebar .kind-banner[data-kind="2"] { background: var(--kind-2) } /* Recommendation */
+#signal-sidebar .kind-banner[data-kind="3"] { background: var(--kind-3) } /* Helpdesk */
+#signal-sidebar .kind-banner[data-kind="4"] { background: var(--kind-4) } /* Test */
 
 #signal-sidebar .kind-banner .banner-kind-label { flex: 1; }
 

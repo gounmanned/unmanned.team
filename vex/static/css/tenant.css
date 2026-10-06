@@ -74,14 +74,14 @@
   inset: auto -10% -60px;
   height: 160px;
   background:
-    radial-gradient(40% 70% at 12% 60%, color-mix(in srgb, var(--sev-1) 30%, transparent), transparent 70%),
-    radial-gradient(35% 60% at 85% 70%, color-mix(in srgb, var(--sev-1) 18%, transparent), transparent 70%);
+    radial-gradient(40% 70% at 12% 60%, color-mix(in srgb, var(--kind-1) 30%, transparent), transparent 70%),
+    radial-gradient(35% 60% at 85% 70%, color-mix(in srgb, var(--kind-1) 18%, transparent), transparent 70%);
   opacity: 0;
   transition: opacity 0.3s;
   pointer-events: none;
 }
 
-.overview.critical { border-color: var(--sev-1); }
+.overview.critical { border-color: var(--kind-1); }
 .overview.critical::before { opacity: 1; }
 
 /* ── overview: trend chart ──────────────────────────────────────── */
@@ -164,7 +164,7 @@
   height: auto;
   padding: 14px 22px;
   border: 0;
-  border-top: 1px solid color-mix(in srgb, var(--sev-1) 18%, var(--line));
+  border-top: 1px solid color-mix(in srgb, var(--kind-1) 18%, var(--line));
   border-radius: 0;
   background: color-mix(in srgb, var(--surface) 55%, transparent);
   -webkit-backdrop-filter: blur(14px) saturate(160%);
@@ -183,7 +183,7 @@
 }
 
 .overview.critical .spotlight:focus-visible {
-  outline: 2px solid var(--sev-1);
+  outline: 2px solid var(--kind-1);
   outline-offset: -2px;
 }
 
@@ -203,7 +203,7 @@
   height: 100%;
   padding: 7px;
   box-sizing: border-box;
-  border: 2px solid var(--sev-1);
+  border: 2px solid var(--kind-1);
   border-radius: 50%;
   background: #fff;
   object-fit: contain;
@@ -213,7 +213,7 @@
   position: absolute;
   inset: 0;
   border-radius: 50%;
-  background: var(--sev-1);
+  background: var(--kind-1);
   opacity: 0;
   animation: spotlight-ring 2.4s ease-out infinite;
 }
@@ -246,14 +246,14 @@
   font-weight: 700;
   letter-spacing: 0.8px;
   text-transform: uppercase;
-  color: var(--sev-1);
+  color: var(--kind-1);
 }
 
 .spotlight-dot {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--sev-1);
+  background: var(--kind-1);
 }
 
 .spotlight-name {
@@ -278,7 +278,7 @@
   flex-direction: column;
   gap: 3px;
   padding: 0 22px;
-  border-left: 1px solid color-mix(in srgb, var(--sev-1) 15%, var(--line));
+  border-left: 1px solid color-mix(in srgb, var(--kind-1) 15%, var(--line));
 }
 
 .spotlight-stats > div:last-child { padding-right: 0; }
@@ -392,11 +392,10 @@ tr[data-status="CV"] td.autoclose {
   white-space: nowrap;
 }
 
-.kind-chip[data-kind="1"] { background: color-mix(in srgb, var(--sev-1) 10%, transparent); color: var(--sev-1); } /* security alert */
-.kind-chip[data-kind="2"] { background: var(--surface-alt); color: var(--sev-5); }                                /* event log */
-.kind-chip[data-kind="3"] { background: color-mix(in srgb, var(--sev-3) 10%, transparent); color: var(--sev-3); } /* prevention */
-.kind-chip[data-kind="4"] { background: color-mix(in srgb, var(--sev-4) 10%, transparent); color: var(--sev-4); } /* helpdesk */
-.kind-chip[data-kind="5"] { background: color-mix(in srgb, var(--brand) 10%, transparent); color: var(--brand); } /* red team */
+.kind-chip[data-kind="1"] { background: color-mix(in srgb, var(--kind-1) 10%, transparent); color: var(--kind-1); } /* security alert */
+.kind-chip[data-kind="2"] { background: color-mix(in srgb, var(--kind-2) 10%, transparent); color: var(--kind-2); } /* prevention */
+.kind-chip[data-kind="3"] { background: color-mix(in srgb, var(--kind-3) 10%, transparent); color: var(--kind-3); } /* helpdesk */
+.kind-chip[data-kind="4"] { background: color-mix(in srgb, var(--kind-4) 10%, transparent); color: var(--kind-4); } /* red team */
 
 /* metadata column */
 

@@ -158,10 +158,9 @@ class TenantScreen {
         const utc = v => Date.parse(/[zZ]|[+-]\d\d:?\d\d$/.test(v) ? v : `${v}Z`);
         const now = Date.now();
 
-        this.table.body.querySelectorAll('tr').forEach(row => {
-            const signal = signals[row.id];
-            const cell = row.querySelector('td.elapsed');
-            if (!signal || !cell) return;
+        this.table.body.querySelectorAll('tr[data-kind="4"] td.elapsed').forEach(cell => {
+            const signal = signals[cell.parentElement.id];
+            if (!signal) return;
 
             const live = signal.status === 'OA';
             const end = live ? now : utc(signal.updated ?? signal.created);
@@ -172,7 +171,7 @@ class TenantScreen {
                 .map(n => String(Math.floor(n)).padStart(2, '0'))
                 .join(':');
         });
-    }
+    }    
 
     listen() {
         document.addEventListener('signal:account', (ev) => {
@@ -203,7 +202,7 @@ class TenantScreen {
                 <td class="metadata">${this.metadata(signal.metadata)}</td>
                 <td class="source">${signal.asset}</td>
                 <td class="created">${Workspace.date(signal.created)}</td>
-                <td class="elapsed">00:00:00</td>
+                <td class="elapsed"></td>
                 <td class="autoclose"></td>
             `;
 

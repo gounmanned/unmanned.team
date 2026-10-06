@@ -342,20 +342,6 @@
   color: var(--text-body);
 }
 
-.signal-search-clear {
-  all: unset;
-  display: grid;
-  place-items: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  color: var(--text-faint);
-  cursor: pointer;
-}
-
-.signal-search-clear[hidden] { display: none; }
-.signal-search-clear:hover { background: var(--line); }
-.signal-search-clear .material-symbols-outlined { font-size: 18px; }
 #signal-table-wrap.searching > table,
 #signal-table-wrap.searching .signal-radar-watermark { display: none; }
 

@@ -10,12 +10,12 @@ class SignalSidebar {
     }
 
     reload() {
-        this.signal = { id: null, severity: 4, status: "OA", asset: "", source: "email" };
+        this.signal = { id: null, kind: 4, status: "OA", asset: "", source: "email" };
         this.render(this.signal, true);
     }
 
     inject(signal, updates) {
-        this.signal = this.state.signals[signal.account][signal.id]
+        this.signal = this.state.signals[signal.account][signal.id];
         this.render(this.signal, false);
         this.add(this.signal);
 
@@ -28,14 +28,15 @@ class SignalSidebar {
 
     render(signal, empty = false) {
         document.getElementById("updates-wrap").classList.toggle("empty", empty);
-        document.getElementById("signal-severity").value = signal.severity;
         document.getElementById("signal-status").value = signal.status;
         document.getElementById("signal-asset").value = signal.asset;
         document.getElementById("signal-asset").required = true;
         document.getElementById("signal-source").value = signal.source;
 
-        const banner = document.getElementById("severity-banner");
-        banner.dataset.severity = signal.severity;
+        const kind = Workspace.KIND[signal.kind];
+        document.getElementById("kind-banner").dataset.kind = signal.kind ?? "";
+        document.getElementById("signal-kind").textContent = kind?.label ?? "";
+        document.getElementById("signal-kind-icon").textContent = kind?.icon ?? "";
     }
 
     add(update) {
@@ -92,7 +93,7 @@ class SignalSidebar {
                     this.add(update);
                 } else {
                     await this.api.signals.create({
-                        severity: parseInt(this.signal.severity),
+                        kind: this.signal.kind,
                         status: this.signal.status,
                         asset: this.signal.asset,
                         source: this.signal.source,
@@ -108,24 +109,12 @@ class SignalSidebar {
         document.getElementById('signal-status').addEventListener('change', async (ev) => {
             this.signal.status = ev.target.selectedOptions[0].id;
             if (!this.signal?.id) return;
-            
+
             await SiteSpinner.withLoading(async () => {
                 const signal = await this.api.signals.patch(this.signal.id, { status: this.signal.status });
                 this.state.signals[signal.account][signal.id] = signal;
                 document.dispatchEvent(new CustomEvent('page:reload'));
                 document.querySelector('site-overlay').click();
-            });
-        });
-
-        document.getElementById('signal-severity').addEventListener('change', async (ev) => {
-            this.signal.severity = parseInt(ev.target.selectedOptions[0].value);
-            document.getElementById("severity-banner").dataset.severity = this.signal.severity;
-            if (!this.signal?.id) return;
-
-            await SiteSpinner.withLoading(async () => {
-                const signal = await this.api.signals.patch(this.signal.id, { severity: this.signal.severity });
-                this.state.signals[signal.account][signal.id] = signal;
-                document.dispatchEvent(new CustomEvent('page:reload'));
             });
         });
 

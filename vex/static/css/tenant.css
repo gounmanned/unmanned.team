@@ -378,9 +378,9 @@ tr[data-status="CV"] td.autoclose {
   background: url(https://cdn.unmanned.team/img/sparkle.svg) center / 18px 18px no-repeat;
 }
 
-/* severity chip */
+/* kind chip */
 
-.severity-chip {
+.kind-chip {
   display: inline-flex;
   align-items: center;
   padding: 3px 9px;
@@ -392,11 +392,11 @@ tr[data-status="CV"] td.autoclose {
   white-space: nowrap;
 }
 
-.severity-chip[data-severity="1"] { background: color-mix(in srgb, var(--sev-1) 10%, transparent); color: var(--sev-1); } /* critical */
-.severity-chip[data-severity="2"] { background: color-mix(in srgb, var(--sev-2) 10%, transparent); color: var(--sev-2); } /* high */
-.severity-chip[data-severity="3"] { background: color-mix(in srgb, var(--sev-3) 10%, transparent); color: var(--sev-3); } /* medium */
-.severity-chip[data-severity="4"] { background: color-mix(in srgb, var(--sev-4) 10%, transparent); color: var(--sev-4); } /* low */
-.severity-chip[data-severity="5"] { background: var(--surface-alt); color: var(--sev-5); }                                /* info */
+.kind-chip[data-kind="1"] { background: color-mix(in srgb, var(--sev-1) 10%, transparent); color: var(--sev-1); } /* security alert */
+.kind-chip[data-kind="2"] { background: var(--surface-alt); color: var(--sev-5); }                                /* event log */
+.kind-chip[data-kind="3"] { background: color-mix(in srgb, var(--sev-3) 10%, transparent); color: var(--sev-3); } /* prevention */
+.kind-chip[data-kind="4"] { background: color-mix(in srgb, var(--sev-4) 10%, transparent); color: var(--sev-4); } /* helpdesk */
+.kind-chip[data-kind="5"] { background: color-mix(in srgb, var(--brand) 10%, transparent); color: var(--brand); } /* red team */
 
 /* metadata column */
 

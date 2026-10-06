@@ -137,7 +137,7 @@ class TenantScreen {
 
     renderSpotlight() {
         const signal = Object.values(this.state.signals?.[this.state.account()] ?? {})
-            .filter(s => Number(s.severity) === 1 && String(s.status).startsWith('O'))
+            .filter(s => Number(s.kind) == 1 && String(s.status).startsWith('O'))
             .sort((a, b) => new Date(b.created) - new Date(a.created))[0];
 
         this._spotlight = signal;
@@ -197,7 +197,7 @@ class TenantScreen {
 
             row.innerHTML = `
                 <td><img src="${Workspace.avatar(signal.source)}"/></td>
-                <td class="severity"></td>
+                <td class="kind"></td>
                 <td class="name" title="${signal.name}">${signal.name.substring(0, 99)}</td>
                 <td class="id">#${signal.id}</td>
                 <td class="metadata">${this.metadata(signal.metadata)}</td>

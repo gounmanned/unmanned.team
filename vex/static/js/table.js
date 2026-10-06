@@ -14,10 +14,10 @@ class Table {
     }
 
     add(row, signal) {
-        const label = Workspace.SEVERITY[signal.severity];
-        row.querySelector("td.severity").innerHTML = `<span class="severity-chip" data-severity="${signal.severity}">${label}</span>`;
+        const kind = Workspace.KIND[signal.kind];
+        row.querySelector("td.kind").innerHTML = `<span class="kind-chip" data-kind="${signal.kind}">${kind?.label ?? '—'}</span>`;
         row.dataset.status = signal.status;
-        row.dataset.severity = signal.severity;
+        row.dataset.kind = signal.kind;
         row.dataset.updated = signal.updated;
 
         const closed = signal.status.startsWith("C");

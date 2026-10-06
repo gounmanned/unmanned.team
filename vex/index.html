@@ -80,7 +80,7 @@
             <img id="spotlight-img" alt="">
           </div>
           <div class="spotlight-body">
-            <div class="spotlight-label"><span class="spotlight-dot"></span>Critical</div>
+            <div class="spotlight-label"><span class="spotlight-dot"></span>Security alert</div>
             <h3 class="spotlight-name" id="spotlight-name"></h3>
           </div>
           <dl class="spotlight-stats">
@@ -139,7 +139,7 @@
         <table id="signal-table">
           <colgroup>
             <col style="width: 5%">    <!-- icon -->
-            <col style="width: 7%">    <!-- severity -->
+            <col style="width: 7%">    <!-- kind -->
             <col style="width: 28%">   <!-- name -->
             <col style="width: 10%">   <!-- id -->
             <col style="width: 6%">    <!-- metadata -->
@@ -151,7 +151,7 @@
           <thead>
             <tr>
               <th></th>
-              <th>Severity</th>
+              <th>Kind</th>
               <th>Name</th>
               <th>ID</th>
               <th>Metadata</th>
@@ -465,15 +465,9 @@
   <!--Sidebars-->
 
   <site-sidebar id="signal-sidebar">
-    <div id="severity-banner" class="severity-banner" data-severity="">
-      <span class="material-symbols-outlined banner-icon"></span>
-      <select id="signal-severity" class="banner-status-select">
-        <option value="1">Critical</option>
-        <option value="2">High</option>
-        <option value="3">Medium</option>
-        <option value="4">Low</option>
-        <option value="5">Info</option>
-      </select>
+    <div id="kind-banner" class="kind-banner" data-kind="">
+      <span class="material-symbols-outlined banner-icon" id="signal-kind-icon"></span>
+      <span class="banner-kind-label" id="signal-kind"></span>
     </div>
 
     <div class="container" id="updates-wrap">

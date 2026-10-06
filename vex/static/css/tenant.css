@@ -304,6 +304,105 @@
   .spotlight-stats > div:nth-child(2) { display: none; }
 }
 
+/* ── signal search ──────────────────────────────────────────────── */
+
+.signal-search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  height: 42px;
+  margin: 0 0 14px;
+  padding: 0 6px 0 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  box-sizing: border-box;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.signal-search:hover {
+  border-color: color-mix(in srgb, var(--brand) 25%, var(--line));
+}
+
+.signal-search > .material-symbols-outlined {
+  font-size: 20px;
+  color: var(--text-faint);
+}
+
+.signal-search input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font: inherit;
+  font-size: 14px;
+  color: var(--text-body);
+}
+
+.signal-search-clear {
+  all: unset;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  color: var(--text-faint);
+  cursor: pointer;
+}
+
+.signal-search-clear[hidden] { display: none; }
+.signal-search-clear:hover { background: var(--line); }
+.signal-search-clear .material-symbols-outlined { font-size: 18px; }
+#signal-table-wrap.searching > table,
+#signal-table-wrap.searching .signal-radar-watermark { display: none; }
+
+.signal-search-results {
+  display: none;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  contain: inline-size;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+#signal-table-wrap.searching .signal-search-results { display: block; }
+
+.signal-search-results li {
+  padding: 7px 8px;
+  border-bottom: 1px solid var(--line);
+  color: var(--text-body);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.signal-search-results li:hover {
+  background: color-mix(in srgb, var(--brand) 4%, transparent);
+}
+
+.signal-search-results mark {
+  padding: 0 1px;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--brand) 22%, transparent);
+  color: inherit;
+}
+
+.signal-search-results li.search-empty {
+  padding: 48px 8px;
+  border: 0;
+  font-family: inherit;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-align: center;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
 /* ── signal table ───────────────────────────────────────────────── */
 
 #signal-section {

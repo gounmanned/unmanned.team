@@ -116,8 +116,8 @@ class AuditApi extends Gateway {
         super();
     }
 
-    async messages(hours = 24) {
-        return this.call("GET", `audit?hours=${hours}`);
+    async search(query) {
+        return this.call("GET", `audit?q=${query}`);
     }
 }
 

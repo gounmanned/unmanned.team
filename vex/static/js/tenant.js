@@ -4,6 +4,8 @@ class TenantScreen {
         this.api = state.api;
         this.table = new Table('signal-table');
         this.month = new Date();
+        this.query = '';
+        this.results = [];
         this.listen();
 
         new ResizeObserver(() => this.renderTrend()).observe(document.getElementById('trend-svg'));
@@ -23,20 +25,21 @@ class TenantScreen {
             this.api.reset();
             this.table.clear();
             this.table.watermark(true);
+            this.clearSearch();
             this.renderSpotlight();
             this.renderTrend();
-            this.count();
             this.attack.reset();
         }).then(() => {
             this.notifications.refresh();
         });
     }
 
-    count() {
-        const rows = Array.from(this.table.body.children);
-        const open = rows.filter(r => !r.classList.contains('closed')).length;
-        const footnote = `${rows.length.toLocaleString()} signals ${open ? `(${open.toLocaleString()} open)` : ''}`;
-        document.getElementById('signal-count').textContent = footnote;
+    count(n) {
+        document.getElementById('signal-count').textContent = `Showing ${n.toLocaleString()} results`;
+    }
+
+    esc(s) {
+        return String(s ?? '').replace(/[&<>"']/g, c => `&#${c.charCodeAt(0)};`);
     }
 
     metadata(meta) {
@@ -45,8 +48,7 @@ class TenantScreen {
             return `<span class="material-symbols-outlined metadata-icon empty">data_object</span>`;
         }
 
-        const esc = s => String(s).replace(/[&<>"']/g, c => `&#${c.charCodeAt(0)};`);
-        const rows = entries.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('');
+        const rows = entries.map(([k, v]) => `<dt>${this.esc(k)}</dt><dd>${this.esc(v)}</dd>`).join('');
 
         return `
             <span class="metadata-hover">
@@ -62,6 +64,52 @@ class TenantScreen {
             Workspace.sidebars.signal.inject(signal, await this.api.signals.get(signal.id));
             document.getElementById('signal-sidebar').show();
         });
+    }
+
+    async search(q) {
+        this.query = q.trim();
+        if (!this.query) return this.clearSearch();
+
+        const query = this.query;
+        document.getElementById('signal-table-wrap').classList.add('searching');
+        document.getElementById('signal-search-clear').hidden = false;
+
+        let logs = [];
+        await SiteSpinner.withLoading(async () => {
+            try {
+                logs = await this.api.audit.search(query) ?? [];
+            } catch (err) {
+                console.error('audit query failed', err);
+            }
+        });
+
+        if (query !== this.query) return;
+        this.results = logs;
+        this.renderResults();
+    }
+
+    clearSearch() {
+        this.query = '';
+        this.results = [];
+        document.getElementById('signal-search-input').value = '';
+        document.getElementById('signal-search-clear').hidden = true;
+        document.getElementById('signal-search-results').innerHTML = '';
+        document.getElementById('signal-table-wrap').classList.remove('searching');
+        this.count(this.table.body.children.length);
+    }
+
+    renderResults() {
+        const pattern = new RegExp(`(${this.query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+        const highlight = text => String(text).split(pattern)
+            .map((part, i) => i % 2 ? `<mark>${this.esc(part)}</mark>` : this.esc(part))
+            .join('');
+
+        document.getElementById('signal-search-results').innerHTML = this.results.length
+            ? this.results.map(log => `<li>${highlight(log.message ?? log)}</li>`).join('')
+            : `<li class="search-empty">No logs match "${this.esc(this.query)}"</li>`;
+
+        document.getElementById('signal-table-wrap').scrollTop = 0;
+        this.count(this.results.length);
     }
 
     scheduleTrend() {
@@ -171,51 +219,39 @@ class TenantScreen {
                 .map(n => String(Math.floor(n)).padStart(2, '0'))
                 .join(':');
         });
-    }    
+    }
 
     listen() {
         document.addEventListener('signal:account', (ev) => {
-            const upsert = (row, signal) => {
-                this.table.add(row, signal);
-                this.table.watermark(false);
-                this.scheduleTrend();
-                this.attack.onSignal(signal);
-            };
-
-            this.state.track(ev.signal);
             const signal = ev.signal;
+            this.state.track(signal);
 
-            const row = document.createElement('tr');
-            row.id = signal.id;
-
-            const existing = this.table.body.querySelector(`tr#${CSS.escape(row.id)}`);
-            if (existing) {
-                upsert(existing, signal);
-                return;
+            let row = this.table.body.querySelector(`tr#${CSS.escape(String(signal.id))}`);
+            if (!row) {
+                row = document.createElement('tr');
+                row.id = signal.id;
+                row.innerHTML = `
+                    <td><img src="${Workspace.avatar(signal.source)}"/></td>
+                    <td class="kind"></td>
+                    <td class="name" title="${this.esc(signal.name)}">${this.esc(signal.name.substring(0, 99))}</td>
+                    <td class="id">#${signal.id}</td>
+                    <td class="metadata">${this.metadata(signal.metadata)}</td>
+                    <td class="source">${this.esc(signal.asset)}</td>
+                    <td class="created">${Workspace.date(signal.created)}</td>
+                    <td class="elapsed"></td>
+                    <td class="autoclose"></td>
+                `;
+                row.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    this.open(signal);
+                });
             }
 
-            row.innerHTML = `
-                <td><img src="${Workspace.avatar(signal.source)}"/></td>
-                <td class="kind"></td>
-                <td class="name" title="${signal.name}">${signal.name.substring(0, 99)}</td>
-                <td class="id">#${signal.id}</td>
-                <td class="metadata">${this.metadata(signal.metadata)}</td>
-                <td class="source">${signal.asset}</td>
-                <td class="created">${Workspace.date(signal.created)}</td>
-                <td class="elapsed"></td>
-                <td class="autoclose"></td>
-            `;
-
-            row.addEventListener('click', async (e) => {
-                e.stopPropagation();
-
-                await SiteSpinner.withLoading(async () => {
-                    await this.open(signal);
-                });
-            });
-
-            upsert(row, signal);
-            this.count();
+            this.table.add(row, signal);
+            this.table.watermark(false);
+            this.scheduleTrend();
+            this.attack.onSignal(signal);
+            if (!this.query) this.count(this.table.body.children.length);
         });
 
         document.getElementById('toggle').addEventListener('click', async () => {
@@ -234,6 +270,26 @@ class TenantScreen {
         document.getElementById('spotlight').addEventListener('click', async () => {
             if (!this._spotlight) return;
             await this.open(this._spotlight);
+        });
+
+        const input = document.getElementById('signal-search-input');
+
+        document.getElementById('signal-search').addEventListener('submit', (e) => {
+            e.preventDefault();
+            this.search(input.value);
+        });
+
+        input.addEventListener('input', () => {
+            if (!input.value.trim() && this.query) this.clearSearch();
+        });
+
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') this.clearSearch();
+        });
+
+        document.getElementById('signal-search-clear').addEventListener('click', () => {
+            this.clearSearch();
+            input.focus();
         });
     }
 }

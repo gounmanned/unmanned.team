@@ -313,21 +313,21 @@
   width: 100%;
   height: 42px;
   margin: 0 0 14px;
-  padding: 0 6px 0 14px;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  background: var(--surface);
+  padding: 0;
+  border: 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--text-faint) 40%, var(--line));
+  border-radius: 0;
+  background: transparent;
   box-sizing: border-box;
-  transition: border-color 0.15s, box-shadow 0.15s;
+  transition: border-color 0.15s;
 }
 
 .signal-search:hover {
-  border-color: color-mix(in srgb, var(--brand) 25%, var(--line));
+  border-bottom-color: color-mix(in srgb, var(--brand) 35%, var(--line));
 }
 
-.signal-search > .material-symbols-outlined {
-  font-size: 20px;
-  color: var(--text-faint);
+.signal-search:focus-within {
+  border-bottom-color: var(--brand);
 }
 
 .signal-search input {

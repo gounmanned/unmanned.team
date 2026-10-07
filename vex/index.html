@@ -137,8 +137,10 @@
     <section id="signal-section">
       <form class="signal-search" id="signal-search" role="search" autocomplete="off">
         <span class="material-symbols-outlined">search</span>
-        <input type="text" id="signal-search-input" placeholder="Security Information and Event Management"
-              enterkeyhint="search" spellcheck="false" aria-label="Search logs">
+        <input type="text" id="signal-search-input" placeholder="Security Information and Event Management" enterkeyhint="search" spellcheck="false">
+        <button type="button" class="view-switch" id="view-switch" aria-pressed="false" title="Board view">
+          <span class="material-symbols-outlined">view_kanban</span>
+        </button>
       </form>
 
       <div class="table-wrap" id="signal-table-wrap">
@@ -169,7 +171,8 @@
           </thead>
           <tbody></tbody>
         </table>
-
+        
+        <div class="signal-board" id="signal-board"></div>
         <ul class="signal-search-results" id="signal-search-results"></ul>
 
         <div class="signal-radar-watermark">
@@ -461,7 +464,6 @@
             <select id="signal-status">
               <optgroup label="Close">
                 <option id="CH" value="CH">Resolved</option>
-                <option id="CF" value="CF">False positive</option>
                 <option id="CR" value="CR">Accepted risk</option>
                 <option id="CV" value="CV">Auto-closed</option>
               </optgroup>

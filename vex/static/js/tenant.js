@@ -2,16 +2,20 @@ class TenantScreen {
     constructor(state) {
         this.state = state;
         this.api = state.api;
-        this.table = new Table('signal-table');
         this.month = new Date();
         this.query = '';
         this.results = [];
+
+        this.table = new Table('signal-table', {
+            open: signal => this.open(signal),
+            move: (signal, status) => this.move(signal, status),
+        });
+
         this.listen();
 
         new ResizeObserver(() => this.renderTrend()).observe(document.getElementById('trend-svg'));
         this.notifications = new Notifications(this.state);
         this.attack = new AttackMode(this.state, () => this.reload());
-        setInterval(() => this.tick(), 1000);
     }
 
     async reload() {
@@ -24,7 +28,6 @@ class TenantScreen {
         await SiteSpinner.withLoading(async() => {
             this.api.reset();
             this.table.clear();
-            this.table.watermark(true);
             this.clearSearch();
             this.renderSpotlight();
             this.renderTrend();
@@ -38,26 +41,6 @@ class TenantScreen {
         document.getElementById('signal-count').textContent = `Showing ${n.toLocaleString()} results`;
     }
 
-    esc(s) {
-        return String(s ?? '').replace(/[&<>"']/g, c => `&#${c.charCodeAt(0)};`);
-    }
-
-    metadata(meta) {
-        const entries = Object.entries(meta ?? {});
-        if (!entries.length) {
-            return `<span class="material-symbols-outlined metadata-icon empty">data_object</span>`;
-        }
-
-        const rows = entries.map(([k, v]) => `<dt>${this.esc(k)}</dt><dd>${this.esc(v)}</dd>`).join('');
-
-        return `
-            <span class="metadata-hover">
-                <span class="material-symbols-outlined metadata-icon">data_object</span>
-                <dl class="metadata-tooltip">${rows}</dl>
-            </span>
-        `;
-    }
-
     async open(signal) {
         await SiteSpinner.withLoading(async () => {
             Workspace.sidebars.signal.reset();
@@ -65,6 +48,13 @@ class TenantScreen {
             document.getElementById('signal-sidebar').show();
         });
     }
+
+    async move(signal, status) {
+        this.state.track(await this.api.signals.patch(signal.id, { status }));
+        document.dispatchEvent(new CustomEvent('page:reload'));
+    }
+
+    // ── search ─────────────────────────────────────────────────────
 
     async search(q) {
         this.query = q.trim();
@@ -93,22 +83,24 @@ class TenantScreen {
         document.getElementById('signal-search-input').value = '';
         document.getElementById('signal-search-results').innerHTML = '';
         document.getElementById('signal-table-wrap').classList.remove('searching');
-        this.count(this.table.body.children.length);
+        this.count(this.table.size);
     }
 
     renderResults() {
         const pattern = new RegExp(`(${this.query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
         const highlight = text => String(text).split(pattern)
-            .map((part, i) => i % 2 ? `<mark>${this.esc(part)}</mark>` : this.esc(part))
+            .map((part, i) => i % 2 ? `<mark>${Workspace.esc(part)}</mark>` : Workspace.esc(part))
             .join('');
 
         document.getElementById('signal-search-results').innerHTML = this.results.length
             ? this.results.map(log => `<li>${highlight(log.message ?? log)}</li>`).join('')
-            : `<li class="search-empty">No logs match "${this.esc(this.query)}"</li>`;
+            : `<li class="search-empty">No logs match "${Workspace.esc(this.query)}"</li>`;
 
         document.getElementById('signal-table-wrap').scrollTop = 0;
         this.count(this.results.length);
     }
+
+    // ── overview ───────────────────────────────────────────────────
 
     scheduleTrend() {
         if (this._trendFrame) return;
@@ -199,57 +191,19 @@ class TenantScreen {
         document.getElementById('spotlight-img').src = `static/img/source/${signal.source}.png`;
     }
 
-    tick() {
-        const signals = this.state.signals[this.state.account()];
-        const utc = v => Date.parse(/[zZ]|[+-]\d\d:?\d\d$/.test(v) ? v : `${v}Z`);
-        const now = Date.now();
-
-        this.table.body.querySelectorAll('tr[data-kind="4"] td.elapsed').forEach(cell => {
-            const signal = signals[cell.parentElement.id];
-            if (!signal) return;
-
-            const live = signal.status === 'OA';
-            const end = live ? now : utc(signal.updated ?? signal.created);
-            const t = Math.max(0, Math.floor((end - utc(signal.created)) / 1000));
-
-            cell.classList.toggle('live', live);
-            cell.textContent = [t / 3600, (t % 3600) / 60, t % 60]
-                .map(n => String(Math.floor(n)).padStart(2, '0'))
-                .join(':');
-        });
-    }
+    // ── events ─────────────────────────────────────────────────────
 
     listen() {
-        document.addEventListener('signal:account', (ev) => {
-            const signal = ev.signal;
+        document.addEventListener('signal:account', ({ signal }) => {
             this.state.track(signal);
-
-            let row = this.table.body.querySelector(`tr#${CSS.escape(String(signal.id))}`);
-            if (!row) {
-                row = document.createElement('tr');
-                row.id = signal.id;
-                row.innerHTML = `
-                    <td><img src="${Workspace.avatar(signal.source)}"/></td>
-                    <td class="kind"></td>
-                    <td class="name" title="${this.esc(signal.name)}">${this.esc(signal.name.substring(0, 99))}</td>
-                    <td class="id">#${signal.id}</td>
-                    <td class="metadata">${this.metadata(signal.metadata)}</td>
-                    <td class="source">${this.esc(signal.asset)}</td>
-                    <td class="created">${Workspace.date(signal.created)}</td>
-                    <td class="elapsed"></td>
-                    <td class="autoclose"></td>
-                `;
-                row.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    this.open(signal);
-                });
-            }
-
-            this.table.add(row, signal);
-            this.table.watermark(false);
+            this.table.add(signal);
             this.scheduleTrend();
             this.attack.onSignal(signal);
-            if (!this.query) this.count(this.table.body.children.length);
+            if (!this.query) this.count(this.table.size);
+        });
+
+        document.getElementById('view-switch').addEventListener('click', (e) => {
+            e.currentTarget.querySelector('span').textContent = this.table.toggleView() ? 'table_rows' : 'view_kanban';
         });
 
         document.getElementById('toggle').addEventListener('click', async () => {

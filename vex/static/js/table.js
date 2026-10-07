@@ -1,10 +1,10 @@
 class Table {
     static COLUMNS = {
-        OA: 'Active',
+        OA: 'Open',
         OB: 'Needs analyst',
         CR: 'Accepted risk',
         CH: 'Closed by analyst',
-        CV: 'Auto-closed',
+        CV: 'Closed by VEX',
     };
 
     constructor(id, { open, move }) {
@@ -103,7 +103,6 @@ class Table {
 
         if (closed) return this.body.append(row);
 
-        // unread first, then most recently updated; open rows above closed ones
         const anchor = [...this.body.children].find(r => {
             if (r === row || r.classList.contains('closed')) return false;
             const rUnread = r.classList.contains('unread');

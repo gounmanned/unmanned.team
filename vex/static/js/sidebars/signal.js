@@ -7,9 +7,11 @@ class SignalSidebar {
 
     reset() {
         document.getElementById("updates").innerHTML = "";
+        document.getElementById("response").value = "";
     }
 
     reload() {
+        this.reset();
         this.signal = { id: null, kind: 3, status: "OA", asset: "", source: "vex" };
         this.render(this.signal, true);
     }

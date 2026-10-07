@@ -29,16 +29,19 @@ class SignalSidebar {
     }
 
     render(signal, empty = false) {
-        document.getElementById("updates-wrap").classList.toggle("empty", empty);
-        document.getElementById("signal-status").value = signal.status;
-        document.getElementById("signal-asset").value = signal.asset;
-        document.getElementById("signal-asset").required = true;
-        document.getElementById("signal-source").value = signal.source;
-
+        const $ = (id) => document.getElementById(id);
         const kind = Workspace.KIND[signal.kind];
-        document.getElementById("kind-banner").dataset.kind = signal.kind ?? "";
-        document.getElementById("signal-kind").textContent = kind?.label ?? "";
-        document.getElementById("signal-kind-icon").textContent = kind?.icon ?? "";
+        const conf = signal.metadata?.confidence;
+
+        $("updates-wrap").classList.toggle("empty", empty);
+        $("signal-status").value = signal.status;
+        $("signal-asset").value = signal.asset;
+        $("signal-source").value = signal.source;
+        $("kind-banner").dataset.kind = signal.kind ?? "";
+        $("signal-kind").textContent = kind?.label ?? "";
+        $("signal-kind-icon").textContent = kind?.icon ?? "";
+        $("signal-confidence").hidden = conf == null;
+        $("signal-confidence").textContent = conf == null ? "" : `${Math.round(conf * 100)}% confidence`;
     }
 
     add(update) {

@@ -169,6 +169,19 @@
 
 #signal-sidebar .kind-banner .banner-kind-label { flex: 1; }
 
+#signal-sidebar .banner-confidence {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.22);
+  font-size: 10.5px;
+  letter-spacing: 0.4px;
+  white-space: nowrap;
+}
+#signal-sidebar .banner-confidence[data-level="low"] {
+  background: rgba(0,0,0,0.25);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.5);
+}
+
 #signal-sidebar .new-message .modern-textbox {
   width: 100%;
   height: 96px;

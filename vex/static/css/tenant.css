@@ -612,6 +612,7 @@ td.elapsed.live {
 
 #signal-table-wrap.board { overflow: hidden; }
 #signal-table-wrap.board > table { display: none; }
+#signal-table-wrap.board.searching { overflow-y: auto; }
 
 #signal-table-wrap.board:not(.searching):not(.empty) .signal-board {
   display: grid;

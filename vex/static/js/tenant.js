@@ -37,8 +37,19 @@ class TenantScreen {
         });
     }
 
-    count(n) {
-        document.getElementById('signal-count').textContent = `Showing ${n.toLocaleString()} results`;
+    count() {
+        const el = document.getElementById('signal-count');
+        el.hidden = !!this.query;
+        if (this.query) return;
+
+        const all = [...this.table.signals.values()];
+        const total = all.length;
+        const open = all.filter(s => String(s.status).startsWith('O')).length;
+        const closed = all.filter(s => String(s.status).startsWith('C')).length;
+        const auto = all.filter(s => s.status === 'CV').length;
+        const pct = closed ? Math.round((auto / closed) * 100) : 0;
+
+        el.innerHTML = `${total.toLocaleString()} signals · ${open.toLocaleString()} open · ${pct}% autoclosed`;
     }
 
     async open(signal) {
@@ -83,7 +94,7 @@ class TenantScreen {
         document.getElementById('signal-search-input').value = '';
         document.getElementById('signal-search-results').innerHTML = '';
         document.getElementById('signal-table-wrap').classList.remove('searching');
-        this.count(this.table.size);
+        this.count();
     }
 
     renderResults() {
@@ -97,7 +108,6 @@ class TenantScreen {
             : `<li class="search-empty">No logs match "${Workspace.esc(this.query)}"</li>`;
 
         document.getElementById('signal-table-wrap').scrollTop = 0;
-        this.count(this.results.length);
     }
 
     // ── overview ───────────────────────────────────────────────────
@@ -199,7 +209,7 @@ class TenantScreen {
             this.table.add(signal);
             this.scheduleTrend();
             this.attack.onSignal(signal);
-            if (!this.query) this.count(this.table.size);
+            if (!this.query) this.count();
         });
 
         document.getElementById('view-switch').addEventListener('click', (e) => {

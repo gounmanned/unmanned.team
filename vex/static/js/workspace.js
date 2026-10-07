@@ -138,17 +138,13 @@ class Workspace {
         return `static/img/source/${s}.png`;
     }
 
-    static debounce(fn, delay) {
-        let timer;
-        return (...args) => {
-            clearTimeout(timer);
-            timer = setTimeout(() => fn(...args), delay);
-        };
-    }
-
     static date(iso) {
         const d = new Date(iso);
         return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+    }
+
+    static esc(s) {
+        return String(s ?? '').replace(/[&<>"']/g, c => `&#${c.charCodeAt(0)};`);
     }
 
     static get sidebars() {

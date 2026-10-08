@@ -72,7 +72,6 @@ class Workspace {
                 this.sidebars = {
                     signal: new SignalSidebar(state),
                     backup: new BackupSidebar(state),
-                    risk: new RiskSidebar(state),
                 }
 
                 this.tenant = new TenantScreen(state);

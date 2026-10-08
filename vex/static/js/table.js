@@ -1,9 +1,9 @@
 class Table {
     static COLUMNS = {
         OA: 'Open',
-        OB: 'Waiting on analyst',
+        OB: 'Waiting on decision',
         CR: 'Accepted risk',
-        CH: 'Closed by analyst',
+        CH: 'Closed by human',
         CV: 'Closed by VEX',
     };
 

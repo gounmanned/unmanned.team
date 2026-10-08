@@ -1,0 +1,1118 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Shopify Access™ — Commerce, Now in Microsoft Access.</title>
+
+  <style>
+    :root {
+      --bg: #050706;
+      --panel: #0b100d;
+      --panel2: #101712;
+      --green: #95bf47;
+      --green-bright: #b7f36b;
+      --white: #f4f7f3;
+      --muted: #8d968f;
+      --border: #202a22;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--white);
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* ---------------- NAV ---------------- */
+
+    .announcement {
+      background: var(--green);
+      color: #071006;
+      text-align: center;
+      padding: 11px;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+
+    nav {
+      height: 76px;
+      padding: 0 6vw;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      background: rgba(5,7,6,.92);
+    }
+
+    .brand {
+      font-size: 18px;
+      font-weight: 900;
+      letter-spacing: -.04em;
+    }
+
+    .brand span {
+      color: var(--green);
+    }
+
+    .navlinks {
+      display: flex;
+      gap: 34px;
+      color: #aeb5af;
+      font-size: 13px;
+    }
+
+    .navlinks a:hover {
+      color: var(--green-bright);
+    }
+
+    .nav-button {
+      background: var(--green);
+      color: #071006;
+      padding: 12px 19px;
+      border-radius: 5px;
+      font-weight: 900;
+      font-size: 12px;
+    }
+
+    /* ---------------- HERO ---------------- */
+
+    .hero {
+      min-height: 860px;
+      padding: 115px 7vw 100px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+    }
+
+    .hero:before {
+      content: "";
+      position: absolute;
+      width: 900px;
+      height: 900px;
+      right: -300px;
+      top: -300px;
+      background: radial-gradient(
+        circle,
+        rgba(149,191,71,.16),
+        rgba(149,191,71,0) 65%
+      );
+      pointer-events: none;
+    }
+
+    .hero-content {
+      max-width: 1250px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid #354431;
+      background: #0d140e;
+      color: var(--green-bright);
+      padding: 9px 13px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+      margin-bottom: 30px;
+    }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      background: var(--green);
+      border-radius: 50%;
+      box-shadow: 0 0 14px var(--green);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(72px, 11vw, 178px);
+      line-height: .82;
+      letter-spacing: -.075em;
+      font-weight: 950;
+      max-width: 1250px;
+    }
+
+    h1 .green {
+      color: var(--green);
+    }
+
+    .hero-sub {
+      max-width: 850px;
+      font-size: 25px;
+      line-height: 1.35;
+      color: #c0c8c1;
+      margin: 45px 0 35px;
+    }
+
+    .hero-sub strong {
+      color: white;
+    }
+
+    .hero-buttons {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .primary {
+      display: inline-block;
+      background: var(--green);
+      color: #071006;
+      padding: 17px 27px;
+      border-radius: 5px;
+      font-size: 13px;
+      font-weight: 950;
+      letter-spacing: .03em;
+      box-shadow: 0 0 35px rgba(149,191,71,.18);
+    }
+
+    .secondary {
+      display: inline-block;
+      border: 1px solid #38423a;
+      padding: 16px 25px;
+      border-radius: 5px;
+      font-size: 13px;
+      font-weight: 800;
+      color: #c5cbc6;
+    }
+
+    .hero-footnote {
+      margin-top: 25px;
+      color: #69716b;
+      font-family: monospace;
+      font-size: 11px;
+    }
+
+    /* ---------------- TRUST ---------------- */
+
+    .trust {
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 35px 7vw;
+      text-align: center;
+    }
+
+    .trust-label {
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: .17em;
+      color: #59615b;
+      text-transform: uppercase;
+      margin-bottom: 25px;
+    }
+
+    .logos {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 70px;
+      flex-wrap: wrap;
+      color: #626a64;
+      font-weight: 900;
+      font-size: 18px;
+    }
+
+    .logos span:nth-child(2) {
+      font-family: Georgia, serif;
+    }
+
+    .logos span:nth-child(3) {
+      letter-spacing: .12em;
+    }
+
+    .logos span:nth-child(4) {
+      font-family: monospace;
+    }
+
+    /* ---------------- BIG STATEMENT ---------------- */
+
+    .statement {
+      padding: 180px 7vw;
+      max-width: 1500px;
+      margin: auto;
+    }
+
+    .statement p {
+      margin: 0;
+      font-size: clamp(48px, 7vw, 105px);
+      line-height: .98;
+      letter-spacing: -.06em;
+      font-weight: 900;
+    }
+
+    .statement .dim {
+      color: #3c453e;
+    }
+
+    .statement .green {
+      color: var(--green);
+    }
+
+    /* ---------------- PRODUCT ---------------- */
+
+    .product-section {
+      padding: 110px 7vw;
+      background: #080b09;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-label {
+      color: var(--green);
+      font-family: monospace;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .14em;
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      font-size: clamp(45px, 6vw, 82px);
+      line-height: .92;
+      letter-spacing: -.06em;
+      margin: 0;
+      max-width: 900px;
+    }
+
+    .section-intro {
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.7;
+      max-width: 720px;
+      margin-top: 25px;
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin-top: 70px;
+    }
+
+    .product-card {
+      min-height: 330px;
+      padding: 35px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .product-card:hover {
+      border-color: #405238;
+    }
+
+    .product-card .number {
+      font-family: monospace;
+      color: var(--green);
+      font-size: 12px;
+    }
+
+    .product-card h3 {
+      font-size: 30px;
+      letter-spacing: -.04em;
+      margin: 65px 0 14px;
+    }
+
+    .product-card p {
+      color: #7f8981;
+      line-height: 1.65;
+      font-size: 14px;
+    }
+
+    /* ---------------- ACCESS TERMINAL ---------------- */
+
+    .terminal-section {
+      padding: 150px 7vw;
+      text-align: center;
+    }
+
+    .terminal-section h2 {
+      font-size: clamp(50px, 7vw, 100px);
+      letter-spacing: -.065em;
+      line-height: .9;
+      margin: 0 auto 30px;
+    }
+
+    .terminal-section h2 span {
+      color: var(--green);
+    }
+
+    .terminal {
+      max-width: 1050px;
+      margin: 65px auto 0;
+      background: #030403;
+      border: 1px solid #293229;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 30px 100px rgba(0,0,0,.5);
+      text-align: left;
+    }
+
+    .terminal-bar {
+      background: #111511;
+      border-bottom: 1px solid #242c25;
+      padding: 13px 18px;
+      color: #626a63;
+      font: 11px monospace;
+    }
+
+    .terminal-body {
+      padding: 35px;
+      font: 14px/2 monospace;
+      color: #b8c0b9;
+    }
+
+    .terminal-body .green {
+      color: var(--green-bright);
+    }
+
+    .terminal-body .blue {
+      color: #8fc4ff;
+    }
+
+    .terminal-body .gray {
+      color: #535b55;
+    }
+
+    /* ---------------- STATS ---------------- */
+
+    .stats {
+      padding: 110px 7vw;
+      background: var(--green);
+      color: #081007;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 40px;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: clamp(50px, 6vw, 90px);
+      line-height: .9;
+      letter-spacing: -.07em;
+    }
+
+    .stat span {
+      display: block;
+      margin-top: 17px;
+      font-size: 11px;
+      font-weight: 950;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    /* ---------------- TESTIMONIALS ---------------- */
+
+    .testimonials {
+      padding: 150px 7vw;
+    }
+
+    .testimonial-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 30px;
+      margin-bottom: 65px;
+    }
+
+    .testimonial-header h2 {
+      margin: 0;
+      font-size: clamp(50px, 6vw, 85px);
+      letter-spacing: -.065em;
+      line-height: .9;
+    }
+
+    .testimonial-header p {
+      max-width: 350px;
+      color: #717a73;
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .testimonial-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .testimonial {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      padding: 35px;
+      border-radius: 7px;
+      min-height: 370px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .stars {
+      color: var(--green);
+      letter-spacing: 4px;
+      font-size: 15px;
+    }
+
+    .testimonial blockquote {
+      margin: 30px 0;
+      font-size: 21px;
+      line-height: 1.4;
+      letter-spacing: -.02em;
+    }
+
+    .customer {
+      border-top: 1px solid var(--border);
+      padding-top: 20px;
+      color: #737c75;
+      font-size: 12px;
+    }
+
+    .customer strong {
+      display: block;
+      color: white;
+      margin-bottom: 5px;
+      font-size: 13px;
+    }
+
+    /* ---------------- QUOTE ---------------- */
+
+    .big-quote {
+      padding: 180px 7vw;
+      background:
+        radial-gradient(
+          circle at center,
+          rgba(149,191,71,.12),
+          transparent 55%
+        );
+      text-align: center;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .big-quote blockquote {
+      max-width: 1250px;
+      margin: auto;
+      font-size: clamp(45px, 6vw, 88px);
+      line-height: .98;
+      letter-spacing: -.065em;
+      font-weight: 900;
+    }
+
+    .big-quote blockquote span {
+      color: var(--green);
+    }
+
+    .big-quote cite {
+      display: block;
+      margin-top: 35px;
+      color: #687169;
+      font-size: 12px;
+      font-style: normal;
+    }
+
+    /* ---------------- CTA ---------------- */
+
+    .final-cta {
+      padding: 170px 7vw;
+      text-align: center;
+    }
+
+    .final-cta h2 {
+      font-size: clamp(65px, 10vw, 150px);
+      line-height: .82;
+      letter-spacing: -.075em;
+      margin: 0 auto 40px;
+      max-width: 1200px;
+    }
+
+    .final-cta h2 span {
+      color: var(--green);
+    }
+
+    .final-cta p {
+      color: #818a83;
+      font-size: 18px;
+      margin-bottom: 40px;
+    }
+
+    /* ---------------- FOOTER ---------------- */
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 7vw;
+      display: flex;
+      justify-content: space-between;
+      color: #555e57;
+      font-size: 11px;
+    }
+
+    footer strong {
+      color: #9da69f;
+    }
+
+    @media(max-width: 850px) {
+      .navlinks {
+        display: none;
+      }
+
+      .product-grid,
+      .testimonial-grid,
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .testimonial-header {
+        display: block;
+      }
+
+      .testimonial-header p {
+        margin-top: 25px;
+      }
+
+      .logos {
+        gap: 25px;
+      }
+
+      .hero {
+        min-height: auto;
+        padding-top: 90px;
+      }
+
+      footer {
+        display: block;
+      }
+
+      footer div + div {
+        margin-top: 15px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="announcement">
+    Shopify Access™ is now generally available · The database modernization you've been waiting for
+  </div>
+
+  <nav>
+    <div class="brand">
+      <span>SHOPIFY</span> ACCESS™
+    </div>
+
+    <div class="navlinks">
+      <a href="#">Platform</a>
+      <a href="#">How It Works</a>
+      <a href="#">Enterprise</a>
+      <a href="#">Customers</a>
+      <a href="#">Pricing</a>
+    </div>
+
+    <a class="nav-button" href="#">BOOK A DEMO</a>
+  </nav>
+
+
+  <!-- HERO -->
+
+  <section class="hero">
+    <div class="hero-content">
+
+      <div class="eyebrow">
+        <span class="dot"></span>
+        The future of commerce data
+      </div>
+
+      <h1>
+        SHOPIFY.<br>
+        <span class="green">IN ACCESS.</span>
+      </h1>
+
+      <div class="hero-sub">
+        <strong>Your Shopify data.</strong><br>
+        Directly in Microsoft Access.<br>
+        <strong>In real time.</strong>
+      </div>
+
+      <div class="hero-buttons">
+        <a class="primary" href="#">
+          CONNECT SHOPIFY TO ACCESS →
+        </a>
+
+        <a class="secondary" href="#">
+          WATCH THE 39-HOUR DEMO
+        </a>
+      </div>
+
+      <div class="hero-footnote">
+        No CSVs. No exports. No data warehouses. No reason to learn Snowflake.
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- TRUST -->
+
+  <section class="trust">
+
+    <div class="trust-label">
+      Trusted by commerce organizations worldwide
+    </div>
+
+    <div class="logos">
+      <span>NORTHSTAR</span>
+      <span>Acme Retail Group</span>
+      <span>FUTURECOMMERCE</span>
+      <span>GLOBALMART</span>
+      <span>RetailOS</span>
+    </div>
+
+  </section>
+
+
+  <!-- BIG STATEMENT -->
+
+  <section class="statement">
+
+    <p>
+      <span class="dim">Everyone told you</span><br>
+      <span class="dim">to modernize your data.</span><br><br>
+      <span>We told you to</span><br>
+      <span class="green">open Access.</span>
+    </p>
+
+  </section>
+
+
+  <!-- PRODUCT -->
+
+  <section class="product-section">
+
+    <div class="section-label">
+      SHOPIFY ACCESS PLATFORM / 01
+    </div>
+
+    <h2 class="section-title">
+      Everything you love about Shopify.
+      Everything you refuse to give up about Access.
+    </h2>
+
+    <p class="section-intro">
+      Shopify Access™ connects your live Shopify environment to Microsoft
+      Access, giving your organization immediate access to commerce data
+      without forcing your team to adopt another platform.
+    </p>
+
+
+    <div class="product-grid">
+
+      <div class="product-card">
+        <div class="number">01 / LIVE DATA</div>
+
+        <h3>Real-Time.</h3>
+
+        <p>
+          Orders, customers, products, inventory and other Shopify data
+          continuously synchronize into your Access environment.
+          Real time means different things to different people.
+          Ours is very reasonable.
+        </p>
+      </div>
+
+
+      <div class="product-card">
+        <div class="number">02 / SQL</div>
+
+        <h3>Just Query It.</h3>
+
+        <p>
+          Use the SQL you already know. Build queries. Join tables.
+          Create reports. Add a WHERE clause and feel something you
+          haven't felt since 2007.
+        </p>
+      </div>
+
+
+      <div class="product-card">
+        <div class="number">03 / FORMS</div>
+
+        <h3>Forms Are Back.</h3>
+
+        <p>
+          Build beautiful, business-critical interfaces using the
+          Microsoft Access forms you've already built.
+          They're not legacy. They're proven.
+        </p>
+      </div>
+
+
+      <div class="product-card">
+        <div class="number">04 / REPORTING</div>
+
+        <h3>Reports.</h3>
+
+        <p>
+          Generate the reports your business depends on.
+          Export to Excel if you want. We won't judge you.
+        </p>
+      </div>
+
+
+      <div class="product-card">
+        <div class="number">05 / AUTOMATION</div>
+
+        <h3>Macros.</h3>
+
+        <p>
+          Your existing macros continue to work.
+          Your existing VBA continues to work.
+          Your existing IT department's blood pressure goes down.
+        </p>
+      </div>
+
+
+      <div class="product-card">
+        <div class="number">06 / ENTERPRISE</div>
+
+        <h3>Built to Last.</h3>
+
+        <p>
+          Shopify Access is engineered around a simple principle:
+          your commerce database should still work five years from now,
+          preferably on the same Windows machine.
+        </p>
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- TERMINAL -->
+
+  <section class="terminal-section">
+
+    <div class="section-label">
+      THE SHOPIFY ACCESS EXPERIENCE
+    </div>
+
+    <h2>
+      Modern commerce.<br>
+      <span>Classic database.</span>
+    </h2>
+
+    <div class="terminal">
+
+      <div class="terminal-bar">
+        Microsoft Access · Shopify_Production.accdb
+      </div>
+
+      <div class="terminal-body">
+
+        <div class="gray">Microsoft Access 365</div>
+
+        <br>
+
+        <div>
+          <span class="blue">SELECT</span>
+          OrderID, CustomerName, TotalPrice
+        </div>
+
+        <div>
+          <span class="blue">FROM</span>
+          Shopify_Orders
+        </div>
+
+        <div>
+          <span class="blue">WHERE</span>
+          FinancialStatus = <span class="green">'paid'</span>
+        </div>
+
+        <br>
+
+        <div class="gray">
+          Connecting to Shopify...
+        </div>
+
+        <div class="gray">
+          Synchronizing commerce environment...
+        </div>
+
+        <div>
+          <span class="green">✓ Connection established.</span>
+        </div>
+
+        <div>
+          <span class="green">✓ 14,293 orders available.</span>
+        </div>
+
+        <div>
+          <span class="green">✓ Data freshness: VERY GOOD.</span>
+        </div>
+
+        <div>
+          <span class="green">✓ Microsoft Access remains operational.</span>
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- STATS -->
+
+  <section class="stats">
+
+    <div class="stat">
+      <strong>0</strong>
+      <span>CSV files required</span>
+    </div>
+
+    <div class="stat">
+      <strong>24/7</strong>
+      <span>Commerce data availability</span>
+    </div>
+
+    <div class="stat">
+      <strong>2003</strong>
+      <span>Still completely relevant</span>
+    </div>
+
+    <div class="stat">
+      <strong>∞</strong>
+      <span>Queries you can write</span>
+    </div>
+
+  </section>
+
+
+  <!-- TESTIMONIALS -->
+
+  <section class="testimonials">
+
+    <div class="testimonial-header">
+
+      <div>
+        <div class="section-label">
+          CUSTOMER STORIES
+        </div>
+
+        <h2>
+          They get it.
+        </h2>
+      </div>
+
+      <p>
+        Thousands of commerce professionals are discovering what
+        Microsoft Access users have known for decades.
+      </p>
+
+    </div>
+
+
+    <div class="testimonial-grid">
+
+      <div class="testimonial">
+
+        <div>
+          <div class="stars">★★★★★</div>
+
+          <blockquote>
+            “We spent six months evaluating modern data platforms.
+            Then our controller asked why we couldn't just put Shopify
+            into Access. We went live Thursday.”
+          </blockquote>
+        </div>
+
+        <div class="customer">
+          <strong>Michael R.</strong>
+          VP of Technology · National Retailer
+        </div>
+
+      </div>
+
+
+      <div class="testimonial">
+
+        <div>
+          <div class="stars">★★★★★</div>
+
+          <blockquote>
+            “Our Access database has been running our business since
+            2008. Shopify Access means we finally don't have to
+            explain why.”
+          </blockquote>
+        </div>
+
+        <div class="customer">
+          <strong>Jennifer L.</strong>
+          Director of Operations · Commerce Company
+        </div>
+
+      </div>
+
+
+      <div class="testimonial">
+
+        <div>
+          <div class="stars">★★★★★</div>
+
+          <blockquote>
+            “I told our CIO we were moving our Shopify data into
+            Microsoft Access. He laughed. Then I showed him the
+            dashboard.”
+          </blockquote>
+        </div>
+
+        <div class="customer">
+          <strong>David K.</strong>
+          Senior Database Administrator
+        </div>
+
+      </div>
+
+
+      <div class="testimonial">
+
+        <div>
+          <div class="stars">★★★★★</div>
+
+          <blockquote>
+            “The real-time synchronization is incredible. We haven't
+            seen this level of performance since we upgraded from
+            Access 2007.”
+          </blockquote>
+        </div>
+
+        <div class="customer">
+          <strong>Sarah M.</strong>
+          VP, Digital Commerce
+        </div>
+
+      </div>
+
+
+      <div class="testimonial">
+
+        <div>
+          <div class="stars">★★★★★</div>
+
+          <blockquote>
+            “Our IT team wanted Snowflake. Our finance team wanted
+            Access. Shopify Access gave everyone what they wanted.”
+          </blockquote>
+        </div>
+
+        <div class="customer">
+          <strong>Robert T.</strong>
+          CFO · Multi-Brand Retail Group
+        </div>
+
+      </div>
+
+
+      <div class="testimonial">
+
+        <div>
+          <div class="stars">★★★★★</div>
+
+          <blockquote>
+            “Finally, a Shopify integration that respects the
+            database I've spent 14 years building.”
+          </blockquote>
+        </div>
+
+        <div class="customer">
+          <strong>Linda P.</strong>
+          Senior Business Systems Analyst
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- BIG QUOTE -->
+
+  <section class="big-quote">
+
+    <blockquote>
+      “The most important innovation in commerce data
+      <span>isn't new.</span>”
+    </blockquote>
+
+    <cite>
+      — Shopify Access Research Institute, 2026
+    </cite>
+
+  </section>
+
+
+  <!-- FINAL CTA -->
+
+  <section class="final-cta">
+
+    <h2>
+      Your Shopify.<br>
+      Your data.<br>
+      <span>Your Access.</span>
+    </h2>
+
+    <p>
+      It's time to stop apologizing for your database.
+    </p>
+
+    <a class="primary" href="#">
+      GET SHOPIFY ACCESS →
+    </a>
+
+  </section>
+
+
+  <footer>
+
+    <div>
+      <strong>SHOPIFY ACCESS™</strong>
+      · Commerce, now relational.
+    </div>
+
+    <div>
+      © 2026 Shopify Access, Inc. · All Rights Reserved
+    </div>
+
+  </footer>
+
+</body>
+</html>
+```

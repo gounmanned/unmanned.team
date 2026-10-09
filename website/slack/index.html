@@ -134,9 +134,8 @@ section.band{padding:112px 0}
 .step-n{font-size:14px;font-weight:900;letter-spacing:1px;text-transform:uppercase;color:var(--aubergine);margin:14px 0 12px}
 .stop h3{margin:0;font-size:34px;line-height:1.15;font-weight:900;letter-spacing:-.6px}
 .stop p{margin:16px 0 0;font-size:18px;line-height:1.65;color:var(--ink-2)}
-.finish .stop-body{display:block;padding-top:6px}
-.finish h3{font-size:28px}
-.finish p{margin-top:8px}
+.more-int{margin-top:18px;display:flex;align-items:center;gap:12px;font-size:16px;color:var(--ink-2)}
+.more-int .count{flex:0 0 auto;font-weight:900;font-size:15px;color:#fff;background:var(--aubergine);padding:4px 10px;border-radius:999px}
 .cmds{margin-top:24px;display:flex;flex-direction:column;gap:8px}
 .cmd{background:var(--ink);color:#fff;border-radius:6px;padding:13px 16px;font-size:15px;overflow-x:auto;white-space:nowrap}
 .cmd .k{color:var(--c-blue)}
@@ -390,6 +389,7 @@ footer nav{display:flex;gap:20px}
               <div class="cmd"><code><span class="k">/connect</span> microsoft <span class="v">&lt;credentials&gt;</span></code></div>
               <div class="cmd"><code><span class="k">/connect</span> google <span class="v">&lt;credentials&gt;</span></code></div>
             </div>
+            <div class="more-int"><span class="count">50+</span><span>more integrations connect the same way.</span></div>
           </div>
           <div class="panel" role="img" aria-label="Slack composer with /connect microsoft typed and the VEX command suggestions open" style="padding:22px">
             <div class="autocomplete" style="position:static;margin:0 0 10px;box-shadow:none">
@@ -442,8 +442,8 @@ footer nav{display:flex;gap:20px}
         </div>
       </li>
 
-      <li class="stop">
-        <div class="marker" aria-hidden="true">5</div>
+      <li class="stop finish">
+        <div class="marker" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></div>
         <div class="stop-body">
           <div>
             <div class="step-n">Step 5</div>
@@ -467,13 +467,6 @@ footer nav{display:flex;gap:20px}
         </div>
       </li>
 
-      <li class="stop finish">
-        <div class="marker" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></div>
-        <div class="stop-body">
-          <h3>You're set up</h3>
-          <p>VEX posts to your channel from here on.</p>
-        </div>
-      </li>
     </ol>
   </div>
 </section>
@@ -487,8 +480,8 @@ footer nav{display:flex;gap:20px}
       <!-- Drop Slack's official mark from Slack's brand assets page at this path. -->
       <span class="logo-tile"><img src="slack.png" alt="Slack"></span>
     </div>
-    <h2>Add VEX to your workspace</h2>
-    <p>Install. Run <code>/connect</code>. Setup done.</p>
+    <h2>Ready to Slack off?</h2>
+    <p>Install now. Run <code>/connect</code>. Setup done.</p>
   </div>
 </section>
 

@@ -158,6 +158,18 @@ section.band{padding:112px 0}
 .doc-link .grow{flex:1;min-width:0}
 .panel .msg{font-size:15px;line-height:1.46}
 .notice{margin-top:4px;border-left:4px solid var(--c-red);padding:4px 12px}
+.thread{padding:0;overflow:hidden}
+.thread-head{padding:14px 22px;border-bottom:1px solid var(--line);display:flex;align-items:baseline;gap:8px}
+.thread-head b{font-size:17px;font-weight:900}
+.thread-head span{font-size:14px;color:var(--muted)}
+.thread-body{padding:14px 22px 20px}
+.signal{margin-top:6px;border-left:4px solid var(--c-yellow);padding:4px 12px;display:flex;flex-direction:column;gap:4px}
+.signal b{font-weight:900}
+.sev{display:inline-block;font-size:11px;font-weight:900;letter-spacing:.5px;text-transform:uppercase;color:#7A5300;background:#FDF2D6;padding:2px 6px;border-radius:3px}
+.replies{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:13px;margin:8px 0}
+.replies::after{content:"";flex:1;height:1px;background:var(--line)}
+.closed{margin-top:4px;border-left:4px solid var(--c-green);padding:4px 12px}
+.status-pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:900;color:var(--green);background:#E3F4EE;padding:2px 8px;border-radius:999px;margin-top:6px}
 
 /* ---------- closing cta ---------- */
 .cta{position:relative;overflow:hidden;color:#fff;padding:128px 0;text-align:center;
@@ -322,7 +334,7 @@ footer nav{display:flex;gap:20px}
   <div class="wrap">
     <div class="section-head">
       <h2>How it works</h2>
-      <p>From install to connected, every step after the first click happens inside Slack.</p>
+      <p>From install to closing tickets, every step after the first click happens inside Slack.</p>
     </div>
 
     <ol class="journey">
@@ -398,6 +410,43 @@ footer nav{display:flex;gap:20px}
         <div class="stop-body">
           <div>
             <div class="step-n">Step 4</div>
+            <h3>Close tickets quickly</h3>
+            <p>When VEX reports a signal, handle it where it landed. Reply <code class="ic" style="font-size:15px">close</code> in the thread and VEX closes the ticket for you. No dashboard, no extra clicks.</p>
+            <div class="cmds">
+              <div class="cmd"><code><span class="k">close</span> <span style="color:rgba(255,255,255,.55)">— reply in any VEX thread</span></code></div>
+            </div>
+          </div>
+          <div class="panel thread" role="img" aria-label="A Slack thread where VEX reports a suspicious sign-in signal, a teammate replies close, and VEX confirms the ticket is closed">
+            <div class="thread-head"><b>Thread</b><span># security-ops</span></div>
+            <div class="thread-body">
+              <div class="msg">
+                <div class="av av-vex"><img src="https://cdn.unmanned.team/img/logo.png" alt=""></div>
+                <div style="min-width:0"><div><span class="who">VEX</span> <span class="app-tag">APP</span> <span class="time">3:07 PM</span></div>
+                  <div class="signal"><span class="sev">Signal</span><b>Suspicious sign-in for j.alvarez</b><span>New location and device on a Microsoft 365 account.</span></div>
+                </div>
+              </div>
+              <div class="replies">2 replies</div>
+              <div class="msg">
+                <div class="av" style="background:var(--c-blue)"></div>
+                <div><div><span class="who">Priya</span> <span class="time">3:12 PM</span></div><div>close</div></div>
+              </div>
+              <div class="msg">
+                <div class="av av-vex"><img src="https://cdn.unmanned.team/img/logo.png" alt=""></div>
+                <div><div><span class="who">VEX</span> <span class="app-tag">APP</span> <span class="time">3:12 PM</span></div>
+                  <div class="closed">Ticket closed by Priya.</div>
+                  <span class="status-pill"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>Closed</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </li>
+
+      <li class="stop">
+        <div class="marker" aria-hidden="true">5</div>
+        <div class="stop-body">
+          <div>
+            <div class="step-n">Step 5</div>
             <h3>Disconnect anytime</h3>
             <p>Switching providers or offboarding a tenant takes one command.</p>
             <div class="cmds">

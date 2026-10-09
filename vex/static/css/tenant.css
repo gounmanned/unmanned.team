@@ -616,7 +616,7 @@ td.elapsed.live {
 
 #signal-table-wrap.board:not(.searching):not(.empty) .signal-board {
   display: grid;
-  grid-template-columns: repeat(5, minmax(200px, 1fr));
+  grid-template-columns: repeat(4, minmax(200px, 1fr));
   height: 100%;
   overflow-x: auto;
 }

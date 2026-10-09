@@ -1,6 +1,5 @@
 class Table {
     static COLUMNS = {
-        OA: 'Open',
         OB: 'Waiting on decision',
         CR: 'Accepted risk',
         CH: 'Closed by human',
@@ -73,7 +72,7 @@ class Table {
 
     elapsed(signal) {
         const utc = v => Date.parse(/[zZ]|[+-]\d\d:?\d\d$/.test(v) ? v : `${v}Z`);
-        const end = signal.status === 'OA' ? Date.now() : utc(signal.updated ?? signal.created);
+        const end = signal.status == 'OB' ? Date.now() : utc(signal.updated ?? signal.created);
         const t = Math.max(0, Math.floor((end - utc(signal.created)) / 1000));
 
         return [t / 3600, (t % 3600) / 60, t % 60]
@@ -98,7 +97,7 @@ class Table {
             <td class="metadata">${this.metadata(signal.metadata)}</td>
             <td class="source">${Workspace.esc(signal.asset)}</td>
             <td class="created">${Workspace.date(signal.created)}</td>
-            <td class="elapsed ${timed && signal.status === 'OA' ? 'live' : ''}">${timed ? this.elapsed(signal) : ''}</td>
+            <td class="elapsed ${timed && signal.status === 'OB' ? 'live' : ''}">${timed ? this.elapsed(signal) : ''}</td>
             <td class="autoclose"></td>`;
 
         if (closed) return this.body.append(row);
@@ -137,7 +136,7 @@ class Table {
     }
 
     tick() {
-        this.body.querySelectorAll('tr[data-kind="4"][data-status="OA"] td.elapsed').forEach(cell => {
+        this.body.querySelectorAll('tr[data-kind="4"][data-status="OB"] td.elapsed').forEach(cell => {
             cell.textContent = this.elapsed(this.signals.get(cell.parentElement.dataset.id));
         });
     }

@@ -12,7 +12,7 @@ class SignalSidebar {
 
     reload() {
         this.reset();
-        this.signal = { id: null, kind: 3, status: "OA", asset: "", source: "vex" };
+        this.signal = { id: null, kind: 3, status: "OB", asset: "", source: "vex" };
         this.render(this.signal, true);
     }
 

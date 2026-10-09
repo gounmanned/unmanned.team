@@ -121,78 +121,28 @@
 <body>
     <div class="container">
         <h1>Slack</h1>
-        <p>This guide walks you through connecting Slack so VEX can send events to a channel of your choice, using a Slack bot.</p>
+        <p>This guide walks you through connecting Slack so VEX can post events to a channel of your choice.</p>
 
-        <div class="important-note">
-            <strong>Notification integration:</strong> Slack is a <strong>notification integration</strong>, not a security monitor. It doesn't scan or find issues on its own — it delivers events (alerts, status changes, connection updates, etc.) from your other security monitors into Slack in real time. Set up a security monitor separately to generate the events this integration will notify you about.
-        </div>
-
-        <h2>Step 1: Create a Slack App</h2>
+        <h2>Step 1: Install the Slack app</h2>
         <ol>
-            <li>Go to <a href="https://api.slack.com/apps" target="_blank">api.slack.com/apps</a> and log into your workspace.</li>
-            <li>Click <strong>"Create New App"</strong>.</li>
-            <li>Choose <strong>"From scratch"</strong>.</li>
-            <li>Set the <strong>App Name</strong> to <code>VEX Notifications</code> and select your workspace.</li>
-            <li>Click <strong>"Create App"</strong>.</li>
+            <li>In Slack, open the <strong>App Directory</strong>, search for <strong>VEX</strong>, and click <strong>"Add to Slack"</strong>.</li>
+            <li>When Slack asks <strong>which channel</strong> VEX should post to, choose it (e.g. <code>#alerts</code>).</li>
+            <li>Review the permissions and click <strong>"Allow"</strong>.</li>
         </ol>
 
-        <h2>Step 2: Add the Bot Token Scopes</h2>
+        <h2>Step 2: Connect it in VEX</h2>
+        <p>Now link your VEX account to the workspace you just installed.</p>
         <ol>
-            <li>From your app's settings page, select <strong>"OAuth &amp; Permissions"</strong> under Features.</li>
-            <li>Scroll to <strong>"Scopes"</strong> and, under <strong>"Bot Token Scopes"</strong>, click <strong>"Add an OAuth Scope"</strong>.</li>
-            <li>Add the following scopes:
-                <ul>
-                    <li><code>chat:write</code></li>
-                    <li><code>app_mentions:read</code></li>
-                    <li><code>commands</code></li>
-                    <li><code>channels:history</code></li>
-                    <li><code>users:read</code></li>
-                    <li><code>users:read.email</code></li>
-                </ul>
-            </li>
-        </ol>
-
-        <h2>Step 3: Install the App</h2>
-        <ol>
-            <li>Scroll back to the top of the "OAuth &amp; Permissions" page.</li>
-            <li>Click <strong>"Install to Workspace"</strong>, review the permissions, and click <strong>"Allow"</strong>.</li>
-        </ol>
-
-        <h2>Step 4: Copy the Bot Token</h2>
-        <ol>
-            <li>After installing, you'll land back on "OAuth &amp; Permissions".</li>
-            <li>Copy the <strong>"Bot User OAuth Token"</strong> at the top of the page. It starts with <code>xoxb-</code>.</li>
-        </ol>
-
-        <div class="important-note">
-            <strong>Treat this token as a secret.</strong> Anyone who has it can post messages as your bot. Don't commit it to source control or share it outside your team.
-        </div>
-
-        <h2>Step 5: Choose a Channel</h2>
-        <ol>
-            <li>Decide which channel you want VEX to post notifications to, and note its name (e.g. <code>#security-alerts</code>).</li>
-            <li>In Slack, open that channel and invite the bot with:
-                <pre>/invite @VEX Notifications</pre>
-            </li>
-        </ol>
-
-        <div class="important-note">
-            <strong>The bot must be a member of the channel.</strong> If it isn't invited, VEX won't be able to post there and connection testing will fail with <code>not_in_channel</code>.
-        </div>
-
-        <h2>Step 6: Upload Bot Credentials to VEX</h2>
-        <ol>
-            <li>Create a new text file and name it <code>slack.json</code>.</li>
-            <li>Using the token from Step 4 and the channel from Step 5, create a JSON object with this structure:</li>
+            <li>Find your Slack <strong>team ID</strong>: open Slack in a web browser and check the address bar. It reads something like <code>app.slack.com/client/T0123ABCD/…</code> — the part starting with <code>T</code> is your team ID.</li>
+            <li>In VEX, add the Slack integration using this JSON, with your own team ID:</li>
         </ol>
         <pre>
 {
-    "token": "xoxb-your-bot-token-here",
-    "channel": "#security-alerts"
+    "team": "T0123ABCD"
 }
         </pre>
         <ol start="3">
-            <li>Save this in VEX</li>
+            <li>Connect.</li>
         </ol>
     </div>
 </body>

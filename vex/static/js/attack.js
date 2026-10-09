@@ -32,7 +32,6 @@ class AttackMode {
     }
 
     reset() {
-        this.close();
         this.el.target.innerHTML = '';
     }
 

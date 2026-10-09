@@ -125,20 +125,19 @@
 
         <h2>Step 1: Install the Slack app</h2>
         <ol>
-            <li>In Slack, open the <strong>App Directory</strong>, search for <strong>VEX</strong>, and click <strong>"Add to Slack"</strong>.</li>
+            <li>Go to https://unmanned.team/slack and click to connect.</li>
             <li>When Slack asks <strong>which channel</strong> VEX should post to, choose it (e.g. <code>#alerts</code>).</li>
             <li>Review the permissions and click <strong>"Allow"</strong>.</li>
         </ol>
 
-        <h2>Step 2: Connect it in VEX</h2>
-        <p>Now link your VEX account to the workspace you just installed.</p>
+        <h2>Step 2: Attach to your VEX account</h2>
         <ol>
             <li>Find your Slack <strong>team ID</strong>: open Slack in a web browser and check the address bar. It reads something like <code>app.slack.com/client/T0123ABCD/…</code> — the part starting with <code>T</code> is your team ID.</li>
-            <li>In VEX, add the Slack integration using this JSON, with your own team ID:</li>
+            <li>In VEX, add the Slack monitor using this JSON:</li>
         </ol>
         <pre>
 {
-    "team": "T0123ABCD"
+    "teamID": "<YOUR TEAM ID>"
 }
         </pre>
         <ol start="3">

@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VEX — Simply autonomous security</title>
+<meta name="description" content="SOC, MDR, XDR, CTEM… twelve acronyms in, one answer out: simply autonomous security.">
+<link rel="icon" type="image/png" href="https://cdn.unmanned.team/img/logo.png">
+<link rel="stylesheet" href="https://cdn.unmanned.team/css/global.css">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0b0c0d;
+    --white:#fcfcfa;
+    --pink:#e01280;
+    --pink-text:#d1107a;
+    --gray-line:#dcdcd8;
+    --gray-faint:#c4c4c4;
+    --surface-dark:#6c6c70;
+    --nav-link:#6b7280;
+    --db-ink:#f3f3f0;
+    --db-mid:#8a8a8e;
+    --classbar-h:26px;
+    --top-h:61px;
+    /* normally supplied by global.css; fallback so this file previews on its own */
+    --surface:var(--surface-base,#ffffff);
+    --loop:10s;   /* one full show: acronyms in (0–3.3s), crunch, title out and hold, fade, repeat */
+  }
+  *{box-sizing:border-box;}
+  html{overflow-x:hidden;scrollbar-gutter:stable;}
+  body{margin:0;padding-top:var(--classbar-h);background:var(--surface);color:var(--ink);font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;}
+  h1,p{margin:0;}
+  a{color:inherit;}
+  ::selection{background:var(--pink);color:#fff;}
+  a:focus-visible{outline:1.5px solid var(--pink);outline-offset:4px;}
+  .wrap{width:min(1100px,calc(100% - 48px));margin:0 auto;}
+
+  .status-dot{
+    width:8px;height:8px;border-radius:50%;background:var(--pink);
+    box-shadow:0 0 0 0 rgba(224,18,128,0.5);animation:pulse 2.2s 2;flex-shrink:0;display:inline-block;
+  }
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(224,18,128,0.45);}
+    70%{box-shadow:0 0 0 8px rgba(224,18,128,0);}
+    100%{box-shadow:0 0 0 0 rgba(224,18,128,0);}
+  }
+
+  /* ---------- CLASS BAR + HEADER ---------- */
+  .classbar{
+    position:fixed;top:0;left:0;right:0;z-index:60;background:var(--ink);color:var(--gray-faint);
+    font-size:9.5px;line-height:1.5;letter-spacing:0.16em;text-transform:uppercase;text-align:center;padding:6px 0;
+  }
+  .site-top{position:sticky;top:var(--classbar-h);z-index:50;}
+  .site-header{background:var(--surface);border-bottom:1px solid var(--gray-line);box-shadow:0 4px 8px -4px rgba(11,12,13,0.1);}
+  .header-inner{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:18px 0;}
+  .header-left{display:flex;align-items:center;gap:16px;min-width:0;}
+  .brand{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:800;line-height:1.5;letter-spacing:0.01em;text-decoration:none;color:var(--ink);}
+  .brand-tag{font-size:11px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;color:var(--surface-dark);white-space:nowrap;}
+  .header-links{display:flex;align-items:center;gap:32px;}
+  .header-link{display:inline-flex;align-items:center;gap:6px;font-weight:600;font-size:15px;line-height:1.5;color:var(--nav-link);text-decoration:none;transition:color 0.2s ease;}
+  .header-link:hover{color:var(--ink);}
+  .header-link--cta{border-bottom:1px solid var(--pink);}
+  .header-link--cta .arrow{color:var(--pink-text);transition:transform 0.2s ease;}
+  .header-link--cta:hover .arrow{transform:translateX(3px);}
+  @media (max-width:700px){
+    :root{--classbar-h:24px;}
+    .classbar{font-size:8px;}
+    .header-link:not(.header-link--cta){display:none;}
+  }
+  @media (max-width:560px){.brand-tag{display:none;}}
+
+  /* ---------- HERO: fills the first screen ---------- */
+  .hero{
+    position:relative;overflow:hidden;background:var(--surface);
+    min-height:calc(100svh - var(--classbar-h) - var(--top-h));
+    display:flex;align-items:center;justify-content:center;padding:24px 0;
+  }
+
+  /* The stage is a 1200 × 680 grid on wide screens (600 × 900 on phones). Every size inside is a
+     multiple of --u, so the whole scene scales with the screen. */
+  .stage{
+    position:relative;container-type:inline-size;
+    width:min(1400px,calc(100% - 32px),calc((100svh - var(--classbar-h) - var(--top-h) - 48px) * 1200 / 680));
+    aspect-ratio:1200 / 680;
+  }
+  .stage-inner{
+    position:absolute;inset:0;--u:calc(100cqw / 1200);
+    /* machine placement */
+    --mx:30;--my:204;--mw:520;
+    /* where the acronyms drop in: x = --k * --x + --off, falling to --fy over the throat --cx */
+    --k:0.85;--off:-10;--cx:253;--fy:340;
+    --floor:653;
+  }
+
+  /* the floor, across the full stage */
+  .stage-inner::after{content:'';position:absolute;left:0;right:0;top:calc(var(--floor) * var(--u));height:2px;background:var(--gray-line);}
+
+  .machine-art{
+    position:absolute;left:calc(var(--mx) * var(--u));top:calc(var(--my) * var(--u));
+    width:calc(var(--mw) * var(--u));height:auto;overflow:visible;
+  }
+
+  /* ---------- STEP 1: ACRONYMS INTO THE CHIPPER ---------- */
+  .chip{
+    position:absolute;top:calc(-10 * var(--u));
+    left:calc((var(--x) * var(--k) + var(--off)) * var(--u));
+    font-family:'JetBrains Mono',monospace;font-weight:800;font-size:calc(30 * var(--u));line-height:1;
+    letter-spacing:0.02em;color:var(--ink);background:var(--white);border:2px solid var(--ink);border-radius:2px;
+    padding:calc(10 * var(--u)) calc(16 * var(--u));white-space:nowrap;
+    box-shadow:calc(5 * var(--u)) calc(5 * var(--u)) 0 rgba(11,12,13,0.18);
+    opacity:0;transform:translate(-50%,0);
+    animation:feed var(--loop) cubic-bezier(0.5,0,0.9,0.5) infinite;
+    animation-delay:calc(var(--i) * 0.22s);
+    z-index:2;
+  }
+  @keyframes feed{
+    0%{opacity:0;transform:translate(-50%,0) rotate(0deg);}
+    1.5%{opacity:1;}
+    8%{opacity:1;transform:translate(calc(-50% + (var(--cx) - var(--x) * var(--k) - var(--off)) * 0.85 * var(--u)), calc((var(--fy) - 20) * var(--u))) rotate(var(--rot));}
+    9.5%{opacity:0;transform:translate(calc(-50% + (var(--cx) - var(--x) * var(--k) - var(--off)) * var(--u)), calc((var(--fy) + 20) * var(--u))) rotate(var(--rot)) scale(0.1);}
+    100%{opacity:0;transform:translate(calc(-50% + (var(--cx) - var(--x) * var(--k) - var(--off)) * var(--u)), calc((var(--fy) + 20) * var(--u))) rotate(var(--rot)) scale(0.1);}
+  }
+
+  /* machine drawing */
+  .hopper{fill:var(--white);stroke:var(--ink);stroke-width:2.5;stroke-linejoin:round;}
+  .rim{stroke:var(--ink);stroke-width:6;stroke-linecap:square;}
+  .body{fill:var(--ink);}
+  .window{fill:#1d1e21;stroke:var(--pink);stroke-width:1.5;}
+  .blade-ring{fill:none;stroke:var(--pink);stroke-width:2.5;}
+  .blade{stroke:var(--pink);stroke-width:3;stroke-linecap:round;}
+  .hub{fill:var(--pink);}
+  .plate{font-family:'JetBrains Mono',monospace;font-weight:800;font-size:13px;letter-spacing:0.2em;fill:var(--db-ink);text-anchor:middle;}
+  .leg{stroke:var(--ink);stroke-width:3.5;stroke-linecap:round;}
+  .bucket{fill:var(--white);stroke:var(--ink);stroke-width:2;stroke-linejoin:round;}
+  .ground{stroke:var(--gray-line);stroke-width:1.5;}
+  .scrap{font-family:'JetBrains Mono',monospace;font-weight:500;font-size:10px;fill:var(--db-mid);opacity:0;transform-box:fill-box;transform-origin:center;animation:scrap 1.2s ease-in infinite;}
+
+  .machine{animation:shake 0.2s steps(1) infinite;}
+  .blades{transform-box:fill-box;transform-origin:center;animation:spin 0.5s linear infinite;}
+  .flash{fill:var(--pink);opacity:0;transform-box:fill-box;transform-origin:left center;animation:flash var(--loop) ease-out 3.5s infinite;}
+  .window{animation:windowHot var(--loop) ease-out 2.6s infinite;}
+
+  @keyframes shake{
+    0%{transform:translate(0,0);}
+    25%{transform:translate(0.8px,-0.6px);}
+    50%{transform:translate(-0.7px,0.5px);}
+    75%{transform:translate(0.6px,0.7px);}
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+  @keyframes scrap{
+    0%{opacity:0;transform:translate(0,0) rotate(0deg);}
+    15%,80%{opacity:1;}
+    100%{opacity:0;transform:translate(var(--sx,0px),30px) rotate(var(--sr,40deg));}
+  }
+  @keyframes windowHot{
+    0%,100%{fill:#1d1e21;}
+    6%,10%{fill:#3a0a24;}
+    16%{fill:#1d1e21;}
+  }
+  /* the blast at the chute mouth as the title comes out */
+  @keyframes flash{
+    0%{opacity:0;transform:scaleX(0.2);}
+    2%{opacity:0.9;transform:scaleX(1);}
+    7%{opacity:0;transform:scaleX(1.6);}
+    100%{opacity:0;}
+  }
+
+  /* ---------- STEP 2: THE TITLE BLASTS OUT ---------- */
+  .title{
+    position:absolute;left:calc(var(--tx) * var(--u));top:calc(var(--ty) * var(--u));
+    --tx:556;--ty:320;
+    font-weight:900;font-size:calc(var(--fs) * var(--u));--fs:106;line-height:0.92;letter-spacing:-0.045em;
+    color:var(--ink);z-index:3;
+  }
+  .title .w{display:block;opacity:0;transform-origin:left center;
+    animation:pop var(--loop) cubic-bezier(0.2,1.4,0.4,1) infinite;
+  }
+  .title .w{--sx:-21;}
+  .title .w1{--sy:89;animation-delay:3.6s;}
+  .title .w2{--sy:-8;animation-delay:3.78s;color:var(--pink);}
+  .title .w3{--sy:-106;animation-delay:3.96s;}
+  @keyframes pop{
+    0%{opacity:0;transform:translate(calc(var(--sx,-30) * var(--u)), calc(var(--sy) * var(--u))) scale(0.08);}
+    1%{opacity:1;}
+    5%{opacity:1;transform:translate(calc(6 * var(--u)),0) scale(1.08);}
+    7%{transform:none;}
+    54%{opacity:1;transform:none;}
+    58%{opacity:0;transform:translateY(calc(-14 * var(--u)));}
+    100%{opacity:0;}
+  }
+
+  /* ---------- PHONES: machine on top, title underneath ---------- */
+  @media (max-width:700px){
+    .stage{width:calc(100% - 16px);aspect-ratio:600 / 900;}
+    .stage-inner{--u:calc(100cqw / 600);--mx:40;--my:120;--mw:520;--k:0.85;--off:0;--cx:263;--fy:255;--floor:569;}
+    .chip{font-size:calc(36 * var(--u));}
+    .title{--tx:30;--ty:600;--fs:91;}
+    .title .w{--sx:515;}
+    .title .w1{--sy:-268;}
+    .title .w2{--sy:-352;}
+    .title .w3{--sy:-436;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .status-dot,.chip,.machine,.blades,.scrap,.flash,.window,.title .w{animation:none !important;}
+    .title .w{opacity:1;}
+  }
+</style>
+</head>
+<body>
+
+  <div class="classbar">UNMANNED · SIMPLY SECURE</div>
+
+  <div class="site-top">
+    <header class="site-header">
+      <div class="wrap header-inner">
+        <div class="header-left">
+          <a href="/" class="brand"><span class="status-dot"></span>VEX</a>
+          <span class="brand-tag">Don’t get hacked</span>
+        </div>
+        <nav class="header-links" aria-label="Main">
+          <a class="header-link" href="/managed">VEX MDR</a>
+          <a class="header-link header-link--cta" href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener">Schedule a chat <span class="arrow">→</span></a>
+        </nav>
+      </div>
+    </header>
+  </div>
+
+  <main>
+  <section class="hero">
+    <div class="stage">
+      <div class="stage-inner">
+
+        <!-- the chipper (drawn on its own 350 × 305 grid, placed by --mx / --my / --mw) -->
+        <svg class="machine-art" viewBox="130 150 350 305" aria-hidden="true">
+          <g class="machine">
+            <polygon class="hopper" points="150,170 410,170 330,252 230,252"/>
+            <line class="rim" x1="140" y1="170" x2="420" y2="170"/>
+            <line class="leg" x1="214" y1="368" x2="198" y2="450"/>
+            <line class="leg" x1="346" y1="368" x2="362" y2="450"/>
+            <rect class="body" x="200" y="250" width="160" height="122" rx="3"/>
+            <rect class="window" x="242" y="264" width="76" height="72" rx="2"/>
+            <g class="blades">
+              <circle class="blade-ring" cx="280" cy="300" r="30"/>
+              <line class="blade" x1="280" y1="300" x2="280" y2="274"/>
+              <line class="blade" x1="280" y1="300" x2="302.5" y2="313"/>
+              <line class="blade" x1="280" y1="300" x2="257.5" y2="313"/>
+              <circle class="hub" cx="280" cy="300" r="4"/>
+            </g>
+            <text class="plate" x="280" y="358">VEX</text>
+            <polygon class="body" points="358,282 470,300 470,342 358,342"/>
+          </g>
+          <!-- blast at the chute mouth -->
+          <polygon class="flash" points="470,300 510,284 510,358 470,342"/>
+          <!-- the bucket and the scraps falling into it -->
+          <polygon class="bucket" points="236,398 324,398 316,448 244,448"/>
+          <text class="scrap" x="262" y="378" style="animation-delay:0s;--sx:-4px;--sr:-50deg">S</text>
+          <text class="scrap" x="276" y="378" style="animation-delay:.3s;--sx:3px;--sr:70deg">X</text>
+          <text class="scrap" x="290" y="378" style="animation-delay:.6s;--sx:-2px;--sr:-30deg">M</text>
+          <text class="scrap" x="270" y="378" style="animation-delay:.9s;--sx:5px;--sr:90deg">C</text>
+          <text class="scrap" x="284" y="378" style="animation-delay:.15s;--sx:-6px;--sr:45deg">D</text>
+          <text class="scrap" x="296" y="378" style="animation-delay:.45s;--sx:2px;--sr:-80deg">A</text>
+          <text class="scrap" x="266" y="378" style="animation-delay:.75s;--sx:4px;--sr:30deg">R</text>
+          <text class="scrap" x="280" y="378" style="animation-delay:1.05s;--sx:-3px;--sr:-60deg">E</text>
+        </svg>
+
+        <!-- step 1: the twelve acronyms (--i = order, --x = where it drops from) -->
+        <div aria-hidden="true">
+          <span class="chip" style="--i:0;--x:150;--rot:-16deg">SOC</span>
+          <span class="chip" style="--i:1;--x:440;--rot:14deg">AISOC</span>
+          <span class="chip" style="--i:2;--x:230;--rot:-9deg">MDR</span>
+          <span class="chip" style="--i:3;--x:370;--rot:20deg">MSP</span>
+          <span class="chip" style="--i:4;--x:170;--rot:11deg">MSSP</span>
+          <span class="chip" style="--i:5;--x:460;--rot:-18deg">BAS</span>
+          <span class="chip" style="--i:6;--x:270;--rot:15deg">CTEM</span>
+          <span class="chip" style="--i:7;--x:400;--rot:-12deg">XDR</span>
+          <span class="chip" style="--i:8;--x:200;--rot:22deg">SIEM</span>
+          <span class="chip" style="--i:9;--x:420;--rot:-10deg">AEV</span>
+          <span class="chip" style="--i:10;--x:310;--rot:9deg">ASM</span>
+          <span class="chip" style="--i:11;--x:140;--rot:-20deg">ITSM</span>
+        </div>
+
+        <!-- step 2: what comes out -->
+        <h1 class="title">
+          <span class="w w1">Simply</span>
+          <span class="w w2">autonomous</span>
+          <span class="w w3">security.</span>
+        </h1>
+      </div>
+    </div>
+  </section>
+  </main>
+
+</body>
+</html>

@@ -134,6 +134,8 @@
   .header-link{display:inline-flex;align-items:center;gap:4px;font-weight:600;font-size:15px;line-height:1.5;color:var(--nav-link);text-decoration:none;transition:color 0.2s ease;}
   .header-link:hover{color:var(--ink);}
   .header-link[aria-current="page"]{color:var(--ink);} /* the page you're on */
+  .header-link--slack{gap:8px;}
+  .header-link--slack img{width:24px;height:24px;}
   .header-link--cta{border-bottom:1px solid var(--pink);}
   .header-link--cta img{width:16px;height:16px;transition:transform 0.2s ease;}
   .header-link--cta:hover img{transform:translateX(3px);}
@@ -529,6 +531,7 @@
         </div>
         <nav class="header-links" aria-label="Main">
           <a class="header-link" href="/managed" aria-current="page">VEX MDR</a>
+          <a class="header-link header-link--slack" href="/slack"><img src="../static/slack-logo.svg" width="24" height="24" alt="">VEX for Slack</a>
           <a class="header-link header-link--cta" href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener">Schedule a chat <img src="../static/icon-arrow-right-pink.svg" width="16" height="16" alt=""></a>
         </nav>
         <button class="menu-btn" type="button" aria-label="Open menu" aria-controls="site-nav" aria-expanded="false"><img src="../static/icon-menu.svg" width="32" height="32" alt=""></button>
@@ -550,6 +553,7 @@
       <ul class="nav-list">
         <li><a href="/"><span class="nav-link">Home</span><span class="nav-sub">Can your defense catch a single attack?</span></a></li>
         <li><a href="/managed" aria-current="page"><span class="nav-link">VEX MDR</span><span class="nav-sub">Continuous prevention, detection and response</span></a></li>
+        <li><a href="/slack"><span class="nav-link">VEX for Slack</span><span class="nav-sub">Security, handled. Right in Slack.</span></a></li>
         <li><a href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener"><span class="nav-link">Schedule a chat</span></a></li>
       </ul>
     </nav>

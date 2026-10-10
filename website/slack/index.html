@@ -1,498 +1,935 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>VEX for Slack</title>
-<meta name="description" content="Install VEX in Slack, pick a channel, and connect Microsoft 365 or Google Workspace with a slash command.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unmanned / VEX for Slack</title>
+<meta name="description" content="Security, handled. Right in Slack. VEX posts every alert already sorted, fixes what it can and brings in a human expert when judgment matters.">
+<link rel="apple-touch-icon" href="https://cdn.unmanned.team/img/logo.png">
+<link rel="icon" type="image/png" href="https://cdn.unmanned.team/img/logo.png">
+<meta property="og:title" content="VEX for Slack" />
+<meta property="og:description" content="Security, handled. Right in Slack." />
+<meta property="og:url" content="https://unmanned.team/slack" />
+<meta property="og:type" content="website" />
+<link rel="stylesheet" href="https://cdn.unmanned.team/css/global.css">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;0,900;1,400&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<!-- Lato is Slack's own font: used only inside the Slack mockups so they look like real Slack -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;800&family=Lato:ital,wght@0,400;0,700;0,900;1,400&display=swap" rel="stylesheet">
 <style>
-:root{
-  --aubergine:#4A154B;
-  --aubergine-dark:#3F0E40;
-  --aubergine-deep:#350D36;
-  --ink:#1D1C1D;
-  --ink-2:#454245;
-  --muted:#616061;
-  --line:#DDDDDD;
-  --line-soft:#EBEAEB;
-  --cream:#F4EDE4;
-  --cream-line:#E2D9CE;
-  --blue:#1264A3;
-  --active:#1164A3;
-  --green:#007A5A;
-  --c-blue:#36C5F0;
-  --c-green:#2EB67D;
-  --c-yellow:#ECB22E;
-  --c-red:#E01E5A;
-  --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
-}
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;font-family:Lato,'Helvetica Neue',Helvetica,Arial,sans-serif;color:var(--ink);background:#fff;-webkit-font-smoothing:antialiased;line-height:1.5}
-a{color:var(--blue)}
-a:hover{color:#0B4C7E}
-code{font-family:var(--mono)}
-img{display:block}
-.wrap{max-width:1180px;margin:0 auto;padding:0 28px}
+  :root{
+    --ink:#0b0c0d;
+    --pink:#e01280;
+    --pink-text:#d1107a;     /* pink for TEXT on light backgrounds (passes 4.5:1) */
+    --gray-line:#dcdcd8;
+    --gray-faint:#c4c4c4;
+    --surface-dark:#6c6c70;
+    --surface-gray:#f7f7f7;
+    --body:#2b2b2b;
+    --body-soft:#4b4c52;
+    --nav-link:#6b7280;      /* header links (4.8:1 on white) */
+    --classbar-h:26px;
+    --gutter:24px;           /* page side margins; 16px on phones */
+    --mono:'JetBrains Mono',ui-monospace,monospace;
+    /* Slack colors, from the Figma design (only this page uses them) */
+    --aubergine:#481249;     /* hero headline */
+    --band:#49144a;          /* "Every alert arrives already sorted" */
+    --band-soft:#6a3e6b;     /* "Close tickets quickly" */
+    --slack:'Lato',system-ui,sans-serif;
+    --s-ink:#1d1c1d;
+    --s-gray:#616061;
+    --s-time:#868686;
+    --s-btn:#007a5a;         /* Slack's green button */
+    --s-green:#2eb67d;
+    --s-yellow:#ecb22e;
+    --s-red:#e01e5a;
+  }
+  *{box-sizing:border-box;}
+  html{overflow-x:hidden;scroll-behavior:smooth;scrollbar-gutter:stable;}
+  body{margin:0;padding-top:var(--classbar-h);background:var(--surface);color:var(--ink);-webkit-font-smoothing:antialiased;}
+  h1,h2,h3,h4,p{margin:0;}
+  h1,h2,h3,h4{text-wrap:balance;}
+  p,li{text-wrap:pretty;}
+  a{color:inherit;}
+  img{display:block;}
+  .visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
+  ::selection{background:var(--pink);color:#fff;}
+  a:focus-visible,button:focus-visible{outline:1.5px solid var(--pink);outline-offset:4px;}
+  .wrap{width:min(1100px,calc(100% - 2 * var(--gutter)));margin:0 auto;}
+  .col{width:min(900px,calc(100% - 2 * var(--gutter)));margin:0 auto;} /* the design's 900px content column */
+  @media (max-width:700px){:root{--gutter:16px;}}
 
-/* ---------- nav ---------- */
-.nav{border-bottom:1px solid var(--line-soft);background:#fff}
-.nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:72px;flex-wrap:wrap;padding-top:12px;padding-bottom:12px}
-.brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--ink)}
-.brand img{height:32px;width:auto}
-.brand-sub{font-size:15px;color:var(--muted);border-left:1px solid var(--line);padding-left:12px}
-.nav-links{display:flex;align-items:center;gap:28px;font-size:15px;font-weight:700}
-.nav-links a{color:var(--ink);text-decoration:none}
-.nav-links a:hover{color:var(--aubergine)}
+  /* ---------- STATUS DOT ---------- */
+  .status-dot{
+    width:8px;height:8px;border-radius:50%;background:var(--pink);
+    box-shadow:0 0 0 0 rgba(224,18,128,0.5);animation:pulse 2.2s infinite;flex-shrink:0;display:inline-block;
+  }
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(224,18,128,0.45);}
+    70%{box-shadow:0 0 0 8px rgba(224,18,128,0);}
+    100%{box-shadow:0 0 0 0 rgba(224,18,128,0);}
+  }
+  .eyebrow-label{font-size:11px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;color:var(--surface-dark);display:flex;align-items:center;gap:11px;}
 
-/* ---------- hero ---------- */
-.hero{background:var(--aubergine);color:#fff;padding:96px 0 0;overflow:hidden}
-.hero-copy{max-width:820px;margin:0 auto;text-align:center;display:flex;flex-direction:column;align-items:center}
-.hero h1{margin:0;font-size:clamp(42px,6.6vw,80px);line-height:1.02;font-weight:900;letter-spacing:-2px}
-.hero h1 em{font-style:normal;color:var(--c-yellow)}
-.hero p{margin:26px 0 0;font-size:20px;line-height:1.55;color:rgba(255,255,255,.86);max-width:620px}
-.hero-cta{margin-top:36px}
-.hero-cta a{display:inline-block;border-radius:6px;line-height:0}
-.hero-cta a:focus-visible,.cta a:focus-visible{outline:3px solid var(--c-yellow);outline-offset:3px}
+  /* ---------- CLASSIFICATION BAR ---------- */
+  .classbar{
+    position:fixed;top:0;left:0;right:0;z-index:60;background:var(--ink);color:var(--gray-faint);
+    font-size:9.5px;line-height:1.5;letter-spacing:0.16em;text-transform:uppercase;text-align:center;padding:6px 0;
+  }
 
-/* ---------- slack window mock ---------- */
-.window{margin-top:68px;border-radius:12px 12px 0 0;overflow:hidden;background:#fff;color:var(--ink);box-shadow:0 -1px 0 rgba(255,255,255,.18)}
-.titlebar{background:var(--aubergine-deep);padding:9px 14px;display:flex;align-items:center;gap:14px}
-.dots{display:flex;gap:7px}
-.dots span{width:12px;height:12px;border-radius:50%}
-.search{flex:1;display:flex;justify-content:center;min-width:0}
-.search div{width:100%;max-width:520px;background:rgba(255,255,255,.17);border-radius:6px;padding:5px 12px;font-size:13px;color:rgba(255,255,255,.85);display:flex;align-items:center;gap:8px}
-.win-body{display:flex;min-height:500px}
-.sidebar{flex:0 0 236px;background:var(--aubergine-dark);color:rgba(255,255,255,.72);font-size:15px;padding-bottom:16px}
-.ws-name{padding:13px 18px;color:#fff;font-weight:900;font-size:18px;border-bottom:1px solid rgba(255,255,255,.12)}
-.sb-head{padding:14px 18px 6px;font-size:14px}
-.sb-item{padding:4px 18px 4px 28px;display:flex;align-items:center;gap:8px}
-.sb-item.active{background:var(--active);color:#fff;font-weight:700}
-.sb-item.unread{color:#fff;font-weight:900}
-.av-sm{width:18px;height:18px;border-radius:4px;flex:0 0 18px}
-.av-sm.vex{background:#fff;display:flex;align-items:center;justify-content:center}
-.av-sm.vex img{width:14px;height:14px;object-fit:contain}
-.channel{flex:1;min-width:0;display:flex;flex-direction:column}
-.ch-head{padding:12px 20px;border-bottom:1px solid var(--line);font-weight:900;font-size:18px}
-.msgs{flex:1;padding:14px 20px 8px;display:flex;flex-direction:column;font-size:15px;line-height:1.46}
-.day{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:13px;font-weight:700;margin-bottom:8px}
-.day::before,.day::after{content:"";flex:1;height:1px;background:var(--line)}
-.day span{border:1px solid var(--line);border-radius:999px;padding:3px 12px}
-.msg{display:flex;gap:10px;padding:6px 0}
-.av{flex:0 0 36px;height:36px;border-radius:6px;display:flex;align-items:center;justify-content:center}
-.av-vex{background:#fff;border:1px solid var(--line)}
-.av-vex img{width:26px;height:26px;object-fit:contain}
-.who{font-weight:900}
-.app-tag{font-size:10px;font-weight:700;color:var(--muted);background:var(--line-soft);padding:1px 4px;border-radius:3px;vertical-align:2px}
-.time{color:var(--muted);font-size:12px}
-.used{color:var(--muted);font-style:italic}
-.ic{font-style:normal;font-size:12px;color:#C01343;background:#F8F8F8;border:1px solid var(--line);padding:1px 4px;border-radius:3px}
-.mention{color:var(--blue);background:#E8F5FA;padding:0 2px;border-radius:3px}
-.block{margin-top:6px;border:1px solid var(--line);border-radius:8px;padding:14px 16px;max-width:500px;display:flex;flex-direction:column;gap:10px}
-.block-title{display:flex;align-items:center;gap:8px;font-weight:900;font-size:16px}
-.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 16px;font-size:14px}
-.btns{display:flex;gap:8px;flex-wrap:wrap}
-.sbtn{font-size:13px;font-weight:700;padding:6px 12px;border-radius:4px;border:1px solid #BBBBBB}
-.sbtn.primary{background:var(--green);border-color:var(--green);color:#fff}
-.composer-wrap{position:relative;margin:0 20px 18px}
-.autocomplete{position:absolute;left:0;right:0;bottom:100%;margin-bottom:6px;background:#fff;border:1px solid var(--line);border-radius:8px;box-shadow:0 4px 14px rgba(0,0,0,.12);overflow:hidden;font-size:14px}
-.ac-head{padding:8px 14px;font-size:12px;font-weight:700;color:var(--muted);border-bottom:1px solid var(--line-soft)}
-.ac-row{padding:8px 14px;display:flex;gap:10px;flex-wrap:wrap}
-.ac-row.on{background:var(--active);color:#fff}
-.ac-row .d{opacity:.85}
-.composer{border:1px solid #868686;border-radius:8px;overflow:hidden}
-.toolbar{padding:6px 10px;background:#F8F8F8;display:flex;gap:16px;color:var(--muted);font-size:13px;font-weight:900}
-.input{padding:10px 12px;font-size:14px}
-.caret{display:inline-block;width:1px;height:18px;background:var(--ink);vertical-align:-4px;margin-left:2px}
-.comp-foot{padding:6px 10px;display:flex;justify-content:flex-end}
-.send{width:30px;height:28px;border-radius:4px;background:var(--green);display:flex;align-items:center;justify-content:center}
+  /* ---------- STICKY HEADER (same as the homepage and VEX MDR) ---------- */
+  .site-top{position:sticky;top:var(--classbar-h);z-index:50;}
+  .site-header{background:var(--surface);border-bottom:1px solid var(--gray-line);}
+  .site-top .site-header{box-shadow:0 4px 8px -4px rgba(11,12,13,0.1);}
+  .header-inner{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:18px 0;}
+  .header-left{display:flex;align-items:center;gap:16px;min-width:0;}
+  .brand{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:800;line-height:1.5;letter-spacing:0.01em;text-decoration:none;color:var(--ink);}
+  .brand .status-dot{animation-iteration-count:2;}
+  .brand-tag{font-size:11px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;color:var(--surface-dark);white-space:nowrap;}
+  .menu-btn{flex-shrink:0;width:32px;height:32px;padding:0;border:none;background:none;cursor:pointer;display:flex;}
+  .menu-btn img{width:32px;height:32px;display:block;}
+  .header-links{display:flex;align-items:center;gap:32px;}
+  .header-link{display:inline-flex;align-items:center;gap:4px;font-weight:600;font-size:15px;line-height:1.5;color:var(--nav-link);text-decoration:none;transition:color 0.2s ease;}
+  .header-link:hover{color:var(--ink);}
+  .header-link[aria-current="page"]{color:var(--ink);}
+  .header-link--slack{gap:8px;}
+  .header-link--slack img{width:24px;height:24px;}
+  .header-link--cta{border-bottom:1px solid var(--pink);}
+  .header-link--cta img{width:16px;height:16px;transition:transform 0.2s ease;}
+  .header-link--cta:hover img{transform:translateX(3px);}
+  .site-top .menu-btn{display:none;}
+  @media (max-width:700px){
+    .header-links{display:none;}
+    .site-top .menu-btn{display:flex;}
+  }
 
-/* ---------- sections ---------- */
-section.band{padding:112px 0}
-.section-head{max-width:640px}
-.section-head h2{margin:0;font-size:clamp(32px,4.2vw,46px);line-height:1.1;font-weight:900;letter-spacing:-1px}
-.section-head p{margin:16px 0 0;font-size:19px;color:var(--ink-2);line-height:1.55}
+  /* ---------- HIDE ON SCROLL ---------- */
+  .classbar{transition:transform 0.4s cubic-bezier(0.49,0.025,0.685,1), opacity 0.4s cubic-bezier(0.49,0.025,0.685,1);}
+  .site-top .site-header{position:relative;z-index:1;transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);}
+  html.header-hidden .classbar{transform:translateY(-100%);opacity:0;}
+  html.header-hidden .site-top .site-header{transform:translateY(calc(-100% - var(--classbar-h)));}
+  html.header-hidden .site-top{pointer-events:none;}
 
-/* who */
-.roles{margin:56px 0 0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:64px}
-.roles li{border-top:1px solid var(--line);padding:22px 0;display:flex;justify-content:space-between;align-items:baseline;gap:24px}
-.roles b{font-size:20px;font-weight:900}
-.roles span{color:var(--muted);font-size:15px;text-align:right}
+  /* ---------- NAV MENU (phones) ---------- */
+  .nav-panel{
+    position:fixed;top:var(--classbar-h);left:0;right:0;bottom:0;z-index:55;background:var(--surface);
+    overflow-y:auto;overscroll-behavior:contain;
+    transform:translateY(-100%);visibility:hidden;
+    transition:transform 0.3s cubic-bezier(0.4,0,0.2,1), visibility 0s linear 0.3s;
+  }
+  .nav-panel.is-open{transform:translateY(0);visibility:visible;transition:transform 0.3s cubic-bezier(0.2,0.8,0.2,1), visibility 0s;}
+  html.nav-open,html.nav-open body{overflow:hidden;}
+  .nav-list{list-style:none;margin:0;padding:32px 0;display:flex;flex-direction:column;gap:13px;}
+  .nav-list li{padding-bottom:13px;border-bottom:1px solid var(--surface-alt);}
+  .nav-list a{display:flex;flex-direction:column;gap:4px;text-decoration:none;}
+  .nav-link{font-size:24px;line-height:1.5;letter-spacing:0.02em;color:var(--ink);}
+  .nav-sub{font-size:13.5px;line-height:1.5;color:var(--surface-dark);}
+  .nav-list a:hover .nav-link{color:var(--pink-text);}
 
-/* how: the journey */
-.how{background:var(--cream);padding-bottom:140px}
-.journey{position:relative;margin:88px 0 0;padding:0;list-style:none}
-.journey::before{content:"";position:absolute;left:27px;top:28px;bottom:28px;border-left:3px dashed #B9A7BA}
-.stop{position:relative;display:grid;grid-template-columns:56px minmax(0,1fr);column-gap:48px;padding-bottom:150px}
-.stop:last-child{padding-bottom:0}
-.marker{position:relative;z-index:1;width:56px;height:56px;border-radius:50%;background:var(--cream);border:3px solid var(--aubergine);color:var(--aubergine);font-weight:900;font-size:21px;display:flex;align-items:center;justify-content:center}
-.stop.finish .marker{background:var(--aubergine);color:#fff}
-.stop-body{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:64px;align-items:start}
-.step-n{font-size:14px;font-weight:900;letter-spacing:1px;text-transform:uppercase;color:var(--aubergine);margin:14px 0 12px}
-.stop h3{margin:0;font-size:34px;line-height:1.15;font-weight:900;letter-spacing:-.6px}
-.stop p{margin:16px 0 0;font-size:18px;line-height:1.65;color:var(--ink-2)}
-.more-int{margin-top:18px;display:flex;align-items:center;gap:12px;font-size:16px;color:var(--ink-2)}
-.more-int .count{flex:0 0 auto;font-weight:900;font-size:15px;color:#fff;background:var(--aubergine);padding:4px 10px;border-radius:999px}
-.cmds{margin-top:24px;display:flex;flex-direction:column;gap:8px}
-.cmd{background:var(--ink);color:#fff;border-radius:6px;padding:13px 16px;font-size:15px;overflow-x:auto;white-space:nowrap}
-.cmd .k{color:var(--c-blue)}
-.cmd .v{color:var(--c-yellow)}
-.panel{background:#fff;border:1px solid var(--cream-line);border-radius:12px;padding:28px}
-.oauth-top{display:flex;align-items:center;gap:14px;font-size:18px;line-height:1.35}
-.app-icon{flex:0 0 52px;height:52px;border-radius:12px;background:#fff;border:1px solid var(--line);display:flex;align-items:center;justify-content:center}
-.app-icon img{width:36px;height:36px;object-fit:contain}
-.field-label{font-weight:900;font-size:15px;margin:22px 0 8px}
-.select{border:1px solid #868686;border-radius:6px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;font-size:16px}
-.oauth-btns{display:flex;justify-content:flex-end;gap:10px;margin-top:22px}
-.oauth-btns span{font-weight:700;font-size:15px;padding:9px 18px;border-radius:4px;border:1px solid #BBBBBB}
-.oauth-btns .allow{background:var(--green);border-color:var(--green);color:#fff;font-weight:900}
-.doc-links{display:flex;flex-direction:column;gap:14px}
-.doc-link{background:#fff;border:1px solid var(--cream-line);border-radius:12px;padding:22px 24px;display:flex;align-items:center;gap:18px;text-decoration:none;color:var(--ink)}
-.doc-link:hover{border-color:var(--aubergine)}
-.doc-link b{display:block;font-size:19px;font-weight:900}
-.doc-link small{display:block;font-size:15px;color:var(--blue);margin-top:2px;word-break:break-all}
-.doc-link .grow{flex:1;min-width:0}
-.panel .msg{font-size:15px;line-height:1.46}
-.notice{margin-top:4px;border-left:4px solid var(--c-red);padding:4px 12px}
-.thread{padding:0;overflow:hidden}
-.thread-head{padding:14px 22px;border-bottom:1px solid var(--line);display:flex;align-items:baseline;gap:8px}
-.thread-head b{font-size:17px;font-weight:900}
-.thread-head span{font-size:14px;color:var(--muted)}
-.thread-body{padding:14px 22px 20px}
-.signal{margin-top:6px;border-left:4px solid var(--c-yellow);padding:4px 12px;display:flex;flex-direction:column;gap:4px}
-.signal b{font-weight:900}
-.sev{display:inline-block;font-size:11px;font-weight:900;letter-spacing:.5px;text-transform:uppercase;color:#7A5300;background:#FDF2D6;padding:2px 6px;border-radius:3px}
-.replies{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:13px;margin:8px 0}
-.replies::after{content:"";flex:1;height:1px;background:var(--line)}
-.closed{margin-top:4px;border-left:4px solid var(--c-green);padding:4px 12px}
-.status-pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:900;color:var(--green);background:#E3F4EE;padding:2px 8px;border-radius:999px;margin-top:6px}
+  @media (max-width:700px){
+    :root{--classbar-h:24px;}
+    .classbar{font-size:8px;}
+    .nav-link{font-size:20px;}
+  }
+  @media (max-width:560px){.brand-tag{display:none;}}
 
-/* ---------- closing cta ---------- */
-.cta{position:relative;overflow:hidden;color:#fff;padding:128px 0;text-align:center;
-  background:
-    radial-gradient(circle at 12% 18%, rgba(255,255,255,.07) 0 180px, transparent 181px),
-    radial-gradient(circle at 92% 88%, rgba(255,255,255,.06) 0 260px, transparent 261px),
-    radial-gradient(rgba(255,255,255,.10) 1.2px, transparent 1.4px) 0 0/22px 22px,
-    linear-gradient(180deg, var(--aubergine) 0%, var(--aubergine-deep) 100%);
-}
-.cta::after{content:"";position:absolute;left:0;right:0;bottom:0;height:6px;
-  background:linear-gradient(90deg,var(--c-blue) 0 25%,var(--c-green) 25% 50%,var(--c-yellow) 50% 75%,var(--c-red) 75% 100%)}
-.lockup{display:inline-flex;align-items:center;gap:22px;margin-bottom:40px}
-.logo-tile{width:96px;height:96px;border-radius:22px;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 12px 30px rgba(0,0,0,.28)}
-.logo-tile img{max-width:62px;max-height:62px;object-fit:contain}
-.lockup .plus{font-size:30px;font-weight:300;color:rgba(255,255,255,.6)}
-.cta h2{margin:0;font-size:clamp(34px,4.8vw,56px);line-height:1.06;font-weight:900;letter-spacing:-1.2px}
-.cta p{margin:16px auto 0;font-size:19px;color:rgba(255,255,255,.82);max-width:520px}
-.cta .btn{margin-top:36px;display:inline-block;border-radius:6px;line-height:0}
+  /* ---------- BUTTONS (as on the published pages) ---------- */
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:600;font-size:15px;line-height:1.5;
+    padding:15px 30px;border-radius:2px;text-decoration:none;background:var(--pink);color:#fff;border:none;cursor:pointer;white-space:nowrap;transition:opacity 0.2s ease;
+  }
+  .btn:hover{opacity:0.8;}
+  .btn--secondary{background:var(--surface);color:var(--ink);box-shadow:inset 0 0 0 1px var(--surface-dark);}
+  .btn--secondary:hover{opacity:1;box-shadow:inset 0 0 0 1px var(--ink);}
 
-footer{border-top:1px solid var(--line-soft);color:var(--muted);font-size:14px;padding:30px 0}
-footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
-footer nav{display:flex;gap:20px}
+  /* ---------- HERO ---------- */
+  .hero{position:relative;overflow:hidden;padding:70px 0 32px;text-align:center;}
+  .hero-glow{position:absolute;top:-154px;left:50%;margin-left:-901px;width:1802px;height:274px;max-width:none;pointer-events:none;}
+  .hero .col{position:relative;display:flex;flex-direction:column;align-items:center;gap:28px;}
+  .hero-mark{display:flex;flex-direction:column;align-items:center;gap:16px;}
+  .hero-mark img{width:64px;height:64px;}
+  .hero h1{max-width:660px;font-weight:600;font-size:clamp(40px,6vw,70px);line-height:1.03;letter-spacing:-0.03em;color:var(--aubergine);}
+  .ctas{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;}
+  .hero-note{font-size:14px;line-height:20px;color:var(--surface-dark);}
 
-/* ---------- responsive ---------- */
-@media (max-width:900px){
-  .stop-body{grid-template-columns:1fr;gap:32px}
-  .roles{grid-template-columns:1fr}
-  .sidebar{display:none}
-  .stop{column-gap:28px;padding-bottom:110px}
-}
-@media (max-width:600px){
-  .nav-links a.txt{display:none}
-  .hero{padding-top:64px}
-  .roles li{flex-direction:column;gap:4px}
-  .roles span{text-align:left}
-  section.band{padding:76px 0}
-  .win-body{min-height:440px}
-  .fields{grid-template-columns:1fr}
-  .journey::before{left:19px}
-  .stop{grid-template-columns:40px minmax(0,1fr);column-gap:18px}
-  .marker{width:40px;height:40px;font-size:17px}
-  .stop h3{font-size:28px}
-  .logo-tile{width:76px;height:76px;border-radius:18px}
-  .logo-tile img{max-width:48px;max-height:48px}
-}
+  /* ---------- SLACK MOCKUPS: shared pieces ----------
+     Everything inside .slack is drawn to look like Slack: Lato, Slack's colors and spacing. */
+  .slack{font-family:var(--slack);color:var(--s-ink);text-align:left;}
+  .msg{display:flex;gap:8px;align-items:flex-start;}
+  .msg-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px;}
+  .msg-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+  .msg-name{font-weight:900;font-size:15px;}
+  .app-tag{padding:1px 4px;border-radius:3px;background:rgba(0,0,0,0.07);font-weight:700;font-size:10px;color:var(--s-gray);}
+  .msg-time{font-size:12px;color:var(--s-gray);}
+  .avatar{flex-shrink:0;}
+  .avatar-letter{display:flex;align-items:center;justify-content:center;flex-shrink:0;width:36px;height:36px;border-radius:8px;background:#e8e8ec;font-weight:700;font-size:14px;color:#52525c;}
+  .attach{display:flex;gap:8px;}
+  .attach::before{content:'';flex-shrink:0;width:4px;border-radius:2px;background:var(--bar);}
+  .attach-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px;align-items:flex-start;}
+  .tag{padding:2px 6px;border-radius:3px;font-weight:900;font-size:10px;line-height:normal;color:var(--s-ink);}
+  .tag--green{background:rgba(46,182,125,0.18);}
+  .tag--yellow{background:rgba(236,178,46,0.18);}
+  .tag--red{background:rgba(224,30,90,0.18);}
+  .attach-title{font-weight:700;font-size:13px;}
+  .attach-text{font-size:13px;line-height:18px;}
+  .s-btns{display:flex;flex-wrap:wrap;gap:8px;padding-top:4px;}
+  .s-btn{padding:5px 8px;border-radius:4px;font-weight:700;font-size:13px;line-height:normal;background:#fff;color:var(--s-ink);box-shadow:inset 0 0 0 1px rgba(0,0,0,0.3);}
+  .s-btn--go{background:var(--s-btn);color:#fff;box-shadow:none;}
+  .cmd{display:inline-block;padding:2px 8px;border-radius:2px;background:#f1f1ee;border:1px solid var(--gray-line);font-family:var(--mono);font-size:0.93em;line-height:1.4;color:var(--pink-text);white-space:nowrap;}
+  .mention{display:inline-block;padding:2px 8px;border-radius:2px;background:#eaf5fa;font-family:var(--mono);font-size:0.93em;line-height:1.4;color:#4c7db4;white-space:nowrap;}
+
+  /* ---------- THE SLACK WINDOW (hero) ----------
+     It sits half on the white hero, half on the purple band below: the band starts behind its middle. */
+  .stage{position:relative;z-index:1;}
+  .stage .col{width:min(900px,calc(100% - 96px));} /* at least 48px each side so the window breathes; phones get the normal gutter (below) */
+  .win-wrap{container-type:inline-size;} /* the window's parts respond to its own width (cqw = 1% of it) */
+  .win{
+    display:flex;flex-direction:column;border:1px solid #ad98ae;border-radius:10px;
+    background:linear-gradient(to bottom,#4a154b,#3a073b);
+    filter:drop-shadow(0 8px 10px rgba(11,12,13,0.12)) drop-shadow(0 2px 2px rgba(11,12,13,0.06));
+  }
+  .win-bar{display:flex;align-items:center;gap:24px;padding:5px 7px;}
+  .win-lights{width:52px;height:12px;}
+  .win-nav{display:flex;gap:14px;justify-content:flex-end;width:116px;flex-shrink:0;}
+  .win-nav img{width:18px;height:18px;}
+  .win-search{flex:1;min-width:0;overflow:hidden;white-space:nowrap;display:flex;align-items:center;gap:8px;height:26px;padding:0 10px;border-radius:6px;background:rgba(255,255,255,0.18);font-size:14px;color:rgba(255,255,255,0.85);}
+  .win-search img{width:16px;height:16px;flex-shrink:0;}
+  .win-app{width:26px;height:26px;border-radius:6px;}
+  .win-help{width:20px;height:20px;}
+  .win-main{display:flex;padding:0 2px 2px 0;}
+
+  .side{flex-shrink:0;width:clamp(116px, 26cqw, 220px);min-width:0;display:flex;flex-direction:column;gap:10px;padding:12px 8px;border-radius:8px 0 0 8px;background:rgba(255,255,255,0.09);font-size:15px;color:rgba(255,255,255,0.85);}
+  .side-head{display:flex;align-items:center;gap:15px;height:28px;padding:0 3px 0 8px;}
+  .side-head p{flex:1;font-weight:900;font-size:18px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .side-head img{width:20px;height:20px;}
+  .side-find{display:flex;align-items:center;gap:6px;height:28px;padding:0 8px;white-space:nowrap;overflow:hidden;border-radius:6px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.35);font-size:14px;color:rgba(255,255,255,0.8);}
+  .side-find img{width:14px;height:14px;}
+  .side-list{display:flex;flex-direction:column;}
+  .side-row{display:flex;align-items:center;gap:7px;height:28px;padding:0 8px 0 9px;border-radius:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .side-row img,.side-plus,.side-find img{flex-shrink:0;}
+  .lbl{min-width:0;overflow:hidden;text-overflow:ellipsis;} /* labels end in “…” when the sidebar narrows */
+  .side-row img{width:16px;height:16px;}
+  .side-row--dim{color:rgba(255,255,255,0.45);}
+  .side-row--on{background:#f9edff;color:#3f0e40;}
+  .side-plus{display:flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:4px;background:rgba(255,255,255,0.15);}
+  .side-plus img{width:12px;height:12px;}
+  .side-rule{height:1px;margin:0 4px;background:rgba(255,255,255,0.15);}
+
+  .chan{flex:1;min-width:0;display:flex;flex-direction:column;background:#fff;border-radius:0 8px 8px 0;overflow:hidden;}
+  .chan-head{display:flex;align-items:center;gap:12px;height:51px;padding:0 16px 0 22px;}
+  .chan-head img{width:20px;height:20px;}
+  .chan-name{flex:1;font-weight:900;font-size:18px;}
+  .chan-actions{display:flex;align-items:center;gap:15px;font-weight:700;font-size:13px;}
+  .chan-actions span{display:flex;align-items:center;gap:4px;}
+  .chan-actions .user{width:18px;height:18px;}
+  .chan-actions .caret{width:12px;height:12px;}
+  .tabs{display:flex;align-items:flex-end;gap:4px;height:36px;padding:0 16px;border-bottom:1px solid #ddd;}
+  .tab{display:flex;align-items:center;gap:5px;height:34px;padding:0 8px;font-weight:700;font-size:13px;}
+  .tab img{width:15px;height:15px;}
+  .tab--on{box-shadow:inset 0 -2px 0 #83388a;}
+  .tab-add{padding:0 8px 10px;}
+  .tab-add img{width:16px;height:16px;}
+  .thread-bar{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-bottom:1px solid #e3e3e8;}
+  .thread-bar div{display:flex;align-items:center;gap:16px;}
+  .thread-bar img{width:20px;height:20px;}
+  .thread-bar .sparkle{width:18px;height:18px;}
+  .thread-bar b{font-size:15px;}
+  .thread-bar small{font-size:12px;color:var(--s-time);}
+  .thread{display:flex;flex-direction:column;padding:2px 0;}
+  .thread .msg{gap:10px;padding:10px 18px;}
+  .thread .msg-name{font-size:14px;}
+  .thread .msg-time{color:var(--s-time);}
+  .thread-text{font-size:14px;line-height:1.75;}
+  .connected{display:inline-flex;align-items:center;gap:10px;padding:16px;border:1px solid #8a8a8e;border-radius:8px;font-weight:700;font-size:16px;}
+  .connected img{width:24px;height:24px;}
+  .composer{padding:8px 18px 16px;}
+  .composer-box{border:1px solid #e2e2e2;border-radius:8px;overflow:hidden;}
+  .composer-tools{padding-top:4px;background:#f8f8f8;overflow:hidden;}
+  .composer-tools img{width:350px;height:34.5px;max-width:none;} /* Slack's formatting toolbar (image from the design), in its light idle state */
+  .composer-in{display:flex;flex-direction:column;gap:12px;padding:8px 16px;}
+  .composer-text{font-size:14px;line-height:1.45;color:#8a8a8e;} /* empty box: Slack's placeholder */
+  .composer-row{display:flex;align-items:center;justify-content:space-between;}
+  .composer-row div{display:flex;align-items:center;gap:8px;}
+  .composer-row img{width:20px;height:20px;}
+  .composer-row .plus{display:flex;padding:4px;border-radius:100px;background:#f2f2f2;}
+  .composer-row .send{width:52px;height:24px;}
+
+  /* ---------- EVERY ALERT ARRIVES ALREADY SORTED (purple band) ---------- */
+  .band{background:var(--band);color:#fff;}
+  .sorted{margin-top:-300px;padding:360px 0 40px;} /* starts behind the middle of the Slack window */
+  .sorted .col{display:flex;flex-direction:column;gap:40px;}
+  .band-head{display:flex;flex-direction:column;gap:20px;}
+  .band-head h2{font-weight:600;font-size:clamp(34px * 32 / 52, 4.2vw * 32 / 52, 32px);line-height:1.25;letter-spacing:-0.01em;}
+  .band-head p{max-width:635px;font-size:18px;line-height:28px;color:rgba(255,255,255,0.72);}
+  .types{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;}
+  .type{display:flex;flex-direction:column;gap:8px;}
+  .type-key{display:flex;align-items:center;gap:8px;font-weight:700;font-size:20px;line-height:32px;}
+  .type-key img{width:8px;height:8px;}
+  .card{flex:1;display:flex;flex-direction:column;gap:12px;padding:16px;border-radius:12px;background:#fff;}
+  .card .msg-body{gap:12px;}
+  .card .avatar{width:32px;height:32px;}
+  .card .avatar-letter{width:32px;height:32px;background:var(--pink);color:#fff;}
+  .card .reply .msg-name{font-size:14px;}
+  .card .reply .msg-body{gap:8px;}
+  .type-caption{padding-top:8px;font-size:14px;line-height:20px;color:rgba(255,255,255,0.68);}
+
+  /* ---------- CLOSE TICKETS QUICKLY ---------- */
+  .band--soft{background:var(--band-soft);padding:32px 0;}
+  .close-grid{display:grid;grid-template-columns:minmax(0,1fr) 284px minmax(0,1fr);gap:24px;align-items:center;}
+  .close-copy{display:flex;flex-direction:column;gap:12px;opacity:0.9;}
+  .close-copy h3{font-weight:700;font-size:20px;line-height:32px;}
+  .close-copy p{font-size:14px;line-height:24px;}
+  .close-copy .cmd{font-size:12px;padding:0 8px;}
+  .mini{border-radius:12px;background:#fff;padding:2px 0;box-shadow:0 2px 6px rgba(11,12,13,0.06),0 1px 2px rgba(11,12,13,0.06);}
+  .mini .msg{gap:6px;padding:6px 10px;}
+  .mini .avatar{width:21px;height:21px;}
+  .mini .avatar-letter{width:21px;height:21px;border-radius:5px;font-size:12px;}
+  .mini .msg-body{gap:4px;}
+  .mini .msg-meta{gap:3.5px;}
+  .mini .msg-name{font-size:12px;}
+  .mini .app-tag{padding:0.5px 2.3px;border-radius:2px;font-size:9px;}
+  .mini .msg-time{font-size:9px;color:var(--s-time);}
+  .mini .attach{gap:6px;}
+  .mini .attach::before{width:2.3px;}
+  .mini .attach-body{gap:4px;}
+  .mini .attach-title{font-size:12px;}
+  .mini .attach-text,.mini .mini-text{font-size:13px;line-height:16px;}
+  .mini .tag{padding:1px 3.5px;border-radius:2px;font-size:9px;color:#057c56;}
+  .replies{display:flex;align-items:center;gap:6px;padding:2px 10px;font-size:9px;font-weight:500;color:var(--s-time);}
+  .replies::after{content:'';flex:1;height:1px;background:#e3e3e8;}
+  .checks{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:16px;}
+  .checks li{display:flex;align-items:center;gap:6px;font-size:14px;line-height:20px;opacity:0.9;}
+  .checks img{width:16px;height:16px;}
+
+  /* ---------- UP AND RUNNING IN THREE STEPS ---------- */
+  .setup{background:var(--surface-gray);padding:60px 0 64px;}
+  .setup .col{display:flex;flex-direction:column;gap:32px;}
+  .setup-head{display:flex;flex-direction:column;gap:20px;}
+  .setup-head h2{font-weight:600;font-size:clamp(34px,4.2vw,52px);line-height:1.14;letter-spacing:-0.015em;}
+  .setup-head p{max-width:620px;font-size:16.5px;line-height:1.7;color:var(--body-soft);}
+  .steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;}
+  .step{display:flex;flex-direction:column;gap:24px;}
+  .visual{display:flex;flex-direction:column;justify-content:center;gap:12px;min-height:276px;padding:16px;background:#fff;border:1px solid var(--gray-line);border-radius:2px;}
+  .step-text{display:flex;flex-direction:column;gap:8px;align-items:flex-start;}
+  .step-num{font-family:var(--mono);font-size:12px;line-height:16px;letter-spacing:0.08em;color:var(--pink-text);}
+  .step-text h3{font-weight:600;font-size:20px;line-height:1.5;letter-spacing:-0.01em;}
+  .step-text h3 code{font-family:var(--mono);font-weight:400;color:var(--body-soft);}
+  .step-text p{font-size:14px;line-height:20px;color:var(--body-soft);}
+  .step-text p code{font-family:var(--mono);font-size:13px;}
+  .link{font-size:16px;line-height:24px;color:var(--pink-text);text-decoration:underline;text-underline-offset:3px;}
+  .link:hover{color:var(--ink);}
+  .chip{display:inline-block;padding:4px 8px;background:var(--surface);border:1px solid var(--gray-line);font-family:var(--mono);font-size:12px;line-height:16px;letter-spacing:0.08em;color:var(--surface-dark);white-space:nowrap;}
+  .chips{display:flex;flex-direction:column;align-items:flex-start;gap:8px;}
+
+  /* step 1: Slack's install dialog */
+  .dialog{display:flex;flex-direction:column;gap:14px;padding:16px;border:1px solid var(--gray-faint);border-radius:8px;background:#fff;box-shadow:0 2px 6px rgba(11,12,13,0.06),0 1px 2px rgba(11,12,13,0.06);}
+  .dialog-head{display:flex;gap:10px;align-items:flex-start;font-weight:700;font-size:14px;line-height:20px;}
+  .dialog-head img{width:32px;height:32px;flex-shrink:0;}
+  .field{display:flex;flex-direction:column;gap:4px;}
+  .field b{font-size:12px;line-height:16px;color:var(--surface-dark);}
+  .select{display:flex;align-items:center;height:30px;padding:0 10px;border-radius:4px;box-shadow:inset 0 0 0 1px rgba(0,0,0,0.3);font-family:var(--font-sans);font-size:12px;color:var(--surface-dark);}
+  .select span{flex:1;}
+  .select img{width:12px;height:12px;}
+  .dialog-actions{display:flex;justify-content:flex-end;}
+  .dialog-actions .s-btn{padding:5px 12px;}
+  /* step 2: setup guide buttons */
+  .visual-label{font-weight:700;font-size:12px;line-height:16px;color:var(--surface-dark);}
+  /* side by side with a 24px gap while both fit; each drops to its own full-width row when they don't */
+  .guides{display:flex;flex-wrap:wrap;gap:12px 24px;}
+  .guide{flex:1 1 0;min-width:max-content;white-space:nowrap;display:flex;align-items:center;justify-content:center;gap:8px;height:32px;padding:0 12px;border:1px solid #8a8a8e;border-radius:2px;background:#fff;font-weight:500;font-size:14px;line-height:20px;color:var(--pink-text);text-decoration:none;box-shadow:4px 4px 0 rgba(11,12,13,0.15);transition:border-color 0.2s ease;}
+  .guide:hover{border-color:var(--ink);}
+  .guide img{width:16px;height:16px;}
+  /* step 3: Slack's command suggestion */
+  .suggest{padding:8px 0;border:1px solid var(--gray-faint);border-radius:8px;background:#f8f8f8;filter:drop-shadow(0 2px 3px rgba(11,12,13,0.06)) drop-shadow(0 1px 1px rgba(11,12,13,0.06));}
+  .suggest-row{display:flex;gap:10px;align-items:flex-start;padding:10px;background:#ebebeb;font-size:12px;}
+  .suggest-row img{width:24px;height:24px;flex-shrink:0;}
+  .suggest-row b{display:block;}
+  .suggest-row span{line-height:1.45;}
+
+  .disconnect{display:flex;flex-direction:column;gap:16px;padding-top:32px;border-top:1px solid var(--gray-faint);}
+  .disconnect h3{font-weight:700;font-size:20px;line-height:32px;}
+  .disconnect p{margin-top:-8px;font-size:14px;line-height:20px;color:var(--body);}
+
+  /* ---------- FINAL CTA ---------- */
+  .final{display:flex;flex-direction:column;align-items:center;gap:24px;padding:48px 0;background:var(--ink);color:#fff;text-align:center;}
+  .final-tiles{display:flex;align-items:center;gap:16px;}
+  .final-tiles .vex{width:48px;height:48px;}
+  .final-tiles .plus{width:18px;height:18px;}
+  .slack-tile{display:flex;align-items:center;justify-content:center;width:48px;height:48px;border-radius:12px;background:#fff;}
+  .slack-tile img{width:25.5px;height:25.5px;}
+  .final-copy{display:flex;flex-direction:column;gap:4px;padding:0 var(--gutter);}
+  .final h2{font-weight:600;font-size:clamp(34px * 32 / 52, 4.2vw * 32 / 52, 32px);line-height:1.25;letter-spacing:-0.01em;}
+  .final p{font-size:16px;line-height:24px;color:rgba(255,255,255,0.72);}
+
+  /* ---------- FOOTER ---------- */
+  footer{
+    border-top:1px solid var(--gray-line);padding:28px 56px 40px;display:flex;justify-content:space-between;align-items:center;
+    font-size:10.5px;line-height:1.5;color:var(--surface-dark);text-transform:uppercase;letter-spacing:0.08em;
+  }
+  footer a{text-decoration:none;}
+  footer a:hover{color:var(--ink);}
+  footer .fmark{color:var(--ink);font-weight:500;}
+  @media (max-width:700px){footer{padding:22px 20px 36px;flex-direction:column;gap:10px;text-align:center;}}
+
+  /* ---------- SMALLER SCREENS ----------
+     900px and below: the sections stack into one centered column.
+     The Slack window squeezes in steps by its own width (@container), then at 600px and below
+     drops its sidebar and message box (see the max-width:600px rule). */
+  @media (max-width:900px){
+    /* stacked: each section becomes one centered column, so tablets get even margins on both sides */
+    .sorted .col,.band--soft .col,.setup .col{width:min(560px,calc(100% - 2 * var(--gutter)));}
+    .types{grid-template-columns:minmax(0,1fr);gap:32px;}
+    .steps{grid-template-columns:minmax(0,1fr);gap:48px;}
+    .step-text{order:-1;} /* stacked: each step's text introduces its picture */
+    .step{gap:20px;}
+    .visual{min-height:0;}
+    .close-grid{grid-template-columns:minmax(0,1fr);gap:28px;}
+    /* stacked: the thread matches the Prevent / Detect / Respond cards above, and the checklist drops out */
+    .mini{max-width:none;padding:16px;display:flex;flex-direction:column;gap:12px;}
+    .mini .msg{gap:8px;padding:0;}
+    .mini .avatar,.mini .avatar-letter{width:32px;height:32px;}
+    .mini .avatar-letter{border-radius:8px;font-size:14px;}
+    .mini .msg-body{gap:8px;}
+    .mini .msg-meta{gap:6px;}
+    .mini .msg-name{font-size:15px;}
+    .mini .app-tag{padding:1px 4px;border-radius:3px;font-size:10px;}
+    .mini .msg-time{font-size:12px;}
+    .mini .attach{gap:8px;}
+    .mini .attach::before{width:4px;}
+    .mini .attach-body{gap:8px;}
+    .mini .attach-title{font-size:13px;}
+    .mini .attach-text,.mini .mini-text{font-size:13px;line-height:18px;}
+    .mini .tag{padding:2px 6px;border-radius:3px;font-size:10px;}
+    .replies{padding:0;font-size:12px;}
+    .checks{display:none;}
+  }
+  /* The Slack window keeps its frame at every size and squeezes in steps as it gets narrower (window widths) */
+  @container (max-width:700px){
+    .win-bar{gap:14px;}
+    .win-nav{width:auto;gap:10px;}
+    .chan-actions .huddle{display:none;}
+    .side-head{gap:8px;}
+  }
+  @container (max-width:560px){
+    .win-nav img:nth-child(3){display:none;}   /* history clock */
+    .chan-actions .members,.chan-actions .bell{display:none;}
+    .chan-head{padding:0 12px 0 14px;gap:8px;}
+    .tabs{padding:0 8px;}
+    .thread-bar,.thread .msg{padding-left:12px;padding-right:12px;}
+    .composer{padding:8px 12px 12px;}
+    .side{padding:10px 6px;}
+    .side-head p{font-size:16px;}
+    .side-head img:last-child{display:none;}   /* new-message pencil */
+    .side,.side-find{font-size:13px;}
+    .side-row{padding:0 6px;}
+  }
+  @container (max-width:420px){
+    .win-bar{gap:10px;}
+    .win-nav{display:none;}
+    .win-help{display:none;}
+    .tab-add,.thread-bar .sparkle{display:none;}
+    .chan-name{font-size:16px;}
+    .thread .msg{gap:8px;}
+    .thread .avatar,.thread .avatar-letter{width:28px;height:28px;}
+    .thread-text{font-size:13px;}
+    .connected{padding:10px 12px;font-size:14px;}
+    .connected img{width:20px;height:20px;}
+  }
+  @container (max-width:320px){   /* narrowest phones, e.g. a 302px Galaxy Z Flip */
+    .chan-actions,.tabs .tab:nth-child(2){display:none;}
+    .thread-bar small{display:none;}
+    .thread .msg{padding-left:8px;padding-right:8px;gap:6px;}
+    .thread .avatar,.thread .avatar-letter{width:24px;height:24px;}
+    .connected{gap:6px;padding:8px 10px;font-size:13px;}
+    .thread .cmd,.thread .mention{white-space:normal;overflow-wrap:anywhere;}
+  }
+  /* Phones and small tablets: the title bar and the channel, in an 8px Slack-purple frame (no sidebar or message box).
+     Below 600px the full window's sidebar leaves too little room for the channel. 24px side margins, 16px on phones. */
+  @media (max-width:480px){.stage .col{width:calc(100% - 2 * var(--gutter));}}
+  @media (min-width:481px) and (max-width:600px){.stage .col{width:calc(100% - 48px);}}
+  @media (max-width:600px){
+    .side,.composer{display:none;}
+    .win{border:8px solid #4a154b;border-top-width:3px;background:#4a154b;}
+    .win-bar{padding:0 0 8px;}
+    .win-main{padding:0;}
+    .chan{border-radius:6px;}
+    .thread{padding-bottom:10px;}
+  }
+  @media (max-width:760px){
+    .sorted{margin-top:-200px;padding-top:248px;}
+  }
+  @media (max-width:700px){
+    .hero{padding-top:48px;}
+    .hero .col{gap:24px;}
+    .hero-mark img{width:48px;height:48px;}
+    .band-head p{font-size:16px;line-height:26px;}
+    .setup{padding:48px 0;}
+  }
+  @media (max-width:420px){
+    .ctas{flex-direction:column;align-self:stretch;}
+    .ctas .btn{width:100%;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    .status-dot{animation:none;}
+    .classbar,.site-top .site-header,.nav-panel,.header-link--cta img,.btn,.guide{transition:none;}
+  }
 </style>
 </head>
 <body>
 
-<header class="nav">
-  <div class="wrap">
-    <a class="brand" href="#">
-      <img src="https://cdn.unmanned.team/img/logo.png" alt="VEX">
-      <span class="brand-sub">VEX for Slack</span>
-    </a>
-    <nav class="nav-links" aria-label="Main">
-      <a class="txt" href="#who">Who it's for</a>
-      <a class="txt" href="#how">How it works</a>
-      <a class="txt" href="https://vex.unmanned.team/docs/microsoft">Docs</a>
+  <div class="classbar">UNMANNED · SIMPLY SECURE</div>
+
+  <!-- ============================================================
+       HEADER (sticky)
+       ============================================================ -->
+  <div class="site-top">
+    <header class="site-header">
+      <div class="wrap header-inner">
+        <div class="header-left">
+          <a href="/" class="brand"><span class="status-dot"></span>VEX</a>
+          <span class="brand-tag">Don’t get hacked</span>
+        </div>
+        <nav class="header-links" aria-label="Main">
+          <a class="header-link" href="/managed">VEX MDR</a>
+          <a class="header-link header-link--slack" href="/slack" aria-current="page"><img src="../static/slack-logo.svg" width="24" height="24" alt="">VEX for Slack</a>
+          <a class="header-link header-link--cta" href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener">Schedule a chat <img src="../static/icon-arrow-right-pink.svg" width="16" height="16" alt=""></a>
+        </nav>
+        <button class="menu-btn" type="button" aria-label="Open menu" aria-controls="site-nav" aria-expanded="false"><img src="../static/icon-menu.svg" width="32" height="32" alt=""></button>
+      </div>
+    </header>
+  </div>
+
+  <!-- ============================================================
+       NAV MENU (phones)
+       ============================================================ -->
+  <div class="nav-panel" id="site-nav">
+    <div class="site-header">
+      <div class="wrap header-inner">
+        <a href="/" class="brand"><span class="status-dot"></span>VEX</a>
+        <button class="menu-btn menu-close" type="button" aria-label="Close menu"><img src="../static/icon-close.svg" width="32" height="32" alt=""></button>
+      </div>
+    </div>
+    <nav class="wrap" aria-label="Menu">
+      <ul class="nav-list">
+        <li><a href="/"><span class="nav-link">Home</span><span class="nav-sub">Can your defense catch a single attack?</span></a></li>
+        <li><a href="/managed"><span class="nav-link">VEX MDR</span><span class="nav-sub">Continuous prevention, detection and response</span></a></li>
+        <li><a href="/slack" aria-current="page"><span class="nav-link">VEX for Slack</span><span class="nav-sub">Security, handled. Right in Slack.</span></a></li>
+        <li><a href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener"><span class="nav-link">Schedule a chat</span></a></li>
+      </ul>
     </nav>
   </div>
-</header>
 
-<main>
+  <main>
 
-<!-- Hero -->
-<section class="hero">
-  <div class="wrap">
-    <div class="hero-copy">
-      <h1>Start giving your security <em>Slack.</em></h1>
-      <p>Install VEX, then connect any integration with a single slash command. No new dashboard to learn.</p>
-      <div class="hero-cta">
-        <a href="https://slack.com/oauth/v2/authorize?client_id=11574043500291.12158197069719&scope=users:read,app_mentions:read,channels:history,chat:write,commands,incoming-webhook,users:read.email&user_scope="><img alt="Add to Slack" height="40" width="139" src="https://platform.slack-edge.com/img/add_to_slack.png" srcSet="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x" /></a>
+  <!-- ============================================================
+       HERO
+       ============================================================ -->
+  <section class="hero">
+    <img class="hero-glow" src="static/hero-glow.svg" width="1802" height="274" alt="" aria-hidden="true">
+    <div class="col">
+      <div class="hero-mark">
+        <img src="../static/slack-logo.svg" width="64" height="64" alt="">
+        <div class="eyebrow-label"><span class="status-dot"></span>VEX for Slack</div>
       </div>
+      <h1>Security, handled. Right in Slack.</h1>
+      <div class="ctas">
+        <a class="btn" href="https://slack.com/oauth/v2/authorize?client_id=11574043500291.12158197069719&amp;scope=users:read,app_mentions:read,channels:history,chat:write,commands,incoming-webhook,users:read.email&amp;user_scope=">Add to Slack</a>
+        <a class="btn btn--secondary" href="#how">See how it works</a>
+      </div>
+      <p class="hero-note">For security and IT teams who already live in Slack</p>
     </div>
+  </section>
 
-    <div class="window" role="img" aria-label="A Slack workspace with VEX in the #security-ops channel. A teammate runs /connect microsoft and VEX confirms Microsoft 365 is connected.">
-      <div class="titlebar">
-        <div class="dots"><span style="background:#FF5F57"></span><span style="background:#FEBC2E"></span><span style="background:#28C840"></span></div>
-        <div class="search"><div><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>Search Acme Security</div></div>
-        <div style="width:26px;height:26px;border-radius:6px;background:var(--c-yellow)"></div>
-      </div>
-      <div class="win-body">
-        <div class="sidebar">
-          <div class="ws-name">Acme Security</div>
-          <div class="sb-head">▾ Channels</div>
-          <div class="sb-item"># general</div>
-          <div class="sb-item"># it-help</div>
-          <div class="sb-item active"># security-ops</div>
-          <div class="sb-item unread"># incidents</div>
-          <div class="sb-head">▾ Direct messages</div>
-          <div class="sb-item"><span class="av-sm" style="background:var(--c-blue)"></span>Priya</div>
-          <div class="sb-item"><span class="av-sm" style="background:var(--c-red)"></span>Marcus</div>
-          <div class="sb-head">▾ Apps</div>
-          <div class="sb-item"><span class="av-sm vex"><img src="https://cdn.unmanned.team/img/logo.png" alt=""></span>VEX</div>
+  <!-- ============================================================
+       SLACK WINDOW: VEX joins #security-ops and connects Microsoft 365
+       (a picture of Slack, so it's hidden from screen readers; the summary below says what it shows)
+       ============================================================ -->
+  <div class="stage">
+    <p class="visually-hidden">In Slack, VEX joins the #security-ops channel. A teammate types /connect microsoft and VEX replies that Microsoft 365 is connected.</p>
+    <div class="col">
+      <div class="win-wrap"><div class="win slack" aria-hidden="true">
+        <div class="win-bar">
+          <img class="win-lights" src="static/win-traffic-lights.svg" width="52" height="12" alt="">
+          <div class="win-nav">
+            <img src="static/win-arrow-left.svg" width="18" height="18" alt="">
+            <img src="static/win-arrow-right.svg" width="18" height="18" alt="">
+            <img src="static/win-clock.svg" width="18" height="18" alt="">
+          </div>
+          <div class="win-search"><img src="static/win-search.svg" width="16" height="16" alt="">Search</div>
+          <img class="win-app" src="static/win-app-icon.png" width="26" height="26" alt="">
+          <img class="win-help" src="static/win-question.svg" width="20" height="20" alt="">
         </div>
-        <div class="channel">
-          <div class="ch-head"># security-ops</div>
-          <div class="msgs">
-            <div class="day"><span>Today</span></div>
-            <div class="msg">
-              <div class="av av-vex"><img src="https://cdn.unmanned.team/img/logo.png" alt=""></div>
-              <div><div><span class="who">VEX</span> <span class="app-tag">APP</span> <span class="time">2:38 PM</span></div>
-              <div>I've been added to <span class="mention">#security-ops</span>. Run <code class="ic">/connect</code> to hook up Microsoft 365 or Google Workspace.</div></div>
+        <div class="win-main">
+          <div class="side">
+            <div class="side-head">
+              <p>Acme Security</p>
+              <img src="static/side-gear.svg" width="20" height="20" alt="">
+              <img src="static/side-note-pencil.svg" width="20" height="20" alt="">
             </div>
-            <div class="msg">
-              <div class="av" style="background:var(--c-blue)"></div>
-              <div><div><span class="who">Priya</span> <span class="time">2:41 PM</span></div>
-              <div class="used">used <code class="ic">/connect microsoft</code></div></div>
+            <div class="side-find"><img src="static/side-find-list.svg" width="14" height="14" alt=""><span class="lbl">Find a conversation</span></div>
+            <div class="side-list">
+              <div class="side-row"><img src="static/side-threads.svg" width="16" height="16" alt=""><span class="lbl">Threads</span></div>
+              <div class="side-row"><img src="static/side-send.svg" width="16" height="16" alt=""><span class="lbl">Drafts &amp; sent</span></div>
+              <div class="side-row"><img src="static/side-address-book.svg" width="16" height="16" alt=""><span class="lbl">Directories</span></div>
             </div>
-            <div class="msg">
-              <div class="av av-vex"><img src="https://cdn.unmanned.team/img/logo.png" alt=""></div>
-              <div style="flex:1;min-width:0"><div><span class="who">VEX</span> <span class="app-tag">APP</span> <span class="time">2:41 PM</span></div>
-                <div class="block">
-                  <div class="block-title"><span style="width:20px;height:20px;border-radius:50%;background:var(--c-green);display:flex;align-items:center;justify-content:center"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg></span>Microsoft 365 connected</div>
-                  <div class="fields"><div><b>Provider</b><br>Microsoft 365</div><div><b>Posting to</b><br>#security-ops</div></div>
-                  <div class="btns"><span class="sbtn primary">Open VEX</span><span class="sbtn">Disconnect</span></div>
-                </div>
-              </div>
+            <div class="side-rule"></div>
+            <div class="side-row side-row--dim"><img src="static/side-star.svg" width="16" height="16" alt=""><span class="lbl">Starred</span></div>
+            <div class="side-list">
+              <div class="side-row"><img src="static/side-hash.svg" width="16" height="16" alt=""><span class="lbl">general</span></div>
+              <div class="side-row side-row--on"><img src="static/side-hash-active.svg" width="16" height="16" alt=""><span class="lbl">security-ops</span></div>
+              <div class="side-row"><span class="side-plus"><img src="static/side-plus.svg" width="12" height="12" alt=""></span><span class="lbl">Add channels</span></div>
+            </div>
+            <div class="side-list">
+              <div class="side-row"><img src="static/side-apps.svg" width="16" height="16" alt=""><span class="lbl">Apps</span></div>
+              <div class="side-row"><img src="static/side-vex.svg" width="16" height="16" alt=""><span class="lbl">VEX</span></div>
             </div>
           </div>
-          <div class="composer-wrap">
-            <div class="autocomplete">
-              <div class="ac-head">VEX</div>
-              <div class="ac-row on"><b>/connect</b><span>google &lt;credentials&gt;</span><span class="d">Connect a provider</span></div>
-              <div class="ac-row"><b>/disconnect</b><span style="color:var(--muted)">google</span><span style="color:var(--muted)">Remove a provider</span></div>
+          <div class="chan">
+            <div class="chan-head">
+              <img src="static/ch-star.svg" width="20" height="20" alt="">
+              <p class="chan-name"># signals</p>
+              <div class="chan-actions">
+                <span class="members"><img class="user" src="static/ch-user.svg" width="18" height="18" alt="">6</span>
+                <span class="huddle"><img src="static/ch-headphones.svg" width="20" height="20" alt=""><img class="caret" src="static/ch-caret-down.svg" width="12" height="12" alt=""></span>
+                <img class="bell" src="static/ch-bell.svg" width="20" height="20" alt="">
+                <img src="static/ch-search.svg" width="20" height="20" alt="">
+                <img src="static/ch-dots-v.svg" width="20" height="20" alt="">
+              </div>
+            </div>
+            <div class="tabs">
+              <div class="tab tab--on"><img src="static/ch-chat-circle.svg" width="15" height="15" alt="">Messages</div>
+              <div class="tab"><img src="static/ch-add-canvas.svg" width="15" height="15" alt="">Add canvas</div>
+              <div class="tab-add"><img src="static/ch-plus.svg" width="16" height="16" alt=""></div>
+            </div>
+            <div class="thread-bar">
+              <div><img src="static/th-caret-left.svg" width="20" height="20" alt=""><b>Thread</b><small># signals</small></div>
+              <div><img class="sparkle" src="static/th-sparkle.svg" width="18" height="18" alt=""><img src="static/th-dots-v.svg" width="20" height="20" alt=""></div>
+            </div>
+            <div class="thread">
+              <div class="msg">
+                <img class="avatar" src="static/vex-avatar-36.svg" width="36" height="36" alt="">
+                <div class="msg-body">
+                  <div class="msg-meta"><span class="msg-name">VEX</span><span class="app-tag">APP</span><span class="msg-time">9:34 AM</span></div>
+                  <p class="thread-text">I’ve been added to <span class="mention">#security-ops</span> Run <span class="cmd">/connect</span> to hook up Microsoft 365 or Google Workspace</p>
+                </div>
+              </div>
+              <div class="msg">
+                <span class="avatar-letter">J</span>
+                <div class="msg-body" style="gap:4px">
+                  <div class="msg-meta"><span class="msg-name">Jason</span><span class="msg-time">9:52 AM</span></div>
+                  <p class="thread-text"><i>used</i> <span class="cmd">/connect microsoft</span></p>
+                </div>
+              </div>
+              <div class="msg">
+                <img class="avatar" src="static/vex-avatar-36.svg" width="36" height="36" alt="">
+                <div class="msg-body">
+                  <div class="msg-meta"><span class="msg-name">VEX</span><span class="app-tag">APP</span><span class="msg-time">9:52 AM</span></div>
+                  <div><span class="connected"><img src="static/check-circle.svg" width="24" height="24" alt="">Microsoft 365 Connected</span></div>
+                </div>
+              </div>
             </div>
             <div class="composer">
-              <div class="toolbar"><span>B</span><span style="font-style:italic">I</span><span style="text-decoration:line-through">S</span><span style="text-decoration:underline">U</span><span>&lt;/&gt;</span></div>
-              <div class="input"><code>/connect google</code><span class="caret"></span></div>
-              <div class="comp-foot"><span class="send"><svg width="14" height="14" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M3 20l18-8L3 4v6l12 2-12 2z"/></svg></span></div>
+              <div class="composer-box">
+                <div class="composer-tools"><img src="static/cmp-toolbar.png" width="350" height="35" alt=""></div>
+                <div class="composer-in">
+                  <p class="composer-text">Message #signals</p>
+                  <div class="composer-row">
+                    <div>
+                      <span class="plus"><img src="static/cmp-plus.svg" width="20" height="20" alt=""></span>
+                      <img src="static/cmp-text-aa.svg" width="20" height="20" alt="">
+                      <img src="static/cmp-smiley.svg" width="20" height="20" alt="">
+                      <img src="static/cmp-at.svg" width="20" height="20" alt="">
+                      <img src="static/cmp-dots-three.svg" width="20" height="20" alt="">
+                    </div>
+                    <img class="send" src="static/cmp-send-idle.svg" width="52" height="24" alt="">
+                  </div>
+                </div>
+              </div>
             </div>
+          </div>
+        </div>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       EVERY ALERT ARRIVES ALREADY SORTED
+       ============================================================ -->
+  <section class="band sorted" id="how">
+    <div class="col">
+      <div class="band-head">
+        <h2>Every alert arrives already sorted.</h2>
+        <p>VEX doesn’t forward noise. Each message says what happened, what VEX already did, and whether a person needs to step in.</p>
+      </div>
+      <div class="types">
+
+        <div class="type">
+          <h3 class="type-key"><img src="static/dot-green.svg" width="8" height="8" alt="">Prevent</h3>
+          <div class="card slack">
+            <div class="msg">
+              <img class="avatar" src="static/vex-avatar-32.svg" width="32" height="32" alt="">
+              <div class="msg-body">
+                <div class="msg-meta"><span class="msg-name">VEX</span><span class="app-tag">APP</span><span class="msg-time">9:14 AM</span></div>
+                <div class="attach" style="--bar:var(--s-green)">
+                  <div class="attach-body">
+                    <span class="tag tag--green">FIXED AUTOMATICALLY</span>
+                    <p class="attach-title">Email spoofing blocked</p>
+                    <p class="attach-text">Anyone could send email pretending to be you. VEX published a DMARC record and confirmed it’s live on 3 public DNS servers.</p>
+                  </div>
+                </div>
+                <div><span class="tag tag--green">CLOSED</span></div>
+              </div>
+            </div>
+          </div>
+          <p class="type-caption">Fixed before it becomes a problem.</p>
+        </div>
+
+        <div class="type">
+          <h3 class="type-key"><img src="static/dot-yellow.svg" width="8" height="8" alt="">Detect</h3>
+          <div class="card slack">
+            <div class="msg">
+              <img class="avatar" src="static/vex-avatar-32.svg" width="32" height="32" alt="">
+              <div class="msg-body">
+                <div class="msg-meta"><span class="msg-name">VEX</span><span class="app-tag">APP</span><span class="msg-time">11:02 AM</span></div>
+                <div class="attach" style="--bar:var(--s-yellow)">
+                  <div class="attach-body">
+                    <span class="tag tag--yellow">NEEDS REVIEW</span>
+                    <p class="attach-title">New forwarding rule on finance@</p>
+                    <p class="attach-text">A new inbox rule sends invoices to an outside Gmail address. VEX paused the rule until you confirm it.</p>
+                    <div class="s-btns"><span class="s-btn s-btn--go">Accept risk</span><span class="s-btn">Keep paused</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p class="type-caption">When something needs a yes or no.</p>
+        </div>
+
+        <div class="type">
+          <h3 class="type-key"><img src="static/dot-red.svg" width="8" height="8" alt="">Respond</h3>
+          <div class="card slack">
+            <div class="msg">
+              <img class="avatar" src="static/vex-avatar-32.svg" width="32" height="32" alt="">
+              <div class="msg-body">
+                <div class="msg-meta"><span class="msg-name">VEX</span><span class="app-tag">APP</span><span class="msg-time">2:47 PM</span></div>
+                <div class="attach" style="--bar:var(--s-red)">
+                  <div class="attach-body">
+                    <span class="tag tag--red">EXPERT ON IT</span>
+                    <p class="attach-title">Investigating 2 accounts</p>
+                    <p class="attach-text">A VEX security analyst is looking into sign-ins from a known-bad IP. Next update in this thread within 30 minutes.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="msg reply">
+              <span class="avatar-letter">C</span>
+              <div class="msg-body">
+                <div class="msg-meta"><span class="msg-name">Caleb</span><span class="app-tag">Unmanned</span><span class="msg-time">2:49 PM</span></div>
+                <p class="attach-text">I’m looking right now!</p>
+              </div>
+            </div>
+          </div>
+          <p class="type-caption">A human expert when judgment matters.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       CLOSE TICKETS QUICKLY
+       ============================================================ -->
+  <section class="band band--soft">
+    <div class="col close-grid">
+      <div class="close-copy">
+        <h3>Close tickets quickly</h3>
+        <p>When VEX reports a signal, handle it where it landed. Reply <span class="cmd">close</span> in the thread and VEX closes the ticket for you. No extra clicks.</p>
+      </div>
+      <div class="mini slack" role="img" aria-label="A Slack thread: VEX reports a suspicious sign-in, Jason replies Close, and VEX marks the ticket closed.">
+        <div class="msg">
+          <img class="avatar" src="static/vex-avatar-21.svg" width="21" height="21" alt="">
+          <div class="msg-body">
+            <div class="msg-meta"><span class="msg-name">VEX</span><span class="app-tag">APP</span><span class="msg-time">9:34 AM</span></div>
+            <div class="attach" style="--bar:var(--s-yellow)">
+              <div class="attach-body">
+                <p class="attach-title">Suspicious sign-in for j.alvarez</p>
+                <p class="attach-text">New location and device on a Microsoft 365 account.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="replies">2 replies</p>
+        <div class="msg">
+          <span class="avatar-letter">J</span>
+          <div class="msg-body" style="gap:2px">
+            <div class="msg-meta"><span class="msg-name">Jason</span><span class="msg-time">9:52 AM</span></div>
+            <p class="mini-text">Close</p>
+          </div>
+        </div>
+        <div class="msg">
+          <img class="avatar" src="static/vex-avatar-21.svg" width="21" height="21" alt="">
+          <div class="msg-body">
+            <div class="msg-meta"><span class="msg-name">VEX</span><span class="app-tag">APP</span><span class="msg-time">9:52 AM</span></div>
+            <div class="attach" style="--bar:var(--s-green)"><div class="attach-body"><p class="attach-text">Ticket closed by Jason</p></div></div>
+            <div><span class="tag tag--green">CLOSED</span></div>
           </div>
         </div>
       </div>
+      <ul class="checks">
+        <li><img src="static/check.svg" width="16" height="16" alt="">No new dashboard</li>
+        <li><img src="static/check.svg" width="16" height="16" alt="">One command to connect</li>
+        <li><img src="static/check.svg" width="16" height="16" alt="">Disconnect anytime</li>
+      </ul>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- Who -->
-<section class="band" id="who">
-  <div class="wrap">
-    <div class="section-head">
-      <h2>Who it's for</h2>
-      <p>Anyone who handles security operations and already spends the day in Slack.</p>
-    </div>
-    <ul class="roles">
-      <li><b>SOC Analyst</b><span>Triages incoming alerts</span></li>
-      <li><b>Security Engineer</b><span>Owns tooling and integrations</span></li>
-      <li><b>Detection &amp; Response Engineer</b><span>Tunes detections, runs playbooks</span></li>
-      <li><b>Incident Responder</b><span>Handles confirmed incidents</span></li>
-      <li><b>Security Operations Manager</b><span>Runs the team and its coverage</span></li>
-      <li><b>CISO / Head of Security</b><span>Needs visibility, not another console</span></li>
-      <li><b>IT Administrator</b><span>Manages Microsoft 365 or Google Workspace</span></li>
-      <li><b>MSP Technician</b><span>Onboards client tenants</span></li>
-    </ul>
-  </div>
-</section>
+  <!-- ============================================================
+       UP AND RUNNING IN THREE STEPS
+       ============================================================ -->
+  <section class="setup">
+    <div class="col">
+      <div class="setup-head">
+        <div class="eyebrow-label"><span class="status-dot"></span>Get started</div>
+        <h2>Up and running in three steps.</h2>
+        <p>You’ll need permission to install Slack apps and admin access to Microsoft 365 or Google Workspace.</p>
+      </div>
+      <div class="steps">
 
-<!-- How -->
-<section class="band how" id="how">
-  <div class="wrap">
-    <div class="section-head">
-      <h2>How it works</h2>
-      <p>From install to closing tickets, every step after the first click happens inside Slack.</p>
-    </div>
-
-    <ol class="journey">
-      <li class="stop">
-        <div class="marker" aria-hidden="true">1</div>
-        <div class="stop-body">
-          <div>
-            <div class="step-n">Step 1</div>
+        <div class="step">
+          <div class="visual" aria-hidden="true">
+            <div class="dialog slack">
+              <div class="dialog-head"><img src="static/step-vex-avatar.svg" width="32" height="32" alt="">Allow the VEX app to access Slack</div>
+              <div class="field"><b>Where do you want to use VEX?</b><div class="select"><span>Your Workspace</span><img src="static/step-caret-down.svg" width="12" height="12" alt=""></div></div>
+              <div class="field"><b>Channel for webhook</b><div class="select"><span># security-ops</span><img src="static/step-caret-down.svg" width="12" height="12" alt=""></div></div>
+              <div class="dialog-actions"><span class="s-btn s-btn--go">Allow</span></div>
+            </div>
+          </div>
+          <div class="step-text">
+            <span class="step-num">01</span>
             <h3>Add VEX to Slack</h3>
-            <p>Click Add to Slack and approve the install. Slack asks which channel VEX should post to; pick the one your security team already watches.</p>
-          </div>
-          <div class="panel" role="img" aria-label="Slack install screen asking where VEX should post, with #security-ops selected">
-            <div class="oauth-top">
-              <span class="app-icon"><img src="https://cdn.unmanned.team/img/logo.png" alt=""></span>
-              <span><b>VEX</b> is requesting permission to access the <b>Acme Security</b> workspace</span>
-            </div>
-            <div class="field-label">Where should VEX post?</div>
-            <div class="select"># security-ops <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></div>
-            <div class="oauth-btns"><span>Cancel</span><span class="allow">Allow</span></div>
+            <p>Approve the install and pick the channel your security team already watches. You’ll see exactly what VEX can read and post before you click Allow.</p>
+            <a class="link" href="https://slack.com/oauth/v2/authorize?client_id=11574043500291.12158197069719&amp;scope=users:read,app_mentions:read,channels:history,chat:write,commands,incoming-webhook,users:read.email&amp;user_scope=">Start now, add to Slack</a>
           </div>
         </div>
-      </li>
 
-      <li class="stop">
-        <div class="marker" aria-hidden="true">2</div>
-        <div class="stop-body">
-          <div>
-            <div class="step-n">Step 2</div>
+        <div class="step">
+          <div class="visual">
+            <p class="visual-label">Review the setup guide:</p>
+            <div class="guides">
+              <a class="guide" href="https://vex.unmanned.team/docs/microsoft" target="_blank" rel="noopener">Microsoft 365 <img src="static/step-external.svg" width="16" height="16" alt=""></a>
+            <a class="guide" href="https://vex.unmanned.team/docs/google" target="_blank" rel="noopener">Google Workspace <img src="static/step-external.svg" width="16" height="16" alt=""></a>
+            </div>
+          </div>
+          <div class="step-text">
+            <span class="step-num">02</span>
             <h3>Get your credentials</h3>
-            <p>Follow the guide for your provider to create the credentials VEX uses. You'll paste them into Slack in the next step.</p>
-          </div>
-          <div class="doc-links">
-            <a class="doc-link" href="https://vex.unmanned.team/docs/microsoft">
-              <span class="grow"><b>Microsoft 365 setup</b><small>vex.unmanned.team/docs/microsoft</small></span>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>
-            </a>
-            <a class="doc-link" href="https://vex.unmanned.team/docs/google">
-              <span class="grow"><b>Google Workspace setup</b><small>vex.unmanned.team/docs/google</small></span>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>
-            </a>
+            <p>Follow the short guide for your provider. It walks you through the process to create the credentials VEX uses. You’ll paste them in Slack in the next step.</p>
           </div>
         </div>
-      </li>
 
-      <li class="stop">
-        <div class="marker" aria-hidden="true">3</div>
-        <div class="stop-body">
-          <div>
-            <div class="step-n">Step 3</div>
-            <h3>Connect with <code style="font-size:.85em">/connect</code></h3>
-            <p>In the channel you chose, run the command for your provider with your credentials. VEX replies in the channel when the connection is live.</p>
-            <div class="cmds">
-              <div class="cmd"><code><span class="k">/connect</span> microsoft <span class="v">&lt;credentials&gt;</span></code></div>
-              <div class="cmd"><code><span class="k">/connect</span> google <span class="v">&lt;credentials&gt;</span></code></div>
+        <div class="step">
+          <div class="visual" aria-hidden="true">
+            <div class="suggest slack">
+              <div class="suggest-row"><img src="static/step-avatar-24.svg" width="24" height="24" alt=""><span><b>/connect [vendor] [json credentials]</b>App · VEX · Connect a monitor</span></div>
             </div>
-            <div class="more-int"><span class="count">50+</span><span>more integrations connect the same way.</span></div>
           </div>
-          <div class="panel" role="img" aria-label="Slack composer with /connect microsoft typed and the VEX command suggestions open" style="padding:22px">
-            <div class="autocomplete" style="position:static;margin:0 0 10px;box-shadow:none">
-              <div class="ac-head">Commands matching "/connect"</div>
-              <div class="ac-row on" style="flex-direction:column;gap:2px"><span><b>/connect</b> microsoft &lt;credentials&gt;</span><span class="d" style="font-size:13px">VEX · Connect Microsoft 365</span></div>
-              <div class="ac-row" style="flex-direction:column;gap:2px"><span><b>/connect</b> google &lt;credentials&gt;</span><span style="font-size:13px;color:var(--muted)">VEX · Connect Google Workspace</span></div>
-            </div>
-            <div class="composer" style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 14px">
-              <code style="font-size:14px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">/connect microsoft eyJ0ZW5hbnQiOi…</code>
-              <span class="send" style="flex:0 0 30px"><svg width="14" height="14" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M3 20l18-8L3 4v6l12 2-12 2z"/></svg></span>
-            </div>
+          <div class="step-text">
+            <span class="step-num">03</span>
+            <h3>Run <code>/connect</code> in Slack</h3>
+            <p>Type <code>/connect</code> and your vendor. Hit enter, and VEX confirms in the channel when you’re live.</p>
+            <div class="chips"><code class="chip">/connect microsoft</code><code class="chip">/connect google</code></div>
           </div>
         </div>
-      </li>
 
-      <li class="stop">
-        <div class="marker" aria-hidden="true">4</div>
-        <div class="stop-body">
-          <div>
-            <div class="step-n">Step 4</div>
-            <h3>Close tickets quickly</h3>
-            <p>When VEX reports a signal, handle it where it landed. Reply <code class="ic" style="font-size:15px">close</code> in the thread and VEX closes the ticket for you. No dashboard, no extra clicks.</p>
-            <div class="cmds">
-              <div class="cmd"><code><span class="k">close</span> <span style="color:rgba(255,255,255,.55)">— reply in any VEX thread</span></code></div>
-            </div>
-          </div>
-          <div class="panel thread" role="img" aria-label="A Slack thread where VEX reports a suspicious sign-in signal, a teammate replies close, and VEX confirms the ticket is closed">
-            <div class="thread-head"><b>Thread</b><span># security-ops</span></div>
-            <div class="thread-body">
-              <div class="msg">
-                <div class="av av-vex"><img src="https://cdn.unmanned.team/img/logo.png" alt=""></div>
-                <div style="min-width:0"><div><span class="who">VEX</span> <span class="app-tag">APP</span> <span class="time">3:07 PM</span></div>
-                  <div class="signal"><span class="sev">Signal</span><b>Suspicious sign-in for j.alvarez</b><span>New location and device on a Microsoft 365 account.</span></div>
-                </div>
-              </div>
-              <div class="replies">2 replies</div>
-              <div class="msg">
-                <div class="av" style="background:var(--c-blue)"></div>
-                <div><div><span class="who">Priya</span> <span class="time">3:12 PM</span></div><div>close</div></div>
-              </div>
-              <div class="msg">
-                <div class="av av-vex"><img src="https://cdn.unmanned.team/img/logo.png" alt=""></div>
-                <div><div><span class="who">VEX</span> <span class="app-tag">APP</span> <span class="time">3:12 PM</span></div>
-                  <div class="closed">Ticket closed by Priya.</div>
-                  <span class="status-pill"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>Closed</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </li>
-
-      <li class="stop finish">
-        <div class="marker" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></div>
-        <div class="stop-body">
-          <div>
-            <div class="step-n">Step 5</div>
-            <h3>Disconnect anytime</h3>
-            <p>Switching providers or offboarding a tenant takes one command.</p>
-            <div class="cmds">
-              <div class="cmd"><code><span class="k">/disconnect</span> microsoft</code></div>
-              <div class="cmd"><code><span class="k">/disconnect</span> google</code></div>
-            </div>
-          </div>
-          <div class="panel" role="img" aria-label="A teammate runs /disconnect google and VEX confirms Google Workspace was disconnected" style="padding:22px">
-            <div class="msg">
-              <div class="av" style="background:var(--c-red)"></div>
-              <div><div><span class="who">Marcus</span> <span class="time">4:12 PM</span></div><div class="used">used <code class="ic">/disconnect google</code></div></div>
-            </div>
-            <div class="msg">
-              <div class="av av-vex"><img src="https://cdn.unmanned.team/img/logo.png" alt=""></div>
-              <div><div><span class="who">VEX</span> <span class="app-tag">APP</span> <span class="time">4:12 PM</span></div><div class="notice">Google Workspace disconnected. Its credentials have been removed.</div></div>
-            </div>
-          </div>
-        </div>
-      </li>
-
-    </ol>
-  </div>
-</section>
-
-<!-- Closing CTA -->
-<section class="cta">
-  <div class="wrap">
-    <div class="lockup">
-      <span class="logo-tile"><img src="https://cdn.unmanned.team/img/logo.png" alt="VEX"></span>
-      <span class="plus" aria-hidden="true">+</span>
-      <!-- Drop Slack's official mark from Slack's brand assets page at this path. -->
-      <span class="logo-tile"><img src="slack.png" alt="Slack"></span>
+      </div>
+      <div class="disconnect">
+        <h3>Disconnect anytime</h3>
+        <p>Switching providers or offboarding a tenant takes one command.</p>
+        <div class="chips"><code class="chip">/disconnect microsoft</code><code class="chip">/disconnect google</code></div>
+      </div>
     </div>
-    <h2>Ready to Slack off?</h2>
-    <p>Install now. Run <code>/connect</code>. Setup done.</p>
-  </div>
-</section>
+  </section>
 
-</main>
+  <!-- ============================================================
+       FINAL CTA
+       ============================================================ -->
+  <section class="final">
+    <div class="final-tiles" aria-hidden="true">
+      <img class="vex" src="static/cta-vex-tile.svg" width="48" height="48" alt="">
+      <img class="plus" src="static/cta-plus.svg" width="18" height="18" alt="">
+      <span class="slack-tile"><img src="../static/slack-logo.svg" width="26" height="26" alt=""></span>
+    </div>
+    <div class="final-copy">
+      <h2>Add VEX to your workspace</h2>
+      <p>Install VEX. Connect your environment. Get security in Slack.</p>
+    </div>
+    <a class="btn" href="https://slack.com/oauth/v2/authorize?client_id=11574043500291.12158197069719&amp;scope=users:read,app_mentions:read,channels:history,chat:write,commands,incoming-webhook,users:read.email&amp;user_scope=">Add to Slack</a>
+  </section>
 
-<footer>
-  <div class="wrap">
-    <span>© 2026 Unmanned, Inc. VEX is not affiliated with or endorsed by Slack.</span>
-    <nav aria-label="Docs"><a href="https://vex.unmanned.team/docs/microsoft">Microsoft docs</a><a href="https://vex.unmanned.team/docs/google">Google docs</a></nav>
-  </div>
-</footer>
+  </main>
 
+  <footer>
+    <span class="fmark">UNMANNED</span>
+    <span>© 2026 UNMANNED, INC.</span>
+    <a href="https://gounmanned.substack.com/" target="_blank" rel="noopener noreferrer">OUR RESEARCH</a>
+  </footer>
+
+  <script>
+    (function(){
+      // hide-on-scroll header (same as the other pages)
+      var root = document.documentElement;
+      var top = document.querySelector('.site-top');
+      var classbar = document.querySelector('.classbar');
+      if(!top){ return; }
+      var lastY = window.scrollY;
+      var ticking = false;
+      function update(){
+        ticking = false;
+        var y = window.scrollY;
+        var showZone = top.offsetHeight + (classbar ? classbar.offsetHeight : 0);
+        if(root.classList.contains('nav-open')){ lastY = y; return; }
+        if(y <= showZone){ root.classList.remove('header-hidden'); lastY = y; return; }
+        if(Math.abs(y - lastY) < 6){ return; }
+        root.classList.toggle('header-hidden', y > lastY);
+        lastY = y;
+      }
+      window.addEventListener('scroll', function(){
+        if(!ticking){ ticking = true; requestAnimationFrame(update); }
+      }, { passive:true });
+      top.addEventListener('focusin', function(){ root.classList.remove('header-hidden'); });
+    })();
+
+    (function(){
+      // phone menu (same as the other pages)
+      var openBtn = document.querySelector('.menu-btn[aria-controls="site-nav"]');
+      var panel = document.getElementById('site-nav');
+      if(!openBtn || !panel){ return; }
+      var closeBtn = panel.querySelector('.menu-close');
+      function openNav(){
+        panel.classList.add('is-open');
+        document.documentElement.classList.add('nav-open');
+        openBtn.setAttribute('aria-expanded','true');
+        closeBtn.focus({ preventScroll:true });
+      }
+      function closeNav(returnFocus){
+        panel.classList.remove('is-open');
+        document.documentElement.classList.remove('nav-open');
+        openBtn.setAttribute('aria-expanded','false');
+        if(returnFocus){ openBtn.focus({ preventScroll:true }); }
+      }
+      openBtn.addEventListener('click', openNav);
+      closeBtn.addEventListener('click', function(){ closeNav(true); });
+      document.addEventListener('keydown', function(e){
+        if(e.key === 'Escape' && panel.classList.contains('is-open')){ closeNav(true); }
+      });
+      panel.addEventListener('click', function(e){
+        if(e.target.closest('a')){ closeNav(false); }
+      });
+      var wide = window.matchMedia('(min-width:701px)');
+      function onWide(){ if(wide.matches && panel.classList.contains('is-open')){ closeNav(false); } }
+      if(wide.addEventListener){ wide.addEventListener('change', onWide); } else { wide.addListener(onWide); }
+    })();
+  </script>
 </body>
 </html>

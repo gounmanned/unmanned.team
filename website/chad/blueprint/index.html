@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VEX MDR — Unmanned</title>
+<meta name="description" content="Your technology is a building. VEX closes the open doors, sounds the alarm when someone tries one, and sends real humans to kick out anyone already inside.">
+<link rel="icon" type="image/png" href="https://cdn.unmanned.team/img/logo.png">
+<link rel="stylesheet" href="https://cdn.unmanned.team/css/global.css">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0b0c0d;
+    --white:#fcfcfa;
+    --pink:#e01280;
+    --pink-text:#d1107a;
+    --pink-on-dark:#e81385;
+    --sev-1:#dc2626;
+    --gray-line:#dcdcd8;
+    --gray-faint:#c4c4c4;
+    --surface-dark:#6c6c70;
+    --surface-gray:#f7f7f7;
+    --body:#2b2b2b;
+    --body-soft:#4b4c52;
+    --nav-link:#6b7280;
+    --db-mid:#8a8a8e;
+    --classbar-h:26px;
+    /* normally supplied by global.css; fallbacks so this file previews on its own */
+    --surface:var(--surface-base,#ffffff);
+    --surface-alt:#efefec;
+    --cycle:15s;
+  }
+  *{box-sizing:border-box;}
+  html{overflow-x:hidden;scrollbar-gutter:stable;}
+  body{margin:0;padding-top:var(--classbar-h);background:var(--surface);color:var(--ink);font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;}
+  h1,h2,h3,p{margin:0;}
+  h1,h2,h3{text-wrap:balance;}
+  p{text-wrap:pretty;}
+  .mono{font-family:'JetBrains Mono',monospace;letter-spacing:0.04em;}
+  a{color:inherit;}
+  ::selection{background:var(--pink);color:#fff;}
+  a:focus-visible,button:focus-visible{outline:1.5px solid var(--pink);outline-offset:4px;}
+  .wrap{width:min(1100px,calc(100% - 48px));margin:0 auto;}
+
+  /* ---------- STATUS DOT ---------- */
+  .status-dot{
+    width:8px;height:8px;border-radius:50%;background:var(--pink);
+    box-shadow:0 0 0 0 rgba(224,18,128,0.5);animation:pulse 2.2s infinite;flex-shrink:0;display:inline-block;
+  }
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(224,18,128,0.45);}
+    70%{box-shadow:0 0 0 8px rgba(224,18,128,0);}
+    100%{box-shadow:0 0 0 0 rgba(224,18,128,0);}
+  }
+  .eyebrow-label{font-size:11px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;color:var(--surface-dark);display:flex;align-items:center;gap:11px;}
+
+  /* ---------- CORNER MARKS ---------- */
+  .corner{position:absolute;width:var(--corner-size,28px);height:var(--corner-size,28px);border-color:var(--ink);opacity:0.55;}
+  .corner.tl{border-top:1px solid;border-left:1px solid;}
+  .corner.tr{border-top:1px solid;border-right:1px solid;}
+  .corner.bl{border-bottom:1px solid;border-left:1px solid;}
+  .corner.br{border-bottom:1px solid;border-right:1px solid;}
+
+  /* ---------- CLASS BAR + HEADER (same as the home page) ---------- */
+  .classbar{
+    position:fixed;top:0;left:0;right:0;z-index:60;background:var(--ink);color:var(--gray-faint);
+    font-size:9.5px;line-height:1.5;letter-spacing:0.16em;text-transform:uppercase;text-align:center;padding:6px 0;
+  }
+  .site-top{position:sticky;top:var(--classbar-h);z-index:50;}
+  .site-header{background:var(--surface);border-bottom:1px solid var(--gray-line);box-shadow:0 4px 8px -4px rgba(11,12,13,0.1);}
+  .header-inner{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:18px 0;}
+  .header-left{display:flex;align-items:center;gap:16px;min-width:0;}
+  .brand{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:800;line-height:1.5;letter-spacing:0.01em;text-decoration:none;color:var(--ink);}
+  .brand .status-dot{animation-iteration-count:2;}
+  .brand-tag{font-size:11px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;color:var(--surface-dark);white-space:nowrap;}
+  .header-links{display:flex;align-items:center;gap:32px;}
+  .header-link{display:inline-flex;align-items:center;gap:6px;font-weight:600;font-size:15px;line-height:1.5;color:var(--nav-link);text-decoration:none;transition:color 0.2s ease;}
+  .header-link:hover,.header-link[aria-current="page"]{color:var(--ink);}
+  .header-link--cta{border-bottom:1px solid var(--pink);}
+  .header-link--cta .arrow{color:var(--pink-text);transition:transform 0.2s ease;}
+  .header-link--cta:hover .arrow{transform:translateX(3px);}
+  @media (max-width:700px){
+    :root{--classbar-h:24px;}
+    .classbar{font-size:8px;}
+    .header-link:not(.header-link--cta){display:none;}
+  }
+  @media (max-width:560px){.brand-tag{display:none;}}
+
+  /* ---------- HERO ---------- */
+  .hero{position:relative;overflow:hidden;background:var(--surface);}
+  .section{position:relative;max-width:900px;margin:0 auto;padding:52px 0 96px 24px;}
+  @media (max-width:948px){.section{padding-right:24px;}}
+  .hero h1{
+    margin-top:16px;font-weight:600;
+    font-size:clamp(40px,6vw,70px);line-height:0.99;letter-spacing:-0.03em;
+  }
+  @media (max-width:480px){.hero h1 br{display:none;}}
+  .hero-lede{margin-top:24px;max-width:680px;font-size:18px;font-weight:300;line-height:1.75;color:var(--ink);}
+  .hero-lede b{font-weight:700;}
+
+  /* ---------- THE DRAWING SHEET ---------- */
+  .sheet{
+    position:relative;margin-top:56px;background:var(--white);border:1px solid var(--db-mid);border-radius:2px;
+    filter:drop-shadow(4px 4px 1px rgba(0,0,0,0.12));
+  }
+  .sheet > .corner{--corner-size:12px;border-color:var(--pink);opacity:1;}
+  .sheet > .corner.tl{top:-9px;left:-9px;}
+  .sheet > .corner.tr{top:-9px;right:-9px;}
+  .sheet > .corner.bl{bottom:-9px;left:-9px;}
+  .sheet > .corner.br{bottom:-9px;right:-9px;}
+  .sheet-head{
+    display:flex;justify-content:space-between;align-items:center;gap:16px;padding:12px 20px;
+    border-bottom:1px solid var(--gray-line);font-size:10px;line-height:1.5;color:var(--surface-dark);text-transform:uppercase;
+  }
+  .sheet-head .left{display:flex;align-items:center;gap:10px;}
+  .sheet-body{padding:20px 20px 0;}
+  .sheet svg{display:block;width:100%;height:auto;}
+
+  /* phase tracker: three mini timeline nodes */
+  .phases{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+  .phase{display:flex;flex-direction:column;gap:10px;color:var(--surface-dark);}
+  .ph-label{display:flex;align-items:center;gap:10px;font-size:11px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;}
+  .ph-node{
+    width:32px;height:32px;border-radius:50%;background:var(--surface);border:1.5px solid var(--gray-faint);
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;
+    font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.04em;color:var(--surface-dark);
+    box-shadow:0 2px 3px rgba(0,0,0,0.12);
+  }
+  .bar{display:block;height:3px;background:var(--gray-line);overflow:hidden;}
+  .fill{display:block;height:100%;background:var(--pink);transform:scaleX(0);transform-origin:left;}
+  /* "on" look for the current step */
+  .phase.ph1 .ph-label{color:var(--ink);}
+  .phase.ph1 .ph-node{border-color:var(--pink);color:var(--pink-text);box-shadow:0 0 10px rgba(224,18,128,0.45);}
+
+  .caption{
+    display:grid;align-items:center;min-height:48px;margin:16px 0 8px;padding:12px 16px;
+    border-left:2px solid var(--pink);background:var(--surface-gray);font-size:16px;line-height:1.5;color:var(--body);
+  }
+  .caption span{grid-area:1/1;opacity:0;}
+  .caption .c1{opacity:1;}
+  .caption b{font-weight:700;color:var(--ink);}
+
+  /* drawing */
+  .grid-sm{stroke:rgba(11,12,13,0.04);}
+  .grid-lg{stroke:rgba(11,12,13,0.08);}
+  .wall{fill:none;stroke:var(--ink);stroke-linecap:square;}
+  .gap{fill:var(--white);}
+  .dim-line{stroke:var(--gray-faint);stroke-width:1;fill:none;}
+  .dim-text{font-family:'JetBrains Mono',monospace;font-size:7.5px;letter-spacing:0.2em;fill:var(--db-mid);}
+  .furn{fill:none;stroke:var(--gray-faint);stroke-width:1.2;}
+  .door-n{stroke:var(--surface-dark);stroke-width:2;fill:none;}
+  .swing-n{stroke:var(--gray-faint);stroke-width:1;stroke-dasharray:3 3;fill:none;}
+  .room{font-family:'Inter',sans-serif;font-weight:600;font-size:11px;letter-spacing:0.16em;fill:var(--ink);text-anchor:middle;}
+  .room-sub{font-family:'JetBrains Mono',monospace;font-size:8px;fill:var(--surface-dark);text-anchor:middle;}
+  .tag{font-family:'JetBrains Mono',monospace;font-size:8px;font-weight:500;letter-spacing:0.04em;}
+  .tag-red{fill:var(--sev-1);}
+  .tag-pink{fill:var(--pink-text);}
+  .tag-gray{fill:var(--surface-dark);}
+
+  .leaf{
+    stroke:var(--sev-1);stroke-width:3;stroke-linecap:round;
+    transform-box:view-box;transform-origin:var(--o);transform:rotate(var(--r));
+  }
+  .swing{stroke:var(--sev-1);stroke-width:1.2;stroke-dasharray:4 3;fill:none;}
+  .sensor{fill:var(--pink);animation:blink 2.2s ease-in-out infinite;}
+  .attacker,.alarm,.removed{opacity:0;}
+  .ring{
+    fill:none;stroke:var(--sev-1);stroke-width:1.5;
+    transform-box:view-box;transform-origin:458px 52px;animation:ring 1.2s ease-out infinite;
+  }
+  .ring.r2{animation-delay:0.6s;}
+  .alarm-badge{fill:var(--sev-1);}
+  .alarm-text{font-family:'JetBrains Mono',monospace;font-size:8px;font-weight:800;letter-spacing:0.08em;fill:#fff;text-anchor:middle;}
+  .who-bad{fill:var(--sev-1);}
+  .who-good{fill:var(--pink);}
+
+  /* title block */
+  .titleblock{
+    display:grid;grid-template-columns:1.3fr 0.7fr 0.9fr 1.4fr;margin:16px -20px 0;border-top:1px solid var(--gray-line);
+    font-size:11px;line-height:1.5;color:var(--ink);
+  }
+  .titleblock > div{padding:12px 20px;}
+  .titleblock > div + div{border-left:1px solid var(--gray-line);}
+  .titleblock small{display:block;font-family:'Inter',sans-serif;font-size:9.5px;letter-spacing:0.18em;text-transform:uppercase;color:var(--surface-dark);margin-bottom:2px;}
+  .status{display:grid;font-weight:500;}
+  .status span{grid-area:1/1;opacity:0;}
+  .status .s1{opacity:1;color:var(--sev-1);}
+  .status .s2,.status .s4{color:var(--pink-text);}
+  .status .s3{color:var(--sev-1);}
+
+  /* ---------- PREVENT / DETECT / RESPOND (scorecard-style strip) ---------- */
+  .pillars{
+    display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin-top:48px;
+    background:var(--white);border:1px solid var(--gray-line);border-radius:2px;filter:drop-shadow(4px 4px 1px rgba(0,0,0,0.15));
+  }
+  .pillar{position:relative;display:flex;flex-direction:column;gap:10px;padding:28px;cursor:pointer;outline:none;}
+  .pillar + .pillar{border-left:1px solid var(--gray-line);}
+  .pillar::before{
+    content:'';position:absolute;inset:0;pointer-events:none;opacity:0;background:var(--surface);
+    box-shadow:0 0 0 1px var(--pink), 0 0 14px rgba(224,18,128,0.5);transition:opacity 0.25s ease;
+  }
+  .pillar > *{position:relative;}
+  .pillar-label{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:11px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;color:var(--surface-dark);}
+  .pillar-when{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.04em;text-transform:none;color:var(--pink-text);white-space:nowrap;}
+  .pillar h3{font-weight:500;font-size:22px;line-height:1.3;letter-spacing:-0.01em;}
+  .pillar p{font-size:14.5px;line-height:1.75;color:var(--body);}
+  .pillar p b{font-weight:700;}
+  .hint{margin-top:20px;font-size:10px;line-height:1.5;color:var(--surface-dark);text-transform:uppercase;}
+
+  .find-out{display:flex;flex-wrap:wrap;align-items:center;gap:16px 24px;margin-top:48px;}
+  .find-out p{font-weight:600;font-size:18px;line-height:1.5;}
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:600;font-size:15px;line-height:1.5;
+    padding:15px 30px;text-decoration:none;background:var(--pink);color:#fff;border:none;cursor:pointer;white-space:nowrap;transition:opacity 0.2s ease;
+  }
+  .btn:hover{opacity:0.8;}
+
+  @media (max-width:760px){
+    .pillars{grid-template-columns:1fr;}
+    .pillar + .pillar{border-left:none;border-top:1px solid var(--gray-line);}
+    .pillar{padding:22px;}
+    .titleblock{grid-template-columns:1fr 1fr;}
+    .titleblock > div:nth-child(3){border-left:none;}
+    .titleblock > div:nth-child(n+3){border-top:1px solid var(--gray-line);}
+    .phases{gap:10px;}
+    .ph-label{font-size:9.5px;letter-spacing:0.12em;gap:6px;}
+    .ph-node{width:26px;height:26px;font-size:9.5px;}
+    .sheet-body{padding:14px 14px 0;}
+    .titleblock{margin:14px -14px 0;}
+    .titleblock > div{padding:10px 14px;}
+    .caption{font-size:14.5px;}
+  }
+  @media (max-width:440px){.ph-label .ph-name{display:none;}}
+
+  /* ---------- STORY ANIMATION (one loop: prevent → detect → respond) ---------- */
+  .leaf.anim{animation:leaf var(--cycle) infinite;}
+  .open-only.anim{animation:hideOpen var(--cycle) infinite;}
+  .attacker.anim{animation:attacker var(--cycle) infinite;}
+  .alarm.anim{animation:alarm var(--cycle) infinite;}
+  .intruder.anim{animation:intruder var(--cycle) infinite;}
+  .removed.anim{animation:removed var(--cycle) infinite;}
+  .responders.anim{animation:responders var(--cycle) infinite;}
+  .status .s1.anim{animation:s1 var(--cycle) infinite;}
+  .status .s2.anim{animation:s2 var(--cycle) infinite;}
+  .status .s3.anim{animation:s3 var(--cycle) infinite;}
+  .status .s4.anim{animation:s4 var(--cycle) infinite;}
+  .caption .c1.anim{animation:p1 var(--cycle) infinite;}
+  .caption .c2.anim{animation:p2 var(--cycle) infinite;}
+  .caption .c3.anim{animation:p3 var(--cycle) infinite;}
+  .pillar[data-p="prevent"]::before{animation:p1 var(--cycle) infinite;}
+  .pillar[data-p="detect"]::before{animation:p2 var(--cycle) infinite;}
+  .pillar[data-p="respond"]::before{animation:p3 var(--cycle) infinite;}
+  .phase.ph1.anim .ph-label{animation:lab1 var(--cycle) infinite;}
+  .phase.ph2.anim .ph-label{animation:lab2 var(--cycle) infinite;}
+  .phase.ph3.anim .ph-label{animation:lab3 var(--cycle) infinite;}
+  .phase.ph1.anim .ph-node{animation:node1 var(--cycle) infinite;}
+  .phase.ph2.anim .ph-node{animation:node2 var(--cycle) infinite;}
+  .phase.ph3.anim .ph-node{animation:node3 var(--cycle) infinite;}
+  .fill.f1.anim{animation:f1 var(--cycle) linear infinite;}
+  .fill.f2.anim{animation:f2 var(--cycle) linear infinite;}
+  .fill.f3.anim{animation:f3 var(--cycle) linear infinite;}
+
+  @keyframes leaf{
+    0%,8%{transform:rotate(var(--r));stroke:var(--sev-1);}
+    16%,92%{transform:rotate(0deg);stroke:var(--pink);}
+    100%{transform:rotate(var(--r));stroke:var(--sev-1);}
+  }
+  @keyframes hideOpen{0%,8%{opacity:1;}14%,92%{opacity:0;}100%{opacity:1;}}
+  @keyframes attacker{
+    0%,34%{opacity:0;transform:translateY(-8px);}
+    38%{opacity:1;transform:translateY(-8px);}
+    44%,62%{opacity:1;transform:translateY(0);}
+    66%,100%{opacity:0;transform:translateY(-8px);}
+  }
+  @keyframes alarm{0%,42%{opacity:0;}45%,62%{opacity:1;}66%,100%{opacity:0;}}
+  @keyframes intruder{0%,82%{opacity:1;}86%,97%{opacity:0;}100%{opacity:1;}}
+  @keyframes removed{0%,84%{opacity:0;}87%,96%{opacity:1;}100%{opacity:0;}}
+  @keyframes responders{
+    0%,68%{transform:translate(0px,0px);}
+    73%{transform:translate(0px,-60px);}
+    77%{transform:translate(100px,-115px);}
+    81%,96%{transform:translate(140px,-85px);}
+    100%{transform:translate(0px,0px);}
+  }
+  @keyframes s1{0%,8%{opacity:1;}11%,96%{opacity:0;}100%{opacity:1;}}
+  @keyframes s2{0%,8%{opacity:0;}11%,34%{opacity:1;}37%,100%{opacity:0;}}
+  @keyframes s3{0%,37%{opacity:0;}40%,64%{opacity:1;}67%,100%{opacity:0;}}
+  @keyframes s4{0%,67%{opacity:0;}70%,96%{opacity:1;}100%{opacity:0;}}
+  @keyframes p1{0%,30%{opacity:1;}34%,96%{opacity:0;}100%{opacity:1;}}
+  @keyframes p2{0%,30%{opacity:0;}34%,63%{opacity:1;}67%,100%{opacity:0;}}
+  @keyframes p3{0%,63%{opacity:0;}67%,96%{opacity:1;}100%{opacity:0;}}
+  @keyframes lab1{0%,31%{color:var(--ink);}34%,97%{color:var(--surface-dark);}100%{color:var(--ink);}}
+  @keyframes lab2{0%,31%{color:var(--surface-dark);}34%,64%{color:var(--ink);}67%,100%{color:var(--surface-dark);}}
+  @keyframes lab3{0%,64%{color:var(--surface-dark);}67%,97%{color:var(--ink);}100%{color:var(--surface-dark);}}
+  @keyframes node1{
+    0%,31%{border-color:var(--pink);color:var(--pink-text);box-shadow:0 0 10px rgba(224,18,128,0.45);}
+    34%,97%{border-color:var(--gray-faint);color:var(--surface-dark);box-shadow:0 2px 3px rgba(0,0,0,0.12);}
+    100%{border-color:var(--pink);color:var(--pink-text);box-shadow:0 0 10px rgba(224,18,128,0.45);}
+  }
+  @keyframes node2{
+    0%,31%{border-color:var(--gray-faint);color:var(--surface-dark);box-shadow:0 2px 3px rgba(0,0,0,0.12);}
+    34%,64%{border-color:var(--pink);color:var(--pink-text);box-shadow:0 0 10px rgba(224,18,128,0.45);}
+    67%,100%{border-color:var(--gray-faint);color:var(--surface-dark);box-shadow:0 2px 3px rgba(0,0,0,0.12);}
+  }
+  @keyframes node3{
+    0%,64%{border-color:var(--gray-faint);color:var(--surface-dark);box-shadow:0 2px 3px rgba(0,0,0,0.12);}
+    67%,97%{border-color:var(--pink);color:var(--pink-text);box-shadow:0 0 10px rgba(224,18,128,0.45);}
+    100%{border-color:var(--gray-faint);color:var(--surface-dark);box-shadow:0 2px 3px rgba(0,0,0,0.12);}
+  }
+  @keyframes f1{0%{transform:scaleX(0);}32%,98%{transform:scaleX(1);}100%{transform:scaleX(0);}}
+  @keyframes f2{0%,33%{transform:scaleX(0);}65%,98%{transform:scaleX(1);}100%{transform:scaleX(0);}}
+  @keyframes f3{0%,66%{transform:scaleX(0);}98%{transform:scaleX(1);}100%{transform:scaleX(0);}}
+  @keyframes blink{0%,100%{opacity:0.35;}50%{opacity:1;}}
+  @keyframes ring{from{transform:scale(0.4);opacity:1;}to{transform:scale(2.6);opacity:0;}}
+
+  /* ---------- HOVER / TAP A STEP: hold the drawing on it ---------- */
+  .hero:has(.pillar:hover,.pillar:focus) :is(.anim,.anim .ph-label,.anim .ph-node),
+  .hero:has(.pillar:hover,.pillar:focus) .pillar::before{animation:none;}
+  .pillar:is(:hover,:focus)::before{opacity:1 !important;}
+  .hero:has(.pillar:hover,.pillar:focus) .leaf{transform:rotate(0deg);stroke:var(--pink);}
+  .hero:has(.pillar:hover,.pillar:focus) :is(.open-only,.status .s1,.caption .c1){opacity:0;}
+  .hero:has(.pillar:hover,.pillar:focus) .phase.ph1 .ph-label{color:var(--surface-dark);}
+  .hero:has(.pillar:hover,.pillar:focus) .phase.ph1 .ph-node{border-color:var(--gray-faint);color:var(--surface-dark);box-shadow:0 2px 3px rgba(0,0,0,0.12);}
+
+  .hero:has([data-p="prevent"]:is(:hover,:focus)) :is(.status .s2,.caption .c1){opacity:1;}
+  .hero:has([data-p="prevent"]:is(:hover,:focus)) .f1,
+  .hero:has([data-p="detect"]:is(:hover,:focus)) :is(.f1,.f2),
+  .hero:has([data-p="respond"]:is(:hover,:focus)) .fill{transform:scaleX(1);}
+
+  .hero:has([data-p="detect"]:is(:hover,:focus)) :is(.attacker,.alarm,.status .s3,.caption .c2){opacity:1;}
+
+  .hero:has([data-p="respond"]:is(:hover,:focus)) .intruder{opacity:0;}
+  .hero:has([data-p="respond"]:is(:hover,:focus)) :is(.removed,.status .s4,.caption .c3){opacity:1;}
+  .hero:has([data-p="respond"]:is(:hover,:focus)) .responders{transform:translate(140px,-85px);}
+
+  .hero:has([data-p="prevent"]:is(:hover,:focus)) .ph1 .ph-label,
+  .hero:has([data-p="detect"]:is(:hover,:focus)) .ph2 .ph-label,
+  .hero:has([data-p="respond"]:is(:hover,:focus)) .ph3 .ph-label{color:var(--ink);}
+  .hero:has([data-p="prevent"]:is(:hover,:focus)) .ph1 .ph-node,
+  .hero:has([data-p="detect"]:is(:hover,:focus)) .ph2 .ph-node,
+  .hero:has([data-p="respond"]:is(:hover,:focus)) .ph3 .ph-node{border-color:var(--pink);color:var(--pink-text);box-shadow:0 0 10px rgba(224,18,128,0.45);}
+
+  @media (prefers-reduced-motion: reduce){
+    .status-dot,.sensor,.ring,.pillar::before,
+    .anim,.anim .ph-label,.anim .ph-node{animation:none !important;}
+  }
+</style>
+</head>
+<body>
+
+  <div class="classbar">UNMANNED · SIMPLY SECURE</div>
+
+  <div class="site-top">
+    <header class="site-header">
+      <div class="wrap header-inner">
+        <div class="header-left">
+          <a href="/" class="brand"><span class="status-dot"></span>VEX</a>
+          <span class="brand-tag">Don’t get hacked</span>
+        </div>
+        <nav class="header-links" aria-label="Main">
+          <a class="header-link" href="/managed" aria-current="page">VEX MDR</a>
+          <a class="header-link header-link--cta" href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener">Schedule a chat <span class="arrow">→</span></a>
+        </nav>
+      </div>
+    </header>
+  </div>
+
+  <main>
+  <section class="hero">
+    <div class="section">
+      <div class="eyebrow-label"><span class="status-dot"></span>VEX MDR</div>
+      <h1>Your business is a building. <br>Attackers try every door.</h1>
+      <p class="hero-lede">It isn’t one system. It’s a floor plan: endpoints, identity, email, SaaS apps and the domain registrar everything lives behind. <b>VEX walks every room like an attacker</b>, then keeps it locked, watched and guarded.</p>
+
+      <!-- ============ THE DRAWING ============ -->
+      <div class="sheet">
+        <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+
+        <div class="sheet-head mono">
+          <span class="left"><span class="status-dot"></span>REC · Sheet A-101</span>
+          <span>Prevent → Detect → Respond</span>
+        </div>
+
+        <div class="sheet-body">
+          <div class="phases" aria-hidden="true">
+            <div class="phase ph1 anim"><span class="ph-label"><span class="ph-node">01</span><span class="ph-name">Prevent</span></span><i class="bar"><b class="fill f1 anim"></b></i></div>
+            <div class="phase ph2 anim"><span class="ph-label"><span class="ph-node">02</span><span class="ph-name">Detect</span></span><i class="bar"><b class="fill f2 anim"></b></i></div>
+            <div class="phase ph3 anim"><span class="ph-label"><span class="ph-node">03</span><span class="ph-name">Respond</span></span><i class="bar"><b class="fill f3 anim"></b></i></div>
+          </div>
+
+          <p class="caption">
+            <span class="c1 anim"><b>Prevent.</b> VEX finds the open doors and closes them.</span>
+            <span class="c2 anim"><b>Detect.</b> Someone tries a door. The alarm goes off.</span>
+            <span class="c3 anim"><b>Respond.</b> Someone’s already inside. Real humans kick them out.</span>
+          </p>
+
+          <svg viewBox="0 0 600 440" role="img" aria-labelledby="bp-title bp-desc">
+            <title id="bp-title">Floor plan of your technology</title>
+            <desc id="bp-desc">Five rooms: Endpoints, SaaS Apps, Email, Identity and Domain Registrar. VEX closes the open doors, sounds the alarm when an attacker tries one, and sends responders to remove an intruder already inside.</desc>
+            <defs>
+              <pattern id="g-sm" width="10" height="10" patternUnits="userSpaceOnUse">
+                <path class="grid-sm" d="M10 0H0V10" fill="none" stroke-width="1"/>
+              </pattern>
+              <pattern id="g-lg" width="50" height="50" patternUnits="userSpaceOnUse">
+                <rect width="50" height="50" fill="url(#g-sm)"/>
+                <path class="grid-lg" d="M50 0H0V50" fill="none" stroke-width="1"/>
+              </pattern>
+            </defs>
+            <rect width="600" height="440" fill="url(#g-lg)"/>
+
+            <!-- dimension lines -->
+            <path class="dim-line" d="M20 40V380 M16 40H24 M16 380H24 M580 40V380 M576 40H584 M576 380H584"/>
+            <text class="dim-text" transform="translate(14 210) rotate(-90)" text-anchor="middle">YOUR TECHNOLOGY</text>
+            <text class="dim-text" transform="translate(592 210) rotate(90)" text-anchor="middle">ATTACK SURFACE</text>
+
+            <!-- walls -->
+            <rect class="wall" x="40" y="40" width="520" height="340" stroke-width="5"/>
+            <path class="wall" stroke-width="2.5" d="M40 200H560 M260 40V200 M200 200V380 M400 200V380"/>
+
+            <!-- door openings -->
+            <rect class="gap" x="35" y="300" width="10" height="36"/>
+            <rect class="gap" x="440" y="35" width="36" height="10"/>
+            <rect class="gap" x="140" y="197" width="36" height="6"/>
+            <rect class="gap" x="555" y="300" width="10" height="36"/>
+            <rect class="gap" x="282" y="375" width="36" height="10"/>
+            <rect class="gap" x="197" y="280" width="6" height="36"/>
+            <rect class="gap" x="397" y="280" width="6" height="36"/>
+            <rect class="gap" x="330" y="197" width="36" height="6"/>
+            <rect class="gap" x="257" y="100" width="6" height="36"/>
+
+            <!-- interior doors -->
+            <line class="door-n" x1="200" y1="280" x2="164" y2="280"/><path class="swing-n" d="M164 280A36 36 0 0 0 200 316"/>
+            <line class="door-n" x1="400" y1="280" x2="436" y2="280"/><path class="swing-n" d="M436 280A36 36 0 0 1 400 316"/>
+            <line class="door-n" x1="330" y1="200" x2="330" y2="164"/><path class="swing-n" d="M330 164A36 36 0 0 1 366 200"/>
+            <line class="door-n" x1="260" y1="100" x2="296" y2="100"/><path class="swing-n" d="M296 100A36 36 0 0 1 260 136"/>
+
+            <!-- front door: locked -->
+            <line x1="282" y1="380" x2="318" y2="380" stroke="var(--ink)" stroke-width="3" stroke-linecap="round"/>
+            <text class="tag tag-gray" x="326" y="398">LOCKED · MFA</text>
+
+            <!-- furniture -->
+            <g class="furn">
+              <rect x="64" y="118" width="40" height="20"/><rect x="118" y="118" width="40" height="20"/><rect x="172" y="118" width="40" height="20"/>
+              <path d="M74 123H94 M128 123H148 M182 123H202"/>
+              <rect x="320" y="140" width="22" height="22" rx="3"/><rect x="352" y="140" width="22" height="22" rx="3"/>
+              <rect x="384" y="140" width="22" height="22" rx="3"/><rect x="416" y="140" width="22" height="22" rx="3"/>
+              <rect x="448" y="140" width="22" height="22" rx="3"/><rect x="480" y="140" width="22" height="22" rx="3"/>
+              <rect x="70" y="262" width="18" height="12"/><rect x="92" y="262" width="18" height="12"/><rect x="114" y="262" width="18" height="12"/><rect x="136" y="262" width="18" height="12"/>
+              <rect x="70" y="278" width="18" height="12"/><rect x="92" y="278" width="18" height="12"/><rect x="114" y="278" width="18" height="12"/><rect x="136" y="278" width="18" height="12"/>
+              <path d="M256 310Q300 286 344 310"/>
+              <rect x="428" y="256" width="34" height="14"/><rect x="470" y="256" width="34" height="14"/>
+            </g>
+
+            <!-- rooms -->
+            <text class="room" x="150" y="76">ENDPOINTS</text>
+            <text class="room-sub" x="150" y="90">laptops · servers · phones</text>
+            <text class="room" x="410" y="104">SAAS APPS</text>
+            <text class="room-sub" x="410" y="118">M365 · Google · Slack · GitHub</text>
+            <text class="room" x="120" y="232">EMAIL</text>
+            <text class="room-sub" x="120" y="246">inboxes · MX · DMARC</text>
+            <text class="room" x="300" y="232">IDENTITY</text>
+            <text class="room-sub" x="300" y="246">users · admins · MFA</text>
+            <text class="room" x="480" y="228">DOMAIN REGISTRAR</text>
+            <text class="room-sub" x="480" y="242">DNS · domains · certs</text>
+
+            <!-- 01 PREVENT: the open doors -->
+            <g class="open-only anim">
+              <path class="swing" d="M76 300A36 36 0 0 1 40 336"/>
+              <path class="swing" d="M476 40A36 36 0 0 1 440 76"/>
+              <path class="swing" d="M140 164A36 36 0 0 1 176 200"/>
+              <path class="swing" d="M560 336A36 36 0 0 1 524 300"/>
+              <text class="tag tag-red" x="52" y="356">OPEN · no DMARC</text>
+              <text class="tag tag-red" x="432" y="62" text-anchor="end">OPEN · stale admin token</text>
+              <text class="tag tag-red" x="134" y="186" text-anchor="end">OPEN · unpatched</text>
+              <text class="tag tag-red" x="548" y="292" text-anchor="end">OPEN · registrar w/o 2FA</text>
+            </g>
+            <line class="leaf anim" x1="40" y1="300" x2="40" y2="336" style="--o:40px 300px;--r:-90deg"/>
+            <line class="leaf anim" x1="440" y1="40" x2="476" y2="40" style="--o:440px 40px;--r:90deg"/>
+            <line class="leaf anim" x1="140" y1="200" x2="176" y2="200" style="--o:140px 200px;--r:-90deg"/>
+            <line class="leaf anim" x1="560" y1="300" x2="560" y2="336" style="--o:560px 300px;--r:90deg"/>
+
+            <!-- sensors on every door -->
+            <circle class="sensor" cx="52" cy="318" r="2.5"/>
+            <circle class="sensor" cx="458" cy="52" r="2.5"/>
+            <circle class="sensor" cx="158" cy="188" r="2.5"/>
+            <circle class="sensor" cx="548" cy="318" r="2.5"/>
+            <circle class="sensor" cx="300" cy="368" r="2.5"/>
+
+            <!-- 02 DETECT: someone tries the SaaS door -->
+            <g class="attacker anim">
+              <circle class="who-bad" cx="458" cy="8" r="4.5"/>
+              <path class="who-bad" d="M450 22Q458 12 466 22Z"/>
+            </g>
+            <g class="alarm anim">
+              <circle class="ring" cx="458" cy="52" r="10"/>
+              <circle class="ring r2" cx="458" cy="52" r="10"/>
+              <rect class="alarm-badge" x="486" y="6" width="68" height="16"/>
+              <text class="alarm-text" x="520" y="17">ALARM · 24/7</text>
+            </g>
+
+            <!-- 03 RESPOND: already inside; humans go in -->
+            <g class="intruder anim">
+              <circle class="who-bad" cx="490" cy="326" r="5"/>
+              <path class="who-bad" d="M481 342Q490 330 499 342Z"/>
+              <text class="tag tag-red" x="490" y="358" text-anchor="middle">already inside</text>
+            </g>
+            <text class="tag tag-pink removed anim" x="490" y="358" text-anchor="middle">✓ removed</text>
+            <g class="responders anim">
+              <circle class="who-good" cx="290" cy="404" r="5"/>
+              <path class="who-good" d="M281 420Q290 408 299 420Z"/>
+              <circle class="who-good" cx="310" cy="404" r="5"/>
+              <path class="who-good" d="M301 420Q310 408 319 420Z"/>
+            </g>
+          </svg>
+
+          <div class="titleblock mono">
+            <div><small>Project</small>Your technology</div>
+            <div><small>Sheet</small>A-101</div>
+            <div><small>Surveyed by</small>VEX</div>
+            <div><small>Status</small>
+              <span class="status">
+                <span class="s1 anim">4 OPEN DOORS</span>
+                <span class="s2 anim">DOORS CLOSED</span>
+                <span class="s3 anim">ALARM RAISED</span>
+                <span class="s4 anim">RESPONDERS ON SITE</span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ PREVENT / DETECT / RESPOND ============ -->
+      <div class="pillars">
+        <article class="pillar" data-p="prevent" tabindex="0">
+          <span class="pillar-label">01 · Prevent <span class="pillar-when">future attacks</span></span>
+          <h3>Close the open doors</h3>
+          <p>VEX tests every room the way an attacker would and hands you <b>the one fix</b> that shuts the most ways in.</p>
+        </article>
+        <article class="pillar" data-p="detect" tabindex="0">
+          <span class="pillar-label">02 · Detect <span class="pillar-when">current attacks</span></span>
+          <h3>Sound the alarm</h3>
+          <p>A strange login, a new admin, a sneaky forwarding rule. When someone tries a door, <b>VEX raises the alarm</b>, 24/7.</p>
+        </article>
+        <article class="pillar" data-p="respond" tabindex="0">
+          <span class="pillar-label">03 · Respond <span class="pillar-when">past attacks</span></span>
+          <h3>Send in real humans</h3>
+          <p>Already inside? The operators who built VEX <b>kick them out</b>, change the locks and tell you exactly what they touched.</p>
+        </article>
+      </div>
+      <p class="hint mono">Hover or tap a step to hold the drawing on it.</p>
+
+      <div class="find-out">
+        <p>Want to see your floor plan?</p>
+        <a class="btn" href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener">Schedule a chat</a>
+      </div>
+    </div>
+  </section>
+  </main>
+
+</body>
+</html>

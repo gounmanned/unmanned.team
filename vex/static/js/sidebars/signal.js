@@ -4,23 +4,24 @@ class SignalSidebar {
         2: { placeholder: "What should change, and why does it matter?",      action: "Create recommendation" },
     };
 
+    static formatTime(value) {
+        const date = new Date(value);
+        if (isNaN(date)) return { short: value ?? "", full: value ?? "" };
+        return {
+            short: date.toLocaleString(undefined, { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }),
+            full: date.toLocaleString(),
+        };
+    }
+
     constructor(state) {
         this.state = state;
         this.api = state.api;
         this.listen();
     }
 
-    el(id) {
-        return document.getElementById(id);
-    }
-
-    close() {
-        document.querySelector("site-overlay").click();
-    }
-
     reset() {
-        this.el("updates").replaceChildren();
-        this.el("response").value = "";
+        document.getElementById("updates").replaceChildren();
+        document.getElementById("response").value = "";
     }
 
     reload() {
@@ -48,62 +49,69 @@ class SignalSidebar {
         const copy = SignalSidebar.NEW_COPY[s.kind];
         const conf = s.metadata?.confidence;
 
-        const sidebar = this.el("signal-sidebar");
+        const sidebar = document.getElementById("signal-sidebar");
         sidebar.classList.toggle("is-new", isNew);
         sidebar.dataset.kind = s.kind ?? "";
 
-        this.el("signal-status").value = s.status;
-        this.el("signal-asset").value = s.asset;
-        this.el("signal-source").value = s.source;
+        document.getElementById("signal-status").value = s.status;
+        document.getElementById("signal-asset").value = s.asset;
+        document.getElementById("signal-source").value = s.source;
 
-        this.el("signal-kind").textContent = kind?.label ?? "";
-        this.el("signal-kind-icon").textContent = kind?.icon ?? "";
-        this.el("signal-confidence").hidden = conf == null;
-        this.el("signal-confidence").textContent = conf == null ? "" : `${Math.round(conf * 100)}% confidence`;
+        document.getElementById("signal-kind").textContent = kind?.label ?? "";
+        document.getElementById("signal-kind-icon").textContent = kind?.icon ?? "";
 
-        for (const btn of this.el("kind-switch").querySelectorAll("button")) {
+        const confidence = document.getElementById("signal-confidence");
+        confidence.hidden = conf == null;
+        confidence.textContent = conf == null ? "" : `${Math.round(conf * 100)}% confidence`;
+
+        for (const btn of document.querySelectorAll("#kind-switch button")) {
             const k = Number(btn.dataset.kind);
             btn.setAttribute("aria-pressed", String(k === s.kind));
             btn.querySelector(".material-symbols-outlined").textContent = Workspace.KIND[k]?.icon ?? "";
         }
 
-        this.el("response").placeholder = isNew ? (copy?.placeholder ?? "Describe this signal") : "Add context to this signal";
-        this.el("signal-save-label").textContent = isNew ? (copy?.action ?? "Create") : "";
+        document.getElementById("response").placeholder =
+            isNew ? (copy?.placeholder ?? "Describe this signal") : "Add context to this signal";
+        document.getElementById("signal-save-label").textContent =
+            isNew ? (copy?.action ?? "Create") : "";
     }
 
     add(update) {
         const source = update.source || this.signal.source;
+        const time = SignalSidebar.formatTime(update.updated);
 
         const li = document.createElement("li");
         li.dataset.key = update.key;
         li.innerHTML = `
-            <div class="message-row">
-                <img class="avatar" alt="">
-                <div class="message-content">
-                    <div class="header">
-                        <span class="sender"></span>
-                        <span class="timestamp"></span>
-                    </div>
-                    <div class="body"></div>
+            <img class="avatar" alt="">
+            <div class="message">
+                <div class="meta">
+                    <span class="sender"></span>
+                    <time class="timestamp"></time>
                 </div>
+                <div class="body"></div>
             </div>`;
 
         const avatar = li.querySelector(".avatar");
         avatar.onerror = () => { avatar.onerror = null; avatar.src = "static/img/source/slack.png"; };
         avatar.src = Workspace.avatar(source);
 
+        const timestamp = li.querySelector(".timestamp");
+        timestamp.textContent = time.short;
+        timestamp.title = time.full;
+        timestamp.dateTime = update.updated ?? "";
+
         li.querySelector(".sender").textContent = source;
-        li.querySelector(".timestamp").textContent = update.updated;
         li.querySelector(".body").textContent = update.value;
 
-        this.el("updates").append(li);
-        this.el("response").value = "";
-        li.scrollIntoView({ behavior: "smooth" });
+        document.getElementById("updates").append(li);
+        document.getElementById("response").value = "";
+        li.scrollIntoView({ behavior: "smooth", block: "nearest" });
     }
 
     validateAsset() {
         if ((this.signal.asset || "").trim()) return true;
-        this.el("signal-asset").reportValidity();
+        document.getElementById("signal-asset").reportValidity();
         return false;
     }
 
@@ -113,21 +121,21 @@ class SignalSidebar {
             this.state.signals[signal.account][signal.id] = signal;
             this.signal = signal;
             document.dispatchEvent(new CustomEvent("page:reload"));
-            if (close) this.close();
+            if (close) document.querySelector("site-overlay").click();
         });
     }
 
     listen() {
-        this.el("kind-switch").addEventListener("click", (ev) => {
+        document.getElementById("kind-switch").addEventListener("click", (ev) => {
             const btn = ev.target.closest("button[data-kind]");
             if (!btn || this.signal?.id) return;   // kind is locked once a signal exists
             this.signal.kind = Number(btn.dataset.kind);
             this.render();
         });
 
-        this.el("signal-save").addEventListener("click", async () => {
+        document.getElementById("signal-save").addEventListener("click", async () => {
             if (!this.validateAsset()) return;
-            const value = this.el("response").value.trim();
+            const value = document.getElementById("response").value.trim();
 
             if (this.signal.id) {
                 if (!value) return;
@@ -141,32 +149,32 @@ class SignalSidebar {
             await SiteSpinner.withLoading(async () => {
                 await this.api.signals.create({ kind, status, asset, source, value });
                 document.dispatchEvent(new CustomEvent("page:reload"));
-                this.close();
+                document.querySelector("site-overlay").click();
             });
         });
 
-        this.el("signal-status").addEventListener("change", (ev) => {
+        document.getElementById("signal-status").addEventListener("change", (ev) => {
             this.signal.status = ev.target.value;
             if (this.signal.id) this.patch({ status: this.signal.status }, { close: true });
         });
 
-        this.el("signal-asset").addEventListener("change", (ev) => {
+        document.getElementById("signal-asset").addEventListener("change", (ev) => {
             this.signal.asset = ev.target.value;
             if (this.signal.id && this.validateAsset()) this.patch({ asset: this.signal.asset });
         });
 
-        this.el("signal-source").addEventListener("change", (ev) => {
+        document.getElementById("signal-source").addEventListener("change", (ev) => {
             this.signal.source = ev.target.value;
             if (this.signal.id) this.patch({ source: this.signal.source });
         });
 
-        this.el("signal-delete").addEventListener("click", async () => {
+        document.getElementById("signal-delete").addEventListener("click", async () => {
             const { id, account } = this.signal;
             await SiteSpinner.withLoading(async () => {
                 await this.api.signals.delete(id);
                 delete this.state.signals[account][id];
                 document.dispatchEvent(new CustomEvent("page:reset"));
-                this.close();
+                document.querySelector("site-overlay").click();
             });
         });
     }

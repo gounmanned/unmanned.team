@@ -84,7 +84,7 @@ class Table {
         const row = this.find('tr', signal.id) ?? document.createElement('tr');
         const closed = signal.status.startsWith('C');
         const unread = !signal.read && !closed;
-        const timed = signal.kind == 4;
+        const timed = signal.kind == 3;
 
         Object.assign(row.dataset, { id: signal.id, status: signal.status, kind: signal.kind, updated: signal.updated });
         row.classList.toggle('unread', unread);

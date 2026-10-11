@@ -491,8 +491,7 @@
 
 .kind-chip[data-kind="1"] { background: color-mix(in srgb, var(--kind-1) 10%, transparent); color: var(--kind-1); } /* security alert */
 .kind-chip[data-kind="2"] { background: color-mix(in srgb, var(--kind-2) 10%, transparent); color: var(--kind-2); } /* recommendation */
-.kind-chip[data-kind="3"] { background: color-mix(in srgb, var(--kind-3) 10%, transparent); color: var(--kind-3); } /* helpdesk */
-.kind-chip[data-kind="4"] { background: color-mix(in srgb, var(--kind-4) 10%, transparent); color: var(--kind-4); } /* security test */
+.kind-chip[data-kind="3"] { background: color-mix(in srgb, var(--kind-4) 10%, transparent); color: var(--kind-4); } /* security test */
 
 /* ── signals: table view ────────────────────────────────────────── */
 

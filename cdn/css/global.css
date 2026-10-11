@@ -11,8 +11,7 @@
   --accent:rgba(224,18,128,0.45);
   --kind-1: #DC2626; 
   --kind-2: #0F766E;
-  --kind-3: #3B82F6;
-  --kind-4: var(--brand);
+  --kind-3: var(--brand);
 }
 
 body {

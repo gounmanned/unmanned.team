@@ -160,24 +160,66 @@ class TenantScreen {
         const hits = counts.map((v, i) => {
             const label = new Date(year, month, i + 1).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
             return `<rect x="${x(i) - step / 2}" y="0" width="${step}" height="${H}" fill="transparent">
-                      <title>${label}: ${v} signal${v === 1 ? '' : 's'}</title>
+                    <title>${label}: ${v} signal${v === 1 ? '' : 's'}</title>
                     </rect>`;
         }).join('');
+
+        // ── radar centered on today ──
+        const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const R = Math.min(480, Math.max(220, W * 0.3));
+        const at = (deg, r = R) => {
+            const a = deg * Math.PI / 180;
+            return [lx + r * Math.cos(a), ly + r * Math.sin(a)].map(n => n.toFixed(1)).join(',');
+        };
+        const spin = (dur, dir = 1) => still ? '' :
+            `<animateTransform attributeName="transform" type="rotate"
+            from="0 ${lx} ${ly}" to="${360 * dir} ${lx} ${ly}" dur="${dur}s" repeatCount="indefinite"/>`;
+
+        const rings = [0.25, 0.5, 0.75, 1]
+            .map(f => `<circle class="trend-ring" cx="${lx}" cy="${ly}" r="${R * f}"/>`).join('');
+
+        const waves = [0, 1, 2]
+            .map(i => `<circle class="trend-wave" cx="${lx}" cy="${ly}" r="${R}" style="animation-delay:${-i * 1.4}s"/>`).join('');
 
         svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
         svg.innerHTML = `
             <defs>
-              <linearGradient id="trend-fill" x1="0" y1="0" x2="0" y2="1">
+            <linearGradient id="trend-fill" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" style="stop-color:var(--brand);stop-opacity:.18"/>
                 <stop offset="100%" style="stop-color:var(--brand);stop-opacity:0"/>
-              </linearGradient>
+            </linearGradient>
+            <radialGradient id="trend-radar-fade">
+                <stop offset="0%" stop-color="#fff"/>
+                <stop offset="35%" stop-color="#fff" stop-opacity=".8"/>
+                <stop offset="100%" stop-color="#fff" stop-opacity="0"/>
+            </radialGradient>
+            <mask id="trend-radar-mask" maskUnits="userSpaceOnUse"
+                    x="${lx - R}" y="${ly - R}" width="${R * 2}" height="${R * 2}">
+                <circle cx="${lx}" cy="${ly}" r="${R}" fill="url(#trend-radar-fade)"/>
+            </mask>
             </defs>
-            <line class="trend-baseline" x1="${pad.l}" x2="${W - pad.r}" y1="${base}" y2="${base}"/>
+
+            <g class="trend-radar" mask="url(#trend-radar-mask)">
+            ${rings}
+            ${waves}
+            </g>
+
+            <line class="trend-baseline" x1="${pad.l}" x2="${lx}" y1="${base}" y2="${base}"/>
+            <line class="trend-future" x1="${lx}" x2="${W - pad.r}" y1="${base}" y2="${base}"/>
             <text class="trend-max" x="${W - pad.r}" y="${pad.t - 2}" text-anchor="end">peak ${max}</text>
             <path d="${area}" fill="url(#trend-fill)"/>
             <path class="trend-line" d="${line}"/>
-            <circle class="trend-today-pulse" cx="${lx}" cy="${ly}" r="3"/>
-            <circle class="trend-today" cx="${lx}" cy="${ly}" r="3"/>
+            <line class="trend-now" x1="${lx}" x2="${lx}" y1="${ly}" y2="${base}"/>
+
+            <g class="trend-radar">
+            <circle class="trend-halo" cx="${lx}" cy="${ly}" r="16"/>
+            <g>
+                <circle class="trend-reticle" cx="${lx}" cy="${ly}" r="9"/>
+                ${spin(12, -1)}
+            </g>
+            <circle class="trend-today-pulse" cx="${lx}" cy="${ly}" r="3.5"/>
+            <circle class="trend-today" cx="${lx}" cy="${ly}" r="3.5"/>
+            </g>
             <g class="trend-axis">${ticks}</g>
             ${hits}
         `;

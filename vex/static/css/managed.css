@@ -83,29 +83,6 @@
   display: flex; flex-direction: column; gap: 1px;
 }
 
-#managed-screen .managed-accounts-watermark {
-  display: none;
-  position: absolute;
-  inset: 0;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  padding: 20px;
-  text-align: center;
-  font-size: 10.5px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-faint);
-  pointer-events: none;
-}
-
-#managed-screen .managed-accounts-watermark .material-symbols-outlined {
-  font-size: 22px;
-  color: #d1d5db;
-}
-
-#managed-screen .managed-accounts-wrap.empty .managed-accounts-watermark { display: flex; }
 #managed-screen .managed-accounts-wrap.empty #managed-accounts { display: none; }
 
 #managed-screen .managed-account-item {
@@ -209,7 +186,7 @@
   overflow: hidden; background: var(--surface);
 }
 
-/* Intro watermark (first load, before an account is selected) */
+/* intro watermark */
 
 #managed-screen .managed-intro-watermark {
   position: absolute;

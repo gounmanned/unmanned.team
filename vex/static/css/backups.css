@@ -135,8 +135,7 @@
   color: var(--line);
 }
 
-/* ── Empty state (uses global .signal-radar-watermark) ──────────────────── */
+/* ── Empty state ──────────────────── */
 
 #file-list-wrap.empty { display: block; }
 #file-list-wrap.empty > .hacker-list { display: none; }
-#file-list-wrap.empty .signal-radar-watermark { display: flex; }

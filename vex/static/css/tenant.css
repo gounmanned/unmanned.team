@@ -1,54 +1,3 @@
-/* ── empty states (radar watermark) ─────────────────────────────── */
-
-.signal-radar-watermark {
-  display: none;
-  position: absolute;
-  inset: 0;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  padding: 40px 20px;
-  text-align: center;
-  pointer-events: none;
-  overflow: hidden;
-}
-
-.table-wrap { position: relative; flex: 1; min-height: 0; }
-.table-wrap.empty { display: block; }
-.table-wrap.empty > table { display: none; }
-.table-wrap.empty .signal-radar-watermark { display: flex; }
-
-.signal-radar {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  z-index: 0;
-  width: min(420px, 85%);
-  height: min(420px, 85%);
-  transform: translate(-50%, -50%);
-  color: var(--line-2, #d1d5db);
-}
-
-.signal-radar-watermark .material-symbols-outlined,
-#breach-screen .breach-detail-empty .material-symbols-outlined {
-  position: relative;
-  z-index: 2;
-  font-size: 28px;
-  color: var(--text-faint, #c4c4c4);
-}
-
-.signal-radar-watermark p,
-#breach-screen .breach-detail-empty p {
-  position: relative;
-  z-index: 2;
-  margin: 0;
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-faint, #9ca3af);
-}
-
 /* ── overview card (trend + critical footer) ────────────────────── */
 
 #overview-section { margin-bottom: 24px; }
@@ -408,8 +357,7 @@
   color: var(--text-body);
 }
 
-#signal-table-wrap.searching > table,
-#signal-table-wrap.searching .signal-radar-watermark { display: none; }
+#signal-table-wrap.searching > table { display: none; }
 
 .signal-search-results {
   display: none;

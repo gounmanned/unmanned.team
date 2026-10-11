@@ -56,7 +56,7 @@ class SignalSidebar {
 
         const confidence = document.getElementById("signal-confidence");
         confidence.hidden = conf == null;
-        confidence.textContent = conf == null ? "" : `${Math.round(conf * 100)}% confidence`;
+        confidence.textContent = conf == null ? "" : `${Math.round(conf * 100)}% likely malicious`;
 
         for (const btn of document.querySelectorAll("#kind-switch button")) {
             btn.setAttribute("aria-pressed", String(Number(btn.dataset.kind) === s.kind));

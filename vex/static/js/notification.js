@@ -1,14 +1,7 @@
 class Notifications {
-    static ONBOARDING = [
-        { id: 'email',    icon: 'badge',      title: 'Connect your identity provider', done: ctx => ['google', 'microsoft'].some(v => ctx.vendors.has(v)) },
-        { id: 'domain',   icon: 'dns',        title: 'Connect your registrar',         done: ctx => ctx.vendors.has('cloudflare') },
-        { id: 'endpoint', icon: 'laptop_mac', title: 'Connect your endpoints',         done: ctx => ctx.hasEndpoints },
-    ];
-
     constructor(state) {
         this.api = state.api;
         this.items = [];
-        this.setup = [];
         this.bell = document.getElementById('notification-bell');
         this.panel = document.getElementById('notification-panel');
         this.list = document.getElementById('notification-panel-list');
@@ -17,50 +10,20 @@ class Notifications {
     }
 
     async refresh() {
-        const [items, assets, monitors] = await Promise.all([
-            this.api.notification.list().catch(() => []),
-            this.api.inventory.list().catch(() => []),
-            this.api.monitors.list().catch(() => []),
-        ]);
-
-        this.items = items ?? [];
-        this.setup = this.pendingSetup(assets ?? [], monitors ?? []);
-
-        const total = this.items.length + this.setup.length;
-        this.bell.classList.toggle('has-notifications', total > 0);
-        this.bell.classList.toggle('setup-only', this.items.length === 0 && this.setup.length > 0);
+        this.items = (await this.api.notification.list().catch(() => [])) ?? [];
+        this.bell.classList.toggle('has-notifications', this.items.length > 0);
         this.render();
     }
 
-    pendingSetup(assets, monitors) {
-        const ctx = {
-            vendors: new Set(monitors.map(key => key.split('/').filter(Boolean)[1]).filter(Boolean)),
-            hasEndpoints: assets.some(a => a.metadata?.platform),
-        };
-        return Notifications.ONBOARDING.filter(step => !step.done(ctx));
-    }
-
     render() {
-        const setup = this.setup.map(s => `
-            <li class="notification-setup" data-step="${s.id}">
-                <span class="material-symbols-outlined notification-setup-icon">${s.icon}</span>
-                <div>
-                    <div class="notification-name">Setup</div>
-                    <div class="notification-value"><strong>${s.title}</strong></div>
-                </div>
-            </li>
-        `).join('');
-
-        const items = this.items.map(n => `
+        this.list.innerHTML = this.items.map(n => `
             <li>
                 <div class="notification-name">${n.name}</div>
                 <div class="notification-value">${n.value}</div>
                 <div class="notification-time">${this.relativeTime(n.created)}</div>
             </li>
         `).join('');
-
-        this.list.innerHTML = setup + items;
-        this.panel.classList.toggle('empty', this.items.length + this.setup.length === 0);
+        this.panel.classList.toggle('empty', this.items.length === 0);
     }
 
     listen() {
@@ -68,16 +31,7 @@ class Notifications {
             e.stopPropagation();
             const opening = !this.panel.classList.contains('open');
             this.panel.classList.toggle('open', opening);
-            if (opening) {
-                this.refresh();
-            }
-        });
-
-        this.list.addEventListener('click', (e) => {
-            if (!e.target.closest('.notification-setup')) return;
-            e.stopPropagation();
-            this.panel.classList.remove('open');
-            document.getElementById('open-monitor-rollup').click();
+            if (opening) this.refresh();
         });
 
         document.addEventListener('click', (e) => {

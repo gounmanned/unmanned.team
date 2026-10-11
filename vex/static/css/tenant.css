@@ -500,6 +500,10 @@
   table-layout: fixed;
 }
 
+#signal-table:not(:has(tbody tr:not(.signal-row-hidden))) thead {
+  display: none;
+}
+
 #signal-table,
 #signal-table th,
 #signal-table td { box-sizing: border-box; }

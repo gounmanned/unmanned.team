@@ -395,61 +395,68 @@
   <!--Sidebars-->
 
   <site-sidebar id="signal-sidebar">
-    <div id="kind-banner" class="kind-banner" data-kind="">
-      <span class="material-symbols-outlined banner-icon" id="signal-kind-icon"></span>
-      <span class="banner-kind-label" id="signal-kind"></span>
-      <span id="signal-confidence" class="banner-confidence" hidden></span>
+    <header class="kind-banner">
+      <div class="banner-view">
+        <span class="material-symbols-outlined banner-icon" id="signal-kind-icon"></span>
+        <span class="banner-kind-label" id="signal-kind"></span>
+        <span class="banner-confidence" id="signal-confidence" hidden></span>
+      </div>
+
+      <div class="banner-new">
+        <span class="banner-eyebrow">New signal</span>
+        <div class="kind-switch" id="kind-switch" role="group" aria-label="Signal type">
+          <button type="button" data-kind="1" aria-pressed="false">
+            <span class="material-symbols-outlined"></span>Security alert
+          </button>
+          <button type="button" data-kind="2" aria-pressed="false">
+            <span class="material-symbols-outlined"></span>Recommendation
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <div class="thread">
+      <ol class="email-thread" id="updates"></ol>
     </div>
 
-    <div class="container" id="updates-wrap">
-      <ol id="updates" class="email-thread"></ol>
-    </div>
-
-    <div class="sidebar-actions">
-      <form id="reply-form">
-        <div class="button-row">
-
-          <div class="field-group">
-            <label>Status</label>
-            <select id="signal-status">
-              <optgroup label="Close">
-                <option id="CH" value="CH">Resolved</option>
-                <option id="CR" value="CR">Accepted risk</option>
-                <option id="CV" value="CV">Auto-closed</option>
-              </optgroup>
-              <optgroup label="Open">
-                <option id="OB" value="OB">Open</option>
-              </optgroup>
-            </select>
-          </div>
-
-          <div class="field-group">
-            <label>Asset</label>
-            <input type="text" id="signal-asset" placeholder="Asset" />
-          </div>
-
-          <div class="field-group">
-            <label>Source</label>
-            <input type="text" id="signal-source" placeholder="Source" />
-          </div>
-
-          <div class="field-group field-group--delete">
-            <button type="button" id="signal-delete" class="delete-btn">
-              <span class="material-symbols-outlined">delete</span>
-            </button>
-          </div>
+    <form class="composer" id="reply-form">
+      <div class="fields">
+        <div class="field">
+          <label for="signal-status">Status</label>
+          <select id="signal-status">
+            <optgroup label="Close">
+              <option value="CH">Resolved</option>
+              <option value="CR">Accepted risk</option>
+              <option value="CV">Auto-closed</option>
+            </optgroup>
+            <optgroup label="Open">
+              <option value="OB">Open</option>
+            </optgroup>
+          </select>
         </div>
 
-        <div class="new-message">
-          <div class="textbox-container">
-            <textarea id="response" class="modern-textbox" placeholder="Add context to this signal"></textarea>
-            <button type="button" class="send-btn" id="signal-save">
-              <span class="material-symbols-outlined">arrow_upward</span>
-            </button>
-          </div>
+        <div class="field">
+          <label for="signal-asset">Asset</label>
+          <input type="text" id="signal-asset" placeholder="Asset" required />
         </div>
-      </form>
-    </div>
+
+        <div class="field">
+          <label for="signal-source">Source</label>
+          <input type="text" id="signal-source" placeholder="Source" />
+        </div>
+
+        <button type="button" class="delete-btn" id="signal-delete" aria-label="Delete signal">
+          <span class="material-symbols-outlined">delete</span>
+        </button>
+      </div>
+
+      <textarea class="composer-input" id="response" placeholder="Add context to this signal"></textarea>
+
+      <button type="button" class="send-btn" id="signal-save">
+        <span class="material-symbols-outlined send-icon">arrow_upward</span>
+        <span class="send-label" id="signal-save-label"></span>
+      </button>
+    </form>
   </site-sidebar>
 
   <site-sidebar id="backup-sidebar">

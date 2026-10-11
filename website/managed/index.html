@@ -305,6 +305,10 @@
   .feature-head img{flex-shrink:0;width:40px;height:40px;}
   .feature-desc{font-size:16px;line-height:1.5;color:var(--card-body);}
   .feature-desc b{font-weight:700;}
+  /* standalone link to the Slack page (same look as "Schedule a chat" in the header) */
+  .feature-link{align-self:flex-start;display:inline-flex;align-items:center;gap:4px;font-weight:600;font-size:15px;line-height:1.5;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--pink);}
+  .feature-link img{width:16px;height:16px;transition:transform 0.2s ease;}
+  .feature-link:hover img{transform:translateX(3px);}
   /* the illustration box: a faint dot grid that fades out toward the edges */
   .visual{
     position:relative;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
@@ -504,6 +508,7 @@
     .classbar,.site-top .site-header,.hud-frame .corner{transition:none;}
     .nav-panel,.nav-panel.is-open{transition:none;}
     .status-row,.status-light{transition:none;}
+    .feature-link img{transition:none;}
     .js .reveal,.js .reveal-group > *{opacity:1 !important;transform:none !important;transition:none !important;}
   }
 </style>
@@ -661,7 +666,8 @@
             <h3>A security team <em>you can Slack off with.</em></h3>
             <img src="../static/slack-logo.svg" width="40" height="40" alt="">
           </div>
-          <p class="feature-desc">Work where your team already does. Ask a question, comment, or bring us in without opening another tool.</p>
+          <p class="feature-desc">Work where your team already does.</p>
+          <a class="feature-link" href="/slack">Get VEX for Slack, free <img src="../static/icon-arrow-right-pink.svg" width="16" height="16" alt=""></a>
           <div class="visual" aria-hidden="true">
             <div class="chat">
               <div class="msg"><span class="avatar avatar--vex"></span><div class="bubble"><p class="bubble-name"><b>VEX</b><span class="badge">APP</span>3 minutes ago</p><p class="is-alert">Windows Defender Threat</p></div></div>

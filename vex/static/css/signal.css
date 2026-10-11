@@ -130,12 +130,6 @@
       background: color-mix(in srgb, var(--accent) 5%, var(--surface));
       border-bottom: 1px solid color-mix(in srgb, var(--accent) 15%, var(--line));
 
-      .sender::after {
-        content: " raised this";
-        font-weight: 400;
-        color: var(--text-faint);
-      }
-
       .body { font-size: 14.5px; }
     }
 

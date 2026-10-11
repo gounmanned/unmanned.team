@@ -137,9 +137,11 @@ class Workspace {
         return `static/img/source/${s}.png`;
     }
 
-    static date(iso) {
+    static date(iso, time = false) {
         const d = new Date(iso);
-        return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+        return time
+            ? d.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })
+            : d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
     }
 
     static esc(s) {

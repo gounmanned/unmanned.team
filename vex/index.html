@@ -396,22 +396,17 @@
 
   <site-sidebar id="signal-sidebar">
     <header class="kind-banner">
-      <div class="banner-view">
-        <span class="material-symbols-outlined banner-icon" id="signal-kind-icon"></span>
-        <span class="banner-kind-label" id="signal-kind"></span>
-        <span class="banner-confidence" id="signal-confidence" hidden></span>
-      </div>
+      <span class="material-symbols-outlined" id="signal-kind-icon"></span>
+      <span class="banner-label" id="signal-kind"></span>
+      <span class="banner-confidence" id="signal-confidence" hidden></span>
 
-      <div class="banner-new">
-        <span class="banner-eyebrow">New signal</span>
-        <div class="kind-switch" id="kind-switch" role="group" aria-label="Signal type">
-          <button type="button" data-kind="1" aria-pressed="false">
-            <span class="material-symbols-outlined"></span>Security alert
-          </button>
-          <button type="button" data-kind="2" aria-pressed="false">
-            <span class="material-symbols-outlined"></span>Recommendation
-          </button>
-        </div>
+      <div class="kind-switch" id="kind-switch" role="group" aria-label="Signal type">
+        <button type="button" data-kind="1" aria-pressed="false">
+          <span class="material-symbols-outlined"></span>Security alert
+        </button>
+        <button type="button" data-kind="2" aria-pressed="false">
+          <span class="material-symbols-outlined"></span>Recommendation
+        </button>
       </div>
     </header>
 
@@ -453,7 +448,7 @@
       <textarea class="composer-input" id="response" placeholder="Add context to this signal"></textarea>
 
       <button type="button" class="send-btn" id="signal-save">
-        <span class="material-symbols-outlined send-icon">arrow_upward</span>
+        <span class="material-symbols-outlined">arrow_upward</span>
         <span class="send-label" id="signal-save-label"></span>
       </button>
     </form>

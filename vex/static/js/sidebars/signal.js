@@ -4,18 +4,14 @@ class SignalSidebar {
         2: { placeholder: "What should change, and why does it matter?",      action: "Create recommendation" },
     };
 
-    static formatTime(value) {
-        const date = new Date(value);
-        if (isNaN(date)) return { short: value ?? "", full: value ?? "" };
-        return {
-            short: date.toLocaleString(undefined, { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }),
-            full: date.toLocaleString(),
-        };
-    }
-
     constructor(state) {
         this.state = state;
         this.api = state.api;
+
+        for (const btn of document.querySelectorAll("#kind-switch button")) {
+            btn.querySelector(".material-symbols-outlined").textContent = Workspace.KIND[btn.dataset.kind]?.icon ?? "";
+        }
+
         this.listen();
     }
 
@@ -35,7 +31,7 @@ class SignalSidebar {
         this.render();
         this.add(this.signal);
 
-        [...updates]
+        updates
             .sort((a, b) => new Date(a.updated) - new Date(b.updated))
             .forEach((update) => this.add(update));
 
@@ -46,17 +42,15 @@ class SignalSidebar {
         const s = this.signal;
         const isNew = !s.id;
         const kind = Workspace.KIND[s.kind];
-        const copy = SignalSidebar.NEW_COPY[s.kind];
         const conf = s.metadata?.confidence;
 
         const sidebar = document.getElementById("signal-sidebar");
         sidebar.classList.toggle("is-new", isNew);
-        sidebar.dataset.kind = s.kind ?? "";
+        sidebar.dataset.kind = s.kind;
 
         document.getElementById("signal-status").value = s.status;
         document.getElementById("signal-asset").value = s.asset;
         document.getElementById("signal-source").value = s.source;
-
         document.getElementById("signal-kind").textContent = kind?.label ?? "";
         document.getElementById("signal-kind-icon").textContent = kind?.icon ?? "";
 
@@ -65,20 +59,16 @@ class SignalSidebar {
         confidence.textContent = conf == null ? "" : `${Math.round(conf * 100)}% confidence`;
 
         for (const btn of document.querySelectorAll("#kind-switch button")) {
-            const k = Number(btn.dataset.kind);
-            btn.setAttribute("aria-pressed", String(k === s.kind));
-            btn.querySelector(".material-symbols-outlined").textContent = Workspace.KIND[k]?.icon ?? "";
+            btn.setAttribute("aria-pressed", String(Number(btn.dataset.kind) === s.kind));
         }
 
-        document.getElementById("response").placeholder =
-            isNew ? (copy?.placeholder ?? "Describe this signal") : "Add context to this signal";
-        document.getElementById("signal-save-label").textContent =
-            isNew ? (copy?.action ?? "Create") : "";
+        const copy = SignalSidebar.NEW_COPY[s.kind];
+        document.getElementById("response").placeholder = isNew ? copy.placeholder : "Add context to this signal";
+        document.getElementById("signal-save-label").textContent = isNew ? copy.action : "";
     }
 
     add(update) {
         const source = update.source || this.signal.source;
-        const time = SignalSidebar.formatTime(update.updated);
 
         const li = document.createElement("li");
         li.dataset.key = update.key;
@@ -97,8 +87,7 @@ class SignalSidebar {
         avatar.src = Workspace.avatar(source);
 
         const timestamp = li.querySelector(".timestamp");
-        timestamp.textContent = time.short;
-        timestamp.title = time.full;
+        timestamp.textContent = Workspace.date(update.updated, true);
         timestamp.dateTime = update.updated ?? "";
 
         li.querySelector(".sender").textContent = source;
@@ -128,13 +117,12 @@ class SignalSidebar {
     listen() {
         document.getElementById("kind-switch").addEventListener("click", (ev) => {
             const btn = ev.target.closest("button[data-kind]");
-            if (!btn || this.signal?.id) return;   // kind is locked once a signal exists
+            if (!btn || this.signal.id) return;   // kind is locked once a signal exists
             this.signal.kind = Number(btn.dataset.kind);
             this.render();
         });
 
         document.getElementById("signal-save").addEventListener("click", async () => {
-            if (!this.validateAsset()) return;
             const value = document.getElementById("response").value.trim();
 
             if (this.signal.id) {
@@ -144,6 +132,8 @@ class SignalSidebar {
                 });
                 return;
             }
+
+            if (!this.validateAsset()) return;
 
             const { kind, status, asset, source } = this.signal;
             await SiteSpinner.withLoading(async () => {

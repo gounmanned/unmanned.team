@@ -42,6 +42,8 @@
     --s-green:#2eb67d;
     --s-yellow:#ecb22e;
     --s-red:#e01e5a;
+    --go-text:#0e7c52;       /* green text (from the API and VEX MDR pages; passes 4.5:1) */
+    --sev-1:#dc2626;         /* error red (from the other pages; 4.5:1 on the light gray) */
   }
   *{box-sizing:border-box;}
   html{overflow-x:hidden;scroll-behavior:smooth;scrollbar-gutter:stable;}
@@ -149,7 +151,8 @@
   .hero-mark img{width:64px;height:64px;}
   .hero h1{max-width:660px;font-weight:600;font-size:clamp(40px,6vw,70px);line-height:1.03;letter-spacing:-0.03em;color:var(--aubergine);}
   .ctas{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;}
-  .hero-note{font-size:14px;line-height:20px;color:var(--surface-dark);}
+  .hero-note{font-size:14px;line-height:22px;color:var(--surface-dark);}
+  .hero-note strong{font-weight:600;color:var(--ink);}
 
   /* ---------- SLACK MOCKUPS: shared pieces ----------
      Everything inside .slack is drawn to look like Slack: Lato, Slack's colors and spacing. */
@@ -258,7 +261,7 @@
   .sorted{margin-top:-300px;padding:360px 0 40px;} /* starts behind the middle of the Slack window */
   .sorted .col{display:flex;flex-direction:column;gap:40px;}
   .band-head{display:flex;flex-direction:column;gap:20px;}
-  .band-head h2{font-weight:600;font-size:clamp(34px * 32 / 52, 4.2vw * 32 / 52, 32px);line-height:1.25;letter-spacing:-0.01em;}
+  .band-head h2{font-weight:600;font-size:clamp(34px,4.2vw,52px);line-height:1.14;letter-spacing:-0.015em;} /* same size as "Up and running in three steps" */
   .band-head p{max-width:635px;font-size:18px;line-height:28px;color:rgba(255,255,255,0.72);}
   .types{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;}
   .type{display:flex;flex-direction:column;gap:8px;}
@@ -320,6 +323,22 @@
   .chip{display:inline-block;padding:4px 8px;background:var(--surface);border:1px solid var(--gray-line);font-family:var(--mono);font-size:12px;line-height:16px;letter-spacing:0.08em;color:var(--surface-dark);white-space:nowrap;}
   .chips{display:flex;flex-direction:column;align-items:flex-start;gap:8px;}
 
+  /* After the Slack install, the install service sends people back here:
+     /slack/?installed=1#get-started (worked) or ?installed=0 (didn't). The script below turns that into
+     .is-installed / .install-failed on this section: step 1 shows as done, or an error with a retry link. */
+  .setup{scroll-margin-top:40px;}
+  .added,.install-error{display:none;}
+  .is-installed .step--1 .link{display:none;}
+  .is-installed .step--1 .visual{opacity:0.55;}
+  /* status badge, in the same green tint as the CLOSED tags in the Slack cards */
+  .added{display:none;align-items:center;gap:6px;padding:4px 10px;border-radius:2px;background:rgba(46,182,125,0.18);font-weight:600;font-size:14px;line-height:20px;color:var(--go-text);}
+  .is-installed .added{display:inline-flex;}
+  .added-check{width:16px;height:16px;background:currentColor;-webkit-mask:url(../static/icon-check.svg) center/contain no-repeat;mask:url(../static/icon-check.svg) center/contain no-repeat;}
+  .install-failed .step--1 .link{display:none;}
+  .install-failed .install-error{display:block;font-weight:600;font-size:15px;line-height:24px;color:var(--sev-1);}
+  .install-error a{color:var(--pink-text);text-underline-offset:3px;}
+  .install-error a:hover{color:var(--ink);}
+
   /* step 1: Slack's install dialog */
   .dialog{display:flex;flex-direction:column;gap:14px;padding:16px;border:1px solid var(--gray-faint);border-radius:8px;background:#fff;box-shadow:0 2px 6px rgba(11,12,13,0.06),0 1px 2px rgba(11,12,13,0.06);}
   .dialog-head{display:flex;gap:10px;align-items:flex-start;font-weight:700;font-size:14px;line-height:20px;}
@@ -345,6 +364,7 @@
   .suggest-row b{display:block;}
   .suggest-row span{line-height:1.45;}
 
+  .disconnect[hidden]{display:none;}
   .disconnect{display:flex;flex-direction:column;gap:16px;padding-top:32px;border-top:1px solid var(--gray-faint);}
   .disconnect h3{font-weight:700;font-size:20px;line-height:32px;}
   .disconnect p{margin-top:-8px;font-size:14px;line-height:20px;color:var(--body);}
@@ -537,7 +557,7 @@
         <a class="btn" href="https://slack.com/oauth/v2/authorize?client_id=11574043500291.12158197069719&amp;scope=users:read,app_mentions:read,channels:history,chat:write,commands,incoming-webhook,users:read.email&amp;user_scope=">Add to Slack</a>
         <a class="btn btn--secondary" href="#how">See how it works</a>
       </div>
-      <p class="hero-note">For security and IT teams who already live in Slack</p>
+      <p class="hero-note"><strong>Free to use.</strong> No sign-up, no payment. Install it and it just works.<br>For security and IT teams who already live in Slack</p>
     </div>
   </section>
 
@@ -787,7 +807,7 @@
   <!-- ============================================================
        UP AND RUNNING IN THREE STEPS
        ============================================================ -->
-  <section class="setup">
+  <section class="setup" id="get-started">
     <div class="col">
       <div class="setup-head">
         <div class="eyebrow-label"><span class="status-dot"></span>Get started</div>
@@ -796,7 +816,7 @@
       </div>
       <div class="steps">
 
-        <div class="step">
+        <div class="step step--1">
           <div class="visual" aria-hidden="true">
             <div class="dialog slack">
               <div class="dialog-head"><img src="static/step-vex-avatar.svg" width="32" height="32" alt="">Allow the VEX app to access Slack</div>
@@ -810,10 +830,12 @@
             <h3>Add VEX to Slack</h3>
             <p>Approve the install and pick the channel your security team already watches. You’ll see exactly what VEX can read and post before you click Allow.</p>
             <a class="link" href="https://slack.com/oauth/v2/authorize?client_id=11574043500291.12158197069719&amp;scope=users:read,app_mentions:read,channels:history,chat:write,commands,incoming-webhook,users:read.email&amp;user_scope=">Start now, add to Slack</a>
+            <p class="added"><span class="added-check" aria-hidden="true"></span>Added to Slack</p>
+            <p class="install-error">Something went wrong adding VEX to Slack, please <a href="https://slack.com/oauth/v2/authorize?client_id=11574043500291.12158197069719&amp;scope=users:read,app_mentions:read,channels:history,chat:write,commands,incoming-webhook,users:read.email&amp;user_scope=">try again</a>.</p>
           </div>
         </div>
 
-        <div class="step">
+        <div class="step step--2">
           <div class="visual">
             <p class="visual-label">Review the setup guide:</p>
             <div class="guides">
@@ -843,7 +865,8 @@
         </div>
 
       </div>
-      <div class="disconnect">
+      <!-- hidden until David is ready to offer it: remove "hidden" to show it again (its divider is its top border) -->
+      <div class="disconnect" hidden>
         <h3>Disconnect anytime</h3>
         <p>Switching providers or offboarding a tenant takes one command.</p>
         <div class="chips"><code class="chip">/disconnect microsoft</code><code class="chip">/disconnect google</code></div>
@@ -876,6 +899,18 @@
   </footer>
 
   <script>
+    (function(){
+      // back from the Slack install: ?installed=1 (worked) or ?installed=0 (didn't); see the styles above .setup
+      var result = new URLSearchParams(location.search).get('installed');
+      var setup = document.getElementById('get-started');
+      if(!setup || (result !== '1' && result !== '0')){ return; }
+      setup.classList.add(result === '1' ? 'is-installed' : 'install-failed');
+      // tidy the address so a refresh or a shared link shows the normal page
+      if(history.replaceState){ history.replaceState(null, '', location.pathname + location.hash); }
+      // the browser jumps to #get-started before the fonts and images settle, so land on it again once they have
+      window.addEventListener('load', function(){ setup.scrollIntoView(); });
+    })();
+
     (function(){
       // hide-on-scroll header (same as the other pages)
       var root = document.documentElement;

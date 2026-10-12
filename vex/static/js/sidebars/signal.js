@@ -116,17 +116,11 @@ class SignalSidebar {
             if (!this.validateAsset()) return;
 
             const { status, asset, source } = this.signal;
-
             await SiteSpinner.withLoading(async () => {
                 await this.api.signals.create({ status, asset, source, value });
                 document.dispatchEvent(new CustomEvent("page:reload"));
                 document.querySelector("site-overlay").click();
             });
-        });
-
-        document.getElementById("signal-status").addEventListener("change", (ev) => {
-            this.signal.status = ev.target.value;
-            if (this.signal.id) this.patch({ status: this.signal.status });
         });
 
         document.getElementById("signal-asset").addEventListener("change", (ev) => {
@@ -137,6 +131,40 @@ class SignalSidebar {
         document.getElementById("signal-source").addEventListener("change", (ev) => {
             this.signal.source = ev.target.value;
             if (this.signal.id) this.patch({ source: this.signal.source });
+        });
+
+        document.getElementById("signal-status").addEventListener("change", async (ev) => {
+            this.signal.status = ev.target.value;
+            if (!this.signal.id) return;
+
+            if (this.signal.status.startsWith("R")) {
+                const thinking = document.createElement("li");
+                thinking.innerHTML = `
+                    <img class="avatar" src="${Workspace.avatar("vex")}" alt="">
+                    <div class="message">
+                        <div class="meta"><span class="sender">vex</span></div>
+                        <div class="body thinking">Thinking…</div>
+                    </div>`;
+
+                document.getElementById("updates").append(thinking);
+                thinking.scrollIntoView({ block: "nearest" });
+
+                const seen = (await this.api.signals.get(this.signal.id)).length;
+                await this.patch({ status: this.signal.status });
+
+                while (thinking.isConnected) {
+                    await new Promise((r) => setTimeout(r, 3750));
+                    const updates = await this.api.signals.get(this.signal.id);
+                    if (updates.length > seen) {
+                        thinking.remove();
+                        updates.slice(seen).forEach((u) => this.add(u));
+                    }
+                }
+            } else {
+                this.patch({ status: this.signal.status }).then(() => {
+                    document.querySelector("site-overlay").click();
+                });
+            }
         });
 
         document.getElementById("signal-delete").addEventListener("click", async () => {

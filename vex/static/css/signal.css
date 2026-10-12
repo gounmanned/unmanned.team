@@ -121,6 +121,11 @@
       white-space: pre-wrap;
       overflow-wrap: break-word;
     }
+
+    .thinking {
+      color: var(--text-faint);
+      animation: thinking 1.2s ease-in-out infinite;
+    }
   }
 
   /* ── Composer ───────────────────────────────────────────────── */
@@ -282,4 +287,8 @@
       font-weight: 600;
     }
   }
+}
+
+@keyframes thinking {
+  50% { opacity: 0.3; }
 }

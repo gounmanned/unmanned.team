@@ -31,10 +31,7 @@ class InventoryRollup {
         this.assets = [];
         this.query = '';
         this.search.value = '';
-
         this.tbody.innerHTML = '';
-        this.wrap.classList.add('empty');
-        document.getElementById('asset-empty-label').textContent = 'No assets';
         if (this.legend) this.legend.innerHTML = '';
         this.closeProfile();
     }
@@ -58,10 +55,6 @@ class InventoryRollup {
         const withSignals = rows.map(a => ({ ...a, signals: open.filter(s => s.asset == a.name).length }));
 
         this.wrap.classList.toggle('empty', withSignals.length === 0);
-        document.getElementById('asset-empty-label').textContent = q
-            ? `No assets match "${q}"`
-            : 'No assets';
-
         this.legend.innerHTML = this.renderLegend();
         this.tbody.innerHTML = withSignals.map(a => {
             return `

@@ -282,22 +282,12 @@
   .close-copy h3{font-weight:700;font-size:20px;line-height:32px;}
   .close-copy p{font-size:14px;line-height:24px;}
   .close-copy .cmd{font-size:12px;padding:0 8px;}
-  .mini{border-radius:12px;background:#fff;padding:2px 0;box-shadow:0 2px 6px rgba(11,12,13,0.06),0 1px 2px rgba(11,12,13,0.06);}
-  .mini .msg{gap:6px;padding:6px 10px;}
-  .mini .avatar{width:21px;height:21px;}
-  .mini .avatar-letter{width:21px;height:21px;border-radius:5px;font-size:12px;}
-  .mini .msg-body{gap:4px;}
-  .mini .msg-meta{gap:3.5px;}
-  .mini .msg-name{font-size:12px;}
-  .mini .app-tag{padding:0.5px 2.3px;border-radius:2px;font-size:9px;}
-  .mini .msg-time{font-size:9px;color:var(--s-time);}
-  .mini .attach{gap:6px;}
-  .mini .attach::before{width:2.3px;}
-  .mini .attach-body{gap:4px;}
-  .mini .attach-title{font-size:12px;}
-  .mini .attach-text,.mini .mini-text{font-size:13px;line-height:16px;}
-  .mini .tag{padding:1px 3.5px;border-radius:2px;font-size:9px;color:#057c56;}
-  .replies{display:flex;align-items:center;gap:6px;padding:2px 10px;font-size:9px;font-weight:500;color:var(--s-time);}
+  /* same sizes as the Prevent / Detect / Respond cards */
+  .mini{display:flex;flex-direction:column;gap:12px;padding:16px;border-radius:12px;background:#fff;box-shadow:0 2px 6px rgba(11,12,13,0.06),0 1px 2px rgba(11,12,13,0.06);}
+  .mini .avatar{width:32px;height:32px;}
+  .mini .msg-body{gap:8px;}
+  .mini .tag{color:#057c56;}
+  .replies{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:var(--s-time);}
   .replies::after{content:'';flex:1;height:1px;background:#e3e3e8;}
   .checks{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:16px;}
   .checks li[hidden]{display:none;}
@@ -405,22 +395,6 @@
     .visual{min-height:0;}
     .close-grid{grid-template-columns:minmax(0,1fr);gap:28px;}
     /* stacked: the thread matches the Prevent / Detect / Respond cards above, and the checklist drops out */
-    .mini{max-width:none;padding:16px;display:flex;flex-direction:column;gap:12px;}
-    .mini .msg{gap:8px;padding:0;}
-    .mini .avatar,.mini .avatar-letter{width:32px;height:32px;}
-    .mini .avatar-letter{border-radius:8px;font-size:14px;}
-    .mini .msg-body{gap:8px;}
-    .mini .msg-meta{gap:6px;}
-    .mini .msg-name{font-size:15px;}
-    .mini .app-tag{padding:1px 4px;border-radius:3px;font-size:10px;}
-    .mini .msg-time{font-size:12px;}
-    .mini .attach{gap:8px;}
-    .mini .attach::before{width:4px;}
-    .mini .attach-body{gap:8px;}
-    .mini .attach-title{font-size:13px;}
-    .mini .attach-text,.mini .mini-text{font-size:13px;line-height:18px;}
-    .mini .tag{padding:2px 6px;border-radius:3px;font-size:10px;}
-    .replies{padding:0;font-size:12px;}
     .checks{display:none;}
   }
   /* The Slack window keeps its frame at every size and squeezes in steps as it gets narrower (window widths) */
@@ -643,10 +617,10 @@
             <p class="story-lede">Each message says what happened, what VEX already did, and whether a person needs to step in.</p>
             <ol class="steps-list">
               <li><button class="story-step" type="button" data-step="0" style="--key:var(--pink)"><span class="story-key"><span class="story-dot"></span>Set up VEX in Slack</span><span class="story-cap">Add VEX, run <span class="cmd">/connect</span>, and VEX starts watching Microsoft 365 or Google Workspace.</span></button></li>
-              <li><button class="story-step" type="button" data-step="1" style="--key:var(--s-green)"><span class="story-key"><span class="story-dot"></span>Prevent</span><span class="story-cap">VEX fixes problems before they become incidents.</span></button></li>
-              <li><button class="story-step" type="button" data-step="2" style="--key:var(--s-yellow)"><span class="story-key"><span class="story-dot"></span>Detect</span><span class="story-cap">VEX checks with you when something needs a yes or no.</span></button></li>
+              <li><button class="story-step" type="button" data-step="1" style="--key:var(--s-green)"><span class="story-key"><span class="story-dot"></span>Prevent</span><span class="story-cap">VEX recommends fixes before problems become incidents.</span></button></li>
+              <li><button class="story-step" type="button" data-step="2" style="--key:var(--s-yellow)"><span class="story-key"><span class="story-dot"></span>Detect</span><span class="story-cap">VEX fixes problems it can, autonomously, before they become incidents.</span></button></li>
               <li><button class="story-step" type="button" data-step="3" style="--key:var(--s-red)"><span class="story-key"><span class="story-dot"></span>Respond</span><span class="story-cap">When human judgment matters, VEX brings in an expert.</span></button></li>
-              <li><button class="story-step" type="button" data-step="4" style="--key:#fff"><span class="story-key"><img class="story-check" src="static/check.svg" width="16" height="16" alt="">Close tickets</span><span class="story-cap">Reply <span class="cmd">close</span> in the thread and VEX closes the ticket for you.</span></button></li>
+              <li><button class="story-step" type="button" data-step="4" style="--key:#fff"><span class="story-key"><img class="story-check" src="static/check.svg" width="16" height="16" alt="">Close tickets</span><span class="story-cap">One click to ignore, mark it fixed, or ask VEX to assess.</span></button></li>
             </ol>
           </div>
           <a class="story-skip" href="#get-started">Get set up now <img src="../static/icon-arrow-down.svg" width="16" height="16" alt=""></a>
@@ -740,11 +714,11 @@
                   <div class="msg-body">
                     <div class="msg-meta"><span class="msg-name">VEX</span><span class="app-tag">APP</span><span class="msg-time">9:14 AM</span></div>
                     <div class="attach" style="--bar:var(--s-green)"><div class="attach-body">
-                      <span class="tag tag--green">FIXED AUTOMATICALLY</span>
-                      <p class="attach-title">Email spoofing blocked</p>
-                      <p class="attach-text">Anyone could send email pretending to be you. VEX published a DMARC record and confirmed it’s live on 3 public DNS servers.</p>
+                      <span class="tag tag--green">RECOMMENDATION</span>
+                      <p class="attach-title">Turn on MFA for 2 admin accounts</p>
+                      <p class="attach-text">These admins can sign in with just a password:<br>jsmith@yourcompany.com,<br>hjohnson@yourcompany.com</p>
+                      <p class="attach-text">MFA blocks most account takeovers.</p>
                     </div></div>
-                    <div><span class="tag tag--green">CLOSED</span></div>
                   </div>
                 </div>
               </div>
@@ -753,11 +727,11 @@
                   <img class="avatar" src="static/vex-avatar-36.svg" width="36" height="36" alt="">
                   <div class="msg-body">
                     <div class="msg-meta"><span class="msg-name">VEX</span><span class="app-tag">APP</span><span class="msg-time">11:02 AM</span></div>
-                    <div class="attach" style="--bar:var(--s-yellow)"><div class="attach-body">
-                      <span class="tag tag--yellow">NEEDS REVIEW</span>
-                      <p class="attach-title">New forwarding rule on finance@</p>
-                      <p class="attach-text">A new inbox rule sends invoices to an outside Gmail address. VEX paused the rule until you confirm it.</p>
-                      <div class="s-btns"><span class="s-btn s-btn--go">Accept risk</span><span class="s-btn">Keep paused</span></div>
+                    <div class="attach" style="--bar:var(--s-green)"><div class="attach-body">
+                      <span class="tag tag--green">AUTO-RESOLVED</span>
+                      <p class="attach-title">Email spoofing blocked</p>
+                      <p class="attach-text">Anyone could send email pretending to be you. VEX published a DMARC record and confirmed it’s live on 3 public DNS servers.</p>
+                      <div class="s-btns"><span class="s-btn s-btn--go">Reopen</span></div>
                     </div></div>
                   </div>
                 </div>
@@ -793,20 +767,12 @@
                     </div></div>
                   </div>
                 </div>
-                <p class="replies">2 replies</p>
-                <div class="msg">
-                  <span class="avatar-letter">J</span>
-                  <div class="msg-body" style="gap:4px">
-                    <div class="msg-meta"><span class="msg-name">Jason</span><span class="msg-time">9:52 AM</span></div>
-                    <p class="thread-text">Close</p>
-                  </div>
-                </div>
+                <p class="replies">1 reply</p>
                 <div class="msg">
                   <img class="avatar" src="static/vex-avatar-36.svg" width="36" height="36" alt="">
                   <div class="msg-body">
-                    <div class="msg-meta"><span class="msg-name">VEX</span><span class="app-tag">APP</span><span class="msg-time">9:52 AM</span></div>
-                    <div class="attach" style="--bar:var(--s-green)"><div class="attach-body"><p class="attach-text">Ticket closed by Jason</p></div></div>
-                    <div><span class="tag tag--green">CLOSED</span></div>
+                    <div class="msg-meta"><span class="msg-name">VEX</span><span class="app-tag">APP</span><span class="msg-time">9:34 AM</span></div>
+                    <div class="s-btns"><span class="s-btn s-btn--go">Ignore</span><span class="s-btn">Fixed</span><span class="s-btn">Assess</span></div>
                   </div>
                 </div>
               </div>
@@ -970,16 +936,16 @@
                 <div class="msg-meta"><span class="msg-name">VEX</span><span class="app-tag">APP</span><span class="msg-time">9:14 AM</span></div>
                 <div class="attach" style="--bar:var(--s-green)">
                   <div class="attach-body">
-                    <span class="tag tag--green">FIXED AUTOMATICALLY</span>
-                    <p class="attach-title">Email spoofing blocked</p>
-                    <p class="attach-text">Anyone could send email pretending to be you. VEX published a DMARC record and confirmed it’s live on 3 public DNS servers.</p>
+                    <span class="tag tag--green">RECOMMENDATION</span>
+                    <p class="attach-title">Turn on MFA for 2 admin accounts</p>
+                    <p class="attach-text">These admins can sign in with just a password:<br>jsmith@yourcompany.com,<br>hjohnson@yourcompany.com</p>
+                    <p class="attach-text">MFA blocks most account takeovers.</p>
                   </div>
                 </div>
-                <div><span class="tag tag--green">CLOSED</span></div>
               </div>
             </div>
           </div>
-          <p class="type-caption">Fixed before it becomes a problem.</p>
+          <p class="type-caption">VEX recommends fixes before problems become incidents.</p>
         </div>
 
         <div class="type">
@@ -989,18 +955,18 @@
               <img class="avatar" src="static/vex-avatar-32.svg" width="32" height="32" alt="">
               <div class="msg-body">
                 <div class="msg-meta"><span class="msg-name">VEX</span><span class="app-tag">APP</span><span class="msg-time">11:02 AM</span></div>
-                <div class="attach" style="--bar:var(--s-yellow)">
+                <div class="attach" style="--bar:var(--s-green)">
                   <div class="attach-body">
-                    <span class="tag tag--yellow">NEEDS REVIEW</span>
-                    <p class="attach-title">New forwarding rule on finance@</p>
-                    <p class="attach-text">A new inbox rule sends invoices to an outside Gmail address. VEX paused the rule until you confirm it.</p>
-                    <div class="s-btns"><span class="s-btn s-btn--go">Accept risk</span><span class="s-btn">Keep paused</span></div>
+                    <span class="tag tag--green">AUTO-RESOLVED</span>
+                    <p class="attach-title">Email spoofing blocked</p>
+                    <p class="attach-text">Anyone could send email pretending to be you. VEX published a DMARC record and confirmed it’s live on 3 public DNS servers.</p>
+                    <div class="s-btns"><span class="s-btn s-btn--go">Reopen</span></div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          <p class="type-caption">When something needs a yes or no.</p>
+          <p class="type-caption">VEX fixes problems it can, autonomously, before they become incidents.</p>
         </div>
 
         <div class="type">
@@ -1027,7 +993,7 @@
               </div>
             </div>
           </div>
-          <p class="type-caption">A human expert when judgment matters.</p>
+          <p class="type-caption">When human judgment matters, VEX brings in an expert.</p>
         </div>
 
       </div>
@@ -1041,11 +1007,11 @@
     <div class="col close-grid">
       <div class="close-copy">
         <h3>Close tickets quickly</h3>
-        <p>When VEX reports a signal, handle it where it landed. Reply <span class="cmd">close</span> in the thread and VEX closes the ticket for you. No extra clicks.</p>
+        <p>When VEX reports a signal, handle it where it landed. One click to ignore, mark it fixed, or ask VEX to assess. No dashboard, no extra clicks.</p>
       </div>
-      <div class="mini slack" role="img" aria-label="A Slack thread: VEX reports a suspicious sign-in, Jason replies Close, and VEX marks the ticket closed.">
+      <div class="mini slack" role="img" aria-label="A Slack thread: VEX reports a suspicious sign-in and replies with three buttons: Ignore, Fixed and Assess.">
         <div class="msg">
-          <img class="avatar" src="static/vex-avatar-21.svg" width="21" height="21" alt="">
+          <img class="avatar" src="static/vex-avatar-32.svg" width="32" height="32" alt="">
           <div class="msg-body">
             <div class="msg-meta"><span class="msg-name">VEX</span><span class="app-tag">APP</span><span class="msg-time">9:34 AM</span></div>
             <div class="attach" style="--bar:var(--s-yellow)">
@@ -1056,26 +1022,18 @@
             </div>
           </div>
         </div>
-        <p class="replies">2 replies</p>
+        <p class="replies">1 reply</p>
         <div class="msg">
-          <span class="avatar-letter">J</span>
-          <div class="msg-body" style="gap:2px">
-            <div class="msg-meta"><span class="msg-name">Jason</span><span class="msg-time">9:52 AM</span></div>
-            <p class="mini-text">Close</p>
-          </div>
-        </div>
-        <div class="msg">
-          <img class="avatar" src="static/vex-avatar-21.svg" width="21" height="21" alt="">
+          <img class="avatar" src="static/vex-avatar-32.svg" width="32" height="32" alt="">
           <div class="msg-body">
-            <div class="msg-meta"><span class="msg-name">VEX</span><span class="app-tag">APP</span><span class="msg-time">9:52 AM</span></div>
-            <div class="attach" style="--bar:var(--s-green)"><div class="attach-body"><p class="attach-text">Ticket closed by Jason</p></div></div>
-            <div><span class="tag tag--green">CLOSED</span></div>
+            <div class="msg-meta"><span class="msg-name">VEX</span><span class="app-tag">APP</span><span class="msg-time">9:34 AM</span></div>
+            <div class="s-btns"><span class="s-btn s-btn--go">Ignore</span><span class="s-btn">Fixed</span><span class="s-btn">Assess</span></div>
           </div>
         </div>
       </div>
       <ul class="checks">
         <li><img src="static/check.svg" width="16" height="16" alt="">No new dashboard</li>
-        <li><img src="static/check.svg" width="16" height="16" alt="">One command to connect</li>
+        <li><img src="static/check.svg" width="16" height="16" alt="">One click to triage</li>
         <li hidden><img src="static/check.svg" width="16" height="16" alt="">Disconnect anytime</li> <!-- hidden with the Disconnect anytime section -->
       </ul>
     </div>

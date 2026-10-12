@@ -151,7 +151,7 @@
   .hero-mark img{width:64px;height:64px;}
   .hero h1{max-width:660px;font-weight:600;font-size:clamp(40px,6vw,70px);line-height:1.03;letter-spacing:-0.03em;color:var(--aubergine);}
   .ctas{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;}
-  .hero-note{font-size:14px;line-height:22px;color:var(--surface-dark);}
+  .hero-note{width:100%;max-width:660px;font-size:14px;line-height:22px;color:var(--surface-dark);} /* a set width: Safari measured it too narrow and wrapped it */
   .hero-note strong{font-weight:600;color:var(--ink);}
 
   /* ---------- SLACK MOCKUPS: shared pieces ----------
@@ -200,7 +200,7 @@
   .win-help{width:20px;height:20px;}
   .win-main{display:flex;padding:0 2px 2px 0;}
 
-  .side{flex-shrink:0;width:clamp(116px, 26cqw, 220px);min-width:0;display:flex;flex-direction:column;gap:10px;padding:12px 8px;border-radius:8px 0 0 8px;background:rgba(255,255,255,0.09);font-size:15px;color:rgba(255,255,255,0.85);}
+  .side{flex-shrink:0;width:clamp(116px, 27cqw, 220px);min-width:0;display:flex;flex-direction:column;gap:10px;padding:12px 8px;border-radius:8px 0 0 8px;background:rgba(255,255,255,0.09);font-size:15px;color:rgba(255,255,255,0.85);}
   .side-head{display:flex;align-items:center;gap:15px;height:28px;padding:0 3px 0 8px;}
   .side-head p{flex:1;font-weight:900;font-size:18px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .side-head img{width:20px;height:20px;}
@@ -490,8 +490,66 @@
     .ctas .btn{width:100%;}
   }
 
+  /* ---------- STORY (desktop only) ----------
+     The pinned area is one screen tall. It opens looking like the original design: the 900px window right under the hero,
+     purple from about halfway down the window to the bottom of the screen. Over the first half-screen of scroll, --t goes
+     0 to 1 (set by the script): the window shrinks to 824px while it moves right and centers, the white strip fills with
+     purple and the steps slide in. The script sets the window's position and width. Then each 80vh of scroll is one step:
+     Set up (the intro, held until you scroll on), Prevent, Detect, Respond, Close tickets. */
+  .story{display:none;}
+  @media (min-width:1100px){
+    .stage,.sorted,.band--soft{display:none;}
+    .story{display:block;position:relative;color:#fff;background:var(--band);}
+    .story-track{--sticky-h:100vh;height:calc(var(--sticky-h) + 450vh);} /* 0.5 screen glide + 5 steps x 0.8 */
+    @supports (height:100svh){ .story-track{--sticky-h:100svh;} } /* fits under iPad Safari's toolbar */
+    /* top:0, full screen: while it's pinned the script keeps the header hidden, so the window always has the whole screen */
+    .story-sticky{--t:0;--white:325px;position:sticky;top:0;height:var(--sticky-h);
+      background:linear-gradient(to bottom,var(--surface) 0,var(--surface) calc((1 - var(--t)) * var(--white)),var(--band) calc((1 - var(--t)) * var(--white)));}
+    .story-grid{position:relative;width:min(1180px,calc(100% - 96px));height:100%;margin:0 auto;display:flex;align-items:center;}
+    /* the steps come in over the second half of the glide, once the window has made room */
+    .story-steps{--s:clamp(0, (var(--t) - 0.4) / 0.6, 1);width:300px;display:flex;flex-direction:column;gap:20px;opacity:var(--s);transform:translateX(calc((1 - var(--s)) * -32px));}
+    .story-grid:not(.is-open) .story-steps{pointer-events:none;}
+    .story-win{position:absolute;top:0;left:0;width:900px;transform-origin:0 0;} /* left, top, width and scale come from the script */
+    .story-steps h2{font-weight:600;font-size:clamp(34px * 24 / 52, 4.2vw * 24 / 52, 24px);line-height:1.25;letter-spacing:-0.01em;}
+    .story-lede{font-size:14px;line-height:1.6;color:rgba(255,255,255,0.72);}
+    .steps-list{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;}
+    .story-step{
+      display:flex;flex-direction:column;gap:4px;width:100%;padding:14px 0 14px 18px;border:0;border-left:2px solid rgba(255,255,255,0.18);
+      background:none;color:#fff;text-align:left;font:inherit;cursor:pointer;opacity:0.5;transition:opacity 0.25s ease, border-color 0.25s ease;
+    }
+    .story-step:hover{opacity:0.8;}
+    .story-step[aria-current="step"]{opacity:1;border-left-color:var(--key);}
+    .story-key{display:flex;align-items:center;gap:8px;font-weight:700;font-size:18px;line-height:1.4;}
+    .story-dot{width:8px;height:8px;border-radius:50%;background:var(--key);}
+    .story-check{width:16px;height:16px;}
+    .story-cap{font-size:13px;line-height:19px;color:rgba(255,255,255,0.72);}
+    .story-cap .cmd{font-size:12px;padding:0 6px;}
+    /* the window's messages: one scene at a time, cross-faded; scene 0 is the setup intro */
+    .scenes{display:grid;padding:4px 0 8px;}
+    .scene{grid-area:1 / 1;display:flex;flex-direction:column;opacity:0;visibility:hidden;transform:translateY(8px);
+      transition:opacity 0.35s ease, transform 0.35s ease, visibility 0s linear 0.35s;}
+    .scene.is-on{opacity:1;visibility:visible;transform:none;transition:opacity 0.35s ease, transform 0.35s ease;}
+    .scene .msg-body{gap:10px;}
+    .scene .attach-title{font-size:15px;}
+    .scene .attach-text{font-size:14px;line-height:20px;}
+    .scene .tag{font-size:11px;}
+    .scene .avatar-letter--c{background:var(--pink);color:#fff;}
+    .scene .replies{padding:2px 18px;font-size:12px;}
+    /* short screens (smaller laptops): tighter steps, and the intro line goes so all five fit beside the window */
+    @media (max-height:820px){
+      .story-steps{gap:14px;}
+      .story-step{padding:9px 0 9px 18px;}
+      .story-key{font-size:17px;}
+    }
+    @media (max-height:760px){.story-lede{display:none;}}
+    /* the setup intro: its three messages fade in one after another */
+    .js-story .intro-msg{opacity:0;transform:translateY(8px);transition:opacity 0.45s ease, transform 0.45s ease;}
+    .js-story .intro-msg.is-in{opacity:1;transform:none;}
+  }
+
   @media (prefers-reduced-motion: reduce){
     html{scroll-behavior:auto;}
+    .story-step,.scene,.scene.is-on,.js-story .intro-msg{transition:none;}
     .status-dot{animation:none;}
     .classbar,.site-top .site-header,.nav-panel,.header-link--cta img,.btn,.guide{transition:none;}
   }
@@ -559,6 +617,214 @@
         <a class="btn btn--secondary" href="#how">See how it works</a>
       </div>
       <p class="hero-note"><strong>Free to use.</strong> No sign-up, no payment. Install it and it just works.<br>For security and IT teams who already live in Slack</p>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       STORY (desktop, 1100px and wider): the Slack window pins on the right while the four steps
+       (Prevent, Detect, Respond, Close tickets) go by on the left; each step swaps the window's message.
+       Below 1100px it's hidden and the stacked sections after it show instead (see STORY in the styles).
+       ============================================================ -->
+  <section class="story" id="how">
+    <div class="story-track">
+      <div class="story-sticky">
+        <div class="story-grid">
+          <div class="story-steps">
+            <h2>Every alert arrives already sorted.</h2>
+            <p class="story-lede">Each message says what happened, what VEX already did, and whether a person needs to step in.</p>
+            <ol class="steps-list">
+              <li><button class="story-step" type="button" data-step="0" style="--key:var(--pink)"><span class="story-key"><span class="story-dot"></span>Set up VEX in Slack</span><span class="story-cap">Add VEX, run <span class="cmd">/connect</span>, and VEX starts watching Microsoft 365 or Google Workspace.</span></button></li>
+              <li><button class="story-step" type="button" data-step="1" style="--key:var(--s-green)"><span class="story-key"><span class="story-dot"></span>Prevent</span><span class="story-cap">VEX fixes problems before they become incidents.</span></button></li>
+              <li><button class="story-step" type="button" data-step="2" style="--key:var(--s-yellow)"><span class="story-key"><span class="story-dot"></span>Detect</span><span class="story-cap">VEX checks with you when something needs a yes or no.</span></button></li>
+              <li><button class="story-step" type="button" data-step="3" style="--key:var(--s-red)"><span class="story-key"><span class="story-dot"></span>Respond</span><span class="story-cap">When human judgment matters, VEX brings in an expert.</span></button></li>
+              <li><button class="story-step" type="button" data-step="4" style="--key:#fff"><span class="story-key"><img class="story-check" src="static/check.svg" width="16" height="16" alt="">Close tickets</span><span class="story-cap">Reply <span class="cmd">close</span> in the thread and VEX closes the ticket for you.</span></button></li>
+            </ol>
+          </div>
+          <div class="story-win">
+      <div class="win-wrap"><div class="win slack" aria-hidden="true">
+        <div class="win-bar">
+          <img class="win-lights" src="static/win-traffic-lights.svg" width="52" height="12" alt="">
+          <div class="win-nav">
+            <img src="static/win-arrow-left.svg" width="18" height="18" alt="">
+            <img src="static/win-arrow-right.svg" width="18" height="18" alt="">
+            <img src="static/win-clock.svg" width="18" height="18" alt="">
+          </div>
+          <div class="win-search"><img src="static/win-search.svg" width="16" height="16" alt="">Search</div>
+          <img class="win-app" src="static/win-app-icon.png" width="26" height="26" alt="">
+          <img class="win-help" src="static/win-question.svg" width="20" height="20" alt="">
+        </div>
+        <div class="win-main">
+          <div class="side">
+            <div class="side-head">
+              <p>Acme Security</p>
+              <img src="static/side-gear.svg" width="20" height="20" alt="">
+              <img src="static/side-note-pencil.svg" width="20" height="20" alt="">
+            </div>
+            <div class="side-find"><img src="static/side-find-list.svg" width="14" height="14" alt=""><span class="lbl">Find a conversation</span></div>
+            <div class="side-list">
+              <div class="side-row"><img src="static/side-threads.svg" width="16" height="16" alt=""><span class="lbl">Threads</span></div>
+              <div class="side-row"><img src="static/side-send.svg" width="16" height="16" alt=""><span class="lbl">Drafts &amp; sent</span></div>
+              <div class="side-row"><img src="static/side-address-book.svg" width="16" height="16" alt=""><span class="lbl">Directories</span></div>
+            </div>
+            <div class="side-rule"></div>
+            <div class="side-row side-row--dim"><img src="static/side-star.svg" width="16" height="16" alt=""><span class="lbl">Starred</span></div>
+            <div class="side-list">
+              <div class="side-row"><img src="static/side-hash.svg" width="16" height="16" alt=""><span class="lbl">general</span></div>
+              <div class="side-row side-row--on"><img src="static/side-hash-active.svg" width="16" height="16" alt=""><span class="lbl">security-ops</span></div>
+              <div class="side-row"><span class="side-plus"><img src="static/side-plus.svg" width="12" height="12" alt=""></span><span class="lbl">Add channels</span></div>
+            </div>
+            <div class="side-list">
+              <div class="side-row"><img src="static/side-apps.svg" width="16" height="16" alt=""><span class="lbl">Apps</span></div>
+              <div class="side-row"><img src="static/side-vex.svg" width="16" height="16" alt=""><span class="lbl">VEX</span></div>
+            </div>
+          </div>
+          <div class="chan">
+            <div class="chan-head">
+              <img src="static/ch-star.svg" width="20" height="20" alt="">
+              <p class="chan-name"># signals</p>
+              <div class="chan-actions">
+                <span class="members"><img class="user" src="static/ch-user.svg" width="18" height="18" alt="">6</span>
+                <span class="huddle"><img src="static/ch-headphones.svg" width="20" height="20" alt=""><img class="caret" src="static/ch-caret-down.svg" width="12" height="12" alt=""></span>
+                <img class="bell" src="static/ch-bell.svg" width="20" height="20" alt="">
+                <img src="static/ch-search.svg" width="20" height="20" alt="">
+                <img src="static/ch-dots-v.svg" width="20" height="20" alt="">
+              </div>
+            </div>
+            <div class="tabs">
+              <div class="tab tab--on"><img src="static/ch-chat-circle.svg" width="15" height="15" alt="">Messages</div>
+              <div class="tab"><img src="static/ch-add-canvas.svg" width="15" height="15" alt="">Add canvas</div>
+              <div class="tab-add"><img src="static/ch-plus.svg" width="16" height="16" alt=""></div>
+            </div>
+            <div class="thread-bar">
+              <div><img src="static/th-caret-left.svg" width="20" height="20" alt=""><b>Thread</b><small># signals</small></div>
+              <div><img class="sparkle" src="static/th-sparkle.svg" width="18" height="18" alt=""><img src="static/th-dots-v.svg" width="20" height="20" alt=""></div>
+            </div>
+            <div class="thread scenes">
+              <div class="scene is-on" data-scene="0">
+              <div class="msg intro-msg">
+                <img class="avatar" src="static/vex-avatar-36.svg" width="36" height="36" alt="">
+                <div class="msg-body">
+                  <div class="msg-meta"><span class="msg-name">VEX</span><span class="app-tag">APP</span><span class="msg-time">9:34 AM</span></div>
+                  <p class="thread-text">I’ve been added to <span class="mention">#security-ops</span> Run <span class="cmd">/connect</span> to hook up Microsoft 365 or Google Workspace</p>
+                </div>
+              </div>
+              <div class="msg intro-msg">
+                <span class="avatar-letter">J</span>
+                <div class="msg-body" style="gap:4px">
+                  <div class="msg-meta"><span class="msg-name">Jason</span><span class="msg-time">9:52 AM</span></div>
+                  <p class="thread-text"><i>used</i> <span class="cmd">/connect microsoft</span></p>
+                </div>
+              </div>
+              <div class="msg intro-msg">
+                <img class="avatar" src="static/vex-avatar-36.svg" width="36" height="36" alt="">
+                <div class="msg-body">
+                  <div class="msg-meta"><span class="msg-name">VEX</span><span class="app-tag">APP</span><span class="msg-time">9:52 AM</span></div>
+                  <div><span class="connected"><img src="static/check-circle.svg" width="24" height="24" alt="">Microsoft 365 Connected</span></div>
+                </div>
+              </div>
+            
+              </div>
+              <div class="scene" data-scene="1">
+                <div class="msg">
+                  <img class="avatar" src="static/vex-avatar-36.svg" width="36" height="36" alt="">
+                  <div class="msg-body">
+                    <div class="msg-meta"><span class="msg-name">VEX</span><span class="app-tag">APP</span><span class="msg-time">9:14 AM</span></div>
+                    <div class="attach" style="--bar:var(--s-green)"><div class="attach-body">
+                      <span class="tag tag--green">FIXED AUTOMATICALLY</span>
+                      <p class="attach-title">Email spoofing blocked</p>
+                      <p class="attach-text">Anyone could send email pretending to be you. VEX published a DMARC record and confirmed it’s live on 3 public DNS servers.</p>
+                    </div></div>
+                    <div><span class="tag tag--green">CLOSED</span></div>
+                  </div>
+                </div>
+              </div>
+              <div class="scene" data-scene="2">
+                <div class="msg">
+                  <img class="avatar" src="static/vex-avatar-36.svg" width="36" height="36" alt="">
+                  <div class="msg-body">
+                    <div class="msg-meta"><span class="msg-name">VEX</span><span class="app-tag">APP</span><span class="msg-time">11:02 AM</span></div>
+                    <div class="attach" style="--bar:var(--s-yellow)"><div class="attach-body">
+                      <span class="tag tag--yellow">NEEDS REVIEW</span>
+                      <p class="attach-title">New forwarding rule on finance@</p>
+                      <p class="attach-text">A new inbox rule sends invoices to an outside Gmail address. VEX paused the rule until you confirm it.</p>
+                      <div class="s-btns"><span class="s-btn s-btn--go">Accept risk</span><span class="s-btn">Keep paused</span></div>
+                    </div></div>
+                  </div>
+                </div>
+              </div>
+              <div class="scene" data-scene="3">
+                <div class="msg">
+                  <img class="avatar" src="static/vex-avatar-36.svg" width="36" height="36" alt="">
+                  <div class="msg-body">
+                    <div class="msg-meta"><span class="msg-name">VEX</span><span class="app-tag">APP</span><span class="msg-time">2:47 PM</span></div>
+                    <div class="attach" style="--bar:var(--s-red)"><div class="attach-body">
+                      <span class="tag tag--red">EXPERT ON IT</span>
+                      <p class="attach-title">Investigating 2 accounts</p>
+                      <p class="attach-text">A VEX security analyst is looking into sign-ins from a known-bad IP. Next update in this thread within 30 minutes.</p>
+                    </div></div>
+                  </div>
+                </div>
+                <div class="msg">
+                  <span class="avatar-letter avatar-letter--c">C</span>
+                  <div class="msg-body" style="gap:4px">
+                    <div class="msg-meta"><span class="msg-name">Caleb</span><span class="app-tag">Unmanned</span><span class="msg-time">2:49 PM</span></div>
+                    <p class="thread-text">I’m looking right now!</p>
+                  </div>
+                </div>
+              </div>
+              <div class="scene" data-scene="4">
+                <div class="msg">
+                  <img class="avatar" src="static/vex-avatar-36.svg" width="36" height="36" alt="">
+                  <div class="msg-body">
+                    <div class="msg-meta"><span class="msg-name">VEX</span><span class="app-tag">APP</span><span class="msg-time">9:34 AM</span></div>
+                    <div class="attach" style="--bar:var(--s-yellow)"><div class="attach-body">
+                      <p class="attach-title">Suspicious sign-in for j.alvarez</p>
+                      <p class="attach-text">New location and device on a Microsoft 365 account.</p>
+                    </div></div>
+                  </div>
+                </div>
+                <p class="replies">2 replies</p>
+                <div class="msg">
+                  <span class="avatar-letter">J</span>
+                  <div class="msg-body" style="gap:4px">
+                    <div class="msg-meta"><span class="msg-name">Jason</span><span class="msg-time">9:52 AM</span></div>
+                    <p class="thread-text">Close</p>
+                  </div>
+                </div>
+                <div class="msg">
+                  <img class="avatar" src="static/vex-avatar-36.svg" width="36" height="36" alt="">
+                  <div class="msg-body">
+                    <div class="msg-meta"><span class="msg-name">VEX</span><span class="app-tag">APP</span><span class="msg-time">9:52 AM</span></div>
+                    <div class="attach" style="--bar:var(--s-green)"><div class="attach-body"><p class="attach-text">Ticket closed by Jason</p></div></div>
+                    <div><span class="tag tag--green">CLOSED</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="composer">
+              <div class="composer-box">
+                <div class="composer-tools"><img src="static/cmp-toolbar.png" width="350" height="35" alt=""></div>
+                <div class="composer-in">
+                  <p class="composer-text">Message #signals</p>
+                  <div class="composer-row">
+                    <div>
+                      <span class="plus"><img src="static/cmp-plus.svg" width="20" height="20" alt=""></span>
+                      <img src="static/cmp-text-aa.svg" width="20" height="20" alt="">
+                      <img src="static/cmp-smiley.svg" width="20" height="20" alt="">
+                      <img src="static/cmp-at.svg" width="20" height="20" alt="">
+                      <img src="static/cmp-dots-three.svg" width="20" height="20" alt="">
+                    </div>
+                    <img class="send" src="static/cmp-send-idle.svg" width="52" height="24" alt="">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div></div>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -677,7 +943,7 @@
   <!-- ============================================================
        EVERY ALERT ARRIVES ALREADY SORTED
        ============================================================ -->
-  <section class="band sorted" id="how">
+  <section class="band sorted" id="how-stacked">
     <div class="col">
       <div class="band-head">
         <h2>Every alert arrives already sorted.</h2>
@@ -836,7 +1102,7 @@
           </div>
         </div>
 
-        <div class="step step--2">
+        <div class="step">
           <div class="visual">
             <p class="visual-label">Review the setup guide:</p>
             <div class="guides">
@@ -909,7 +1175,13 @@
       // tidy the address so a refresh or a shared link shows the normal page
       if(history.replaceState){ history.replaceState(null, '', location.pathname + location.hash); }
       // the browser jumps to #get-started before the fonts and images settle, so land on it again once they have
-      window.addEventListener('load', function(){ setup.scrollIntoView(); });
+      window.addEventListener('load', function(){
+        // jump, don't glide through the story above (smooth scrolling is switched off just for this jump)
+        var html = document.documentElement;
+        html.style.scrollBehavior = 'auto';
+        setup.scrollIntoView();
+        html.style.scrollBehavior = '';
+      });
     })();
 
     (function(){
@@ -924,7 +1196,7 @@
         ticking = false;
         var y = window.scrollY;
         var showZone = top.offsetHeight + (classbar ? classbar.offsetHeight : 0);
-        if(root.classList.contains('nav-open')){ lastY = y; return; }
+        if(root.classList.contains('nav-open') || root.hasAttribute('data-auto-scroll') || root.hasAttribute('data-story-pinned')){ lastY = y; return; } // menu open, a click-scroll, or the story pinned
         if(y <= showZone){ root.classList.remove('header-hidden'); lastY = y; return; }
         if(Math.abs(y - lastY) < 6){ return; }
         root.classList.toggle('header-hidden', y > lastY);
@@ -965,6 +1237,114 @@
       var wide = window.matchMedia('(min-width:701px)');
       function onWide(){ if(wide.matches && panel.classList.contains('is-open')){ closeNav(false); } }
       if(wide.addEventListener){ wide.addEventListener('change', onWide); } else { wide.addListener(onWide); }
+    })();
+
+    (function(){
+      // STORY (desktop): see STORY in the styles. Scroll position -> --t (layout), active step and scene.
+      var story = document.querySelector('.story');
+      if(!story){ return; }
+      var desktop = window.matchMedia('(min-width:1100px)');
+      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var root = document.documentElement;
+      var track = story.querySelector('.story-track');
+      var grid = story.querySelector('.story-grid');
+      var sticky = story.querySelector('.story-sticky');
+      var win = story.querySelector('.story-win');
+      var steps = [].slice.call(story.querySelectorAll('.story-step'));
+      var scenes = [].slice.call(story.querySelectorAll('.scene'));
+      var intro = [].slice.call(story.querySelectorAll('.intro-msg'));
+      var INTRO = 0.5, STEP = 0.8;   // screens of scroll: the layout slide, then each step
+      var current = -1, played = false, timers = [];
+      root.classList.add('js-story');
+      root.style.setProperty('--top-h', document.querySelector('.site-top').offsetHeight + 'px');
+
+      // the setup intro plays once, when the window first comes into view; any step finishes it at once
+      function playIntro(){
+        if(played){ return; }
+        played = true;
+        intro.forEach(function(m, k){ timers.push(setTimeout(function(){ m.classList.add('is-in'); }, reduce ? 0 : 500 + k * 900)); });
+      }
+      function finishIntro(){ played = true; timers.forEach(clearTimeout); intro.forEach(function(m){ m.classList.add('is-in'); }); }
+
+      function setStep(n){
+        current = n;
+        if(n > 0){ finishIntro(); }
+        scenes.forEach(function(sc){ sc.classList.toggle('is-on', +sc.getAttribute('data-scene') === n); });
+        steps.forEach(function(b){ if(+b.getAttribute('data-step') === n){ b.setAttribute('aria-current', 'step'); } else { b.removeAttribute('aria-current'); } });
+      }
+      // window position: from the original spot (900px, centered, right under the hero) to the right column (824px,
+      // vertically centered beside the steps, 56px gap)
+      function place(e){
+        var gw = grid.clientWidth, gh = grid.clientHeight, gl = grid.getBoundingClientRect().left, M = 24;
+        var vw = document.documentElement.clientWidth;  // the page's width without the scrollbar (Windows scrollbars take up space)
+        var w0 = Math.min(900, vw - 96), w1 = Math.min(824, gw - 356);
+        win.style.width = w1 + 'px';
+        var sc1 = Math.min(1, (gh - 2 * M) / win.offsetHeight);   // shrink to fit short screens, with 24px above and below
+        var w = w0 + (w1 - w0) * e, sc = 1 + (sc1 - 1) * e;
+        win.style.width = w + 'px';
+        var x0 = (vw - w0) / 2 - gl, x1 = gw - w1 * sc1;
+        var y1 = Math.max(M, (gh - win.offsetHeight * sc) / 2);
+        win.style.left = (x0 + (x1 - x0) * e) + 'px';
+        win.style.top = (y1 * e) + 'px';
+        win.style.transform = sc < 1 ? 'scale(' + sc.toFixed(4) + ')' : '';
+        if(e === 0){ sticky.style.setProperty('--white', (win.offsetHeight * 0.52) + 'px'); } // purple starts about halfway down the window
+      }
+      function progress(){ return -track.getBoundingClientRect().top / window.innerHeight; } // screens scrolled into the story
+      var ticking = false;
+      function update(){
+        ticking = false;
+        if(!desktop.matches){ root.removeAttribute('data-story-pinned'); return; }
+        var r = track.getBoundingClientRect();
+        var pinned = r.top <= 0 && r.bottom >= window.innerHeight;
+        if(pinned){ root.setAttribute('data-story-pinned', ''); root.classList.add('header-hidden'); }
+        else { root.removeAttribute('data-story-pinned'); }
+        var p = progress();
+        var t = reduce ? (p > 0 ? 1 : 0) : Math.max(0, Math.min(1, p / INTRO));
+        sticky.style.setProperty('--t', t.toFixed(3));
+        grid.classList.toggle('is-open', t > 0.5);
+        place(t * t * (3 - 2 * t));  // eased
+        var n = p < INTRO ? 0 : Math.min(steps.length - 1, Math.floor((p - INTRO) / STEP));  // 0 = Set up
+        if(n !== current){ setStep(n); }
+        if(track.getBoundingClientRect().top < window.innerHeight * 0.8){ playIntro(); }
+      }
+      window.addEventListener('scroll', function(){ if(!ticking){ ticking = true; requestAnimationFrame(update); } }, { passive:true });
+      window.addEventListener('resize', update);
+      update();
+
+      // scroll there with the header kept hidden (otherwise scrolling back up would bring it in and shift the
+      // pinned window); the header takes over again once the page has stopped moving
+      var settle;
+      function glideTo(y){
+        root.setAttribute('data-auto-scroll', '');
+        root.classList.add('header-hidden');
+        window.scrollTo({ top:y, behavior: reduce ? 'auto' : 'smooth' });
+        clearTimeout(settle);
+        settle = setTimeout(release, 1200);  // in case the page doesn't need to move at all
+      }
+      function release(){ root.removeAttribute('data-auto-scroll'); }
+      window.addEventListener('scroll', function(){
+        if(!root.hasAttribute('data-auto-scroll')){ return; }
+        clearTimeout(settle);
+        settle = setTimeout(release, 150);  // no scroll for 150ms: done
+      }, { passive:true });
+
+      // a step scrolls to the middle of its stretch
+      steps.forEach(function(b){
+        b.addEventListener('click', function(){
+          var k = +b.getAttribute('data-step');
+          glideTo(track.getBoundingClientRect().top + window.scrollY + (INTRO + k * STEP + STEP / 2) * window.innerHeight);
+        });
+      });
+      // "See how it works": the story on desktop, the stacked sections otherwise
+      var how = document.querySelector('a[href="#how"]');
+      if(how){
+        how.addEventListener('click', function(e){
+          e.preventDefault();
+          var target = desktop.matches ? track.getBoundingClientRect().top + window.scrollY + (INTRO + STEP / 2) * window.innerHeight
+                                       : document.getElementById('how-stacked').getBoundingClientRect().top + window.scrollY - 24;
+          if(desktop.matches){ glideTo(target); } else { window.scrollTo({ top:target, behavior: reduce ? 'auto' : 'smooth' }); }
+        });
+      }
     })();
   </script>
 </body>

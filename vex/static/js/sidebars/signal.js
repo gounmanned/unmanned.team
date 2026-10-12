@@ -150,7 +150,7 @@ class SignalSidebar {
                 thinking.scrollIntoView({ block: "nearest" });
 
                 const seen = (await this.api.signals.get(this.signal.id)).length;
-                await this.patch({ status: this.signal.status });
+                await this.api.signals.patch(this.signal.id, { status: this.signal.status });
 
                 while (thinking.isConnected) {
                     await new Promise((r) => setTimeout(r, 3750));

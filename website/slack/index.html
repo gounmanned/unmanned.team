@@ -542,6 +542,15 @@
       .story-key{font-size:17px;}
     }
     @media (max-height:760px){.story-lede{display:none;}}
+    /* "Get set up now": under the window while the story is pinned (placed by the script); fades in with the steps */
+    .story-skip{
+      --s:clamp(0, (var(--t) - 0.4) / 0.6, 1);position:absolute;z-index:1;display:inline-flex;align-items:center;gap:6px;
+      font-weight:600;font-size:14px;line-height:1.5;color:#fff;text-decoration:none;border-bottom:1px solid var(--pink);
+      opacity:var(--s);pointer-events:none;transform:translateX(-50%);
+    }
+    .story-grid.is-open .story-skip{pointer-events:auto;}
+    .story-skip img{width:16px;height:16px;transition:transform 0.2s ease;}
+    .story-skip:hover img{transform:translateY(2px);}
     /* the setup intro: its three messages fade in one after another */
     .js-story .intro-msg{opacity:0;transform:translateY(8px);transition:opacity 0.45s ease, transform 0.45s ease;}
     .js-story .intro-msg.is-in{opacity:1;transform:none;}
@@ -549,7 +558,7 @@
 
   @media (prefers-reduced-motion: reduce){
     html{scroll-behavior:auto;}
-    .story-step,.scene,.scene.is-on,.js-story .intro-msg{transition:none;}
+    .story-step,.scene,.scene.is-on,.js-story .intro-msg,.story-skip img{transition:none;}
     .status-dot{animation:none;}
     .classbar,.site-top .site-header,.nav-panel,.header-link--cta img,.btn,.guide{transition:none;}
   }
@@ -640,6 +649,7 @@
               <li><button class="story-step" type="button" data-step="4" style="--key:#fff"><span class="story-key"><img class="story-check" src="static/check.svg" width="16" height="16" alt="">Close tickets</span><span class="story-cap">Reply <span class="cmd">close</span> in the thread and VEX closes the ticket for you.</span></button></li>
             </ol>
           </div>
+          <a class="story-skip" href="#get-started">Get set up now <img src="../static/icon-arrow-down.svg" width="16" height="16" alt=""></a>
           <div class="story-win">
       <div class="win-wrap"><div class="win slack" aria-hidden="true">
         <div class="win-bar">
@@ -1250,6 +1260,7 @@
       var grid = story.querySelector('.story-grid');
       var sticky = story.querySelector('.story-sticky');
       var win = story.querySelector('.story-win');
+      var skip = story.querySelector('.story-skip');
       var steps = [].slice.call(story.querySelectorAll('.story-step'));
       var scenes = [].slice.call(story.querySelectorAll('.scene'));
       var intro = [].slice.call(story.querySelectorAll('.intro-msg'));
@@ -1279,14 +1290,18 @@
         var vw = document.documentElement.clientWidth;  // the page's width without the scrollbar (Windows scrollbars take up space)
         var w0 = Math.min(900, vw - 96), w1 = Math.min(824, gw - 356);
         win.style.width = w1 + 'px';
-        var sc1 = Math.min(1, (gh - 2 * M) / win.offsetHeight);   // shrink to fit short screens, with 24px above and below
+        var LINK = 40;  // room under the window for "Get set up now"
+        var sc1 = Math.min(1, (gh - 2 * M - LINK) / win.offsetHeight);   // shrink to fit short screens, with 24px above and below
         var w = w0 + (w1 - w0) * e, sc = 1 + (sc1 - 1) * e;
         win.style.width = w + 'px';
         var x0 = (vw - w0) / 2 - gl, x1 = gw - w1 * sc1;
-        var y1 = Math.max(M, (gh - win.offsetHeight * sc) / 2);
+        var y1 = Math.max(M, (gh - win.offsetHeight * sc - LINK) / 2);
         win.style.left = (x0 + (x1 - x0) * e) + 'px';
         win.style.top = (y1 * e) + 'px';
         win.style.transform = sc < 1 ? 'scale(' + sc.toFixed(4) + ')' : '';
+        var wx = x0 + (x1 - x0) * e, wy = y1 * e;
+        skip.style.left = (wx + w * sc / 2) + 'px';
+        skip.style.top = (wy + win.offsetHeight * sc + 14) + 'px';
         if(e === 0){ sticky.style.setProperty('--white', (win.offsetHeight * 0.52) + 'px'); } // purple starts about halfway down the window
       }
       function progress(){ return -track.getBoundingClientRect().top / window.innerHeight; } // screens scrolled into the story
@@ -1304,7 +1319,7 @@
         grid.classList.toggle('is-open', t > 0.5);
         place(t * t * (3 - 2 * t));  // eased
         var n = p < INTRO ? 0 : Math.min(steps.length - 1, Math.floor((p - INTRO) / STEP));  // 0 = Set up
-        if(n !== current){ setStep(n); }
+        if(n !== current && !skipping){ setStep(n); }
         if(track.getBoundingClientRect().top < window.innerHeight * 0.8){ playIntro(); }
       }
       window.addEventListener('scroll', function(){ if(!ticking){ ticking = true; requestAnimationFrame(update); } }, { passive:true });
@@ -1321,7 +1336,14 @@
         clearTimeout(settle);
         settle = setTimeout(release, 1200);  // in case the page doesn't need to move at all
       }
-      function release(){ root.removeAttribute('data-auto-scroll'); }
+      function release(){ root.removeAttribute('data-auto-scroll'); skipping = false; update(); }
+      // "Get set up now": straight down to the setup steps, holding the current message on the way
+      var skipping = false;
+      skip.addEventListener('click', function(e){
+        e.preventDefault();
+        skipping = true;
+        glideTo(document.getElementById('get-started').getBoundingClientRect().top + window.scrollY - 24);
+      });
       window.addEventListener('scroll', function(){
         if(!root.hasAttribute('data-auto-scroll')){ return; }
         clearTimeout(settle);

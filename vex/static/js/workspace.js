@@ -49,13 +49,6 @@ class Api {
 class Workspace {
     static #instance;
 
-    static KIND = {
-        1: { label: 'Security alert',    icon: 'gpp_maybe' },
-        2: { label: 'Recommendation',    icon: 'shield' },
-        3: { label: 'Helpdesk',          icon: 'support_agent' },
-        4: { label: 'Security test',     icon: 'swords' },
-    };
-
     async render(code) {
         Workspace.#instance = this;
 
@@ -151,5 +144,14 @@ class Workspace {
     static get sidebars() {
         document.querySelector('site-overlay').click();
         return Workspace.#instance?.sidebars;
+    }
+
+    static risk(threat) {
+        if (threat == null || Number.isNaN(Number(threat))) return null;
+        const pct = Math.min(100, Math.max(0, Math.round(Number(threat) * 100)));
+
+        if (pct <= 50) return { pct, level: 'low',    label: 'Likely benign',    icon: 'verified_user' };
+        if (pct <= 75) return { pct, level: 'medium', label: 'Suspicious',       icon: 'warning' };
+        return               { pct, level: 'high',   label: 'Likely malicious', icon: 'dangerous' };
     }
 }

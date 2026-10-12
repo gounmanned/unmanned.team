@@ -4,6 +4,7 @@
 
 .overview {
   --strong: #111827;
+  --critical: var(--risk-high, #dc2626);
 
   position: relative;
   isolation: isolate;
@@ -23,14 +24,14 @@
   inset: auto -10% -60px;
   height: 160px;
   background:
-    radial-gradient(40% 70% at 12% 60%, color-mix(in srgb, var(--kind-1) 30%, transparent), transparent 70%),
-    radial-gradient(35% 60% at 85% 70%, color-mix(in srgb, var(--kind-1) 18%, transparent), transparent 70%);
+    radial-gradient(40% 70% at 12% 60%, color-mix(in srgb, var(--critical) 30%, transparent), transparent 70%),
+    radial-gradient(35% 60% at 85% 70%, color-mix(in srgb, var(--critical) 18%, transparent), transparent 70%);
   opacity: 0;
   transition: opacity 0.3s;
   pointer-events: none;
 }
 
-.overview.critical { border-color: var(--kind-1); }
+.overview.critical { border-color: var(--critical); }
 .overview.critical::before { opacity: 1; }
 
 /* ── overview: trend chart ──────────────────────────────────────── */
@@ -46,7 +47,7 @@
   box-sizing: border-box;
 }
 
-.overview.critical .trend-chart { --radar: var(--kind-1); }
+.overview.critical .trend-chart { --radar: var(--critical); }
 
 .trend-chart-head {
   position: relative;
@@ -179,7 +180,7 @@
   height: auto;
   padding: 14px 22px;
   border: 0;
-  border-top: 1px solid color-mix(in srgb, var(--kind-1) 18%, var(--line));
+  border-top: 1px solid color-mix(in srgb, var(--critical) 18%, var(--line));
   border-radius: 0;
   background: color-mix(in srgb, var(--surface) 55%, transparent);
   -webkit-backdrop-filter: blur(14px) saturate(160%);
@@ -198,7 +199,7 @@
 }
 
 .overview.critical .spotlight:focus-visible {
-  outline: 2px solid var(--kind-1);
+  outline: 2px solid var(--critical);
   outline-offset: -2px;
 }
 
@@ -218,7 +219,7 @@
   height: 100%;
   padding: 7px;
   box-sizing: border-box;
-  border: 2px solid var(--kind-1);
+  border: 2px solid var(--critical);
   border-radius: 50%;
   background: #fff;
   object-fit: contain;
@@ -228,7 +229,7 @@
   position: absolute;
   inset: 0;
   border-radius: 50%;
-  background: var(--kind-1);
+  background: var(--critical);
   opacity: 0;
   animation: spotlight-ring 2.4s ease-out infinite;
 }
@@ -256,14 +257,14 @@
   font-weight: 700;
   letter-spacing: 0.8px;
   text-transform: uppercase;
-  color: var(--kind-1);
+  color: var(--critical);
 }
 
 .spotlight-dot {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--kind-1);
+  background: var(--critical);
 }
 
 .spotlight-name {
@@ -288,7 +289,7 @@
   flex-direction: column;
   gap: 3px;
   padding: 0 22px;
-  border-left: 1px solid color-mix(in srgb, var(--kind-1) 15%, var(--line));
+  border-left: 1px solid color-mix(in srgb, var(--critical) 15%, var(--line));
 }
 
 .spotlight-stats > div:last-child { padding-right: 0; }
@@ -475,23 +476,30 @@
   outline-offset: 2px;
 }
 
-/* kind chip */
+/* threat chip */
 
-.kind-chip {
+.threat-chip {
+  --risk: var(--text-faint);
   display: inline-flex;
   align-items: center;
   padding: 3px 9px;
   border-radius: 20px;
-  font-size: 10px;
+  background: color-mix(in srgb, var(--risk) 10%, transparent);
+  font-size: 10.5px;
   font-weight: 700;
-  letter-spacing: 0.4px;
-  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
   white-space: nowrap;
+  color: var(--risk);
 }
 
-.kind-chip[data-kind="1"] { background: color-mix(in srgb, var(--kind-1) 10%, transparent); color: var(--kind-1); } /* security alert */
-.kind-chip[data-kind="2"] { background: color-mix(in srgb, var(--kind-2) 10%, transparent); color: var(--kind-2); } /* recommendation */
-.kind-chip[data-kind="3"] { background: color-mix(in srgb, var(--kind-4) 10%, transparent); color: var(--kind-4); } /* security test */
+.threat-chip[data-risk="low"]    { --risk: var(--risk-low, #16a34a); }
+.threat-chip[data-risk="medium"] { --risk: var(--risk-medium, #ea580c); }
+.threat-chip[data-risk="high"]   { --risk: var(--risk-high, #dc2626); }
+
+.threat-chip.empty {
+  padding-left: 0;
+  background: none;
+}
 
 /* ── signals: table view ────────────────────────────────────────── */
 
@@ -526,6 +534,8 @@
   text-overflow: ellipsis;
 }
 
+td.threat { white-space: nowrap; }
+
 td.name,
 td.id,
 td.source,
@@ -553,10 +563,6 @@ tr.unread td.name::before {
   border-radius: 50%;
   background: var(--brand);
   vertical-align: middle;
-}
-
-tr[data-status="CV"] td.autoclose {
-  background: url(https://cdn.unmanned.team/img/sparkle.svg) center / 18px 18px no-repeat;
 }
 
 /* metadata column */

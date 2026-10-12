@@ -49,18 +49,6 @@ class Api {
 class Workspace {
     static #instance;
 
-    static RISK_LEVELS = [
-        { max: 50,  level: 'low',    label: 'Likely benign',    icon: 'verified_user' },
-        { max: 75,  level: 'medium', label: 'Suspicious',       icon: 'warning' },
-        { max: 100, level: 'high',   label: 'Likely malicious', icon: 'dangerous' },
-    ];
-
-    static risk(confidence) {
-        if (confidence == null || Number.isNaN(Number(confidence))) return null;
-        const pct = Math.min(100, Math.max(0, Math.round(Number(confidence) * 100)));
-        return { ...Workspace.RISK_LEVELS.find(t => pct <= t.max), pct };
-    }
-
     async render(code) {
         Workspace.#instance = this;
 
@@ -156,5 +144,14 @@ class Workspace {
     static get sidebars() {
         document.querySelector('site-overlay').click();
         return Workspace.#instance?.sidebars;
+    }
+
+    static risk(confidence) {
+        if (confidence == null || Number.isNaN(Number(confidence))) return null;
+        const pct = Math.min(100, Math.max(0, Math.round(Number(confidence) * 100)));
+
+        if (pct <= 50) return { pct, level: 'low',    label: 'Likely benign',    icon: 'verified_user' };
+        if (pct <= 75) return { pct, level: 'medium', label: 'Suspicious',       icon: 'warning' };
+        return               { pct, level: 'high',   label: 'Likely malicious', icon: 'dangerous' };
     }
 }

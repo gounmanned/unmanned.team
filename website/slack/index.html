@@ -42,6 +42,7 @@
     --s-green:#2eb67d;
     --s-yellow:#ecb22e;
     --s-red:#e01e5a;
+    --s-blue:#36c5f0;        /* Slack's blue (from its logo): Recommendation messages */
     --go-text:#0e7c52;       /* green text (from the API and VEX MDR pages; passes 4.5:1) */
     --sev-1:#dc2626;         /* error red (from the other pages; 4.5:1 on the light gray) */
   }
@@ -170,8 +171,8 @@
   .attach-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px;align-items:flex-start;}
   .tag{padding:2px 6px;border-radius:3px;font-weight:900;font-size:10px;line-height:normal;color:var(--s-ink);}
   .tag--green{background:rgba(46,182,125,0.18);}
-  .tag--yellow{background:rgba(236,178,46,0.18);}
   .tag--red{background:rgba(224,30,90,0.18);}
+  .tag--blue{background:rgba(54,197,240,0.18);}
   .attach-title{font-weight:700;font-size:13px;}
   .attach-text{font-size:13px;line-height:18px;}
   .s-btns{display:flex;flex-wrap:wrap;gap:8px;padding-top:4px;}
@@ -266,7 +267,7 @@
   .types{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;}
   .type{display:flex;flex-direction:column;gap:8px;}
   .type-key{display:flex;align-items:center;gap:8px;font-weight:700;font-size:20px;line-height:32px;}
-  .type-key img{width:8px;height:8px;}
+  .type-dot{width:8px;height:8px;border-radius:50%;background:var(--key);} /* each category's color matches its card */
   .card{flex:1;display:flex;flex-direction:column;gap:12px;padding:16px;border-radius:12px;background:#fff;}
   .card .msg-body{gap:12px;}
   .card .avatar{width:32px;height:32px;}
@@ -286,7 +287,6 @@
   .mini{display:flex;flex-direction:column;gap:12px;padding:16px;border-radius:12px;background:#fff;box-shadow:0 2px 6px rgba(11,12,13,0.06),0 1px 2px rgba(11,12,13,0.06);}
   .mini .avatar{width:32px;height:32px;}
   .mini .msg-body{gap:8px;}
-  .mini .tag{color:#057c56;}
   .replies{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:var(--s-time);}
   .replies::after{content:'';flex:1;height:1px;background:#e3e3e8;}
   .checks{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:16px;}
@@ -617,8 +617,8 @@
             <p class="story-lede">Each message says what happened, what VEX already did, and whether a person needs to step in.</p>
             <ol class="steps-list">
               <li><button class="story-step" type="button" data-step="0" style="--key:var(--pink)"><span class="story-key"><span class="story-dot"></span>Set up VEX in Slack</span><span class="story-cap">Add VEX, run <span class="cmd">/connect</span>, and VEX starts watching Microsoft 365 or Google Workspace.</span></button></li>
-              <li><button class="story-step" type="button" data-step="1" style="--key:var(--s-green)"><span class="story-key"><span class="story-dot"></span>Prevent</span><span class="story-cap">VEX finds weak spots and tells you how to close them.</span></button></li>
-              <li><button class="story-step" type="button" data-step="2" style="--key:var(--s-yellow)"><span class="story-key"><span class="story-dot"></span>Detect</span><span class="story-cap">VEX catches threats and fixes what it can on its own.</span></button></li>
+              <li><button class="story-step" type="button" data-step="1" style="--key:var(--s-blue)"><span class="story-key"><span class="story-dot"></span>Prevent</span><span class="story-cap">VEX finds weak spots and tells you how to close them.</span></button></li>
+              <li><button class="story-step" type="button" data-step="2" style="--key:var(--s-green)"><span class="story-key"><span class="story-dot"></span>Detect</span><span class="story-cap">VEX catches threats and fixes what it can on its own.</span></button></li>
               <li><button class="story-step" type="button" data-step="3" style="--key:var(--s-red)"><span class="story-key"><span class="story-dot"></span>Respond</span><span class="story-cap">When human judgment matters, VEX brings in an expert.</span></button></li>
               <li><button class="story-step" type="button" data-step="4" style="--key:#fff"><span class="story-key"><img class="story-check" src="static/check.svg" width="16" height="16" alt="">Close tickets</span><span class="story-cap">One click to ignore, mark it fixed, or ask VEX to assess.</span></button></li>
             </ol>
@@ -713,8 +713,8 @@
                   <img class="avatar" src="static/vex-avatar-36.svg" width="36" height="36" alt="">
                   <div class="msg-body">
                     <div class="msg-meta"><span class="msg-name">VEX</span><span class="app-tag">APP</span><span class="msg-time">9:14 AM</span></div>
-                    <div class="attach" style="--bar:var(--s-green)"><div class="attach-body">
-                      <span class="tag tag--green">RECOMMENDATION</span>
+                    <div class="attach" style="--bar:var(--s-blue)"><div class="attach-body">
+                      <span class="tag tag--blue">RECOMMENDATION</span>
                       <p class="attach-title">Turn on MFA for 2 admin accounts</p>
                       <p class="attach-text">These admins can sign in with just a password:<br>jsmith@yourcompany.com,<br>hjohnson@yourcompany.com</p>
                       <p class="attach-text">MFA blocks most account takeovers.</p>
@@ -928,15 +928,15 @@
       <div class="types">
 
         <div class="type">
-          <h3 class="type-key"><img src="static/dot-green.svg" width="8" height="8" alt="">Prevent</h3>
+          <h3 class="type-key"><span class="type-dot" style="--key:var(--s-blue)"></span>Prevent</h3>
           <div class="card slack">
             <div class="msg">
               <img class="avatar" src="static/vex-avatar-32.svg" width="32" height="32" alt="">
               <div class="msg-body">
                 <div class="msg-meta"><span class="msg-name">VEX</span><span class="app-tag">APP</span><span class="msg-time">9:14 AM</span></div>
-                <div class="attach" style="--bar:var(--s-green)">
+                <div class="attach" style="--bar:var(--s-blue)">
                   <div class="attach-body">
-                    <span class="tag tag--green">RECOMMENDATION</span>
+                    <span class="tag tag--blue">RECOMMENDATION</span>
                     <p class="attach-title">Turn on MFA for 2 admin accounts</p>
                     <p class="attach-text">These admins can sign in with just a password:<br>jsmith@yourcompany.com,<br>hjohnson@yourcompany.com</p>
                     <p class="attach-text">MFA blocks most account takeovers.</p>
@@ -949,7 +949,7 @@
         </div>
 
         <div class="type">
-          <h3 class="type-key"><img src="static/dot-yellow.svg" width="8" height="8" alt="">Detect</h3>
+          <h3 class="type-key"><span class="type-dot" style="--key:var(--s-green)"></span>Detect</h3>
           <div class="card slack">
             <div class="msg">
               <img class="avatar" src="static/vex-avatar-32.svg" width="32" height="32" alt="">
@@ -970,7 +970,7 @@
         </div>
 
         <div class="type">
-          <h3 class="type-key"><img src="static/dot-red.svg" width="8" height="8" alt="">Respond</h3>
+          <h3 class="type-key"><span class="type-dot" style="--key:var(--s-red)"></span>Respond</h3>
           <div class="card slack">
             <div class="msg">
               <img class="avatar" src="static/vex-avatar-32.svg" width="32" height="32" alt="">

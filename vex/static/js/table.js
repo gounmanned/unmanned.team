@@ -87,14 +87,8 @@ class Table {
         const row = this.find('tr', signal.id) ?? document.createElement('tr');
         const closed = signal.status.startsWith('C');
         const unread = !signal.read && !closed;
-        const timed = signal.source === 'attack';
 
-        Object.assign(row.dataset, {
-            id: signal.id,
-            status: signal.status,
-            source: signal.source ?? '',
-            updated: signal.updated,
-        });
+        Object.assign(row.dataset, { id: signal.id, status: signal.status, updated: signal.updated });
         row.classList.toggle('unread', unread);
         row.classList.toggle('closed', closed);
         row.innerHTML = `
@@ -105,7 +99,7 @@ class Table {
             <td class="metadata">${this.metadata(signal.metadata)}</td>
             <td class="source">${Workspace.esc(signal.asset)}</td>
             <td class="created">${Workspace.date(signal.created)}</td>
-            <td class="elapsed ${timed && signal.status === 'OB' ? 'live' : ''}">${timed ? this.elapsed(signal) : ''}</td>
+            <td class="elapsed ${signal.status === 'OB' ? 'live' : ''}">${this.elapsed(signal)}</td>
             <td class="autoclose"></td>`;
 
         if (closed) return this.body.append(row);
@@ -144,7 +138,7 @@ class Table {
     }
 
     tick() {
-        this.body.querySelectorAll('tr[data-source="attack"][data-status="OB"] td.elapsed').forEach(cell => {
+        this.body.querySelectorAll('tr[data-status="OB"] td.elapsed').forEach(cell => {
             const signal = this.signals.get(cell.parentElement.dataset.id);
             if (signal) cell.textContent = this.elapsed(signal);
         });

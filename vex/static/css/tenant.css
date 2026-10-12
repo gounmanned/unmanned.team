@@ -476,7 +476,7 @@
   outline-offset: 2px;
 }
 
-/* threat chip — metadata.confidence: 0–50 / 51–75 / 76+ */
+/* threat chip */
 
 .threat-chip {
   --risk: var(--text-faint);
@@ -618,7 +618,7 @@ td.metadata { white-space: nowrap; }
 .metadata-tooltip dt { font-weight: 600; color: #9ca3af; white-space: nowrap; }
 .metadata-tooltip dd { margin: 0; word-break: break-word; }
 
-/* elapsed clock (attack signals only) */
+/* elapsed clock */
 
 td.elapsed {
   font-size: 12px;

@@ -1,17 +1,12 @@
 class SignalSidebar {
     static NEW_COPY = {
-        1: { placeholder: "What happened, where, and what needs to be done?", action: "Create alert" },
-        2: { placeholder: "What should change, and why does it matter?",      action: "Create recommendation" },
+        placeholder: "What happened, where, and what needs to be done?",
+        action: "Create signal",
     };
 
     constructor(state) {
         this.state = state;
         this.api = state.api;
-
-        for (const btn of document.querySelectorAll("#kind-switch button")) {
-            btn.querySelector(".material-symbols-outlined").textContent = Workspace.KIND[btn.dataset.kind]?.icon ?? "";
-        }
-
         this.listen();
     }
 
@@ -22,7 +17,7 @@ class SignalSidebar {
 
     reload() {
         this.reset();
-        this.signal = { id: null, kind: 1, status: "OB", asset: "", source: "vex" };
+        this.signal = { id: null, status: "OB", asset: "", source: "vex" };
         this.render();
     }
 
@@ -41,30 +36,30 @@ class SignalSidebar {
     render() {
         const s = this.signal;
         const isNew = !s.id;
-        const kind = Workspace.KIND[s.kind];
-        const conf = s.metadata?.confidence;
+        const risk = isNew ? null : Workspace.risk(s.metadata?.confidence);
 
         const sidebar = document.getElementById("signal-sidebar");
         sidebar.classList.toggle("is-new", isNew);
-        sidebar.dataset.kind = s.kind;
+        if (risk) sidebar.dataset.risk = risk.level;
+        else delete sidebar.dataset.risk;
 
         document.getElementById("signal-status").value = s.status;
         document.getElementById("signal-asset").value = s.asset;
         document.getElementById("signal-source").value = s.source;
-        document.getElementById("signal-kind").textContent = kind?.label ?? "";
-        document.getElementById("signal-kind-icon").textContent = kind?.icon ?? "";
+
+        document.getElementById("signal-label").textContent =
+            isNew ? "New signal" : risk?.label ?? "Signal";
+        document.getElementById("signal-icon").textContent =
+            isNew ? "add_circle" : risk?.icon ?? "notifications";
 
         const confidence = document.getElementById("signal-confidence");
-        confidence.hidden = conf == null;
-        confidence.textContent = conf == null ? "" : `${Math.round(conf * 100)}% likely malicious`;
+        confidence.hidden = !risk;
+        confidence.textContent = risk ? `${risk.pct}% likely malicious` : "";
 
-        for (const btn of document.querySelectorAll("#kind-switch button")) {
-            btn.setAttribute("aria-pressed", String(Number(btn.dataset.kind) === s.kind));
-        }
-
-        const copy = SignalSidebar.NEW_COPY[s.kind];
-        document.getElementById("response").placeholder = isNew ? copy.placeholder : "Add context to this signal";
-        document.getElementById("signal-save-label").textContent = isNew ? copy.action : "";
+        document.getElementById("response").placeholder =
+            isNew ? SignalSidebar.NEW_COPY.placeholder : "Add context to this signal";
+        document.getElementById("signal-save-label").textContent =
+            isNew ? SignalSidebar.NEW_COPY.action : "";
     }
 
     add(update) {
@@ -109,19 +104,13 @@ class SignalSidebar {
             const signal = await this.api.signals.patch(this.signal.id, fields);
             this.state.signals[signal.account][signal.id] = signal;
             this.signal = signal;
+            this.render();
             document.dispatchEvent(new CustomEvent("page:reload"));
             if (close) document.querySelector("site-overlay").click();
         });
     }
 
     listen() {
-        document.getElementById("kind-switch").addEventListener("click", (ev) => {
-            const btn = ev.target.closest("button[data-kind]");
-            if (!btn || this.signal.id) return;   // kind is locked once a signal exists
-            this.signal.kind = Number(btn.dataset.kind);
-            this.render();
-        });
-
         document.getElementById("signal-save").addEventListener("click", async () => {
             const value = document.getElementById("response").value.trim();
 
@@ -135,9 +124,9 @@ class SignalSidebar {
 
             if (!this.validateAsset()) return;
 
-            const { kind, status, asset, source } = this.signal;
+            const { status, asset, source } = this.signal;
             await SiteSpinner.withLoading(async () => {
-                await this.api.signals.create({ kind, status, asset, source, value });
+                await this.api.signals.create({ status, asset, source, value });
                 document.dispatchEvent(new CustomEvent("page:reload"));
                 document.querySelector("site-overlay").click();
             });

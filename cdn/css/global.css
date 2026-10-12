@@ -9,9 +9,6 @@
   --font-sans: 'Inter', system-ui, sans-serif;
   --brand: #e01280;
   --accent:rgba(224,18,128,0.45);
-  --kind-1: #DC2626; 
-  --kind-2: #0F766E;
-  --kind-3: var(--brand);
 }
 
 body {

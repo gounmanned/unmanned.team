@@ -49,12 +49,17 @@ class Api {
 class Workspace {
     static #instance;
 
-    static KIND = {
-        1: { label: 'Security alert',    icon: 'gpp_maybe' },
-        2: { label: 'Recommendation',    icon: 'shield' },
-        3: { label: 'Helpdesk',          icon: 'support_agent' },
-        4: { label: 'Security test',     icon: 'swords' },
-    };
+    static RISK_LEVELS = [
+        { max: 50,  level: 'low',    label: 'Likely benign',    icon: 'verified_user' },
+        { max: 75,  level: 'medium', label: 'Suspicious',       icon: 'warning' },
+        { max: 100, level: 'high',   label: 'Likely malicious', icon: 'dangerous' },
+    ];
+
+    static risk(confidence) {
+        if (confidence == null || Number.isNaN(Number(confidence))) return null;
+        const pct = Math.min(100, Math.max(0, Math.round(Number(confidence) * 100)));
+        return { ...Workspace.RISK_LEVELS.find(t => pct <= t.max), pct };
+    }
 
     async render(code) {
         Workspace.#instance = this;

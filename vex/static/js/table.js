@@ -51,8 +51,11 @@ class Table {
         return this.wrap.querySelector(`${selector}[data-id="${CSS.escape(String(id))}"]`);
     }
 
-    chip(kind) {
-        return `<span class="kind-chip" data-kind="${kind}">${Workspace.KIND[kind]?.label ?? '—'}</span>`;
+    threat(confidence) {
+        const risk = Workspace.risk(confidence);
+        return risk
+            ? `<span class="threat-chip" data-risk="${risk.level}" title="${risk.label}">${risk.pct}%</span>`
+            : `<span class="threat-chip empty">—</span>`;
     }
 
     metadata(meta) {
@@ -84,14 +87,19 @@ class Table {
         const row = this.find('tr', signal.id) ?? document.createElement('tr');
         const closed = signal.status.startsWith('C');
         const unread = !signal.read && !closed;
-        const timed = signal.kind == 3;
+        const timed = signal.source === 'attack';
 
-        Object.assign(row.dataset, { id: signal.id, status: signal.status, kind: signal.kind, updated: signal.updated });
+        Object.assign(row.dataset, {
+            id: signal.id,
+            status: signal.status,
+            source: signal.source ?? '',
+            updated: signal.updated,
+        });
         row.classList.toggle('unread', unread);
         row.classList.toggle('closed', closed);
         row.innerHTML = `
             <td><img src="${Workspace.avatar(signal.source)}"/></td>
-            <td class="kind">${this.chip(signal.kind)}</td>
+            <td class="threat">${this.threat(signal.metadata?.confidence)}</td>
             <td class="name" title="${Workspace.esc(signal.name)}">${Workspace.esc(signal.name.substring(0, 99))}</td>
             <td class="id">#${signal.id}</td>
             <td class="metadata">${this.metadata(signal.metadata)}</td>
@@ -119,7 +127,7 @@ class Table {
         card.innerHTML = `
             <div class="board-card-top">
                 <img src="${Workspace.avatar(signal.source)}" alt="">
-                ${this.chip(signal.kind)}
+                ${this.threat(signal.metadata?.confidence)}
             </div>
             <div class="board-card-name" title="${Workspace.esc(signal.name)}">${Workspace.esc(signal.name)}</div>
             <div class="board-card-meta">
@@ -136,8 +144,9 @@ class Table {
     }
 
     tick() {
-        this.body.querySelectorAll('tr[data-kind="4"][data-status="OB"] td.elapsed').forEach(cell => {
-            cell.textContent = this.elapsed(this.signals.get(cell.parentElement.dataset.id));
+        this.body.querySelectorAll('tr[data-source="attack"][data-status="OB"] td.elapsed').forEach(cell => {
+            const signal = this.signals.get(cell.parentElement.dataset.id);
+            if (signal) cell.textContent = this.elapsed(signal);
         });
     }
 

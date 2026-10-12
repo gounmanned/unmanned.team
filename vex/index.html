@@ -146,7 +146,7 @@
         <table id="signal-table">
           <colgroup>
             <col style="width: 5%">    <!-- icon -->
-            <col style="width: 10%">   <!-- kind -->
+            <col style="width: 10%">   <!-- threat -->
             <col style="width: 25%">   <!-- name -->
             <col style="width: 10%">   <!-- id -->
             <col style="width: 6%">    <!-- metadata -->
@@ -158,7 +158,7 @@
           <thead>
             <tr>
               <th></th>
-              <th>Kind</th>
+              <th>Threat</th>
               <th>Name</th>
               <th>ID</th>
               <th>Metadata</th>
@@ -395,23 +395,14 @@
   <!--Sidebars-->
 
   <site-sidebar id="signal-sidebar">
-    <header class="kind-banner">
-      <span class="material-symbols-outlined" id="signal-kind-icon"></span>
-      <span class="banner-label" id="signal-kind"></span>
-      <span class="banner-confidence" id="signal-confidence" hidden></span>
-
-      <div class="kind-switch" id="kind-switch" role="group" aria-label="Signal type">
-        <button type="button" data-kind="1" aria-pressed="false">
-          <span class="material-symbols-outlined"></span>Security alert
-        </button>
-        <button type="button" data-kind="2" aria-pressed="false">
-          <span class="material-symbols-outlined"></span>Recommendation
-        </button>
-      </div>
+    <header class="signal-banner">
+        <span class="material-symbols-outlined" id="signal-icon"></span>
+        <span class="banner-label" id="signal-label"></span>
+        <span class="banner-confidence" id="signal-confidence" hidden></span>
     </header>
 
     <div class="thread">
-      <ol class="updates" id="updates"></ol>
+        <ol class="updates" id="updates"></ol>
     </div>
 
     <form class="composer" id="reply-form">
@@ -419,37 +410,34 @@
         <div class="field">
           <label for="signal-status">Status</label>
           <select id="signal-status">
-            <optgroup label="Close">
-              <option value="CH">Resolved</option>
-              <option value="CR">Accepted risk</option>
-              <option value="CV">Auto-closed</option>
-            </optgroup>
-            <optgroup label="Open">
-              <option value="OB">Open</option>
-            </optgroup>
+              <optgroup label="Close">
+                  <option value="CH">Resolved</option>
+                  <option value="CR">Accepted risk</option>
+                  <option value="CV">Auto-closed</option>
+              </optgroup>
+              <optgroup label="Open">
+                  <option value="OB">Open</option>
+              </optgroup>
           </select>
         </div>
-
         <div class="field">
-          <label for="signal-asset">Asset</label>
-          <input type="text" id="signal-asset" placeholder="Asset" required />
+            <label for="signal-asset">Asset</label>
+            <input type="text" id="signal-asset" placeholder="Asset" required />
         </div>
-
         <div class="field">
-          <label for="signal-source">Source</label>
-          <input type="text" id="signal-source" placeholder="Source" />
+            <label for="signal-source">Source</label>
+            <input type="text" id="signal-source" placeholder="Source" />
         </div>
-
         <button type="button" class="delete-btn" id="signal-delete" aria-label="Delete signal">
-          <span class="material-symbols-outlined">delete</span>
+            <span class="material-symbols-outlined">delete</span>
         </button>
       </div>
 
       <textarea class="composer-input" id="response" placeholder="Add context to this signal"></textarea>
 
       <button type="button" class="send-btn" id="signal-save">
-        <span class="material-symbols-outlined">arrow_upward</span>
-        <span class="send-label" id="signal-save-label"></span>
+          <span class="material-symbols-outlined">arrow_upward</span>
+          <span class="send-label" id="signal-save-label"></span>
       </button>
     </form>
   </site-sidebar>

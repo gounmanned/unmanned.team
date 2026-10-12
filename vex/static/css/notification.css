@@ -43,7 +43,7 @@
 }
 
 .bell-btn.has-notifications .bell-dot {
-  background: var(--kind-1);
+  background: red;
   animation: bell-pulse 1.6s ease-out infinite;
 }
 
@@ -115,7 +115,7 @@
   font-weight: 700;
   letter-spacing: 0.5px;
   text-transform: uppercase;
-  color: var(--kind-1);
+  color: red;
   margin-bottom: 3px;
 }
 

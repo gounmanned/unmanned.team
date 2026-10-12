@@ -4,13 +4,13 @@
   flex-direction: column;
   height: 100%;
 
-  &[data-kind="1"] { --accent: var(--kind-1); } /* Alert */
-  &[data-kind="2"] { --accent: var(--kind-2); } /* Recommendation */
-  &[data-kind="3"] { --accent: var(--kind-3); } /* Test */
+  &[data-risk="low"]    { --accent: var(--risk-low, #16a34a); }
+  &[data-risk="medium"] { --accent: var(--risk-medium, #ea580c); }
+  &[data-risk="high"]   { --accent: var(--risk-high, #dc2626); }
 
   /* ── Banner ─────────────────────────────────────────────────── */
 
-  .kind-banner {
+  .signal-banner {
     flex-shrink: 0;
     display: flex;
     align-items: center;
@@ -36,54 +36,6 @@
     font-size: 10.5px;
     letter-spacing: 0.4px;
     white-space: nowrap;
-  }
-
-  .kind-switch {
-    display: none;
-    flex: 1;
-    gap: 2px;
-    padding: 3px;
-    border-radius: 10px;
-    background: rgba(0,0,0,0.2);
-
-    button {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      height: 30px;
-      padding: 0 12px;
-      border: none;
-      border-radius: 7px;
-      background: transparent;
-      font-family: inherit;
-      font-size: 13px;
-      font-weight: 600;
-      letter-spacing: normal;
-      text-transform: none;
-      color: rgba(255,255,255,0.85);
-      cursor: pointer;
-      transition: background-color 0.15s, color 0.15s;
-
-      &:hover:not([aria-pressed="true"]) {
-        background: rgba(255,255,255,0.12);
-        color: #fff;
-      }
-
-      &[aria-pressed="true"] {
-        background: #fff;
-        color: var(--accent);
-        box-shadow: 0 1px 3px rgba(0,0,0,0.18);
-      }
-
-      &:focus-visible {
-        outline: 2px solid #fff;
-        outline-offset: 2px;
-      }
-    }
-
-    .material-symbols-outlined { font-size: 18px; }
   }
 
   /* ── Thread ─────────────────────────────────────────────────── */
@@ -112,7 +64,6 @@
       box-shadow: none;
     }
 
-    /* Rail connecting each update to the next */
     li:not(:first-child):not(:last-child)::before {
       content: "";
       position: absolute;
@@ -123,7 +74,6 @@
       background: var(--line);
     }
 
-    /* The original signal */
     li:first-child {
       padding: 18px;
       margin-bottom: 6px;
@@ -299,12 +249,10 @@
   /* ── New signal ─────────────────────────────────────────────── */
 
   &.is-new {
-    .kind-banner > :not(.kind-switch),
     .thread,
     .delete-btn,
     .send-btn .material-symbols-outlined { display: none; }
 
-    .kind-switch { display: flex; }
     .send-label { display: inline; }
 
     .composer {

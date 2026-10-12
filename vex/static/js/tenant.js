@@ -227,7 +227,7 @@ class TenantScreen {
 
     renderSpotlight() {
         const signal = Object.values(this.state.signals?.[this.state.account()] ?? {})
-            .filter(s => String(s.status).startsWith('O') && Workspace.risk(s.metadata?.confidence)?.level === 'high')
+            .filter(s => String(s.status).startsWith('O') && Workspace.risk(s.metadata?.threat)?.level === 'high')
             .sort((a, b) => new Date(b.created) - new Date(a.created))[0];
 
         this._spotlight = signal;

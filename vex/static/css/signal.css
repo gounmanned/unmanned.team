@@ -29,7 +29,7 @@
 
   .banner-label { flex: 1; }
 
-  .banner-confidence {
+  .banner-threat {
     padding: 2px 8px;
     border-radius: 999px;
     background: rgba(255,255,255,0.22);

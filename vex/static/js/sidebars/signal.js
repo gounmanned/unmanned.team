@@ -36,7 +36,7 @@ class SignalSidebar {
     render() {
         const s = this.signal;
         const isNew = !s.id;
-        const risk = isNew ? null : Workspace.risk(s.metadata?.confidence);
+        const risk = isNew ? null : Workspace.risk(s.metadata?.threat);
 
         const sidebar = document.getElementById("signal-sidebar");
         sidebar.classList.toggle("is-new", isNew);
@@ -52,9 +52,9 @@ class SignalSidebar {
         document.getElementById("signal-icon").textContent =
             isNew ? "add_circle" : risk?.icon ?? "notifications";
 
-        const confidence = document.getElementById("signal-confidence");
-        confidence.hidden = !risk;
-        confidence.textContent = risk ? `${risk.pct}% likely malicious` : "";
+        const threat = document.getElementById("signal-threat");
+        threat.hidden = !risk;
+        threat.textContent = risk ? `${risk.pct}% likely malicious` : "";
 
         document.getElementById("response").placeholder =
             isNew ? SignalSidebar.NEW_COPY.placeholder : "Add context to this signal";

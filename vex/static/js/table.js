@@ -51,8 +51,8 @@ class Table {
         return this.wrap.querySelector(`${selector}[data-id="${CSS.escape(String(id))}"]`);
     }
 
-    threat(confidence) {
-        const risk = Workspace.risk(confidence);
+    threat(threat) {
+        const risk = Workspace.risk(threat);
         return risk
             ? `<span class="threat-chip" data-risk="${risk.level}" title="${risk.label}">${risk.pct}%</span>`
             : `<span class="threat-chip empty">—</span>`;
@@ -93,7 +93,7 @@ class Table {
         row.classList.toggle('closed', closed);
         row.innerHTML = `
             <td><img src="${Workspace.avatar(signal.source)}"/></td>
-            <td class="threat">${this.threat(signal.metadata?.confidence)}</td>
+            <td class="threat">${this.threat(signal.metadata?.threat)}</td>
             <td class="name" title="${Workspace.esc(signal.name)}">${Workspace.esc(signal.name.substring(0, 99))}</td>
             <td class="id">#${signal.id}</td>
             <td class="metadata">${this.metadata(signal.metadata)}</td>
@@ -119,8 +119,7 @@ class Table {
         card.dataset.id = signal.id;
         card.innerHTML = `
             <div class="board-card-top">
-                <img src="${Workspace.avatar(signal.source)}" alt="">
-                ${this.threat(signal.metadata?.confidence)}
+                <img src="${Workspace.avatar(signal.source)}">${this.threat(signal.metadata?.threat)}
             </div>
             <div class="board-card-name" title="${Workspace.esc(signal.name)}">${Workspace.esc(signal.name)}</div>
             <div class="board-card-meta">

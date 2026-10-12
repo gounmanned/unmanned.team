@@ -91,14 +91,13 @@ class SignalSidebar {
         return false;
     }
 
-    async patch(fields, { close = false } = {}) {
+    async patch(fields) {
         await SiteSpinner.withLoading(async () => {
             const signal = await this.api.signals.patch(this.signal.id, fields);
             this.state.signals[signal.account][signal.id] = signal;
             this.signal = signal;
             this.render();
             document.dispatchEvent(new CustomEvent("page:reload"));
-            if (close) document.querySelector("site-overlay").click();
         });
     }
 
@@ -127,7 +126,7 @@ class SignalSidebar {
 
         document.getElementById("signal-status").addEventListener("change", (ev) => {
             this.signal.status = ev.target.value;
-            if (this.signal.id) this.patch({ status: this.signal.status }, { close: true });
+            if (this.signal.id) this.patch({ status: this.signal.status });
         });
 
         document.getElementById("signal-asset").addEventListener("change", (ev) => {

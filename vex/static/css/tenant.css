@@ -565,10 +565,6 @@ tr.unread td.name::before {
   vertical-align: middle;
 }
 
-tr[data-status="CV"] td.autoclose {
-  background: url(https://cdn.unmanned.team/img/sparkle.svg) center / 18px 18px no-repeat;
-}
-
 /* metadata column */
 
 td.metadata { white-space: nowrap; }

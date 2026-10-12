@@ -99,8 +99,7 @@ class Table {
             <td class="metadata">${this.metadata(signal.metadata)}</td>
             <td class="source">${Workspace.esc(signal.asset)}</td>
             <td class="created">${Workspace.date(signal.created)}</td>
-            <td class="elapsed ${signal.status === 'OB' ? 'live' : ''}">${this.elapsed(signal)}</td>
-            <td class="autoclose"></td>`;
+            <td class="elapsed ${signal.status === 'OB' ? 'live' : ''}">${this.elapsed(signal)}</td>`;
 
         if (closed) return this.body.append(row);
 

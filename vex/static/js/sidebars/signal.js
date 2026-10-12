@@ -26,10 +26,7 @@ class SignalSidebar {
         this.render();
         this.add(this.signal);
 
-        updates
-            .sort((a, b) => new Date(a.updated) - new Date(b.updated))
-            .forEach((update) => this.add(update));
-
+        updates.sort((a, b) => new Date(a.updated) - new Date(b.updated)).forEach((update) => this.add(update));
         document.dispatchEvent(new CustomEvent("page:reload"));
     }
 
@@ -46,20 +43,15 @@ class SignalSidebar {
         document.getElementById("signal-status").value = s.status;
         document.getElementById("signal-asset").value = s.asset;
         document.getElementById("signal-source").value = s.source;
-
-        document.getElementById("signal-label").textContent =
-            isNew ? "New signal" : risk?.label ?? "Signal";
-        document.getElementById("signal-icon").textContent =
-            isNew ? "add_circle" : risk?.icon ?? "notifications";
+        document.getElementById("signal-label").textContent = isNew ? "New signal" : risk?.label ?? "Signal";
+        document.getElementById("signal-icon").textContent = isNew ? "add_circle" : risk?.icon ?? "notifications";
 
         const threat = document.getElementById("signal-threat");
         threat.hidden = !risk;
         threat.textContent = risk ? `${risk.pct}% likely malicious` : "";
 
-        document.getElementById("response").placeholder =
-            isNew ? SignalSidebar.NEW_COPY.placeholder : "Add context to this signal";
-        document.getElementById("signal-save-label").textContent =
-            isNew ? SignalSidebar.NEW_COPY.action : "";
+        document.getElementById("response").placeholder = isNew ? SignalSidebar.NEW_COPY.placeholder : "Add context to this signal";
+        document.getElementById("signal-save-label").textContent = isNew ? SignalSidebar.NEW_COPY.action : "";
     }
 
     add(update) {
@@ -125,6 +117,7 @@ class SignalSidebar {
             if (!this.validateAsset()) return;
 
             const { status, asset, source } = this.signal;
+
             await SiteSpinner.withLoading(async () => {
                 await this.api.signals.create({ status, asset, source, value });
                 document.dispatchEvent(new CustomEvent("page:reload"));

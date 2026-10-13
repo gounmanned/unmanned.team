@@ -24,7 +24,7 @@ class SignalSidebar {
     inject(signal, updates) {
         this.signal = this.state.signals[signal.account][signal.id];
         this.render();
-        this.add(this.signal);
+        this.add(this.signal, this.signal.created);
 
         updates.sort((a, b) => new Date(a.updated) - new Date(b.updated)).forEach((update) => this.add(update));
         document.dispatchEvent(new CustomEvent("page:reload"));
@@ -54,7 +54,7 @@ class SignalSidebar {
         document.getElementById("signal-save-label").textContent = isNew ? SignalSidebar.NEW_COPY.action : "";
     }
 
-    add(update) {
+    add(update, when = update.updated) {
         const source = update.source || this.signal.source;
 
         const li = document.createElement("li");
@@ -74,8 +74,8 @@ class SignalSidebar {
         avatar.src = Workspace.avatar(source);
 
         const timestamp = li.querySelector(".timestamp");
-        timestamp.textContent = Workspace.date(update.updated, true);
-        timestamp.dateTime = update.updated ?? "";
+        timestamp.textContent = Workspace.date(when, true);
+        timestamp.dateTime = when ?? "";
 
         li.querySelector(".sender").textContent = source;
         li.querySelector(".body").innerHTML = DOMPurify.sanitize(

@@ -78,7 +78,9 @@ class SignalSidebar {
         timestamp.dateTime = update.updated ?? "";
 
         li.querySelector(".sender").textContent = source;
-        li.querySelector(".body").textContent = update.value;
+        li.querySelector(".body").innerHTML = DOMPurify.sanitize(
+            marked.parse(update.value ?? "", { breaks: true, gfm: true })
+        );
 
         document.getElementById("updates").append(li);
         document.getElementById("response").value = "";

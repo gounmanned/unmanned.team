@@ -205,13 +205,13 @@
   .catalog.is-searching .more{display:none;}
 
   /* how VEX responds: the legend for the code on every row */
-  .responses{margin-top:40px;padding:16px 20px;background:var(--surface);border:1px solid var(--gray-line);border-radius:2px;text-align:left;}
+  .responses{box-sizing:border-box;width:100%;margin-top:40px;padding:16px 20px;background:var(--surface);border:1px solid var(--gray-line);border-radius:2px;text-align:left;}
   .resp-top{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 16px;}
   .resp-top p{font-size:14px;line-height:1.55;color:var(--body);}
   .resp-toggle{padding:0;border:0;background:none;cursor:pointer;font:500 13px var(--font-sans);color:var(--pink-text);}
   .resp-toggle::after{content:'';display:inline-block;width:6px;height:6px;margin:0 2px 2px 8px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(45deg);transition:transform 0.2s ease;}
   .responses.is-open .resp-toggle::after{transform:rotate(-135deg);margin-bottom:-2px;}
-  .resp-list{list-style:none;margin:12px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:10px 22px;}
+  .resp-list{list-style:none;margin:12px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:12px 32px;}
   .resp-list li{display:flex;align-items:baseline;gap:8px;}
   .resp-list code{font:500 12px/1.5 var(--mono);color:var(--ink);padding:1px 6px;border:1px solid var(--gray-line);border-radius:2px;}
   .resp-list b{font-weight:600;font-size:14px;line-height:1.5;color:var(--ink);}
@@ -255,7 +255,7 @@
     html.jump-open{overflow:hidden;}
   }
   @media (max-width:900px){ .responses.is-open .resp-list{grid-template-columns:repeat(2,minmax(0,1fr));} }
-  @media (max-width:520px){ .responses.is-open .resp-list{grid-template-columns:minmax(0,1fr);} .responses{padding:14px 16px;} .resp-list{gap:8px 16px;} }
+  @media (max-width:520px){ .responses.is-open .resp-list{grid-template-columns:minmax(0,1fr);} .responses{padding:14px 16px;} .resp-list{gap:12px 22px;} }
   @media (max-width:700px){
     .hero{padding:48px 0 40px;}
     .to-top{right:16px;bottom:16px;}

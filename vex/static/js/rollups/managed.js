@@ -22,7 +22,6 @@ class ManagedRollup {
 
         (async () => {
             this.summary.resetSignals();
-
             await this.api.managed.signals(new CustomEvent("signal:managed"));
             this.members.forEach((_, domain) => this._settleBadge(domain));
             this._sortAccounts();

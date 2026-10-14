@@ -375,10 +375,7 @@
     .pv-skip img{width:14px;height:14px;opacity:0.7;}
     .pv-skip:hover{color:var(--ink);}
     .pv-pin[data-step]:not([data-step="0"]):not(.is-leaving) .pv-skip,.pv-skip:focus-visible{opacity:1;pointer-events:auto;}
-    /* gentle snapping onto each moment (markers placed by the script) */
-    html{scroll-snap-type:y proximity;}
-    .pv-track{position:relative;}
-    .pv-snap{position:absolute;left:0;width:1px;height:1px;scroll-snap-align:start;pointer-events:none;}
+
     /* step 0: the intro; step 1+: the story */
     .pv-pin .pv-head{opacity:0;transform:translateY(10px);}
     .pv-pin .pv-story-copy{opacity:0;}
@@ -441,7 +438,6 @@
   }
   @media (prefers-reduced-motion: reduce){
     .pv-left > *,.pv-intro,.pv-grid,.pv-head,.pv-pdr,.pv-lines,.pv-lines li,.pv-lines li > *,.pv-lines li::before,.pv-skip,.pv-call,.pv-call span{transition:none !important;}
-    html{scroll-snap-type:none;}
   }
   /* ---------- FOOTER ---------- */
   footer{
@@ -1243,18 +1239,6 @@
       }
       window.addEventListener('scroll', function(){ if(!ticking){ ticking = true; requestAnimationFrame(update); } }, { passive:true });
       window.addEventListener('resize', function(){ center(); step = -2; update(); });
-      // snap points: the middle of each moment (not the scrubbed extrusion, which follows the scroll)
-      (function(){
-        var acc = 0;
-        STEPS.forEach(function(len, i){
-          if(i > 0 && i !== MORPH){
-            var m = document.createElement('i'); m.className = 'pv-snap';
-            m.style.top = ((acc + (i === STEPS.length - 1 ? 0.3 : len / 2)) * 100) + 'vh';
-            track.appendChild(m);
-          }
-          acc += len;
-        });
-      })();
       // skip past the story to the Slack section
       var skip = pin.querySelector('.pv-skip'), dest = document.getElementById('vex-slack'), settle;
       skip.addEventListener('click', function(e){

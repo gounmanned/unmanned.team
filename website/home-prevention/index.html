@@ -1,0 +1,1363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DRAFT · Home · prevention story</title>
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/png" href="https://cdn.unmanned.team/img/logo.png">
+<link rel="stylesheet" href="https://cdn.unmanned.team/css/global.css">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;800&family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0b0c0d;
+    --pink:#e01280;
+    --pink-text:#d1107a;     /* pink for TEXT on light backgrounds (passes 4.5:1) */
+    --gray-line:#dcdcd8;
+    --gray-faint:#c4c4c4;
+    --surface-dark:#6c6c70;
+    --surface-gray:#f7f7f7;
+    --body:#2b2b2b;
+    --body-soft:#4b4c52;
+    --nav-link:#6b7280;      /* header links (4.8:1 on white) */
+    --classbar-h:26px;
+    --gutter:24px;           /* page side margins; 16px on phones */
+    --mono:'JetBrains Mono',ui-monospace,monospace;
+    --slack:'Lato',system-ui,sans-serif;
+    --s-ink:#1d1c1d;
+    --s-gray:#616061;
+    --s-time:#868686;
+    --s-btn:#007a5a;         /* Slack's green button */
+    --s-green:#2eb67d;
+    --s-yellow:#ecb22e;
+    --s-red:#e01e5a;
+    --s-blue:#36c5f0;        /* Slack's blue (from its logo): Recommendation messages */
+    --go-text:#0e7c52;       /* green text (from the API and VEX MDR pages; passes 4.5:1) */
+    --sev-1:#dc2626;         /* error red (from the other pages; 4.5:1 on the light gray) */
+  }
+  *{box-sizing:border-box;}
+  html{overflow-x:hidden;scroll-behavior:smooth;scrollbar-gutter:stable;}
+  body{margin:0;padding-top:var(--classbar-h);background:var(--surface);color:var(--ink);-webkit-font-smoothing:antialiased;}
+  h1,h2,h3,h4,p{margin:0;}
+  h1,h2,h3,h4{text-wrap:balance;}
+  p,li{text-wrap:pretty;}
+  a{color:inherit;}
+  img{display:block;}
+  ::selection{background:var(--pink);color:#fff;}
+  a:focus-visible,button:focus-visible{outline:1.5px solid var(--pink);outline-offset:4px;}
+  .wrap{width:min(1100px,calc(100% - 2 * var(--gutter)));margin:0 auto;}
+  .col{width:min(900px,calc(100% - 2 * var(--gutter)));margin:0 auto;} /* the design's 900px content column */
+  @media (max-width:700px){:root{--gutter:16px;}}
+
+  /* ---------- STATUS DOT ---------- */
+  .status-dot{
+    width:8px;height:8px;border-radius:50%;background:var(--pink);
+    box-shadow:0 0 0 0 rgba(224,18,128,0.5);animation:pulse 2.2s infinite;flex-shrink:0;display:inline-block;
+  }
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(224,18,128,0.45);}
+    70%{box-shadow:0 0 0 8px rgba(224,18,128,0);}
+    100%{box-shadow:0 0 0 0 rgba(224,18,128,0);}
+  }
+  .eyebrow-label{font-size:11px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;color:var(--surface-dark);display:flex;align-items:center;gap:11px;}
+
+  /* ---------- CLASSIFICATION BAR ---------- */
+  .classbar{
+    position:fixed;top:0;left:0;right:0;z-index:60;background:var(--ink);color:var(--gray-faint);
+    font-size:9.5px;line-height:1.5;letter-spacing:0.16em;text-transform:uppercase;text-align:center;padding:6px 0;
+  }
+
+  /* ---------- STICKY HEADER (same as the homepage and VEX MDR) ---------- */
+  .site-top{position:sticky;top:var(--classbar-h);z-index:50;}
+  .site-header{background:var(--surface);border-bottom:1px solid var(--gray-line);}
+  .site-top .site-header{box-shadow:0 4px 8px -4px rgba(11,12,13,0.1);}
+  .header-inner{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:18px 0;}
+  .header-left{display:flex;align-items:center;gap:16px;min-width:0;}
+  .brand{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:800;line-height:1.5;letter-spacing:0.01em;text-decoration:none;color:var(--ink);}
+  .brand .status-dot{animation-iteration-count:2;}
+  .brand-tag{font-size:11px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;color:var(--surface-dark);white-space:nowrap;}
+  .menu-btn{flex-shrink:0;width:32px;height:32px;padding:0;border:none;background:none;cursor:pointer;display:flex;}
+  .menu-btn img{width:32px;height:32px;display:block;}
+  .header-links{display:flex;align-items:center;gap:32px;}
+  .header-link{display:inline-flex;align-items:center;gap:4px;font-weight:600;font-size:15px;line-height:1.5;color:var(--nav-link);text-decoration:none;transition:color 0.2s ease;}
+  .header-link:hover{color:var(--ink);}
+  .header-link[aria-current="page"]{color:var(--ink);}
+  .header-link--slack{gap:8px;}
+  .header-link--slack img{width:24px;height:24px;}
+  .header-link--cta{border-bottom:1px solid var(--pink);}
+  .header-link--cta img{width:16px;height:16px;transition:transform 0.2s ease;}
+  .header-link--cta:hover img{transform:translateX(3px);}
+  .site-top .menu-btn{display:none;}
+  @media (max-width:700px){
+    .header-links{display:none;}
+    .site-top .menu-btn{display:flex;}
+  }
+
+  /* ---------- HIDE ON SCROLL ---------- */
+  .classbar{transition:transform 0.4s cubic-bezier(0.49,0.025,0.685,1), opacity 0.4s cubic-bezier(0.49,0.025,0.685,1);}
+  .site-top .site-header{position:relative;z-index:1;transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);}
+  html.header-hidden .classbar{transform:translateY(-100%);opacity:0;}
+  html.header-hidden .site-top .site-header{transform:translateY(calc(-100% - var(--classbar-h)));}
+  html.header-hidden .site-top{pointer-events:none;}
+
+  /* ---------- NAV MENU (phones) ---------- */
+  .nav-panel{
+    position:fixed;top:var(--classbar-h);left:0;right:0;bottom:0;z-index:55;background:var(--surface);
+    overflow-y:auto;overscroll-behavior:contain;
+    transform:translateY(-100%);visibility:hidden;
+    transition:transform 0.3s cubic-bezier(0.4,0,0.2,1), visibility 0s linear 0.3s;
+  }
+  .nav-panel.is-open{transform:translateY(0);visibility:visible;transition:transform 0.3s cubic-bezier(0.2,0.8,0.2,1), visibility 0s;}
+  html.nav-open,html.nav-open body{overflow:hidden;}
+  .nav-list{list-style:none;margin:0;padding:32px 0;display:flex;flex-direction:column;gap:13px;}
+  .nav-list li{padding-bottom:13px;border-bottom:1px solid var(--surface-alt);}
+  .nav-list a{display:flex;flex-direction:column;gap:4px;text-decoration:none;}
+  .nav-link{font-size:24px;line-height:1.5;letter-spacing:0.02em;color:var(--ink);}
+  .nav-sub{font-size:13.5px;line-height:1.5;color:var(--surface-dark);}
+  .nav-list a:hover .nav-link{color:var(--pink-text);}
+
+  @media (max-width:700px){
+    :root{--classbar-h:24px;}
+    .classbar{font-size:8px;}
+    .nav-link{font-size:20px;}
+  }
+  @media (max-width:560px){.brand-tag{display:none;}}
+
+  /* ---------- BUTTONS (as on the published pages) ---------- */
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:600;font-size:15px;line-height:1.5;
+    padding:15px 30px;border-radius:2px;text-decoration:none;background:var(--pink);color:#fff;border:none;cursor:pointer;white-space:nowrap;transition:opacity 0.2s ease;
+  }
+  .btn:hover{opacity:0.8;}
+
+  /* ---------- SLACK MOCKUPS: shared pieces ----------
+     Everything inside .slack is drawn to look like Slack: Lato, Slack's colors and spacing. */
+  .slack{font-family:var(--slack);color:var(--s-ink);text-align:left;}
+  .msg{display:flex;gap:8px;align-items:flex-start;}
+  .msg-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px;}
+  .msg-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+  .msg-name{font-weight:900;font-size:15px;}
+  .app-tag{padding:1px 4px;border-radius:3px;background:rgba(0,0,0,0.07);font-weight:700;font-size:10px;color:var(--s-gray);}
+  .msg-time{font-size:12px;color:var(--s-gray);}
+  .avatar{flex-shrink:0;}
+  .attach{display:flex;gap:8px;}
+  .attach::before{content:'';flex-shrink:0;width:4px;border-radius:2px;background:var(--bar);}
+  .attach-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px;align-items:flex-start;}
+  .tag{padding:2px 6px;border-radius:3px;font-weight:900;font-size:10px;line-height:normal;color:var(--s-ink);}
+  .tag--green{background:rgba(46,182,125,0.18);}
+  .tag--red{background:rgba(224,30,90,0.18);}
+  .tag--blue{background:rgba(54,197,240,0.18);}
+  .attach-title{font-weight:700;font-size:13px;}
+  .s-btns{display:flex;flex-wrap:wrap;gap:8px;padding-top:4px;}
+  .s-btn{padding:5px 8px;border-radius:4px;font-weight:700;font-size:13px;line-height:normal;background:#fff;color:var(--s-ink);box-shadow:inset 0 0 0 1px rgba(0,0,0,0.3);}
+  .s-btn--go{background:var(--s-btn);color:#fff;box-shadow:none;}
+
+  /* ---------- HERO ---------- */
+  .hero{position:relative;overflow:hidden;padding:104px 0 72px;text-align:center;}
+  .hero-backdrop{position:absolute;top:0;left:50%;margin-left:-1468px;pointer-events:none;max-width:none;}
+  .hero .wrap{position:relative;display:flex;flex-direction:column;align-items:center;gap:24px;}
+  .hero h1{max-width:720px;font-weight:600;font-size:clamp(40px,6vw,70px);line-height:1.03;letter-spacing:-0.03em;}
+  .hero-lede{max-width:640px;font-size:18px;font-weight:300;line-height:1.7;color:var(--body);}
+  .ctas{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:12px 28px;margin-top:8px;}
+  .text-link{display:inline-flex;align-items:center;gap:6px;font-weight:500;font-size:15px;line-height:1.5;color:var(--pink-text);text-decoration:none;}
+  .text-link img{width:16px;height:16px;transition:transform 0.2s ease;}
+  .text-link:hover img{transform:translateX(3px);}
+  .text-link--on-dark{color:#ff5aa8;}
+
+  /* ---------- SECTION SHELL ---------- */
+  .section{padding:96px 0;}
+  .section--gray{background:var(--surface-gray);}
+  .sec-head{display:flex;flex-direction:column;gap:16px;max-width:760px;}
+  .sec-head h2{font-weight:600;font-size:clamp(34px,4.2vw,52px);line-height:1.12;letter-spacing:-0.02em;}
+  .sec-head p{font-size:17px;line-height:1.7;color:var(--body);}
+  .sec-head--center{margin:0 auto;align-items:center;text-align:center;}
+
+  /* ---------- PREVENT / DETECT / RESPOND ROW ---------- */
+  .pdr{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin-top:48px;}
+  .pdr-item{position:relative;display:flex;flex-direction:column;gap:6px;padding-top:14px;border-top:1px solid var(--pink);}
+  .pdr-key{font-family:var(--mono);font-weight:500;font-size:11px;line-height:1.5;letter-spacing:0.1em;text-transform:uppercase;color:var(--pink-text);margin-top:-36px;margin-bottom:18px;}
+  .pdr-item h3{font-weight:600;font-size:15px;line-height:1.5;}
+  .pdr-item p{font-size:14px;line-height:1.55;color:var(--body-soft);}
+  .pdr-item:not(:last-child)::after{content:'';position:absolute;right:-20px;top:-27px;width:16px;height:16px;opacity:0.5;
+    background:var(--ink);-webkit-mask:url(../static/icon-arrow-right-pink.svg) center/contain no-repeat;mask:url(../static/icon-arrow-right-pink.svg) center/contain no-repeat;}
+
+  /* ---------- WHAT YOU GET ---------- */
+  .checks{list-style:none;margin:48px 0 0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:48px;}
+  .checks li{display:flex;align-items:center;gap:14px;padding:14px 0;border-top:1px solid var(--gray-line);font-weight:600;font-size:16px;line-height:1.5;}
+  .ico{flex-shrink:0;width:20px;height:20px;background:var(--pink);-webkit-mask:var(--i) center/contain no-repeat;mask:var(--i) center/contain no-repeat;}
+
+  /* ---------- TWO PATHS ---------- */
+  .paths{background:var(--ink);color:#fff;padding:88px 0;}
+  .paths .eyebrow-label{color:#a3a3a8;}
+  .paths-grid{display:grid;grid-template-columns:minmax(0,1fr) 1px minmax(0,1fr);gap:32px;margin-top:32px;}
+  .paths-rule{background:rgba(255,255,255,0.14);}
+  .path{display:flex;flex-direction:column;align-items:center;gap:14px;padding:44px 32px;background:#18181b;border-radius:2px;text-align:center;}
+  .path-key{font-family:var(--mono);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#ff5aa8;}
+  .path h3{font-weight:600;font-size:clamp(34px * 28 / 52, 4.2vw * 28 / 52, 28px);line-height:1.2;letter-spacing:-0.01em;}
+  .path p{max-width:380px;font-size:15px;line-height:1.6;color:rgba(255,255,255,0.72);}
+  .path .btn{margin-top:8px;}
+
+  /* ---------- PRODUCT MOCKUPS: shared frame ---------- */
+  .panel{background:#fff;border:1px solid var(--gray-line);border-radius:6px;box-shadow:0 12px 32px -12px rgba(11,12,13,0.22),0 2px 6px rgba(11,12,13,0.06);overflow:hidden;}
+  .loop{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;}
+  .loop li{position:relative;display:grid;grid-template-columns:64px 18px minmax(0,1fr);gap:10px;padding-bottom:16px;}
+  .loop li:last-child{padding-bottom:0;}
+  .loop time{font-family:var(--mono);font-size:12px;line-height:20px;color:var(--surface-dark);font-variant-numeric:tabular-nums;}
+  .loop b{display:block;font-size:14px;line-height:20px;}
+  .loop span{display:block;font-size:13px;line-height:1.5;color:var(--body-soft);}
+  .person-role{font-family:var(--mono);font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--surface-dark);}
+  .person-name{margin-top:4px;font-weight:700;font-size:20px;}
+  .rows{display:flex;flex-direction:column;}
+  .row{display:grid;grid-template-columns:18px 40px minmax(0,1fr);gap:10px;align-items:center;padding:6px 0;border-top:1px solid #efefec;}
+  .row .t{width:14px;height:14px;border-radius:3px;background:var(--c);}
+  .row b{display:block;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .row small{display:block;color:var(--surface-dark);font-size:10px;}
+
+  /* ---------- SMALLER SCREENS ---------- */
+  @media (max-width:900px){
+    .pdr{grid-template-columns:minmax(0,1fr);gap:40px;margin-top:64px;}
+    .pdr-item:not(:last-child)::after{display:none;}
+    .checks{grid-template-columns:minmax(0,1fr);}
+    .paths-grid{grid-template-columns:minmax(0,1fr);}
+    .paths-rule{display:none;}
+  }
+  @media (max-width:700px){
+    .hero{padding:64px 0 48px;}
+    .hero-lede{font-size:16px;}
+    .section{padding:64px 0;}
+    .paths{padding:64px 0;}
+    .path{padding:32px 20px;}
+    .person-name{margin-top:0;}
+    .person-role{align-self:end;}
+    .loop li{grid-template-columns:54px 18px minmax(0,1fr);gap:6px;}
+    .loop time{font-size:11px;}
+  }
+
+  /* ---------- A DIFFERENT KIND OF PREVENTION ---------- */
+
+  /* ---------- SLACK BAND ---------- */
+  .slack-band{background:#49144a;color:#fff;padding:96px 0;}
+  .slack-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,360px);gap:64px;align-items:center;}
+  .slack-copy{display:flex;flex-direction:column;gap:20px;}
+  .slack-tiles{display:flex;align-items:center;gap:10px;font-weight:600;font-size:15px;color:rgba(255,255,255,0.85);}
+  .slack-tiles span{display:flex;align-items:center;justify-content:center;width:48px;height:48px;border-radius:8px;background:#fff;box-shadow:3px 3px 0 rgba(0,0,0,0.25);}
+  .slack-tiles span i{width:22px;height:22px;border-radius:50%;background:var(--pink);}
+  .slack-tiles img{width:26px;height:26px;}
+  .slack-tiles b{font-weight:400;font-size:20px;color:rgba(255,255,255,0.7);}
+  .slack-copy h2{font-weight:600;font-size:clamp(34px,4.2vw,52px);line-height:1.1;letter-spacing:-0.02em;}
+  .slack-copy p{max-width:520px;font-size:17px;line-height:1.7;color:rgba(255,255,255,0.75);}
+  .slack-cards{display:flex;flex-direction:column;gap:10px;}
+  .slack-cards .card{padding:14px;border-radius:8px;background:#fff;box-shadow:0 8px 24px -12px rgba(0,0,0,0.5);}
+  .slack-cards .avatar{width:32px;height:32px;}
+
+  /* ---------- TEAM ---------- */
+  .team{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin-top:48px;}
+  .member{display:flex;flex-direction:column;gap:12px;padding:0 24px;border-left:1px solid var(--gray-line);}
+  .member:first-child{border-left:0;padding-left:0;}
+  .member-top{display:flex;align-items:center;gap:14px;}
+  .member img{width:96px;height:96px;object-fit:cover;filter:grayscale(1);border-radius:2px;}
+  .member .person-name{font-size:17px;}
+  .member-past{font-size:13px;color:var(--body-soft);}
+  .team-link{display:flex;justify-content:center;margin-top:40px;}
+
+  /* pricing line under the checklist */
+  .price-line{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 16px;margin-top:40px;padding:20px 24px;background:#fff;border:1px solid var(--gray-line);border-radius:2px;}
+  .price-line strong{font-weight:700;font-size:22px;color:var(--pink-text);}
+  .price-line span{font-size:15px;color:var(--body);}
+
+  @media (max-width:900px){
+    .slack-grid{grid-template-columns:minmax(0,1fr);gap:40px;}
+    .team{grid-template-columns:minmax(0,1fr);gap:28px;}
+    .member{padding:0;border-left:0;}
+  }
+  @media (max-width:700px){.slack-band{padding:64px 0;}}
+
+  /* ---------- PREVENTION STORY ----------
+     Desktop (1100px+): one pinned block. It opens as the hero's prevention row (three layers, attacks
+     dropping through them). Scrolling on, the copy swaps for "A different kind of prevention.", the top
+     layer becomes a see-through box, and the five beats play: scan, find, assess, lock, retest.
+     Each beat is a stretch of scroll; its animation plays on a clock when the beat is reached.
+     Below 1100px nothing is pinned: the layers sit under the intro and the box plays by itself when seen. */
+  :root{--amber-text:#946200;}   /* amber for text on white (5:1); the square itself uses Slack’s yellow */
+  .pv-title{font-weight:600;font-size:clamp(34px * 27 / 52, 4.2vw * 27 / 52, 27px);line-height:1.3;letter-spacing:-0.01em;}
+  .pv-lede{margin-top:16px;font-size:18px;font-weight:300;line-height:1.7;color:var(--body);}
+  .pv-lede b{font-weight:600;}
+  .pv-head{font-weight:600;font-size:clamp(34px,4.2vw,52px);line-height:1.1;letter-spacing:-0.02em;}
+  .pv-lines{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:14px;}
+  .pv-lines li{font-size:16px;line-height:1.6;color:var(--body-soft);transition:opacity 0.4s ease, color 0.3s ease;}
+  .pv-lines li.is-now{font-weight:600;color:var(--ink);}
+  .pv-stage{position:relative;}
+  .pv-stage canvas{position:absolute;inset:0;width:100%;height:100%;}
+  .pv-call{position:absolute;bottom:auto;width:214px;font-family:var(--mono);font-size:10.5px;line-height:1.45;letter-spacing:0.08em;text-transform:uppercase;color:var(--surface-dark);
+    opacity:0;transition:opacity 0.3s ease;pointer-events:none;}
+  .pv-call.is-on{opacity:1;}
+  .pv-call b{display:block;padding-bottom:6px;margin-bottom:8px;border-bottom:1px solid var(--gray-line);font-weight:500;color:var(--c, var(--sev-1));transition:color 0.3s ease;}
+  .pv-call span{display:block;margin-top:5px;opacity:0;transform:translateY(3px);transition:opacity 0.3s ease, transform 0.3s ease;}
+  .pv-call span.is-on{opacity:1;transform:none;}
+  .pv-pdr{padding-top:36px;}
+  .pv-pdr .pdr{margin-top:0;}
+
+  /* stacked (phones and tablets) */
+  .pv-stack{padding:24px 0 72px;}
+  .pv-stack .pv-stage{height:300px;margin-top:24px;}
+  .pv-stack .pv-pdr{margin-top:56px;}
+  .pv-stack .pv-story{margin-top:88px;display:flex;flex-direction:column;gap:24px;}
+  .pv-stack .pv-stage--box{height:300px;margin-top:0;}
+  .pv-stack .pv-call{position:static;width:auto;margin-top:8px;}
+  /* phones: one moment at a time, in a caption sized to the longest one (--cap-h, measured by the script),
+     so the cube below never moves; dots show where you are. Reduced motion shows every line. */
+  .pv-stack .pv-lines{min-height:var(--cap-h, 6.5em);}
+  .pv-stack .pv-lines li{display:none;font-size:17px;color:var(--ink);}
+  .pv-stack .pv-lines li.is-now{display:block;animation:pv-cap 0.5s ease both;}
+  @keyframes pv-cap{from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none}}
+  /* tappable: jump to a moment (the story carries on from there). The line fills pink up to the current dot. */
+  .pv-dots{position:relative;display:flex;justify-content:space-between;margin:-12px -14px 0;}
+  .pv-dots::before,.pv-dots::after{content:'';position:absolute;left:22px;top:50%;height:2px;margin-top:-1px;background:var(--gray-line);}
+  .pv-dots::before{right:22px;}
+  .pv-dots::after{width:calc((100% - 44px) * var(--done, 0));background:var(--pink);transition:width 0.5s ease;}
+  .pv-dots button{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;width:44px;height:44px;padding:0;border:0;background:none;cursor:pointer;}
+  .pv-dots button::before{content:'';width:14px;height:14px;box-sizing:border-box;border-radius:50%;border:2px solid var(--gray-faint);background:#fff;
+    transition:background-color 0.3s ease, border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;}
+  .pv-dots button.is-seen::before{background:var(--gray-faint);}
+  .pv-dots button.is-now::before{background:var(--pink);border-color:var(--pink);transform:scale(1.15);box-shadow:0 0 0 5px rgba(224,18,128,0.15);}
+  @media (prefers-reduced-motion: reduce){
+    .pv-stack .pv-lines li{display:block;animation:none;}
+    .pv-dots{display:none;}
+  }
+  .pv-replay{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;padding:0;border:0;background:none;font:500 14px var(--font-sans);color:var(--pink-text);cursor:pointer;
+    opacity:0;pointer-events:none;transition:opacity 0.3s ease;}
+  .pv-replay.is-on{opacity:1;pointer-events:auto;}
+  .pv-pin{display:none;}
+
+  @media (min-width:1100px){
+    .pv-stack{display:none;}
+    .pv-pin{display:block;}
+    .hero{padding-bottom:56px;}
+    .pv-rule{border-top:1px solid var(--gray-line);}
+    .pv-track{height:calc(100vh + 7.45 * 100vh);height:calc(100svh + 7.45 * 100vh);}   /* matches the STEPS lengths in the script */
+    /* Top-aligned, so the intro sits right under the hero as in Figma. Once the story starts, the grid slides
+       down to the middle of the screen (--shift is set by the script). */
+    .pv-sticky{position:sticky;top:0;height:100vh;height:100svh;padding-top:32px;overflow:hidden;}
+    .pv-grid{--stage-h:600px;position:relative;display:grid;height:var(--stage-h);grid-template-columns:minmax(0,1fr) minmax(0,600px);grid-template-rows:58px minmax(0,1fr);
+      column-gap:64px;row-gap:28px;transition:transform 0.9s cubic-bezier(0.3,0.7,0.2,1);}
+    .pv-headrow{grid-column:1 / -1;grid-row:1;position:relative;z-index:1;}
+    .pv-intro{grid-column:1;grid-row:1 / -1;align-self:start;justify-self:start;width:640px;margin-top:84px;position:relative;z-index:1;transition:opacity 0.5s ease, transform 0.5s ease;}
+    .pv-left{grid-column:1;grid-row:2;position:relative;}
+    .pv-left > *{transition:opacity 0.5s ease, transform 0.5s ease;}
+    /* the story copy rolls up: the newest line sits a little below the middle, older lines move up and fade */
+    .pv-story-copy{position:absolute;inset:-24px 0 0;overflow:hidden;
+      -webkit-mask-image:linear-gradient(to bottom, transparent 0, #000 72px);mask-image:linear-gradient(to bottom, transparent 0, #000 72px);}
+    .pv-story-copy .pv-lines{position:absolute;left:0;right:0;top:0;transition:transform 0.8s cubic-bezier(0.2,0.7,0.2,1);}
+    .pv-pin .pv-stage{grid-column:2;grid-row:1 / -1;height:100%;}
+    .pv-pin .pv-stage canvas{pointer-events:none;width:calc(100% + 48px);height:calc(100% + 90px);}   /* room for the shadow to fade (PAD in the script) */
+    /* under the layers in the intro; out of the flow so it never moves the story */
+    .pv-pin .pv-pdr{position:absolute;left:0;right:0;top:262px;transition:opacity 0.5s ease;}
+    .pv-head{transition:opacity 0.5s ease, transform 0.5s ease;}
+    .pv-lines li{transition:color 0.4s ease;}
+    .pv-lines li > *{opacity:0;transition:opacity 0.6s ease;}
+    .pv-lines li.is-seen > *{opacity:0.45;}
+    .pv-lines li.is-seen.is-now > *{opacity:1;}
+    .pv-lines li.is-old > *{opacity:0.25;}
+    /* the progress rail: a line down the left of the copy, one dot per moment. It rolls with the copy, so the
+       pink dot always sits beside the bold line; hollow dots below show what's left (but not its words). */
+    .pv-story-copy .pv-lines{padding-left:28px;}
+    .pv-story-copy .pv-lines li{position:relative;}
+    .pv-story-copy .pv-lines li:not(.pv-more):not(:nth-last-child(2))::after{content:'';position:absolute;left:-24px;top:0;bottom:-14px;width:1px;background:var(--gray-line);}
+    .pv-story-copy .pv-lines li:first-child::after{top:12px;}
+    .pv-story-copy .pv-lines li.beat::before{content:'';position:absolute;z-index:1;left:-28px;top:8px;width:9px;height:9px;box-sizing:border-box;border-radius:50%;
+      border:1.5px solid var(--gray-faint);background:#fff;transition:background-color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;}
+    .pv-story-copy .pv-lines li.beat.is-seen::before{background:var(--gray-faint);}
+    .pv-story-copy .pv-lines li.beat.is-now::before{background:var(--pink);border-color:var(--pink);box-shadow:0 0 0 4px rgba(224,18,128,0.15);}
+    /* "Skip to VEX in Slack": always there while the story is pinned; first stop for keyboard users */
+    .pv-skip{position:absolute;z-index:2;left:max(24px, calc((100% - 1100px) / 2));bottom:24px;display:inline-flex;align-items:center;gap:6px;
+      font-size:13px;font-weight:500;line-height:1.5;color:var(--surface-dark);text-decoration:none;opacity:0;pointer-events:none;transition:opacity 0.4s ease, color 0.2s ease;}
+    .pv-skip img{width:14px;height:14px;opacity:0.7;}
+    .pv-skip:hover{color:var(--ink);}
+    .pv-pin[data-step]:not([data-step="0"]):not(.is-leaving) .pv-skip,.pv-skip:focus-visible{opacity:1;pointer-events:auto;}
+    /* gentle snapping onto each moment (markers placed by the script) */
+    html{scroll-snap-type:y proximity;}
+    .pv-track{position:relative;}
+    .pv-snap{position:absolute;left:0;width:1px;height:1px;scroll-snap-align:start;pointer-events:none;}
+    /* step 0: the intro; step 1+: the story */
+    .pv-pin .pv-head{opacity:0;transform:translateY(10px);}
+    .pv-pin .pv-story-copy{opacity:0;}
+    .pv-pin[data-step]:not([data-step="0"]) .pv-grid{transform:translateY(var(--shift, 0px));}
+    .pv-pin[data-step]:not([data-step="0"]) .pv-head{opacity:1;transform:none;}
+    .pv-pin[data-step]:not([data-step="0"]) .pv-intro{opacity:0;transform:translateY(-10px);pointer-events:none;}
+    .pv-pin[data-step]:not([data-step="0"]) .pv-story-copy{opacity:1;}
+    .pv-pin[data-step]:not([data-step="0"]) .pv-pdr{opacity:0;pointer-events:none;}
+  }
+  @media (min-width:1100px) and (max-height:820px){
+    .pv-grid{--stage-h:540px;row-gap:20px;}
+  }
+
+  .slack-copy .slack-lead{font-weight:600;font-size:clamp(34px * 22 / 52, 4.2vw * 22 / 52, 22px);line-height:1.35;color:#fff;}
+
+  /* the Slack cards arrive one at a time, like new messages, the first time they're seen (set up by the script) */
+  .slack-cards.will-arrive .card{opacity:0;transform:translateY(14px);transition:opacity 0.45s ease, transform 0.5s cubic-bezier(0.2,0.8,0.2,1);}
+  .slack-cards.will-arrive.is-in .card{opacity:1;transform:none;}
+  .slack-cards.will-arrive.is-in .card:nth-child(2){transition-delay:0.6s;}
+  .slack-cards.will-arrive.is-in .card:nth-child(3){transition-delay:1.2s;}
+
+  /* the closing link arrives a beat after the last line */
+  .pv-lines li.pv-more{margin-top:6px;font-weight:500;}
+  .pv-lines li.pv-more.is-seen > *{transition-delay:0.9s;}
+
+  /* ---------- INTEGRATIONS DRAWER ---------- */
+  .price-line .link-btn{margin-left:auto;padding:0;border:0;background:none;font:inherit;cursor:pointer;}
+  .drawer{position:fixed;inset:0;z-index:200;visibility:hidden;transition:visibility 0s linear 0.35s;}
+  .drawer.is-open{visibility:visible;transition:none;}
+  .drawer-scrim{position:absolute;inset:0;background:rgba(11,12,13,0.32);opacity:0;transition:opacity 0.3s ease;}
+  .drawer.is-open .drawer-scrim{opacity:1;}
+  .drawer-panel{position:absolute;top:0;right:0;bottom:0;width:min(440px,100%);display:flex;flex-direction:column;background:#fff;
+    box-shadow:-12px 0 40px -16px rgba(11,12,13,0.35);transform:translateX(100%);transition:transform 0.35s cubic-bezier(0.2,0.8,0.2,1);}
+  .drawer.is-open .drawer-panel{transform:none;}
+  .drawer-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:28px 28px 20px;border-bottom:1px solid var(--gray-line);}
+  .drawer-head h2{font-weight:600;font-size:clamp(34px * 24 / 52, 4.2vw * 24 / 52, 24px);line-height:1.25;}
+  .drawer-head p{margin-top:8px;font-size:15px;line-height:1.55;color:var(--body-soft);}
+  .drawer-close{flex-shrink:0;display:flex;align-items:center;justify-content:center;width:36px;height:36px;margin:-6px -8px 0 0;border:0;border-radius:2px;background:none;cursor:pointer;}
+  .drawer-close:hover{background:var(--surface-gray);}
+  .drawer-close img{width:20px;height:20px;}
+  .drawer-body{flex:1;overflow-y:auto;padding:8px 28px 28px;}
+  .drawer-group{margin-top:24px;}
+  .drawer-group h3{font-family:var(--mono);font-weight:500;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--surface-dark);}
+  .drawer-list{list-style:none;margin:10px 0 0;padding:0;}
+  .drawer-list li{display:grid;grid-template-columns:20px minmax(0,1fr);gap:4px 14px;padding:12px 0;border-top:1px solid var(--gray-line);}
+  .drawer-list li:last-child{border-bottom:1px solid var(--gray-line);}
+  .drawer-list .ico{margin-top:2px;}
+  .drawer-list b{font-weight:600;font-size:15px;line-height:1.4;}
+  .drawer-list span:not(.ico){grid-column:2;font-size:13px;line-height:1.5;color:var(--body-soft);}
+  .drawer-list .tick{width:8px;height:8px;margin:6px 6px 0;border-radius:50%;background:var(--pink);}
+  .drawer-foot{padding:18px 28px;border-top:1px solid var(--gray-line);background:var(--surface-gray);}
+  @media (max-width:700px){
+    .drawer-panel{width:100%;}
+    .drawer-head{padding:20px 16px 16px;}
+    .drawer-body{padding:4px 16px 24px;}
+    .drawer-foot{padding:16px;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .drawer,.drawer-scrim,.drawer-panel,.pv-lines li.pv-more{transition:none !important;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .pv-left > *,.pv-intro,.pv-grid,.pv-head,.pv-pdr,.pv-lines,.pv-lines li,.pv-lines li > *,.pv-lines li::before,.pv-skip,.pv-call,.pv-call span{transition:none !important;}
+    html{scroll-snap-type:none;}
+  }
+  /* ---------- FOOTER ---------- */
+  footer{
+    border-top:1px solid var(--gray-line);padding:28px 56px 40px;display:flex;justify-content:space-between;align-items:center;
+    font-size:10.5px;line-height:1.5;color:var(--surface-dark);text-transform:uppercase;letter-spacing:0.08em;
+  }
+  footer a{text-decoration:none;}
+  footer a:hover{color:var(--ink);}
+  footer .fmark{color:var(--ink);font-weight:500;}
+  @media (max-width:700px){footer{padding:22px 20px 36px;flex-direction:column;gap:10px;text-align:center;}}
+
+</style>
+</head>
+<body>
+
+  <div class="classbar">UNMANNED · SIMPLY SECURE</div>
+
+  <!-- ============================================================
+       HEADER (sticky)
+       ============================================================ -->
+  <div class="site-top">
+    <header class="site-header">
+      <div class="wrap header-inner">
+        <div class="header-left">
+          <a href="/" class="brand"><span class="status-dot"></span>VEX</a>
+          <span class="brand-tag">Don’t get hacked</span>
+        </div>
+        <nav class="header-links" aria-label="Main">
+          <a class="header-link" href="/managed">VEX MDR</a>
+          <a class="header-link header-link--slack" href="/slack"><img src="../static/slack-logo.svg" width="24" height="24" alt="">VEX for Slack</a>
+          <a class="header-link header-link--cta" href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener">Schedule a chat <img src="../static/icon-arrow-right-pink.svg" width="16" height="16" alt=""></a>
+        </nav>
+        <button class="menu-btn" type="button" aria-label="Open menu" aria-controls="site-nav" aria-expanded="false"><img src="../static/icon-menu.svg" width="32" height="32" alt=""></button>
+      </div>
+    </header>
+  </div>
+
+  <!-- ============================================================
+       NAV MENU (phones)
+       ============================================================ -->
+  <div class="nav-panel" id="site-nav">
+    <div class="site-header">
+      <div class="wrap header-inner">
+        <a href="/" class="brand"><span class="status-dot"></span>VEX</a>
+        <button class="menu-btn menu-close" type="button" aria-label="Close menu"><img src="../static/icon-close.svg" width="32" height="32" alt=""></button>
+      </div>
+    </div>
+    <nav class="wrap" aria-label="Menu">
+      <ul class="nav-list">
+        <li><a href="/"><span class="nav-link">Home</span><span class="nav-sub">Can your defense catch a single attack?</span></a></li>
+        <li><a href="/managed"><span class="nav-link">VEX MDR</span><span class="nav-sub">Continuous prevention, detection and response</span></a></li>
+        <li><a href="/slack"><span class="nav-link">VEX for Slack</span><span class="nav-sub">Security, handled. Right in Slack.</span></a></li>
+        <li><a href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener"><span class="nav-link">Schedule a chat</span></a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <main>
+
+  <section class="hero">
+    <img class="hero-backdrop" src="../static/glow-grid-bg.svg" width="2936" height="258" alt="" aria-hidden="true">
+    <div class="wrap">
+      <div class="eyebrow-label"><span class="status-dot"></span>VEX · AI SOC</div>
+      <h1>Your SOC, run&nbsp;by&nbsp;hackers.</h1>
+      <p class="hero-lede">An AI-powered SOC built and run by offensive-security experts. VEX tests your defenses, investigates threats and brings our team into the response. You know what’s handled and what needs your attention.</p>
+      <div class="ctas">
+        <a class="btn" href="/managed">Explore VEX Managed SOC</a>
+        <a class="text-link" href="/test">Test the one you already have <img src="../static/icon-arrow-right-pink.svg" width="16" height="16" alt=""></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="pv" id="prevention">
+    <!-- phones and tablets: stacked; the box plays by itself when it scrolls into view -->
+    <div class="pv-stack wrap">
+      <div class="pv-intro">
+            <h2 class="pv-title">Prevention means less to detect and respond&nbsp;to.</h2>
+            <p class="pv-lede">Our background in offensive security operations gives us a different approach to the prevention layer. <b>Now that’s offensive.</b></p>
+          </div>
+      <div class="pv-stage" role="img" aria-label="Three layers: prevent, detect and respond. Most attacks stop at prevent, a few reach detect, and rarely one reaches respond."><canvas data-scene="layers"></canvas></div>
+      <div class="pv-pdr">
+      <div class="pdr">
+        <div class="pdr-item"><p class="pdr-key">Prevent</p><h3>We attack first</h3><p>Gaps are closed before anyone else finds them.</p></div>
+        <div class="pdr-item"><p class="pdr-key">Detect</p><h3>VEX handles the noise</h3><p>See it in Slack, where you work.</p></div>
+        <div class="pdr-item"><p class="pdr-key">Respond</p><h3>Human judgment</h3><p>Not another ticket. An expert who’s on it.</p></div>
+      </div>
+      </div>
+      <div class="pv-story">
+        <h2 class="pv-head">A different kind of prevention.</h2>
+        <ol class="pv-lines" aria-live="polite">
+            <li class="beat" data-from="3"><span>Most AI SOCs start at the alert.</span></li>
+            <li data-from="3"><span>VEX starts before, by knowing how attackers work, AI and human.</span></li>
+            <li class="beat" data-from="4"><span>It scans the system and identifies weak points.</span></li>
+            <li class="beat" data-from="5"><span>When it finds a gap, it identifies patterns and assesses the threat potential.</span></li>
+            <li class="beat" data-from="6"><span>VEX locks the door or recommends next steps.</span></li>
+            <li class="beat" data-from="7"><span>The gap is tested again and watched.</span></li>
+            <li class="pv-more" data-from="7"><a class="text-link" href="/detections/" target="_blank" rel="noopener">Want to see everything we detect? <img src="../static/icon-arrow-right-pink.svg" width="16" height="16" alt=""></a></li>
+        </ol>
+        <div class="pv-dots" role="group" aria-label="Story moments"><button type="button" aria-label="Moment 1 of 5"></button><button type="button" aria-label="Moment 2 of 5"></button><button type="button" aria-label="Moment 3 of 5"></button><button type="button" aria-label="Moment 4 of 5"></button><button type="button" aria-label="Moment 5 of 5"></button></div>
+        <div>
+          <div class="pv-stage pv-stage--box" role="img" aria-label="VEX scans your systems, finds an old sign-in method that skips MFA, turns it off, then tests it again."><canvas data-scene="box"></canvas></div>
+          <div class="pv-call" aria-hidden="true"><b data-t></b><span></span><span></span><span></span></div>
+        </div>
+        <button class="pv-replay" type="button">Play again</button>
+      </div>
+    </div>
+    <!-- desktop: pinned -->
+    <div class="pv-pin" data-step="0">
+      <div class="wrap pv-rule"></div>
+      <div class="pv-track">
+        <div class="pv-sticky">
+          <a class="pv-skip" href="#vex-slack">Skip to VEX in Slack <img src="../static/icon-arrow-down.svg" width="14" height="14" alt=""></a>
+          <div class="wrap pv-grid">
+            <div class="pv-headrow"><h2 class="pv-head">A different kind of prevention.</h2></div>
+            <div class="pv-intro">
+            <h2 class="pv-title">Prevention means less to detect and respond&nbsp;to.</h2>
+            <p class="pv-lede">Our background in offensive security operations gives us a different approach to the prevention layer. <b>Now that’s offensive.</b></p>
+          </div>
+            <div class="pv-left">
+              <div class="pv-story-copy">
+                <ol class="pv-lines">
+            <li class="beat" data-from="3"><span>Most AI SOCs start at the alert.</span></li>
+            <li data-from="3"><span>VEX starts before, by knowing how attackers work, AI and human.</span></li>
+            <li class="beat" data-from="4"><span>It scans the system and identifies weak points.</span></li>
+            <li class="beat" data-from="5"><span>When it finds a gap, it identifies patterns and assesses the threat potential.</span></li>
+            <li class="beat" data-from="6"><span>VEX locks the door or recommends next steps.</span></li>
+            <li class="beat" data-from="7"><span>The gap is tested again and watched.</span></li>
+            <li class="pv-more" data-from="7"><a class="text-link" href="/detections/" target="_blank" rel="noopener">Want to see everything we detect? <img src="../static/icon-arrow-right-pink.svg" width="16" height="16" alt=""></a></li>
+                </ol>
+              </div>
+            </div>
+            <div class="pv-stage" role="img" aria-label="VEX scans your systems, finds an old sign-in method that skips MFA, turns it off, then tests it again."><canvas data-scene="pinned"></canvas><div class="pv-call" aria-hidden="true"><b data-t></b><span></span><span></span><span></span></div></div>
+            <div class="pv-pdr">
+      <div class="pdr">
+        <div class="pdr-item"><p class="pdr-key">Prevent</p><h3>We attack first</h3><p>Gaps are closed before anyone else finds them.</p></div>
+        <div class="pdr-item"><p class="pdr-key">Detect</p><h3>VEX handles the noise</h3><p>See it in Slack, where you work.</p></div>
+        <div class="pdr-item"><p class="pdr-key">Respond</p><h3>Human judgment</h3><p>Not another ticket. An expert who’s on it.</p></div>
+      </div>
+      </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slack-band" id="vex-slack" tabindex="-1">
+    <div class="wrap slack-grid">
+      <div class="slack-copy">
+        <div class="slack-tiles"><span><i></i></span><b>+</b><span><img src="../static/slack-logo.svg" width="26" height="26" alt=""></span>&nbsp;VEX app for Slack</div>
+        <h2>Your security operations, in&nbsp;Slack.</h2>
+        <p class="slack-lead">You don’t need another UI or dashboard.</p>
+        <p>VEX is autonomous. All you need to see what’s found, what’s been handled and what needs your decision is a Slack account. Ask questions and follow each investigation right in the thread.</p>
+        <a class="text-link text-link--on-dark" href="/slack">See how easily VEX works in Slack <img src="../static/icon-arrow-right-pink.svg" width="16" height="16" alt=""></a>
+      </div>
+      <div class="slack-cards" aria-hidden="true">
+          <div class="card slack"><div class="msg"><img class="avatar" src="../slack/static/vex-avatar-32.svg" width="32" height="32" alt="">
+            <div class="msg-body"><div class="msg-meta"><span class="msg-name">VEX</span><span class="app-tag">APP</span><span class="msg-time">9:14 AM</span></div>
+              <div class="attach" style="--bar:var(--s-blue)"><div class="attach-body"><span class="tag tag--blue">RECOMMENDATION</span><p class="attach-title">Turn on MFA for 2 admin accounts</p><div class="s-btns"><span class="s-btn s-btn--go">Fixed</span><span class="s-btn">Accept risk</span><span class="s-btn">Ask Red Team</span></div></div></div>
+            </div></div></div>
+          <div class="card slack"><div class="msg"><img class="avatar" src="../slack/static/vex-avatar-32.svg" width="32" height="32" alt="">
+            <div class="msg-body"><div class="msg-meta"><span class="msg-name">VEX</span><span class="app-tag">APP</span><span class="msg-time">11:02 AM</span></div>
+              <div class="attach" style="--bar:var(--s-green)"><div class="attach-body"><span class="tag tag--green">AUTO-RESOLVED</span><p class="attach-title">Email spoofing blocked</p><div class="s-btns"><span class="s-btn s-btn--go">Reopen</span></div></div></div>
+            </div></div></div>
+          <div class="card slack"><div class="msg"><img class="avatar" src="../slack/static/vex-avatar-32.svg" width="32" height="32" alt="">
+            <div class="msg-body"><div class="msg-meta"><span class="msg-name">VEX</span><span class="app-tag">APP</span><span class="msg-time">2:47 PM</span></div>
+              <div class="attach" style="--bar:var(--s-red)"><div class="attach-body"><span class="tag tag--red">EXPERT ON IT</span><p class="attach-title">Investigating 2 accounts</p></div></div>
+            </div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="team">
+    <div class="wrap">
+      <div class="sec-head sec-head--center">
+        <div class="eyebrow-label"><span class="status-dot"></span>Hackers make better defenders</div>
+        <h2>Built by people who know how attacks&nbsp;work.</h2>
+        <p>VEX is built by people who’ve worked on both sides of the attack: offensive research, detection engineering and incident response. They bring attacker thinking to the judgment your defense needs.</p>
+      </div>
+      <div class="team">
+        <div class="member"><div class="member-top"><img src="../static/team-david-hunt.jpg" width="96" height="96" alt=""><div><p class="person-role">Founder</p><p class="person-name">David Hunt</p></div></div><p class="member-past">MITRE · Mandiant · USG</p></div>
+        <div class="member"><div class="member-top"><img src="../static/team-john-jackman.jpg" width="96" height="96" alt=""><div><p class="person-role">Head of security</p><p class="person-name">John Jackman</p></div></div><p class="member-past">REDLattice · DoD</p></div>
+        <div class="member"><div class="member-top"><img src="../static/team-phil-urquhart.jpg" width="96" height="96" alt=""><div><p class="person-role">Head engineer</p><p class="person-name">Phil Urquhart</p></div></div><p class="member-past">Mandiant · DoD</p></div>
+      </div>
+      <div class="team-link"><a class="text-link" href="#team">Meet the team <img src="../static/icon-arrow-right-pink.svg" width="16" height="16" alt=""></a></div>
+    </div>
+  </section>
+
+  <section class="section section--gray" id="included">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="eyebrow-label"><span class="status-dot"></span>What you get</div>
+        <h2>Everything a security team does. Without building&nbsp;one.</h2>
+      </div>
+      <ul class="checks">
+        <li><span class="ico" style="--i:url(static/icon-sliders.svg)"></span>Proactive tuning</li>
+        <li><span class="ico" style="--i:url(../static/icon-detective.svg)"></span>24/7 detection</li>
+        <li><span class="ico" style="--i:url(../static/icon-shield.svg)"></span>Instant account lockdown</li>
+        <li><span class="ico" style="--i:url(static/icon-sync.svg)"></span>Automatic patching</li>
+        <li><span class="ico" style="--i:url(../static/icon-envelope.svg)"></span>Monthly rundown</li>
+        <li><span class="ico" style="--i:url(../static/icon-headset.svg)"></span>Real analysts, not just software</li>
+      </ul>
+      <div class="price-line"><strong>$10 per identity.</strong><span>People, computers, AI agents and service accounts. No mystery in the bill.</span><button class="text-link link-btn" type="button" data-drawer="integrations" aria-haspopup="dialog">See all of VEX’s integrations <img src="../static/icon-arrow-right-pink.svg" width="16" height="16" alt=""></button></div>
+    </div>
+  </section>
+
+  <section class="paths">
+    <div class="wrap">
+      <div class="eyebrow-label"><span class="status-dot"></span>Get started</div>
+      <div class="paths-grid">
+        <div class="path">
+          <p class="path-key">VEX Managed SOC</p>
+          <h3>Need security?<br>Let VEX handle it.</h3>
+          <p>A 24/7 SOC that attacks you first: prevention, detection and response in one.</p>
+          <a class="btn" href="/managed">Learn about VEX Managed SOC</a>
+        </div>
+        <div class="paths-rule" aria-hidden="true"></div>
+        <div class="path">
+          <p class="path-key">Test your SOC</p>
+          <h3>Already have security?<br>Let VEX test it.</h3>
+          <p>Find out where your current defense holds, and where an attacker could get through.</p>
+          <a class="btn" href="/test">Book a 24-hour test</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="drawer" id="integrations" role="dialog" aria-modal="true" aria-labelledby="integrations-title" aria-hidden="true">
+    <div class="drawer-scrim" data-close></div>
+    <div class="drawer-panel">
+      <div class="drawer-head">
+        <div>
+          <h2 id="integrations-title">What VEX watches</h2>
+          <p>VEX connects to the tools you already use and watches every identity in them. $10 per identity.</p>
+        </div>
+        <button class="drawer-close" type="button" data-close aria-label="Close"><img src="../static/icon-close.svg" width="20" height="20" alt=""></button>
+      </div>
+      <div class="drawer-body">
+        <div class="drawer-group">
+          <h3>Identities</h3>
+          <ul class="drawer-list">
+            <li><span class="ico" style="--i:url(../static/icon-users.svg)"></span><b>People</b><span>Everyone with a work account.</span></li>
+            <li><span class="ico" style="--i:url(../static/icon-laptop.svg)"></span><b>Computers</b><span>Laptops, desktops and servers (endpoints).</span></li>
+            <li><span class="ico" style="--i:url(../static/icon-robot.svg)"></span><b>AI agents</b><span>Bots and agents that act with their own access.</span></li>
+            <li><span class="ico" style="--i:url(../static/icon-envelope.svg)"></span><b>Service accounts</b><span>Shared inboxes and the logins apps use to talk to each other.</span></li>
+          </ul>
+        </div>
+        <div class="drawer-group">
+          <h3>Integrations</h3>
+          <ul class="drawer-list">
+            <li><i class="tick"></i><b>Microsoft 365</b><span>Entra ID Protection, Defender for Identity, Defender for Cloud Apps and Microsoft 365 alert policies</span></li>
+            <li><i class="tick"></i><b>Azure</b><span>Microsoft Defender for Cloud</span></li>
+            <li><i class="tick"></i><b>Google Workspace</b><span>Google Workspace Alert Center</span></li>
+            <li><i class="tick"></i><b>AWS</b><span>IAM Access Analyzer</span></li>
+            <li><i class="tick"></i><b>GitHub</b><span>Secret scanning</span></li>
+            <li><i class="tick"></i><b>Level</b><span>Endpoint security alerts and help desk tickets</span></li>
+          </ul>
+        </div>
+        <div class="drawer-group">
+          <h3>Where VEX reports</h3>
+          <ul class="drawer-list">
+            <li><img src="../static/slack-logo.svg" width="20" height="20" alt=""><b>Slack</b><span>What VEX found, fixed and needs from you, where your team already works.</span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="drawer-foot"><a class="text-link" href="/detections/" target="_blank" rel="noopener">See everything we detect <img src="../static/icon-arrow-right-pink.svg" width="16" height="16" alt=""></a></div>
+    </div>
+  </div>
+
+  </main>
+
+  <footer>
+    <span class="fmark">UNMANNED</span>
+    <span>© 2026 UNMANNED, INC.</span>
+    <a href="https://gounmanned.substack.com/" target="_blank" rel="noopener noreferrer">OUR RESEARCH</a>
+  </footer>
+
+  <script>
+    (function(){
+      // hide-on-scroll header (same as the other pages)
+      var root = document.documentElement;
+      var top = document.querySelector('.site-top');
+      var classbar = document.querySelector('.classbar');
+      if(!top){ return; }
+      var lastY = window.scrollY;
+      var ticking = false;
+      function update(){
+        ticking = false;
+        var y = window.scrollY;
+        var showZone = top.offsetHeight + (classbar ? classbar.offsetHeight : 0);
+        if(root.classList.contains('nav-open') || root.hasAttribute('data-auto-scroll') || root.hasAttribute('data-story-pinned')){ lastY = y; return; } // menu open, a click-scroll, or the story pinned
+        if(y <= showZone){ root.classList.remove('header-hidden'); lastY = y; return; }
+        if(Math.abs(y - lastY) < 6){ return; }
+        root.classList.toggle('header-hidden', y > lastY);
+        lastY = y;
+      }
+      window.addEventListener('scroll', function(){
+        if(!ticking){ ticking = true; requestAnimationFrame(update); }
+      }, { passive:true });
+      top.addEventListener('focusin', function(){ root.classList.remove('header-hidden'); });
+    })();
+
+    (function(){
+      // phone menu (same as the other pages)
+      var openBtn = document.querySelector('.menu-btn[aria-controls="site-nav"]');
+      var panel = document.getElementById('site-nav');
+      if(!openBtn || !panel){ return; }
+      var closeBtn = panel.querySelector('.menu-close');
+      function openNav(){
+        panel.classList.add('is-open');
+        document.documentElement.classList.add('nav-open');
+        openBtn.setAttribute('aria-expanded','true');
+        closeBtn.focus({ preventScroll:true });
+      }
+      function closeNav(returnFocus){
+        panel.classList.remove('is-open');
+        document.documentElement.classList.remove('nav-open');
+        openBtn.setAttribute('aria-expanded','false');
+        if(returnFocus){ openBtn.focus({ preventScroll:true }); }
+      }
+      openBtn.addEventListener('click', openNav);
+      closeBtn.addEventListener('click', function(){ closeNav(true); });
+      document.addEventListener('keydown', function(e){
+        if(e.key === 'Escape' && panel.classList.contains('is-open')){ closeNav(true); }
+      });
+      panel.addEventListener('click', function(e){
+        if(e.target.closest('a')){ closeNav(false); }
+      });
+      var wide = window.matchMedia('(min-width:701px)');
+      function onWide(){ if(wide.matches && panel.classList.contains('is-open')){ closeNav(false); } }
+      if(wide.addEventListener){ wide.addEventListener('change', onWide); } else { wide.addListener(onWide); }
+    })();
+
+    (function(){
+      // PREVENTION SCENE: one small 3D drawing on a canvas (orthographic, no library).
+      // World: x right, y up, z toward the viewer. The prevent layer is the square -1..1 at y = 0.
+      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var C = { pink:'224,18,128', ink:'11,12,13', gray:'108,108,112', red:'220,38,38', amber:'236,178,46', green:'14,124,82' };
+      var GAP = 0.42, H = 2.0, N = 6;        // layer gap, box height (2 = a cube), grid cells per side
+      var CELL = 2 / N;
+      function rgba(c, a){ return 'rgba(' + c + ',' + a + ')'; }
+      function ease(t){ t = Math.max(0, Math.min(1, t)); return t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3) / 2; }
+      function clamp(t){ return Math.max(0, Math.min(1, t)); }
+      function mix(a, b, t){ return a + (b - a) * t; }
+      function mixC(a, b, t){ a = a.split(','); b = b.split(','); return a.map(function(v, i){ return Math.round(mix(+v, +b[i], t)); }).join(','); }
+      // a seeded random, so the scan and the paths look the same every time
+      function rng(seed){ return function(){ seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }; }
+
+      // Tweened number: set(to, ms, delay) eases from wherever it is now.
+      function Tw(v){ this.from = v; this.to = v; this.t0 = 0; this.d = 1; }
+      Tw.prototype.set = function(to, ms, delay, now){
+        if(to === this.to){ return; }
+        this.from = this.get(now); this.to = to; this.t0 = now + (delay || 0); this.d = reduce ? 1 : (ms || 1);
+        if(reduce){ this.t0 = now - 1; }
+      };
+      Tw.prototype.get = function(now){ return mix(this.from, this.to, ease((now - this.t0) / this.d)); };
+
+      // the cells on all six faces of the box: corners as functions of the box height h
+      var CELLS = [];
+      (function(){
+        var i, j;
+        for(i = 0; i < N; i++){ for(j = 0; j < N; j++){
+          var x0 = -1 + i*CELL, z0 = -1 + j*CELL;
+          CELLS.push({ f:'top', n:[0,1,0], q:[[x0,0,z0],[x0+CELL,0,z0],[x0+CELL,0,z0+CELL],[x0,0,z0+CELL]] });
+          CELLS.push({ f:'bot', n:[0,-1,0], q:[[x0,-H,z0],[x0+CELL,-H,z0],[x0+CELL,-H,z0+CELL],[x0,-H,z0+CELL]] });
+        } }
+        var rows = Math.round(H / CELL);
+        for(i = 0; i < N; i++){ for(j = 0; j < rows; j++){
+          var a = -1 + i*CELL, y0 = -j*CELL;
+          CELLS.push({ f:'zp', n:[0,0,1], q:[[a,y0,1],[a+CELL,y0,1],[a+CELL,y0-CELL,1],[a,y0-CELL,1]], col:i, row:rows-1-j });
+          CELLS.push({ f:'zn', n:[0,0,-1], q:[[a,y0,-1],[a+CELL,y0,-1],[a+CELL,y0-CELL,-1],[a,y0-CELL,-1]] });
+          CELLS.push({ f:'xp', n:[1,0,0], q:[[1,y0,a],[1,y0,a+CELL],[1,y0-CELL,a+CELL],[1,y0-CELL,a]] });
+          CELLS.push({ f:'xn', n:[-1,0,0], q:[[-1,y0,a],[-1,y0,a+CELL],[-1,y0-CELL,a+CELL],[-1,y0-CELL,a]] });
+        } }
+        var r = rng(7);
+        CELLS.forEach(function(c){ c.lit = r() < 0.5; c.at = r() * 1500; });
+      })();
+      // the weak spot: front face, second column, second row from the top (the callout sits above the cube)
+      var TARGET = CELLS.filter(function(c){ return c.f === 'zp' && c.col === 1 && c.row === N - 2; })[0];
+      TARGET.lit = false;
+      var TC = TARGET.q.reduce(function(s, p){ return [s[0]+p[0]/4, s[1]+p[1]/4, s[2]+p[2]/4]; }, [0,0,0]);
+
+      // the assessment paths: all leave the weak spot and run along the cube's grid (cell centers),
+      // checking where an attacker could go from there. Three dead-end; the last finds the threat and ripples.
+      var PAD = { r:48, b:90 };   // how far the desktop canvas runs past its stage (see the CSS)
+      var RIPPLE = 3450;   // ms after the paths start: the last one lands on the threat
+      function L(i, j, k){ return [-1 + (i + 0.5)*CELL, -H + (j + 0.5)*CELL, -1 + (k + 0.5)*CELL]; }
+      var PATHS = [
+        { p:[TC, L(1,4,4), L(4,4,4), L(4,5,4)], dead:true },
+        { p:[TC, L(1,4,3), L(1,1,3), L(3,1,3)], dead:true },
+        { p:[TC, L(1,4,2), L(1,4,0), L(3,4,0)], dead:true },
+        { p:[TC, L(1,4,3), L(4,4,3), L(4,2,3), L(4,2,1), [L(4,2,1)[0], -H, L(4,2,1)[2]]], dead:false }
+      ];
+
+      function Scene(canvas, opts){
+        this.c = canvas; this.ctx = canvas.getContext('2d'); this.opts = opts || {};
+        this.call = opts.call || null;
+        this.step = -1; this.w = 0; this.h = 0;
+        var now = performance.now();
+        this.layers = new Tw(1);   // the detect and respond layers
+        this.dotsOn = new Tw(1);   // attacks dropping through the layers
+        this.grayT = new Tw(0);    // the prevent layer turning blueprint gray
+        this.ext = new Tw(0);      // the prevent layer extruding into a box
+        this.cam = new Tw(0);      // camera: the layer view -> the box view
+        this.pathsA = new Tw(0);
+        this.sq = { c:C.red, from:C.red, t0:0 };
+        this.scanT = null; this.pathT = null; this.retestT = null; this.watchT = null;
+        this.dots = []; this.nextDot = now; this.dotN = 0;
+        this.resize();
+        var self = this;
+        if('ResizeObserver' in window){ new ResizeObserver(function(){ self.resize(); }).observe(canvas.parentNode); }
+      }
+      Scene.prototype.resize = function(){
+        var r = this.c.getBoundingClientRect(), d = window.devicePixelRatio || 1;
+        this.w = r.width; this.h = r.height;
+        this.c.width = Math.round(r.width * d); this.c.height = Math.round(r.height * d);
+        this.ctx.setTransform(d, 0, 0, d, 0, 0);
+      };
+      // camera at blend k (0 = the layers, 1 = the box)
+      function view(yawD, pitchD, s, my){
+        var yaw = yawD * Math.PI / 180, pitch = pitchD * Math.PI / 180;
+        return { cy:Math.cos(yaw), sy:Math.sin(yaw), cp:Math.cos(pitch), sp:Math.sin(pitch), s:s, my:my, ox:0, oy:0 };
+      }
+      // where the cube's corners land for a view, relative to its origin
+      function bounds(v){
+        var b = { x0:1e9, x1:-1e9, y0:1e9, y1:-1e9 };
+        [[-1,0,-1],[1,0,-1],[1,0,1],[-1,0,1],[-1,-H,-1],[1,-H,-1],[1,-H,1],[-1,-H,1]].forEach(function(p){
+          var X = v.s*(p[0]*v.cy - p[2]*v.sy), Z = p[0]*v.sy + p[2]*v.cy, Y = -v.s*((p[1] - v.my)*v.cp - Z*v.sp);
+          b.x0 = Math.min(b.x0, X); b.x1 = Math.max(b.x1, X); b.y0 = Math.min(b.y0, Y); b.y1 = Math.max(b.y1, Y);
+        });
+        return b;
+      }
+      // camera at blend k (0 = the layers, 1 = the cube). Desktop puts the cube bottom right, leaving room
+      // above it for the callout; phones center it.
+      Scene.prototype.camera = function(k){
+        var side = this.opts.callSide, w = this.w - (side ? PAD.r : 0), h = this.h - (side ? PAD.b : 0);   // fit to the stage, not the padded canvas
+        var a;
+        if(side){ a = view(45, 18.5, Math.min(120, w * 0.2), -GAP); a.ox = w - 64 - 1.414*a.s; a.oy = 29 + a.s*(1.414*a.sp + GAP*a.cp); }
+        else { a = view(45, 18.5, Math.min(w * (w < 600 ? 0.24 : 0.27), h * 0.5), -GAP); a.ox = w/2 - (w < 600 ? 28 : 0); a.oy = h/2 + 0.1*h; }
+        var b = view(36, 24, side ? Math.min((w - 24) / 2.9, (h - 130) / 2.95, 128) : Math.min(w * 0.3, (h - 16) / 3), -H/2), bb = bounds(b);
+        if(side){ b.ox = w - 14 - bb.x1; b.oy = h - 8 - bb.y1; }
+        else { b.ox = w/2 - (bb.x0 + bb.x1)/2; b.oy = h/2 - (bb.y0 + bb.y1)/2; }
+        var v = view(mix(45, 36, k), mix(18.5, 24, k), mix(a.s, b.s, k), mix(a.my, b.my, k));
+        v.ox = mix(a.ox, b.ox, k); v.oy = mix(a.oy, b.oy, k);
+        return v;
+      };
+      Scene.prototype.P = function(p){
+        var v = this.v;
+        var X = p[0]*v.cy - p[2]*v.sy, Z = p[0]*v.sy + p[2]*v.cy, Y = p[1] - v.my;
+        return [v.ox + v.s*X, v.oy - v.s*(Y*v.cp - Z*v.sp)];
+      };
+      Scene.prototype.facing = function(n){ var v = this.v; return (n[0]*v.sy + n[2]*v.cy) * v.cp + n[1]*v.sp > 0; };   // faces the viewer?
+      Scene.prototype.poly = function(pts){ var x = this.ctx; x.beginPath(); pts.forEach(function(p, i){ p = this.P(p); if(i){ x.lineTo(p[0], p[1]); } else { x.moveTo(p[0], p[1]); } }, this); x.closePath(); };
+      Scene.prototype.line = function(a, b){ var x = this.ctx; a = this.P(a); b = this.P(b); x.beginPath(); x.moveTo(a[0], a[1]); x.lineTo(b[0], b[1]); x.stroke(); };
+
+      // ---- what each step looks like ----
+      Scene.prototype.setStep = function(n){
+        if(n === this.step){ return; }
+        var now = performance.now(), prev = this.step;
+        this.step = n;
+        // 0: three layers.  1+: the box (layers fade, top goes gray, then extrudes, then the camera settles)
+        var box = n >= 1;
+        this.dotsOn.set(box ? 0 : 1, 400, 0, now);
+        this.layers.set(box ? 0 : 1, 450, box ? 0 : 900, now);
+        this.grayT.set(box ? 1 : 0, 450, box ? 200 : 700, now);
+        this.ext.set(box ? 1 : 0, 750, box ? 450 : 0, now);
+        this.cam.set(box ? 1 : 0, 900, box ? 450 : 100, now);
+        // 2: scan every face, then land on the weak spot (only replays when coming up from step 1)
+        if(n >= 2 && prev < 2){ this.scanT = (prev < 0 || reduce) ? now - 99999 : now + (prev < 1 ? 1900 : 1000); }   // a beat to read first
+        if(n < 2){ this.scanT = null; }
+        // catch-up: moved on before the scan finished? finish it now (the paths, below, likewise)
+        if(n >= 3 && this.scanT != null && now - this.scanT < 2200){ this.scanT = now - 2200; }
+        // 3: the assessment paths
+        if(n === 3 && prev < 3){ this.pathT = reduce ? now - 99999 : Math.max(now + 800, this.scanT + 2400); }
+        this.pathsA.set(n === 3 ? 1 : 0, 400, 0, now);
+        if(n > 3 && prev < 3){ this.pathT = null; }
+        if(n >= 4 && this.pathT != null && now - this.pathT < RIPPLE){ this.pathT = now - RIPPLE; }
+        // The weak spot's color: 2 amber (a possible threat, being assessed) | 3 amber, red once the pattern
+        // lands on a threat (see draw) | 4 green (door locked) | 5 retest, then brand pink (watched) while the scan
+        // starts up again
+        if(n === 4 && prev < 4){ this.retestT = reduce ? now - 99999 : now + 200; }   // VEX's dot flies in: locks the door
+        if(n === 5 && prev < 5){ this.retestT = reduce ? now - 99999 : now + 200; this.watchT = reduce ? now - 99999 : now + 1300; }
+        if(n < 4){ this.retestT = null; }
+        if(n < 5){ this.watchT = null; }
+        if(n === 4 && prev === 3){ this.color(C.red, now, 0); }                             // still red as it arrives
+        this.color(n >= 4 ? C.green : C.amber, now, n === 4 && prev < 4 && !reduce ? 1100 : 0);   // green on the hit
+      };
+      Scene.prototype.color = function(c, now, delay){
+        if(c === this.sq.c){ return; }
+        var cur = this.sqColor(now);
+        this.sq.from = cur; this.sq.c = c; this.sq.t0 = now + delay;
+      };
+      Scene.prototype.sqColor = function(now){ return mixC(this.sq.from, this.sq.c, reduce ? 1 : clamp((now - this.sq.t0) / 450)); };
+
+      // ---- the callout beside the weak spot ----
+      var CALLS = {
+        2:{ t:'Legacy sign-in found', c:'var(--amber-text)', l:[] },
+        3:{ t:'Legacy sign-in found', c:'var(--amber-text)', l:['Checking…', 'Threat 0%', 'Sign-in works over IMAP, password only'] },
+        4:{ t:'Legacy sign-in', c:'var(--go-text)', l:['Legacy sign-in turned off', 'Messaging the user to turn on MFA'] },
+        5:{ t:'Legacy sign-in', c:'var(--pink-text)', l:['Tested again: blocked', 'Recommendation sent', 'Watching'] }
+      };
+      Scene.prototype.updateCall = function(now){
+        var el = this.call; if(!el){ return; }
+        var n = this.step, found = n >= 2 && this.scanT != null && now - this.scanT > 1900;
+        el.classList.toggle('is-on', found);
+        el.style.opacity = this.exit ? 1 - clamp(this.exit / 0.3) : '';
+        if(!found){ return; }
+        var d = CALLS[Math.min(n, 5)], b = el.querySelector('b'), sp = el.querySelectorAll('span');
+        var wait = n >= 4 && !reduce ? 1200 : 0;   // the callout changes when the dot hits
+        if(el._n !== n){
+          el._n = n; el._bAt = now + wait;
+          sp.forEach(function(s, i){ s.classList.remove('is-on'); s._at = now + (reduce ? 0 : wait + 250 + i * (n === 3 ? 1300 : 350)); });
+        }
+        if(now >= el._bAt && el._shown !== n){
+          el._shown = n; b.textContent = d.t; el.style.setProperty('--c', d.c);
+          sp.forEach(function(s, i){ s.textContent = d.l[i] || ''; });
+        }
+        sp.forEach(function(s, i){ if(d.l[i] && now >= s._at){ s.classList.add('is-on'); } });
+        if(n === 3 && el._shown === 3){ el.style.setProperty('--c', now >= this.pathT + RIPPLE ? 'var(--sev-1)' : 'var(--amber-text)'); }
+        if(n === 3){ var pct = reduce ? 91 : Math.round(91 * clamp((now - this.pathT - 600) / 2600)); sp[1].textContent = 'Threat ' + pct + '%'; }
+        // sit beside the weak spot (side callouts only)
+        if(this.opts.callSide){
+          var c = this.P(TC), top = this.cubeTop();
+          el.style.left = Math.min(c[0] + 12, this.w - PAD.r - 220) + 'px';
+          el.style.top = (top - 22 - el.offsetHeight) + 'px';
+          this.leadTop = top - 22 - el.offsetHeight + 4;
+        }
+      };
+
+      Scene.prototype.cubeTop = function(){ var self = this; return Math.min.apply(null, [[-1,0,-1],[1,0,-1],[1,0,1],[-1,0,1]].map(function(p){ return self.P(p)[1]; })); };
+
+      // ---- drawing ----
+      Scene.prototype.draw = function(now){
+        var x = this.ctx, w = this.w, h = this.h;
+        if(!w){ return; }
+        x.clearRect(0, 0, w, h);
+        var cam = this.cam.get(now), ext = this.ext.get(now), lay = this.layers.get(now), gray = this.grayT.get(now), dots = this.dotsOn.get(now);
+        if(this.morph != null){   // desktop: the layers -> cube change follows the scroll
+          var m = this.morph;
+          dots = 1 - clamp(m / 0.25); lay = 1 - clamp(m / 0.3); gray = clamp((m - 0.15) / 0.3);
+          ext = ease(clamp((m - 0.3) / 0.55)); cam = clamp((m - 0.2) / 0.7);
+        }
+        this.v = this.camera(ease(cam));
+        x.lineJoin = 'round';
+        // the lower layers (detect, respond)
+        if(lay > 0.01){
+          this.layer(-2*GAP, { fill:rgba(C.ink, 0.018*lay), edge:rgba(C.gray, 0.45*lay), grid:rgba(C.gray, 0.28*lay), label:'RESPOND', lc:rgba(C.gray, 0.9*lay) });
+          this.layer(-GAP, { fill:rgba(C.ink, 0.035*lay), edge:rgba(C.ink, 0.62*lay), grid:rgba(C.gray, 0.35*lay), label:'DETECT', lc:rgba(C.ink, 0.75*lay) });
+        }
+        if(dots > 0.01){ this.drawDots(now, dots, 'under'); }
+        if(this.step === 3 && this.pathT != null && now >= this.pathT + RIPPLE){ this.color(C.red, now, 0); }
+        if(this.step === 5 && this.watchT != null && now >= this.watchT){ this.color(C.pink, now, 0); }
+        // the box (or, before it extrudes, the prevent layer)
+        var e = this.exit || 0, detail = 1 - clamp(e / 0.3), flat = ease(clamp((e - 0.3) / 0.7));
+        this.box(now, ext * (1 - flat), gray * (1 - flat), lay, detail);
+        if(dots > 0.01){ this.drawDots(now, dots, 'over'); }
+      };
+      Scene.prototype.layer = function(y, st){
+        var x = this.ctx;
+        this.poly([[-1,y,-1],[1,y,-1],[1,y,1],[-1,y,1]]);
+        x.fillStyle = st.fill; x.fill();
+        x.setLineDash([2, 3]); x.strokeStyle = st.grid; x.lineWidth = 1;
+        for(var i = 1; i < N; i++){ var a = -1 + i*CELL; this.line([a,y,-1],[a,y,1]); this.line([-1,y,a],[1,y,a]); }
+        x.setLineDash([]); x.strokeStyle = st.edge; x.lineWidth = 1;
+        this.poly([[-1,y,-1],[1,y,-1],[1,y,1],[-1,y,1]]); x.stroke();
+        if(st.label){ this.label(st.label, [1, y, 1], st.lc); }
+      };
+      Scene.prototype.label = function(t, corner, color){
+        var x = this.ctx, p = this.P(corner), q = this.P([1, corner[1], -1]);
+        var r = p[0] > q[0] ? p : q;   // the right-hand corner
+        x.font = '500 9px "JetBrains Mono", monospace'; x.fillStyle = color; x.textBaseline = 'middle';
+        if('letterSpacing' in x){ x.letterSpacing = '1px'; }
+        x.fillText(t, r[0] + 10, r[1]);
+        if('letterSpacing' in x){ x.letterSpacing = '0px'; }
+      };
+      Scene.prototype.box = function(now, ext, gray, lay, detail){
+        var x = this.ctx, self = this, hh = H * ext;
+        var edge = mixC(C.pink, C.gray, gray), ea = mix(0.95, 0.7, gray);
+        var fillTop = gray < 1 ? rgba(mixC(C.pink, C.ink, gray), mix(0.055, 0.025, gray)) : rgba(C.ink, 0.025);
+        var faces = [
+          { n:[0,-1,0], q:[[-1,-hh,-1],[1,-hh,-1],[1,-hh,1],[-1,-hh,1]] },
+          { n:[0,0,-1], q:[[-1,0,-1],[1,0,-1],[1,-hh,-1],[-1,-hh,-1]] },
+          { n:[-1,0,0], q:[[-1,0,-1],[-1,0,1],[-1,-hh,1],[-1,-hh,-1]] },
+          { n:[1,0,0], q:[[1,0,-1],[1,0,1],[1,-hh,1],[1,-hh,-1]] },
+          { n:[0,0,1], q:[[-1,0,1],[1,0,1],[1,-hh,1],[-1,-hh,1]] },
+          { n:[0,1,0], q:[[-1,0,-1],[1,0,-1],[1,0,1],[-1,0,1]] }
+        ];
+        // back faces first, then the cells, then the front faces, so the box reads as glass
+        var back = faces.filter(function(f){ return !self.facing(f.n); }), front = faces.filter(function(f){ return self.facing(f.n); });
+        var faceFill = function(f, a){ self.poly(f.q); x.fillStyle = f.n[1] === 1 ? fillTop : rgba(C.ink, a); x.fill(); };
+        var grid = function(f, a){
+          x.setLineDash([2, 3]); x.strokeStyle = f.n[1] === 1 && gray < 1 ? rgba(mixC(C.pink, C.gray, gray), mix(0.45, a, gray)) : rgba(C.gray, a); x.lineWidth = 1;
+          var i, k;
+          if(f.n[1] !== 0){ var y = f.q[0][1]; for(i = 1; i < N; i++){ k = -1 + i*CELL; self.line([k,y,-1],[k,y,1]); self.line([-1,y,k],[1,y,k]); } }
+          else if(hh > 0.01){
+            var rows = Math.round(H / CELL);
+            for(i = 1; i < N; i++){ k = -1 + i*CELL;
+              if(f.n[2]){ self.line([k,0,f.n[2]],[k,-hh,f.n[2]]); } else { self.line([f.n[0],0,k],[f.n[0],-hh,k]); } }
+            for(i = 1; i < rows; i++){ k = -i*CELL*ext;
+              if(f.n[2]){ self.line([-1,k,f.n[2]],[1,k,f.n[2]]); } else { self.line([f.n[0],k,-1],[f.n[0],k,1]); } }
+          }
+          x.setLineDash([]);
+        };
+        var edges = function(f, a){ self.poly(f.q); x.strokeStyle = rgba(edge, a); x.lineWidth = 1; x.stroke(); };
+        var sideA = clamp(ext * 3);
+        // a soft shadow on the floor under the cube, so it sits on something (drawn off-canvas; only its blur shows)
+        if(hh > 0.01){
+          var g = -hh - 0.03, sh = 1.05, dpr = this.c.width / this.w;
+          x.save(); x.translate(-10000, 0); x.shadowOffsetX = 10000 * (this.c.width / this.w);   // shadow offsets ignore the canvas scale
+          x.shadowBlur = 34 * dpr; x.shadowColor = rgba(C.ink, 0.075 * clamp((ext - 0.2) * 1.6));
+          this.poly([[-sh,g,-sh],[sh,g,-sh],[sh,g,sh],[-sh,g,sh]]); x.fillStyle = '#000'; x.fill(); x.restore();
+        }
+        back.forEach(function(f){ if(f.n[1] === 1 || hh > 0.01){ faceFill(f, 0.02 * sideA); grid(f, 0.22 * sideA); edges(f, ea * 0.55 * (f.n[1] === 1 ? 1 : sideA)); } });
+        var det = ext > 0.98 && detail > 0.01;
+        if(det){ x.save(); x.globalAlpha = detail; this.cells(now, false); x.restore(); }
+        front.forEach(function(f){ if(f.n[1] === 1 || hh > 0.01){ faceFill(f, 0.03 * sideA); grid(f, 0.4 * (f.n[1] === 1 ? 1 : sideA)); } });
+        if(det){ x.save(); x.globalAlpha = detail; this.cells(now, true); this.paths(now); this.weakSpot(now); x.restore(); }
+        front.forEach(function(f){ if(f.n[1] === 1 || hh > 0.01){ edges(f, ea * (f.n[1] === 1 ? 1 : sideA)); } });
+        // the PREVENT label rides the top layer until the box forms
+        var la = Math.max(0, lay);
+        if(la > 0.01){ this.label('PREVENT', [1, 0, 1], rgba(C.pink, la)); }
+      };
+      // the scan: cells on all six faces light up amber, glow, then settle a shade darker ("checked")
+      Scene.prototype.cells = function(now, frontPass){
+        if(this.scanT == null){ return; }
+        var x = this.ctx, t = now - this.scanT, self = this;
+        CELLS.forEach(function(c){
+          if(!c.lit || self.facing(c.n) !== frontPass){ return; }
+          var k = t - c.at; if(k < 0){ return; }
+          if(self.watchT != null && now > self.watchT && !reduce){ k = (now - self.watchT - c.at * 1.6) % 3800; if(k < 0){ k = 9999; } }
+          var glow = k < 120 ? k / 120 : k < 420 ? 1 : Math.max(0, 1 - (k - 420) / 450);
+          var dim = frontPass ? 1 : 0.45;
+          self.poly(c.q);
+          x.fillStyle = rgba(C.ink, 0.028 * dim); x.fill();
+          if(glow > 0){   // checking: a quick gray tint, then it settles a shade darker
+            x.fillStyle = rgba(C.ink, 0.11 * glow * dim); x.fill();
+            x.strokeStyle = rgba(C.gray, 0.55 * glow * dim); x.lineWidth = 1; x.stroke();
+          }
+        });
+      };
+      Scene.prototype.weakSpot = function(now){
+        if(this.scanT == null){ return; }
+        var t = now - this.scanT; if(t < 1700){ return; }
+        var x = this.ctx, a = reduce ? 1 : clamp((t - 1700) / 300), col = this.sqColor(now);
+        var pulse = reduce ? 0.5 : 0.5 + 0.5 * Math.sin(now / 260);
+        this.poly(TARGET.q);
+        x.fillStyle = rgba(col, 0.14 * a); x.fill();
+        x.save(); x.shadowColor = rgba(col, 0.9 * a); x.shadowBlur = 8 + 14 * pulse;   // the glow behind the outline
+        x.strokeStyle = rgba(col, (0.25 + 0.25 * pulse) * a); x.lineWidth = 7; x.stroke(); x.restore();
+        x.strokeStyle = rgba(col, a); x.lineWidth = 2.5; x.stroke();
+        if(this.opts.callSide && this.leadTop != null && this.call.classList.contains('is-on')){
+          var c = this.P(TC), t = this.P([TC[0], TC[1] + CELL/2, 1]);
+          x.strokeStyle = rgba(C.gray, 0.55 * a); x.lineWidth = 1; x.beginPath(); x.moveTo(c[0], this.leadTop); x.lineTo(t[0], t[1]); x.stroke();
+        }
+        // the retest: a probe runs at the spot and stops at the wall
+        if(this.retestT != null){
+          var r = (now - this.retestT) / 900;
+          if(r > 0 && r < 1.4){
+            var p0 = [TC[0] - 0.05, TC[1] + 0.05, 2.1], p1 = [TC[0], TC[1], 1.02], k = ease(Math.min(r, 1));
+            var q = [mix(p0[0], p1[0], k), mix(p0[1], p1[1], k), mix(p0[2], p1[2], k)], P = this.P(q);
+            x.fillStyle = rgba(C.pink, r < 1 ? 1 : 1 - (r - 1) / 0.4); x.beginPath(); x.arc(P[0], P[1], 3.5, 0, 7); x.fill();
+            if(r >= 1){ this.ring(TC, 0.12 + (r - 1) * 0.5, 'z', rgba(C.pink, 1 - (r - 1) / 0.4)); }
+          }
+        }
+      };
+      // a circle drawn flat in a plane: 'y' = lying on a layer, 'z' = on the front face
+      Scene.prototype.ring = function(c, r, plane, stroke){
+        var x = this.ctx; x.beginPath();
+        for(var i = 0; i <= 28; i++){
+          var a = i / 28 * Math.PI * 2, p = plane === 'y' ? [c[0] + r*Math.cos(a), c[1], c[2] + r*Math.sin(a)] : [c[0] + r*Math.cos(a), c[1] + r*Math.sin(a), c[2]];
+          p = this.P(p); if(i){ x.lineTo(p[0], p[1]); } else { x.moveTo(p[0], p[1]); }
+        }
+        x.strokeStyle = stroke; x.lineWidth = 1.2; x.stroke();
+      };
+      Scene.prototype.paths = function(now){
+        var A = this.pathsA.get(now);
+        if(this.pathT == null || A < 0.01){ return; }
+        var x = this.ctx, t = now - this.pathT, self = this;
+        PATHS.forEach(function(path, i){
+          var segs0 = path.p.length - 1, start = i * 650, dur = 300 * segs0, k = clamp((t - start) / dur);
+          if(k <= 0){ return; }
+          var pts = path.p.map(function(p){ return self.P(p); });
+          var segs = pts.length - 1, upto = k * segs;
+          var fade = path.dead ? (t > start + dur + 500 ? 0.3 : 1) : 1;
+          x.strokeStyle = rgba(C.pink, (path.dead ? 0.6 : 1) * fade * A); x.lineWidth = path.dead ? 1.2 : 2;
+          x.beginPath(); x.moveTo(pts[0][0], pts[0][1]);
+          for(var s = 1; s <= segs; s++){
+            var f = clamp(upto - (s - 1)); if(f <= 0){ break; }
+            x.lineTo(mix(pts[s-1][0], pts[s][0], f), mix(pts[s-1][1], pts[s][1], f));
+          }
+          x.stroke();
+          pts.forEach(function(p, j){
+            if(j > upto + 0.001){ return; }
+            var end = j === segs;
+            x.fillStyle = rgba(end && path.dead ? C.gray : C.pink, fade * A);
+            x.beginPath(); x.arc(p[0], p[1], end && !path.dead ? 4.5 : 3, 0, 7); x.fill();
+          });
+          if(!path.dead && k >= 1){   // the threat: ripples on the floor where the path lands
+            var end = path.p[segs0];
+            [0, 700].forEach(function(off){
+              var r = ((t - start - dur + off) % 1400) / 1400;
+              self.ring(end, 0.05 + r * 0.3, 'y', rgba(C.pink, (1 - r) * 0.85 * A));
+            });
+          }
+        });
+      };
+      // the intro: attacks drop onto the layers. Most stop at prevent, some at detect, rarely one at respond.
+      Scene.prototype.drawDots = function(now, A, pass){
+        var x = this.ctx, self = this;
+        if(pass === 'under'){
+          if(reduce){
+            this.dots = [[0.35,0,0.2,0],[-0.5,0,-0.3,0],[0.1,0,-0.65,0],[-0.2,0,0.55,0],[0.6,0,-0.4,0],[-0.6,-GAP,0.3,1],[0.4,-GAP,0.5,1],[0.05,-2*GAP,-0.1,2]]
+              .map(function(d){ return { x:d[0], z:d[2], stop:d[3], t0:-1e9 }; });
+          } else {
+            if(now - this.nextDot > 2000){ this.nextDot = now - 2000; }
+            while(now > this.nextDot){
+              var r = rng(++this.dotN * 977)();
+              var n = this.dotN, stop = n % 13 === 0 ? 2 : n % 5 === 0 ? 1 : 0;
+              var gx = Math.floor(r * 1e4) % (N - 1) + 1, gz = Math.floor(r * 1e6) % (N - 1) + 1;
+              this.dots.push({ x:-1 + gx*CELL, z:-1 + gz*CELL, stop:stop, t0:this.nextDot });
+              this.nextDot += 208 + (r * 1e3 % 1) * 208;   // about 3 a second
+            }
+          }
+        }
+        var FALL = 1.6, SPEED = 1.5 / 1000;   // starts this far above the top layer; world units per ms
+        this.dots = this.dots.filter(function(d){
+          var stopY = -d.stop * GAP, dist = FALL - stopY, t = reduce ? 1e9 : now - d.t0, y = FALL - t * SPEED;
+          var hit = y <= stopY, since = hit ? (t - dist / SPEED) : 0;
+          if(hit && since > 900 && !reduce){ return false; }
+          // draw dots above the top layer in the "over" pass, below it in the "under" pass
+          var above = (hit ? stopY : y) >= -0.001;
+          if((pass === 'over') !== above){ return true; }
+          var col = d.stop === 0 ? C.pink : C.ink;
+          if(!hit){
+            var p = self.P([d.x, y, d.z]), fa = clamp((FALL - y) / 0.4);
+            x.fillStyle = rgba(C.gray, 0.85 * fa * A); x.beginPath(); x.arc(p[0], p[1], 2.6, 0, 7); x.fill();
+            if(y < 0.02 && y > -0.12 && d.stop > 0){ self.ring([d.x, 0, d.z], 0.05, 'y', rgba(C.pink, 0.35 * A)); }
+          } else {
+            var k = reduce ? 0.35 : clamp(since / 900), q = self.P([d.x, stopY, d.z]);
+            self.ring([d.x, stopY, d.z], 0.04 + k * 0.16, 'y', rgba(col, (1 - k) * 0.9 * A));
+            x.fillStyle = rgba(col, (1 - k) * A); x.beginPath(); x.arc(q[0], q[1], 2.6 * (1 - k * 0.6), 0, 7); x.fill();
+          }
+          return true;
+        });
+      };
+
+      // ---- wiring ----
+      var scenes = [];
+      function loop(now){ scenes.forEach(function(s){ if(s.live){ s.draw(now); s.updateCall(now); } }); requestAnimationFrame(loop); }
+      function visible(el, s){
+        if(!('IntersectionObserver' in window)){ s.live = true; return; }
+        new IntersectionObserver(function(es){ s.live = es[0].isIntersecting; }, { threshold:0 }).observe(el);
+      }
+      var root = document.documentElement;
+      var desktop = window.matchMedia('(min-width:1100px)');
+
+      // desktop: pinned, driven by scroll
+      var pin = document.querySelector('.pv-pin');
+      var ps = new Scene(pin.querySelector('canvas'), { callSide:true, call:pin.querySelector('.pv-call') });
+      ps.setStep(0); scenes.push(ps); visible(pin.querySelector('.pv-stage'), ps);
+      var track = pin.querySelector('.pv-track'), lines = [].slice.call(pin.querySelectorAll('.pv-lines li'));
+      var copy = pin.querySelector('.pv-story-copy');
+      // Story steps. Each is a stretch of scroll (in screens; they add up to the 7.45 in the CSS), and a scene:
+      // 0 intro layers (short) | 1 headline over the layers, a pause | 2 the layers become the cube, with the scroll |
+      // 3 first two lines, a pause | 4 scan | 5 paths | 6 lock | 7 retest, then watched (long, to ease into the next section)
+      var STEPS = [0.35, 0.7, 1.0, 1.0, 1.1, 1.1, 0.8, 1.4], SCENE = [0, 0, 1, 1, 2, 3, 4, 5], MORPH = 2, ticking = false;
+      // Lines arrive by step; the newest is bold, older ones fade. With `roll`, the list slides up so the
+      // newest lines sit just below the middle (before any line arrives, the list waits below the bottom).
+      function showLines(list, n, roll){
+        var now = [];
+        list.forEach(function(li){
+          var age = n - +li.dataset.from;
+          li.classList.toggle('is-seen', age >= 0); li.classList.toggle('is-now', age === 0); li.classList.toggle('is-old', age >= 2);
+          if(age === 0){ now.push(li); }
+        });
+        if(!roll){ return; }
+        var hgt = roll.clientHeight, y;
+        if(!now.length){ y = hgt; }
+        else { var a = now[0].offsetTop, b = now[now.length - 1].offsetTop + now[now.length - 1].offsetHeight; y = hgt * 0.56 - (a + b) / 2; }
+        roll.querySelector('.pv-lines').style.transform = 'translateY(' + Math.round(y) + 'px)';
+      }
+      var step = -1, grid = pin.querySelector('.pv-grid');
+      function center(){ grid.style.setProperty('--shift', Math.max(0, (window.innerHeight - grid.offsetHeight) / 2 - 32) + 'px'); }
+      center();
+      function update(){
+        ticking = false;
+        if(!desktop.matches){ root.removeAttribute('data-story-pinned'); return; }
+        var r = track.getBoundingClientRect(), pinned = r.top <= 0 && r.bottom >= window.innerHeight;
+        if(pinned){ if(!root.hasAttribute('data-story-pinned')){ root.setAttribute('data-story-pinned', ''); root.classList.add('header-hidden'); } }
+        else { root.removeAttribute('data-story-pinned'); }
+        var p = -r.top / window.innerHeight, n = 0, acc = 0;
+        while(n < STEPS.length - 1 && p >= acc + STEPS[n]){ acc += STEPS[n]; n++; }
+        if(n !== step){ step = n; ps.setStep(SCENE[n]); pin.dataset.step = n; showLines(lines, n, copy); }
+        var m0 = STEPS.slice(0, MORPH).reduce(function(a, b){ return a + b; }, 0);
+        ps.morph = clamp((p - m0) / (STEPS[MORPH] * 0.85));
+        // the last 0.6 screens: scrubbed with the scroll, the cube settles back into the prevention layer
+        var total = STEPS.reduce(function(a, b){ return a + b; }, 0);
+        ps.exit = clamp((p - (total - 0.6)) / 0.6);
+        pin.classList.toggle('is-leaving', ps.exit > 0.15);
+      }
+      window.addEventListener('scroll', function(){ if(!ticking){ ticking = true; requestAnimationFrame(update); } }, { passive:true });
+      window.addEventListener('resize', function(){ center(); step = -2; update(); });
+      // snap points: the middle of each moment (not the scrubbed extrusion, which follows the scroll)
+      (function(){
+        var acc = 0;
+        STEPS.forEach(function(len, i){
+          if(i > 0 && i !== MORPH){
+            var m = document.createElement('i'); m.className = 'pv-snap';
+            m.style.top = ((acc + (i === STEPS.length - 1 ? 0.3 : len / 2)) * 100) + 'vh';
+            track.appendChild(m);
+          }
+          acc += len;
+        });
+      })();
+      // skip past the story to the Slack section
+      var skip = pin.querySelector('.pv-skip'), dest = document.getElementById('vex-slack'), settle;
+      skip.addEventListener('click', function(e){
+        e.preventDefault();
+        root.setAttribute('data-auto-scroll', ''); root.classList.add('header-hidden');
+        window.scrollTo({ top: dest.getBoundingClientRect().top + window.scrollY, behavior: reduce ? 'auto' : 'smooth' });
+        clearTimeout(settle);
+        settle = setTimeout(function(){ root.removeAttribute('data-auto-scroll'); dest.focus({ preventScroll:true }); }, reduce ? 50 : 1400);
+      });
+      update();
+
+      // phones and tablets: the layers drop forever; the cube plays its beats once when seen
+      var stack = document.querySelector('.pv-stack');
+      var ls = new Scene(stack.querySelector('[data-scene="layers"]'), {});
+      ls.setStep(0); scenes.push(ls); visible(ls.c.parentNode, ls);
+      var bs = new Scene(stack.querySelector('[data-scene="box"]'), { call:stack.querySelector('.pv-call') });
+      var blines = [].slice.call(stack.querySelectorAll('.pv-lines li')), replay = stack.querySelector('.pv-replay');
+      var AT = [0, 300, 1500, 3300, 5300, 9900, 14700, 17500], timers = [], played = false;
+      // jump to a story step on the phone (a tapped dot): rewind the cube if going back so that moment replays,
+      // then carry on from there on the same clock
+      function playFrom(start){
+        timers.forEach(clearTimeout); timers = []; replay.classList.remove('is-on'); played = true;
+        if(start < shown){ bs.step = -1; bs.scanT = bs.pathT = bs.retestT = bs.watchT = null; bs.setStep(1); }
+        bs.setStep(SCENE[start]); showLinesPhone(start);
+        AT.forEach(function(at, n){
+          if(n <= start){ return; }
+          timers.push(setTimeout(function(){ bs.setStep(SCENE[n]); showLinesPhone(n); if(n === 7){ timers.push(setTimeout(function(){ replay.classList.add('is-on'); }, 2400)); } }, at - AT[start]));
+        });
+        if(start === 7){ timers.push(setTimeout(function(){ replay.classList.add('is-on'); }, 2400)); }
+      }
+      function play(){
+        timers.forEach(clearTimeout); timers = []; replay.classList.remove('is-on');
+        if(reduce){ bs.setStep(5); showLinesPhone(7); return; }
+        bs.step = -1; bs.scanT = null; bs.setStep(0); showLinesPhone(0);
+        AT.forEach(function(at, n){ timers.push(setTimeout(function(){ bs.setStep(SCENE[n]); showLinesPhone(n); if(n === 7){ timers.push(setTimeout(function(){ replay.classList.add('is-on'); }, 2400)); } }, at)); });
+      }
+      // phone caption: size it to its longest moment, and move the dots with the story
+      var bol = stack.querySelector('.pv-story .pv-lines'), dotRow = stack.querySelector('.pv-dots'), dots = [].slice.call(dotRow.querySelectorAll('button')), shown = 0;
+      function fitCaption(){
+        var tallest = 0;
+        for(var k = 3; k <= 7; k++){ showLines(blines, k); tallest = Math.max(tallest, bol.scrollHeight); }
+        bol.style.setProperty('--cap-h', tallest + 'px'); showLines(blines, shown);
+      }
+      var showLinesPhone = function(n){
+        shown = n; showLines(blines, n);
+        dots.forEach(function(d, i){
+          var at = i + 3, now = n === at;
+          d.classList.toggle('is-seen', n > at); d.classList.toggle('is-now', now);
+          if(now){ d.setAttribute('aria-current', 'step'); } else { d.removeAttribute('aria-current'); }
+        });
+        dotRow.style.setProperty('--done', Math.max(0, Math.min(4, n - 3)) / 4);
+      };
+      bs.setStep(reduce ? 5 : 0); showLinesPhone(reduce ? 7 : 0);
+      dots.forEach(function(d, i){ d.addEventListener('click', function(){ if(!reduce){ playFrom(i + 3); } }); });
+      bol.style.minHeight = '0px'; fitCaption(); bol.style.minHeight = '';
+      window.addEventListener('resize', function(){ if(!desktop.matches){ bol.style.minHeight = '0px'; fitCaption(); bol.style.minHeight = ''; } });
+      scenes.push(bs);
+      bs.onShow = function(){ if(!played && !desktop.matches){ played = true; play(); } };
+      if('IntersectionObserver' in window){
+        new IntersectionObserver(function(es){ bs.live = es[0].isIntersecting; if(es[0].intersectionRatio >= 0.6 && bs.onShow){ bs.onShow(); } }, { threshold:[0, 0.6] }).observe(bs.c.parentNode);
+      } else { bs.live = true; bs.onShow(); }
+      replay.addEventListener('click', play);
+
+      requestAnimationFrame(loop);
+    })();
+
+    (function(){
+      // INTEGRATIONS DRAWER: opens from the pricing line; Esc, the scrim or × closes it; focus stays inside while open.
+      var d = document.getElementById('integrations'), opener = null, root = document.documentElement;
+      var panel = d.querySelector('.drawer-panel');
+      function focusables(){ return [].slice.call(panel.querySelectorAll('a[href],button')); }
+      function open(btn){
+        opener = btn; d.classList.add('is-open'); d.setAttribute('aria-hidden', 'false');
+        root.style.overflow = 'hidden';
+        setTimeout(function(){ d.querySelector('.drawer-close').focus(); }, 50);
+      }
+      function close(){
+        d.classList.remove('is-open'); d.setAttribute('aria-hidden', 'true'); root.style.overflow = '';
+        if(opener){ opener.focus(); }
+      }
+      document.querySelectorAll('[data-drawer="integrations"]').forEach(function(b){ b.addEventListener('click', function(){ open(b); }); });
+      d.querySelectorAll('[data-close]').forEach(function(el){ el.addEventListener('click', close); });
+      document.addEventListener('keydown', function(e){
+        if(!d.classList.contains('is-open')){ return; }
+        if(e.key === 'Escape'){ close(); return; }
+        if(e.key === 'Tab'){
+          var f = focusables(), first = f[0], last = f[f.length - 1];
+          if(e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+          else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+        }
+      });
+    })();
+
+    (function(){
+      // SLACK CARDS: one at a time, once, when the cards come into view (all at once with reduced motion)
+      var cards = document.querySelector('.slack-cards');
+      if(!cards || window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)){ return; }
+      cards.classList.add('will-arrive');
+      var io = new IntersectionObserver(function(es){
+        if(es[0].isIntersecting){ cards.classList.add('is-in'); io.disconnect(); }
+      }, { threshold:0.35 });
+      io.observe(cards);
+    })();
+  </script>
+</body>
+</html>

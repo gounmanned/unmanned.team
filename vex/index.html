@@ -182,7 +182,7 @@
         <span class="count" id="signal-count">0 signals</span>
       </div>
 
-      <a id="open-inventory-rollup">Assets</a>
+      <a id="open-inventory-rollup">Identities</a>
       <a id="open-backup-sidebar">Backups</a>
       <a id="open-monitor-rollup">Monitors</a>
       <a id="open-signal-sidebar" class="cta">+ Add Signal</a>
@@ -307,33 +307,38 @@
 
   <site-rollup id="inventory-screen">
     <div class="rollup-head">
-      <span class="material-symbols-outlined rollup-head-icon">inventory_2</span>
+      <span class="material-symbols-outlined rollup-head-icon">badge</span>
       <div class="rollup-head-text">
-        <h2>Assets</h2>
-        <p>Every identity, domain, and device VEX has discovered, in one inventory.</p>
+        <h2>Identities</h2>
+        <p>Every person, service account, and AI agent VEX protects.</p>
+      </div>
+
+      <div class="inv-count">
+        <span class="inv-count-value" id="inv-identity-count">0</span>
+        <span class="inv-count-label">Protected identities</span>
+        <span class="inv-count-note" id="inv-identity-note"></span>
       </div>
     </div>
 
-    <div class="asset-toolbar">
-      <div class="asset-legend" id="asset-legend"></div> 
-
-      <div class="asset-search">
-        <span class="material-symbols-outlined">search</span>
-        <input type="text" id="asset-search" placeholder="Search value, source, or group…">
+    <div class="inv-body">
+      <div class="inv-toolbar">
+        <div class="inv-filter" id="identity-filter" role="tablist" aria-label="Identity type"></div>
+        <div class="inv-search">
+          <span class="material-symbols-outlined">search</span>
+          <input type="text" id="asset-search" placeholder="Search email, source, or platform…">
+        </div>
       </div>
-    </div>
 
-    <div class="asset-split" id="asset-split">
-      <div class="table-wrap" id="asset-table-wrap">
+      <div class="inv-table">
         <table id="asset-table">
           <thead>
             <tr>
               <th>Status</th>
               <th>Priority</th>
+              <th>Type</th>
+              <th>Identity</th>
               <th>Source</th>
               <th>Platform</th>
-              <th>Group</th>
-              <th>Name</th>
               <th>Signals</th>
               <th>Last seen</th>
               <th></th>
@@ -341,34 +346,6 @@
           </thead>
           <tbody></tbody>
         </table>
-      </div>
-
-      <div class="asset-profile" id="asset-profile">
-        <button class="asset-profile-close" id="asset-profile-close" type="button" aria-label="Close">
-          <span class="material-symbols-outlined">close</span>
-        </button>
-
-        <div class="asset-profile-header">
-          <img class="asset-profile-avatar" id="asset-profile-avatar" src="" alt="">
-          <div class="asset-profile-name" id="asset-profile-name"></div>
-          <span class="asset-profile-status" id="asset-profile-status"></span>
-        </div>
-
-        <div class="asset-profile-meta">
-          <div class="asset-profile-meta-row">
-            <span class="label">Last seen</span>
-            <span class="value" id="asset-profile-updated"></span>
-          </div>
-          <div class="asset-profile-meta-row" id="asset-profile-platform-row">
-            <span class="label">Platform</span>
-            <span class="value" id="asset-profile-platform"></span>
-          </div>
-        </div>
-
-        <div class="asset-profile-signals">
-          <div class="asset-profile-section-title">Signals</div>
-          <ul id="asset-profile-signal-list"></ul>
-        </div>
       </div>
     </div>
   </site-rollup>

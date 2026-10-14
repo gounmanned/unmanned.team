@@ -64,7 +64,7 @@
   .eyebrow-label{font-size:11px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;color:var(--surface-dark);display:flex;align-items:center;gap:11px;}
 
   /* ---------- CLASSIFICATION BAR ---------- */
-  /* fixed top stack: the review-only strip (when shown) sits above the class bar. JS keeps --classbar-h equal to the stack's height. */
+  /* fixed top stack around the class bar. JS keeps --classbar-h equal to the stack's height. */
   .topstack{position:fixed;top:0;left:0;right:0;z-index:60;}
   .classbar{
     background:var(--ink);color:var(--gray-faint);
@@ -138,12 +138,6 @@
   /* hidden for now: the "Try:" suggestion chips. Delete this rule to bring them back. */
   .try{display:none !important;}
 
-  /* review-only strip above the class bar: shows only when detections.json carries both label versions.
-     Not part of the site; remove it (markup, CSS, JS) before the page goes live. */
-  .review{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:4px 12px;padding:6px 16px;background:var(--surface-gray);border-bottom:1px dashed var(--pink);font:500 11px/1.5 var(--mono);color:var(--body);}
-  .review strong{color:var(--pink-text);font-weight:600;text-transform:uppercase;letter-spacing:0.12em;}
-  .review button{font:500 11px/1.5 var(--mono);padding:1px 8px;border:1px solid var(--gray-line);border-radius:2px;background:var(--surface);color:var(--body);cursor:pointer;}
-  .review button[aria-pressed="true"]{border-color:var(--ink);background:var(--ink);color:#fff;}
 
   /* ---------- BACK TO TOP ----------
      Floats in the bottom corner when you scroll back up after reading down the page; hides again when you scroll down. */
@@ -195,9 +189,11 @@
   .group-head h4{font-weight:700;font-size:16px;line-height:1.5;color:var(--ink);}
   .group-head .official{font:500 11px/1.5 var(--mono);color:var(--surface-dark);}
   .list{list-style:none;margin:0;padding:0;}
-  .row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 16px;padding:11px 0;border-top:1px solid var(--gray-line);align-items:baseline;}
+  .row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:2px 16px;padding:11px 0;border-top:1px solid var(--gray-line);align-items:baseline;}
+  .row .resp{grid-column:3;grid-row:1;font:500 11px/1.5 var(--mono);color:var(--ink);padding:1px 6px;border:1px solid var(--gray-line);border-radius:2px;background:var(--surface);white-space:nowrap;}
   .row .name{font-size:14.5px;line-height:1.5;color:var(--ink);overflow-wrap:anywhere;}
   .row .id{font:500 11px/1.5 var(--mono);color:var(--surface-dark);overflow-wrap:anywhere;text-align:right;max-width:320px;}
+  .row .id{grid-column:2;grid-row:1;}
   .row .desc{grid-column:1 / -1;font-size:13px;line-height:1.5;color:var(--body);}
   mark{background:var(--mark);color:inherit;padding:0 1px;border-radius:1px;}
   .more{
@@ -208,6 +204,28 @@
   .group.is-collapsed .row.extra{display:none;}
   .catalog.is-searching .more{display:none;}
 
+  /* how VEX responds: the legend for the code on every row */
+  .responses{box-sizing:border-box;width:100%;margin-top:40px;padding:16px 20px;background:var(--surface);border:1px solid var(--gray-line);border-radius:2px;text-align:left;}
+  .resp-top{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 16px;}
+  .resp-top p{font-size:14px;line-height:1.55;color:var(--body);}
+  .resp-toggle{padding:0;border:0;background:none;cursor:pointer;font:500 13px var(--font-sans);color:var(--pink-text);}
+  .resp-toggle::after{content:'';display:inline-block;width:6px;height:6px;margin:0 2px 2px 8px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(45deg);transition:transform 0.2s ease;}
+  .responses.is-open .resp-toggle::after{transform:rotate(-135deg);margin-bottom:-2px;}
+  .resp-list{list-style:none;margin:12px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:12px 32px;}
+  .resp-list li{display:flex;align-items:baseline;gap:8px;}
+  .resp-list code{font:500 12px/1.5 var(--mono);color:var(--ink);padding:1px 6px;border:1px solid var(--gray-line);border-radius:2px;}
+  .resp-list b{font-weight:600;font-size:14px;line-height:1.5;color:var(--ink);}
+  .resp-list span{display:none;}
+  /* open: one code per line, with what it does */
+  .responses.is-open .resp-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px 28px;margin-top:16px;}
+  .responses.is-open .resp-list li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:2px 10px;align-content:start;} /* top-aligned, so first lines line up across a row */
+  .responses.is-open .resp-list code{grid-row:1 / 3;}
+  .responses.is-open .resp-list span{display:block;font-size:13px;line-height:1.45;color:var(--body);}
+  /* custom detections: a placeholder at the end of the catalog */
+  .custom .soon{display:inline-block;margin-left:10px;padding:2px 8px;border:1px dashed var(--pink);border-radius:2px;font:500 11px/1.5 var(--mono);letter-spacing:0.08em;text-transform:uppercase;color:var(--pink-text);vertical-align:middle;}
+  .custom-body{font-size:15px;line-height:1.7;color:var(--body);max-width:620px;}
+  .custom-body a{color:var(--pink-text);font-weight:500;}
+  .catalog.is-searching .custom{display:none;}
   .empty,.load-error{margin-top:64px;padding:20px 24px;background:var(--white);border:1px solid var(--gray-line);border-radius:2px;font-size:14.5px;line-height:1.75;color:var(--body);}
   .empty strong{display:block;color:var(--ink);}
 
@@ -236,18 +254,22 @@
     .source{scroll-margin-top:calc(var(--classbar-h) + var(--top-h, 61px) + 88px);}
     html.jump-open{overflow:hidden;}
   }
+  @media (max-width:900px){ .responses.is-open .resp-list{grid-template-columns:repeat(2,minmax(0,1fr));} }
+  @media (max-width:520px){ .responses.is-open .resp-list{grid-template-columns:minmax(0,1fr);} .responses{padding:14px 16px;} .resp-list{gap:12px 22px;} }
   @media (max-width:700px){
     .hero{padding:48px 0 40px;}
     .to-top{right:16px;bottom:16px;}
     .jump-toggle,.jump-scroll{padding-left:16px;padding-right:16px;}
     .bucket{gap:32px;padding:40px 0 16px;}
-    .row{grid-template-columns:minmax(0,1fr);}
+    .row{grid-template-columns:minmax(0,1fr) auto;}
+    .row .id{grid-column:1;grid-row:2;}
+    .row .resp{grid-column:2;grid-row:1;}
     .cat-main{padding-top:32px;}
     .search-bar{margin-top:-8px;padding:8px 0;} /* slimmer sticky stack on phones */
     #q{height:44px;}
     .row .id{text-align:left;max-width:none;}
   }
-  /* "Recommendations" at 34px is wider than a 302px phone (Galaxy Z Flip with zoom) */
+  /* a long vendor name at 34px is wider than a 302px phone (Galaxy Z Flip with zoom) */
   @media (max-width:340px){.bucket-head h2{font-size:29px;}}
 
   /* ---------- FOOTER ---------- */
@@ -263,18 +285,13 @@
   @media (prefers-reduced-motion: reduce){
     html{scroll-behavior:auto;}
     .status-dot{animation:none;}
-    .topstack,.site-top .site-header,.jump,.jump-toggle img,#q,.search-bar,.group-head,.to-top,.to-top.is-shown{transition:none;}
+    .resp-toggle::after,.topstack,.site-top .site-header,.jump,.jump-toggle img,#q,.search-bar,.group-head,.to-top,.to-top.is-shown{transition:none;}
   }
 </style>
 </head>
 <body>
 
   <div class="topstack" id="topstack">
-    <div class="review" id="review" hidden>
-      <strong>Review only</strong> Source labels:
-      <button type="button" data-mode="a" aria-pressed="true">A · Vendor products</button>
-      <button type="button" data-mode="b" aria-pressed="false">B · VEX integrations</button>
-    </div>
     <div class="classbar">UNMANNED · SIMPLY SECURE</div>
   </div>
 
@@ -299,7 +316,14 @@
     <div class="wrap">
       <div class="eyebrow-label"><span class="status-dot"></span>Detection catalog</div>
       <h1>What VEX detects.</h1>
-      <p class="lede">Every alert type VEX can raise from the services it connects to, plus the attacks VEX runs to test your defenses. Search for a threat, a service or an alert ID.</p>
+      <p class="lede">Every alert type VEX can raise from the services it connects to, listed by vendor, and what VEX does when it sees one. Search for a threat, a service or an alert ID.</p>
+      <section class="responses" aria-label="Response codes">
+        <div class="resp-top">
+          <p>Every detection shows the response VEX applies when it sees it.</p>
+          <button class="resp-toggle" type="button" aria-expanded="false" aria-controls="resp-list">What each means</button>
+        </div>
+        <ul class="resp-list" id="resp-list"><li><code>R0</code><b>Log</b><span>Logged to your audit history. No further action.</span></li><li><code>R1</code><b>Logout</b><span>Signs the account out.</span></li><li><code>R2</code><b>Contain</b><span>Locks the asset out and keeps it from getting back in.</span></li><li><code>R3</code><b>Investigate</b><span>Starts an automatic investigation into the root cause.</span></li><li><code>R4</code><b>Recommend</b><span>Writes a specific security recommendation.</span></li><li><code>R5</code><b>Assess</b><span>Runs an offensive assessment, the way a red team would.</span></li></ul>
+      </section>
     </div>
   </section>
 
@@ -313,7 +337,7 @@
       <nav class="jump" id="jump" aria-label="On this page">
         <p class="jump-label">On this page</p>
         <button class="jump-toggle" type="button" aria-expanded="false" aria-controls="jump-scroll">
-          <span class="jump-toggle-text"><span class="jump-toggle-label">On this page</span><span class="jump-current">Security alerts</span></span>
+          <span class="jump-toggle-text"><span class="jump-toggle-label">On this page</span><span class="jump-current">Microsoft 365</span></span>
           <img src="../static/icon-chevron-down.svg" width="20" height="20" alt="">
         </button>
         <div class="jump-scroll" id="jump-scroll"><ul class="jump-list" id="jump-list"></ul></div>
@@ -324,7 +348,7 @@
           <div class="field">
             <img class="mag" src="../static/icon-magnifying-glass.svg" width="20" height="20" alt="">
             <label class="visually-hidden" for="q">Search detections</label>
-            <input id="q" type="search" placeholder="Try “ransomware”, “impossible travel” or an ID" autocomplete="off" spellcheck="false">
+            <input id="q" type="search" placeholder="Try “ransomware”, “phishing” or an ID" autocomplete="off" spellcheck="false">
             <button id="clear" type="button" aria-label="Clear search" hidden><img src="../static/icon-x-small.svg" width="20" height="20" alt=""></button>
           </div>
         </div>
@@ -386,19 +410,16 @@
 
     (function(){
       // ---------- the catalog ----------
-      // Page copy for each bucket. The rows themselves come from detections.json.
-      var BUCKETS = {
-        alerts: { name:'Security alerts',
-          lede:'Raised when a connected service reports a sign of attack: a risky sign-in, malware on a machine, a leaked password or key.' },
-        tests: { name:'Security tests',
-          lede:'Attacks VEX runs against your own accounts, the way a red team would, to check that your defenses catch them. Each one is mapped to the MITRE ATT&CK technique it simulates.' },
-        recommendations: { name:'Recommendations',
-          lede:'Found by checking your settings, not by waiting for an attack: storage, keys or roles shared outside your account, and access nobody uses.' },
-        helpdesk: { name:'Help desk tickets',
-          lede:'Problems that need a fix, not a fight: a full disk, a stopped service, a computer that went offline, an expiring certificate.' },
-        events: { name:'Event logs',
-          lede:'Changes worth keeping a record of, like new admins, password resets and settings changes.' }
-      };
+      // the response legend: codes and names by default; "What each means" shows the descriptions
+      var legend = document.querySelector('.responses'), legendBtn = legend.querySelector('.resp-toggle');
+      legendBtn.addEventListener('click', function(){
+        var open = legend.classList.toggle('is-open');
+        legendBtn.setAttribute('aria-expanded', String(open));
+        legendBtn.textContent = open ? 'Hide descriptions' : 'What each means';
+      });
+
+      // what each response code means (the legend at the top of the page says the same)
+      var RESPONSES = { R0:'Log', R1:'Logout', R2:'Contain', R3:'Investigate', R4:'Recommend', R5:'Assess' };
       var SHOW = 8;  // rows shown per group before "Show all" (groups only a few rows longer show in full)
 
       var catalog = document.getElementById('catalog');
@@ -406,75 +427,58 @@
       var stats = document.getElementById('stats');
       var q = document.getElementById('q');
       var clearBtn = document.getElementById('clear');
-      var review = document.getElementById('review');
       var topstack = document.getElementById('topstack');
       function measureStack(){ document.documentElement.style.setProperty('--classbar-h', topstack.offsetHeight + 'px'); }
       measureStack();
       if(window.ResizeObserver){ new ResizeObserver(measureStack).observe(topstack); }
       window.addEventListener('resize', measureStack);
-      var data, mode = 'a', rowEls = [], built = false;
+      var data, rowEls = [], built = false;
 
       function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]; }); }
       function slug(s){ return s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); }
       function fmt(n){ return n.toLocaleString('en-US'); }
-      // the label a row's source shows: vendor product (A) or VEX integration (B)
-      function sourceLabel(key){
-        var s = data.sources[key];
-        return (mode === 'b' && s.integration) ? s.integration : s.label;
-      }
-      function integrationCount(){
-        var seen = {};
-        Object.keys(data.sources).forEach(function(k){
-          if(k === 'vex-tests' || k === 'vex'){ return; }  // VEX's own tests aren't a connected service
-          seen[data.sources[k].integration || data.sources[k].label] = 1;
-        });
-        return Object.keys(seen).length;
-      }
+      function resp(r){ return r[5] || data.response; }
 
-      // bucket -> source label -> group -> rows, all in the JSON's own order
+      // vendor -> product -> group -> rows, in the JSON's own order (the build sorts rows by vendor)
       function model(){
-        var out = {};
-        data.buckets.forEach(function(b){ out[b] = { order:[], sources:{} }; });
+        var out = {}, order = [];
         data.rows.forEach(function(r, i){
-          var b = out[data.buckets[r[0]]];
-          var label = sourceLabel(r[1]);
-          if(!b.sources[label]){ b.sources[label] = { order:[], groups:{} }; b.order.push(label); }
-          var s = b.sources[label];
-          if(!s.groups[r[2]]){ s.groups[r[2]] = []; s.order.push(r[2]); }
-          s.groups[r[2]].push(i);
+          var v = data.sources[r[0]].vendor;
+          if(!out[v]){ out[v] = { order:[], sources:{} }; order.push(v); }
+          var s = out[v].sources[r[0]];
+          if(!s){ s = out[v].sources[r[0]] = { order:[], groups:{} }; out[v].order.push(r[0]); }
+          if(!s.groups[r[1]]){ s.groups[r[1]] = []; s.order.push(r[1]); }
+          s.groups[r[1]].push(i);
         });
-        return out;
+        return { order:order, vendors:out };
       }
+      function vendorLabel(k){ for(var i = 0; i < data.vendors.length; i++){ if(data.vendors[i].key === k){ return data.vendors[i].label; } } return k; }
 
       function render(){
         var m = model();
         var html = '', nav = '';
-        data.buckets.forEach(function(b){
-          var bm = m[b], copy = BUCKETS[b], total = 0;
-          bm.order.forEach(function(l){ bm.sources[l].order.forEach(function(g){ total += bm.sources[l].groups[g].length; }); });
-          if(!total){ return; }
-          nav += '<li><a class="jump-link" href="#' + b + '" data-bucket="' + b + '"><span>' + esc(copy.name) + '</span><span class="c">' + fmt(total) + '</span></a><ul class="jump-sub">';
-          html += '<section class="bucket" id="' + b + '" data-bucket="' + b + '"><div class="bucket-head"><h2>' + esc(copy.name) + '</h2><p class="lede">' + esc(copy.lede) + '</p></div>';
-          bm.order.forEach(function(label){
-            var s = bm.sources[label], id = b + '-' + slug(label), n = 0;
+        m.order.forEach(function(v){
+          var vm = m.vendors[v], vlabel = vendorLabel(v), total = 0, many = vm.order.length > 1;
+          vm.order.forEach(function(k){ vm.sources[k].order.forEach(function(g){ total += vm.sources[k].groups[g].length; }); });
+          nav += '<li><a class="jump-link" href="#' + v + '" data-bucket="' + v + '"><span>' + esc(vlabel) + '</span><span class="c">' + fmt(total) + '</span></a><ul class="jump-sub">';
+          html += '<section class="bucket" id="' + v + '" data-bucket="' + v + '"><div class="bucket-head"><h2>' + esc(vlabel) + '</h2></div>';
+          vm.order.forEach(function(k){
+            var s = vm.sources[k], label = data.sources[k].label, id = v + '-' + slug(label), n = 0;
             s.order.forEach(function(g){ n += s.groups[g].length; });
-            nav += '<li><a class="jump-link" href="#' + id + '" data-source="' + id + '"><span>' + esc(label) + '</span><span class="c">' + fmt(n) + '</span></a></li>';
-            html += '<div class="source" id="' + id + '"><div class="source-head"><h3>' + esc(label) + '</h3><span class="count" data-count>' + fmt(n) + '</span></div>';
+            // the product list in the menu only where a vendor has several (Microsoft 365)
+            if(many){ nav += '<li><a class="jump-link" href="#' + id + '" data-source="' + id + '"><span>' + esc(label) + '</span><span class="c">' + fmt(n) + '</span></a></li>'; }
+            html += '<div class="source" id="' + id + '">' + (label !== vlabel ? '<div class="source-head"><h3>' + esc(label) + '</h3><span class="count" data-count>' + fmt(n) + '</span></div>' : '<span hidden data-count></span>');
             s.order.forEach(function(g){
               var rows = s.groups[g], fold = rows.length > SHOW + 4;
               html += '<div class="group' + (fold ? ' is-collapsed' : '') + '">';
-              if(g){
-                var t = b === 'tests' && data.tactics && data.tactics[g];
-                html += '<div class="group-head">' + (t
-                  ? '<h4>' + esc(t.plain) + '</h4><span class="official">' + esc(g) + ' · ' + esc(t.id) + '</span>'
-                  : '<h4>' + esc(g) + '</h4>') + '<span class="count">' + fmt(rows.length) + '</span></div>';
-              }
+              if(g){ html += '<div class="group-head"><h4>' + esc(g) + '</h4><span class="count">' + fmt(rows.length) + '</span></div>'; }
               html += '<ul class="list">';
               rows.forEach(function(ri, k){
-                var r = data.rows[ri];
-                html += '<li class="row' + (fold && k >= SHOW ? ' extra' : '') + '" data-i="' + ri + '"><span class="name">' + esc(r[3]) + '</span>'
-                  + (r[4] && r[4] !== r[3] ? '<code class="id">' + esc(r[4]) + '</code>' : '')
-                  + (r[5] ? '<p class="desc">' + esc(r[5]) + '</p>' : '') + '</li>';
+                var r = data.rows[ri], code = resp(r);
+                html += '<li class="row' + (fold && k >= SHOW ? ' extra' : '') + '" data-i="' + ri + '"><span class="name">' + esc(r[2]) + '</span>'
+                  + (r[3] && r[3] !== r[2] ? '<code class="id">' + esc(r[3]) + '</code>' : '')
+                  + '<span class="resp" title="' + code + ': ' + RESPONSES[code] + '" aria-label="Response ' + code + ', ' + RESPONSES[code] + '">' + code + '</span>'
+                  + (r[4] ? '<p class="desc">' + esc(r[4]) + '</p>' : '') + '</li>';
               });
               html += '</ul>' + (fold ? '<button class="more" type="button" data-n="' + rows.length + '">Show all ' + fmt(rows.length) + '</button>' : '') + '</div>';
             });
@@ -483,16 +487,19 @@
           html += '</section>';
           nav += '</ul></li>';
         });
+        // custom detections: a placeholder until the upload API is ready
+        nav += '<li><a class="jump-link" href="#custom" data-bucket="custom"><span>Custom detections</span><span class="c"></span></a></li>';
+        html += '<section class="bucket custom" id="custom" data-bucket="custom"><div class="bucket-head"><h2>Custom detections<span class="soon">Coming soon</span></h2>'
+          + '<p class="custom-body">Soon you’ll be able to upload your own detections through the <a href="/api/">VEX API</a>, and they’ll be listed here alongside the rest.</p></div></section>';
         html += '<div class="empty" id="empty" hidden></div>';
         catalog.innerHTML = html;
         jumpList.innerHTML = nav;
 
         // search index: one lowercase string per row (name, ID, group, source, description)
         rowEls = [].map.call(catalog.querySelectorAll('.row'), function(li){
-          var r = data.rows[+li.getAttribute('data-i')];
-          var t = data.tactics && data.tactics[r[2]];
+          var r = data.rows[+li.getAttribute('data-i')], code = resp(r);
           return { el:li, name:li.querySelector('.name'), id:li.querySelector('.id'), r:r,
-            hay:[r[3], r[4], r[2], sourceLabel(r[1]), r[5] || '', t ? t.plain + ' ' + t.id : ''].join(' ').toLowerCase() };
+            hay:[r[2], r[3], r[1], data.sources[r[0]].label, vendorLabel(data.sources[r[0]].vendor), r[4] || '', code, RESPONSES[code]].join(' ').toLowerCase() };
         });
         built = true;
         filter();
@@ -531,8 +538,8 @@
           x.el.hidden = !hit;
           if(hit){ shown++; }
           if(searching || x.marked){
-            x.name.innerHTML = highlight(x.r[3], hit ? words : []);
-            if(x.id){ x.id.innerHTML = highlight(x.r[4], hit ? words : []); }
+            x.name.innerHTML = highlight(x.r[2], hit ? words : []);
+            if(x.id){ x.id.innerHTML = highlight(x.r[3], hit ? words : []); }
             x.marked = searching;
           }
         });
@@ -549,23 +556,23 @@
           s.hidden = !n;
           s.querySelector('[data-count]').textContent = fmt(n);
           var link = jumpList.querySelector('[data-source="' + s.id + '"]');
-          link.parentNode.hidden = !n;
-          link.querySelector('.c').textContent = fmt(n);
+          if(link){ link.parentNode.hidden = !n; link.querySelector('.c').textContent = fmt(n); }
           var b = s.parentNode.getAttribute('data-bucket');
           bucketCounts[b] = (bucketCounts[b] || 0) + n;
         });
-        [].forEach.call(catalog.querySelectorAll('.bucket'), function(sec){
+        [].forEach.call(catalog.querySelectorAll('.bucket:not(.custom)'), function(sec){
           var b = sec.getAttribute('data-bucket'), n = bucketCounts[b] || 0;
           sec.hidden = !n;
           jumpList.querySelector('[data-bucket="' + b + '"]').parentNode.hidden = !n;
           jumpList.querySelector('[data-bucket="' + b + '"] .c').textContent = fmt(n);
         });
+        jumpList.querySelector('[data-bucket="custom"]').parentNode.hidden = searching;
         var empty = document.getElementById('empty');
         empty.hidden = shown > 0;
         if(!shown){ empty.innerHTML = '<strong>Nothing matches “' + esc(raw) + '”.</strong>Try a broader word, a service name like “AWS”, or part of an alert ID.'; }
         stats.innerHTML = searching
           ? '<strong>' + fmt(shown) + '</strong> of ' + fmt(rowEls.length) + ' detections match'
-          : '<strong>' + fmt(rowEls.length) + '</strong> detections from ' + integrationCount() + ' connected services, plus VEX’s own security tests';
+          : '<strong>' + fmt(rowEls.length) + '</strong> detections from ' + data.vendors.length + ' connected services';
         document.dispatchEvent(new CustomEvent('catalog:filtered'));
       }
 
@@ -597,15 +604,6 @@
         if(collapsed && g.getBoundingClientRect().top < 0){ g.scrollIntoView({ block:'start' }); }
       });
 
-      // review switch between label versions A and B (only when the JSON carries both)
-      review.addEventListener('click', function(e){
-        var b = e.target.closest('button');
-        if(!b || b.getAttribute('data-mode') === mode){ return; }
-        mode = b.getAttribute('data-mode');
-        [].forEach.call(review.querySelectorAll('button'), function(x){ x.setAttribute('aria-pressed', String(x === b)); });
-        render();
-      });
-
       var params = new URL(location.href).searchParams;
       if(params.get('q')){ q.value = params.get('q'); }
       fetch('detections.json').then(function(r){
@@ -613,7 +611,6 @@
         return r.json();
       }).then(function(json){
         data = json;
-        if(data.labels === 'both'){ review.hidden = false; }
         render();
       }).catch(function(){
         catalog.innerHTML = '<p class="load-error">The catalog didn’t load. Refresh the page to try again.</p>';

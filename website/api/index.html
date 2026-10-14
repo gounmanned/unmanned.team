@@ -191,6 +191,8 @@
   .param-table th:nth-child(4){width:100px;}
   .value-table th:first-child{width:72px;}
   .value-table th:nth-child(2):not(:last-child){width:140px;}
+  .value-table--wide th:first-child,.value-table--wide th:nth-child(2):not(:last-child){width:auto;} /* the Managed comparison: words, not codes */
+  .value-table--wide td:first-child{font-family:inherit;font-weight:600;}
   .req,.opt{font-weight:600;font-size:12px;}
   .req{color:var(--pink-text);}
   .opt{color:var(--surface-dark);}
@@ -326,9 +328,10 @@
         </button>
         <ul class="jump-list" id="jump-list">
           <li><a class="jump-link" href="#auth">Authentication</a></li>
+          <li><a class="jump-link" href="#managed">Managed</a></li>
           <li><a class="jump-link" href="#signals">Signals</a></li>
           <li><a class="jump-link" href="#monitors">Monitors</a></li>
-          <li><a class="jump-link" href="#assets">Assets</a></li>
+          <li><a class="jump-link" href="#identities">Identities</a></li>
           <li><a class="jump-link" href="#notifications">Notifications</a></li>
           <li><a class="jump-link" href="#files">Files</a></li>
           <li><a class="jump-link" href="#audit">Audit</a></li>
@@ -402,28 +405,75 @@
       </div>
       <div class="endpoint" id="account-delegation">
         <div class="endpoint-head">
-          <h3 class="endpoint-title">Delegating into an account</h3>
+          <h3 class="endpoint-title">One login, many accounts: the account header</h3>
         </div>
-        <p class="endpoint-desc">By default every call in this reference runs against your root tenant account — the one tied to your own account domain. If you manage other accounts, you can redirect any call to one of them.</p>
+        <p class="endpoint-desc">If you manage other accounts, you don’t need a login for each one. Use the same token, and add an <code>account</code> header to say which account a call is for.</p>
         <div class="callout">
           <div class="eyebrow-label"><span class="status-dot"></span>Account header</div>
-          <p>Pass an <code>account</code> header on any request in this doc and VEX delegates that call into the named account instead of your root tenant. Accounts are named after domains — <code>example.com</code>, not an internal ID.</p>
-          <p>You need permission to manage the account you're delegating into. Omit the header and everything runs against your own account domain, same as always.</p>
+          <p>Pass the <code>account</code> header on any request and the call runs inside that account instead of your own. Accounts are named by their domain, like <code>example.com</code>, not an internal ID.</p>
+          <p>It works the same on every endpoint in this reference: signals, monitors, identities, notifications, files and audit. Leave it out and the call runs against your own account.</p>
+          <p>You need permission to manage the account you name. To see every managed account at once instead of one at a time, use the <a href="#managed">managed routes</a>.</p>
         </div>
         <table class="param-table">
           <thead><tr><th>Header</th><th>In</th><th>Type</th><th></th><th>Description</th></tr></thead>
           <tbody>
-            <tr><td>account</td><td>header</td><td>string, domain</td><td><span class="opt">Optional</span></td><td>The customer account to delegate into, e.g. <code>example.com</code>. Requires permission on that account. Omit to run against your root tenant.</td></tr>
+            <tr><td>account</td><td>header</td><td>string, domain</td><td><span class="opt">Optional</span></td><td>The account to run the call in, e.g. <code>example.com</code>. Requires permission on that account. Leave it out to use your own account.</td></tr>
           </tbody>
         </table>
         <div class="code-panel">
           <div class="code-head"><span class="code-file">delegate.sh</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy delegate.sh to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
-          <pre><code><span class="t-cmnt"># Runs against example.com instead of your own account</span>
+          <pre><code><span class="t-cmnt"># Lists the monitors in example.com instead of your own account</span>
 <span class="t-fn">curl</span> https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/monitor \
   -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span> \
   -H <span class="t-str">"account: example.com"</span></code></pre>
         </div>
-        <p class="note">This applies to every endpoint in this reference the same way — monitors, signals, assets, files, all of it. One header, no separate delegated tokens to manage.</p>
+      </div>
+    </section>
+
+    <section class="api-section" id="managed">
+      <div class="section-head">
+        <h2>Managed</h2>
+        <p class="lede">If you manage several accounts, these routes return data from all of them in a single call. No <code>account</code> header needed.</p>
+      </div>
+      <div class="callout">
+        <div class="eyebrow-label"><span class="status-dot"></span>One account, or all of them</div>
+        <table class="value-table value-table--wide">
+          <thead><tr><th>To work with</th><th>Use</th><th>Where</th></tr></thead>
+          <tbody>
+            <tr><td>One account at a time</td><td>The <code>account</code> header</td><td>Any endpoint in this reference</td></tr>
+            <tr><td>Every account at once</td><td>A <code>/managed</code> route</td><td>Signals and identities</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="endpoint" id="get-managed-signal">
+        <div class="endpoint-head">
+          <span class="method method--get">GET</span>
+          <h3 class="endpoint-path">/managed/signal</h3>
+          <span class="endpoint-status">200 OK</span>
+        </div>
+        <p class="endpoint-desc">Every open signal across every account you manage, in one call.</p>
+        <div class="callout">
+          <div class="eyebrow-label"><span class="status-dot"></span>Multi-tenant shortcut</div>
+          <p>If you manage several accounts, this is the one call worth knowing about: it returns every open signal across all of them in a single response, so you don't have to loop over each account with the <code>account</code> header just to check for open work.</p>
+        </div>
+        <div class="code-panel">
+          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy request to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
+          <pre><code><span class="t-fn">curl</span> https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/managed/signal \
+  -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span></code></pre>
+        </div>
+      </div>
+      <div class="endpoint" id="get-managed-asset">
+        <div class="endpoint-head">
+          <span class="method method--get">GET</span>
+          <h3 class="endpoint-path">/managed/asset</h3>
+          <span class="endpoint-status">200 OK</span>
+        </div>
+        <p class="endpoint-desc">Every identity across every account you manage, in one call.</p>
+        <div class="code-panel">
+          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy request to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
+          <pre><code><span class="t-fn">curl</span> https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/managed/asset \
+  -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span></code></pre>
+        </div>
       </div>
     </section>
 
@@ -442,20 +492,6 @@
             <tr><td>CH</td><td>Resolved</td><td>Confirmed resolved and archived.</td></tr>
             <tr><td>CR</td><td>Accepted risk</td><td>Customer accepted the risk on this ticket.</td></tr>
             <tr><td>CV</td><td>Auto-closed</td><td>VEX closed with high confidence.</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="callout">
-        <div class="eyebrow-label"><span class="status-dot"></span>Signal severity values</div>
-        <p>The <code>severity</code> field is a 1–5 scale, most urgent first.</p>
-        <table class="value-table">
-          <thead><tr><th>Value</th><th>Label</th></tr></thead>
-          <tbody>
-            <tr><td>1</td><td>critical</td></tr>
-            <tr><td>2</td><td>high</td></tr>
-            <tr><td>3</td><td>medium</td></tr>
-            <tr><td>4</td><td>low</td></tr>
-            <tr><td>5</td><td>info</td></tr>
           </tbody>
         </table>
       </div>
@@ -485,7 +521,6 @@
     <span class="t-key">"id"</span>: <span class="t-num">482910736244</span>,
     <span class="t-key">"source"</span>: <span class="t-str">"google"</span>,
     <span class="t-key">"name"</span>: <span class="t-str">"login.new_location"</span>,
-    <span class="t-key">"severity"</span>: <span class="t-num">3</span>,
     <span class="t-key">"created"</span>: <span class="t-str">"2026-08-27T22:04:12Z"</span>,
     <span class="t-key">"updated"</span>: <span class="t-str">"2026-08-27T22:04:12Z"</span>,
     <span class="t-key">"value"</span>: <span class="t-str">"Login for jsmith@acmecorp.com from a new country"</span>,
@@ -502,7 +537,6 @@
     <span class="t-key">"id"</span>: <span class="t-num">719203845561</span>,
     <span class="t-key">"source"</span>: <span class="t-str">"microsoft"</span>,
     <span class="t-key">"name"</span>: <span class="t-str">"mfa.disabled"</span>,
-    <span class="t-key">"severity"</span>: <span class="t-num">1</span>,
     <span class="t-key">"created"</span>: <span class="t-str">"2026-08-27T22:06:03Z"</span>,
     <span class="t-key">"updated"</span>: <span class="t-str">"2026-08-27T22:06:03Z"</span>,
     <span class="t-key">"value"</span>: <span class="t-str">"MFA disabled for an admin account"</span>,
@@ -536,7 +570,6 @@
   <span class="t-key">"id"</span>: <span class="t-num">719203845561</span>,
   <span class="t-key">"source"</span>: <span class="t-str">"microsoft"</span>,
   <span class="t-key">"name"</span>: <span class="t-str">"mfa.disabled"</span>,
-  <span class="t-key">"severity"</span>: <span class="t-num">1</span>,
   <span class="t-key">"created"</span>: <span class="t-str">"2026-08-27T22:06:03Z"</span>,
   <span class="t-key">"updated"</span>: <span class="t-str">"2026-08-27T22:06:03Z"</span>,
   <span class="t-key">"value"</span>: <span class="t-str">"MFA disabled for an admin account"</span>,
@@ -551,23 +584,6 @@
 }</code></pre>
         </div>
       </div>
-      <div class="endpoint" id="get-managed-signal">
-        <div class="endpoint-head">
-          <span class="method method--get">GET</span>
-          <h3 class="endpoint-path">/managed/signal</h3>
-          <span class="endpoint-status">200 OK</span>
-        </div>
-        <p class="endpoint-desc">Every open signal across every account you manage, in one call.</p>
-        <div class="callout">
-          <div class="eyebrow-label"><span class="status-dot"></span>Multi-tenant shortcut</div>
-          <p>If you manage several accounts, this is the one call worth knowing about: it returns every open signal across all of them in a single response, so you don't have to loop over each account with the <code>account</code> header just to check for open work.</p>
-        </div>
-        <div class="code-panel">
-          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy request to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
-          <pre><code><span class="t-fn">curl</span> https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/managed/signal \
-  -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span></code></pre>
-        </div>
-      </div>
     </section>
 
     <section class="api-section" id="monitors">
@@ -577,8 +593,9 @@
       </div>
       <div class="callout">
         <div class="eyebrow-label"><span class="status-dot"></span>Monitor keys</div>
-        <p>Every monitor is identified by a three-part key: <code>account/vendor/index</code> — e.g. <code>acmecorp.com/google/0</code>.</p>
-        <p>The <code>account</code> is the domain the monitor belongs to, and <code>vendor</code> is the slug for what it's watching (<code>google</code>, <code>microsoft</code>, and so on). The <code>index</code> is what lets you connect more than one of the same vendor — say, two separate Microsoft 365 tenants — by giving each its own <code>index</code> under the same vendor slug.</p>
+        <p>Every monitor is identified by a three-part key: <code>account/vendor/index</code>, e.g. <code>acmecorp.com/google/0</code>.</p>
+        <p>The <code>account</code> is the domain the monitor belongs to, and <code>vendor</code> is the slug for what it’s watching (<code>google</code>, <code>microsoft</code> and so on). The <code>index</code> tells apart two monitors for the same vendor, say two separate Microsoft 365 tenants.</p>
+        <p>You don’t choose the index: VEX assigns it when you connect a monitor, and <code>GET /monitor</code> lists it. You only need it to disconnect a monitor.</p>
       </div>
       <div class="endpoint" id="get-monitor">
         <div class="endpoint-head">
@@ -610,14 +627,14 @@
         <table class="param-table">
           <thead><tr><th>Parameter</th><th>In</th><th>Type</th><th></th><th>Description</th></tr></thead>
           <tbody>
-            <tr><td>name</td><td>path</td><td>string</td><td><span class="req">Required</span></td><td>Monitor slug with index, e.g. <code>google/0</code> or <code>microsoft/0</code>.</td></tr>
+            <tr><td>name</td><td>path</td><td>string</td><td><span class="req">Required</span></td><td>Monitor slug, e.g. <code>google</code> or <code>microsoft</code>. No index: VEX assigns one.</td></tr>
           </tbody>
         </table>
         <p class="note">Body shape depends on the provider. The two most common patterns:</p>
         <div class="code-panel">
           <div class="code-head"><span class="code-file">connect-monitor.sh</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy connect-monitor.sh to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code><span class="t-cmnt"># Google Workspace: service account JSON key</span>
-<span class="t-fn">curl</span> -X POST https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/monitor/google/0 \
+<span class="t-fn">curl</span> -X POST https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/monitor/google \
   -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span> \
   -H <span class="t-str">"Content-Type: application/json"</span> \
   -d <span class="t-str">'{
@@ -629,7 +646,7 @@
   }'</span>
 
 <span class="t-cmnt"># Microsoft 365: app registration credentials</span>
-<span class="t-fn">curl</span> -X POST https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/monitor/microsoft/0 \
+<span class="t-fn">curl</span> -X POST https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/monitor/microsoft \
   -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span> \
   -H <span class="t-str">"Content-Type: application/json"</span> \
   -d <span class="t-str">'{
@@ -646,10 +663,17 @@
       <div class="endpoint" id="delete-monitor">
         <div class="endpoint-head">
           <span class="method method--delete">DELETE</span>
-          <h3 class="endpoint-path">/monitor/{name}</h3>
+          <h3 class="endpoint-path">/monitor/{name}/{index}</h3>
           <span class="endpoint-status">204 No Content</span>
         </div>
         <p class="endpoint-desc">Disconnects a monitor. VEX stops watching that surface immediately. We'll miss it more than you will.</p>
+        <table class="param-table">
+          <thead><tr><th>Parameter</th><th>In</th><th>Type</th><th></th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>name</td><td>path</td><td>string</td><td><span class="req">Required</span></td><td>Monitor slug, e.g. <code>google</code>.</td></tr>
+            <tr><td>index</td><td>path</td><td>integer</td><td><span class="req">Required</span></td><td>Which monitor to disconnect, e.g. <code>0</code>. <code>GET /monitor</code> lists each monitor with its index.</td></tr>
+          </tbody>
+        </table>
         <div class="code-panel">
           <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy request to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code><span class="t-fn">curl</span> -X DELETE https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/monitor/google/0 \
@@ -658,10 +682,10 @@
       </div>
     </section>
 
-    <section class="api-section" id="assets">
+    <section class="api-section" id="identities">
       <div class="section-head">
-        <h2>Assets</h2>
-        <p class="lede">The inventory VEX has built of your business from the monitors you've connected: domains, identities, endpoints, whatever else showed up. This is what "surface" actually refers to everywhere else in this reference.</p>
+        <h2>Identities</h2>
+        <p class="lede">The people VEX knows about in your business, found through the monitors you’ve connected. Each identity is a person, named by their email address.</p>
       </div>
       <div class="endpoint" id="get-asset">
         <div class="endpoint-head">
@@ -669,7 +693,7 @@
           <h3 class="endpoint-path">/asset</h3>
           <span class="endpoint-status">200 OK</span>
         </div>
-        <p class="endpoint-desc">Every asset VEX currently knows about, across every connected monitor. No filtering needed to get the full picture — this is the full picture.</p>
+        <p class="endpoint-desc">Every identity VEX currently knows about, across every connected monitor. No filtering needed: this is the full list.</p>
         <div class="code-panel">
           <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy request to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code><span class="t-fn">curl</span> https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/asset \
@@ -680,11 +704,11 @@
           <pre><code>[
   {
     <span class="t-key">"account"</span>: <span class="t-str">"acmecorp.com"</span>,
-    <span class="t-key">"key"</span>: <span class="t-str">"asset#jsmith@acmecorp.com"</span>,
+    <span class="t-key">"key"</span>: <span class="t-str">"asset#priya.shah@acmecorp.com"</span>,
     <span class="t-key">"metadata"</span>: {
       <span class="t-key">"group"</span>: <span class="t-str">"identity"</span>
     },
-    <span class="t-key">"name"</span>: <span class="t-str">"jsmith@acmecorp.com"</span>,
+    <span class="t-key">"name"</span>: <span class="t-str">"priya.shah@acmecorp.com"</span>,
     <span class="t-key">"source"</span>: <span class="t-str">"google"</span>,
     <span class="t-key">"status"</span>: <span class="t-str">"A0"</span>,
     <span class="t-key">"ttl"</span>: <span class="t-num">1788185460</span>,
@@ -692,19 +716,19 @@
   },
   {
     <span class="t-key">"account"</span>: <span class="t-str">"acmecorp.com"</span>,
-    <span class="t-key">"key"</span>: <span class="t-str">"asset#acmecorp.com"</span>,
+    <span class="t-key">"key"</span>: <span class="t-str">"asset#marcus.reed@acmecorp.com"</span>,
     <span class="t-key">"metadata"</span>: {
-      <span class="t-key">"group"</span>: <span class="t-str">"domain"</span>
+      <span class="t-key">"group"</span>: <span class="t-str">"identity"</span>
     },
-    <span class="t-key">"name"</span>: <span class="t-str">"acmecorp.com"</span>,
-    <span class="t-key">"source"</span>: <span class="t-str">"cloudflare"</span>,
+    <span class="t-key">"name"</span>: <span class="t-str">"marcus.reed@acmecorp.com"</span>,
+    <span class="t-key">"source"</span>: <span class="t-str">"microsoft"</span>,
     <span class="t-key">"status"</span>: <span class="t-str">"A0"</span>,
     <span class="t-key">"ttl"</span>: <span class="t-num">1788185602</span>,
     <span class="t-key">"updated"</span>: <span class="t-str">"2026-06-02T14:13:22Z"</span>
   }
 ]</code></pre>
         </div>
-        <p class="note">Assets accumulate as monitors connect, and expire on their own via <code>ttl</code> if they haven't been seen in a while — no need to remove them by hand.</p>
+        <p class="note">Identities accumulate as monitors connect, and expire on their own via <code>ttl</code> if they haven’t been seen in a while. No need to remove them by hand.</p>
       </div>
     </section>
 
@@ -814,16 +838,16 @@
           <h3 class="endpoint-path">/audit</h3>
           <span class="endpoint-status">200 OK</span>
         </div>
-        <p class="endpoint-desc">SIEM log entries collected across your connected monitors over the requested window.</p>
+        <p class="endpoint-desc">SIEM log entries from your connected monitors that match your search.</p>
         <table class="param-table">
           <thead><tr><th>Parameter</th><th>In</th><th>Type</th><th></th><th>Description</th></tr></thead>
           <tbody>
-            <tr><td>hours</td><td>query</td><td>integer</td><td><span class="opt">Optional</span></td><td>How many hours back to pull logs for. Defaults to <code>24</code>.</td></tr>
+            <tr><td>q</td><td>query</td><td>string</td><td><span class="req">Required</span></td><td>What to search for, the way you’d search the web, e.g. <code>dmarc</code>. Returns the log lines that match.</td></tr>
           </tbody>
         </table>
         <div class="code-panel">
           <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy request to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
-          <pre><code><span class="t-fn">curl</span> <span class="t-str">"https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/audit?hours=24"</span> \
+          <pre><code><span class="t-fn">curl</span> <span class="t-str">"https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/audit?q=dmarc"</span> \
   -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span></code></pre>
         </div>
         <div class="code-panel">

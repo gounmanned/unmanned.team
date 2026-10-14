@@ -305,8 +305,20 @@
   .pv-stack .pv-story{margin-top:88px;display:flex;flex-direction:column;gap:24px;}
   .pv-stack .pv-stage--box{height:300px;margin-top:0;}
   .pv-stack .pv-call{position:static;width:auto;margin-top:8px;}
-  .pv-stack .pv-lines li{opacity:0.35;}
-  .pv-stack .pv-lines li.is-seen{opacity:1;}
+  /* phones: one moment at a time, in a caption sized to the longest one (--cap-h, measured by the script),
+     so the cube below never moves; dots show where you are. Reduced motion shows every line. */
+  .pv-stack .pv-lines{min-height:var(--cap-h, 6.5em);}
+  .pv-stack .pv-lines li{display:none;font-size:17px;color:var(--ink);}
+  .pv-stack .pv-lines li.is-now{display:block;animation:pv-cap 0.5s ease both;}
+  @keyframes pv-cap{from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none}}
+  .pv-dots{display:flex;gap:8px;margin-top:-8px;}
+  .pv-dots i{width:8px;height:8px;box-sizing:border-box;border-radius:50%;border:1.5px solid var(--gray-faint);background:#fff;transition:background-color 0.3s ease, border-color 0.3s ease;}
+  .pv-dots i.is-seen{background:var(--gray-faint);}
+  .pv-dots i.is-now{background:var(--pink);border-color:var(--pink);}
+  @media (prefers-reduced-motion: reduce){
+    .pv-stack .pv-lines li{display:block;animation:none;}
+    .pv-dots{display:none;}
+  }
   .pv-replay{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;padding:0;border:0;background:none;font:500 14px var(--font-sans);color:var(--pink-text);cursor:pointer;
     opacity:0;pointer-events:none;transition:opacity 0.3s ease;}
   .pv-replay.is-on{opacity:1;pointer-events:auto;}
@@ -513,7 +525,7 @@
       </div>
       <div class="pv-story">
         <h2 class="pv-head">A different kind of prevention.</h2>
-        <ol class="pv-lines">
+        <ol class="pv-lines" aria-live="polite">
             <li class="beat" data-from="3"><span>Most AI SOCs start at the alert.</span></li>
             <li data-from="3"><span>VEX starts before, by knowing how attackers work, AI and human.</span></li>
             <li class="beat" data-from="4"><span>It scans the system and identifies weak points.</span></li>
@@ -522,6 +534,7 @@
             <li class="beat" data-from="7"><span>The gap is tested again and watched.</span></li>
             <li class="pv-more" data-from="7"><a class="text-link" href="/detections/" target="_blank" rel="noopener">Want to see everything we detect? <img src="../static/icon-arrow-right-pink.svg" width="16" height="16" alt=""></a></li>
         </ol>
+        <div class="pv-dots" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
         <div>
           <div class="pv-stage pv-stage--box" role="img" aria-label="VEX scans your systems, finds an old sign-in method that skips MFA, turns it off, then tests it again."><canvas data-scene="box"></canvas></div>
           <div class="pv-call" aria-hidden="true"><b data-t></b><span></span><span></span><span></span></div>
@@ -1256,11 +1269,24 @@
       var AT = [0, 300, 1500, 3300, 5300, 9900, 14700, 17500], timers = [], played = false;
       function play(){
         timers.forEach(clearTimeout); timers = []; replay.classList.remove('is-on');
-        if(reduce){ bs.setStep(5); showLines(blines, 7); return; }
-        bs.step = -1; bs.scanT = null; bs.setStep(0); showLines(blines, 0);
-        AT.forEach(function(at, n){ timers.push(setTimeout(function(){ bs.setStep(SCENE[n]); showLines(blines, n); if(n === 7){ timers.push(setTimeout(function(){ replay.classList.add('is-on'); }, 2400)); } }, at)); });
+        if(reduce){ bs.setStep(5); showLinesPhone(7); return; }
+        bs.step = -1; bs.scanT = null; bs.setStep(0); showLinesPhone(0);
+        AT.forEach(function(at, n){ timers.push(setTimeout(function(){ bs.setStep(SCENE[n]); showLinesPhone(n); if(n === 7){ timers.push(setTimeout(function(){ replay.classList.add('is-on'); }, 2400)); } }, at)); });
       }
-      bs.setStep(reduce ? 5 : 0); showLines(blines, reduce ? 7 : 0);
+      // phone caption: size it to its longest moment, and move the dots with the story
+      var bol = stack.querySelector('.pv-story .pv-lines'), dots = [].slice.call(stack.querySelectorAll('.pv-dots i')), shown = 0;
+      function fitCaption(){
+        var tallest = 0;
+        for(var k = 3; k <= 7; k++){ showLines(blines, k); tallest = Math.max(tallest, bol.scrollHeight); }
+        bol.style.setProperty('--cap-h', tallest + 'px'); showLines(blines, shown);
+      }
+      var showLinesPhone = function(n){
+        shown = n; showLines(blines, n);
+        dots.forEach(function(d, i){ var at = i + 3; d.classList.toggle('is-seen', n > at); d.classList.toggle('is-now', n === at || (n > 7 && i === 4)); });
+      };
+      bs.setStep(reduce ? 5 : 0); showLinesPhone(reduce ? 7 : 0);
+      bol.style.minHeight = '0px'; fitCaption(); bol.style.minHeight = '';
+      window.addEventListener('resize', function(){ if(!desktop.matches){ bol.style.minHeight = '0px'; fitCaption(); bol.style.minHeight = ''; } });
       scenes.push(bs);
       bs.onShow = function(){ if(!played && !desktop.matches){ played = true; play(); } };
       if('IntersectionObserver' in window){

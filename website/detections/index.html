@@ -40,6 +40,7 @@
     --gray-faint:#c4c4c4;
     --surface-dark:#6c6c70;
     --surface-gray:#f7f7f7;
+    --go-text:#0e7c52;       /* code strings (from the API page) */
     --body:#2b2b2b;
     --classbar-h:26px;
     --mono:'JetBrains Mono',ui-monospace,monospace;
@@ -275,13 +276,41 @@
   .drawer-close:hover{background:var(--surface-gray);}
   .drawer-close img{width:20px;height:20px;}
   .drawer-body{flex:1;overflow-y:auto;padding:24px 28px 28px;}
-  .snippet{border:1px solid var(--gray-line);border-radius:2px;background:var(--surface-gray);}
-  .snippet-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 8px 8px 14px;border-bottom:1px solid var(--gray-line);
-    font:500 12px/1.5 var(--mono);color:var(--surface-dark);}
-  .snippet-copy{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border:1px solid var(--gray-line);border-radius:2px;background:#fff;cursor:pointer;
-    font:500 12px/16px var(--font-sans);color:var(--ink);}
-  .snippet-copy:hover{border-color:var(--ink);}
-  .snippet pre{margin:0;padding:14px;overflow-x:auto;font:400 12.5px/1.65 var(--mono);color:var(--ink);tab-size:4;}
+  /* the code panel, copy button and highlight colors: the same as the API page */
+  .copy-btn{position:relative;flex-shrink:0;display:flex;padding:2px;border:none;background:none;cursor:pointer;border-radius:4px;}
+  .copy-btn:hover{background:rgba(11,12,13,0.06);}
+  .copy-btn img{width:20px;height:20px;display:block;}
+  .tooltip{
+    position:absolute;top:calc(100% + 12px);left:50%;transform:translateX(-50%) translateY(-4px);
+    padding:8px 12px;border-radius:4px;background:var(--surface-dark);color:#fff;
+    font-family:var(--font-sans);font-size:13px;line-height:normal;white-space:nowrap;
+    filter:drop-shadow(0 6px 4px rgba(0,0,0,0.16));
+    opacity:0;visibility:hidden;pointer-events:none;
+    transition:opacity 0.15s ease, transform 0.15s ease, visibility 0s linear 0.15s;z-index:5;
+  }
+  .tooltip::before{
+    content:'';position:absolute;bottom:100%;left:50%;margin-left:-8px;
+    border:8px solid transparent;border-top:0;border-bottom-color:var(--surface-dark);
+  }
+  .copy-btn:hover .tooltip,.copy-btn:focus-visible .tooltip,.copy-btn.is-copied .tooltip{
+    opacity:1;visibility:visible;transform:translateX(-50%) translateY(0);transition:opacity 0.15s ease, transform 0.15s ease, visibility 0s;
+  }
+  .code-head .tooltip{left:auto;right:-6px;transform:translateY(-4px);} /* keep the tooltip inside the panel */
+  .code-head .tooltip::before{left:auto;right:8px;margin-left:0;}
+  .code-head .copy-btn:hover .tooltip,.code-head .copy-btn:focus-visible .tooltip,.code-head .copy-btn.is-copied .tooltip{transform:translateY(0);}
+  .code-panel{border:1px solid var(--gray-line);border-radius:4px;background:var(--surface-gray);}
+  .code-head{display:flex;align-items:center;gap:10px;padding:8px 10px 8px 16px;background:var(--surface-alt);border-bottom:1px solid var(--gray-line);border-radius:4px 4px 0 0;}
+  .code-file{font-family:var(--mono);font-weight:500;font-size:12px;color:var(--ink);}
+  .code-lang{flex:1;font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--pink-text);}
+  .code-panel pre{margin:0;padding:16px 16px 18px;overflow-x:auto;} /* long lines scroll sideways inside the panel */
+  .code-panel pre code{font-size:12.5px;line-height:1.7;white-space:pre;}
+  /* code colours (all pass 4.5:1 on the light panel) */
+  .t-fn{color:#2f5f96;}
+  .t-kw{color:var(--pink-text);}
+  .t-str{color:var(--go-text);}
+  .t-num{color:#8a5a00;}
+  .t-key{color:#7a3fc4;}
+  .t-cmnt{color:var(--surface-dark);font-style:italic;}
   .drawer-foot{padding:16px 28px;border-top:1px solid var(--gray-line);background:var(--surface-gray);}
   .drawer-foot a{display:inline-flex;align-items:center;gap:6px;font-weight:500;font-size:14px;color:var(--pink-text);text-decoration:none;}
   .drawer-foot img{width:16px;height:16px;}
@@ -450,67 +479,69 @@
         <button class="drawer-close" type="button" data-close aria-label="Close"><img src="../static/icon-close.svg" width="20" height="20" alt=""></button>
       </div>
       <div class="drawer-body">
-        <div class="snippet">
-          <div class="snippet-head"><span>custom_detections.py</span><button class="snippet-copy" type="button"><img src="../static/icon-copy.svg" width="14" height="14" alt=""><span>Copy</span></button></div>
-          <pre><code>import os
-import time
-from datetime import datetime, timedelta, timezone
+        <div class="code-panel">
+          <div class="code-head"><span class="code-file">custom_detections.py</span><span class="code-lang">Python</span><button class="copy-btn" type="button" aria-label="Copy custom_detections.py to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
+          <pre><code><span class="t-kw">import</span> os
+<span class="t-kw">import</span> time
+<span class="t-kw">from</span> datetime <span class="t-kw">import</span> datetime, timedelta, timezone
 
-import requests
+<span class="t-kw">import</span> requests
 
-INTERVAL = 300
+INTERVAL = <span class="t-num">300</span>
 
 
-""" Authenticate with VEX """
-def login():
-    resp = requests.post(
-        "https://cognito-idp.us-east-2.amazonaws.com",
+<span class="t-cmnt">""" Authenticate with VEX """</span>
+<span class="t-kw">def</span> <span class="t-fn">login</span>():
+    resp = requests.<span class="t-fn">post</span>(
+        <span class="t-str">"https://cognito-idp.us-east-2.amazonaws.com"</span>,
         headers={
-            "Content-Type": "application/x-amz-json-1.1",
-            "X-Amz-Target": "AWSCognitoIdentityProviderService.InitiateAuth",
+            <span class="t-str">"Content-Type"</span>: <span class="t-str">"application/x-amz-json-1.1"</span>,
+            <span class="t-str">"X-Amz-Target"</span>: <span class="t-str">"AWSCognitoIdentityProviderService.InitiateAuth"</span>,
         },
         json={
-            "AuthFlow": "USER_PASSWORD_AUTH",
-            "ClientId": "2314edi18c3o3t8sroh2u2hucf",
-            "AuthParameters": {
-                "USERNAME": os.environ["VEX_USERNAME"],
-                "PASSWORD": os.environ["VEX_PASSWORD"],
+            <span class="t-str">"AuthFlow"</span>: <span class="t-str">"USER_PASSWORD_AUTH"</span>,
+            <span class="t-str">"ClientId"</span>: <span class="t-str">"2314edi18c3o3t8sroh2u2hucf"</span>,
+            <span class="t-str">"AuthParameters"</span>: {
+                <span class="t-str">"USERNAME"</span>: os.environ[<span class="t-str">"VEX_USERNAME"</span>],
+                <span class="t-str">"PASSWORD"</span>: os.environ[<span class="t-str">"VEX_PASSWORD"</span>],
             },
         },
     )
-    resp.raise_for_status()
-    return resp.json()["AuthenticationResult"]["IdToken"]
+    resp.<span class="t-fn">raise_for_status</span>()
+    <span class="t-kw">return</span> resp.<span class="t-fn">json</span>()[<span class="t-str">"AuthenticationResult"</span>][<span class="t-str">"IdToken"</span>]
 
 
-""" Pull audit logs between timestamps from VEX """
-def poll(start, end):
-    session = requests.Session()
-    session.headers["Authorization"] = f"Bearer {login()}"
+<span class="t-cmnt">""" Pull audit logs between timestamps from VEX """</span>
+<span class="t-kw">def</span> <span class="t-fn">poll</span>(start, end):
+    session = requests.<span class="t-fn">Session</span>()
+    session.headers[<span class="t-str">"Authorization"</span>] = <span class="t-str">f"Bearer {login()}"</span>
 
-    resp = session.get("https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/audit", params={"start": start, "end": end})
-    resp.raise_for_status()
+    resp = session.<span class="t-fn">get</span>(<span class="t-str">"https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/audit"</span>, params={<span class="t-str">"start"</span>: start, <span class="t-str">"end"</span>: end})
+    resp.<span class="t-fn">raise_for_status</span>()
 
-    for log in resp.json():
-        run_rules(session, log)
-
-
-""" Run a custom ruleset and POST matches to VEX """
-def run_rules(session, line):
-    if "MALICIOUS" in line:
-        signal = {"name": "audit.malicious", "source": "specialsauce", "value": line}
-        session.post("https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/signal", json=signal)
+    <span class="t-kw">for</span> log <span class="t-kw">in</span> resp.<span class="t-fn">json</span>():
+        <span class="t-fn">run_rules</span>(session, log)
 
 
-end = (datetime.now(timezone.utc) - timedelta(seconds=INTERVAL)).strftime("%Y-%m-%dT%H:%M:%SZ")
-while True:
-    start, end = end, datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-    poll(start, end)
-    time.sleep(INTERVAL)</code></pre>
+<span class="t-cmnt">""" Run a custom ruleset and POST matches to VEX """</span>
+<span class="t-kw">def</span> <span class="t-fn">run_rules</span>(session, line):
+    <span class="t-kw">if</span> <span class="t-str">"MALICIOUS"</span> <span class="t-kw">in</span> line:
+        signal = {<span class="t-str">"name"</span>: <span class="t-str">"audit.malicious"</span>, <span class="t-str">"source"</span>: <span class="t-str">"specialsauce"</span>, <span class="t-str">"value"</span>: line}
+        session.<span class="t-fn">post</span>(<span class="t-str">"https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/signal"</span>, json=signal)
+
+
+end = (datetime.<span class="t-fn">now</span>(timezone.utc) - <span class="t-fn">timedelta</span>(seconds=INTERVAL)).<span class="t-fn">strftime</span>(<span class="t-str">"%Y-%m-%dT%H:%M:%SZ"</span>)
+<span class="t-kw">while</span> <span class="t-kw">True</span>:
+    start, end = end, datetime.<span class="t-fn">now</span>(timezone.utc).<span class="t-fn">strftime</span>(<span class="t-str">"%Y-%m-%dT%H:%M:%SZ"</span>)
+    <span class="t-fn">poll</span>(start, end)
+    time.<span class="t-fn">sleep</span>(INTERVAL)</code></pre>
         </div>
       </div>
       <div class="drawer-foot"><a href="/api/">VEX API reference <img src="../static/icon-arrow-right-pink.svg" width="16" height="16" alt=""></a></div>
     </div>
   </div>
+
+  <span class="visually-hidden" id="copy-status" role="status"></span>
 
   <button class="to-top" id="to-top" type="button"><span class="to-top-icon" aria-hidden="true"></span>Top</button>
 
@@ -584,12 +615,26 @@ while True:
             else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
           }
         });
-        var copyBtn = d.querySelector('.snippet-copy'), copyLabel = copyBtn.querySelector('span');
-        copyBtn.addEventListener('click', function(){
-          if(!navigator.clipboard){ return; }
-          navigator.clipboard.writeText(d.querySelector('.snippet code').textContent).then(function(){
-            copyLabel.textContent = 'Copied';
-            setTimeout(function(){ copyLabel.textContent = 'Copy'; }, 1600);
+        var status = document.getElementById('copy-status');
+        function fallback(text, done){
+          var box = document.createElement('textarea');
+          box.value = text; box.setAttribute('readonly', '');
+          box.style.position = 'fixed'; box.style.opacity = '0';
+          document.body.appendChild(box); box.select();
+          try { if(document.execCommand('copy')){ done(); } } catch(e){}
+          document.body.removeChild(box);
+        }
+        [].forEach.call(d.querySelectorAll('.copy-btn'), function(btn){
+          var timer, tip = btn.querySelector('.tooltip');
+          btn.addEventListener('click', function(){
+            var text = btn.closest('.code-panel').querySelector('pre').textContent.trim();
+            function done(){
+              tip.textContent = 'Copied'; status.textContent = 'Copied to clipboard'; btn.classList.add('is-copied');
+              clearTimeout(timer);
+              timer = setTimeout(function(){ btn.classList.remove('is-copied'); tip.textContent = 'copy to clipboard'; status.textContent = ''; }, 1600);
+            }
+            if(navigator.clipboard && window.isSecureContext){ navigator.clipboard.writeText(text).then(done, function(){ fallback(text, done); }); }
+            else { fallback(text, done); }
           });
         });
       })();

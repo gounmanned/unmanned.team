@@ -15,7 +15,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 9px 18px;
+    padding: 9px 12px 9px 18px;
     background: var(--accent);
     color: #fff;
     font-size: 11.5px;
@@ -38,6 +38,27 @@
     white-space: nowrap;
   }
 
+  .delete-btn {
+    display: grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border: none;
+    border-radius: 6px;
+    background: none;
+    color: rgba(255,255,255,0.75);
+    cursor: pointer;
+    transition: background-color 0.15s, color 0.15s;
+
+    &:hover {
+      background: rgba(255,255,255,0.18);
+      color: #fff;
+    }
+
+    .material-symbols-outlined { font-size: 16px; }
+  }
+
   /* ── Thread ─────────────────────────────────────────────────── */
 
   .thread {
@@ -45,43 +66,6 @@
     min-height: 0;
     overflow-y: auto;
     background: var(--surface);
-  }
-
-  .updates {
-    list-style: none;
-    margin: 0;
-    padding: 0 0 12px;
-
-    > li {
-      position: relative;
-      display: grid;
-      grid-template-columns: 28px 1fr;
-      column-gap: 12px;
-      margin: 0;
-      padding: 14px 18px;
-      background: none;
-      border: none;
-      box-shadow: none;
-    }
-
-    > li:not(:first-child):not(:last-child)::before {
-      content: "";
-      position: absolute;
-      left: 31.5px;
-      top: 46px;
-      bottom: -10px;
-      width: 1px;
-      background: var(--line);
-    }
-
-    > li:first-child {
-      padding: 18px;
-      margin-bottom: 6px;
-      background: color-mix(in srgb, var(--accent) 5%, var(--surface));
-      border-bottom: 1px solid color-mix(in srgb, var(--accent) 15%, var(--line));
-
-      .body { font-size: 14.5px; }
-    }
 
     .avatar {
       width: 28px;
@@ -113,12 +97,44 @@
       color: var(--text-faint);
       white-space: nowrap;
     }
+  }
+
+  .updates {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    > li {
+      position: relative;
+      display: grid;
+      grid-template-columns: 28px 1fr;
+      column-gap: 12px;
+      padding: 14px 18px;
+    }
+
+    > li:not(:first-child)::before {
+      content: "";
+      position: absolute;
+      left: 31.5px;
+      top: 46px;
+      bottom: -10px;
+      width: 1px;
+      background: var(--line);
+    }
+
+    > li:first-child {
+      padding: 18px;
+      margin-bottom: 6px;
+      background: color-mix(in srgb, var(--accent) 5%, var(--surface));
+      border-bottom: 1px solid color-mix(in srgb, var(--accent) 15%, var(--line));
+
+      .body { font-size: 14.5px; }
+    }
 
     .body {
       font-size: 13.5px;
       line-height: 1.6;
       color: var(--text-body);
-      white-space: normal;
       overflow-wrap: break-word;
 
       > :first-child { margin-top: 0; }
@@ -159,77 +175,102 @@
     }
   }
 
+  /* ── vex's turn: your call ──────────────────────────────────── */
+
+  .next-turn {
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    column-gap: 12px;
+    padding: 14px 18px 22px;
+  }
+
+  .prompt {
+    margin: 0 0 10px;
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: var(--text-body);
+  }
+
+  .choices {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 8px;
+  }
+
+  .choice {
+    --tone: var(--accent);
+    display: grid;
+    grid-template-columns: 18px 1fr;
+    column-gap: 10px;
+    row-gap: 1px;
+    align-content: start;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--surface);
+    font-family: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 0.15s, box-shadow 0.15s;
+
+    .material-symbols-outlined {
+      grid-row: span 2;
+      font-size: 18px;
+      line-height: 20px;
+      color: var(--text-faint);
+      transition: color 0.15s;
+    }
+
+    &:hover {
+      border-color: var(--tone);
+      box-shadow: 0 1px 3px color-mix(in srgb, var(--text-body) 8%, transparent);
+
+      .material-symbols-outlined { color: var(--tone); }
+    }
+
+    &[data-tone="danger"] { --tone: var(--risk-high, #dc2626); }
+  }
+
+  .choice-label {
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 20px;
+    color: var(--text-body);
+  }
+
+  .choice-detail {
+    font-size: 12px;
+    color: var(--text-faint);
+  }
+
+  .closes {
+    margin: 12px 0 0;
+    font-size: 12px;
+    color: var(--text-faint);
+
+    button {
+      padding: 0;
+      border: none;
+      background: none;
+      font: inherit;
+      font-weight: 600;
+      color: var(--text-body);
+      cursor: pointer;
+
+      &:hover { text-decoration: underline; }
+    }
+  }
+
+  &.is-busy .next-turn { display: none; }
+
   /* ── Composer ───────────────────────────────────────────────── */
 
   .composer {
     flex-shrink: 0;
     display: grid;
-    grid-template-areas: "fields" "input";
-    gap: 10px;
+    grid-template-areas: "input";
     padding: 12px 18px 10px;
     border-top: 1px solid var(--line);
-  }
-
-  .fields {
-    grid-area: fields;
-    display: flex;
-    align-items: flex-end;
-    gap: 8px;
-  }
-
-  .field {
-    flex: 1;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-
-    label {
-      font-size: 9px;
-      font-weight: 700;
-      letter-spacing: 0.8px;
-      text-transform: uppercase;
-      color: #b8bfc9;
-    }
-  }
-
-  .field :is(input, select),
-  .delete-btn {
-    height: 30px;
-    border: 1px solid var(--line);
-    border-radius: 6px;
-    background: var(--surface);
-    box-sizing: border-box;
-    transition: border-color 0.15s, background-color 0.15s, color 0.15s;
-  }
-
-  .field :is(input, select) {
-    width: 100%;
-    padding: 5px 10px;
-    font-family: inherit;
-    font-size: 12px;
-    color: var(--text-body);
-    outline: none;
-
-    &:focus { border-color: var(--accent); }
-  }
-
-  .delete-btn {
-    flex-shrink: 0;
-    display: grid;
-    place-items: center;
-    width: 30px;
-    padding: 0;
-    color: var(--text-faint);
-    cursor: pointer;
-
-    &:hover {
-      background: #fef2f2;
-      border-color: #fca5a5;
-      color: #ef4444;
-    }
-
-    .material-symbols-outlined { font-size: 16px; }
   }
 
   .composer-input {
@@ -238,7 +279,6 @@
     height: 96px;
     padding: 13px 44px 13px 14px;
     border: none;
-    border-radius: 10px;
     font-family: inherit;
     font-size: 13.5px;
     line-height: 1.55;
@@ -250,13 +290,14 @@
     &::placeholder { color: var(--text-faint); }
   }
 
+  .fields { display: none; }
+
   .send-btn {
     grid-area: input;
     align-self: end;
     justify-self: end;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: grid;
+    place-items: center;
     width: 28px;
     height: 28px;
     margin: 0 8px 8px 0;
@@ -285,14 +326,11 @@
     .delete-btn,
     .send-btn .material-symbols-outlined { display: none; }
 
-    .send-label { display: inline; }
-
     .composer {
       flex: 1;
       min-height: 0;
       grid-template-rows: 1fr auto auto;
       grid-template-areas: "input" "fields" "send";
-      gap: 0;
       padding: 0;
       border-top: none;
     }
@@ -300,13 +338,47 @@
     .composer-input {
       height: auto;
       padding: 18px;
-      border-radius: 0;
       font-size: 14px;
     }
 
     .fields {
+      grid-area: fields;
+      display: flex;
+      gap: 8px;
       padding: 12px 18px 0;
       border-top: 1px solid var(--line);
+    }
+
+    .field {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+
+      label {
+        font-size: 9px;
+        font-weight: 700;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+        color: #b8bfc9;
+      }
+
+      input {
+        height: 30px;
+        padding: 5px 10px;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        background: var(--surface);
+        font-family: inherit;
+        font-size: 12px;
+        color: var(--text-body);
+        box-sizing: border-box;
+        outline: none;
+        transition: border-color 0.15s;
+
+        &:focus { border-color: var(--accent); }
+      }
     }
 
     .send-btn {
@@ -319,6 +391,8 @@
       font-size: 13.5px;
       font-weight: 600;
     }
+
+    .send-label { display: inline; }
   }
 }
 

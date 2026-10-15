@@ -1,23 +1,35 @@
+const isOpen = (status) => !status.startsWith("C");
+
 class SignalSidebar {
-    static NEW_COPY = {
-        placeholder: "What happened, where, and what needs to be done?",
-        action: "Create signal",
-    };
+    static CHOICES = [
+        { status: "R3", icon: "search", label: "Run investigation", detail: "I'll dig into related activity.", when: isOpen },
+        { status: "R4", icon: "lightbulb", label: "Recommend a fix", detail: "I'll propose remediation steps.", when: isOpen },
+        { status: "R1", icon: "shield_lock", label: "Contain the asset", detail: "I'll lock the user out.", tone: "danger", when: isOpen },
+    ];
+
+    static CLOSES = [
+        { status: "CH", label: "It's fixed", when: isOpen },
+        { status: "CR", label: "Accept risk", when: isOpen },
+        { status: "OB", label: "Reopen", when: (s) => !isOpen(s) },
+    ];
+
+    static CLOSED_AS = { CH: "resolved", CR: "accepted risk", CV: "auto-closed" };
 
     constructor(state) {
         this.state = state;
         this.api = state.api;
+        document.getElementById("next-turn-avatar").src = Workspace.avatar("vex");
         this.listen();
     }
 
     reset() {
         document.getElementById("updates").replaceChildren();
-        document.getElementById("response").value = "";
+        document.getElementById("reply-form").reset();
     }
 
     reload() {
         this.reset();
-        this.signal = { id: null, status: "OB", asset: "", source: "vex" };
+        this.signal = { id: null, status: "OB" };
         this.render();
     }
 
@@ -27,22 +39,19 @@ class SignalSidebar {
         this.add(this.signal, this.signal.created);
 
         updates.sort((a, b) => new Date(a.updated) - new Date(b.updated)).forEach((update) => this.add(update));
+        document.getElementById("next-turn").scrollIntoView({ block: "end" });
         document.dispatchEvent(new CustomEvent("page:reload"));
     }
 
     render() {
-        const s = this.signal;
-        const isNew = !s.id;
-        const risk = isNew ? null : Workspace.risk(s.metadata?.threat);
+        const isNew = !this.signal.id;
+        const risk = isNew ? null : Workspace.risk(this.signal.metadata?.threat);
 
         const sidebar = document.getElementById("signal-sidebar");
         sidebar.classList.toggle("is-new", isNew);
         if (risk) sidebar.dataset.risk = risk.level;
         else delete sidebar.dataset.risk;
 
-        document.getElementById("signal-status").value = s.status;
-        document.getElementById("signal-asset").value = s.asset;
-        document.getElementById("signal-source").value = s.source;
         document.getElementById("signal-label").textContent = isNew ? "New signal" : risk?.label ?? "Signal";
         document.getElementById("signal-icon").textContent = isNew ? "add_circle" : risk?.icon ?? "notifications";
 
@@ -50,15 +59,49 @@ class SignalSidebar {
         threat.hidden = !risk;
         threat.textContent = risk ? `${risk.pct}% likely malicious` : "";
 
-        document.getElementById("response").placeholder = isNew ? SignalSidebar.NEW_COPY.placeholder : "Add context to this signal";
-        document.getElementById("signal-save-label").textContent = isNew ? SignalSidebar.NEW_COPY.action : "";
+        document.getElementById("response").placeholder = isNew
+            ? "What happened, where, and what needs to be done?"
+            : "Add context for vex";
+
+        this.renderTurn();
+    }
+
+    renderTurn() {
+        const { status } = this.signal;
+        const open = isOpen(status);
+
+        document.getElementById("next-turn-prompt").textContent = !open
+            ? `This one's closed as ${SignalSidebar.CLOSED_AS[status]}.`
+            : status === "OB" ? "How do you want to handle this?" : "What's next?";
+
+        const choices = SignalSidebar.CHOICES.filter((c) => c.when(status)).map((c) => {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "choice";
+            button.dataset.status = c.status;
+            if (c.tone) button.dataset.tone = c.tone;
+            button.innerHTML = `
+                <span class="material-symbols-outlined">${c.icon}</span>
+                <span class="choice-label">${c.label}</span>
+                <span class="choice-detail">${c.detail}</span>`;
+            return button;
+        });
+        document.getElementById("next-turn-choices").replaceChildren(...choices);
+
+        const closes = SignalSidebar.CLOSES.filter((c) => c.when(status)).flatMap((c, i) => {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.dataset.status = c.status;
+            button.textContent = c.label;
+            return i ? [" · ", button] : [button];
+        });
+        document.getElementById("next-turn-closes").replaceChildren(open ? "Or close it out: " : "", ...closes);
     }
 
     add(update, when = update.updated) {
         const source = update.source || this.signal.source;
 
         const li = document.createElement("li");
-        li.dataset.key = update.key;
         li.innerHTML = `
             <img class="avatar" alt="">
             <div class="message">
@@ -87,96 +130,97 @@ class SignalSidebar {
         li.scrollIntoView({ behavior: "smooth", block: "nearest" });
     }
 
-    validateAsset() {
-        if ((this.signal.asset || "").trim()) return true;
-        document.getElementById("signal-asset").reportValidity();
-        return false;
+    async note() {
+        const value = document.getElementById("response").value.trim();
+        if (!value) return;
+        await SiteSpinner.withLoading(async () => {
+            this.add(await this.api.signals.update(this.signal.id, value));
+        });
     }
 
-    async patch(fields) {
+    async create() {
+        const asset = document.getElementById("signal-asset");
+        if (!asset.reportValidity()) return;
+
         await SiteSpinner.withLoading(async () => {
-            const signal = await this.api.signals.patch(this.signal.id, fields);
+            await this.api.signals.create({
+                status: this.signal.status,
+                asset: asset.value.trim(),
+                source: document.getElementById("signal-source").value.trim(),
+                value: document.getElementById("response").value.trim(),
+            });
+            document.dispatchEvent(new CustomEvent("page:reload"));
+            document.querySelector("site-overlay").click();
+        });
+    }
+
+    async decide(status) {
+        await this.note();
+        if (status.startsWith("R")) return this.askVex(status);
+
+        await SiteSpinner.withLoading(async () => {
+            const signal = await this.api.signals.patch(this.signal.id, { status });
             this.state.signals[signal.account][signal.id] = signal;
             this.signal = signal;
             this.render();
             document.dispatchEvent(new CustomEvent("page:reload"));
         });
+ 
+        if (!isOpen(status)) document.querySelector("site-overlay").click();
+    }
+
+    async askVex(status) {
+        const sidebar = document.getElementById("signal-sidebar");
+        sidebar.classList.add("is-busy");
+
+        const thinking = document.createElement("li");
+        thinking.innerHTML = `
+            <img class="avatar" src="${Workspace.avatar("vex")}" alt="">
+            <div class="message">
+                <div class="meta"><span class="sender">vex</span></div>
+                <div class="body thinking">Thinking…</div>
+            </div>`;
+        document.getElementById("updates").append(thinking);
+        thinking.scrollIntoView({ block: "nearest" });
+
+        const seen = (await this.api.signals.get(this.signal.id)).length;
+        await this.api.signals.patch(this.signal.id, { status });
+        this.signal.status = status;
+        this.renderTurn();
+
+        while (thinking.isConnected) {
+            await new Promise((r) => setTimeout(r, 3750));
+            const updates = await this.api.signals.get(this.signal.id);
+            if (updates.length > seen) {
+                thinking.remove();
+                updates.slice(seen).forEach((u) => this.add(u));
+            }
+        }
+
+        sidebar.classList.remove("is-busy");
+        document.getElementById("next-turn").scrollIntoView({ behavior: "smooth", block: "end" });
+    }
+
+    async delete() {
+        const { id, account } = this.signal;
+        await SiteSpinner.withLoading(async () => {
+            await this.api.signals.delete(id);
+            delete this.state.signals[account][id];
+            document.dispatchEvent(new CustomEvent("page:reset"));
+            document.querySelector("site-overlay").click();
+        });
     }
 
     listen() {
-        document.getElementById("signal-save").addEventListener("click", async () => {
-            const value = document.getElementById("response").value.trim();
-
-            if (this.signal.id) {
-                if (!value) return;
-                await SiteSpinner.withLoading(async () => {
-                    this.add(await this.api.signals.update(this.signal.id, value));
-                });
-                return;
-            }
-
-            if (!this.validateAsset()) return;
-
-            const { status, asset, source } = this.signal;
-            await SiteSpinner.withLoading(async () => {
-                await this.api.signals.create({ status, asset, source, value });
-                document.dispatchEvent(new CustomEvent("page:reload"));
-                document.querySelector("site-overlay").click();
-            });
+        document.getElementById("signal-save").addEventListener("click", () => {
+            this.signal.id ? this.note() : this.create();
         });
 
-        document.getElementById("signal-asset").addEventListener("change", (ev) => {
-            this.signal.asset = ev.target.value;
-            if (this.signal.id && this.validateAsset()) this.patch({ asset: this.signal.asset });
+        document.getElementById("next-turn").addEventListener("click", (ev) => {
+            const button = ev.target.closest("button[data-status]");
+            if (button) this.decide(button.dataset.status);
         });
 
-        document.getElementById("signal-source").addEventListener("change", (ev) => {
-            this.signal.source = ev.target.value;
-            if (this.signal.id) this.patch({ source: this.signal.source });
-        });
-
-        document.getElementById("signal-status").addEventListener("change", async (ev) => {
-            this.signal.status = ev.target.value;
-            if (!this.signal.id) return;
-
-            if (this.signal.status.startsWith("R")) {
-                const thinking = document.createElement("li");
-                thinking.innerHTML = `
-                    <img class="avatar" src="${Workspace.avatar("vex")}" alt="">
-                    <div class="message">
-                        <div class="meta"><span class="sender">vex</span></div>
-                        <div class="body thinking">Thinking…</div>
-                    </div>`;
-
-                document.getElementById("updates").append(thinking);
-                thinking.scrollIntoView({ block: "nearest" });
-
-                const seen = (await this.api.signals.get(this.signal.id)).length;
-                await this.api.signals.patch(this.signal.id, { status: this.signal.status });
-
-                while (thinking.isConnected) {
-                    await new Promise((r) => setTimeout(r, 3750));
-                    const updates = await this.api.signals.get(this.signal.id);
-                    if (updates.length > seen) {
-                        thinking.remove();
-                        updates.slice(seen).forEach((u) => this.add(u));
-                    }
-                }
-            } else {
-                this.patch({ status: this.signal.status }).then(() => {
-                    document.querySelector("site-overlay").click();
-                });
-            }
-        });
-
-        document.getElementById("signal-delete").addEventListener("click", async () => {
-            const { id, account } = this.signal;
-            await SiteSpinner.withLoading(async () => {
-                await this.api.signals.delete(id);
-                delete this.state.signals[account][id];
-                document.dispatchEvent(new CustomEvent("page:reset"));
-                document.querySelector("site-overlay").click();
-            });
-        });
+        document.getElementById("signal-delete").addEventListener("click", () => this.delete());
     }
 }

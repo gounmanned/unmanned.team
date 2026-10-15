@@ -373,55 +373,42 @@
         <span class="material-symbols-outlined" id="signal-icon"></span>
         <span class="banner-label" id="signal-label"></span>
         <span class="banner-threat" id="signal-threat" hidden></span>
+        <button type="button" class="delete-btn" id="signal-delete" aria-label="Delete signal">
+            <span class="material-symbols-outlined">delete</span>
+        </button>
     </header>
 
     <div class="thread">
         <ol class="updates" id="updates"></ol>
+
+        <div class="next-turn" id="next-turn">
+            <img class="avatar" id="next-turn-avatar" alt="">
+            <div class="message">
+                <div class="meta"><span class="sender">vex</span></div>
+                <p class="prompt" id="next-turn-prompt"></p>
+                <div class="choices" id="next-turn-choices"></div>
+                <p class="closes" id="next-turn-closes"></p>
+            </div>
+        </div>
     </div>
 
     <form class="composer" id="reply-form">
-      <div class="fields">
-        <div class="field">
-          <label for="signal-status">Status</label>
-          <select id="signal-status">
-              <optgroup label="Respond">
-                  <option value="R1">Contain asset</option>
-                  <option value="R2">Release asset from containment</option>
-              </optgroup>
-              <optgroup label="Triage">
-                  <option value="R3">Launch investigation</option>
-                  <option value="R4">Generate recommendation</option>
-                  <option value="R5">View red team assessment</option>
-              </optgroup>
-              <optgroup label="Close">
-                  <option value="CH">Resolved</option>
-                  <option value="CR">Accepted risk</option>
-                  <option value="CV">Auto-closed</option>
-              </optgroup>
-              <optgroup label="Open">
-                  <option value="OB">Open</option>
-              </optgroup>
-          </select>
+        <textarea class="composer-input" id="response"></textarea>
+        <div class="fields">
+            <div class="field">
+                <label for="signal-asset">Asset</label>
+                <input type="text" id="signal-asset" placeholder="Asset" required />
+            </div>
+            <div class="field">
+                <label for="signal-source">Source</label>
+                <input type="text" id="signal-source" placeholder="Source" value="vex" />
+            </div>
         </div>
-        <div class="field">
-            <label for="signal-asset">Asset</label>
-            <input type="text" id="signal-asset" placeholder="Asset" required />
-        </div>
-        <div class="field">
-            <label for="signal-source">Source</label>
-            <input type="text" id="signal-source" placeholder="Source" />
-        </div>
-        <button type="button" class="delete-btn" id="signal-delete" aria-label="Delete signal">
-            <span class="material-symbols-outlined">delete</span>
+
+        <button type="button" class="send-btn" id="signal-save">
+            <span class="material-symbols-outlined">arrow_upward</span>
+            <span class="send-label">Create signal</span>
         </button>
-      </div>
-
-      <textarea class="composer-input" id="response" placeholder="Add context to this signal"></textarea>
-
-      <button type="button" class="send-btn" id="signal-save">
-          <span class="material-symbols-outlined">arrow_upward</span>
-          <span class="send-label" id="signal-save-label"></span>
-      </button>
     </form>
   </site-sidebar>
 

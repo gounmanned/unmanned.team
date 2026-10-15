@@ -29,7 +29,10 @@
     --white:#fcfcfa;
     --pink:#e01280;
     --pink-text:#d1107a;     /* pink for TEXT on light backgrounds (passes 4.5:1) */
-    --mark:#ffe59a;          /* search highlight (from the prototype) */
+    --mark:#ffe59a;
+    --toggle-off:#8a8a8e;    /* Toggle track, off (Unmanned DS) */
+    --pink-hover:#d10176;    /* Toggle track, on + hover (Unmanned DS) */
+    --pink-press:#aa005f;    /* Toggle track, on + pressed (Unmanned DS) */          /* search highlight (from the prototype) */
     --gray-line:#dcdcd8;
     --gray-faint:#c4c4c4;
     --surface-dark:#6c6c70;
@@ -114,7 +117,26 @@
   .search-bar{position:sticky;top:var(--stick-top);z-index:30;margin:-12px 0 0;padding:12px 0;background:var(--surface);transition:top 0.3s cubic-bezier(0.4,0,0.2,1);}
   .search-bar.is-stuck{box-shadow:0 1px 0 var(--gray-line);}
   .group-head{position:sticky;top:calc(var(--stick-top) + var(--search-h, 76px));z-index:20;padding-top:8px;background:var(--surface);transition:top 0.3s cubic-bezier(0.4,0,0.2,1);}
-  .field{position:relative;}
+  .search-bar{display:flex;align-items:center;gap:12px 24px;}
+  .field{position:relative;flex:1;min-width:0;}
+
+  /* "Show details" toggle (the Unmanned DS Toggle): shows or hides every row's vendor ID at once */
+  .details-toggle{display:inline-flex;align-items:center;gap:10px;flex-shrink:0;padding:4px 0;border:0;background:none;cursor:pointer;
+    font:500 14px/1.5 var(--font-sans);color:var(--ink);white-space:nowrap;}
+  .details-toggle .track{--t:var(--toggle-off);position:relative;flex-shrink:0;width:36px;height:20px;border-radius:2px;background:var(--t);
+    transition:background-color 0.12s ease-out, box-shadow 0.12s ease-out;}
+  .details-toggle .knob{position:absolute;top:2px;left:2px;width:16px;height:16px;background:#fff;transition:left 0.12s ease-out, width 0.12s ease-out;}
+  .details-toggle .knob::before{content:'';position:absolute;inset:0;background:var(--t);
+    -webkit-mask:url(../static/icon-x-small.svg) center/14px 14px no-repeat;mask:url(../static/icon-x-small.svg) center/14px 14px no-repeat;}
+  .details-toggle[aria-checked="true"] .track{--t:var(--pink);}
+  .details-toggle[aria-checked="true"] .knob{left:18px;}
+  .details-toggle[aria-checked="true"] .knob::before{-webkit-mask-image:url(../static/icon-check.svg);mask-image:url(../static/icon-check.svg);}
+  .details-toggle[aria-checked="true"]:hover .track{--t:var(--pink-hover);}
+  .details-toggle:active .knob{width:20px;}   /* pressed: the knob squishes */
+  .details-toggle[aria-checked="true"]:active .knob{left:14px;}
+  .details-toggle[aria-checked="true"]:active .track{--t:var(--pink-press);}
+  .details-toggle:focus{outline:none;}
+  .details-toggle:focus-visible .track{box-shadow:0 0 0 3px rgba(224,18,128,0.35);}
   .field .mag{position:absolute;left:16px;top:50%;transform:translateY(-50%);width:20px;height:20px;pointer-events:none;}
   #q{
     width:100%;height:52px;padding:0 48px 0 46px;font:500 15px var(--font-sans);color:var(--ink);background:var(--surface);
@@ -189,12 +211,12 @@
   .group-head h4{font-weight:700;font-size:16px;line-height:1.5;color:var(--ink);}
   .group-head .official{font:500 11px/1.5 var(--mono);color:var(--surface-dark);}
   .list{list-style:none;margin:0;padding:0;}
-  .row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:2px 16px;padding:11px 0;border-top:1px solid var(--gray-line);align-items:baseline;}
-  .row .resp{grid-column:3;grid-row:1;font:500 11px/1.5 var(--mono);color:var(--ink);padding:1px 6px;border:1px solid var(--gray-line);border-radius:2px;background:var(--surface);white-space:nowrap;}
+  .row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:0 16px;padding:11px 0;border-top:1px solid var(--gray-line);align-items:baseline;}
+  .row .resp{grid-column:2;grid-row:1;font:500 11px/1.5 var(--mono);color:var(--ink);padding:1px 6px;border:1px solid var(--gray-line);border-radius:2px;background:var(--surface);white-space:nowrap;}
   .row .name{font-size:14.5px;line-height:1.5;color:var(--ink);overflow-wrap:anywhere;}
-  .row .id{font:500 11px/1.5 var(--mono);color:var(--surface-dark);overflow-wrap:anywhere;text-align:right;max-width:320px;}
-  .row .id{grid-column:2;grid-row:1;}
-  .row .desc{grid-column:1 / -1;font-size:13px;line-height:1.5;color:var(--body);}
+  .row .id{grid-column:1;grid-row:2;margin-top:8px;font:500 11px/1.5 var(--mono);color:var(--surface-dark);overflow-wrap:anywhere;}
+  .catalog:not(.show-details) .row .id{display:none;}
+  .row .desc{grid-column:1 / -1;margin-top:2px;font-size:13px;line-height:1.5;color:var(--body);}
   mark{background:var(--mark);color:inherit;padding:0 1px;border-radius:1px;}
   .more{
     margin-top:12px;font:600 13px var(--font-sans);background:var(--surface);border:1px solid var(--gray-line);color:var(--ink);
@@ -261,13 +283,10 @@
     .to-top{right:16px;bottom:16px;}
     .jump-toggle,.jump-scroll{padding-left:16px;padding-right:16px;}
     .bucket{gap:32px;padding:40px 0 16px;}
-    .row{grid-template-columns:minmax(0,1fr) auto;}
-    .row .id{grid-column:1;grid-row:2;}
-    .row .resp{grid-column:2;grid-row:1;}
     .cat-main{padding-top:32px;}
-    .search-bar{margin-top:-8px;padding:8px 0;} /* slimmer sticky stack on phones */
+    .search-bar{margin-top:-8px;padding:8px 0;flex-wrap:wrap;} /* slimmer sticky stack on phones */
+    .field{flex-basis:100%;}
     #q{height:44px;}
-    .row .id{text-align:left;max-width:none;}
   }
   /* a long vendor name at 34px is wider than a 302px phone (Galaxy Z Flip with zoom) */
   @media (max-width:340px){.bucket-head h2{font-size:29px;}}
@@ -285,7 +304,7 @@
   @media (prefers-reduced-motion: reduce){
     html{scroll-behavior:auto;}
     .status-dot{animation:none;}
-    .resp-toggle::after,.topstack,.site-top .site-header,.jump,.jump-toggle img,#q,.search-bar,.group-head,.to-top,.to-top.is-shown{transition:none;}
+    .details-toggle .track,.details-toggle .knob,.resp-toggle::after,.topstack,.site-top .site-header,.jump,.jump-toggle img,#q,.search-bar,.group-head,.to-top,.to-top.is-shown{transition:none;}
   }
 </style>
 </head>
@@ -351,6 +370,7 @@
             <input id="q" type="search" placeholder="Try “ransomware”, “phishing” or an ID" autocomplete="off" spellcheck="false">
             <button id="clear" type="button" aria-label="Clear search" hidden><img src="../static/icon-x-small.svg" width="20" height="20" alt=""></button>
           </div>
+          <button class="details-toggle" id="details" type="button" role="switch" aria-checked="false"><span class="track" aria-hidden="true"><span class="knob"></span></span>Show details</button>
         </div>
         <div class="search">
           <div class="try">Try:
@@ -416,6 +436,14 @@
         var open = legend.classList.toggle('is-open');
         legendBtn.setAttribute('aria-expanded', String(open));
         legendBtn.textContent = open ? 'Hide descriptions' : 'What each means';
+      });
+
+      // "Show details": one switch for every row's vendor ID (off by default)
+      var detailsBtn = document.getElementById('details'), catalogEl = document.getElementById('catalog');
+      detailsBtn.addEventListener('click', function(){
+        var on = detailsBtn.getAttribute('aria-checked') !== 'true';
+        detailsBtn.setAttribute('aria-checked', String(on));
+        catalogEl.classList.toggle('show-details', on);
       });
 
       // what each response code means (the legend at the top of the page says the same)

@@ -53,30 +53,33 @@ class Workspace {
         Workspace.#instance = this;
 
         Auth.init(code)
-            .then(async user => await SiteSpinner.withLoading(async () => {
-                const state = new AppState(user);
+            .then(async user => {
+                await SiteSpinner.withLoading(async () => {
+                    const state = new AppState(user);
 
-                this.rollups = {
-                    managed: new ManagedRollup(state),
-                    monitor: new MonitorRollup(state),
-                    inventory: new InventoryRollup(state),
-                };
+                    this.rollups = {
+                        managed: new ManagedRollup(state),
+                        monitor: new MonitorRollup(state),
+                        inventory: new InventoryRollup(state),
+                    };
 
-                this.sidebars = {
-                    signal: new SignalSidebar(state),
-                    backup: new BackupSidebar(state),
-                }
+                    this.sidebars = {
+                        signal: new SignalSidebar(state),
+                        backup: new BackupSidebar(state),
+                    }
 
-                this.tenant = new TenantScreen(state);
-                this.reset(state);
-                this.reload();
-                this.listen();
+                    this.tenant = new TenantScreen(state);
+                    this.reset(state);
+                    this.reload();
+                    this.listen();
 
-                setInterval(() => this.reload(), 60000);
-                document.addEventListener('page:reload', () => this.reload());
-                document.addEventListener('page:reset', () => this.reset(state));
-                document.getElementById("open-managed-rollup").click();
-            }))
+                    setInterval(() => this.reload(), 60000);
+                    document.addEventListener('page:reload', () => this.reload());
+                    document.addEventListener('page:reset', () => this.reset(state));
+                    document.getElementById("open-managed-rollup").click();
+                });
+                document.getElementById('auth-gate')?.remove();
+            })
             .catch(err => {
                 console.error(err);
             });

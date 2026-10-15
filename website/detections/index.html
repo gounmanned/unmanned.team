@@ -314,11 +314,6 @@
   .t-cmnt{color:var(--surface-dark);font-style:italic;}
   @media (max-width:700px){ .drawer-head{padding:20px 16px 16px;} .drawer-body{padding:16px;} }
 
-  /* custom detections: a placeholder at the end of the catalog */
-  .custom .soon{display:inline-block;margin-left:10px;padding:2px 8px;border:1px dashed var(--pink);border-radius:2px;font:500 11px/1.5 var(--mono);letter-spacing:0.08em;text-transform:uppercase;color:var(--pink-text);vertical-align:middle;}
-  .custom-body{font-size:15px;line-height:1.7;color:var(--body);max-width:620px;}
-  .custom-body a{color:var(--pink-text);font-weight:500;}
-  .catalog.is-searching .custom{display:none;}
   .empty,.load-error{margin-top:64px;padding:20px 24px;background:var(--white);border:1px solid var(--gray-line);border-radius:2px;font-size:14.5px;line-height:1.75;color:var(--body);}
   .empty strong{display:block;color:var(--ink);}
 
@@ -719,10 +714,6 @@ end = (datetime.<span class="t-fn">now</span>(timezone.utc) - <span class="t-fn"
           html += '</section>';
           nav += '</ul></li>';
         });
-        // custom detections: a placeholder until the upload API is ready
-        nav += '<li><a class="jump-link" href="#custom" data-bucket="custom"><span>Custom detections</span><span class="c"></span></a></li>';
-        html += '<section class="bucket custom" id="custom" data-bucket="custom"><div class="bucket-head"><h2>Custom detections<span class="soon">Coming soon</span></h2>'
-          + '<p class="custom-body">Soon you’ll be able to upload your own detections through the <a href="/api/">VEX API</a>, and they’ll be listed here alongside the rest.</p></div></section>';
         html += '<div class="empty" id="empty" hidden></div>';
         catalog.innerHTML = html;
         jumpList.innerHTML = nav;
@@ -794,13 +785,12 @@ end = (datetime.<span class="t-fn">now</span>(timezone.utc) - <span class="t-fn"
           var b = s.parentNode.getAttribute('data-bucket');
           bucketCounts[b] = (bucketCounts[b] || 0) + n;
         });
-        [].forEach.call(catalog.querySelectorAll('.bucket:not(.custom)'), function(sec){
+        [].forEach.call(catalog.querySelectorAll('.bucket'), function(sec){
           var b = sec.getAttribute('data-bucket'), n = bucketCounts[b] || 0;
           sec.hidden = !n;
           jumpList.querySelector('[data-bucket="' + b + '"]').parentNode.hidden = !n;
           jumpList.querySelector('[data-bucket="' + b + '"] .c').textContent = fmt(n);
         });
-        jumpList.querySelector('[data-bucket="custom"]').parentNode.hidden = searching;
         var empty = document.getElementById('empty');
         empty.hidden = shown > 0;
         if(!shown){ empty.innerHTML = '<strong>Nothing matches “' + esc(raw) + '”.</strong>Try a broader word, a service name like “AWS”, or part of an alert ID.'; }

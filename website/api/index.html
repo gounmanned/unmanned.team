@@ -600,6 +600,35 @@
 }</code></pre>
         </div>
       </div>
+      <div class="endpoint" id="post-signal">
+        <div class="endpoint-head">
+          <span class="method method--post">POST</span>
+          <h3 class="endpoint-path">/signal</h3>
+        </div>
+        <p class="endpoint-desc">Creates a new signal. Send all four fields in the body; leaving one out may create an incomplete signal.</p>
+        <table class="param-table">
+          <thead><tr><th>Parameter</th><th>In</th><th>Type</th><th></th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>status</td><td>body</td><td>string</td><td><span class="req">Required</span></td><td>Where the signal starts, as a status code, e.g. <code>OB</code> for Open.</td></tr>
+            <tr><td>asset</td><td>body</td><td>string</td><td><span class="req">Required</span></td><td>Who the signal is about, e.g. <code>priya.shah@acmecorp.com</code>.</td></tr>
+            <tr><td>source</td><td>body</td><td>string</td><td><span class="req">Required</span></td><td>Where it came from, as a monitor slug, e.g. <code>google</code>.</td></tr>
+            <tr><td>value</td><td>body</td><td>string</td><td><span class="req">Required</span></td><td>What happened, in plain words.</td></tr>
+          </tbody>
+        </table>
+        <div class="code-panel">
+          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy request to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
+          <pre><code><span class="t-fn">curl</span> -X POST https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/signal \
+  -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span> \
+  -H <span class="t-str">"Content-Type: application/json"</span> \
+  -d <span class="t-str">'{
+    "status": "OB",
+    "asset": "priya.shah@acmecorp.com",
+    "source": "google",
+    "value": "Mail forwarding rule sends priya.shah@acmecorp.com inbox to an outside address"
+  }'</span></code></pre>
+        </div>
+        <p class="note">To add to an existing signal, <code>POST /signal/{id}</code> instead. Only <code>value</code> is read; the other fields are ignored.</p>
+      </div>
     </section>
 
     <section class="api-section" id="monitors">
@@ -670,10 +699,6 @@
     "client_id": "your-app-client-id",
     "client_secret": "your-app-secret"
   }'</span></code></pre>
-        </div>
-        <div class="code-panel">
-          <div class="code-head"><span class="code-file">response</span><span class="code-lang">JSON</span><button class="copy-btn" type="button" aria-label="Copy response to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
-          <pre><code><span class="t-kw">null</span></code></pre>
         </div>
       </div>
       <div class="endpoint" id="delete-monitor">
@@ -854,16 +879,22 @@
           <h3 class="endpoint-path">/audit</h3>
           <span class="endpoint-status">200 OK</span>
         </div>
-        <p class="endpoint-desc">SIEM log entries from your connected monitors that match your search.</p>
+        <p class="endpoint-desc">SIEM log entries from your connected monitors that match your search, or that fall between two times.</p>
         <table class="param-table">
           <thead><tr><th>Parameter</th><th>In</th><th>Type</th><th></th><th>Description</th></tr></thead>
           <tbody>
-            <tr><td>q</td><td>query</td><td>string</td><td><span class="req">Required</span></td><td>What to search for, the way you’d search the web, e.g. <code>dmarc</code>. Returns the log lines that match.</td></tr>
+            <tr><td>q</td><td>query</td><td>string</td><td><span class="opt">Optional</span></td><td>What to search for, the way you’d search the web, e.g. <code>dmarc</code>. Returns the log lines that match.</td></tr>
+            <tr><td>start</td><td>query</td><td>string, ISO 8601</td><td><span class="opt">Optional</span></td><td>Only return log lines from this time on, e.g. <code>2026-10-12T00:00:00Z</code>. Use with <code>end</code>. Ignored when <code>q</code> is set.</td></tr>
+            <tr><td>end</td><td>query</td><td>string, ISO 8601</td><td><span class="opt">Optional</span></td><td>Only return log lines before this time, e.g. <code>2026-10-13T00:00:00Z</code>. Use with <code>start</code>. Ignored when <code>q</code> is set.</td></tr>
           </tbody>
         </table>
         <div class="code-panel">
           <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy request to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code><span class="t-fn">curl</span> <span class="t-str">"https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/audit?q=dmarc"</span> \
+  -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span>
+
+<span class="t-cmnt"># or everything between two times</span>
+<span class="t-fn">curl</span> <span class="t-str">"https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/audit?start=2026-10-12T00:00:00Z&amp;end=2026-10-13T00:00:00Z"</span> \
   -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span></code></pre>
         </div>
         <div class="code-panel">
@@ -879,7 +910,7 @@
   }
 ]</code></pre>
         </div>
-        <p class="note">This is the unfiltered feed — expect volume. Use Signals if you want VEX's opinion on which of these lines actually matter.</p>
+        <p class="note">This is the unfiltered feed, so expect volume. Use Signals if you want VEX's opinion on which of these lines actually matter.</p>
       </div>
     </section>
 

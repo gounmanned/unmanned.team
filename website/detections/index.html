@@ -30,10 +30,17 @@
     --pink:#e01280;
     --pink-text:#d1107a;     /* pink for TEXT on light backgrounds (passes 4.5:1) */
     --mark:#ffe59a;          /* search highlight (from the prototype) */
+    --toggle-off:#8a8a8e;    /* Toggle track off; badge, input and legend borders (Unmanned DS) */
+    --pink-hover:#d10176;    /* Toggle on + hover; link and secondary-button text (Unmanned DS) */
+    --pink-press:#aa005f;    /* Toggle track, on + pressed (Unmanned DS) */
+    --body-soft:#4b4c52;     /* badge text (Unmanned DS) */
+    --surface-warm:#faf9f6;  /* response legend background (Unmanned DS mockup) */
+    --lift:2px 2px 0 rgba(11,12,13,0.15);  /* the DS offset shadow */
     --gray-line:#dcdcd8;
     --gray-faint:#c4c4c4;
     --surface-dark:#6c6c70;
     --surface-gray:#f7f7f7;
+    --go-text:#0e7c52;       /* code strings (from the API page) */
     --body:#2b2b2b;
     --classbar-h:26px;
     --mono:'JetBrains Mono',ui-monospace,monospace;
@@ -100,6 +107,17 @@
   .hero .wrap{position:relative;z-index:1;display:flex;flex-direction:column;align-items:flex-start;gap:24px;}
   .hero h1{font-weight:600;font-size:clamp(40px,6vw,70px);line-height:0.99;letter-spacing:-0.03em;}
   .lede{font-size:16px;line-height:1.75;color:var(--body);max-width:680px;}
+  /* intro: the copy on the left, the custom-detections button on the right (bottom-aligned) */
+  .intro-row{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px 24px;width:100%;}
+  .intro-row .lede{max-width:600px;font-size:14px;line-height:20px;color:var(--ink);}
+  /* DS Button, Secondary / sm */
+  .btn-secondary{display:inline-flex;align-items:center;gap:8px;height:32px;padding:0 12px;flex-shrink:0;background:#fff;border:1px solid var(--pink);border-radius:2px;
+    box-shadow:var(--lift);font:500 14px/20px var(--font-sans);color:var(--pink-hover);cursor:pointer;transition:transform 0.1s ease, box-shadow 0.1s ease;}
+  .btn-secondary img{width:16px;height:16px;}
+  .btn-secondary:hover{border-color:var(--pink-hover);}
+  .btn-secondary:active{transform:translate(2px,2px);box-shadow:none;}
+  .btn-secondary:focus{outline:none;}
+  .btn-secondary:focus-visible{box-shadow:var(--lift), 0 0 0 3px rgba(224,18,128,0.35);}
 
   /* the search sits at the top of the content column, beside the jump menu, so it reads as part of the catalog */
   .cat-main{min-width:0;padding-top:64px;}
@@ -114,17 +132,36 @@
   .search-bar{position:sticky;top:var(--stick-top);z-index:30;margin:-12px 0 0;padding:12px 0;background:var(--surface);transition:top 0.3s cubic-bezier(0.4,0,0.2,1);}
   .search-bar.is-stuck{box-shadow:0 1px 0 var(--gray-line);}
   .group-head{position:sticky;top:calc(var(--stick-top) + var(--search-h, 76px));z-index:20;padding-top:8px;background:var(--surface);transition:top 0.3s cubic-bezier(0.4,0,0.2,1);}
-  .field{position:relative;}
-  .field .mag{position:absolute;left:16px;top:50%;transform:translateY(-50%);width:20px;height:20px;pointer-events:none;}
+  .search-bar{display:flex;align-items:center;gap:12px 24px;}
+  .field{position:relative;flex:1;min-width:0;}
+
+  /* "Show details" toggle (the Unmanned DS Toggle): shows or hides every row's vendor ID at once */
+  .details-toggle{display:inline-flex;align-items:center;gap:12px;flex-shrink:0;padding:0;border:0;background:none;cursor:pointer;
+    font:400 16px/24px var(--font-sans);color:var(--ink);white-space:nowrap;}
+  .details-toggle .track{--t:var(--toggle-off);position:relative;flex-shrink:0;width:36px;height:20px;border-radius:2px;background:var(--t);
+    transition:background-color 0.12s ease-out, box-shadow 0.12s ease-out;}
+  .details-toggle .knob{position:absolute;top:2px;left:2px;width:16px;height:16px;background:#fff;transition:left 0.12s ease-out, width 0.12s ease-out;}
+  .details-toggle .knob::before{content:'';position:absolute;inset:0;background:var(--t);
+    -webkit-mask:url(../static/icon-x-small.svg) center/14px 14px no-repeat;mask:url(../static/icon-x-small.svg) center/14px 14px no-repeat;}
+  .details-toggle[aria-checked="true"] .track{--t:var(--pink);}
+  .details-toggle[aria-checked="true"] .knob{left:18px;}
+  .details-toggle[aria-checked="true"] .knob::before{-webkit-mask-image:url(../static/icon-check.svg);mask-image:url(../static/icon-check.svg);}
+  .details-toggle[aria-checked="true"]:hover .track{--t:var(--pink-hover);}
+  .details-toggle:active .knob{width:20px;}   /* pressed: the knob squishes */
+  .details-toggle[aria-checked="true"]:active .knob{left:14px;}
+  .details-toggle[aria-checked="true"]:active .track{--t:var(--pink-press);}
+  .details-toggle:focus{outline:none;}
+  .details-toggle:focus-visible .track{box-shadow:0 0 0 3px rgba(224,18,128,0.35);}
+  .field .mag{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:20px;height:20px;pointer-events:none;}
   #q{
-    width:100%;height:52px;padding:0 48px 0 46px;font:500 15px var(--font-sans);color:var(--ink);background:var(--surface);
-    border:1px solid var(--gray-line);border-radius:2px;outline:none;-webkit-appearance:none;appearance:none;
+    width:100%;height:40px;padding:0 44px 0 40px;font:400 16px var(--font-sans);color:var(--ink);background:#fff;
+    border:1px solid var(--toggle-off);border-radius:2px;outline:none;-webkit-appearance:none;appearance:none;
     transition:border-color 0.15s, box-shadow 0.15s;
   }
   /* the browser's own clear button is hidden: it doubled up with ours */
   #q::-webkit-search-cancel-button,#q::-webkit-search-decoration{-webkit-appearance:none;appearance:none;display:none;}
   #q::placeholder{color:var(--surface-dark);font-weight:400;}
-  #q:hover{border-color:var(--gray-faint);}
+  #q:hover{border-color:var(--ink);}
   #q:focus{border-color:var(--pink);box-shadow:0 0 0 3px rgba(224,18,128,0.12);}
   #clear{position:absolute;right:8px;top:50%;transform:translateY(-50%);display:flex;padding:6px;border:0;background:none;cursor:pointer;border-radius:2px;}
   #clear:hover{background:rgba(11,12,13,0.06);}
@@ -189,12 +226,12 @@
   .group-head h4{font-weight:700;font-size:16px;line-height:1.5;color:var(--ink);}
   .group-head .official{font:500 11px/1.5 var(--mono);color:var(--surface-dark);}
   .list{list-style:none;margin:0;padding:0;}
-  .row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:2px 16px;padding:11px 0;border-top:1px solid var(--gray-line);align-items:baseline;}
-  .row .resp{grid-column:3;grid-row:1;font:500 11px/1.5 var(--mono);color:var(--ink);padding:1px 6px;border:1px solid var(--gray-line);border-radius:2px;background:var(--surface);white-space:nowrap;}
+  .row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:0 16px;padding:11px 0;border-top:1px solid var(--gray-line);align-items:baseline;}
+  .row .resp{grid-column:2;grid-row:1;align-self:start;background:var(--surface-gray);}
   .row .name{font-size:14.5px;line-height:1.5;color:var(--ink);overflow-wrap:anywhere;}
-  .row .id{font:500 11px/1.5 var(--mono);color:var(--surface-dark);overflow-wrap:anywhere;text-align:right;max-width:320px;}
-  .row .id{grid-column:2;grid-row:1;}
-  .row .desc{grid-column:1 / -1;font-size:13px;line-height:1.5;color:var(--body);}
+  .row .id{grid-column:1;grid-row:3;margin-top:8px;font:500 11px/1.5 var(--mono);color:var(--surface-dark);overflow-wrap:anywhere;}
+  .catalog:not(.show-details) .row:not(.id-hit) .id{display:none;}   /* a search that matched the ID shows it anyway */
+  .row .desc{grid-column:1 / -1;grid-row:2;margin-top:2px;font-size:13px;line-height:1.5;color:var(--body);}
   mark{background:var(--mark);color:inherit;padding:0 1px;border-radius:1px;}
   .more{
     margin-top:12px;font:600 13px var(--font-sans);background:var(--surface);border:1px solid var(--gray-line);color:var(--ink);
@@ -205,27 +242,78 @@
   .catalog.is-searching .more{display:none;}
 
   /* how VEX responds: the legend for the code on every row */
-  .responses{box-sizing:border-box;width:100%;margin-top:40px;padding:16px 20px;background:var(--surface);border:1px solid var(--gray-line);border-radius:2px;text-align:left;}
-  .resp-top{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 16px;}
-  .resp-top p{font-size:14px;line-height:1.55;color:var(--body);}
-  .resp-toggle{padding:0;border:0;background:none;cursor:pointer;font:500 13px var(--font-sans);color:var(--pink-text);}
+  .responses{box-sizing:border-box;width:100%;padding:16px;background:var(--surface-warm);border:1px solid var(--toggle-off);border-radius:2px;box-shadow:var(--lift);text-align:left;}
+  .resp-top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px 16px;}
+  .resp-top p{flex:1 1 220px;font-size:14px;line-height:20px;color:var(--ink);}
+  .resp-toggle{padding:1px 2px;border:0;background:none;cursor:pointer;font:500 12px/16px var(--font-sans);color:var(--surface-dark);transition:color 0.15s ease;text-transform:lowercase;white-space:nowrap;} /* a utility, so gray like the side menu, not pink */
+  .resp-toggle:hover{color:var(--ink);}
   .resp-toggle::after{content:'';display:inline-block;width:6px;height:6px;margin:0 2px 2px 8px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(45deg);transition:transform 0.2s ease;}
   .responses.is-open .resp-toggle::after{transform:rotate(-135deg);margin-bottom:-2px;}
   .resp-list{list-style:none;margin:12px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:12px 32px;}
-  .resp-list li{display:flex;align-items:baseline;gap:8px;}
-  .resp-list code{font:500 12px/1.5 var(--mono);color:var(--ink);padding:1px 6px;border:1px solid var(--gray-line);border-radius:2px;}
-  .resp-list b{font-weight:600;font-size:14px;line-height:1.5;color:var(--ink);}
+  .resp-list li{display:flex;align-items:center;gap:8px;}
+  /* DS Badge, Mono / Outline: the legend's codes and the code on every row */
+  .resp-list code,.row .resp{box-sizing:border-box;display:inline-flex;align-items:center;height:24px;padding:4px 8px;border:1px solid var(--toggle-off);border-radius:2px;
+    background:#fff;font:400 12px/16px var(--mono);letter-spacing:0.08em;color:var(--body-soft);white-space:nowrap;}
+  .resp-list b{font-weight:600;font-size:12px;line-height:16px;color:var(--ink);}
   .resp-list span{display:none;}
   /* open: one code per line, with what it does */
   .responses.is-open .resp-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px 28px;margin-top:16px;}
-  .responses.is-open .resp-list li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:2px 10px;align-content:start;} /* top-aligned, so first lines line up across a row */
+  .responses.is-open .resp-list li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:2px 10px;align-content:start;align-items:start;} /* top-aligned, so first lines line up across a row */
   .responses.is-open .resp-list code{grid-row:1 / 3;}
+  .responses.is-open .resp-list b{padding-top:4px;}
   .responses.is-open .resp-list span{display:block;font-size:13px;line-height:1.45;color:var(--body);}
-  /* custom detections: a placeholder at the end of the catalog */
-  .custom .soon{display:inline-block;margin-left:10px;padding:2px 8px;border:1px dashed var(--pink);border-radius:2px;font:500 11px/1.5 var(--mono);letter-spacing:0.08em;text-transform:uppercase;color:var(--pink-text);vertical-align:middle;}
-  .custom-body{font-size:15px;line-height:1.7;color:var(--body);max-width:620px;}
-  .custom-body a{color:var(--pink-text);font-weight:500;}
-  .catalog.is-searching .custom{display:none;}
+  /* "Write your own custom detections": a side drawer with an example script */
+  .drawer{position:fixed;inset:0;z-index:200;visibility:hidden;transition:visibility 0s linear 0.35s;}
+  .drawer.is-open{visibility:visible;transition:none;}
+  .drawer-scrim{position:absolute;inset:0;background:rgba(11,12,13,0.32);opacity:0;transition:opacity 0.3s ease;}
+  .drawer.is-open .drawer-scrim{opacity:1;}
+  .drawer-panel{position:absolute;top:0;right:0;bottom:0;width:min(680px,100%);display:flex;flex-direction:column;background:var(--surface);
+    box-shadow:-12px 0 40px -16px rgba(11,12,13,0.35);transform:translateX(100%);transition:transform 0.35s cubic-bezier(0.2,0.8,0.2,1);}
+  .drawer.is-open .drawer-panel{transform:none;}
+  .drawer-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:28px 28px 20px;border-bottom:1px solid var(--gray-line);}
+  .drawer-head h2{font-weight:600;font-size:clamp(34px * 24 / 52, 4.2vw * 24 / 52, 24px);line-height:1.25;}
+  .drawer-head p{margin-top:8px;max-width:560px;font-size:15px;line-height:1.6;color:var(--body);}
+  .drawer-close{flex-shrink:0;display:flex;align-items:center;justify-content:center;width:36px;height:36px;margin:-6px -8px 0 0;border:0;border-radius:2px;background:none;cursor:pointer;}
+  .drawer-close:hover{background:var(--surface-gray);}
+  .drawer-close img{width:20px;height:20px;}
+  .drawer-body{flex:1;overflow-y:auto;padding:24px 28px 28px;}
+  /* the code panel, copy button and highlight colors: the same as the API page */
+  .copy-btn{position:relative;flex-shrink:0;display:flex;padding:2px;border:none;background:none;cursor:pointer;border-radius:4px;}
+  .copy-btn:hover{background:rgba(11,12,13,0.06);}
+  .copy-btn img{width:20px;height:20px;display:block;}
+  .tooltip{
+    position:absolute;top:calc(100% + 12px);left:50%;transform:translateX(-50%) translateY(-4px);
+    padding:8px 12px;border-radius:4px;background:var(--surface-dark);color:#fff;
+    font-family:var(--font-sans);font-size:13px;line-height:normal;white-space:nowrap;
+    filter:drop-shadow(0 6px 4px rgba(0,0,0,0.16));
+    opacity:0;visibility:hidden;pointer-events:none;
+    transition:opacity 0.15s ease, transform 0.15s ease, visibility 0s linear 0.15s;z-index:5;
+  }
+  .tooltip::before{
+    content:'';position:absolute;bottom:100%;left:50%;margin-left:-8px;
+    border:8px solid transparent;border-top:0;border-bottom-color:var(--surface-dark);
+  }
+  .copy-btn:hover .tooltip,.copy-btn:focus-visible .tooltip,.copy-btn.is-copied .tooltip{
+    opacity:1;visibility:visible;transform:translateX(-50%) translateY(0);transition:opacity 0.15s ease, transform 0.15s ease, visibility 0s;
+  }
+  .code-head .tooltip{left:auto;right:-6px;transform:translateY(-4px);} /* keep the tooltip inside the panel */
+  .code-head .tooltip::before{left:auto;right:8px;margin-left:0;}
+  .code-head .copy-btn:hover .tooltip,.code-head .copy-btn:focus-visible .tooltip,.code-head .copy-btn.is-copied .tooltip{transform:translateY(0);}
+  .code-panel{border:1px solid var(--gray-line);border-radius:4px;background:var(--surface-gray);}
+  .code-head{display:flex;align-items:center;gap:10px;padding:8px 10px 8px 16px;background:var(--surface-alt);border-bottom:1px solid var(--gray-line);border-radius:4px 4px 0 0;}
+  .code-file{font-family:var(--mono);font-weight:500;font-size:12px;color:var(--ink);}
+  .code-lang{flex:1;font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--pink-text);}
+  .code-panel pre{margin:0;padding:16px 16px 18px;overflow-x:auto;} /* long lines scroll sideways inside the panel */
+  .code-panel pre code{font-size:12.5px;line-height:1.7;white-space:pre;}
+  /* code colours (all pass 4.5:1 on the light panel) */
+  .t-fn{color:#2f5f96;}
+  .t-kw{color:var(--pink-text);}
+  .t-str{color:var(--go-text);}
+  .t-num{color:#8a5a00;}
+  .t-key{color:#7a3fc4;}
+  .t-cmnt{color:var(--surface-dark);font-style:italic;}
+  @media (max-width:700px){ .drawer-head{padding:20px 16px 16px;} .drawer-body{padding:16px;} }
+
   .empty,.load-error{margin-top:64px;padding:20px 24px;background:var(--white);border:1px solid var(--gray-line);border-radius:2px;font-size:14.5px;line-height:1.75;color:var(--body);}
   .empty strong{display:block;color:var(--ink);}
 
@@ -255,19 +343,21 @@
     html.jump-open{overflow:hidden;}
   }
   @media (max-width:900px){ .responses.is-open .resp-list{grid-template-columns:repeat(2,minmax(0,1fr));} }
+  /* phones: no hover to hint it's tappable, so the legend toggle becomes a bordered button (beside the sentence when it fits, else below it) */
+  @media (max-width:700px){
+    .resp-toggle{display:inline-flex;align-items:center;height:36px;padding:0 12px;border:1px solid var(--toggle-off);border-radius:2px;background:#fff;
+      font-size:14px;line-height:20px;color:var(--ink);text-transform:none;}
+  }
   @media (max-width:520px){ .responses.is-open .resp-list{grid-template-columns:minmax(0,1fr);} .responses{padding:14px 16px;} .resp-list{gap:12px 22px;} }
   @media (max-width:700px){
     .hero{padding:48px 0 40px;}
     .to-top{right:16px;bottom:16px;}
     .jump-toggle,.jump-scroll{padding-left:16px;padding-right:16px;}
     .bucket{gap:32px;padding:40px 0 16px;}
-    .row{grid-template-columns:minmax(0,1fr) auto;}
-    .row .id{grid-column:1;grid-row:2;}
-    .row .resp{grid-column:2;grid-row:1;}
     .cat-main{padding-top:32px;}
-    .search-bar{margin-top:-8px;padding:8px 0;} /* slimmer sticky stack on phones */
+    .search-bar{margin-top:-8px;padding:8px 0;flex-wrap:wrap;} /* slimmer sticky stack on phones */
+    .field{flex-basis:100%;}
     #q{height:44px;}
-    .row .id{text-align:left;max-width:none;}
   }
   /* a long vendor name at 34px is wider than a 302px phone (Galaxy Z Flip with zoom) */
   @media (max-width:340px){.bucket-head h2{font-size:29px;}}
@@ -285,7 +375,7 @@
   @media (prefers-reduced-motion: reduce){
     html{scroll-behavior:auto;}
     .status-dot{animation:none;}
-    .resp-toggle::after,.topstack,.site-top .site-header,.jump,.jump-toggle img,#q,.search-bar,.group-head,.to-top,.to-top.is-shown{transition:none;}
+    .btn-secondary,.drawer,.drawer-scrim,.drawer-panel,.details-toggle .track,.details-toggle .knob,.resp-toggle::after,.topstack,.site-top .site-header,.jump,.jump-toggle img,#q,.search-bar,.group-head,.to-top,.to-top.is-shown{transition:none;}
   }
 </style>
 </head>
@@ -316,13 +406,16 @@
     <div class="wrap">
       <div class="eyebrow-label"><span class="status-dot"></span>Detection catalog</div>
       <h1>What VEX detects.</h1>
-      <p class="lede">Every alert type VEX can raise from the services it connects to, listed by vendor, and what VEX does when it sees one. Search for a threat, a service or an alert ID.</p>
+      <div class="intro-row">
+        <p class="lede">Every alert type VEX can raise, by vendor, in the vendor’s own words, and what VEX does when it sees one. Vendors rename and retire alerts over time, so a newly changed name may take a little while to appear here.</p>
+        <button class="btn-secondary" type="button" data-drawer="custom-drawer" aria-haspopup="dialog">Write your own custom detections <img src="../static/icon-arrow-right-pink.svg" width="16" height="16" alt=""></button>
+      </div>
       <section class="responses" aria-label="Response codes">
         <div class="resp-top">
-          <p>Every detection shows the response VEX applies when it sees it.</p>
-          <button class="resp-toggle" type="button" aria-expanded="false" aria-controls="resp-list">What each means</button>
+          <p>These are the responses VEX applies to a detection when it sees it.</p>
+          <button class="resp-toggle" type="button" aria-expanded="false" aria-controls="resp-list">Show descriptions</button>
         </div>
-        <ul class="resp-list" id="resp-list"><li><code>R0</code><b>Log</b><span>Logged to your audit history. No further action.</span></li><li><code>R1</code><b>Logout</b><span>Signs the account out.</span></li><li><code>R2</code><b>Contain</b><span>Locks the asset out and keeps it from getting back in.</span></li><li><code>R3</code><b>Investigate</b><span>Starts an automatic investigation into the root cause.</span></li><li><code>R4</code><b>Recommend</b><span>Writes a specific security recommendation.</span></li><li><code>R5</code><b>Assess</b><span>Runs an offensive assessment, the way a red team would.</span></li></ul>
+        <ul class="resp-list" id="resp-list"><li><code>R0</code><b>Log</b><span>Logged to your audit history. No further action.</span></li><li><code>R1</code><b>Contain</b><span>Locks the asset out and keeps it from getting back in.</span></li><li><code>R2</code><b>Release</b><span>Releases the asset from containment.</span></li><li><code>R3</code><b>Investigate</b><span>Starts an automatic investigation into the root cause.</span></li><li><code>R4</code><b>Recommend</b><span>Writes a specific security recommendation.</span></li></ul>
       </section>
     </div>
   </section>
@@ -351,6 +444,7 @@
             <input id="q" type="search" placeholder="Try “ransomware”, “phishing” or an ID" autocomplete="off" spellcheck="false">
             <button id="clear" type="button" aria-label="Clear search" hidden><img src="../static/icon-x-small.svg" width="20" height="20" alt=""></button>
           </div>
+          <button class="details-toggle" id="details" type="button" role="switch" aria-checked="false"><span class="track" aria-hidden="true"><span class="knob"></span></span>Show details</button>
         </div>
         <div class="search">
           <div class="try">Try:
@@ -371,6 +465,80 @@
   </div>
 
   </main>
+
+  <div class="drawer" id="custom-drawer" role="dialog" aria-modal="true" aria-labelledby="custom-title" aria-hidden="true">
+    <div class="drawer-scrim" data-close></div>
+    <div class="drawer-panel">
+      <div class="drawer-head">
+        <div>
+          <h2 id="custom-title">Write your own custom detections</h2>
+          <p>This is an example script that shows how you can contact the VEX API every 5 minutes, get the logs, run them through your own detection rules (i.e. custom), and create a signal in VEX for any matches.</p>
+        </div>
+        <button class="drawer-close" type="button" data-close aria-label="Close"><img src="../static/icon-close.svg" width="20" height="20" alt=""></button>
+      </div>
+      <div class="drawer-body">
+        <div class="code-panel">
+          <div class="code-head"><span class="code-file">custom_detections.py</span><span class="code-lang">Python</span><button class="copy-btn" type="button" aria-label="Copy custom_detections.py to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
+          <pre><code><span class="t-kw">import</span> os
+<span class="t-kw">import</span> time
+<span class="t-kw">from</span> datetime <span class="t-kw">import</span> datetime, timedelta, timezone
+
+<span class="t-kw">import</span> requests
+
+INTERVAL = <span class="t-num">300</span>
+
+
+<span class="t-cmnt">""" Authenticate with VEX """</span>
+<span class="t-kw">def</span> <span class="t-fn">login</span>():
+    resp = requests.<span class="t-fn">post</span>(
+        <span class="t-str">"https://cognito-idp.us-east-2.amazonaws.com"</span>,
+        headers={
+            <span class="t-str">"Content-Type"</span>: <span class="t-str">"application/x-amz-json-1.1"</span>,
+            <span class="t-str">"X-Amz-Target"</span>: <span class="t-str">"AWSCognitoIdentityProviderService.InitiateAuth"</span>,
+        },
+        json={
+            <span class="t-str">"AuthFlow"</span>: <span class="t-str">"USER_PASSWORD_AUTH"</span>,
+            <span class="t-str">"ClientId"</span>: <span class="t-str">"2314edi18c3o3t8sroh2u2hucf"</span>,
+            <span class="t-str">"AuthParameters"</span>: {
+                <span class="t-str">"USERNAME"</span>: os.environ[<span class="t-str">"VEX_USERNAME"</span>],
+                <span class="t-str">"PASSWORD"</span>: os.environ[<span class="t-str">"VEX_PASSWORD"</span>],
+            },
+        },
+    )
+    resp.<span class="t-fn">raise_for_status</span>()
+    <span class="t-kw">return</span> resp.<span class="t-fn">json</span>()[<span class="t-str">"AuthenticationResult"</span>][<span class="t-str">"IdToken"</span>]
+
+
+<span class="t-cmnt">""" Pull audit logs between timestamps from VEX """</span>
+<span class="t-kw">def</span> <span class="t-fn">poll</span>(start, end):
+    session = requests.<span class="t-fn">Session</span>()
+    session.headers[<span class="t-str">"Authorization"</span>] = <span class="t-str">f"Bearer {login()}"</span>
+
+    resp = session.<span class="t-fn">get</span>(<span class="t-str">"https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/audit"</span>, params={<span class="t-str">"start"</span>: start, <span class="t-str">"end"</span>: end})
+    resp.<span class="t-fn">raise_for_status</span>()
+
+    <span class="t-kw">for</span> log <span class="t-kw">in</span> resp.<span class="t-fn">json</span>():
+        <span class="t-fn">run_rules</span>(session, log)
+
+
+<span class="t-cmnt">""" Run a custom ruleset and POST matches to VEX """</span>
+<span class="t-kw">def</span> <span class="t-fn">run_rules</span>(session, line):
+    <span class="t-kw">if</span> <span class="t-str">"MALICIOUS"</span> <span class="t-kw">in</span> line:
+        signal = {<span class="t-str">"name"</span>: <span class="t-str">"audit.malicious"</span>, <span class="t-str">"source"</span>: <span class="t-str">"specialsauce"</span>, <span class="t-str">"value"</span>: line}
+        session.<span class="t-fn">post</span>(<span class="t-str">"https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/signal"</span>, json=signal)
+
+
+end = (datetime.<span class="t-fn">now</span>(timezone.utc) - <span class="t-fn">timedelta</span>(seconds=INTERVAL)).<span class="t-fn">strftime</span>(<span class="t-str">"%Y-%m-%dT%H:%M:%SZ"</span>)
+<span class="t-kw">while</span> <span class="t-kw">True</span>:
+    start, end = end, datetime.<span class="t-fn">now</span>(timezone.utc).<span class="t-fn">strftime</span>(<span class="t-str">"%Y-%m-%dT%H:%M:%SZ"</span>)
+    <span class="t-fn">poll</span>(start, end)
+    time.<span class="t-fn">sleep</span>(INTERVAL)</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <span class="visually-hidden" id="copy-status" role="status"></span>
 
   <button class="to-top" id="to-top" type="button"><span class="to-top-icon" aria-hidden="true"></span>Top</button>
 
@@ -396,7 +564,7 @@
         ticking = false;
         var y = window.scrollY;
         var showZone = top.offsetHeight + (classbar ? classbar.offsetHeight : 0);
-        if(root.classList.contains('jump-open')){ lastY = y; return; }
+        if(root.classList.contains('jump-open') || root.hasAttribute('data-relayout')){ lastY = y; return; } // menu open, or the page just changed height under you
         if(y <= showZone){ root.classList.remove('header-hidden'); lastY = y; return; }
         if(Math.abs(y - lastY) < 6){ return; }
         root.classList.toggle('header-hidden', y > lastY);
@@ -410,16 +578,75 @@
 
     (function(){
       // ---------- the catalog ----------
+      // Showing or hiding content changes the page's height, and the browser shifts the scroll position to keep your
+      // place. Mark that moment so the hide-on-scroll header and the Top button don't mistake it for you scrolling.
+      function relayout(){
+        var r = document.documentElement;
+        r.setAttribute('data-relayout', '');
+        clearTimeout(relayout.t);
+        relayout.t = setTimeout(function(){ r.removeAttribute('data-relayout'); }, 300);
+      }
+
       // the response legend: codes and names by default; "What each means" shows the descriptions
       var legend = document.querySelector('.responses'), legendBtn = legend.querySelector('.resp-toggle');
       legendBtn.addEventListener('click', function(){
+        relayout();
         var open = legend.classList.toggle('is-open');
         legendBtn.setAttribute('aria-expanded', String(open));
-        legendBtn.textContent = open ? 'Hide descriptions' : 'What each means';
+        legendBtn.textContent = open ? 'Hide descriptions' : 'Show descriptions';   // lowercase on desktop via CSS
+      });
+
+      // the custom-detections drawer: Esc, the scrim or × closes it; focus stays inside while open
+      (function(){
+        var d = document.getElementById('custom-drawer'), opener = null, rootEl = document.documentElement, panel = d.querySelector('.drawer-panel');
+        function open(b){ opener = b; d.classList.add('is-open'); d.setAttribute('aria-hidden', 'false'); rootEl.style.overflow = 'hidden'; setTimeout(function(){ d.querySelector('.drawer-close').focus(); }, 50); }
+        function close(){ d.classList.remove('is-open'); d.setAttribute('aria-hidden', 'true'); rootEl.style.overflow = ''; if(opener){ opener.focus(); } }
+        document.querySelectorAll('[data-drawer="custom-drawer"]').forEach(function(b){ b.addEventListener('click', function(){ open(b); }); });
+        d.querySelectorAll('[data-close]').forEach(function(el){ el.addEventListener('click', close); });
+        document.addEventListener('keydown', function(e){
+          if(!d.classList.contains('is-open')){ return; }
+          if(e.key === 'Escape'){ close(); return; }
+          if(e.key === 'Tab'){
+            var f = [].slice.call(panel.querySelectorAll('a[href],button')), first = f[0], last = f[f.length - 1];
+            if(e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+            else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+          }
+        });
+        var status = document.getElementById('copy-status');
+        function fallback(text, done){
+          var box = document.createElement('textarea');
+          box.value = text; box.setAttribute('readonly', '');
+          box.style.position = 'fixed'; box.style.opacity = '0';
+          document.body.appendChild(box); box.select();
+          try { if(document.execCommand('copy')){ done(); } } catch(e){}
+          document.body.removeChild(box);
+        }
+        [].forEach.call(d.querySelectorAll('.copy-btn'), function(btn){
+          var timer, tip = btn.querySelector('.tooltip');
+          btn.addEventListener('click', function(){
+            var text = btn.closest('.code-panel').querySelector('pre').textContent.trim();
+            function done(){
+              tip.textContent = 'Copied'; status.textContent = 'Copied to clipboard'; btn.classList.add('is-copied');
+              clearTimeout(timer);
+              timer = setTimeout(function(){ btn.classList.remove('is-copied'); tip.textContent = 'copy to clipboard'; status.textContent = ''; }, 1600);
+            }
+            if(navigator.clipboard && window.isSecureContext){ navigator.clipboard.writeText(text).then(done, function(){ fallback(text, done); }); }
+            else { fallback(text, done); }
+          });
+        });
+      })();
+
+      // "Show details": one switch for every row's vendor ID (off by default)
+      var detailsBtn = document.getElementById('details'), catalogEl = document.getElementById('catalog');
+      detailsBtn.addEventListener('click', function(){
+        var on = detailsBtn.getAttribute('aria-checked') !== 'true';
+        detailsBtn.setAttribute('aria-checked', String(on));
+        relayout();
+        catalogEl.classList.toggle('show-details', on);
       });
 
       // what each response code means (the legend at the top of the page says the same)
-      var RESPONSES = { R0:'Log', R1:'Logout', R2:'Contain', R3:'Investigate', R4:'Recommend', R5:'Assess' };
+      var RESPONSES = { R0:'Log', R1:'Contain', R2:'Release', R3:'Investigate', R4:'Recommend' };
       var SHOW = 8;  // rows shown per group before "Show all" (groups only a few rows longer show in full)
 
       var catalog = document.getElementById('catalog');
@@ -476,9 +703,9 @@
               rows.forEach(function(ri, k){
                 var r = data.rows[ri], code = resp(r);
                 html += '<li class="row' + (fold && k >= SHOW ? ' extra' : '') + '" data-i="' + ri + '"><span class="name">' + esc(r[2]) + '</span>'
-                  + (r[3] && r[3] !== r[2] ? '<code class="id">' + esc(r[3]) + '</code>' : '')
                   + '<span class="resp" title="' + code + ': ' + RESPONSES[code] + '" aria-label="Response ' + code + ', ' + RESPONSES[code] + '">' + code + '</span>'
-                  + (r[4] ? '<p class="desc">' + esc(r[4]) + '</p>' : '') + '</li>';
+                  + (r[4] ? '<p class="desc">' + esc(r[4]) + '</p>' : '')
+                  + (r[3] && r[3] !== r[2] ? '<code class="id">' + esc(r[3]) + '</code>' : '') + '</li>';
               });
               html += '</ul>' + (fold ? '<button class="more" type="button" data-n="' + rows.length + '">Show all ' + fmt(rows.length) + '</button>' : '') + '</div>';
             });
@@ -487,10 +714,6 @@
           html += '</section>';
           nav += '</ul></li>';
         });
-        // custom detections: a placeholder until the upload API is ready
-        nav += '<li><a class="jump-link" href="#custom" data-bucket="custom"><span>Custom detections</span><span class="c"></span></a></li>';
-        html += '<section class="bucket custom" id="custom" data-bucket="custom"><div class="bucket-head"><h2>Custom detections<span class="soon">Coming soon</span></h2>'
-          + '<p class="custom-body">Soon you’ll be able to upload your own detections through the <a href="/api/">VEX API</a>, and they’ll be listed here alongside the rest.</p></div></section>';
         html += '<div class="empty" id="empty" hidden></div>';
         catalog.innerHTML = html;
         jumpList.innerHTML = nav;
@@ -535,6 +758,8 @@
         catalog.classList.toggle('is-searching', searching);
         rowEls.forEach(function(x){
           var hit = !searching || words.every(function(w){ return x.hay.indexOf(w) > -1; });
+          // matched on its ID? show the ID even with details off, so you can see why it's here
+          x.el.classList.toggle('id-hit', !!(searching && hit && x.id && words.some(function(w){ return x.r[3].toLowerCase().indexOf(w) > -1; })));
           x.el.hidden = !hit;
           if(hit){ shown++; }
           if(searching || x.marked){
@@ -560,13 +785,12 @@
           var b = s.parentNode.getAttribute('data-bucket');
           bucketCounts[b] = (bucketCounts[b] || 0) + n;
         });
-        [].forEach.call(catalog.querySelectorAll('.bucket:not(.custom)'), function(sec){
+        [].forEach.call(catalog.querySelectorAll('.bucket'), function(sec){
           var b = sec.getAttribute('data-bucket'), n = bucketCounts[b] || 0;
           sec.hidden = !n;
           jumpList.querySelector('[data-bucket="' + b + '"]').parentNode.hidden = !n;
           jumpList.querySelector('[data-bucket="' + b + '"] .c').textContent = fmt(n);
         });
-        jumpList.querySelector('[data-bucket="custom"]').parentNode.hidden = searching;
         var empty = document.getElementById('empty');
         empty.hidden = shown > 0;
         if(!shown){ empty.innerHTML = '<strong>Nothing matches “' + esc(raw) + '”.</strong>Try a broader word, a service name like “AWS”, or part of an alert ID.'; }
@@ -706,6 +930,7 @@
         ticking = false;
         var y = window.scrollY;
         if(Math.abs(y - lastY) < 6){ return; }
+        if(root.hasAttribute('data-relayout')){ lastY = y; return; }
         var show = y < lastY && y > window.innerHeight && !root.classList.contains('jump-open');
         btn.classList.toggle('is-shown', show);
         lastY = y;

@@ -244,8 +244,8 @@
   /* how VEX responds: the legend for the code on every row */
   .responses{box-sizing:border-box;width:100%;padding:16px;background:var(--surface-warm);border:1px solid var(--toggle-off);border-radius:2px;box-shadow:var(--lift);text-align:left;}
   .resp-top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px 16px;}
-  .resp-top p{font-size:14px;line-height:20px;color:var(--ink);}
-  .resp-toggle{padding:1px 2px;border:0;background:none;cursor:pointer;font:500 12px/16px var(--font-sans);color:var(--surface-dark);transition:color 0.15s ease;} /* a utility, so gray like the side menu, not pink */
+  .resp-top p{flex:1 1 220px;font-size:14px;line-height:20px;color:var(--ink);}
+  .resp-toggle{padding:1px 2px;border:0;background:none;cursor:pointer;font:500 12px/16px var(--font-sans);color:var(--surface-dark);transition:color 0.15s ease;text-transform:lowercase;white-space:nowrap;} /* a utility, so gray like the side menu, not pink */
   .resp-toggle:hover{color:var(--ink);}
   .resp-toggle::after{content:'';display:inline-block;width:6px;height:6px;margin:0 2px 2px 8px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(45deg);transition:transform 0.2s ease;}
   .responses.is-open .resp-toggle::after{transform:rotate(-135deg);margin-bottom:-2px;}
@@ -348,6 +348,11 @@
     html.jump-open{overflow:hidden;}
   }
   @media (max-width:900px){ .responses.is-open .resp-list{grid-template-columns:repeat(2,minmax(0,1fr));} }
+  /* phones: no hover to hint it's tappable, so the legend toggle becomes a bordered button (beside the sentence when it fits, else below it) */
+  @media (max-width:700px){
+    .resp-toggle{display:inline-flex;align-items:center;height:36px;padding:0 12px;border:1px solid var(--toggle-off);border-radius:2px;background:#fff;
+      font-size:14px;line-height:20px;color:var(--ink);text-transform:none;}
+  }
   @media (max-width:520px){ .responses.is-open .resp-list{grid-template-columns:minmax(0,1fr);} .responses{padding:14px 16px;} .resp-list{gap:12px 22px;} }
   @media (max-width:700px){
     .hero{padding:48px 0 40px;}
@@ -413,7 +418,7 @@
       <section class="responses" aria-label="Response codes">
         <div class="resp-top">
           <p>These are the responses VEX applies to a detection when it sees it.</p>
-          <button class="resp-toggle" type="button" aria-expanded="false" aria-controls="resp-list">show descriptions</button>
+          <button class="resp-toggle" type="button" aria-expanded="false" aria-controls="resp-list">Show descriptions</button>
         </div>
         <ul class="resp-list" id="resp-list"><li><code>R0</code><b>Log</b><span>Logged to your audit history. No further action.</span></li><li><code>R1</code><b>Contain</b><span>Locks the asset out and keeps it from getting back in.</span></li><li><code>R2</code><b>Release</b><span>Releases the asset from containment.</span></li><li><code>R3</code><b>Investigate</b><span>Starts an automatic investigation into the root cause.</span></li><li><code>R4</code><b>Recommend</b><span>Writes a specific security recommendation.</span></li></ul>
       </section>
@@ -593,7 +598,7 @@ end = (datetime.<span class="t-fn">now</span>(timezone.utc) - <span class="t-fn"
         relayout();
         var open = legend.classList.toggle('is-open');
         legendBtn.setAttribute('aria-expanded', String(open));
-        legendBtn.textContent = open ? 'hide descriptions' : 'show descriptions';
+        legendBtn.textContent = open ? 'Hide descriptions' : 'Show descriptions';   // lowercase on desktop via CSS
       });
 
       // the custom-detections drawer: Esc, the scrim or × closes it; focus stays inside while open

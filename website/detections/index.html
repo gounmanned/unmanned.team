@@ -536,7 +536,7 @@ while True:
         ticking = false;
         var y = window.scrollY;
         var showZone = top.offsetHeight + (classbar ? classbar.offsetHeight : 0);
-        if(root.classList.contains('jump-open')){ lastY = y; return; }
+        if(root.classList.contains('jump-open') || root.hasAttribute('data-relayout')){ lastY = y; return; } // menu open, or the page just changed height under you
         if(y <= showZone){ root.classList.remove('header-hidden'); lastY = y; return; }
         if(Math.abs(y - lastY) < 6){ return; }
         root.classList.toggle('header-hidden', y > lastY);
@@ -550,9 +550,19 @@ while True:
 
     (function(){
       // ---------- the catalog ----------
+      // Showing or hiding content changes the page's height, and the browser shifts the scroll position to keep your
+      // place. Mark that moment so the hide-on-scroll header and the Top button don't mistake it for you scrolling.
+      function relayout(){
+        var r = document.documentElement;
+        r.setAttribute('data-relayout', '');
+        clearTimeout(relayout.t);
+        relayout.t = setTimeout(function(){ r.removeAttribute('data-relayout'); }, 300);
+      }
+
       // the response legend: codes and names by default; "What each means" shows the descriptions
       var legend = document.querySelector('.responses'), legendBtn = legend.querySelector('.resp-toggle');
       legendBtn.addEventListener('click', function(){
+        relayout();
         var open = legend.classList.toggle('is-open');
         legendBtn.setAttribute('aria-expanded', String(open));
         legendBtn.textContent = open ? 'hide descriptions' : 'show descriptions';
@@ -589,6 +599,7 @@ while True:
       detailsBtn.addEventListener('click', function(){
         var on = detailsBtn.getAttribute('aria-checked') !== 'true';
         detailsBtn.setAttribute('aria-checked', String(on));
+        relayout();
         catalogEl.classList.toggle('show-details', on);
       });
 
@@ -880,6 +891,7 @@ while True:
         ticking = false;
         var y = window.scrollY;
         if(Math.abs(y - lastY) < 6){ return; }
+        if(root.hasAttribute('data-relayout')){ lastY = y; return; }
         var show = y < lastY && y > window.innerHeight && !root.classList.contains('jump-open');
         btn.classList.toggle('is-shown', show);
         lastY = y;

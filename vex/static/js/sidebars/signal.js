@@ -2,13 +2,13 @@ const isOpen = (status) => !status.startsWith("C");
 
 class SignalSidebar {
     static CHOICES = [
-        { status: "R3", icon: "search", label: "Run investigation", detail: "I'll dig into related activity.", when: isOpen },
-        { status: "R4", icon: "lightbulb", label: "Recommend a fix", detail: "I'll propose remediation steps.", when: isOpen },
-        { status: "R1", icon: "shield_lock", label: "Contain the asset", detail: "I'll lock the user out.", tone: "danger", when: isOpen },
+        { status: "R3", label: "Investigate", primary: true, when: isOpen },
+        { status: "R4", label: "Recommend", when: isOpen },
+        { status: "R1", label: "Contain asset",  when: isOpen },
     ];
 
     static CLOSES = [
-        { status: "CH", label: "It's fixed", when: isOpen },
+        { status: "CH", label: "Resolve", when: isOpen },
         { status: "CR", label: "Accept risk", when: isOpen },
         { status: "OB", label: "Reopen", when: (s) => !isOpen(s) },
     ];
@@ -61,7 +61,7 @@ class SignalSidebar {
 
         document.getElementById("response").placeholder = isNew
             ? "What happened, where, and what needs to be done?"
-            : "Add context for vex";
+            : "Add context for VEX";
 
         this.renderTurn();
     }
@@ -78,12 +78,9 @@ class SignalSidebar {
             const button = document.createElement("button");
             button.type = "button";
             button.className = "choice";
+            button.classList.toggle("is-primary", !!c.primary);
             button.dataset.status = c.status;
-            if (c.tone) button.dataset.tone = c.tone;
-            button.innerHTML = `
-                <span class="material-symbols-outlined">${c.icon}</span>
-                <span class="choice-label">${c.label}</span>
-                <span class="choice-detail">${c.detail}</span>`;
+            button.textContent = c.label;
             return button;
         });
         document.getElementById("next-turn-choices").replaceChildren(...choices);
@@ -107,10 +104,13 @@ class SignalSidebar {
             <div class="message">
                 <div class="meta">
                     <span class="sender"></span>
+                    <span class="tag">AI analyst</span>
                     <time class="timestamp"></time>
                 </div>
                 <div class="body"></div>
             </div>`;
+
+        li.querySelector(".tag").hidden = source !== "vex";
 
         const avatar = li.querySelector(".avatar");
         avatar.onerror = () => { avatar.onerror = null; avatar.src = "static/img/source/slack.png"; };
@@ -165,7 +165,6 @@ class SignalSidebar {
             this.render();
             document.dispatchEvent(new CustomEvent("page:reload"));
         });
- 
         if (!isOpen(status)) document.querySelector("site-overlay").click();
     }
 
@@ -177,7 +176,7 @@ class SignalSidebar {
         thinking.innerHTML = `
             <img class="avatar" src="${Workspace.avatar("vex")}" alt="">
             <div class="message">
-                <div class="meta"><span class="sender">vex</span></div>
+                <div class="meta"><span class="sender">vex</span><span class="tag">AI analyst</span></div>
                 <div class="body thinking">Thinking…</div>
             </div>`;
         document.getElementById("updates").append(thinking);

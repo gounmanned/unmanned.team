@@ -29,10 +29,13 @@
     --white:#fcfcfa;
     --pink:#e01280;
     --pink-text:#d1107a;     /* pink for TEXT on light backgrounds (passes 4.5:1) */
-    --mark:#ffe59a;
-    --toggle-off:#8a8a8e;    /* Toggle track, off (Unmanned DS) */
-    --pink-hover:#d10176;    /* Toggle track, on + hover (Unmanned DS) */
-    --pink-press:#aa005f;    /* Toggle track, on + pressed (Unmanned DS) */          /* search highlight (from the prototype) */
+    --mark:#ffe59a;          /* search highlight (from the prototype) */
+    --toggle-off:#8a8a8e;    /* Toggle track off; badge, input and legend borders (Unmanned DS) */
+    --pink-hover:#d10176;    /* Toggle on + hover; link and secondary-button text (Unmanned DS) */
+    --pink-press:#aa005f;    /* Toggle track, on + pressed (Unmanned DS) */
+    --body-soft:#4b4c52;     /* badge text (Unmanned DS) */
+    --surface-warm:#faf9f6;  /* response legend background (Unmanned DS mockup) */
+    --lift:2px 2px 0 rgba(11,12,13,0.15);  /* the DS offset shadow */
     --gray-line:#dcdcd8;
     --gray-faint:#c4c4c4;
     --surface-dark:#6c6c70;
@@ -103,6 +106,17 @@
   .hero .wrap{position:relative;z-index:1;display:flex;flex-direction:column;align-items:flex-start;gap:24px;}
   .hero h1{font-weight:600;font-size:clamp(40px,6vw,70px);line-height:0.99;letter-spacing:-0.03em;}
   .lede{font-size:16px;line-height:1.75;color:var(--body);max-width:680px;}
+  /* intro: the copy on the left, the custom-detections button on the right (bottom-aligned) */
+  .intro-row{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px 24px;width:100%;}
+  .intro-row .lede{max-width:600px;font-size:14px;line-height:20px;color:var(--ink);}
+  /* DS Button, Secondary / sm */
+  .btn-secondary{display:inline-flex;align-items:center;gap:8px;height:32px;padding:0 12px;flex-shrink:0;background:#fff;border:1px solid var(--pink);border-radius:2px;
+    box-shadow:var(--lift);font:500 14px/20px var(--font-sans);color:var(--pink-hover);cursor:pointer;transition:transform 0.1s ease, box-shadow 0.1s ease;}
+  .btn-secondary img{width:16px;height:16px;}
+  .btn-secondary:hover{border-color:var(--pink-hover);}
+  .btn-secondary:active{transform:translate(2px,2px);box-shadow:none;}
+  .btn-secondary:focus{outline:none;}
+  .btn-secondary:focus-visible{box-shadow:var(--lift), 0 0 0 3px rgba(224,18,128,0.35);}
 
   /* the search sits at the top of the content column, beside the jump menu, so it reads as part of the catalog */
   .cat-main{min-width:0;padding-top:64px;}
@@ -121,8 +135,8 @@
   .field{position:relative;flex:1;min-width:0;}
 
   /* "Show details" toggle (the Unmanned DS Toggle): shows or hides every row's vendor ID at once */
-  .details-toggle{display:inline-flex;align-items:center;gap:10px;flex-shrink:0;padding:4px 0;border:0;background:none;cursor:pointer;
-    font:500 14px/1.5 var(--font-sans);color:var(--ink);white-space:nowrap;}
+  .details-toggle{display:inline-flex;align-items:center;gap:12px;flex-shrink:0;padding:0;border:0;background:none;cursor:pointer;
+    font:400 16px/24px var(--font-sans);color:var(--ink);white-space:nowrap;}
   .details-toggle .track{--t:var(--toggle-off);position:relative;flex-shrink:0;width:36px;height:20px;border-radius:2px;background:var(--t);
     transition:background-color 0.12s ease-out, box-shadow 0.12s ease-out;}
   .details-toggle .knob{position:absolute;top:2px;left:2px;width:16px;height:16px;background:#fff;transition:left 0.12s ease-out, width 0.12s ease-out;}
@@ -137,16 +151,16 @@
   .details-toggle[aria-checked="true"]:active .track{--t:var(--pink-press);}
   .details-toggle:focus{outline:none;}
   .details-toggle:focus-visible .track{box-shadow:0 0 0 3px rgba(224,18,128,0.35);}
-  .field .mag{position:absolute;left:16px;top:50%;transform:translateY(-50%);width:20px;height:20px;pointer-events:none;}
+  .field .mag{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:20px;height:20px;pointer-events:none;}
   #q{
-    width:100%;height:52px;padding:0 48px 0 46px;font:500 15px var(--font-sans);color:var(--ink);background:var(--surface);
-    border:1px solid var(--gray-line);border-radius:2px;outline:none;-webkit-appearance:none;appearance:none;
+    width:100%;height:40px;padding:0 44px 0 40px;font:400 16px var(--font-sans);color:var(--ink);background:#fff;
+    border:1px solid var(--toggle-off);border-radius:2px;outline:none;-webkit-appearance:none;appearance:none;
     transition:border-color 0.15s, box-shadow 0.15s;
   }
   /* the browser's own clear button is hidden: it doubled up with ours */
   #q::-webkit-search-cancel-button,#q::-webkit-search-decoration{-webkit-appearance:none;appearance:none;display:none;}
   #q::placeholder{color:var(--surface-dark);font-weight:400;}
-  #q:hover{border-color:var(--gray-faint);}
+  #q:hover{border-color:var(--ink);}
   #q:focus{border-color:var(--pink);box-shadow:0 0 0 3px rgba(224,18,128,0.12);}
   #clear{position:absolute;right:8px;top:50%;transform:translateY(-50%);display:flex;padding:6px;border:0;background:none;cursor:pointer;border-radius:2px;}
   #clear:hover{background:rgba(11,12,13,0.06);}
@@ -212,7 +226,7 @@
   .group-head .official{font:500 11px/1.5 var(--mono);color:var(--surface-dark);}
   .list{list-style:none;margin:0;padding:0;}
   .row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:0 16px;padding:11px 0;border-top:1px solid var(--gray-line);align-items:baseline;}
-  .row .resp{grid-column:2;grid-row:1;font:500 11px/1.5 var(--mono);color:var(--ink);padding:1px 6px;border:1px solid var(--gray-line);border-radius:2px;background:var(--surface);white-space:nowrap;}
+  .row .resp{grid-column:2;grid-row:1;align-self:start;background:var(--surface-gray);}
   .row .name{font-size:14.5px;line-height:1.5;color:var(--ink);overflow-wrap:anywhere;}
   .row .id{grid-column:1;grid-row:2;margin-top:8px;font:500 11px/1.5 var(--mono);color:var(--surface-dark);overflow-wrap:anywhere;}
   .catalog:not(.show-details) .row .id{display:none;}
@@ -227,22 +241,52 @@
   .catalog.is-searching .more{display:none;}
 
   /* how VEX responds: the legend for the code on every row */
-  .responses{box-sizing:border-box;width:100%;margin-top:40px;padding:16px 20px;background:var(--surface);border:1px solid var(--gray-line);border-radius:2px;text-align:left;}
-  .resp-top{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 16px;}
-  .resp-top p{font-size:14px;line-height:1.55;color:var(--body);}
-  .resp-toggle{padding:0;border:0;background:none;cursor:pointer;font:500 13px var(--font-sans);color:var(--pink-text);}
+  .responses{box-sizing:border-box;width:100%;padding:16px;background:var(--surface-warm);border:1px solid var(--toggle-off);border-radius:2px;box-shadow:var(--lift);text-align:left;}
+  .resp-top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px 16px;}
+  .resp-top p{font-size:14px;line-height:20px;color:var(--ink);}
+  .resp-toggle{padding:1px 2px;border:0;background:none;cursor:pointer;font:500 12px/16px var(--font-sans);color:var(--pink-hover);}
   .resp-toggle::after{content:'';display:inline-block;width:6px;height:6px;margin:0 2px 2px 8px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(45deg);transition:transform 0.2s ease;}
   .responses.is-open .resp-toggle::after{transform:rotate(-135deg);margin-bottom:-2px;}
   .resp-list{list-style:none;margin:12px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:12px 32px;}
-  .resp-list li{display:flex;align-items:baseline;gap:8px;}
-  .resp-list code{font:500 12px/1.5 var(--mono);color:var(--ink);padding:1px 6px;border:1px solid var(--gray-line);border-radius:2px;}
-  .resp-list b{font-weight:600;font-size:14px;line-height:1.5;color:var(--ink);}
+  .resp-list li{display:flex;align-items:center;gap:8px;}
+  /* DS Badge, Mono / Outline: the legend's codes and the code on every row */
+  .resp-list code,.row .resp{box-sizing:border-box;display:inline-flex;align-items:center;height:24px;padding:4px 8px;border:1px solid var(--toggle-off);border-radius:2px;
+    background:#fff;font:400 12px/16px var(--mono);letter-spacing:0.08em;color:var(--body-soft);white-space:nowrap;}
+  .resp-list b{font-weight:500;font-size:12px;line-height:16px;color:var(--ink);}
   .resp-list span{display:none;}
   /* open: one code per line, with what it does */
   .responses.is-open .resp-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px 28px;margin-top:16px;}
-  .responses.is-open .resp-list li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:2px 10px;align-content:start;} /* top-aligned, so first lines line up across a row */
+  .responses.is-open .resp-list li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:2px 10px;align-content:start;align-items:start;} /* top-aligned, so first lines line up across a row */
   .responses.is-open .resp-list code{grid-row:1 / 3;}
+  .responses.is-open .resp-list b{padding-top:4px;}
   .responses.is-open .resp-list span{display:block;font-size:13px;line-height:1.45;color:var(--body);}
+  /* "Write your own custom detections": a side drawer with an example script */
+  .drawer{position:fixed;inset:0;z-index:200;visibility:hidden;transition:visibility 0s linear 0.35s;}
+  .drawer.is-open{visibility:visible;transition:none;}
+  .drawer-scrim{position:absolute;inset:0;background:rgba(11,12,13,0.32);opacity:0;transition:opacity 0.3s ease;}
+  .drawer.is-open .drawer-scrim{opacity:1;}
+  .drawer-panel{position:absolute;top:0;right:0;bottom:0;width:min(680px,100%);display:flex;flex-direction:column;background:var(--surface);
+    box-shadow:-12px 0 40px -16px rgba(11,12,13,0.35);transform:translateX(100%);transition:transform 0.35s cubic-bezier(0.2,0.8,0.2,1);}
+  .drawer.is-open .drawer-panel{transform:none;}
+  .drawer-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:28px 28px 20px;border-bottom:1px solid var(--gray-line);}
+  .drawer-head h2{font-weight:600;font-size:clamp(34px * 24 / 52, 4.2vw * 24 / 52, 24px);line-height:1.25;}
+  .drawer-head p{margin-top:8px;max-width:560px;font-size:15px;line-height:1.6;color:var(--body);}
+  .drawer-close{flex-shrink:0;display:flex;align-items:center;justify-content:center;width:36px;height:36px;margin:-6px -8px 0 0;border:0;border-radius:2px;background:none;cursor:pointer;}
+  .drawer-close:hover{background:var(--surface-gray);}
+  .drawer-close img{width:20px;height:20px;}
+  .drawer-body{flex:1;overflow-y:auto;padding:24px 28px 28px;}
+  .snippet{border:1px solid var(--gray-line);border-radius:2px;background:var(--surface-gray);}
+  .snippet-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 8px 8px 14px;border-bottom:1px solid var(--gray-line);
+    font:500 12px/1.5 var(--mono);color:var(--surface-dark);}
+  .snippet-copy{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border:1px solid var(--gray-line);border-radius:2px;background:#fff;cursor:pointer;
+    font:500 12px/16px var(--font-sans);color:var(--ink);}
+  .snippet-copy:hover{border-color:var(--ink);}
+  .snippet pre{margin:0;padding:14px;overflow-x:auto;font:400 12.5px/1.65 var(--mono);color:var(--ink);tab-size:4;}
+  .drawer-foot{padding:16px 28px;border-top:1px solid var(--gray-line);background:var(--surface-gray);}
+  .drawer-foot a{display:inline-flex;align-items:center;gap:6px;font-weight:500;font-size:14px;color:var(--pink-text);text-decoration:none;}
+  .drawer-foot img{width:16px;height:16px;}
+  @media (max-width:700px){ .drawer-head{padding:20px 16px 16px;} .drawer-body{padding:16px;} .drawer-foot{padding:14px 16px;} }
+
   /* custom detections: a placeholder at the end of the catalog */
   .custom .soon{display:inline-block;margin-left:10px;padding:2px 8px;border:1px dashed var(--pink);border-radius:2px;font:500 11px/1.5 var(--mono);letter-spacing:0.08em;text-transform:uppercase;color:var(--pink-text);vertical-align:middle;}
   .custom-body{font-size:15px;line-height:1.7;color:var(--body);max-width:620px;}
@@ -304,7 +348,7 @@
   @media (prefers-reduced-motion: reduce){
     html{scroll-behavior:auto;}
     .status-dot{animation:none;}
-    .details-toggle .track,.details-toggle .knob,.resp-toggle::after,.topstack,.site-top .site-header,.jump,.jump-toggle img,#q,.search-bar,.group-head,.to-top,.to-top.is-shown{transition:none;}
+    .btn-secondary,.drawer,.drawer-scrim,.drawer-panel,.details-toggle .track,.details-toggle .knob,.resp-toggle::after,.topstack,.site-top .site-header,.jump,.jump-toggle img,#q,.search-bar,.group-head,.to-top,.to-top.is-shown{transition:none;}
   }
 </style>
 </head>
@@ -335,11 +379,14 @@
     <div class="wrap">
       <div class="eyebrow-label"><span class="status-dot"></span>Detection catalog</div>
       <h1>What VEX detects.</h1>
-      <p class="lede">Every alert type VEX can raise from the services it connects to, listed by vendor, and what VEX does when it sees one. Search for a threat, a service or an alert ID.</p>
+      <div class="intro-row">
+        <p class="lede">Every alert type VEX can raise, by vendor, in the vendor’s own words, and what VEX does when it sees one. Vendors rename and retire alerts over time, so a newly changed name may take a little while to appear here.</p>
+        <button class="btn-secondary" type="button" data-drawer="custom-drawer" aria-haspopup="dialog">Write your own custom detections <img src="../static/icon-arrow-right-pink.svg" width="16" height="16" alt=""></button>
+      </div>
       <section class="responses" aria-label="Response codes">
         <div class="resp-top">
-          <p>Every detection shows the response VEX applies when it sees it.</p>
-          <button class="resp-toggle" type="button" aria-expanded="false" aria-controls="resp-list">What each means</button>
+          <p>These are the responses VEX applies to a detection when it sees it.</p>
+          <button class="resp-toggle" type="button" aria-expanded="false" aria-controls="resp-list">show descriptions</button>
         </div>
         <ul class="resp-list" id="resp-list"><li><code>R0</code><b>Log</b><span>Logged to your audit history. No further action.</span></li><li><code>R1</code><b>Contain</b><span>Locks the asset out and keeps it from getting back in.</span></li><li><code>R2</code><b>Release</b><span>Releases the asset from containment.</span></li><li><code>R3</code><b>Investigate</b><span>Starts an automatic investigation into the root cause.</span></li><li><code>R4</code><b>Recommend</b><span>Writes a specific security recommendation.</span></li></ul>
       </section>
@@ -392,6 +439,79 @@
 
   </main>
 
+  <div class="drawer" id="custom-drawer" role="dialog" aria-modal="true" aria-labelledby="custom-title" aria-hidden="true">
+    <div class="drawer-scrim" data-close></div>
+    <div class="drawer-panel">
+      <div class="drawer-head">
+        <div>
+          <h2 id="custom-title">Write your own custom detections</h2>
+          <p>This is an example script that shows how you can contact the VEX API every 5 minutes, get the logs, run them through your own detection rules (i.e. custom), and create a signal in VEX for any matches.</p>
+        </div>
+        <button class="drawer-close" type="button" data-close aria-label="Close"><img src="../static/icon-close.svg" width="20" height="20" alt=""></button>
+      </div>
+      <div class="drawer-body">
+        <div class="snippet">
+          <div class="snippet-head"><span>custom_detections.py</span><button class="snippet-copy" type="button"><img src="../static/icon-copy.svg" width="14" height="14" alt=""><span>Copy</span></button></div>
+          <pre><code>import os
+import time
+from datetime import datetime, timedelta, timezone
+
+import requests
+
+INTERVAL = 300
+
+
+""" Authenticate with VEX """
+def login():
+    resp = requests.post(
+        "https://cognito-idp.us-east-2.amazonaws.com",
+        headers={
+            "Content-Type": "application/x-amz-json-1.1",
+            "X-Amz-Target": "AWSCognitoIdentityProviderService.InitiateAuth",
+        },
+        json={
+            "AuthFlow": "USER_PASSWORD_AUTH",
+            "ClientId": "2314edi18c3o3t8sroh2u2hucf",
+            "AuthParameters": {
+                "USERNAME": os.environ["VEX_USERNAME"],
+                "PASSWORD": os.environ["VEX_PASSWORD"],
+            },
+        },
+    )
+    resp.raise_for_status()
+    return resp.json()["AuthenticationResult"]["IdToken"]
+
+
+""" Pull audit logs between timestamps from VEX """
+def poll(start, end):
+    session = requests.Session()
+    session.headers["Authorization"] = f"Bearer {login()}"
+
+    resp = session.get("https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/audit", params={"start": start, "end": end})
+    resp.raise_for_status()
+
+    for log in resp.json():
+        run_rules(session, log)
+
+
+""" Run a custom ruleset and POST matches to VEX """
+def run_rules(session, line):
+    if "MALICIOUS" in line:
+        signal = {"name": "audit.malicious", "source": "specialsauce", "value": line}
+        session.post("https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/signal", json=signal)
+
+
+end = (datetime.now(timezone.utc) - timedelta(seconds=INTERVAL)).strftime("%Y-%m-%dT%H:%M:%SZ")
+while True:
+    start, end = end, datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    poll(start, end)
+    time.sleep(INTERVAL)</code></pre>
+        </div>
+      </div>
+      <div class="drawer-foot"><a href="/api/">VEX API reference <img src="../static/icon-arrow-right-pink.svg" width="16" height="16" alt=""></a></div>
+    </div>
+  </div>
+
   <button class="to-top" id="to-top" type="button"><span class="to-top-icon" aria-hidden="true"></span>Top</button>
 
   <footer>
@@ -435,8 +555,34 @@
       legendBtn.addEventListener('click', function(){
         var open = legend.classList.toggle('is-open');
         legendBtn.setAttribute('aria-expanded', String(open));
-        legendBtn.textContent = open ? 'Hide descriptions' : 'What each means';
+        legendBtn.textContent = open ? 'hide descriptions' : 'show descriptions';
       });
+
+      // the custom-detections drawer: Esc, the scrim or × closes it; focus stays inside while open
+      (function(){
+        var d = document.getElementById('custom-drawer'), opener = null, rootEl = document.documentElement, panel = d.querySelector('.drawer-panel');
+        function open(b){ opener = b; d.classList.add('is-open'); d.setAttribute('aria-hidden', 'false'); rootEl.style.overflow = 'hidden'; setTimeout(function(){ d.querySelector('.drawer-close').focus(); }, 50); }
+        function close(){ d.classList.remove('is-open'); d.setAttribute('aria-hidden', 'true'); rootEl.style.overflow = ''; if(opener){ opener.focus(); } }
+        document.querySelectorAll('[data-drawer="custom-drawer"]').forEach(function(b){ b.addEventListener('click', function(){ open(b); }); });
+        d.querySelectorAll('[data-close]').forEach(function(el){ el.addEventListener('click', close); });
+        document.addEventListener('keydown', function(e){
+          if(!d.classList.contains('is-open')){ return; }
+          if(e.key === 'Escape'){ close(); return; }
+          if(e.key === 'Tab'){
+            var f = [].slice.call(panel.querySelectorAll('a[href],button')), first = f[0], last = f[f.length - 1];
+            if(e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+            else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+          }
+        });
+        var copyBtn = d.querySelector('.snippet-copy'), copyLabel = copyBtn.querySelector('span');
+        copyBtn.addEventListener('click', function(){
+          if(!navigator.clipboard){ return; }
+          navigator.clipboard.writeText(d.querySelector('.snippet code').textContent).then(function(){
+            copyLabel.textContent = 'Copied';
+            setTimeout(function(){ copyLabel.textContent = 'Copy'; }, 1600);
+          });
+        });
+      })();
 
       // "Show details": one switch for every row's vendor ID (off by default)
       var detailsBtn = document.getElementById('details'), catalogEl = document.getElementById('catalog');

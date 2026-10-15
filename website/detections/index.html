@@ -245,7 +245,8 @@
   .responses{box-sizing:border-box;width:100%;padding:16px;background:var(--surface-warm);border:1px solid var(--toggle-off);border-radius:2px;box-shadow:var(--lift);text-align:left;}
   .resp-top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px 16px;}
   .resp-top p{font-size:14px;line-height:20px;color:var(--ink);}
-  .resp-toggle{padding:1px 2px;border:0;background:none;cursor:pointer;font:500 12px/16px var(--font-sans);color:var(--pink-hover);}
+  .resp-toggle{padding:1px 2px;border:0;background:none;cursor:pointer;font:500 12px/16px var(--font-sans);color:var(--surface-dark);transition:color 0.15s ease;} /* a utility, so gray like the side menu, not pink */
+  .resp-toggle:hover{color:var(--ink);}
   .resp-toggle::after{content:'';display:inline-block;width:6px;height:6px;margin:0 2px 2px 8px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(45deg);transition:transform 0.2s ease;}
   .responses.is-open .resp-toggle::after{transform:rotate(-135deg);margin-bottom:-2px;}
   .resp-list{list-style:none;margin:12px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:12px 32px;}

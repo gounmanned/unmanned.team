@@ -879,16 +879,22 @@
           <h3 class="endpoint-path">/audit</h3>
           <span class="endpoint-status">200 OK</span>
         </div>
-        <p class="endpoint-desc">SIEM log entries from your connected monitors that match your search.</p>
+        <p class="endpoint-desc">SIEM log entries from your connected monitors that match your search, or that fall between two times.</p>
         <table class="param-table">
           <thead><tr><th>Parameter</th><th>In</th><th>Type</th><th></th><th>Description</th></tr></thead>
           <tbody>
-            <tr><td>q</td><td>query</td><td>string</td><td><span class="req">Required</span></td><td>What to search for, the way you’d search the web, e.g. <code>dmarc</code>. Returns the log lines that match.</td></tr>
+            <tr><td>q</td><td>query</td><td>string</td><td><span class="opt">Optional</span></td><td>What to search for, the way you’d search the web, e.g. <code>dmarc</code>. Returns the log lines that match.</td></tr>
+            <tr><td>start</td><td>query</td><td>string, ISO 8601</td><td><span class="opt">Optional</span></td><td>Only return log lines from this time on, e.g. <code>2026-10-12T00:00:00Z</code>. Use with <code>end</code>. Ignored when <code>q</code> is set.</td></tr>
+            <tr><td>end</td><td>query</td><td>string, ISO 8601</td><td><span class="opt">Optional</span></td><td>Only return log lines before this time, e.g. <code>2026-10-13T00:00:00Z</code>. Use with <code>start</code>. Ignored when <code>q</code> is set.</td></tr>
           </tbody>
         </table>
         <div class="code-panel">
           <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy request to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code><span class="t-fn">curl</span> <span class="t-str">"https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/audit?q=dmarc"</span> \
+  -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span>
+
+<span class="t-cmnt"># or everything between two times</span>
+<span class="t-fn">curl</span> <span class="t-str">"https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/audit?start=2026-10-12T00:00:00Z&amp;end=2026-10-13T00:00:00Z"</span> \
   -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span></code></pre>
         </div>
         <div class="code-panel">
@@ -904,7 +910,7 @@
   }
 ]</code></pre>
         </div>
-        <p class="note">This is the unfiltered feed — expect volume. Use Signals if you want VEX's opinion on which of these lines actually matter.</p>
+        <p class="note">This is the unfiltered feed, so expect volume. Use Signals if you want VEX's opinion on which of these lines actually matter.</p>
       </div>
     </section>
 

@@ -253,7 +253,7 @@
   /* DS Badge, Mono / Outline: the legend's codes and the code on every row */
   .resp-list code,.row .resp{box-sizing:border-box;display:inline-flex;align-items:center;height:24px;padding:4px 8px;border:1px solid var(--toggle-off);border-radius:2px;
     background:#fff;font:400 12px/16px var(--mono);letter-spacing:0.08em;color:var(--body-soft);white-space:nowrap;}
-  .resp-list b{font-weight:500;font-size:12px;line-height:16px;color:var(--ink);}
+  .resp-list b{font-weight:600;font-size:12px;line-height:16px;color:var(--ink);}
   .resp-list span{display:none;}
   /* open: one code per line, with what it does */
   .responses.is-open .resp-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px 28px;margin-top:16px;}
@@ -311,10 +311,7 @@
   .t-num{color:#8a5a00;}
   .t-key{color:#7a3fc4;}
   .t-cmnt{color:var(--surface-dark);font-style:italic;}
-  .drawer-foot{padding:16px 28px;border-top:1px solid var(--gray-line);background:var(--surface-gray);}
-  .drawer-foot a{display:inline-flex;align-items:center;gap:6px;font-weight:500;font-size:14px;color:var(--pink-text);text-decoration:none;}
-  .drawer-foot img{width:16px;height:16px;}
-  @media (max-width:700px){ .drawer-head{padding:20px 16px 16px;} .drawer-body{padding:16px;} .drawer-foot{padding:14px 16px;} }
+  @media (max-width:700px){ .drawer-head{padding:20px 16px 16px;} .drawer-body{padding:16px;} }
 
   /* custom detections: a placeholder at the end of the catalog */
   .custom .soon{display:inline-block;margin-left:10px;padding:2px 8px;border:1px dashed var(--pink);border-radius:2px;font:500 11px/1.5 var(--mono);letter-spacing:0.08em;text-transform:uppercase;color:var(--pink-text);vertical-align:middle;}
@@ -537,7 +534,6 @@ end = (datetime.<span class="t-fn">now</span>(timezone.utc) - <span class="t-fn"
     time.<span class="t-fn">sleep</span>(INTERVAL)</code></pre>
         </div>
       </div>
-      <div class="drawer-foot"><a href="/api/">VEX API reference <img src="../static/icon-arrow-right-pink.svg" width="16" height="16" alt=""></a></div>
     </div>
   </div>
 

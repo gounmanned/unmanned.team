@@ -322,7 +322,7 @@
           <p>Every detection shows the response VEX applies when it sees it.</p>
           <button class="resp-toggle" type="button" aria-expanded="false" aria-controls="resp-list">What each means</button>
         </div>
-        <ul class="resp-list" id="resp-list"><li><code>R0</code><b>Log</b><span>Logged to your audit history. No further action.</span></li><li><code>R1</code><b>Logout</b><span>Signs the account out.</span></li><li><code>R2</code><b>Contain</b><span>Locks the asset out and keeps it from getting back in.</span></li><li><code>R3</code><b>Investigate</b><span>Starts an automatic investigation into the root cause.</span></li><li><code>R4</code><b>Recommend</b><span>Writes a specific security recommendation.</span></li><li><code>R5</code><b>Assess</b><span>Runs an offensive assessment, the way a red team would.</span></li></ul>
+        <ul class="resp-list" id="resp-list"><li><code>R0</code><b>Log</b><span>Logged to your audit history. No further action.</span></li><li><code>R1</code><b>Logout</b><span>Signs the account out.</span></li><li><code>R2</code><b>Release</b><span>Releases the asset from containment.</span></li><li><code>R3</code><b>Investigate</b><span>Starts an automatic investigation into the root cause.</span></li><li><code>R4</code><b>Recommend</b><span>Writes a specific security recommendation.</span></li></ul>
       </section>
     </div>
   </section>
@@ -419,7 +419,7 @@
       });
 
       // what each response code means (the legend at the top of the page says the same)
-      var RESPONSES = { R0:'Log', R1:'Logout', R2:'Contain', R3:'Investigate', R4:'Recommend', R5:'Assess' };
+      var RESPONSES = { R0:'Log', R1:'Logout', R2:'Release', R3:'Investigate', R4:'Recommend' };
       var SHOW = 8;  // rows shown per group before "Show all" (groups only a few rows longer show in full)
 
       var catalog = document.getElementById('catalog');

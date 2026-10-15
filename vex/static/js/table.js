@@ -3,7 +3,7 @@ class Table {
         OB: 'Waiting on decision',
         CR: 'Accepted risk',
         CH: 'Closed by human',
-        CV: 'Closed by VEX',
+        CV: 'Autoclosed by VEX',
     };
 
     constructor(id, { open, move }) {

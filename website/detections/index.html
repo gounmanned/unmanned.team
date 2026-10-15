@@ -230,7 +230,7 @@
   .row .resp{grid-column:2;grid-row:1;align-self:start;background:var(--surface-gray);}
   .row .name{font-size:14.5px;line-height:1.5;color:var(--ink);overflow-wrap:anywhere;}
   .row .id{grid-column:1;grid-row:2;margin-top:8px;font:500 11px/1.5 var(--mono);color:var(--surface-dark);overflow-wrap:anywhere;}
-  .catalog:not(.show-details) .row .id{display:none;}
+  .catalog:not(.show-details) .row:not(.id-hit) .id{display:none;}   /* a search that matched the ID shows it anyway */
   .row .desc{grid-column:1 / -1;margin-top:2px;font-size:13px;line-height:1.5;color:var(--body);}
   mark{background:var(--mark);color:inherit;padding:0 1px;border-radius:1px;}
   .more{
@@ -767,6 +767,8 @@ end = (datetime.<span class="t-fn">now</span>(timezone.utc) - <span class="t-fn"
         catalog.classList.toggle('is-searching', searching);
         rowEls.forEach(function(x){
           var hit = !searching || words.every(function(w){ return x.hay.indexOf(w) > -1; });
+          // matched on its ID? show the ID even with details off, so you can see why it's here
+          x.el.classList.toggle('id-hit', !!(searching && hit && x.id && words.some(function(w){ return x.r[3].toLowerCase().indexOf(w) > -1; })));
           x.el.hidden = !hit;
           if(hit){ shown++; }
           if(searching || x.marked){

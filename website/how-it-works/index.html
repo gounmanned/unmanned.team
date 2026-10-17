@@ -298,7 +298,6 @@
   .mk-input{flex:1;display:flex;flex-direction:column;justify-content:space-between;padding:10px;background:#fefeff;border:0.8px solid var(--mk-edge);border-radius:8px;font-size:12px;line-height:18px;color:var(--mk-muted);}
   .mk-send{align-self:flex-end;display:flex;padding:5px;border-radius:5px;background:var(--pink);}
 
-    font-family:var(--mono);font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:var(--surface-dark);}
   .hw-sec--gray{background:var(--surface-gray);}   /* the loop sections alternate: loop gray, collect white, triage gray, detect white, update gray, operations white */
 
   /* review: the question cards */
@@ -553,6 +552,38 @@
     .mock-stack--triage{zoom:0.82;}
     .db-row--extra{display:none;}
     .hw-close-cta{margin-top:48px;padding-top:32px;}
+  }
+
+  /* drawer content: the "In short" box, tags, outcome rows, side-by-side comparisons, field notes, the closing line */
+  .in-short{margin:20px 0 4px;padding:16px 18px;background:var(--surface-gray);border-radius:2px;}
+  .in-short p{margin:0;font-size:16px;line-height:25px;color:var(--ink);}
+  .prose .in-short p{margin-top:0;color:var(--ink);}
+  .prose .in-short .in-short-label{margin-bottom:6px;font-family:var(--mono);font-size:11px;line-height:16px;letter-spacing:0.08em;text-transform:uppercase;color:var(--pink-text);}
+  .prose h3{margin-top:32px;}
+  .prose h4{margin-top:24px;font-weight:600;font-size:16px;line-height:24px;color:var(--ink);}
+  .tags{list-style:none;display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 0;padding:0;}
+  .prose .tags li{margin:0;padding:4px 10px;border:1px solid var(--gray-line);border-radius:2px;font-size:14px;line-height:20px;color:var(--ink);}
+  .route{margin:14px 0 0;border-top:1px solid var(--gray-line);}
+  .route > div{display:grid;grid-template-columns:minmax(0,180px) minmax(0,1fr);gap:4px 16px;padding:10px 0;border-bottom:1px solid var(--gray-line);}
+  .route dt{font-weight:600;font-size:15px;line-height:23px;color:var(--ink);}
+  .route dd{margin:0;font-size:15px;line-height:23px;color:var(--body-2);}
+  .route dd::before{content:'→ ';color:var(--pink-text);}
+  .compare{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:16px;}
+  .compare > div{padding:14px 16px;border:1px solid var(--gray-line);border-radius:2px;}
+  .prose .compare p{margin:0;font-size:15px;line-height:23px;color:var(--ink);}
+  .prose .compare .compare-label{margin-bottom:6px;font-family:var(--mono);font-size:11px;line-height:16px;letter-spacing:0.08em;text-transform:uppercase;color:var(--surface-dark);}
+  .prose .compare .compare-note{margin-top:8px;font-size:14px;line-height:21px;color:var(--body-2);}
+  .compare--ask > div:last-child{border-color:var(--pink-text);background:#fef1f5;}
+  .prose .compare--ask > div:last-child .compare-label{color:var(--pink-text);}
+  .fields{margin:10px 0 0;}
+  .fields > div{display:grid;grid-template-columns:minmax(0,120px) minmax(0,1fr);gap:4px 16px;padding:6px 0;}
+  .fields dt{font-family:var(--mono);font-size:13px;line-height:23px;color:var(--pink-text);}
+  .fields dd{margin:0;font-size:15px;line-height:23px;color:var(--body-2);}
+  .prose .quotes{padding-left:0;list-style:none;}
+  .prose .quotes li{padding-left:14px;border-left:2px solid var(--gray-line);font-style:italic;}
+  .prose .closing{margin-top:28px;padding-top:16px;border-top:1px solid var(--gray-line);font-weight:600;color:var(--ink);}
+  @media (max-width:520px){
+    .compare,.route > div,.fields > div{grid-template-columns:minmax(0,1fr);}
   }
   /* ---------- FOOTER ---------- */
   footer{
@@ -986,16 +1017,29 @@
         <button class="drawer-close" type="button" data-close aria-label="Close"><img src="../static/icon-close.svg" width="20" height="20" alt=""></button>
       </div>
       <div class="drawer-body prose">
-        <p>To detect malicious behavior, you need a reliable stream of what’s actually happening across an environment. That means collecting activity from identities, endpoints, domains, SaaS applications, network devices, email systems, and everything else an attacker might touch.</p>
-        <p>Identity providers like Microsoft and Google have well-documented APIs and mature integrations. But what about the firewall? The domain registrar? An ISP portal? DMARC reports? The dozens, or hundreds, of SaaS applications a company relies on?</p>
-        <h3>VEX is designed to make collection boring.</h3>
+        <aside class="in-short"><p class="in-short-label">In short</p><p>VEX collects activity from everything an attacker might touch, not just endpoints. Data comes in through 100+ integrations, the VEX API, or email for systems without an API. Security-relevant events become signals, and everything else is kept in an audit log that’s never purged.</p></aside>
+        <h3>What VEX collects</h3>
+        <p>To detect malicious behavior, you need a reliable stream of what’s actually happening across an environment. That means collecting activity from everything an attacker might touch:</p>
+        <ul class="tags"><li>Identities</li><li>Endpoints</li><li>Domains</li><li>SaaS applications</li><li>Network devices</li><li>Email systems</li></ul>
+        <h3>The hard-to-reach sources</h3>
+        <p>Identity providers like Microsoft and Google have well-documented APIs and mature integrations. But what about:</p>
+        <ul>
+          <li>The firewall?</li>
+          <li>The domain registrar?</li>
+          <li>An ISP portal?</li>
+          <li>DMARC reports?</li>
+          <li>The dozens, or hundreds, of SaaS applications a company relies on?</li>
+        </ul>
+        <h3>VEX is designed to make collection boring</h3>
         <ol>
           <li><b>Connect an API.</b> Connect any data source through the <a class="inline-link" href="/api/">VEX API</a>.</li>
           <li><b>Push data by email.</b> When a system doesn’t have an API, send its data to the unique mailbox included with every VEX deployment.</li>
         </ol>
         <p>VEX supports 100+ third-party integrations, plus an unlimited number of additional data sources that can feed it through the API or email.</p>
-        <p>Once connected, VEX continuously collects and normalizes the data. Security-relevant events become signals for analysis. Everything else goes into a never-purged audit log, available for retrieval over the API.</p>
-        <p>The result is a much broader view of reality than a traditional SOC typically gets: not just what happened on an endpoint, but what happened everywhere.</p>
+        <h3>Where the data goes</h3>
+        <p>Once connected, VEX continuously collects and normalizes the data.</p>
+        <dl class="route"><div><dt>Security-relevant events</dt><dd>Become signals for analysis.</dd></div><div><dt>Everything else</dt><dd>Goes into a never-purged audit log, available for retrieval over the API.</dd></div></dl>
+        <p class="closing">The result is a much broader view of reality than a traditional SOC typically gets: not just what happened on an endpoint, but what happened everywhere.</p>
       </div>
     </div>
   </div>
@@ -1008,13 +1052,14 @@
         <button class="drawer-close" type="button" data-close aria-label="Close"><img src="../static/icon-close.svg" width="20" height="20" alt=""></button>
       </div>
       <div class="drawer-body prose">
+        <aside class="in-short"><p class="in-short-label">In short</p><p>Every signal is triaged in real time, in two stages. First the asset: if a breach looks likely, VEX can log the identity out or contain the asset. Then the signal: VEX pulls the history, decides whether there’s evil, and closes the signal itself if there isn’t.</p></aside>
         <h3>1. Triage the asset</h3>
         <p>First, VEX looks at the asset associated with the signal (a computer, identity, domain or other resource) and determines whether action should be taken against it.</p>
-        <ul>
-          <li><b>Log out:</b> should active sessions be revoked?</li>
-          <li><b>Contain:</b> should the asset be isolated or otherwise prevented from continuing to operate?</li>
-        </ul>
-        <p>These actions are reserved for signals with sufficiently high confidence that a breach may be underway. Logging an identity out is relatively low-impact; containing an identity or computer is more disruptive and may require a human to intervene before the asset is returned to service.</p>
+        <div class="compare">
+          <div><p class="compare-label">Log out</p><p>Should active sessions be revoked?</p><p class="compare-note">Relatively low-impact.</p></div>
+          <div><p class="compare-label">Contain</p><p>Should the asset be isolated or otherwise prevented from continuing to operate?</p><p class="compare-note">More disruptive. May require a human to intervene before the asset is returned to service.</p></div>
+        </div>
+        <p>These actions are reserved for signals with sufficiently high confidence that a breach may be underway.</p>
         <h3>2. Triage the signal</h3>
         <p>Next, VEX investigates the signal itself.</p>
         <ol>
@@ -1022,7 +1067,7 @@
           <li><b>Determine whether there’s evil.</b> VEX analyzes the signal and its surrounding evidence to determine whether it represents malicious activity.</li>
           <li><b>Auto-close when appropriate.</b> If the evidence doesn’t indicate malicious activity, the signal is automatically closed.</li>
         </ol>
-        <p>This is where collection becomes detection. We’ve gathered the evidence; now VEX has to decide what it means.</p>
+        <p class="closing">This is where collection becomes detection. We’ve gathered the evidence; now VEX has to decide what it means.</p>
       </div>
     </div>
   </div>
@@ -1035,11 +1080,22 @@
         <button class="drawer-close" type="button" data-close aria-label="Close"><img src="../static/icon-close.svg" width="20" height="20" alt=""></button>
       </div>
       <div class="drawer-body prose">
+        <aside class="in-short"><p class="in-short-label">In short</p><p>VEX doesn’t match events against rules. For each investigation, an AI analyst answers one question: has this environment been compromised? Then models from other families try to prove that answer wrong. Only a conclusion that survives, with enough confidence, opens a signal.</p></aside>
+        <h3>No rules engine</h3>
         <p>Traditional detection engineering generally starts with a known bad behavior: a suspicious login, an impossible-travel event, a malicious process, a known indicator. You encode that behavior as a rule, wait for an event to match it, and investigate the resulting alert.</p>
         <p>VEX doesn’t have a traditional rules engine. There aren’t thousands of detection rules waiting for individual events to match. Instead, VEX gives an AI analyst a bounded set of evidence and asks it to reason about what happened.</p>
-        <p>Rather than asking <i>“Does this event match a detection?”</i>, VEX asks <i>“Given everything we know about this environment, is there high confidence that a compromise has occurred?”</i></p>
-        <p>Each detection runs as an investigation against a specific question. VEX collects the relevant audit history, compresses the most recent hours of audit events and days of security signals into a working state, and provides that state to the AI analyst along with the detection-specific instructions.</p>
-        <h3>The runtime context has three layers</h3>
+        <div class="compare compare--ask">
+          <div><p class="compare-label">Rather than asking</p><p>“Does this event match a detection?”</p></div>
+          <div><p class="compare-label">VEX asks</p><p>“Given everything we know about this environment, is there high confidence that a compromise has occurred?”</p></div>
+        </div>
+        <h3>How an investigation runs</h3>
+        <p>Each detection runs as an investigation against a specific question. VEX:</p>
+        <ol>
+          <li>Collects the relevant audit history.</li>
+          <li>Compresses the most recent hours of audit events and days of security signals into a working state.</li>
+          <li>Provides that state to the AI analyst along with the detection-specific instructions.</li>
+        </ol>
+        <h4>The runtime context has three layers</h4>
         <ol>
           <li><b>Historical context:</b> a vector-based filesystem containing historical signal results and their associated context.</li>
           <li><b>Detection instructions:</b> a system prompt specific to the investigation being performed.</li>
@@ -1051,16 +1107,18 @@
   <span class="k">"probability"</span>: 0.79,
   <span class="k">"response"</span>: "A description of what occurred"
 }</pre>
-        <h3>But VEX doesn’t take the model’s word for it.</h3>
+        <dl class="fields"><div><dt>answer</dt><dd>The decision.</dd></div><div><dt>probability</dt><dd>The model’s self-reported confidence.</dd></div><div><dt>response</dt><dd>A description of what occurred.</dd></div></dl>
+        <h3>But VEX doesn’t take the model’s word for it</h3>
         <p>The initial conclusion is independently reviewed by multiple model families. Each reviewer receives the same underlying evidence and is asked to evaluate the conclusion from a different perspective and at different temperatures. Some reviews are deliberately adversarial:</p>
-        <ul>
-          <li>Is the proposed answer correct?</li>
-          <li>A reviewer believes the answer is wrong. Check the evidence independently. Is it actually correct?</li>
+        <ul class="quotes">
+          <li>“Is the proposed answer correct?”</li>
+          <li>“A reviewer believes the answer is wrong. Check the evidence independently. Is it actually correct?”</li>
         </ul>
         <p>The goal isn’t to get several models to agree with one another. It’s to make the original hypothesis survive attempts to disprove it.</p>
+        <h3>How the decision is made</h3>
         <p>Agreement across independent checks increases confidence. Disagreement introduces uncertainty. VEX combines those evaluations with the analyst’s initial confidence to produce a final confidence estimate: not a binary alert or no alert, but how strongly the evidence supports the hypothesis that the environment has been compromised.</p>
-        <p>If that confidence crosses the detection threshold, VEX creates a signal for investigation. If it doesn’t, the investigation is closed automatically.</p>
-        <p>The important part isn’t that an AI makes the decision. It’s that the decision is treated as a hypothesis that must survive independent attempts to disprove it.</p>
+        <dl class="route"><div><dt>Crosses the detection threshold</dt><dd>VEX creates a signal for investigation.</dd></div><div><dt>Doesn’t cross it</dt><dd>The investigation is closed automatically.</dd></div></dl>
+        <p class="closing">The important part isn’t that an AI makes the decision. It’s that the decision is treated as a hypothesis that must survive independent attempts to disprove it.</p>
       </div>
     </div>
   </div>
@@ -1073,10 +1131,24 @@
         <button class="drawer-close" type="button" data-close aria-label="Close"><img src="../static/icon-close.svg" width="20" height="20" alt=""></button>
       </div>
       <div class="drawer-body prose">
-        <p>Once VEX has made a detection decision, it writes that decision back to the signal and persists the updated state. If the signal is determined to represent malicious activity, it remains open for human investigation. If the evidence doesn’t support the hypothesis, VEX marks it auto-closed.</p>
-        <p>A signal is a living piece of security state. Its status, severity, disposition and analyst comments can all change as new evidence becomes available. Whenever that state changes, VEX regenerates the signal’s compact stub (a current, plain-text summary of what VEX knows about the signal) and sends the signal back through the same collection, triage and detection process.</p>
-        <p>That means a human analyst’s judgment becomes part of the record’s future context, just like an event collected from an API. A comment can add evidence. A disposition can change the interpretation of an incident. A severity change can alter how the signal is treated. Each update gives VEX another chance to reconsider what it knows.</p>
-        <p>The result is a continuously evolving security knowledge store rather than a collection of static alerts.</p>
+        <aside class="in-short"><p class="in-short-label">In short</p><p>A signal is never final. Whenever its state changes, including a comment from your team, VEX rewrites its summary and runs it back through the loop. Over time that builds a security knowledge store instead of a pile of static alerts.</p></aside>
+        <h3>Writing back the decision</h3>
+        <p>Once VEX has made a detection decision, it writes that decision back to the signal and persists the updated state.</p>
+        <dl class="route"><div><dt>Malicious activity</dt><dd>The signal remains open for human investigation.</dd></div><div><dt>Evidence doesn’t support the hypothesis</dt><dd>VEX marks it auto-closed.</dd></div></dl>
+        <h3>A living piece of security state</h3>
+        <p>A signal’s state can change as new evidence becomes available:</p>
+        <ul class="tags"><li>Status</li><li>Severity</li><li>Disposition</li><li>Analyst comments</li></ul>
+        <p>Whenever that state changes, VEX regenerates the signal’s compact stub and sends the signal back through the same collection, triage and detection process.</p>
+        <dl class="fields"><div><dt>Compact stub</dt><dd>A current, plain-text summary of what VEX knows about the signal.</dd></div></dl>
+        <h3>People count as evidence</h3>
+        <p>A human analyst’s judgment becomes part of the record’s future context, just like an event collected from an API.</p>
+        <ul>
+          <li>A comment can add evidence.</li>
+          <li>A disposition can change the interpretation of an incident.</li>
+          <li>A severity change can alter how the signal is treated.</li>
+        </ul>
+        <p>Each update gives VEX another chance to reconsider what it knows.</p>
+        <p class="closing">The result is a continuously evolving security knowledge store rather than a collection of static alerts.</p>
         <h3>Your data stays yours</h3>
         <p>VEX is a multi-tenant system that separates each account into its own logical partition, and runs every query, deterministic or LLM-based, against only the data in that account.</p>
       </div>

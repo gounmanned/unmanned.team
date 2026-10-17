@@ -189,33 +189,7 @@
   @media (orientation:portrait){ .hw-hero{min-height:0;} }
 
   /* the timeline card: a dotted grid, VEX's step highlighted, a dashed prevention line; it rises out of a slot */
-  .hw-hero-art{display:flex;justify-content:center;align-items:flex-end;min-height:401px;}
-  .tl{position:relative;width:100%;max-width:468px;margin:0;}
-  .tl-card{position:relative;padding:26px 24px 34px 18px;background:#f5f6f8 url(static/timeline-grid.svg) 0 0 no-repeat;border:1px solid #8a8a8e;border-bottom:0;border-radius:2px 2px 0 0;
-    box-shadow:0 8px 20px -2px rgba(11,12,13,0.12),0 2px 4px rgba(11,12,13,0.06);clip-path:inset(-40px -40px 0 -40px);}   /* no shadow below the ground line */
-  /* the ground the card rises out of: a shadow over the card's foot, darkest at the line, fading up and out to the sides */
-  .tl::after{content:'';position:absolute;left:50%;bottom:0;width:calc(100% + 48px);height:30px;transform:translateX(-50%);pointer-events:none;
-    background:linear-gradient(90deg,rgba(11,12,13,0),rgba(11,12,13,0.28) 18%,rgba(11,12,13,0.28) 82%,rgba(11,12,13,0)) 50% 100%/100% 1px no-repeat,
-      radial-gradient(50% 100% at 50% 100%,rgba(11,12,13,0.16),rgba(11,12,13,0.05) 60%,rgba(11,12,13,0)) 50% 100%/100% 100% no-repeat;}
-  .tl-steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:24px;}
-  .tl-step{position:relative;display:grid;grid-template-columns:35px minmax(0,1fr);column-gap:12px;align-items:start;padding:4px 0;}
-  .tl-step > div{display:flex;flex-direction:column;}
-  .tl-step b{font-weight:700;font-size:16px;line-height:24px;color:var(--body-2);}
-  .tl-step > div > span{font-size:16px;line-height:22px;color:var(--surface-dark);}
-  .tl-dot{position:relative;z-index:1;justify-self:center;width:19px;height:19px;margin-top:2.5px;border-radius:50%;background:#fff;border:2px solid #c4c4c4;}
-  .tl-step:not(.tl-step--last)::after{content:'';position:absolute;left:16px;top:16px;width:3px;height:calc(100% + 24px);background:#c4c4c4;}   /* the track down to the next dot */
-  .tl-step--key::before{content:'';position:absolute;left:-7px;right:-12px;top:-10.5px;bottom:-6.5px;background:#fef1f5;border:1px solid var(--pink-text);border-radius:2px;}
-  .tl-step--key > *{position:relative;}
-  .tl-step--key .tl-dot{width:17px;height:17px;margin-top:3.5px;background:#d10176;border:0;box-shadow:0 0 0 9px #fee3ec;}
-  .tl-step--key::after{background:#d10176;}
-  .tl-divider{position:relative;height:0;margin:-12px 0;border-top:1px dashed #8a8a8e;margin-left:1px;}
-  .tl-divider span{position:absolute;right:0;bottom:6px;font-family:var(--mono);font-size:12px;line-height:16px;letter-spacing:0.08em;text-transform:uppercase;color:#8a8a8e;}
-  .tl-badge{display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:2px;background:#fff;border:1px solid #8a8a8e;font-weight:500;font-size:12px;line-height:16px;color:var(--body-2);white-space:nowrap;}
-  .tl-badge::before{content:'';width:12px;height:12px;background:currentColor;transform:rotate(180deg);
-    -webkit-mask:url(../static/icon-arrow-right-pink.svg) center/contain no-repeat;mask:url(../static/icon-arrow-right-pink.svg) center/contain no-repeat;}
-  .tl-badge--vex{background:var(--pink);border-color:var(--pink);color:#fff;}
-  .tl-step .tl-badge{position:absolute;right:0;top:4px;}   /* off to the right, as in Figma; the text keeps its width */
-  .tl-step--last .tl-badge{top:50%;transform:translateY(-50%);}
+  .hw-hero-art{display:flex;justify-content:center;align-items:center;}
 
   /* shared section type */
   .hw-loop h2,.hw-sec h2{margin-top:16px;font-weight:600;font-size:clamp(34px,4.2vw,48px);line-height:1.1667;letter-spacing:-0.015em;color:var(--ink);}
@@ -318,9 +292,6 @@
   @media (max-width:700px){
     .hw-hero{padding:56px 0 48px;}
     .hw-hero-art{min-height:0;}
-    .tl-card{padding:22px 16px 30px 12px;}
-    .tl-step .tl-badge,.tl-step--last .tl-badge{position:relative;top:auto;right:auto;transform:none;grid-column:2;justify-self:start;margin-top:8px;}
-    .tl-step--key::before{right:-6px;}
     .hw-lede,.hw-lede-2{font-size:18px;line-height:28px;}
     .hw-loop,.hw-sec{padding:64px 0;}
     .hw-loop-list{grid-template-columns:minmax(0,1fr);}
@@ -585,6 +556,53 @@
   @media (max-width:520px){
     .compare,.route > div,.fields > div{grid-template-columns:minmax(0,1fr);}
   }
+
+  /* ---------- hero visual: the corridor of panes (drawn by the script) ---------- */
+  .hp{width:100%;max-width:560px;margin:0;}
+  .hp-stage{display:block;width:100%;height:auto;overflow:visible;}
+  .hp-pane{stroke-width:1;}
+  .hp-pane--vex{fill:#d10176;fill-opacity:0.2;stroke:var(--pink);}
+  .hp-pane--glass{fill:#c4c4c4;fill-opacity:0.28;stroke:var(--surface-dark);}
+  .hp-pane--ghost{fill:none;stroke:#8a8a8e;stroke-dasharray:3 4;opacity:0.6;}
+  .hp-floor{fill:#f2f2ef;}
+  .hp-band{fill:var(--pink);}
+  .hp-band-label{font:600 17px var(--mono);letter-spacing:0.1em;fill:#fff;}
+  .hp-gap{fill:#fff;stroke:var(--pink);stroke-width:1.5;}
+  .hp-seal{fill:none;stroke:var(--pink);stroke-width:1.5;opacity:0;}
+  .hp-beam{fill:none;stroke:var(--ink);stroke-width:2;stroke-linecap:round;}
+  .hp-attempt{fill:none;stroke:#8a8a8e;stroke-width:1.5;stroke-dasharray:3 4;stroke-linecap:round;}
+  .hp-stop{fill:var(--pink);transition:opacity 0.35s ease;}
+  .hp-deny{stroke:var(--body-2);stroke-width:2.2;stroke-linecap:round;opacity:0;transition:opacity 0.35s ease;}
+  .hp-deny.hp-on{opacity:1;}
+  .hp-title{font:600 13.5px Inter, sans-serif;fill:var(--ink);}
+  .hp-desc{font:400 12px Inter, sans-serif;fill:var(--surface-dark);}
+  .hp-ghost .hp-title,.hp-ghost .hp-desc{fill:#8a8a8e;}
+  .hp-legend{display:none;list-style:none;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 16px;margin:12px 0 0;padding:14px 0 0;border-top:1px solid var(--gray-line);text-align:left;}
+  .hp-legend li{display:flex;flex-direction:column;gap:2px;min-width:0;}
+  .hp-legend b{font-weight:600;font-size:15px;line-height:22px;color:var(--ink);}
+  .hp-legend span{font-size:13px;line-height:19px;color:var(--surface-dark);}
+  .hp-legend-ghost b,.hp-legend-ghost span{color:#8a8a8e;}
+  /* plays once (about 4.5s): panes arrive near to far; the attack reaches the gap; VEX seals it (the pink moment);
+     the attempt (moved by the script) crosses the band and fades into an X on Access denied */
+  .hp-play .hp-seq{opacity:0;animation:hp-in 0.5s ease forwards;}
+  .hp-play .hp-beam{stroke-dasharray:var(--len);stroke-dashoffset:var(--len);animation:hp-draw var(--dur) linear 1s forwards;}
+  .hp-play .hp-gap{animation:hp-in 0.5s ease 0.15s forwards, hp-sealfill 0.35s ease 2.05s forwards;}
+  .hp-play .hp-seal{transform-box:fill-box;transform-origin:center;animation:hp-flash 0.9s ease-out 2.05s;}
+  @keyframes hp-in{to{opacity:1}}
+  @keyframes hp-draw{to{stroke-dashoffset:0}}
+  @keyframes hp-sealfill{to{fill:#d10176}}
+  @keyframes hp-flash{0%{opacity:0.9;transform:scale(1)}100%{opacity:0;transform:scale(2.6)}}
+  @media (prefers-reduced-motion: reduce){
+    .hp-play .hp-seq,.hp-play .hp-beam,.hp-play .hp-gap{animation:none;opacity:1;stroke-dashoffset:0;}
+    .hp-play .hp-gap{fill:#d10176;}
+    .hp-play .hp-seal{animation:none;}
+    .hp-stop,.hp-deny{transition:none;}
+  }
+  /* phones: the drawing gets too small for its labels, so they move to a list under it */
+  @media (max-width:600px){
+    .hp-labels{display:none;}
+    .hp-legend{display:grid;}
+  }
   /* ---------- FOOTER ---------- */
   footer{
     border-top:1px solid var(--gray-line);padding:28px 56px 40px;display:flex;justify-content:space-between;align-items:center;
@@ -656,16 +674,14 @@
           <p><span>Add VEX to <b>Slack</b> for free. It gets to work right away.</span> <a class="text-link" href="/slack">Get VEX for Slack <img src="../static/icon-arrow-right-pink.svg" width="16" height="16" alt=""></a></p>
         </div>
       </div>
-      <div class="hw-hero-art"><figure class="tl" aria-label="How an attack builds: missing MFA, an odd sign-in, access, then an incident. VEX looks at the first step; prevention stops it before access. Most look at the incident.">
-        <div class="tl-card">
-          <ol class="tl-steps" aria-hidden="true">
-            <li class="tl-step tl-step--key"><i class="tl-dot"></i><div><b>Missing MFA</b><span>A gap an attacker could use</span></div><span class="tl-badge tl-badge--vex">Where VEX looks</span></li>
-            <li class="tl-step"><i class="tl-dot"></i><div><b>Odd sign-in</b><span>Attempt is made</span></div></li>
-            <li class="tl-divider"><span>Prevention</span></li>
-            <li class="tl-step"><i class="tl-dot"></i><div><b>Access</b><span>The door is opened</span></div></li>
-            <li class="tl-step tl-step--last"><i class="tl-dot"></i><div><b>Incident</b><span>An alert is sent</span></div><span class="tl-badge">Most look here</span></li>
-          </ol>
-        </div>
+      <div class="hw-hero-art"><figure class="hp" aria-label="How VEX stops an attack early: VEX identifies a gap (missing MFA) and closes it. An odd sign-in attempt follows but fails at the prevention line, so access is denied and the incident never happens.">
+        <svg class="hp-stage" id="hp-stage" viewBox="0 0 560 360" aria-hidden="true"></svg>
+        <ol class="hp-legend">
+          <li><b>Missing MFA</b><span>VEX identifies the gap</span></li>
+          <li><b>Odd sign-in</b><span>Attempt is made</span></li>
+          <li class="hp-legend-ghost"><b>Access denied</b><span>The door is shut</span></li>
+          <li class="hp-legend-ghost"><b>Incident</b><span>Never happens</span></li>
+        </ol>
       </figure></div>
     </div>
   </section>
@@ -1297,6 +1313,86 @@
       }, { threshold:0.6 });
       io.observe(m.querySelector('.cm-card'));
       window.addEventListener('resize', function(){ if(m.classList.contains('is-done')){ tray.style.transform = 'none'; } });
+    })();
+    (function(){
+      // HERO PANES: a small isometric camera (no library). World x runs down the corridor, y is up, z is across.
+      // Class names are each quoted on their own so the build's CSS cleanup sees them.
+      var svg = document.getElementById('hp-stage');
+      if(!svg){ return; }
+      var NS = 'http://www.w3.org/2000/svg';
+      var yaw = 35 * Math.PI / 180, pitch = 22 * Math.PI / 180, S = 104, OX = 70, OY = 250;
+      function P(x, y, z){
+        var sx = x * Math.cos(yaw) - z * Math.sin(yaw), depth = x * Math.sin(yaw) + z * Math.cos(yaw);
+        return [OX + S * sx, OY - S * (y * Math.cos(pitch) + depth * Math.sin(pitch))];
+      }
+      function pts(list){ return list.map(function(p){ var q = P(p[0], p[1], p[2]); return q[0].toFixed(1) + ',' + q[1].toFixed(1); }).join(' '); }
+      function el(name, attrs, parent){ var e = document.createElementNS(NS, name); for(var k in attrs){ e.setAttribute(k, attrs[k]); } (parent || svg).appendChild(e); return e; }
+      function cls(){ return [].slice.call(arguments).filter(Boolean).join(' '); }
+      var A = 0.62, B = 0.78;   // pane half-width (z) and half-height (y)
+      function rect(x){ return [[x, B, -A], [x, B, A], [x, -B, A], [x, -B, -A]]; }
+      var X = { p1:0, p2:1.5, bound:2.15, p3:3.3, p4:4.55 };
+      var STEPS = [
+        { x:X.p1, t:'Missing MFA', d:'VEX identifies the gap' },
+        { x:X.p2, t:'Odd sign-in', d:'Attempt is made' },
+        { x:X.p3, t:'Access denied', d:'The door is shut', ghost:true },
+        { x:X.p4, t:'Incident', d:'Never happens', ghost:true }];
+      var g = el('g', {}), labels = el('g', { 'class':cls('hp-labels') }, g), attempt, dot, deny, A0, A1;
+      function delay(i){ return 'animation-delay:' + (0.15 + i * 0.15) + 's'; }
+
+      // the floor, and the prevention band painted across it with PREVENTION laid flat inside (an affine matrix
+      // from the floor's own axes: the text reads along the band (-z), its glyphs stand toward the far end (+x))
+      var FZ = A + 0.3, BW = 0.2;
+      el('polygon', { 'class':cls('hp-floor', 'hp-seq'), points:pts([[-0.35, -B, -FZ], [X.p4 + 0.25, -B, -FZ], [X.p4 + 0.25, -B, FZ], [-0.35, -B, FZ]]), style:'animation-delay:0.1s' }, g);
+      el('polygon', { 'class':cls('hp-band', 'hp-seq'), points:pts([[X.bound - BW, -B, -A], [X.bound + BW, -B, -A], [X.bound + BW, -B, A], [X.bound - BW, -B, A]]), style:'animation-delay:0.5s' }, g);
+      var o = P(X.bound, -B, 0), ez = P(X.bound, -B, -1), ex = P(X.bound + 1, -B, 0);
+      var m = [(ez[0] - o[0]) / S, (ez[1] - o[1]) / S, -(ex[0] - o[0]) / S, -(ex[1] - o[1]) / S, o[0], o[1]].map(function(v){ return v.toFixed(4); });
+      el('text', { 'class':cls('hp-band-label', 'hp-seq'), x:0, y:0, 'text-anchor':'middle', 'dominant-baseline':'central', transform:'matrix(' + m.join(' ') + ')', style:'animation-delay:0.5s' }, g).textContent = 'PREVENTION';
+
+      // panes far to near, so nearer ones sit in front; each label sits under its pane
+      for(var i = 3; i >= 0; i--){
+        var s = STEPS[i], kind = i === 0 ? 'hp-pane--vex' : s.ghost ? 'hp-pane--ghost' : 'hp-pane--glass';
+        el('polygon', { 'class':cls('hp-pane', kind, 'hp-seq'), points:pts(rect(s.x)), style:delay(i) }, g);
+        var left = P(s.x, -B, A)[0], low = P(s.x, -B, -A)[1], lg = el('g', { 'class':cls('hp-seq', s.ghost && 'hp-ghost'), style:delay(i) }, labels);
+        el('text', { 'class':cls('hp-title'), x:left, y:low + 30 }, lg).textContent = s.t;
+        el('text', { 'class':cls('hp-desc'), x:left, y:low + 46 }, lg).textContent = s.d;
+        if(i === 1){
+          // the attempt after the gap is sealed: dashed, it crosses the band and dies on Access denied (in front of 03, behind 02)
+          A0 = P(X.p1, 0, 0); A1 = P(X.p3, 0, 0);
+          attempt = el('line', { 'class':cls('hp-attempt'), x1:A0[0], y1:A0[1], x2:A0[0], y2:A0[1] }, g);
+          dot = el('circle', { 'class':cls('hp-stop'), cx:A0[0], cy:A0[1], r:4, opacity:0 }, g);
+          deny = el('g', { 'class':cls('hp-deny') }, g);
+          // the X lies in the pane's own plane, so it takes the pane's perspective
+          var r = 0.075, xa = P(X.p3, r, -r), xb = P(X.p3, -r, r), xc = P(X.p3, r, r), xd = P(X.p3, -r, -r);
+          el('line', { x1:xa[0], y1:xa[1], x2:xb[0], y2:xb[1] }, deny);
+          el('line', { x1:xc[0], y1:xc[1], x2:xd[0], y2:xd[1] }, deny);
+        }
+      }
+      // the attack up to the gap, solid; then the gap, open until VEX seals it
+      var b0 = P(-0.95, 0, 0), b1 = P(X.p1, 0, 0);
+      var beam = el('line', { 'class':cls('hp-beam'), x1:b0[0], y1:b0[1], x2:b1[0], y2:b1[1] }, g);
+      var beamLen = Math.hypot(b1[0] - b0[0], b1[1] - b0[1]), BEAM_S = 0.9, SPEED = beamLen / BEAM_S;   // px per second, both halves
+      beam.style.setProperty('--len', beamLen.toFixed(1)); beam.style.setProperty('--dur', BEAM_S + 's');
+      var gq = [[X.p1, 0.13, -0.13], [X.p1, 0.13, 0.13], [X.p1, -0.13, 0.13], [X.p1, -0.13, -0.13]];
+      el('polygon', { 'class':cls('hp-gap'), points:pts(gq) }, g);
+      el('polygon', { 'class':cls('hp-seal'), points:pts(gq) }, g);
+      g.appendChild(labels);   // labels over everything, the floor included
+      var bb = g.getBBox(), pad = 6;
+      svg.setAttribute('viewBox', [Math.floor(bb.x - pad), Math.floor(bb.y - pad), Math.ceil(bb.width + pad * 2), Math.ceil(bb.height + pad * 2)].join(' '));
+
+      // the attempt carries on at the beam's speed, its dot riding the tip; at Access denied the dot fades into the X
+      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      function tip(k){
+        var x = A0[0] + (A1[0] - A0[0]) * k, y = A0[1] + (A1[1] - A0[1]) * k;
+        attempt.setAttribute('x2', x); attempt.setAttribute('y2', y); dot.setAttribute('cx', x); dot.setAttribute('cy', y);
+      }
+      svg.classList.add('hp-play');
+      if(reduce){ tip(1); deny.classList.add('hp-on'); return; }
+      tip(0);
+      setTimeout(function(){
+        var dur = Math.hypot(A1[0] - A0[0], A1[1] - A0[1]) / SPEED * 1000, t0 = performance.now();
+        dot.setAttribute('opacity', 1);
+        (function step(now){ var k = Math.min(1, (now - t0) / dur); tip(k); if(k < 1){ requestAnimationFrame(step); } else { dot.setAttribute('opacity', 0); deny.classList.add('hp-on'); } })(t0);
+      }, 2600);   // a beat after the gap is sealed (2.05s)
     })();
   </script>
 </body>

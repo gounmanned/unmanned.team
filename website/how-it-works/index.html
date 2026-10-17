@@ -679,7 +679,7 @@
         <ol class="hp-legend">
           <li><b>Missing MFA</b><span>VEX identifies the gap</span></li>
           <li><b>Odd sign-in</b><span>Attempt is made</span></li>
-          <li class="hp-legend-ghost"><b>Access denied</b><span>The door is shut</span></li>
+          <li class="hp-legend-ghost"><b>Access denied</b><span>VEX already closed the gap</span></li>
           <li class="hp-legend-ghost"><b>Incident</b><span>Never happens</span></li>
         </ol>
       </figure></div>
@@ -1334,7 +1334,7 @@
       var STEPS = [
         { x:X.p1, t:'Missing MFA', d:'VEX identifies the gap' },
         { x:X.p2, t:'Odd sign-in', d:'Attempt is made' },
-        { x:X.p3, t:'Access denied', d:'The door is shut', ghost:true },
+        { x:X.p3, t:'Access denied', d:'VEX already closed the gap', ghost:true },
         { x:X.p4, t:'Incident', d:'Never happens', ghost:true }];
       var g = el('g', {}), labels = el('g', { 'class':cls('hp-labels') }, g), attempt, dot, deny, A0, A1;
       function delay(i){ return 'animation-delay:' + (0.15 + i * 0.15) + 's'; }

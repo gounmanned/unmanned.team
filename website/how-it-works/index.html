@@ -577,11 +577,13 @@
   .hp-title{font:600 13.5px Inter, sans-serif;fill:var(--ink);}
   .hp-desc{font:400 12px Inter, sans-serif;fill:var(--surface-dark);}
   .hp-ghost .hp-title,.hp-ghost .hp-desc{fill:#8a8a8e;}
+  .hp-labels .hp-desc.hp-vex{fill:var(--pink-text);}   /* pink = VEX acting: the two lines where VEX does something */
   .hp-legend{display:none;list-style:none;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 16px;margin:12px 0 0;padding:14px 0 0;border-top:1px solid var(--gray-line);text-align:left;}
   .hp-legend li{display:flex;flex-direction:column;gap:2px;min-width:0;}
   .hp-legend b{font-weight:600;font-size:15px;line-height:22px;color:var(--ink);}
   .hp-legend span{font-size:13px;line-height:19px;color:var(--surface-dark);}
   .hp-legend-ghost b,.hp-legend-ghost span{color:#8a8a8e;}
+  .hp-legend .hp-legend-vex{color:var(--pink-text);}
   /* plays once (about 4.5s): panes arrive near to far; the attack reaches the gap; VEX seals it (the pink moment);
      the attempt (moved by the script) crosses the band and fades into an X on Access denied */
   .hp-play .hp-seq{opacity:0;animation:hp-in 0.5s ease forwards;}
@@ -677,9 +679,9 @@
       <div class="hw-hero-art"><figure class="hp" aria-label="How VEX stops an attack early: VEX identifies a gap (missing MFA) and closes it. An odd sign-in attempt follows but fails at the prevention line, so access is denied and the incident never happens.">
         <svg class="hp-stage" id="hp-stage" viewBox="0 0 560 360" aria-hidden="true"></svg>
         <ol class="hp-legend">
-          <li><b>Missing MFA</b><span>VEX identifies the gap</span></li>
+          <li><b>Missing MFA</b><span class="hp-legend-vex">VEX identifies the gap</span></li>
           <li><b>Odd sign-in</b><span>Attempt is made</span></li>
-          <li class="hp-legend-ghost"><b>Access denied</b><span>VEX already closed the gap</span></li>
+          <li class="hp-legend-ghost"><b>Access denied</b><span class="hp-legend-vex">VEX already closed the gap</span></li>
           <li class="hp-legend-ghost"><b>Incident</b><span>Never happens</span></li>
         </ol>
       </figure></div>
@@ -1332,9 +1334,9 @@
       function rect(x){ return [[x, B, -A], [x, B, A], [x, -B, A], [x, -B, -A]]; }
       var X = { p1:0, p2:1.5, bound:2.15, p3:3.3, p4:4.55 };
       var STEPS = [
-        { x:X.p1, t:'Missing MFA', d:'VEX identifies the gap' },
+        { x:X.p1, t:'Missing MFA', d:'VEX identifies the gap', vex:true },
         { x:X.p2, t:'Odd sign-in', d:'Attempt is made' },
-        { x:X.p3, t:'Access denied', d:'VEX already closed the gap', ghost:true },
+        { x:X.p3, t:'Access denied', d:'VEX already closed the gap', ghost:true, vex:true },
         { x:X.p4, t:'Incident', d:'Never happens', ghost:true }];
       var g = el('g', {}), labels = el('g', { 'class':cls('hp-labels') }, g), attempt, dot, deny, A0, A1;
       function delay(i){ return 'animation-delay:' + (0.15 + i * 0.15) + 's'; }
@@ -1354,7 +1356,7 @@
         el('polygon', { 'class':cls('hp-pane', kind, 'hp-seq'), points:pts(rect(s.x)), style:delay(i) }, g);
         var left = P(s.x, -B, A)[0], low = P(s.x, -B, -A)[1], lg = el('g', { 'class':cls('hp-seq', s.ghost && 'hp-ghost'), style:delay(i) }, labels);
         el('text', { 'class':cls('hp-title'), x:left, y:low + 30 }, lg).textContent = s.t;
-        el('text', { 'class':cls('hp-desc'), x:left, y:low + 46 }, lg).textContent = s.d;
+        el('text', { 'class':cls('hp-desc', s.vex && 'hp-vex'), x:left, y:low + 46 }, lg).textContent = s.d;
         if(i === 1){
           // the attempt after the gap is sealed: dashed, it crosses the band and dies on Access denied (in front of 03, behind 02)
           A0 = P(X.p1, 0, 0); A1 = P(X.p3, 0, 0);

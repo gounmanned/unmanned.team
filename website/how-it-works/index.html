@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DRAFT · How VEX works</title>
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/png" href="https://cdn.unmanned.team/img/logo.png">
+<link rel="stylesheet" href="https://cdn.unmanned.team/css/global.css">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;800&family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0b0c0d;
+    --pink:#e01280;
+    --pink-text:#d1107a;     /* pink for TEXT on light backgrounds (passes 4.5:1) */
+    --gray-line:#dcdcd8;
+    --gray-faint:#c4c4c4;
+    --surface-dark:#6c6c70;
+    --surface-gray:#f7f7f7;
+    --body:#2b2b2b;
+    --body-soft:#4b4c52;
+    --nav-link:#6b7280;      /* header links (4.8:1 on white) */
+    --classbar-h:26px;
+    --gutter:24px;           /* page side margins; 16px on phones */
+    --mono:'JetBrains Mono',ui-monospace,monospace;
+    --slack:'Lato',system-ui,sans-serif;
+    --s-ink:#1d1c1d;
+    --s-gray:#616061;
+    --s-time:#868686;
+    --s-btn:#007a5a;         /* Slack's green button */
+    --s-green:#2eb67d;
+    --s-yellow:#ecb22e;
+    --s-red:#e01e5a;
+    --s-blue:#36c5f0;        /* Slack's blue (from its logo): Recommendation messages */
+    --go-text:#0e7c52;       /* green text (from the API and VEX MDR pages; passes 4.5:1) */
+    --sev-1:#dc2626;         /* error red (from the other pages; 4.5:1 on the light gray) */
+  }
+  *{box-sizing:border-box;}
+  html{overflow-x:hidden;scroll-behavior:smooth;scrollbar-gutter:stable;}
+  body{margin:0;padding-top:var(--classbar-h);background:var(--surface);color:var(--ink);-webkit-font-smoothing:antialiased;}
+  h1,h2,h3,h4,p{margin:0;}
+  h1,h2,h3,h4{text-wrap:balance;}
+  p,li{text-wrap:pretty;}
+  a{color:inherit;}
+  img{display:block;}
+  ::selection{background:var(--pink);color:#fff;}
+  a:focus-visible,button:focus-visible{outline:1.5px solid var(--pink);outline-offset:4px;}
+  .wrap{width:min(1100px,calc(100% - 2 * var(--gutter)));margin:0 auto;} /* the design's 900px content column */
+  @media (max-width:700px){:root{--gutter:16px;}}
+
+  /* ---------- STATUS DOT ---------- */
+  .status-dot{
+    width:8px;height:8px;border-radius:50%;background:var(--pink);
+    box-shadow:0 0 0 0 rgba(224,18,128,0.5);animation:pulse 2.2s infinite;flex-shrink:0;display:inline-block;
+  }
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(224,18,128,0.45);}
+    70%{box-shadow:0 0 0 8px rgba(224,18,128,0);}
+    100%{box-shadow:0 0 0 0 rgba(224,18,128,0);}
+  }
+
+  /* ---------- CLASSIFICATION BAR ---------- */
+  .classbar{
+    position:fixed;top:0;left:0;right:0;z-index:60;background:var(--ink);color:var(--gray-faint);
+    font-size:9.5px;line-height:1.5;letter-spacing:0.16em;text-transform:uppercase;text-align:center;padding:6px 0;
+  }
+
+  /* ---------- STICKY HEADER (same as the homepage and VEX MDR) ---------- */
+  .site-top{position:sticky;top:var(--classbar-h);z-index:50;}
+  .site-header{background:var(--surface);border-bottom:1px solid var(--gray-line);}
+  .site-top .site-header{box-shadow:0 4px 8px -4px rgba(11,12,13,0.1);}
+  .header-inner{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:18px 0;}
+  .header-left{display:flex;align-items:center;gap:16px;min-width:0;}
+  .brand{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:800;line-height:1.5;letter-spacing:0.01em;text-decoration:none;color:var(--ink);}
+  .brand .status-dot{animation-iteration-count:2;}
+  .brand-tag{font-size:11px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;color:var(--surface-dark);white-space:nowrap;}
+  .menu-btn{flex-shrink:0;width:32px;height:32px;padding:0;border:none;background:none;cursor:pointer;display:flex;}
+  .menu-btn img{width:32px;height:32px;display:block;}
+  .header-links{display:flex;align-items:center;gap:32px;}
+  .header-link{display:inline-flex;align-items:center;gap:4px;font-weight:600;font-size:15px;line-height:1.5;color:var(--nav-link);text-decoration:none;transition:color 0.2s ease;}
+  .header-link:hover{color:var(--ink);}
+  .header-link[aria-current="page"]{color:var(--ink);}
+  .header-link--slack{gap:8px;}
+  .header-link--slack img{width:24px;height:24px;}
+  .header-link--cta{border-bottom:1px solid var(--pink);}
+  .header-link--cta img{width:16px;height:16px;transition:transform 0.2s ease;}
+  .header-link--cta:hover img{transform:translateX(3px);}
+  .site-top .menu-btn{display:none;}
+  @media (max-width:700px){
+    .header-links{display:none;}
+    .site-top .menu-btn{display:flex;}
+  }
+
+  /* ---------- HIDE ON SCROLL ---------- */
+  .classbar{transition:transform 0.4s cubic-bezier(0.49,0.025,0.685,1), opacity 0.4s cubic-bezier(0.49,0.025,0.685,1);}
+  .site-top .site-header{position:relative;z-index:1;transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);}
+  html.header-hidden .classbar{transform:translateY(-100%);opacity:0;}
+  html.header-hidden .site-top .site-header{transform:translateY(calc(-100% - var(--classbar-h)));}
+  html.header-hidden .site-top{pointer-events:none;}
+
+  /* ---------- NAV MENU (phones) ---------- */
+  .nav-panel{
+    position:fixed;top:var(--classbar-h);left:0;right:0;bottom:0;z-index:55;background:var(--surface);
+    overflow-y:auto;overscroll-behavior:contain;
+    transform:translateY(-100%);visibility:hidden;
+    transition:transform 0.3s cubic-bezier(0.4,0,0.2,1), visibility 0s linear 0.3s;
+  }
+  .nav-panel.is-open{transform:translateY(0);visibility:visible;transition:transform 0.3s cubic-bezier(0.2,0.8,0.2,1), visibility 0s;}
+  html.nav-open,html.nav-open body{overflow:hidden;}
+  .nav-list{list-style:none;margin:0;padding:32px 0;display:flex;flex-direction:column;gap:13px;}
+  .nav-list li{padding-bottom:13px;border-bottom:1px solid var(--surface-alt);}
+  .nav-list a{display:flex;flex-direction:column;gap:4px;text-decoration:none;}
+  .nav-link{font-size:24px;line-height:1.5;letter-spacing:0.02em;color:var(--ink);}
+  .nav-sub{font-size:13.5px;line-height:1.5;color:var(--surface-dark);}
+  .nav-list a:hover .nav-link{color:var(--pink-text);}
+
+  @media (max-width:700px){
+    :root{--classbar-h:24px;}
+    .classbar{font-size:8px;}
+    .nav-link{font-size:20px;}
+  }
+  @media (max-width:560px){.brand-tag{display:none;}}
+
+  /* ---------- BUTTONS (as on the published pages) ---------- */
+
+  /* ---------- SLACK MOCKUPS: shared pieces ----------
+     Everything inside .slack is drawn to look like Slack: Lato, Slack's colors and spacing. */
+
+  /* ---------- HERO ---------- */
+  .text-link{display:inline-flex;align-items:center;gap:6px;font-weight:500;font-size:15px;line-height:1.5;color:var(--pink-text);text-decoration:none;}
+  .text-link img{width:16px;height:16px;transition:transform 0.2s ease;}
+  .text-link:hover img{transform:translateX(3px);}
+
+  /* ---------- SECTION SHELL ---------- */
+
+  /* ---------- PREVENT / DETECT / RESPOND ROW ---------- */
+
+  /* ---------- WHAT YOU GET ---------- */
+  .ico{flex-shrink:0;width:20px;height:20px;background:var(--pink);-webkit-mask:var(--i) center/contain no-repeat;mask:var(--i) center/contain no-repeat;}
+
+  /* ---------- TWO PATHS ---------- */
+
+  /* ---------- PRODUCT MOCKUPS: shared frame ---------- */
+
+  /* ---------- SMALLER SCREENS ---------- */
+
+  /* ---------- HOW VEX WORKS (coded from Figma 1702:63619) ---------- */
+  :root{
+    --body-2:#4b4c52;        /* DS text/secondary */
+    --pink-press:#aa005f;    /* DS offset shadow under pink */
+    --line-strong:#c4c4c4;   /* DS border/strong (as --gray-faint) */
+    --mk-ink:#303541;        /* the VEX app's colors, for the signal-panel mock-ups */
+    --mk-muted:#686e7b;
+    --mk-edge:#9298a5;
+    --mk-pink-bg:#fff4f9;
+    --mk-pink-edge:#e899c1;
+    --mk-role:#c8006e;
+  }
+  h1,h2,h3,h4{text-wrap:balance;} p,li{text-wrap:pretty;}
+
+  /* the DS eyebrow, in the site's mono */
+  .eyebrow{font-family:var(--mono);font-weight:400;font-size:12px;line-height:16px;letter-spacing:0.08em;text-transform:uppercase;color:var(--surface-dark);}
+  .eyebrow--dot{display:flex;align-items:center;gap:11px;}
+  .eyebrow--on-dark{color:var(--gray-faint);}
+
+  /* the DS button: Primary, pink with a pink offset shadow; hover lifts 2px, press sinks 4px */
+  .btn-ds{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:2px;background:var(--pink);color:#fff;text-decoration:none;white-space:nowrap;
+    font:500 18px/28px Inter, sans-serif;box-shadow:4px 4px 0 var(--pink-press);transition:transform 0.12s ease, box-shadow 0.12s ease;}
+  .btn-ds--lg{height:48px;padding:0 24px;}
+  .btn-ds:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--pink-press);}
+  .btn-ds:active{transform:translate(4px,4px);box-shadow:none;}
+  .inline-link{color:var(--pink-text);text-decoration:underline;text-underline-offset:2px;}
+
+  /* hero: fills the screen in landscape; copy left, the timeline right (Figma 1702:63648) */
+  .hw-hero{position:relative;overflow:hidden;display:flex;align-items:center;min-height:calc(100svh - var(--classbar-h) - var(--header-h, 61px));padding:96px 0 60px;border-bottom:1px solid var(--gray-line);}
+  .hw-hero-glow{position:absolute;top:0;left:50%;width:2160px;max-width:none;height:auto;margin-left:-1080px;pointer-events:none;}   /* this page's blue-gray */
+  .hw-hero-inner{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:60px;align-items:center;}
+  .hw-hero-copy{display:flex;flex-direction:column;align-items:flex-start;}
+  .eyebrow--bold{font-weight:600;}
+  .hw-hero h1{margin-top:16px;font-weight:600;font-size:clamp(40px,5.2vw,64px);line-height:1.0625;letter-spacing:-0.02em;color:var(--ink);}
+  .hw-lede{margin-top:24px;font-size:20px;line-height:32px;color:var(--ink);}
+  .hw-hero .btn-ds{margin-top:32px;}
+  .hw-try{display:flex;flex-direction:column;gap:4px;margin-top:40px;padding-top:32px;border-top:1px solid var(--gray-line);font-size:14px;line-height:20px;color:var(--body-2);}
+  .hw-try p:last-child{display:flex;flex-wrap:wrap;align-items:center;gap:4px 16px;}
+  .hw-try b{font-weight:700;}
+  .hw-try .text-link{font-size:14px;}
+  .hw-try .text-link img{width:14px;height:14px;}
+  @media (orientation:portrait){ .hw-hero{min-height:0;} }
+
+  /* the timeline card: a dotted grid, VEX's step highlighted, a dashed prevention line; it rises out of a slot */
+  .hw-hero-art{display:flex;justify-content:center;align-items:flex-end;min-height:401px;}
+  .tl{position:relative;width:100%;max-width:468px;margin:0;}
+  .tl-card{position:relative;padding:26px 24px 34px 18px;background:#f5f6f8 url(static/timeline-grid.svg) 0 0 no-repeat;border:1px solid #8a8a8e;border-bottom:0;border-radius:2px 2px 0 0;
+    box-shadow:0 8px 20px -2px rgba(11,12,13,0.12),0 2px 4px rgba(11,12,13,0.06);clip-path:inset(-40px -40px 0 -40px);}   /* no shadow below the ground line */
+  /* the ground the card rises out of: a shadow over the card's foot, darkest at the line, fading up and out to the sides */
+  .tl::after{content:'';position:absolute;left:50%;bottom:0;width:calc(100% + 48px);height:30px;transform:translateX(-50%);pointer-events:none;
+    background:linear-gradient(90deg,rgba(11,12,13,0),rgba(11,12,13,0.28) 18%,rgba(11,12,13,0.28) 82%,rgba(11,12,13,0)) 50% 100%/100% 1px no-repeat,
+      radial-gradient(50% 100% at 50% 100%,rgba(11,12,13,0.16),rgba(11,12,13,0.05) 60%,rgba(11,12,13,0)) 50% 100%/100% 100% no-repeat;}
+  .tl-steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:24px;}
+  .tl-step{position:relative;display:grid;grid-template-columns:35px minmax(0,1fr);column-gap:12px;align-items:start;padding:4px 0;}
+  .tl-step > div{display:flex;flex-direction:column;}
+  .tl-step b{font-weight:700;font-size:18px;line-height:28px;color:var(--body-2);}
+  .tl-step > div > span{font-size:18px;line-height:22px;color:var(--surface-dark);}
+  .tl-dot{position:relative;z-index:1;justify-self:center;width:19px;height:19px;margin-top:4.5px;border-radius:50%;background:#fff;border:2px solid #c4c4c4;}
+  .tl-step:not(.tl-step--last)::after{content:'';position:absolute;left:16px;top:18px;width:3px;height:calc(100% + 24px);background:#c4c4c4;}   /* the track down to the next dot */
+  .tl-step--key::before{content:'';position:absolute;left:-7px;right:-12px;top:-10.5px;bottom:-6.5px;background:#fef1f5;border:1px solid var(--pink-text);border-radius:2px;}
+  .tl-step--key > *{position:relative;}
+  .tl-step--key .tl-dot{width:17px;height:17px;margin-top:5.5px;background:#d10176;border:0;box-shadow:0 0 0 9px #fee3ec;}
+  .tl-step--key::after{background:#d10176;}
+  .tl-divider{position:relative;height:0;margin:-12px 0;border-top:1px dashed #8a8a8e;margin-left:1px;}
+  .tl-divider span{position:absolute;right:0;bottom:6px;font-family:var(--mono);font-size:12px;line-height:16px;letter-spacing:0.08em;text-transform:uppercase;color:#8a8a8e;}
+  .tl-badge{display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:2px;background:#fff;border:1px solid #8a8a8e;font-weight:500;font-size:12px;line-height:16px;color:var(--body-2);white-space:nowrap;}
+  .tl-badge::before{content:'';width:12px;height:12px;background:currentColor;transform:rotate(180deg);
+    -webkit-mask:url(../static/icon-arrow-right-pink.svg) center/contain no-repeat;mask:url(../static/icon-arrow-right-pink.svg) center/contain no-repeat;}
+  .tl-badge--vex{background:var(--pink);border-color:var(--pink);color:#fff;}
+  .tl-step .tl-badge{position:absolute;right:0;top:4px;}   /* off to the right, as in Figma; the text keeps its width */
+  .tl-step--last .tl-badge{top:50%;transform:translateY(-50%);}
+
+  /* shared section type */
+  .hw-loop h2,.hw-sec h2{margin-top:16px;font-weight:600;font-size:clamp(34px,4.2vw,48px);line-height:1.1667;letter-spacing:-0.015em;color:var(--ink);}
+  .hw-lede-2{margin-top:24px;font-size:20px;line-height:32px;color:var(--body-2);}
+  .hw-lede-2 + .hw-lede-2{margin-top:32px;}
+
+  /* the loop overview */
+  .hw-loop{padding:96px 0;background:var(--surface-gray);overflow-x:clip;}
+  .hw-loop-top{display:grid;grid-template-columns:minmax(0,500px) minmax(0,1fr);gap:80px;align-items:center;}
+  .hw-loop-copy .hw-lede-2:first-of-type{margin-top:18px;}
+  .hw-loop-art{position:relative;max-width:492px;}
+  .loop-glow{position:absolute;left:-15.6%;top:10%;width:124.8%;height:auto;max-width:none;pointer-events:none;}
+  .loop-svg{position:relative;display:block;width:100%;height:auto;overflow:visible;}
+  .loop-label text{font-family:Inter, sans-serif;font-size:15.06px;fill:var(--surface-dark);}
+  .loop-note text{font-family:var(--mono);font-weight:300;font-size:11.29px;letter-spacing:0.9px;fill:var(--surface-dark);}
+  .loop-vex{font-family:Inter, sans-serif;font-weight:800;font-size:22.72px;letter-spacing:-0.11px;fill:var(--ink);}
+  .hw-loop-list{list-style:none;margin:41px 0 0;padding:24px 0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px 32px;border-top:1px solid var(--line-strong);border-bottom:1px solid var(--line-strong);}
+  .hw-loop-list li{display:flex;flex-direction:column;gap:8px;}
+  .hw-loop-list p{font-size:18px;line-height:28px;color:var(--body-2);}
+  .hw-loop-list b{font-weight:700;}
+  .method-n{font-family:var(--mono);font-size:12px;line-height:16px;letter-spacing:0.08em;color:var(--pink);}
+
+  /* section nav: sticks under the site header, rises when the header hides */
+  .hw-nav{position:sticky;top:calc(var(--classbar-h) + var(--header-h, 61px));z-index:40;display:flex;flex-direction:column;align-items:center;gap:8px;padding-top:16px;background:#fff;
+    border-top:1px solid var(--gray-line);border-bottom:1px solid var(--gray-line);box-shadow:0 2px 6px rgba(11,12,13,0.06),0 1px 2px rgba(11,12,13,0.06);transition:top 0.3s cubic-bezier(0.4,0,0.2,1);}
+  html.header-hidden .hw-nav{top:0;}
+  .hw-tabs{display:flex;max-width:100%;overflow-x:auto;scrollbar-width:none;}
+  .hw-tabs::-webkit-scrollbar{display:none;}
+  .hw-tabs a,.hw-tabs span{flex-shrink:0;padding:0 16px 16px;border-bottom:2px solid transparent;font-size:14px;line-height:1.5;color:#8a8a8e;text-decoration:none;white-space:nowrap;transition:color 0.2s ease, border-color 0.2s ease;}
+  .hw-tabs a:hover{color:var(--ink);}
+  .hw-tabs a[aria-current="true"]{border-bottom-color:var(--pink);color:var(--ink);font-weight:600;}
+  .hw-tabs span{cursor:default;}
+
+  /* inside-the-loop sections: copy 500 + visual 450, 80 apart */
+  .hw-sec{padding:96px 0;scroll-margin-top:110px;}
+  .hw-grid{display:grid;grid-template-columns:minmax(0,500px) minmax(0,451px);gap:80px;align-items:center;}
+  .hw-grid--flip{grid-template-columns:minmax(0,450px) minmax(0,500px);}
+  .hw-grid > .hw-copy{align-self:start;}
+  .hw-sub{margin-top:24px;font-weight:600;font-size:24px;line-height:32px;letter-spacing:-0.005em;color:var(--ink);}
+  .methods{list-style:none;margin:24px 0 0;padding:0;border-top:1px solid var(--gray-line);}
+  .method{display:flex;align-items:flex-start;gap:8px;padding:16px 0;border-bottom:1px solid var(--gray-line);}
+  .methods--rules .method{padding:20px 0;}
+  .method .method-n{flex-shrink:0;width:16px;}
+  .methods--rules .method .method-n{width:28px;}
+  .method > div{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;}
+  .method-title{font-weight:700;font-size:18px;line-height:28px;color:#151515;}
+  .method-text{font-size:18px;line-height:28px;color:var(--body-2);}
+
+  /* signal-panel mock-ups (a picture of the VEX app) */
+  .mock-stack{position:relative;margin:0;}
+  .mock-back{position:absolute;}
+  .mock-front{position:relative;}
+  .mock-stack--triage{margin-top:100px;}
+  .mock-stack--triage .mock-back{left:-48px;top:-100px;width:450px;transform:scale(0.88);transform-origin:0 0;opacity:0.9;}   /* the routine one, behind */
+  .mk-status.mk-status--contained{border-color:#d10176;background:#fef1f5;color:#d10176;}
+  .mock{position:relative;display:flex;flex-direction:column;width:100%;max-width:450px;overflow:hidden;padding-top:89px;background:#fefeff;border:2px solid var(--mk-edge);border-radius:12px;
+    box-shadow:0 8px 20px -2px rgba(11,12,13,0.12),0 2px 4px rgba(11,12,13,0.06);font-family:Inter, sans-serif;color:var(--mk-ink);text-align:left;}
+  .mk-head{position:absolute;left:0;right:0;top:0;}
+  .mk-bar{display:flex;align-items:center;gap:6px;padding:16px 13px 13px;background:var(--pink);color:#fff;font-weight:600;font-size:18px;line-height:1;letter-spacing:-0.005em;}
+  .mk-x{margin-left:auto;}
+  .mk-sub{display:flex;align-items:center;gap:9px;padding:8px 16px;background:#f1f1ee;box-shadow:2.6px 2.6px 0 rgba(11,12,13,0.15);}
+  .mk-asset{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:700;font-size:18px;line-height:20px;color:#6b6b78;}
+  .mk-rule{align-self:stretch;width:1px;background:var(--mk-edge);}
+  .mk-status{display:inline-flex;align-items:center;gap:5px;padding:5px;border:0.8px solid #029266;border-radius:5px;background:#ebfbf3;font-weight:700;font-size:12px;line-height:13px;color:#057c56;white-space:nowrap;}
+  .mk-del{display:inline-flex;padding:3px;border:0.8px solid var(--mk-edge);border-radius:3px;}
+  .mk-content{flex:1;min-height:0;overflow:hidden;}
+  .mk-event{display:flex;gap:16px;padding:16px;background:var(--mk-pink-bg);border-top:0.8px solid var(--mk-pink-edge);border-bottom:0.8px solid var(--mk-pink-edge);}
+  .mk-logo{flex-shrink:0;width:32px;height:32px;object-fit:contain;}
+  .mk-logo--cf{display:flex;align-items:center;justify-content:center;height:20px;}
+  .mk-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:12px;}
+  .mk-src{display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 8px;white-space:nowrap;}
+  .mk-src b,.mk-author b{font-weight:700;font-size:14px;line-height:16px;}
+  .mk-time{font-size:12px;line-height:13px;color:var(--mk-muted);}
+  .mk-event p,.mk-thread p{font-size:16px;line-height:1.25;overflow-wrap:anywhere;}
+  .mk-title,.mk-strong{font-weight:700;}
+  .mk-thread{display:flex;gap:16px;margin:0 16px;padding:16px 0 13px;border-bottom:0.8px solid #e3e5ea;}
+  .mk-avatar{flex-shrink:0;}
+  .mk-author{display:flex;flex-wrap:wrap;align-items:center;gap:4px 6px;white-space:nowrap;}
+  .mk-role{padding:1px 5px;border:0.4px solid var(--mk-pink-edge);border-radius:3px;background:var(--mk-pink-bg);font-weight:500;font-size:12px;line-height:13px;color:var(--mk-role);}
+  .mk-composer{position:absolute;left:0;right:0;bottom:0;height:134px;display:flex;padding:10px;background:#f9fafb;border-top:0.8px solid var(--mk-edge);}
+  .mk-input{flex:1;display:flex;flex-direction:column;justify-content:space-between;padding:10px;background:#fefeff;border:0.8px solid var(--mk-edge);border-radius:8px;font-size:12px;line-height:18px;color:var(--mk-muted);}
+  .mk-send{align-self:flex-end;display:flex;padding:5px;border-radius:5px;background:var(--pink);}
+
+    font-family:var(--mono);font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:var(--surface-dark);}
+  .hw-sec--gray{background:var(--surface-gray);}   /* the loop sections alternate: loop gray, collect white, triage gray, detect white, update gray, operations white */
+
+  /* review: the question cards */
+
+  /* get started */
+
+  /* narrower screens: one column; copy first, then the visual */
+  @media (max-width:1100px){ .mock-back{display:none;} .mock-stack--triage{margin-top:0;} }
+  @media (max-width:1023px){
+    .hw-hero-inner{grid-template-columns:minmax(0,1fr);gap:72px;}
+    .hw-hero-art{justify-content:center;min-height:0;}   /* centered when stacked, like the other visuals */
+    .hw-loop-top,.hw-grid,.hw-grid--flip{grid-template-columns:minmax(0,1fr);gap:48px;}
+    .hw-grid--flip > .hw-visual{order:2;}
+    .hw-loop-art{margin:0 auto;width:100%;}
+    .hw-visual{display:flex;flex-direction:column;align-items:center;}
+    .mock-stack{width:100%;max-width:450px;}
+  }
+  @media (max-width:700px){
+    .hw-hero{padding:56px 0 48px;}
+    .hw-hero-art{min-height:0;}
+    .tl-card{padding:22px 16px 30px 12px;}
+    .tl-step .tl-badge,.tl-step--last .tl-badge{position:relative;top:auto;right:auto;transform:none;grid-column:2;justify-self:start;margin-top:8px;}
+    .tl-step--key::before{right:-6px;}
+    .hw-lede,.hw-lede-2{font-size:18px;line-height:28px;}
+    .hw-loop,.hw-sec{padding:64px 0;}
+    .hw-loop-list{grid-template-columns:minmax(0,1fr);}
+    .hw-tabs{padding:0 8px;}
+    .method-title,.method-text{font-size:16px;line-height:24px;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .btn-ds,.hw-nav,.hw-tabs a{transition:none;}
+  }
+
+  /* ---------- 01 COLLECT: the VEX app's signal list, running off the right edge ---------- */
+  .hw-sec--bleed{overflow-x:clip;}
+  .hw-grid--bleed{grid-template-columns:minmax(0,500px) minmax(0,1fr);}
+  .eyebrow b{font-weight:600;color:var(--ink);}
+  .link-btn{padding:0;border:0;background:none;font:inherit;cursor:pointer;}
+  .inline-link.link-btn{color:var(--pink-text);}
+  .hw-more{margin-top:32px;}
+  .db-wrap{margin:0;min-width:0;}
+  .db{width:1200px;border:4px solid #c9ccd3;border-radius:10px;background:#fff;overflow:hidden;box-shadow:0 16px 40px -16px rgba(11,12,13,0.22);color:#303541;}
+  .db-vex{display:inline-block;flex-shrink:0;width:7px;height:7px;border-radius:50%;background:var(--pink);}
+  .db-top{display:flex;align-items:center;gap:8px;height:50px;padding:0 20px;border-bottom:1px solid #e4e6ea;}
+  .db-top b{font-weight:800;font-size:13px;letter-spacing:0.01em;}
+  .db-app{display:grid;grid-template-columns:207px minmax(0,1fr);}
+  .db-side{display:flex;flex-direction:column;gap:3px;padding:14px 10px 24px;background:#f9fafb;border-right:1px solid #e4e6ea;}
+  .db-org{display:flex;align-items:center;gap:8px;height:36px;margin-bottom:12px;padding:0 7px;border:1px solid #e4e6ea;border-radius:8px;background:#fff;font-weight:500;font-size:11px;}
+  .db-org span{display:grid;place-items:center;width:22px;height:22px;border:1px solid #e4e6ea;border-radius:5px;background:#f5f6f8;font-size:10px;}
+  .db-nav{display:flex;align-items:center;gap:10px;height:30px;padding:0 8px;border:1px solid transparent;border-radius:7px;font-weight:500;font-size:12px;color:#52525c;}
+  .db-nav.is-on{background:#fff;border-color:#e4e6ea;box-shadow:0 1px 2px rgba(11,12,13,0.05);font-weight:600;color:#17171c;}
+  .db-nav em{margin-left:auto;padding:0 6px;border-radius:99px;background:#686e7b;font-style:normal;font-size:10px;line-height:15px;color:#fff;}
+  .db-sec{margin:14px 8px 4px;font-weight:600;font-size:9px;letter-spacing:0.06em;text-transform:uppercase;color:#686e7b;}
+  .db-main{min-width:0;padding:27px 27px 27px;}
+  .db-title{font-weight:600;font-size:20px;line-height:28px;}
+  .db-tabs{display:flex;gap:28px;margin-top:16px;border-bottom:1px solid #e4e6ea;font-size:12px;color:#52525c;white-space:nowrap;}
+  .db-tabs span{padding-bottom:10px;}
+  .db-tabs .is-on{margin-bottom:-1px;border-bottom:2px solid #17171c;font-weight:600;color:#17171c;}
+  .db-tabs em,.db-chips em{margin-left:6px;padding:1px 6px;border-radius:99px;background:#f1f2f4;font-style:normal;font-size:10px;color:#52525c;}
+  .db-tabs .is-on em{background:#fef1f5;color:var(--pink-text);}
+  .db-chips{display:flex;gap:7px;margin-top:16px;white-space:nowrap;}
+  .db-chips span{padding:4px 10px;border:1px solid #d4d6db;border-radius:99px;font-size:11px;}
+  .db-table{margin-top:16px;border:1px solid #e4e6ea;border-radius:8px;overflow:hidden;}
+  .db-row{display:grid;grid-template-columns:40px 52px 300px 190px 90px;align-items:center;column-gap:16px;height:52px;padding:0 16px;border-top:1px solid #eef0f2;font-size:12px;white-space:nowrap;}
+  .db-row--head{height:36px;border-top:0;background:#fafbfc;font-size:11px;color:#686e7b;}
+  .db-type{display:grid;place-items:center;width:34px;height:34px;border:1px solid #eceef1;border-radius:50%;background:#f5f6f8;}
+  .db-type .db-vex{width:9px;height:9px;}
+  .db-threat{display:inline-block;min-width:42px;padding:3px 0;border:1px solid;border-radius:99px;font-style:normal;font-weight:600;font-size:11px;text-align:center;}
+  .db-threat--hi{border-color:#f9c4dc;background:#fef1f5;color:#d10176;}
+  .db-threat--mid{border-color:#f3d9a4;background:#fff8eb;color:#b45309;}
+  .db-threat--lo{border-color:#bfe5cf;background:#effaf4;color:#0e7c52;}
+  .db-name{display:flex;flex-direction:column;gap:2px;min-width:0;}
+  .db-name b{font-weight:500;font-size:13px;color:#17171c;}
+  .db-name small{font-size:11px;color:#8a8a8e;}
+
+  /* ---------- side drawers (the homepage draft's, opened by any [data-drawer]) ---------- */
+  .drawer{position:fixed;inset:0;z-index:200;visibility:hidden;transition:visibility 0s linear 0.35s;}
+  .drawer.is-open{visibility:visible;transition:none;}
+  .drawer-scrim{position:absolute;inset:0;background:rgba(11,12,13,0.32);opacity:0;transition:opacity 0.3s ease;}
+  .drawer.is-open .drawer-scrim{opacity:1;}
+  .drawer-panel{position:absolute;top:0;right:0;bottom:0;width:min(440px,100%);display:flex;flex-direction:column;background:#fff;
+    box-shadow:-12px 0 40px -16px rgba(11,12,13,0.35);transform:translateX(100%);transition:transform 0.35s cubic-bezier(0.2,0.8,0.2,1);}
+  .drawer--wide .drawer-panel{width:min(560px,100%);}
+  .drawer.is-open .drawer-panel{transform:none;}
+  .drawer-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:28px 28px 20px;border-bottom:1px solid var(--gray-line);}
+  .drawer-head .eyebrow{margin-bottom:10px;}
+  .drawer-head h2{font-weight:600;font-size:clamp(34px * 24 / 52, 4.2vw * 24 / 52, 24px);line-height:1.25;color:var(--ink);}
+  .drawer-head p{margin-top:8px;font-size:15px;line-height:1.55;color:var(--body-2);}
+  .drawer-close{flex-shrink:0;display:flex;align-items:center;justify-content:center;width:36px;height:36px;margin:-6px -8px 0 0;border:0;border-radius:2px;background:none;cursor:pointer;}
+  .drawer-close:hover{background:var(--surface-gray);}
+  .drawer-close img{width:20px;height:20px;}
+  .drawer-body{flex:1;overflow-y:auto;padding:8px 28px 28px;}
+  .drawer-group{margin-top:24px;}
+  .drawer-group h3{font-family:var(--mono);font-weight:500;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--surface-dark);}
+  .drawer-list{list-style:none;margin:10px 0 0;padding:0;}
+  .drawer-list li{display:grid;grid-template-columns:20px minmax(0,1fr);gap:4px 14px;padding:12px 0;border-top:1px solid var(--gray-line);}
+  .drawer-list li:last-child{border-bottom:1px solid var(--gray-line);}
+  .drawer-list .ico{margin-top:2px;}
+  .drawer-list b{font-weight:600;font-size:15px;line-height:1.4;}
+  .drawer-list span:not(.ico){grid-column:2;font-size:13px;line-height:1.5;color:var(--body-2);}
+  .drawer-list .tick{width:8px;height:8px;margin:6px 6px 0;border-radius:50%;background:var(--pink);}
+  .drawer-foot{padding:18px 28px;border-top:1px solid var(--gray-line);background:var(--surface-gray);}
+  .prose{padding-top:4px;}
+  .prose p,.prose li{font-size:16px;line-height:26px;color:var(--body-2);}
+  .prose p{margin-top:16px;}
+  .prose h3{margin-top:28px;font-weight:600;font-size:18px;line-height:26px;color:var(--ink);}
+  .prose ol,.prose ul{margin:4px 0 0;padding-left:20px;}
+  .prose li{margin-top:10px;padding-left:4px;}
+  .prose b{font-weight:600;color:var(--ink);}
+  .prose pre.code{margin-top:12px;padding:16px;background:#f5f6f8;border:1px solid var(--gray-line);border-radius:2px;font-family:var(--mono);font-size:13px;line-height:20px;color:var(--ink);white-space:pre;overflow-x:auto;}
+  .prose .k{color:var(--pink-text);}
+  @media (min-width:1024px) and (max-width:1199px){   /* little of the app shows beside the copy: give it to the signal names */
+    .db-app{grid-template-columns:minmax(0,1fr);}
+    .db-side{display:none;}
+  }
+  @media (max-width:1023px){
+    .hw-grid--bleed{grid-template-columns:minmax(0,1fr);gap:48px;}
+    .db{zoom:0.8;}   /* stacked: the app needn't be full size to read */
+    .hw-visual.db-wrap{align-items:flex-start;}
+  }
+  @media (max-width:700px){
+    .mock{height:auto !important;padding-bottom:134px;}   /* text wraps more on phones: let the panel grow instead of cutting the thread */
+    .db{width:720px;}
+    .db-app{grid-template-columns:minmax(0,1fr);}
+    .db-side{display:none;}
+    .db-main{padding:20px 20px 24px;}
+    .drawer-head{padding:20px 16px 16px;}
+    .drawer-body{padding:4px 16px 24px;}
+    .drawer-foot{padding:16px;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .drawer,.drawer-scrim,.drawer-panel{transition:none !important;}
+  }
+
+  /* ---------- 03 DETECT: the confidence meter: the checks slide up from behind the question card ---------- */
+  .cm{width:100%;max-width:451px;margin:0;}
+  .cm-clip{overflow:hidden;padding:0 10px;}   /* its bottom edge is the card's top: rows appear from behind the card */
+  .cm-tray{position:relative;list-style:none;margin:0;padding:4px 14px 2px;background:#faf9f6;border:1px solid #8a8a8e;border-bottom:0;border-radius:8px 8px 0 0;
+    transition:transform 0.8s cubic-bezier(0.2,0.8,0.2,1);}
+  .cm-step{display:grid;grid-template-columns:12px minmax(0,1fr) auto;column-gap:12px;row-gap:2px;align-items:center;padding:12px 0;border-bottom:1px dashed var(--gray-line);}
+  .cm-step:last-child{border-bottom:0;}
+  .cm-dot{grid-row:1 / span 2;width:9px;height:9px;border-radius:50%;background:var(--ink);}
+  .cm-step b{font-weight:600;font-size:15px;line-height:20px;color:var(--ink);}
+  .cm-step span{grid-column:2;font-size:14px;line-height:20px;color:var(--body-2);}
+  .cm-step em{grid-column:3;grid-row:1 / span 2;font-family:var(--mono);font-style:normal;font-size:14px;color:var(--ink);}
+  .cm-card{position:relative;padding:24px;background:#fff;border:1px solid #8a8a8e;border-radius:2px;box-shadow:4px 4px 0 rgba(11,12,13,0.12);}
+  .cm-q{font-weight:600;font-size:17px;line-height:1.4;color:var(--ink);}
+  .cm-q i{font-style:normal;white-space:nowrap;}
+  .cm-meter{margin-top:24px;}
+  .cm-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px;}
+  .cm-head span{font-family:var(--mono);font-size:11px;line-height:16px;letter-spacing:0.08em;text-transform:uppercase;color:var(--surface-dark);}
+  .cm-val{font-family:var(--mono);font-weight:600;font-size:22px;color:var(--ink);transition:color 0.4s ease;}
+  .cm-track{position:relative;height:14px;background:#eeeeec;border-radius:2px;}
+  .cm-fill{position:absolute;left:0;top:0;bottom:0;width:var(--v);background:#8a8a8e;border-radius:2px;transition:width 1s cubic-bezier(0.4,0,0.2,1), background-color 0.4s ease;}
+  .cm-mark{position:absolute;left:var(--t);top:-6px;bottom:-6px;width:2px;margin-left:-1px;background:var(--ink);}
+  .cm-mark span{position:absolute;top:100%;left:50%;margin-top:6px;transform:translateX(-50%);font-family:var(--mono);font-style:normal;font-size:11px;line-height:16px;letter-spacing:0.08em;text-transform:uppercase;color:var(--surface-dark);white-space:nowrap;}
+  .cm-out{display:flex;align-items:center;gap:8px;margin-top:40px;font-weight:600;font-size:15px;color:var(--pink-text);transition:opacity 0.5s ease, transform 0.5s ease;}
+  .cm-out::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--pink);}
+  /* the finished state is the default; crossing the threshold is the one pink moment */
+  .cm.is-over .cm-fill,.cm:not(.is-armed) .cm-fill{background:var(--pink);}
+  .cm.is-over .cm-val,.cm:not(.is-armed) .cm-val{color:var(--pink-text);}
+  /* armed by the script, before and while it plays: name, then score, then the bar moves */
+  .cm.is-armed .cm-step b,.cm.is-armed .cm-step span{opacity:0;transition:opacity 0.6s ease 0.35s;}
+  .cm.is-armed .cm-step.is-in b,.cm.is-armed .cm-step.is-in span{opacity:1;}
+  .cm.is-armed .cm-step em,.cm.is-armed .cm-dot{opacity:0;transition:opacity 0.5s ease;}
+  .cm.is-armed .cm-step.is-scored em,.cm.is-armed .cm-step.is-in .cm-dot{opacity:1;}
+  .cm.is-armed:not(.is-done) .cm-out{opacity:0;transform:translateY(4px);}
+  @media (max-width:700px){
+    .cm-card{padding:20px 16px;}
+    .cm-q{font-size:16px;}
+    .cm-tray{padding:4px 12px 2px;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .cm-tray,.cm-step b,.cm-step span,.cm-step em,.cm-dot,.cm-fill,.cm-val,.cm-out{transition:none !important;}
+  }
+
+  /* ---------- 04 UPDATE: one signal's summary, before and after a comment (static) ---------- */
+  .su{position:relative;display:flex;flex-direction:column;gap:20px;width:100%;max-width:451px;margin:0;}
+  .su::before{content:'';position:absolute;left:28px;top:24px;bottom:24px;border-left:1px dashed #8a8a8e;}   /* the thread */
+  .su-card{position:relative;padding:20px 24px 22px;background:#fff;border:1px solid #8a8a8e;border-radius:2px;box-shadow:4px 4px 0 rgba(11,12,13,0.12);}
+  .su-card--new{border-color:var(--pink-text);}
+  .su-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px;}
+  .su-head span{font-family:var(--mono);font-size:11px;line-height:16px;letter-spacing:0.08em;text-transform:uppercase;color:var(--surface-dark);}
+  .su-sev{padding:2px 8px;border:1px solid;border-radius:2px;font-style:normal;font-weight:600;font-size:12px;line-height:16px;}
+  .su-sev--high{border-color:#f3d9a4;background:#fff8eb;color:#b45309;}
+  .su-sev--crit{border-color:var(--pink-text);background:#fef1f5;color:var(--pink-text);}
+  .su-card p{font-size:15px;line-height:23px;color:var(--ink);}
+  .su-card b{font-weight:600;}
+  .su .nw{white-space:nowrap;}
+  .su-card mark{background:#fef1f5;color:inherit;box-shadow:0 1px 0 var(--pink-text);}
+  .su-step{position:relative;display:flex;gap:12px;margin-left:12px;}
+  .su-avatar{flex-shrink:0;display:grid;place-items:center;width:34px;height:34px;border:1px solid #8a8a8e;border-radius:50%;background:#fff;font-weight:600;font-size:12px;color:var(--ink);}
+  .su-comment > div{padding:12px 14px;background:#fff;border:1px solid var(--gray-line);border-radius:2px;}
+  .su-who{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px;margin-bottom:4px;}
+  .su-who b{font-weight:600;font-size:14px;color:var(--ink);}
+  .su-who span{font-size:12px;color:var(--surface-dark);}
+  .su-comment p:last-child{font-size:15px;line-height:22px;color:var(--ink);}
+  .su-loop{flex-direction:column;gap:8px;padding-left:46px;}
+  .su-loop::before{content:'';position:absolute;left:12px;top:3px;width:10px;height:10px;border-radius:50%;background:var(--pink);}
+  .su-loop b{font-family:var(--mono);font-weight:400;font-size:11px;line-height:16px;letter-spacing:0.08em;text-transform:uppercase;color:var(--surface-dark);}
+  .su-chips{display:flex;flex-wrap:wrap;align-items:center;gap:6px;}
+  .su-chips span{padding:3px 10px;border:1px solid #8a8a8e;border-radius:99px;background:#fff;font-size:13px;line-height:18px;color:var(--ink);}
+  .su-chips i{width:12px;border-top:1px solid #8a8a8e;}
+  @media (max-width:700px){
+    .su-card{padding:16px 16px 18px;}
+    .su-step{margin-left:6px;}
+    .su::before{left:22px;}
+  }
+
+  /* ---------- closing: operations + getting started (dark) ---------- */
+  .hw-close{padding:96px 0;background:var(--ink);color:#fff;}
+  .hw-close-grid{display:grid;grid-template-columns:minmax(0,560px) minmax(0,420px);justify-content:space-between;gap:60px;align-items:center;}
+  .hw-close h2{margin-top:16px;font-weight:600;font-size:clamp(34px,4.2vw,48px);line-height:1.1667;letter-spacing:-0.015em;color:#fff;}
+  .hw-close-lede{margin-top:24px;font-size:20px;line-height:32px;color:rgba(255,255,255,0.72);}
+  .hw-close h3{margin-top:40px;font-weight:600;font-size:24px;line-height:32px;letter-spacing:-0.005em;color:#fff;}
+  .hw-close-list{list-style:none;margin:20px 0 0;padding:0;border-top:1px solid rgba(255,255,255,0.16);}
+  .hw-close-list li{display:flex;align-items:baseline;gap:8px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.16);}
+  .hw-close-list .method-n{width:28px;flex-shrink:0;}
+  .hw-close-list b{font-weight:600;font-size:18px;line-height:28px;color:#fff;}
+  .sl{margin:0;background:#fff;border-radius:8px;box-shadow:0 24px 48px -24px rgba(0,0,0,0.6);color:#1d1c1d;overflow:hidden;}
+  .sl-chan{display:flex;align-items:center;gap:8px;padding:12px 16px;border-bottom:1px solid #e8e8e8;font-weight:700;font-size:15px;}
+  .sl-msg{display:flex;gap:10px;padding:16px 16px 20px;}
+  .sl-avatar{flex-shrink:0;border-radius:6px;}
+  .sl-meta{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px;margin-bottom:2px;font-size:12px;color:#616061;}
+  .sl-meta b{font-weight:800;font-size:15px;color:#1d1c1d;}
+  .sl-app{padding:0 4px;border-radius:3px;background:#e8e8e8;font-weight:700;font-size:10px;line-height:16px;color:#616061;}
+  .sl-msg p:last-child{font-size:15px;line-height:22px;}
+  .hw-close-cta{display:flex;align-items:center;justify-content:space-between;gap:24px;margin-top:64px;padding-top:40px;border-top:1px solid rgba(255,255,255,0.16);}
+  .hw-close-cta p{font-weight:600;font-size:clamp(24px,2.6vw,32px);line-height:1.25;color:#fff;}
+  @media (max-width:1023px){
+    .hw-close-grid{grid-template-columns:minmax(0,1fr);gap:48px;}
+    .sl{max-width:450px;}
+  }
+  @media (max-width:700px){
+    .hw-close{padding:64px 0;}
+    .hw-close-lede{font-size:18px;line-height:28px;}
+    .hw-close h3{font-size:20px;line-height:28px;}
+    .hw-close-list b{font-size:16px;line-height:24px;}
+    .hw-close-cta{flex-direction:column;align-items:flex-start;margin-top:48px;}
+  }
+
+  /* ---------- short laptop screens (e.g. 1280 x 800): each section's content fits in one view ---------- */
+  @media (min-width:1024px) and (max-height:900px){
+    .hw-loop,.hw-sec,.hw-close{padding:64px 0;}
+    .hw-loop h2,.hw-sec h2,.hw-close h2{font-size:clamp(34px,3.6vw,42px);}
+    .hw-lede-2,.hw-close-lede{margin-top:16px;font-size:18px;line-height:28px;}
+    .hw-sub,.hw-close h3{margin-top:20px;font-size:20px;line-height:28px;}
+    .methods{margin-top:16px;}
+    .methods--rules .method{padding:12px 0;}
+    .method-title,.method-text{font-size:16px;line-height:24px;}
+    .hw-more{margin-top:20px;}
+    .mock-stack--triage{zoom:0.82;}
+    .db-row--extra{display:none;}
+    .hw-close-cta{margin-top:48px;padding-top:32px;}
+  }
+  /* ---------- FOOTER ---------- */
+  footer{
+    border-top:1px solid var(--gray-line);padding:28px 56px 40px;display:flex;justify-content:space-between;align-items:center;
+    font-size:10.5px;line-height:1.5;color:var(--surface-dark);text-transform:uppercase;letter-spacing:0.08em;
+  }
+  footer a{text-decoration:none;}
+  footer a:hover{color:var(--ink);}
+  footer .fmark{color:var(--ink);font-weight:500;}
+  @media (max-width:700px){footer{padding:22px 20px 36px;flex-direction:column;gap:10px;text-align:center;}}
+
+</style>
+</head>
+<body>
+
+  <div class="classbar">UNMANNED · SIMPLY SECURE</div>
+
+  <!-- ============================================================
+       HEADER (sticky)
+       ============================================================ -->
+  <div class="site-top">
+    <header class="site-header">
+      <div class="wrap header-inner">
+        <div class="header-left">
+          <a href="/" class="brand"><span class="status-dot"></span>VEX</a>
+          <span class="brand-tag">Don’t get hacked</span>
+        </div>
+        <nav class="header-links" aria-label="Main">
+          <a class="header-link" href="/how-it-works/">VEX AI SOC</a>
+          <a class="header-link header-link--slack" href="/slack"><img src="../static/slack-logo.svg" width="24" height="24" alt="">VEX for Slack</a>
+          <a class="header-link header-link--cta" href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener">Schedule a chat <img src="../static/icon-arrow-right-pink.svg" width="16" height="16" alt=""></a>
+        </nav>
+        <button class="menu-btn" type="button" aria-label="Open menu" aria-controls="site-nav" aria-expanded="false"><img src="../static/icon-menu.svg" width="32" height="32" alt=""></button>
+      </div>
+    </header>
+  </div>
+
+  <!-- ============================================================
+       NAV MENU (phones)
+       ============================================================ -->
+  <div class="nav-panel" id="site-nav">
+    <div class="site-header">
+      <div class="wrap header-inner">
+        <a href="/" class="brand"><span class="status-dot"></span>VEX</a>
+        <button class="menu-btn menu-close" type="button" aria-label="Close menu"><img src="../static/icon-close.svg" width="32" height="32" alt=""></button>
+      </div>
+    </div>
+    <nav class="wrap" aria-label="Menu">
+      <ul class="nav-list">
+        <li><a href="/"><span class="nav-link">Home</span><span class="nav-sub">Your AI SOC, run by hackers.</span></a></li>
+        <li><a href="/how-it-works/"><span class="nav-link">VEX AI SOC</span><span class="nav-sub">Good prevention starts with great detection.</span></a></li>
+        <li><a href="/slack"><span class="nav-link">VEX for Slack</span><span class="nav-sub">Security, handled. Right in Slack.</span></a></li>
+        <li><a href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener"><span class="nav-link">Schedule a chat</span></a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <main>
+
+  <section class="hw-hero">
+    <img class="hw-hero-glow" src="static/hero-glow.svg" width="2160" height="228" alt="" aria-hidden="true">
+    <div class="wrap hw-hero-inner">
+      <div class="hw-hero-copy">
+        <p class="eyebrow eyebrow--dot eyebrow--bold"><span class="status-dot"></span>VEX Platform</p>
+        <h1>Good prevention starts with great detection.</h1>
+        <p class="hw-lede">We call it an Offensive SOC. VEX looks for the accounts, settings and behaviors likely to become part of an attack, so there’s less to detect and respond to in the first place.</p>
+        <a class="btn-ds btn-ds--lg" href="#loop">See how VEX works <img src="static/icon-arrow-down-white.svg" width="20" height="20" alt=""></a>
+        <div class="hw-try">
+          <p>Don’t take our word for it.</p>
+          <p><span>Add VEX to <b>Slack</b> for free. It gets to work right away.</span> <a class="text-link" href="/slack">Get VEX for Slack <img src="../static/icon-arrow-right-pink.svg" width="16" height="16" alt=""></a></p>
+        </div>
+      </div>
+      <div class="hw-hero-art"><figure class="tl" aria-label="How an attack builds: missing MFA, an odd sign-in, access, then an incident. VEX looks at the first step; prevention stops it before access. Most look at the incident.">
+        <div class="tl-card">
+          <ol class="tl-steps" aria-hidden="true">
+            <li class="tl-step tl-step--key"><i class="tl-dot"></i><div><b>Missing MFA</b><span>A gap an attacker could use</span></div><span class="tl-badge tl-badge--vex">Where VEX looks</span></li>
+            <li class="tl-step"><i class="tl-dot"></i><div><b>Odd sign-in</b><span>Attempt is made</span></div></li>
+            <li class="tl-divider"><span>Prevention</span></li>
+            <li class="tl-step"><i class="tl-dot"></i><div><b>Access</b><span>The door is opened</span></div></li>
+            <li class="tl-step tl-step--last"><i class="tl-dot"></i><div><b>Incident</b><span>An alert is sent</span></div><span class="tl-badge">Most look here</span></li>
+          </ol>
+        </div>
+      </figure></div>
+    </div>
+  </section>
+  <nav class="hw-nav" aria-label="On this page">
+    <div class="hw-tabs"><a href="#loop">The loop</a><a href="#collect">Collect</a><a href="#triage">Triage</a><a href="#detect">Detect</a><a href="#update">Update</a></div>
+  </nav>
+  <section class="hw-loop" id="loop">
+    <div class="wrap">
+      <div class="hw-loop-top">
+        <div class="hw-loop-copy">
+          <p class="eyebrow">How VEX works</p>
+          <h2>The VEX loop.</h2>
+          <p class="hw-lede-2">VEX runs every piece of evidence through the same four stages: collect, triage, detect, update. Then it does it again.</p>
+          <p class="hw-lede-2">Findings and human input become context for future investigations. When new information changes the picture, VEX can reassess.</p>
+        </div>
+        <div class="hw-loop-art"><img class="loop-glow" src="static/loop-glow.svg" width="614" height="245" alt="" aria-hidden="true"><svg class="loop-svg" width="492" height="289" viewBox="0 0 492 289" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The VEX loop: Collect, Triage, Detect and Update, in a circle around VEX. Collect hands signals to Triage, Triage hands evidence and history to Detect, Detect hands a decision and its confidence to Update, and new evidence and human input go back to Collect.">
+<!-- Exported from Figma (How VEX works, node 1702:68573). Shapes as exported; the outlined text was replaced with
+     live text at the same positions (x shifted +5.28, the export's left overflow), styled in the page CSS. -->
+<path d="M269.477 66.6568C269.857 66.302 269.878 65.7064 269.523 65.3265L263.741 59.1362C263.386 58.7563 262.791 58.736 262.411 59.0908C262.031 59.4456 262.01 60.0412 262.365 60.4211L267.505 65.9236L262.002 71.0631C261.622 71.4179 261.602 72.0134 261.957 72.3933C262.312 72.7732 262.907 72.7935 263.287 72.4387L269.477 66.6568ZM124.092 75.8121C123.583 75.9143 123.252 76.4103 123.355 76.9199C123.457 77.4296 123.953 77.7599 124.462 77.6577L124.277 76.7349L124.092 75.8121ZM244.875 65.5625V66.5037C252.951 66.5037 260.933 66.6411 268.803 66.9096L268.835 65.969L268.867 65.0283C260.976 64.7591 252.972 64.6213 244.875 64.6213V65.5625ZM124.277 76.7349L124.462 77.6577C159.817 70.5684 200.959 66.5037 244.875 66.5037V65.5625V64.6213C200.848 64.6213 159.581 68.6959 124.092 75.8121L124.277 76.7349Z" fill="#DCDCD8"/>
+<path d="M389.271 81.212C388.768 81.0816 388.255 81.3837 388.124 81.8869C387.994 82.3901 388.296 82.9037 388.799 83.0341L389.035 82.123L389.271 81.212ZM483.81 148.547C484.177 148.915 484.773 148.915 485.141 148.547L491.13 142.558C491.498 142.19 491.498 141.594 491.13 141.227C490.763 140.859 490.167 140.859 489.799 141.227L484.475 146.551L479.151 141.227C478.784 140.859 478.188 140.859 477.82 141.227C477.453 141.594 477.453 142.19 477.82 142.558L483.81 148.547ZM389.035 82.123L388.799 83.0341C417.728 90.5321 441.475 100.22 457.967 111.341C474.488 122.481 483.534 134.918 483.534 147.882H484.475H485.416C485.416 133.976 475.726 121.045 459.02 109.78C442.284 98.4949 418.311 88.7387 389.271 81.212L389.035 82.123Z" fill="#DCDCD8"/>
+<path d="M235.433 229.474C235.061 229.837 235.053 230.433 235.416 230.805L241.331 236.869C241.694 237.241 242.29 237.248 242.662 236.885C243.034 236.522 243.041 235.926 242.679 235.554L237.421 230.165L242.81 224.907C243.182 224.544 243.19 223.948 242.827 223.576C242.464 223.204 241.868 223.196 241.496 223.559L235.433 229.474ZM382.065 216.349C382.57 216.228 382.882 215.72 382.761 215.214C382.64 214.709 382.132 214.397 381.626 214.518L381.846 215.434L382.065 216.349ZM244.875 230.202V229.261C241.938 229.261 239.013 229.243 236.101 229.207L236.09 230.148L236.078 231.089C238.998 231.125 241.93 231.144 244.875 231.144V230.202ZM381.846 215.434L381.626 214.518C342.888 223.808 295.743 229.261 244.875 229.261V230.202V231.144C295.869 231.144 343.163 225.677 382.065 216.349L381.846 215.434Z" fill="#DCDCD8"/>
+<path d="M116.49 218.363C116.998 218.473 117.499 218.151 117.61 217.644C117.721 217.136 117.399 216.634 116.891 216.524L116.691 217.443L116.49 218.363ZM9.91597 133.029C9.75937 132.533 9.23063 132.258 8.73498 132.415L0.657953 134.967C0.162306 135.124 -0.112549 135.652 0.0440469 136.148C0.200643 136.644 0.72939 136.918 1.22504 136.762L8.40462 134.493L10.673 141.673C10.8295 142.169 11.3583 142.444 11.8539 142.287C12.3496 142.13 12.6244 141.602 12.4678 141.106L9.91597 133.029ZM116.691 217.443L116.891 216.524C83.4638 209.237 55.7221 199.192 36.3625 187.36C16.9572 175.5 6.21852 162.005 6.21852 147.882H5.27734H4.33617C4.33617 163.025 15.821 177.011 35.3808 188.966C54.9863 200.949 82.9512 211.052 116.49 218.363L116.691 217.443ZM5.27734 147.882H6.21852C6.21852 143.078 7.45694 138.357 9.85361 133.747L9.01852 133.312L8.18344 132.878C5.66356 137.726 4.33617 142.743 4.33617 147.882H5.27734Z" fill="#DCDCD8"/>
+<g opacity="0.6">
+<path d="M21.6406 73.7076L69.265 57.832V110.751L21.6406 126.626V73.7076Z" fill="#D10176" fill-opacity="0.1"/>
+<path d="M69.0889 110.624L21.8164 126.381V73.834L69.0889 58.0762V110.624Z" stroke="#FEE3EC" stroke-opacity="0.5" stroke-width="0.352353"/>
+<path d="M69.2656 57.832L106.307 73.7076V126.626L69.2656 110.751V57.832Z" fill="#D10176" fill-opacity="0.3"/>
+<path d="M106.131 73.8232V126.359L69.4414 110.634V58.0986L106.131 73.8232Z" stroke="#FEE3EC" stroke-opacity="0.5" stroke-width="0.352353"/>
+<path d="M21.6406 73.7076L69.265 57.832L106.306 73.7076L58.6818 89.5832L21.6406 73.7076Z" fill="#DD469B" fill-opacity="0.3"/>
+<path d="M105.81 73.6865L58.6895 89.3945L22.1357 73.7275L69.2559 58.0195L105.81 73.6865Z" stroke="#FEE3EC" stroke-opacity="0.5" stroke-width="0.352353"/>
+<path d="M21.6406 126.628L69.265 110.752L106.306 126.628L58.6818 142.503L21.6406 126.628Z" fill="#DD469B" fill-opacity="0.3"/>
+<path d="M105.81 126.606L58.6895 142.314L22.1357 126.647L69.2559 110.939L105.81 126.606Z" stroke="#FEE3EC" stroke-opacity="0.5" stroke-width="0.352353"/>
+<path d="M21.6406 73.709L58.6818 89.5846V142.503L21.6406 126.628V73.709Z" fill="#D10176" fill-opacity="0.3"/>
+<path d="M58.5059 89.7002V142.236L21.8164 126.511V73.9756L58.5059 89.7002Z" stroke="#FEE3EC" stroke-opacity="0.5" stroke-width="0.352353"/>
+<path d="M58.6875 89.5846L106.312 73.709V126.628L58.6875 142.503V89.5846Z" fill="#D10176" fill-opacity="0.1"/>
+<path d="M106.136 126.501L58.8633 142.258V89.7109L106.136 73.9531V126.501Z" stroke="#FEE3EC" stroke-opacity="0.5" stroke-width="0.352353"/>
+</g>
+<g style="mix-blend-mode:darken" opacity="0.6">
+<rect x="45.2891" y="89.8711" width="7.62753" height="7.62792" fill="#E01280"/>
+<rect x="68.9336" y="73.8516" width="7.62753" height="7.62792" fill="#E01280"/>
+<rect x="64.3594" y="95.209" width="7.62753" height="7.62792" fill="#E01280"/>
+<rect x="75.0391" y="101.312" width="7.62753" height="7.62792" fill="#E01280"/>
+<rect x="52.918" y="103.602" width="7.62753" height="7.62792" fill="#E01280"/>
+</g>
+<g opacity="0.6">
+<path d="M287.602 44.5685L335.227 28.6934V81.6105L287.602 97.4856V44.5685Z" fill="#D10176" fill-opacity="0.1"/>
+<path d="M335.051 81.4834L287.777 97.2412V44.6953L335.051 28.9375V81.4834Z" stroke="#FEE3EC" stroke-opacity="0.5" stroke-width="0.352353"/>
+<path d="M335.227 28.6934L372.269 44.5685V97.4856L335.227 81.6105V28.6934Z" fill="#D10176" fill-opacity="0.3"/>
+<path d="M372.093 44.6846V97.2178L335.402 81.4932V28.96L372.093 44.6846Z" stroke="#FEE3EC" stroke-opacity="0.5" stroke-width="0.352353"/>
+<path d="M287.602 44.5685L335.227 28.6934L372.27 44.5685L324.644 60.4436L287.602 44.5685Z" fill="#DD469B" fill-opacity="0.3"/>
+<path d="M371.773 44.5479L324.651 60.2549L288.097 44.5879L335.219 28.8809L371.773 44.5479Z" stroke="#FEE3EC" stroke-opacity="0.5" stroke-width="0.352353"/>
+<path d="M287.602 97.4845L335.227 81.6094L372.27 97.4845L324.644 113.36L287.602 97.4845Z" fill="#DD469B" fill-opacity="0.3"/>
+<path d="M371.773 97.4639L324.651 113.171L288.097 97.5039L335.219 81.7969L371.773 97.4639Z" stroke="#FEE3EC" stroke-opacity="0.5" stroke-width="0.352353"/>
+<path d="M287.602 44.5664L324.644 60.4415V113.359L287.602 97.4835V44.5664Z" fill="#D10176" fill-opacity="0.3"/>
+<path d="M324.468 60.5576V113.091L287.777 97.3662V44.833L324.468 60.5576Z" stroke="#FEE3EC" stroke-opacity="0.5" stroke-width="0.352353"/>
+<path d="M324.641 60.4415L372.266 44.5664V97.4835L324.641 113.359V60.4415Z" fill="#D10176" fill-opacity="0.1"/>
+<path d="M372.09 97.3564L324.816 113.114V60.5684L372.09 44.8105V97.3564Z" stroke="#FEE3EC" stroke-opacity="0.5" stroke-width="0.352353"/>
+</g>
+<g style="mix-blend-mode:darken" opacity="0.6">
+<rect x="320.398" y="68.3555" width="7.62775" height="7.62769" fill="#E01280"/>
+<rect x="312.77" y="68.3555" width="7.62775" height="7.62769" fill="#E01280"/>
+<rect x="328.027" y="60.7285" width="7.62775" height="7.62769" fill="#E01280"/>
+<rect x="328.027" y="53.0996" width="7.62775" height="7.62769" fill="#E01280"/>
+<rect x="328.027" y="68.3555" width="7.62775" height="7.62769" fill="#E01280"/>
+<rect x="335.656" y="68.3555" width="7.62775" height="7.62769" fill="#E01280"/>
+<rect x="343.285" y="68.3555" width="7.62775" height="7.62769" fill="#E01280"/>
+<rect x="328.027" y="75.9844" width="7.62775" height="7.62769" fill="#E01280"/>
+<rect x="328.027" y="83.6133" width="7.62775" height="7.62769" fill="#E01280"/>
+</g>
+<g opacity="0.6">
+<path d="M400.609 161.856L448.234 145.98V198.898L400.609 214.774V161.856Z" fill="#D10176" fill-opacity="0.1"/>
+<path d="M448.059 198.771L400.785 214.529V161.982L448.059 146.225V198.771Z" stroke="#FEE3EC" stroke-opacity="0.5" stroke-width="0.352353"/>
+<path d="M448.238 145.98L485.28 161.856V214.774L448.238 198.898V145.98Z" fill="#D10176" fill-opacity="0.3"/>
+<path d="M485.104 161.971V214.506L448.414 198.781V146.247L485.104 161.971Z" stroke="#FEE3EC" stroke-opacity="0.5" stroke-width="0.352353"/>
+<path d="M400.609 161.856L448.234 145.98L485.276 161.856L437.651 177.731L400.609 161.856Z" fill="#DD469B" fill-opacity="0.3"/>
+<path d="M484.78 161.835L437.659 177.543L401.104 161.876L448.226 146.168L484.78 161.835Z" stroke="#FEE3EC" stroke-opacity="0.5" stroke-width="0.352353"/>
+<path d="M400.609 214.772L448.234 198.896L485.276 214.772L437.651 230.647L400.609 214.772Z" fill="#DD469B" fill-opacity="0.3"/>
+<path d="M484.78 214.751L437.659 230.459L401.104 214.792L448.226 199.084L484.78 214.751Z" stroke="#FEE3EC" stroke-opacity="0.5" stroke-width="0.352353"/>
+<path d="M400.609 161.855L437.651 177.731V230.649L400.609 214.773V161.855Z" fill="#D10176" fill-opacity="0.3"/>
+<path d="M437.475 177.846V230.381L400.785 214.656V162.122L437.475 177.846Z" stroke="#FEE3EC" stroke-opacity="0.5" stroke-width="0.352353"/>
+<path d="M437.648 177.731L485.273 161.855V214.773L437.648 230.649V177.731Z" fill="#D10176" fill-opacity="0.1"/>
+<path d="M485.098 214.646L437.824 230.404V177.857L485.098 162.1V214.646Z" stroke="#FEE3EC" stroke-opacity="0.5" stroke-width="0.352353"/>
+</g>
+<g style="mix-blend-mode:darken" opacity="0.6">
+<rect x="423.488" y="180.307" width="7.62763" height="7.62781" fill="#E01280"/>
+<rect width="7.62763" height="7.62781" transform="matrix(1 0 0 -1 423.488 201.664)" fill="#E01280"/>
+<rect width="7.62763" height="7.62781" transform="matrix(-1 0 0 1 461.629 180.307)" fill="#E01280"/>
+<rect x="461.629" y="201.664" width="7.62763" height="7.62781" transform="rotate(180 461.629 201.664)" fill="#E01280"/>
+<rect x="423.488" y="172.678" width="7.62763" height="7.62781" fill="#E01280"/>
+<rect width="7.62763" height="7.62781" transform="matrix(1 0 0 -1 423.488 209.291)" fill="#E01280"/>
+<rect width="7.62763" height="7.62781" transform="matrix(-1 0 0 1 461.629 172.678)" fill="#E01280"/>
+<rect x="461.629" y="209.291" width="7.62763" height="7.62781" transform="rotate(180 461.629 209.291)" fill="#E01280"/>
+<rect x="431.117" y="172.678" width="7.62763" height="7.62781" fill="#E01280"/>
+<rect width="7.62763" height="7.62781" transform="matrix(1 0 0 -1 431.117 209.291)" fill="#E01280"/>
+<rect width="7.62763" height="7.62781" transform="matrix(-1 0 0 1 454 172.678)" fill="#E01280"/>
+<rect x="454" y="209.291" width="7.62763" height="7.62781" transform="rotate(180 454 209.291)" fill="#E01280"/>
+<rect x="438.738" y="186.408" width="7.62763" height="7.62781" fill="#E01280"/>
+</g>
+<g opacity="0.6">
+<path d="M132.664 190.994L180.29 175.119V228.036L132.664 243.912V190.994Z" fill="#D10176" fill-opacity="0.1"/>
+<path d="M180.113 227.909L132.84 243.667V191.121L180.113 175.363V227.909Z" stroke="#FEE3EC" stroke-opacity="0.5" stroke-width="0.352353"/>
+<path d="M180.289 175.119L217.331 190.994V243.912L180.289 228.036V175.119Z" fill="#D10176" fill-opacity="0.3"/>
+<path d="M217.155 191.11V243.645L180.465 227.919V175.386L217.155 191.11Z" stroke="#FEE3EC" stroke-opacity="0.5" stroke-width="0.352353"/>
+<path d="M132.664 190.994L180.29 175.119L217.332 190.994L169.706 206.869L132.664 190.994Z" fill="#DD469B" fill-opacity="0.3"/>
+<path d="M216.836 190.974L169.713 206.681L133.159 191.014L180.281 175.307L216.836 190.974Z" stroke="#FEE3EC" stroke-opacity="0.5" stroke-width="0.352353"/>
+<path d="M132.664 243.912L180.29 228.037L217.332 243.912L169.706 259.787L132.664 243.912Z" fill="#DD469B" fill-opacity="0.3"/>
+<path d="M216.836 243.892L169.713 259.599L133.159 243.932L180.281 228.225L216.836 243.892Z" stroke="#FEE3EC" stroke-opacity="0.5" stroke-width="0.352353"/>
+<path d="M132.664 190.994L169.706 206.869V259.787L132.664 243.911V190.994Z" fill="#D10176" fill-opacity="0.3"/>
+<path d="M169.53 206.985V259.52L132.84 243.794V191.261L169.53 206.985Z" stroke="#FEE3EC" stroke-opacity="0.5" stroke-width="0.352353"/>
+<path d="M169.703 206.869L217.329 190.994V243.911L169.703 259.787V206.869Z" fill="#D10176" fill-opacity="0.1"/>
+<path d="M217.152 243.784L169.879 259.542V206.996L217.152 191.238V243.784Z" stroke="#FEE3EC" stroke-opacity="0.5" stroke-width="0.352353"/>
+</g>
+<g style="mix-blend-mode:darken" opacity="0.6">
+<rect width="7.62773" height="7.62771" transform="matrix(1 0 0 -1 153.984 227.119)" fill="#E01280"/>
+<rect width="7.62773" height="7.62771" transform="matrix(1 0 0 -1 161.434 227.119)" fill="#E01280"/>
+<rect width="7.62773" height="7.62771" transform="matrix(1 0 0 -1 168.961 227.119)" fill="#E01280"/>
+<rect width="7.62773" height="7.62771" transform="matrix(1 0 0 -1 176.492 227.119)" fill="#E01280"/>
+<rect width="7.62773" height="7.62771" transform="matrix(1 0 0 -1 184.02 227.119)" fill="#E01280"/>
+<rect width="7.62773" height="7.62771" transform="matrix(1 0 0 -1 191.551 227.119)" fill="#E01280"/>
+<rect width="7.62773" height="7.62771" transform="matrix(1 0 0 -1 161.613 234.746)" fill="#E01280"/>
+<rect x="169.246" y="234.254" width="7.62773" height="7.62771" fill="#E01280"/>
+<rect x="161.434" y="211.865" width="7.62773" height="7.62771" fill="#E01280"/>
+<rect x="168.961" y="204.234" width="7.62773" height="7.62771" fill="#E01280"/>
+</g>
+<g class="loop-label" aria-hidden="true">
+<text x="64.4" y="46.1" text-anchor="middle">Collect</text>
+<text x="329" y="17" text-anchor="middle">Triage</text>
+<text x="441.7" y="253" text-anchor="middle">Detect</text>
+<text x="174.4" y="282.2" text-anchor="middle">Update</text>
+</g>
+<g class="loop-note" aria-hidden="true">
+<!-- what each stage hands to the next: one label per arrow, inside the ring -->
+<text x="196" y="95" text-anchor="middle">SIGNALS</text>
+<text x="436" y="121" text-anchor="end">EVIDENCE +</text>
+<text x="436" y="136" text-anchor="end">HISTORY</text>
+<text x="312" y="197.7" text-anchor="middle">DECISION +</text>
+<text x="312" y="212.7" text-anchor="middle">CONFIDENCE</text>
+<text x="48" y="161" text-anchor="start">NEW EVIDENCE +</text>
+<text x="48" y="176" text-anchor="start">HUMAN INPUT</text>
+</g>
+<circle cx="205.43" cy="140.604" r="5.67972" fill="#D10176"/>
+<text class="loop-vex" x="215.6" y="148.1" aria-hidden="true">VEX</text>
+</svg>
+</div>
+      </div>
+      <ol class="hw-loop-list"><li><span class="method-n">01</span><p><b>Collect telemetry</b><br>Gather activity from connected systems.</p></li><li><span class="method-n">02</span><p><b>Triage signal</b><br>Assess the affected asset and investigate the signal.</p></li><li><span class="method-n">03</span><p><b>Detect evil</b><br>Determine whether activity is malicious, and challenge the conclusion.</p></li><li><span class="method-n">04</span><p><b>Update state</b><br>Carry findings and human judgment into the next investigation.</p></li></ol>
+    </div>
+  </section>
+  <section class="hw-sec hw-sec--bleed" id="collect">
+    <div class="wrap hw-grid hw-grid--bleed">
+      <div class="hw-copy">
+        <p class="eyebrow"><b>The loop:</b> Collect</p>
+        <h2>Look where an attacker would.</h2>
+        <p class="hw-lede-2">Attackers don’t stay inside the systems you watch most. VEX collects activity from identities, devices, domains, network gear and the SaaS apps you rely on, so its investigations start with what’s really happening.</p>
+        <h3 class="hw-sub">Designed to make collection boring.</h3>
+        <ul class="methods methods--rules">
+          <li class="method"><span class="method-n">01</span><div><p class="method-title">100+ integrations.</p><p class="method-text">Connect platforms like Microsoft 365 and Google Workspace directly. <button class="inline-link link-btn" type="button" data-drawer="integrations" aria-haspopup="dialog">View all</button></p></div></li>
+          <li class="method"><span class="method-n">02</span><div><p class="method-title">The VEX API.</p><p class="method-text">Send in any other data source.</p></div></li>
+          <li class="method"><span class="method-n">03</span><div><p class="method-title">No API? Use email.</p><p class="method-text">Forward reports and notices to the mailbox included with every VEX deployment.</p></div></li>
+        </ul>
+        <p class="hw-more"><button class="text-link link-btn" type="button" data-drawer="drawer-collect" aria-haspopup="dialog">How collection works <img src="../static/icon-arrow-right-pink.svg" width="16" height="16" alt=""></button></p>
+      </div>
+      <figure class="hw-visual db-wrap" aria-label="The VEX app’s list of signals, from Microsoft 365, Level, Cloudflare, HubSpot and VEX’s own checks, including a missing DMARC record.">
+        <div class="db" aria-hidden="true">
+          <div class="db-top"><i class="db-vex"></i><b>VEX</b></div>
+          <div class="db-app">
+            <div class="db-side">
+              <div class="db-org"><span>U</span>Your organization</div><div class="db-nav"><img src="static/dash-home.svg" width="16" height="16" alt="">Home</div><div class="db-nav is-on"><img src="static/dash-signals.svg" width="16" height="16" alt="">All signals<em>18</em></div><div class="db-nav"><img src="static/dash-attack.svg" width="16" height="16" alt="">Attack mode<em>2</em></div><p class="db-sec">Your organization</p><div class="db-nav"><img src="static/dash-assets.svg" width="16" height="16" alt="">Assets</div><div class="db-nav"><img src="static/dash-integrations.svg" width="16" height="16" alt="">Integrations</div><div class="db-nav"><img src="static/dash-risks.svg" width="16" height="16" alt="">Accepted risks</div><div class="db-nav"><img src="static/dash-logs.svg" width="16" height="16" alt="">Logs</div>
+            </div>
+            <div class="db-main">
+              <p class="db-title">All signals</p>
+              <div class="db-tabs"><span class="is-on">Open <em>11</em></span><span>Assigned to me <em>3</em></span><span>Unassigned <em>4</em></span><span>Auto-resolved <em>214</em></span></div>
+              <div class="db-chips"><span>Critical <em>1</em></span><span>High <em>4</em></span><span>Recommendations <em>3</em></span></div>
+              <div class="db-table">
+                <div class="db-row db-row--head"><span>Type</span><span>Threat</span><span>Name</span><span>Asset</span><span>Detected</span></div>
+                <div class="db-row"><span class="db-type"><img src="static/logo-microsoft.svg" width="18" height="18" alt=""></span><span><i class="db-threat db-threat--hi">96%</i></span><span class="db-name"><b>Malicious attachment</b><small>Stopped</small></span><span>k.moore@example.com</span><span>Oct 8</span></div>
+                <div class="db-row"><span class="db-type"><img src="static/logo-level.svg" width="18" height="18" alt=""></span><span><i class="db-threat db-threat--hi">78%</i></span><span class="db-name"><b>Old VPN account without MFA</b><small>Disabled</small></span><span>j.lee@example.com</span><span>Oct 8</span></div>
+                <div class="db-row"><span class="db-type"><img src="static/logo-level.svg" width="18" height="18" alt=""></span><span><i class="db-threat db-threat--lo">3%</i></span><span class="db-name"><b>Weak sharing link on payroll folder</b><small>Identity</small></span><span>k.moore@example.com</span><span>Oct 7</span></div>
+                <div class="db-row"><span class="db-type"><img src="static/logo-cloudflare.svg" width="20" height="13" alt=""></span><span><i class="db-threat db-threat--mid">27%</i></span><span class="db-name"><b>Phishing domain look-alike</b><small>Taken down</small></span><span>examp1e.com</span><span>Oct 7</span></div>
+                <div class="db-row"><span class="db-type"><img src="static/logo-hubspot.png" width="20" height="20" alt=""></span><span><i class="db-threat db-threat--hi">85%</i></span><span class="db-name"><b>Data export activity detected</b><small>Identity</small></span><span>k.moore@example.com</span><span>Oct 6</span></div>
+                <div class="db-row db-row--extra"><span class="db-type"><img src="static/logo-cloudflare.svg" width="20" height="13" alt=""></span><span><i class="db-threat db-threat--lo">7%</i></span><span class="db-name"><b>Managed challenge issued</b><small>Domain</small></span><span>example.com</span><span>Oct 6</span></div>
+                <div class="db-row"><span class="db-type"><i class="db-vex"></i></span><span><i class="db-threat db-threat--hi">83%</i></span><span class="db-name"><b>Missing DMARC record</b><small>Domain</small></span><span>example.com</span><span>Oct 5</span></div>
+                <div class="db-row db-row--extra"><span class="db-type"><i class="db-vex"></i></span><span><i class="db-threat db-threat--mid">64%</i></span><span class="db-name"><b>Missing identity monitor</b><small>Identity</small></span><span>j.lee@example.com</span><span>Oct 5</span></div>
+                <div class="db-row"><span class="db-type"><img src="static/logo-level.svg" width="18" height="18" alt=""></span><span><i class="db-threat db-threat--hi">92%</i></span><span class="db-name"><b>Suspicious script on laptop</b><small>Contained</small></span><span>HR-laptop-428936</span><span>Oct 4</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </figure>
+    </div>
+  </section>
+  <section class="hw-sec hw-sec--gray" id="triage">
+    <div class="wrap hw-grid hw-grid--flip">
+      <div class="hw-visual">
+        <figure class="mock-stack mock-stack--triage" aria-label="Two VEX signal panels. In front, a suspicious script on a laptop: VEX contained the laptop, pulled its history and sent it on for a full investigation. Behind it, a routine Cloudflare event, auto-closed.">
+          <div class="mock-back" aria-hidden="true"><div class="mock" style="height:586px">
+      <div class="mk-head">
+        <div class="mk-bar"><img src="static/mock-bell.svg" width="19" height="19" alt=""><span>Signal</span><img class="mk-x" src="static/mock-close.svg" width="16" height="16" alt=""></div>
+        <div class="mk-sub"><span class="mk-asset">example.com</span><img src="static/mock-pencil.svg" width="16" height="16" alt=""><i class="mk-rule"></i>
+          <span class="mk-status"><img src="static/mock-check.svg" width="11" height="11" alt="">Auto-closed</span><span class="mk-del"><img src="static/mock-trash.svg" width="16" height="16" alt=""></span></div>
+      </div>
+      <div class="mk-content">
+        <div class="mk-event"><span class="mk-logo mk-logo--cf"><img src="static/logo-cloudflare.svg" width="32" height="20" alt=""></span>
+          <div class="mk-body"><div class="mk-src"><b>Cloudflare</b><span class="mk-time">October 8, 10:22 AM</span></div><p class="mk-title">A Slackbot request was challenged.</p><p>The event includes a request path, client address, and Slackbot user agent.</p></div></div>
+        <div class="mk-thread"><img class="mk-avatar" src="static/mock-vex-avatar.svg" width="32" height="32" alt="">
+          <div class="mk-body"><div class="mk-author"><b>VEX</b><span class="mk-role">AI analyst</span><span class="mk-time">October 8, 10:22 AM</span></div><p class="mk-strong">The same pattern has appeared before.</p><p>Earlier requests share the same path and user agent. The recorded assessment found no indicators of compromise.</p></div></div>
+        <div class="mk-thread"><img class="mk-avatar" src="static/mock-vex-avatar.svg" width="32" height="32" alt="">
+          <div class="mk-body"><div class="mk-author"><b>VEX</b><span class="mk-role">AI analyst</span><span class="mk-time">October 8, 10:24 AM</span></div><p class="mk-strong">Routine activity. Auto-closed.</p></div></div>
+      </div>
+      <div class="mk-composer"><div class="mk-input"><span>Comment</span><span class="mk-send"><img src="static/mock-send.svg" width="16" height="16" alt=""></span></div></div>
+    </div></div>
+          <div class="mock-front" aria-hidden="true"><div class="mock" style="height:672px">
+      <div class="mk-head">
+        <div class="mk-bar"><img src="static/mock-bell.svg" width="19" height="19" alt=""><span>Signal</span><img class="mk-x" src="static/mock-close.svg" width="16" height="16" alt=""></div>
+        <div class="mk-sub"><span class="mk-asset">HR-laptop-428936</span><img src="static/mock-pencil.svg" width="16" height="16" alt=""><i class="mk-rule"></i>
+          <span class="mk-status mk-status--contained">Contained</span><span class="mk-del"><img src="static/mock-trash.svg" width="16" height="16" alt=""></span></div>
+      </div>
+      <div class="mk-content">
+        <div class="mk-event"><img class="mk-logo" src="static/logo-level.svg" width="32" height="32" alt="">
+          <div class="mk-body"><div class="mk-src"><b>Level</b><span class="mk-time">October 8, 10:22 AM</span></div><p class="mk-title">Suspicious script on laptop</p><p>A script ran from a temporary folder and connected to an unknown address.</p></div></div>
+        <div class="mk-thread"><img class="mk-avatar" src="static/mock-vex-avatar.svg" width="32" height="32" alt="">
+          <div class="mk-body"><div class="mk-author"><b>VEX</b><span class="mk-role">AI analyst</span><span class="mk-time">October 8, 10:22 AM</span></div><p class="mk-strong">Laptop contained.</p><p>A breach looks likely, so VEX acted first. The laptop is cut off from the network until someone releases it.</p></div></div>
+        <div class="mk-thread"><img class="mk-avatar" src="static/mock-vex-avatar.svg" width="32" height="32" alt="">
+          <div class="mk-body"><div class="mk-author"><b>VEX</b><span class="mk-role">AI analyst</span><span class="mk-time">October 8, 10:24 AM</span></div><p class="mk-strong">History pulled.</p><p>This laptop has never run this script before, and no one approved it. Sent on for a full investigation.</p></div></div>
+      </div>
+      <div class="mk-composer"><div class="mk-input"><span>Comment</span><span class="mk-send"><img src="static/mock-send.svg" width="16" height="16" alt=""></span></div></div>
+    </div></div>
+        </figure>
+      </div>
+      <div class="hw-copy">
+        <p class="eyebrow"><b>The loop:</b> Triage</p>
+        <h2>Protect the asset. Investigate the signal.</h2>
+        <p class="hw-lede-2">Every signal is triaged as it arrives. If a breach looks likely, VEX can contain the account or device before the investigation is finished, so an attacker’s next move is already limited.</p>
+        <ul class="methods methods--rules">
+          <li class="method"><span class="method-n">01</span><div><p class="method-title">Protect the asset first.</p><p class="method-text">When a breach looks likely, VEX can contain the account or device. A person may need to release it.</p></div></li>
+          <li class="method"><span class="method-n">02</span><div><p class="method-title">Pull the history.</p><p class="method-text">VEX looks back through past activity, because a single event rarely tells the whole story.</p></div></li>
+          <li class="method"><span class="method-n">03</span><div><p class="method-title">Close what’s routine.</p><p class="method-text">If the evidence shows nothing malicious, the signal closes itself. No one has to look at it.</p></div></li>
+        </ul>
+        <p class="hw-more"><button class="text-link link-btn" type="button" data-drawer="drawer-triage" aria-haspopup="dialog">How triage works <img src="../static/icon-arrow-right-pink.svg" width="16" height="16" alt=""></button></p>
+      </div>
+    </div>
+  </section>
+  <section class="hw-sec" id="detect">
+    <div class="wrap hw-grid">
+      <div class="hw-copy">
+        <p class="eyebrow"><b>The loop:</b> Detect</p>
+        <h2>Every answer has to survive a challenge.</h2>
+        <p class="hw-lede-2">Most tools wait for an event to match a rule. VEX asks a bigger question: given everything we know, has this business been compromised? Then it tries to prove its own answer wrong.</p>
+        <ul class="methods methods--rules">
+          <li class="method"><span class="method-n">01</span><div><p class="method-title">Ask one focused question.</p><p class="method-text">An AI analyst gets the evidence, the history and instructions for this one investigation, and answers with its confidence.</p></div></li>
+          <li class="method"><span class="method-n">02</span><div><p class="method-title">Try to prove it wrong.</p><p class="method-text">Other AI models check the same evidence. Some are told the answer is wrong and have to check for themselves.</p></div></li>
+          <li class="method"><span class="method-n">03</span><div><p class="method-title">Act on the result.</p><p class="method-text">Agreement raises confidence. Above the threshold, your team gets a signal. Below it, the investigation closes.</p></div></li>
+        </ul>
+        <p class="hw-more"><button class="text-link link-btn" type="button" data-drawer="drawer-detect" aria-haspopup="dialog">How detection works <img src="../static/icon-arrow-right-pink.svg" width="16" height="16" alt=""></button></p>
+      </div>
+      <div class="hw-visual">
+        <figure class="cm" data-meter aria-label="How VEX decides: the AI analyst answers yes with 79% confidence. Reviewer 1 agrees, Reviewer 2 is unsure, and Reviewer 3, told the answer is wrong, checks the evidence and agrees. Confidence ends at 88%, above the threshold, so a signal opens for your team.">
+          <div class="cm-clip" aria-hidden="true"><ol class="cm-tray">
+            <li class="cm-step" data-v="79"><i class="cm-dot"></i><b>Analyst</b><span>Yes, compromised</span><em>79%</em></li>
+            <li class="cm-step" data-v="84"><i class="cm-dot"></i><b>Reviewer 1</b><span>Agrees</span><em>+5</em></li>
+            <li class="cm-step" data-v="81"><i class="cm-dot"></i><b>Reviewer 2</b><span>Unsure</span><em>−3</em></li>
+            <li class="cm-step" data-v="88"><i class="cm-dot"></i><b>Reviewer 3 · told it’s wrong</b><span>Checked, agrees</span><em>+7</em></li>
+          </ol></div>
+          <div class="cm-card">
+            <p class="cm-q">“Given everything we know, has <i>HR-laptop-428936</i> been compromised?”</p>
+            <div class="cm-meter" aria-hidden="true">
+              <div class="cm-head"><span>Confidence</span><b class="cm-val">88%</b></div>
+              <div class="cm-track" style="--t:85%"><i class="cm-fill" style="--v:88%"></i><i class="cm-mark"><span>Threshold</span></i></div>
+            </div>
+            <p class="cm-out" aria-hidden="true">Signal opened for your team</p>
+          </div>
+        </figure>
+      </div>
+    </div>
+  </section>
+  <section class="hw-sec hw-sec--gray" id="update">
+    <div class="wrap hw-grid hw-grid--flip">
+      <div class="hw-visual">
+        <figure class="su" aria-label="One signal, updated. Before: an unapproved script on HR-laptop-428936 reached an unknown address; the laptop is contained and the severity is high. k.moore comments: “I didn’t install anything. I did open an invoice email yesterday.” The signal goes back through collect, triage and detect. After: the script likely came from a phishing email, two related signals are linked, and the severity is raised to critical.">
+          <div class="su-card" aria-hidden="true">
+            <div class="su-head"><span>Signal summary</span><i class="su-sev su-sev--high">High</i></div>
+            <p>Unapproved script on <b class="nw">HR-laptop-428936</b> reached an unknown address. Laptop contained. Open for investigation.</p>
+          </div>
+          <div class="su-step su-comment" aria-hidden="true">
+            <span class="su-avatar">KM</span>
+            <div><p class="su-who"><b>k.moore</b><span>Comment · 11:04 AM</span></p><p>I didn’t install anything. I did open an invoice email yesterday.</p></div>
+          </div>
+          <div class="su-step su-loop" aria-hidden="true"><b>Back through the loop</b><span class="su-chips"><span>Collect</span><i></i><span>Triage</span><i></i><span>Detect</span></span></div>
+          <div class="su-card su-card--new" aria-hidden="true">
+            <div class="su-head"><span>Signal summary · updated</span><i class="su-sev su-sev--crit">Critical</i></div>
+            <p>Script likely came from <mark>a phishing email k.moore opened on October 7</mark>. <mark>Linked to 2 related signals.</mark> Laptop stays contained.</p>
+          </div>
+        </figure>
+      </div>
+      <div class="hw-copy">
+        <p class="eyebrow"><b>The loop:</b> Update</p>
+        <h2>A signal is never final.</h2>
+        <p class="hw-lede-2">A signal isn’t a one-time alert. Whenever something changes, like a new event or a comment from your team, VEX rewrites what it knows and sends the signal through the loop again.</p>
+        <h3 class="hw-sub">A knowledge store, not a pile of alerts.</h3>
+        <ul class="methods methods--rules">
+          <li class="method"><span class="method-n">01</span><div><p class="method-title">Record the decision.</p><p class="method-text">If VEX finds malicious activity, the signal stays open for a person to investigate. If not, it’s marked auto-closed.</p></div></li>
+          <li class="method"><span class="method-n">02</span><div><p class="method-title">Treat people as evidence.</p><p class="method-text">A comment or a severity change from your team becomes part of the record, just like an event from an integration.</p></div></li>
+          <li class="method"><span class="method-n">03</span><div><p class="method-title">Run the loop again.</p><p class="method-text">Every change sends the signal back through collect, triage and detect, with everything VEX now knows.</p></div></li>
+        </ul>
+        <p class="hw-more"><button class="text-link link-btn" type="button" data-drawer="drawer-update" aria-haspopup="dialog">How updates work <img src="../static/icon-arrow-right-pink.svg" width="16" height="16" alt=""></button></p>
+      </div>
+    </div>
+  </section>
+  <section class="hw-close" id="operations">
+    <div class="wrap">
+      <div class="hw-close-grid">
+        <div class="hw-close-copy">
+          <p class="eyebrow eyebrow--dot eyebrow--on-dark"><span class="status-dot"></span>Operations</p>
+          <h2>The AI SOC you don’t have to watch.</h2>
+          <p class="hw-close-lede">VEX runs the loop around the clock, and security operators watch it 24/7. Check in from Slack whenever you want. There’s a dashboard too, if you like one.</p>
+          <h3>Most security tools start with a demo. VEX starts in Slack.</h3>
+          <ol class="hw-close-list">
+            <li><span class="method-n">01</span><b>No demo needed.</b></li>
+            <li><span class="method-n">02</span><b>Free to use.</b></li>
+            <li><span class="method-n">03</span><b>It goes to work as soon as it’s added.</b></li>
+          </ol>
+        </div>
+        <figure class="sl" aria-label="A Slack message from VEX in the security channel: VEX is connected and watching 24 identities, and will post there when something needs you.">
+          <div class="sl-chan" aria-hidden="true"><img src="../static/slack-logo.svg" width="16" height="16" alt="">#security</div>
+          <div class="sl-msg" aria-hidden="true">
+            <img class="sl-avatar" src="../slack/static/vex-avatar-36.svg" width="36" height="36" alt="">
+            <div><p class="sl-meta"><b>VEX</b><span class="sl-app">APP</span><span>9:02 AM</span></p>
+              <p>VEX is connected and watching 24 identities. I’ll post here when something needs you.</p></div>
+          </div>
+        </figure>
+      </div>
+      <div class="hw-close-cta"><p>Ready to start using VEX?</p><a class="btn-ds btn-ds--lg" href="/slack">Get VEX for Slack</a></div>
+    </div>
+  </section>
+
+  <div class="drawer" id="integrations" role="dialog" aria-modal="true" aria-labelledby="integrations-title" aria-hidden="true">
+    <div class="drawer-scrim" data-close></div>
+    <div class="drawer-panel">
+      <div class="drawer-head">
+        <div>
+          <h2 id="integrations-title">What VEX watches</h2>
+          <p>VEX connects to the tools you already use and watches every identity in them.</p>
+        </div>
+        <button class="drawer-close" type="button" data-close aria-label="Close"><img src="../static/icon-close.svg" width="20" height="20" alt=""></button>
+      </div>
+      <div class="drawer-body">
+        <div class="drawer-group">
+          <h3>Identities</h3>
+          <ul class="drawer-list">
+            <li><span class="ico" style="--i:url(../static/icon-users.svg)"></span><b>People</b><span>Everyone with a work account.</span></li>
+            <li><span class="ico" style="--i:url(../static/icon-laptop.svg)"></span><b>Computers</b><span>Laptops, desktops and servers (endpoints).</span></li>
+            <li><span class="ico" style="--i:url(../static/icon-robot.svg)"></span><b>AI agents</b><span>Bots and agents that act with their own access.</span></li>
+            <li><span class="ico" style="--i:url(../static/icon-envelope.svg)"></span><b>Service accounts</b><span>Shared inboxes and the logins apps use to talk to each other.</span></li>
+          </ul>
+        </div>
+        <div class="drawer-group">
+          <h3>Integrations</h3>
+          <ul class="drawer-list">
+            <li><i class="tick"></i><b>Microsoft 365</b><span>Entra ID Protection, Defender for Identity, Defender for Cloud Apps and Microsoft 365 alert policies</span></li>
+            <li><i class="tick"></i><b>Azure</b><span>Microsoft Defender for Cloud</span></li>
+            <li><i class="tick"></i><b>Google Workspace</b><span>Google Workspace Alert Center</span></li>
+            <li><i class="tick"></i><b>AWS</b><span>IAM Access Analyzer</span></li>
+            <li><i class="tick"></i><b>GitHub</b><span>Secret scanning</span></li>
+            <li><i class="tick"></i><b>Level</b><span>Endpoint security alerts and help desk tickets</span></li>
+          </ul>
+        </div>
+        <div class="drawer-group">
+          <h3>Where VEX reports</h3>
+          <ul class="drawer-list">
+            <li><img src="../static/slack-logo.svg" width="20" height="20" alt=""><b>Slack</b><span>What VEX found, fixed and needs from you, where your team already works.</span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="drawer-foot"><a class="text-link" href="/detections/" target="_blank" rel="noopener">See everything we detect <img src="../static/icon-arrow-right-pink.svg" width="16" height="16" alt=""></a></div>
+    </div>
+  </div>
+
+  <div class="drawer drawer--wide" id="drawer-collect" role="dialog" aria-modal="true" aria-labelledby="drawer-collect-title" aria-hidden="true">
+    <div class="drawer-scrim" data-close></div>
+    <div class="drawer-panel">
+      <div class="drawer-head">
+        <div><p class="eyebrow"><b>The loop:</b> Collect</p><h2 id="drawer-collect-title">How collection works</h2><p>Detection starts with reality.</p></div>
+        <button class="drawer-close" type="button" data-close aria-label="Close"><img src="../static/icon-close.svg" width="20" height="20" alt=""></button>
+      </div>
+      <div class="drawer-body prose">
+        <p>To detect malicious behavior, you need a reliable stream of what’s actually happening across an environment. That means collecting activity from identities, endpoints, domains, SaaS applications, network devices, email systems, and everything else an attacker might touch.</p>
+        <p>Identity providers like Microsoft and Google have well-documented APIs and mature integrations. But what about the firewall? The domain registrar? An ISP portal? DMARC reports? The dozens, or hundreds, of SaaS applications a company relies on?</p>
+        <h3>VEX is designed to make collection boring.</h3>
+        <ol>
+          <li><b>Connect an API.</b> Connect any data source through the <a class="inline-link" href="/api/">VEX API</a>.</li>
+          <li><b>Push data by email.</b> When a system doesn’t have an API, send its data to the unique mailbox included with every VEX deployment.</li>
+        </ol>
+        <p>VEX supports 100+ third-party integrations, plus an unlimited number of additional data sources that can feed it through the API or email.</p>
+        <p>Once connected, VEX continuously collects and normalizes the data. Security-relevant events become signals for analysis. Everything else goes into a never-purged audit log, available for retrieval over the API.</p>
+        <p>The result is a much broader view of reality than a traditional SOC typically gets: not just what happened on an endpoint, but what happened everywhere.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="drawer drawer--wide" id="drawer-triage" role="dialog" aria-modal="true" aria-labelledby="drawer-triage-title" aria-hidden="true">
+    <div class="drawer-scrim" data-close></div>
+    <div class="drawer-panel">
+      <div class="drawer-head">
+        <div><p class="eyebrow"><b>The loop:</b> Triage</p><h2 id="drawer-triage-title">How triage works</h2><p>Every security signal goes through a real-time, two-stage triage.</p></div>
+        <button class="drawer-close" type="button" data-close aria-label="Close"><img src="../static/icon-close.svg" width="20" height="20" alt=""></button>
+      </div>
+      <div class="drawer-body prose">
+        <h3>1. Triage the asset</h3>
+        <p>First, VEX looks at the asset associated with the signal (a computer, identity, domain or other resource) and determines whether action should be taken against it.</p>
+        <ul>
+          <li><b>Log out:</b> should active sessions be revoked?</li>
+          <li><b>Contain:</b> should the asset be isolated or otherwise prevented from continuing to operate?</li>
+        </ul>
+        <p>These actions are reserved for signals with sufficiently high confidence that a breach may be underway. Logging an identity out is relatively low-impact; containing an identity or computer is more disruptive and may require a human to intervene before the asset is returned to service.</p>
+        <h3>2. Triage the signal</h3>
+        <p>Next, VEX investigates the signal itself.</p>
+        <ol>
+          <li><b>Retrieve historical evidence.</b> VEX pulls relevant historical activity to put the signal in context. A single event rarely tells the whole story.</li>
+          <li><b>Determine whether there’s evil.</b> VEX analyzes the signal and its surrounding evidence to determine whether it represents malicious activity.</li>
+          <li><b>Auto-close when appropriate.</b> If the evidence doesn’t indicate malicious activity, the signal is automatically closed.</li>
+        </ol>
+        <p>This is where collection becomes detection. We’ve gathered the evidence; now VEX has to decide what it means.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="drawer drawer--wide" id="drawer-detect" role="dialog" aria-modal="true" aria-labelledby="drawer-detect-title" aria-hidden="true">
+    <div class="drawer-scrim" data-close></div>
+    <div class="drawer-panel">
+      <div class="drawer-head">
+        <div><p class="eyebrow"><b>The loop:</b> Detect</p><h2 id="drawer-detect-title">How detection works</h2><p>This is where VEX gets opinionated.</p></div>
+        <button class="drawer-close" type="button" data-close aria-label="Close"><img src="../static/icon-close.svg" width="20" height="20" alt=""></button>
+      </div>
+      <div class="drawer-body prose">
+        <p>Traditional detection engineering generally starts with a known bad behavior: a suspicious login, an impossible-travel event, a malicious process, a known indicator. You encode that behavior as a rule, wait for an event to match it, and investigate the resulting alert.</p>
+        <p>VEX doesn’t have a traditional rules engine. There aren’t thousands of detection rules waiting for individual events to match. Instead, VEX gives an AI analyst a bounded set of evidence and asks it to reason about what happened.</p>
+        <p>Rather than asking <i>“Does this event match a detection?”</i>, VEX asks <i>“Given everything we know about this environment, is there high confidence that a compromise has occurred?”</i></p>
+        <p>Each detection runs as an investigation against a specific question. VEX collects the relevant audit history, compresses the most recent hours of audit events and days of security signals into a working state, and provides that state to the AI analyst along with the detection-specific instructions.</p>
+        <h3>The runtime context has three layers</h3>
+        <ol>
+          <li><b>Historical context:</b> a vector-based filesystem containing historical signal results and their associated context.</li>
+          <li><b>Detection instructions:</b> a system prompt specific to the investigation being performed.</li>
+          <li><b>The question:</b> a user prompt containing the single question the analyst must answer.</li>
+        </ol>
+        <p>The model returns a decision and its self-reported confidence in structured JSON:</p>
+        <pre class="code">{
+  <span class="k">"answer"</span>: true,
+  <span class="k">"probability"</span>: 0.79,
+  <span class="k">"response"</span>: "A description of what occurred"
+}</pre>
+        <h3>But VEX doesn’t take the model’s word for it.</h3>
+        <p>The initial conclusion is independently reviewed by multiple model families. Each reviewer receives the same underlying evidence and is asked to evaluate the conclusion from a different perspective and at different temperatures. Some reviews are deliberately adversarial:</p>
+        <ul>
+          <li>Is the proposed answer correct?</li>
+          <li>A reviewer believes the answer is wrong. Check the evidence independently. Is it actually correct?</li>
+        </ul>
+        <p>The goal isn’t to get several models to agree with one another. It’s to make the original hypothesis survive attempts to disprove it.</p>
+        <p>Agreement across independent checks increases confidence. Disagreement introduces uncertainty. VEX combines those evaluations with the analyst’s initial confidence to produce a final confidence estimate: not a binary alert or no alert, but how strongly the evidence supports the hypothesis that the environment has been compromised.</p>
+        <p>If that confidence crosses the detection threshold, VEX creates a signal for investigation. If it doesn’t, the investigation is closed automatically.</p>
+        <p>The important part isn’t that an AI makes the decision. It’s that the decision is treated as a hypothesis that must survive independent attempts to disprove it.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="drawer drawer--wide" id="drawer-update" role="dialog" aria-modal="true" aria-labelledby="drawer-update-title" aria-hidden="true">
+    <div class="drawer-scrim" data-close></div>
+    <div class="drawer-panel">
+      <div class="drawer-head">
+        <div><p class="eyebrow"><b>The loop:</b> Update</p><h2 id="drawer-update-title">How updates work</h2><p>The loop doesn’t end at a decision.</p></div>
+        <button class="drawer-close" type="button" data-close aria-label="Close"><img src="../static/icon-close.svg" width="20" height="20" alt=""></button>
+      </div>
+      <div class="drawer-body prose">
+        <p>Once VEX has made a detection decision, it writes that decision back to the signal and persists the updated state. If the signal is determined to represent malicious activity, it remains open for human investigation. If the evidence doesn’t support the hypothesis, VEX marks it auto-closed.</p>
+        <p>A signal is a living piece of security state. Its status, severity, disposition and analyst comments can all change as new evidence becomes available. Whenever that state changes, VEX regenerates the signal’s compact stub (a current, plain-text summary of what VEX knows about the signal) and sends the signal back through the same collection, triage and detection process.</p>
+        <p>That means a human analyst’s judgment becomes part of the record’s future context, just like an event collected from an API. A comment can add evidence. A disposition can change the interpretation of an incident. A severity change can alter how the signal is treated. Each update gives VEX another chance to reconsider what it knows.</p>
+        <p>The result is a continuously evolving security knowledge store rather than a collection of static alerts.</p>
+        <h3>Your data stays yours</h3>
+        <p>VEX is a multi-tenant system that separates each account into its own logical partition, and runs every query, deterministic or LLM-based, against only the data in that account.</p>
+      </div>
+    </div>
+  </div>
+
+  </main>
+
+  <footer>
+    <span class="fmark">UNMANNED</span>
+    <span>© 2026 UNMANNED, INC.</span>
+    <a href="https://gounmanned.substack.com/" target="_blank" rel="noopener noreferrer">OUR RESEARCH</a>
+  </footer>
+
+  <script>
+    (function(){
+      // hide-on-scroll header (same as the other pages)
+      var root = document.documentElement;
+      var top = document.querySelector('.site-top');
+      var classbar = document.querySelector('.classbar');
+      if(!top){ return; }
+      var lastY = window.scrollY;
+      var ticking = false;
+      function update(){
+        ticking = false;
+        var y = window.scrollY;
+        var showZone = top.offsetHeight + (classbar ? classbar.offsetHeight : 0);
+        if(root.classList.contains('nav-open') || root.hasAttribute('data-auto-scroll') || root.hasAttribute('data-story-pinned')){ lastY = y; return; } // menu open, a click-scroll, or the story pinned
+        if(y <= showZone){ root.classList.remove('header-hidden'); lastY = y; return; }
+        if(Math.abs(y - lastY) < 6){ return; }
+        root.classList.toggle('header-hidden', y > lastY);
+        lastY = y;
+      }
+      window.addEventListener('scroll', function(){
+        if(!ticking){ ticking = true; requestAnimationFrame(update); }
+      }, { passive:true });
+      top.addEventListener('focusin', function(){ root.classList.remove('header-hidden'); });
+    })();
+
+    (function(){
+      // phone menu (same as the other pages)
+      var openBtn = document.querySelector('.menu-btn[aria-controls="site-nav"]');
+      var panel = document.getElementById('site-nav');
+      if(!openBtn || !panel){ return; }
+      var closeBtn = panel.querySelector('.menu-close');
+      function openNav(){
+        panel.classList.add('is-open');
+        document.documentElement.classList.add('nav-open');
+        openBtn.setAttribute('aria-expanded','true');
+        closeBtn.focus({ preventScroll:true });
+      }
+      function closeNav(returnFocus){
+        panel.classList.remove('is-open');
+        document.documentElement.classList.remove('nav-open');
+        openBtn.setAttribute('aria-expanded','false');
+        if(returnFocus){ openBtn.focus({ preventScroll:true }); }
+      }
+      openBtn.addEventListener('click', openNav);
+      closeBtn.addEventListener('click', function(){ closeNav(true); });
+      document.addEventListener('keydown', function(e){
+        if(e.key === 'Escape' && panel.classList.contains('is-open')){ closeNav(true); }
+      });
+      panel.addEventListener('click', function(e){
+        if(e.target.closest('a')){ closeNav(false); }
+      });
+      var wide = window.matchMedia('(min-width:701px)');
+      function onWide(){ if(wide.matches && panel.classList.contains('is-open')){ closeNav(false); } }
+      if(wide.addEventListener){ wide.addEventListener('change', onWide); } else { wide.addListener(onWide); }
+    })();
+
+    (function(){
+      // SECTION NAV: sits under the site header; marks the section you're in
+      var root = document.documentElement, head = document.querySelector('.site-top');
+      function setHead(){ if(head){ root.style.setProperty('--header-h', head.offsetHeight + 'px'); } }
+      setHead(); window.addEventListener('resize', setHead);
+      var links = [].slice.call(document.querySelectorAll('.hw-tabs a')), strip = document.querySelector('.hw-tabs');
+      var secs = links.map(function(a){ return document.getElementById(a.getAttribute('href').slice(1)); });
+      function mark(){
+        var y = window.innerHeight * 0.35, cur = -1;   // nothing marked while in the hero
+        secs.forEach(function(s, i){ if(s.getBoundingClientRect().top < y){ cur = i; } });
+        links.forEach(function(a, i){
+          var on = i === cur;
+          if(on && a.getAttribute('aria-current') !== 'true'){
+            var l = a.offsetLeft - 16, r = a.offsetLeft + a.offsetWidth + 16;   // keep it in view inside the strip only
+            if(l < strip.scrollLeft){ strip.scrollLeft = l; } else if(r > strip.scrollLeft + strip.clientWidth){ strip.scrollLeft = r - strip.clientWidth; }
+          }
+          if(on){ a.setAttribute('aria-current', 'true'); } else { a.removeAttribute('aria-current'); }
+        });
+      }
+      var t = false;
+      window.addEventListener('scroll', function(){ if(!t){ t = true; requestAnimationFrame(function(){ t = false; mark(); }); } }, { passive:true });
+      mark();
+    })();
+    (function(){
+      // SIDE DRAWERS: any [data-drawer="id"] opens that drawer; Esc, the scrim or × closes it; focus stays inside while open.
+      var root = document.documentElement, cur = null, opener = null;
+      function open(d, btn){
+        cur = d; opener = btn; d.classList.add('is-open'); d.setAttribute('aria-hidden', 'false'); root.style.overflow = 'hidden';
+        setTimeout(function(){ d.querySelector('.drawer-close').focus(); }, 50);
+      }
+      function close(){
+        if(!cur){ return; }
+        cur.classList.remove('is-open'); cur.setAttribute('aria-hidden', 'true'); root.style.overflow = ''; cur = null;
+        if(opener){ opener.focus(); }
+      }
+      document.querySelectorAll('[data-drawer]').forEach(function(b){
+        var d = document.getElementById(b.getAttribute('data-drawer'));
+        if(d){ b.addEventListener('click', function(){ open(d, b); }); }
+      });
+      document.querySelectorAll('.drawer [data-close]').forEach(function(el){ el.addEventListener('click', close); });
+      document.addEventListener('keydown', function(e){
+        if(!cur){ return; }
+        if(e.key === 'Escape'){ close(); return; }
+        if(e.key === 'Tab'){
+          var f = [].slice.call(cur.querySelector('.drawer-panel').querySelectorAll('a[href],button')), first = f[0], last = f[f.length - 1];
+          if(e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+          else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+        }
+      });
+    })();
+    (function(){
+      // CONFIDENCE METER: plays once in view. The question sits alone; then each check slides up from behind the card:
+      // its name fades in, then its score, then the bar moves, then a pause. Crossing the threshold turns it pink.
+      var m = document.querySelector('[data-meter]');
+      if(!m || !('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches){ return; }
+      var tray = m.querySelector('.cm-tray'), rows = [].slice.call(tray.children);
+      var fill = m.querySelector('.cm-fill'), val = m.querySelector('.cm-val');
+      var t = parseFloat(m.querySelector('.cm-track').style.getPropertyValue('--t'));
+      function show(n){   // reveal the tray down to the bottom of row n (0 = hidden behind the card)
+        var h = tray.offsetHeight, y = n ? h - (rows[n - 1].offsetTop + rows[n - 1].offsetHeight) : h;
+        tray.style.transform = 'translateY(' + Math.max(0, y) + 'px)';
+      }
+      function set(v){ fill.style.setProperty('--v', v + '%'); val.textContent = v + '%'; m.classList.toggle('is-over', v >= t); }
+      m.classList.add('is-armed'); set(0); show(0);
+      var START = 1400, STEP = 3400, at = function(ms, fn){ setTimeout(fn, ms); };
+      var io = new IntersectionObserver(function(es){
+        if(!es[0].isIntersecting){ return; }
+        io.disconnect();
+        rows.forEach(function(r, i){
+          var s = START + i * STEP;
+          at(s, function(){ show(i + 1); r.classList.add('is-in'); });         // slides up, name fades in
+          at(s + 1300, function(){ r.classList.add('is-scored'); });          // then its score
+          at(s + 1800, function(){ set(+r.getAttribute('data-v')); });        // then the bar moves
+        });
+        at(START + rows.length * STEP - 600, function(){ m.classList.add('is-done'); show(rows.length); });
+      }, { threshold:0.6 });
+      io.observe(m.querySelector('.cm-card'));
+      window.addEventListener('resize', function(){ if(m.classList.contains('is-done')){ tray.style.transform = 'none'; } });
+    })();
+  </script>
+</body>
+</html>

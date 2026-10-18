@@ -6,6 +6,7 @@ class ManagedRollup {
         this.list = document.getElementById('managed-accounts');
         this.members = new Map();
         this.summary = new ManagedSummary(state);
+        this.hunt = new ManagedHunt();
         this.listen();
     }
 
@@ -273,16 +274,35 @@ class ManagedSummary {
     }
 
     resetSignals() {
-        this.signals = { open: 0 };
+        this.open = [];
     }
 
     resetAssets() {
-        this.assets = { identity: 0 };
+        this.identities = 0;
     }
 
     setAccountCount(count) {
-        const value = document.getElementById('managed-summary-accounts-value');
-        if (value) value.textContent = count;
+        this._set('managed-summary-accounts-value', count.toLocaleString());
+    }
+
+    renderSignals() {
+        const ages = this.open
+            .filter(s => s.metadata?.threat)
+            .map(s => Date.now() - new Date(s.created))
+            .sort((a, b) => a - b);
+
+        const mid = Math.floor(ages.length / 2);
+        const median = ages.length
+            ? (ages.length % 2 ? ages[mid] : (ages[mid - 1] + ages[mid]) / 2)
+            : null;
+
+        this._set('managed-summary-signals-value', this.open.length.toLocaleString());
+        this._set('managed-summary-mttr-value', median === null ? '—' : this._duration(median));
+        document.getElementById('managed-summary-signals-value')?.classList.toggle('alert', this.open.length > 0);
+    }
+
+    renderAssets() {
+        this._set('managed-summary-identity-value', this.identities.toLocaleString());
     }
 
     _resetCounts() {
@@ -290,41 +310,74 @@ class ManagedSummary {
         this.resetAssets();
     }
 
+    _duration(ms) {
+        const minutes = Math.round(ms / 60000);
+        if (minutes < 60) return `${minutes}m`;
+        if (minutes < 1440) return `${Math.round(minutes / 60)}h`;
+        return `${Math.round(minutes / 1440)}d`;
+    }
+
+    _set(id, text) {
+        const el = document.getElementById(id);
+        if (el) el.textContent = text;
+    }
+
     _setLoading() {
-        const ids = [
-            'managed-summary-accounts-value',
-            'managed-summary-signals-value',
-            'managed-summary-identity-value',
-        ];
-        ids.forEach(id => {
+        ['managed-summary-accounts-value', 'managed-summary-signals-value',
+         'managed-summary-identity-value', 'managed-summary-mttr-value'].forEach(id => {
             const el = document.getElementById(id);
             if (el) el.innerHTML = '<span class="managed-badge-spinner"></span>';
         });
     }
 
-    renderSignals() {
-        const value = document.getElementById('managed-summary-signals-value');
-        if (!value) return;
-
-        value.textContent = this.signals.open;
-    }
-
-    renderAssets() {
-        const identity = document.getElementById('managed-summary-identity-value');
-        if (identity) {
-            identity.textContent = this.assets.identity;
-        }
-    }
-
     listen() {
         document.addEventListener("signal:managed", (ev) => {
-            if (!ev.signal.status.startsWith('O')) return;
-            this.signals.open++;
+            if (ev.signal.status.startsWith('O')) this.open.push(ev.signal);
         });
 
         document.addEventListener("managed:asset", (ev) => {
-            if (ev.asset?.metadata?.group != "identity") return;
-            this.assets.identity++;
+            if (ev.asset?.metadata?.group === "identity") this.identities++;
         });
+    }
+}
+
+class ManagedHunt {
+    constructor() {
+        this.field = document.getElementById('managed-hero-field');
+        this.stats = this.field.nextElementSibling;
+        this.x = this.y = 0;
+
+        this.next();
+        setInterval(() => this.next(), 3600);
+    }
+
+    next() {
+        if (!this.field.offsetWidth) return;
+
+        const { x, y } = this._spot();
+        this.field.style.setProperty('--x', `${x}px`);
+        this.field.style.setProperty('--y', `${y}px`);
+
+        this.field.classList.remove('hunt');
+        void this.field.offsetWidth;
+        this.field.classList.add('hunt');
+    }
+
+    _spot() {
+        const field = this.field.getBoundingClientRect();
+        const stats = this.stats.getBoundingClientRect();
+        const gap = 60;
+
+        while (true) {
+            const x = gap + Math.random() * (field.width - gap * 2);
+            const y = gap + Math.random() * (field.height - gap * 2);
+            const left = field.left + x, top = field.top + y;
+
+            const clear = left < stats.left - gap || left > stats.right + gap
+                       || top < stats.top - gap || top > stats.bottom + gap;
+            const far = Math.hypot(x - this.x, y - this.y) > field.width * 0.2;
+
+            if (clear && far) return { x: this.x = x, y: this.y = y };
+        }
     }
 }

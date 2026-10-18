@@ -49,7 +49,12 @@ class TenantScreen {
         const auto = all.filter(s => s.status === 'CV').length;
         const pct = closed ? Math.round((auto / closed) * 100) : 0;
 
-        el.innerHTML = `${total.toLocaleString()} signals · ${open.toLocaleString()} open · ${pct}% autoclosed`;
+        const responded = all.filter(s => s.metadata?.threat && String(s.status).startsWith('C'));
+        const mttr = responded.length
+            ? Math.round(responded.reduce((sum, s) => sum + (new Date(s.updated) - new Date(s.created)), 0) / responded.length / 60000)
+            : 0;
+
+        el.innerHTML = `${total.toLocaleString()} signals · ${open.toLocaleString()} open · ${mttr.toLocaleString()}m MTTR · ${pct}% autoclosed`;
     }
 
     async open(signal) {

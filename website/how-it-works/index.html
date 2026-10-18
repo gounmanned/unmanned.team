@@ -730,6 +730,20 @@
   .cs-stage .vz-replay{align-self:flex-end;margin-top:-4px;}
   .hw-visual--meter{display:flex;flex-direction:column;align-items:flex-end;gap:10px;}
   @media (max-width:1023px){ .hw-visual--meter{align-items:center;} .hw-visual--meter .vz-replay{align-self:flex-end;} }
+
+  /* drawer: technical detail folded away (a native details element, closed by default) */
+  .tech{margin-top:20px;border:1px solid var(--gray-line);border-radius:2px;}
+  .tech summary{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;list-style:none;cursor:pointer;
+    font-family:var(--mono);font-size:12px;line-height:16px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink);}
+  .tech summary::-webkit-details-marker{display:none;}
+  .tech summary::after{content:'';flex-shrink:0;width:16px;height:16px;background:var(--surface-dark);transition:transform 0.2s ease;
+    -webkit-mask:url(../static/icon-chevron-down.svg) center/contain no-repeat;mask:url(../static/icon-chevron-down.svg) center/contain no-repeat;}
+  .tech[open] summary::after{transform:rotate(180deg);}
+  .tech summary:hover{background:var(--surface-gray);}
+  .tech summary:focus-visible{outline:2px solid var(--pink);outline-offset:2px;}
+  .tech-body{padding:0 14px 16px;border-top:1px solid var(--gray-line);}
+  .prose .tech-body h4{margin-top:16px;}
+  @media (prefers-reduced-motion: reduce){ .tech summary::after{transition:none;} }
   /* ---------- FOOTER ---------- */
   footer{
     border-top:1px solid var(--gray-line);padding:28px 56px 40px;display:flex;justify-content:space-between;align-items:center;
@@ -1269,19 +1283,25 @@
           <li>Compresses the most recent hours of audit events and days of security signals into a working state.</li>
           <li>Provides that state to the AI analyst along with the detection-specific instructions.</li>
         </ol>
-        <h4>The runtime context has three layers</h4>
-        <ol>
-          <li><b>Historical context:</b> a vector-based filesystem containing historical signal results and their associated context.</li>
-          <li><b>Detection instructions:</b> a system prompt specific to the investigation being performed.</li>
-          <li><b>The question:</b> a user prompt containing the single question the analyst must answer.</li>
-        </ol>
-        <p>The model returns a decision and its self-reported confidence in structured JSON:</p>
-        <pre class="code">{
+        <p>The model returns a decision and its self-reported confidence.</p>
+        <details class="tech">
+          <summary>Technical implementation</summary>
+          <div class="tech-body">
+          <h4>The runtime context has three layers</h4>
+          <ol>
+            <li><b>Historical context:</b> a vector-based filesystem containing historical signal results and their associated context.</li>
+            <li><b>Detection instructions:</b> a system prompt specific to the investigation being performed.</li>
+            <li><b>The question:</b> a user prompt containing the single question the analyst must answer.</li>
+          </ol>
+          <p>The model’s decision comes back as structured JSON:</p>
+          <pre class="code">{
   <span class="k">"answer"</span>: true,
   <span class="k">"probability"</span>: 0.79,
   <span class="k">"response"</span>: "A description of what occurred"
 }</pre>
-        <dl class="fields"><div><dt>answer</dt><dd>The decision.</dd></div><div><dt>probability</dt><dd>The model’s self-reported confidence.</dd></div><div><dt>response</dt><dd>A description of what occurred.</dd></div></dl>
+          <dl class="fields"><div><dt>answer</dt><dd>The decision.</dd></div><div><dt>probability</dt><dd>The model’s self-reported confidence.</dd></div><div><dt>response</dt><dd>A description of what occurred.</dd></div></dl>
+          </div>
+        </details>
         <h3>But VEX doesn’t take the model’s word for it</h3>
         <p>The initial conclusion is independently reviewed by multiple model families. Each reviewer receives the same underlying evidence and is asked to evaluate the conclusion from a different perspective and at different temperatures. Some reviews are deliberately adversarial:</p>
         <ul class="quotes">

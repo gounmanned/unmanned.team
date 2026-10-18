@@ -188,7 +188,6 @@
   .hw-try .text-link img{width:14px;height:14px;}
   @media (orientation:portrait){ .hw-hero{min-height:0;} }
 
-  /* the timeline card: a dotted grid, VEX's step highlighted, a dashed prevention line; it rises out of a slot */
   .hw-hero-art{display:flex;justify-content:center;align-items:center;}
 
   /* shared section type */
@@ -291,7 +290,6 @@
   }
   @media (max-width:700px){
     .hw-hero{padding:56px 0 48px;}
-    .hw-hero-art{min-height:0;}
     .hw-lede,.hw-lede-2{font-size:18px;line-height:28px;}
     .hw-loop,.hw-sec{padding:64px 0;}
     .hw-loop-list{grid-template-columns:minmax(0,1fr);}
@@ -332,14 +330,10 @@
   .db-chips{display:flex;gap:7px;margin-top:16px;white-space:nowrap;}
   .db-chips span{padding:4px 10px;border:1px solid #d4d6db;border-radius:99px;font-size:11px;}
   .db-table{margin-top:16px;border:1px solid #e4e6ea;border-radius:8px;overflow:hidden;}
-  .db-row{display:grid;grid-template-columns:40px 52px 300px 190px 90px;align-items:center;column-gap:16px;height:52px;padding:0 16px;border-top:1px solid #eef0f2;font-size:12px;white-space:nowrap;}
+  .db-row{display:grid;grid-template-columns:40px 330px 190px 90px;align-items:center;column-gap:16px;height:52px;padding:0 16px;border-top:1px solid #eef0f2;font-size:12px;white-space:nowrap;}
   .db-row--head{height:36px;border-top:0;background:#fafbfc;font-size:11px;color:#686e7b;}
   .db-type{display:grid;place-items:center;width:34px;height:34px;border:1px solid #eceef1;border-radius:50%;background:#f5f6f8;}
   .db-type .db-vex{width:9px;height:9px;}
-  .db-threat{display:inline-block;min-width:42px;padding:3px 0;border:1px solid;border-radius:99px;font-style:normal;font-weight:600;font-size:11px;text-align:center;}
-  .db-threat--hi{border-color:#f9c4dc;background:#fef1f5;color:#d10176;}
-  .db-threat--mid{border-color:#f3d9a4;background:#fff8eb;color:#b45309;}
-  .db-threat--lo{border-color:#bfe5cf;background:#effaf4;color:#0e7c52;}
   .db-name{display:flex;flex-direction:column;gap:2px;min-width:0;}
   .db-name b{font-weight:500;font-size:13px;color:#17171c;}
   .db-name small{font-size:11px;color:#8a8a8e;}
@@ -403,46 +397,47 @@
     .drawer,.drawer-scrim,.drawer-panel{transition:none !important;}
   }
 
-  /* ---------- 03 DETECT: the confidence meter: the checks slide up from behind the question card ---------- */
-  .cm{width:100%;max-width:451px;margin:0;}
-  .cm-clip{overflow:hidden;padding:0 10px;}   /* its bottom edge is the card's top: rows appear from behind the card */
-  .cm-tray{position:relative;list-style:none;margin:0;padding:4px 14px 2px;background:#faf9f6;border:1px solid #8a8a8e;border-bottom:0;border-radius:8px 8px 0 0;
-    transition:transform 0.8s cubic-bezier(0.2,0.8,0.2,1);}
-  .cm-step{display:grid;grid-template-columns:12px minmax(0,1fr) auto;column-gap:12px;row-gap:2px;align-items:center;padding:12px 0;border-bottom:1px dashed var(--gray-line);}
-  .cm-step:last-child{border-bottom:0;}
-  .cm-dot{grid-row:1 / span 2;width:9px;height:9px;border-radius:50%;background:var(--ink);}
-  .cm-step b{font-weight:600;font-size:15px;line-height:20px;color:var(--ink);}
-  .cm-step span{grid-column:2;font-size:14px;line-height:20px;color:var(--body-2);}
-  .cm-step em{grid-column:3;grid-row:1 / span 2;font-family:var(--mono);font-style:normal;font-size:14px;color:var(--ink);}
-  .cm-card{position:relative;padding:24px;background:#fff;border:1px solid #8a8a8e;border-radius:2px;box-shadow:4px 4px 0 rgba(11,12,13,0.12);}
-  .cm-q{font-weight:600;font-size:17px;line-height:1.4;color:var(--ink);}
+  /* ---------- 03 DETECT: the reviewers' panel (Figma 1828:130770), in the hero card's style ---------- */
+  .cm{display:flex;flex-direction:column;gap:16px;width:100%;max-width:429px;margin:0;padding:24px;background:#f5f6f8 url(static/timeline-grid.svg) 0 0;
+    border:1px solid #8a8a8e;border-radius:2px;box-shadow:4px 4px 0 rgba(11,12,13,0.15);}
+  .cm-steps{list-style:none;display:flex;flex-direction:column;gap:16px;margin:0;padding:0;}
+  .cm-step{display:grid;grid-template-columns:17px minmax(0,1fr);column-gap:16px;row-gap:4px;align-items:center;padding-bottom:16px;border-bottom:1px solid #c4c4c4;transition:opacity 0.32s ease;}
+  .cm-step:last-child{border-bottom:0;padding-bottom:0;}
+  .cm-dot{grid-row:1 / span 2;width:17px;height:17px;border-radius:50%;background:var(--surface-dark);}
+  .cm-step--analyst .cm-dot{background:#d10176;}
+  .cm-who{font-family:var(--mono);font-size:12px;line-height:16px;letter-spacing:0.08em;text-transform:uppercase;color:var(--body-2);}
+  .cm-step--analyst .cm-who{color:#d10176;}
+  .cm-step b{font-weight:700;font-size:14px;line-height:20px;color:var(--body-2);}
+  .cm-card{display:flex;flex-direction:column;gap:16px;padding:16px;background:#fff;border:1px solid #8a8a8e;box-shadow:2px 2px 0 rgba(11,12,13,0.15);}
+  .cm-q{font-weight:700;font-size:16px;line-height:24px;color:var(--body-2);}
   .cm-q i{font-style:normal;white-space:nowrap;}
-  .cm-meter{margin-top:24px;}
   .cm-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px;}
-  .cm-head span{font-family:var(--mono);font-size:11px;line-height:16px;letter-spacing:0.08em;text-transform:uppercase;color:var(--surface-dark);}
-  .cm-val{font-family:var(--mono);font-weight:600;font-size:22px;color:var(--ink);transition:color 0.4s ease;}
-  .cm-track{position:relative;height:14px;background:#eeeeec;border-radius:2px;}
-  .cm-fill{position:absolute;left:0;top:0;bottom:0;width:var(--v);background:#8a8a8e;border-radius:2px;transition:width 1s cubic-bezier(0.4,0,0.2,1), background-color 0.4s ease;}
-  .cm-mark{position:absolute;left:var(--t);top:-6px;bottom:-6px;width:2px;margin-left:-1px;background:var(--ink);}
-  .cm-mark span{position:absolute;top:100%;left:50%;margin-top:6px;transform:translateX(-50%);font-family:var(--mono);font-style:normal;font-size:11px;line-height:16px;letter-spacing:0.08em;text-transform:uppercase;color:var(--surface-dark);white-space:nowrap;}
-  .cm-out{display:flex;align-items:center;gap:8px;margin-top:40px;font-weight:600;font-size:15px;color:var(--pink-text);transition:opacity 0.5s ease, transform 0.5s ease;}
+  .cm-head span{font-family:var(--mono);font-size:12px;line-height:16px;letter-spacing:0.08em;text-transform:uppercase;color:var(--body-2);}
+  .cm-val{font-family:var(--mono);font-weight:600;font-size:18px;line-height:16px;color:var(--ink);transition:color 0.4s ease;}
+  .cm-track{position:relative;height:12px;background:#d9d9d9;}
+  .cm-fill{position:absolute;left:0;top:0;bottom:0;width:var(--v);background:#8a8a8e;transition:width 0.7s cubic-bezier(0.4,0,0.2,1), background-color 0.3s ease;}
+  .cm-mark{position:absolute;left:var(--t);top:-5px;bottom:-5px;width:2px;margin-left:-1px;background:var(--ink);}
+  .cm-mark span{position:absolute;top:100%;left:50%;margin-top:5px;transform:translateX(-50%);font-family:var(--mono);font-style:normal;font-size:11px;line-height:16px;letter-spacing:0.08em;text-transform:uppercase;color:var(--surface-dark);white-space:nowrap;}
+  .cm-out{display:flex;align-items:center;gap:8px;margin-top:18px;font-weight:600;font-size:15px;line-height:20px;color:var(--pink-text);transition:opacity 0.5s ease, transform 0.5s ease;}
   .cm-out::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--pink);}
   /* the finished state is the default; crossing the threshold is the one pink moment */
   .cm.is-over .cm-fill,.cm:not(.is-armed) .cm-fill{background:var(--pink);}
   .cm.is-over .cm-val,.cm:not(.is-armed) .cm-val{color:var(--pink-text);}
-  /* armed by the script, before and while it plays: name, then score, then the bar moves */
-  .cm.is-armed .cm-step b,.cm.is-armed .cm-step span{opacity:0;transition:opacity 0.6s ease 0.35s;}
-  .cm.is-armed .cm-step.is-in b,.cm.is-armed .cm-step.is-in span{opacity:1;}
-  .cm.is-armed .cm-step em,.cm.is-armed .cm-dot{opacity:0;transition:opacity 0.5s ease;}
-  .cm.is-armed .cm-step.is-scored em,.cm.is-armed .cm-step.is-in .cm-dot{opacity:1;}
+  /* armed by the script: reviewers wait (their space is kept, so the panel never changes height) */
+  .cm.is-armed .cm-step:not(.is-in){opacity:0;}
   .cm.is-armed:not(.is-done) .cm-out{opacity:0;transform:translateY(4px);}
   @media (max-width:700px){
-    .cm-card{padding:20px 16px;}
-    .cm-q{font-size:16px;}
-    .cm-tray{padding:4px 12px 2px;}
+    .cm{gap:12px;padding:16px;}
+    .cm-steps{gap:12px;}
+    .cm-step{padding-bottom:12px;column-gap:12px;}
+    .cm-card{gap:12px;padding:14px;}
+    .cm-q{font-size:15px;line-height:22px;}
+    .cm-out{margin-top:14px;}
+    .cs-chrome{height:36px;}
+    .cs-msgs{padding:12px 14px 14px;gap:12px;}
   }
   @media (prefers-reduced-motion: reduce){
-    .cm-tray,.cm-step b,.cm-step span,.cm-step em,.cm-dot,.cm-fill,.cm-val,.cm-out{transition:none !important;}
+    .cm-step,.cm-fill,.cm-val,.cm-out{transition:none !important;}
   }
 
   /* ---------- 04 UPDATE: one signal's summary, before and after a comment (static) ---------- */
@@ -606,6 +601,135 @@
     .hp-labels{display:none;}
     .hp-legend{display:grid;}
   }
+
+  /* ---------- phones: a tighter pass (2026-10-18). Nothing is hidden; less air, slightly smaller body text and visuals ---------- */
+  @media (max-width:700px){
+    .hw-loop,.hw-sec,.hw-close{padding:48px 0;}
+    .hw-hero{padding:40px 0 40px;}
+    .hw-loop-top,.hw-grid,.hw-grid--flip,.hw-grid--bleed,.hw-close-grid{gap:32px;}
+    .hw-lede,.hw-lede-2,.hw-close-lede{margin-top:16px;font-size:17px;line-height:26px;}
+    .hw-sub,.hw-close h3{margin-top:20px;font-size:19px;line-height:26px;}
+    .methods{margin-top:12px;}
+    .methods--rules .method,.method{padding:12px 0;}
+    .method > div{gap:2px;}
+    .method-title{font-size:16px;line-height:23px;}
+    .method-text{font-size:15px;line-height:22px;}
+    .hw-more{margin-top:16px;}
+    .hw-loop-list{margin-top:28px;padding:16px 0;gap:14px;}
+    .hw-loop-list p{font-size:16px;line-height:24px;}
+    /* visuals */
+    .db-row--extra{display:none;}
+    .mock-stack--triage{zoom:0.86;}
+    .cm-meter{margin-top:18px;}
+    .cm-out{margin-top:30px;}
+    .su{gap:14px;}
+    .su-card{padding:14px 14px 16px;}
+    .su-card p,.su-comment p:last-child{font-size:14px;line-height:21px;}
+    .hw-close-list li{padding:10px 0;}
+    .hw-close-cta{margin-top:36px;padding-top:28px;}
+  }
+
+  /* ---------- 01 COLLECT: dashboard -> lifted signals -> Slack (Figma storyboard 1828:125468) ----------
+     State classes on the figure: (none) dashboard | is-hl three rows highlighted | is-lift the rows lifted with the
+     caption | is-slack the Slack window. The markup ships as is-slack (the finished frame); the script rewinds it. */
+  .cs{position:relative;}
+  .cs .db{transition:opacity 0.5s ease, transform 0.6s ease;}
+  .cs .db-row{transition:background-color 0.35s ease, box-shadow 0.35s ease;}
+  .cs.is-hl .db-row--hl{background:#fef1f5;box-shadow:inset 0 0 0 2px var(--pink);animation:cs-pulse 0.65s ease-in-out 0.4s 3;}
+  @keyframes cs-pulse{50%{box-shadow:inset 0 0 0 2px var(--pink),inset 0 0 18px rgba(224,18,128,0.35);}}
+  .cs.is-lift .db,.cs.is-slack .db{opacity:0;transform:scale(0.985);}
+  .cs-stage{position:absolute;left:0;top:50%;transform:translateY(-50%);width:min(520px, 100%);display:flex;flex-direction:column;align-items:center;gap:16px;pointer-events:none;}
+  .cs-cap{text-align:center;max-width:460px;opacity:0;transform:translateY(8px);transition:opacity 0.5s ease, transform 0.5s ease;}
+  .cs-cap p{font-size:16px;line-height:24px;color:var(--body-2);}
+  .cs-cap .cs-cap-head{margin-bottom:6px;font-weight:700;color:var(--ink);}
+  .cs-cap b{font-weight:700;}
+  .cs-late{display:block;opacity:0;transition:opacity 0.6s ease 0.3s;}   /* its own line, so it arrives whole */
+  .cs.is-lift .cs-cap,.cs.is-slack .cs-cap{opacity:1;transform:none;}
+  .cs.is-slack .cs-late{opacity:1;}
+  .cs-scene{position:relative;width:100%;}
+  /* the lifted rows: larger, in a card that fades off to the right */
+  /* the lifted rows travel from the dashboard (moved by the script); the card's frame fades in once they land */
+  .cs-lift{position:absolute;left:0;right:-80px;top:0;padding:2px 0 2px 2px;opacity:0;transition:opacity 0.45s ease, transform 0.45s ease;}
+  .cs.is-lift .cs-lift{opacity:1;}
+  .cs.is-slack .cs-lift{opacity:0;transform:translateY(-14px);}
+  .cs-lift-card{position:absolute;inset:0;border:2px solid #c4c4c4;border-right:0;border-radius:12px 0 0 12px;background:#fff;
+    box-shadow:0 1px 2px rgba(11,12,13,0.06),0 2px 6px rgba(11,12,13,0.06);
+    -webkit-mask-image:linear-gradient(to right,#000 70%,transparent);mask-image:linear-gradient(to right,#000 70%,transparent);
+    opacity:0;transition:opacity 0.5s ease 0.75s;}
+  .cs.is-lift .cs-lift-card{opacity:1;}
+  .cs-row{position:relative;display:grid;grid-template-columns:48px minmax(0,1fr) auto;align-items:center;column-gap:14px;padding:13px 19px;border-top:1px solid #e3e5ea;background:#fff;
+    -webkit-mask-image:linear-gradient(to right,#000 70%,transparent);mask-image:linear-gradient(to right,#000 70%,transparent);transition:background-color 0.5s ease, box-shadow 0.5s ease;}
+  .cs-row.is-flying{background:#fef1f5;box-shadow:inset 0 0 0 2px var(--pink);}
+  .cs-lift-card + .cs-row{border-top:0;border-top-left-radius:10px;}
+  .cs-row:last-child{border-bottom-left-radius:10px;}
+  .cs-row .db-type{width:47px;height:47px;}
+  .cs-row .db-type img{transform:scale(1.25);}
+  .cs-name{display:flex;flex-direction:column;gap:2px;min-width:0;}
+  .cs-name b{font-weight:500;font-size:16.5px;line-height:24px;color:#303541;white-space:nowrap;}
+  .cs-name small{font-size:14px;line-height:19px;color:#686e7b;}
+  .cs-asset{font-size:15px;color:#303541;white-space:nowrap;}
+  /* the Slack window, with two more chats stacked behind it */
+  .cs-slack{position:relative;padding-top:18px;opacity:0;transform:translateY(20px);transition:opacity 0.5s ease 0.15s, transform 0.6s cubic-bezier(0.2,0.8,0.2,1) 0.15s;}
+  .cs.is-slack .cs-slack{opacity:1;transform:none;}
+  .cs-win{background:#fff;border:1px solid rgba(0,0,0,0.08);border-radius:12px;overflow:hidden;font-family:Lato, sans-serif;color:#1d1c1d;
+    box-shadow:0 2px 4px rgba(11,12,13,0.06),0 8px 20px -2px rgba(11,12,13,0.12);}
+  .cs-win--back1,.cs-win--back2{position:absolute;left:0;right:0;height:120px;transform-origin:50% 0;}
+  .cs-win--back1{top:9px;transform:scale(0.95);opacity:0.75;}
+  .cs-win--back2{top:0;transform:scale(0.9);opacity:0.45;}
+  .cs-win--front{position:relative;}
+  .cs-win--back1 .cs-chrome > *,.cs-win--back2 .cs-chrome > *{visibility:hidden;}   /* behind the window only the plum edge shows */
+  .cs-chrome{display:flex;align-items:center;gap:16px;height:40px;padding:0 16px;background:#4a154b;color:#fff;}
+  .cs-chrome b{flex:1;font-weight:900;font-size:14px;}
+  .cs-chrome img{width:22px;height:22px;padding:3px;border-radius:5px;background:#fff;}
+  .cs-lights{display:flex;gap:7px;}
+  .cs-lights i{width:10px;height:10px;border-radius:50%;background:#ff5f57;}
+  .cs-lights i:nth-child(2){background:#febc2e;}
+  .cs-lights i:nth-child(3){background:#28c840;}
+  .cs-msgs{display:flex;flex-direction:column;gap:16px;padding:18px 20px 20px;}
+  .cs-msg{display:flex;gap:10px;}
+  .cs-avatar{flex-shrink:0;display:grid;place-items:center;width:36px;height:36px;border:1px solid #e2e2e2;border-radius:8px;background:#fff;}
+  .cs-avatar i{width:14px;height:14px;border-radius:50%;background:var(--pink);}
+  .cs-body{flex:1;min-width:0;}
+  .cs-meta{display:flex;align-items:center;gap:6px;font-size:12px;color:#616061;}
+  .cs-meta b{font-weight:900;font-size:15px;color:#1d1c1d;}
+  .cs-app{padding:1px 4px;border-radius:3px;background:rgba(0,0,0,0.07);font-weight:700;font-size:10px;}
+  .cs-att{position:relative;display:flex;flex-direction:column;gap:6px;margin-top:4px;padding:2px 0 2px 16px;}
+  .cs-att::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:2px;background:#ecb22e;}
+  .cs-att--contained::before{background:#057c56;}
+  .cs-tag{align-self:flex-start;padding:2px 6px;border-radius:3px;background:rgba(236,178,46,0.16);font-weight:900;font-size:10px;line-height:12px;}
+  .cs-att--contained .cs-tag{background:rgba(46,182,125,0.18);}
+  .cs-att p{font-size:14px;line-height:21px;}
+  .cs-att .cs-att-title{font-weight:700;font-size:15px;line-height:20px;}
+  .cs-btns{display:flex;gap:8px;padding-top:4px;}
+  .cs-btn{padding:5px 12px;border:1px solid rgba(0,0,0,0.3);border-radius:4px;background:#fff;font-weight:700;font-size:13px;line-height:16px;}
+  .cs-btn--go{border-color:#007a5a;background:#007a5a;color:#fff;}
+  /* the second message arrives a beat after the window */
+  .cs.is-slack .cs-msg + .cs-msg{animation:cs-arrive 0.5s ease 1.6s both;}
+  @keyframes cs-arrive{from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none}}
+  @media (max-width:700px){
+    .cs-cap p{font-size:15px;line-height:22px;}
+    .cs-row{padding:10px 14px;column-gap:12px;}
+    .cs-row .db-type{width:38px;height:38px;}
+    .cs-name b{font-size:15px;line-height:22px;white-space:normal;}
+    .cs-name small{font-size:13px;}
+    .cs-asset{display:none;}
+    .cs-msgs{padding:14px 14px 16px;gap:12px;}
+    .cs-att p{font-size:13.5px;line-height:20px;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .cs .db,.cs .db-row,.cs-cap,.cs-late,.cs-lift,.cs-slack{transition:none !important;}
+    .cs.is-slack .cs-msg + .cs-msg,.cs.is-hl .db-row--hl{animation:none;}
+  }
+
+  /* ---------- the animations: finish once (they start over if you leave before the end), then a quiet Replay ---------- */
+  .vz-replay{display:inline-flex;align-items:center;gap:6px;padding:4px 2px;border:0;background:none;font:500 13px/18px var(--font-sans, Inter, sans-serif);color:var(--surface-dark);cursor:pointer;pointer-events:auto;}
+  .vz-replay::before{content:'';width:14px;height:14px;background:currentColor;-webkit-mask:url(static/icon-arrow-counter-clockwise.svg) center/contain no-repeat;mask:url(static/icon-arrow-counter-clockwise.svg) center/contain no-repeat;}
+  .vz-replay:hover{color:var(--ink);}
+  .vz-replay:focus-visible{outline:2px solid var(--pink);outline-offset:2px;border-radius:2px;}
+  .vz-replay[hidden]{visibility:hidden;}   /* its space is kept, so nothing moves when it appears */
+  .cs-stage .vz-replay{align-self:flex-end;margin-top:-4px;}
+  .hw-visual--meter{display:flex;flex-direction:column;align-items:flex-end;gap:10px;}
+  @media (max-width:1023px){ .hw-visual--meter{align-items:center;} .hw-visual--meter .vz-replay{align-self:flex-end;} }
   /* ---------- FOOTER ---------- */
   footer{
     border-top:1px solid var(--gray-line);padding:28px 56px 40px;display:flex;justify-content:space-between;align-items:center;
@@ -835,7 +959,7 @@
         </ul>
         <p class="hw-more"><button class="text-link link-btn" type="button" data-drawer="drawer-collect" aria-haspopup="dialog">How collection works <img src="../static/icon-arrow-right-pink.svg" width="16" height="16" alt=""></button></p>
       </div>
-      <figure class="hw-visual db-wrap" aria-label="The VEX app’s list of signals, from Microsoft 365, Level, Cloudflare, HubSpot and VEX’s own checks, including a missing DMARC record.">
+      <figure class="hw-visual db-wrap cs is-slack" data-collect aria-label="The VEX app’s list of signals from many sources. Three are picked out: a HubSpot data export, a missing DMARC record and a suspicious script on a laptop. Our UI is optional: when something looks suspicious, VEX investigates and messages you in Slack, here about the laptop, which it has isolated.">
         <div class="db" aria-hidden="true">
           <div class="db-top"><i class="db-vex"></i><b>VEX</b></div>
           <div class="db-app">
@@ -847,19 +971,27 @@
               <div class="db-tabs"><span class="is-on">Open <em>11</em></span><span>Assigned to me <em>3</em></span><span>Unassigned <em>4</em></span><span>Auto-resolved <em>214</em></span></div>
               <div class="db-chips"><span>Critical <em>1</em></span><span>High <em>4</em></span><span>Recommendations <em>3</em></span></div>
               <div class="db-table">
-                <div class="db-row db-row--head"><span>Type</span><span>Threat</span><span>Name</span><span>Asset</span><span>Detected</span></div>
-                <div class="db-row"><span class="db-type"><img src="static/logo-microsoft.svg" width="18" height="18" alt=""></span><span><i class="db-threat db-threat--hi">96%</i></span><span class="db-name"><b>Malicious attachment</b><small>Stopped</small></span><span>k.moore@example.com</span><span>Oct 8</span></div>
-                <div class="db-row"><span class="db-type"><img src="static/logo-level.svg" width="18" height="18" alt=""></span><span><i class="db-threat db-threat--hi">78%</i></span><span class="db-name"><b>Old VPN account without MFA</b><small>Disabled</small></span><span>j.lee@example.com</span><span>Oct 8</span></div>
-                <div class="db-row"><span class="db-type"><img src="static/logo-level.svg" width="18" height="18" alt=""></span><span><i class="db-threat db-threat--lo">3%</i></span><span class="db-name"><b>Weak sharing link on payroll folder</b><small>Identity</small></span><span>k.moore@example.com</span><span>Oct 7</span></div>
-                <div class="db-row"><span class="db-type"><img src="static/logo-cloudflare.svg" width="20" height="13" alt=""></span><span><i class="db-threat db-threat--mid">27%</i></span><span class="db-name"><b>Phishing domain look-alike</b><small>Taken down</small></span><span>examp1e.com</span><span>Oct 7</span></div>
-                <div class="db-row"><span class="db-type"><img src="static/logo-hubspot.png" width="20" height="20" alt=""></span><span><i class="db-threat db-threat--hi">85%</i></span><span class="db-name"><b>Data export activity detected</b><small>Identity</small></span><span>k.moore@example.com</span><span>Oct 6</span></div>
-                <div class="db-row db-row--extra"><span class="db-type"><img src="static/logo-cloudflare.svg" width="20" height="13" alt=""></span><span><i class="db-threat db-threat--lo">7%</i></span><span class="db-name"><b>Managed challenge issued</b><small>Domain</small></span><span>example.com</span><span>Oct 6</span></div>
-                <div class="db-row"><span class="db-type"><i class="db-vex"></i></span><span><i class="db-threat db-threat--hi">83%</i></span><span class="db-name"><b>Missing DMARC record</b><small>Domain</small></span><span>example.com</span><span>Oct 5</span></div>
-                <div class="db-row db-row--extra"><span class="db-type"><i class="db-vex"></i></span><span><i class="db-threat db-threat--mid">64%</i></span><span class="db-name"><b>Missing identity monitor</b><small>Identity</small></span><span>j.lee@example.com</span><span>Oct 5</span></div>
-                <div class="db-row"><span class="db-type"><img src="static/logo-level.svg" width="18" height="18" alt=""></span><span><i class="db-threat db-threat--hi">92%</i></span><span class="db-name"><b>Suspicious script on laptop</b><small>Contained</small></span><span>HR-laptop-428936</span><span>Oct 4</span></div>
+                <div class="db-row db-row--head"><span>Type</span><span>Name</span><span>Asset</span><span>Detected</span></div>
+                <div class="db-row"><span class="db-type"><img src="static/logo-microsoft.svg" width="18" height="18" alt=""></span><span class="db-name"><b>Malicious attachment</b><small>Email security</small></span><span>k.moore@example.com</span><span>Oct 8</span></div>
+                <div class="db-row"><span class="db-type"><img src="static/logo-level.svg" width="18" height="18" alt=""></span><span class="db-name"><b>VPN account without MFA</b><small>Identity & access</small></span><span>j.lee@example.com</span><span>Oct 8</span></div>
+                <div class="db-row"><span class="db-type"><img src="static/logo-level.svg" width="18" height="18" alt=""></span><span class="db-name"><b>Payroll folder shared</b><small>SaaS · File sharing</small></span><span>k.moore@example.com</span><span>Oct 7</span></div>
+                <div class="db-row"><span class="db-type"><img src="static/logo-cloudflare.svg" width="20" height="13" alt=""></span><span class="db-name"><b>Suspected lookalike domain</b><small>Domain security</small></span><span>examp1e.com</span><span>Oct 7</span></div>
+                <div class="db-row db-row--hl"><span class="db-type"><img src="static/logo-hubspot.png" width="20" height="20" alt=""></span><span class="db-name"><b>HubSpot data export detected</b><small>SaaS · CRM activity</small></span><span>k.moore@example.com</span><span>Oct 6</span></div>
+                <div class="db-row db-row--extra"><span class="db-type"><img src="static/logo-cloudflare.svg" width="20" height="13" alt=""></span><span class="db-name"><b>Web request challenged</b><small>Web security</small></span><span>example.com</span><span>Oct 6</span></div>
+                <div class="db-row db-row--hl"><span class="db-type"><i class="db-vex"></i></span><span class="db-name"><b>Missing DMARC record</b><small>Domain · Email authentication</small></span><span>example.com</span><span>Oct 5</span></div>
+                <div class="db-row db-row--extra"><span class="db-type"><i class="db-vex"></i></span><span class="db-name"><b>Identity monitoring not connected</b><small>Monitoring coverage</small></span><span>j.lee@example.com</span><span>Oct 5</span></div>
+                <div class="db-row db-row--hl"><span class="db-type"><img src="static/logo-level.svg" width="18" height="18" alt=""></span><span class="db-name"><b>Suspicious script executed on laptop</b><small>Endpoint activity</small></span><span>HR-laptop-428936</span><span>Oct 4</span></div>
               </div>
             </div>
           </div>
+        </div>
+        <div class="cs-stage" aria-hidden="true">
+          <div class="cs-cap"><p class="cs-cap-head">Our UI is optional</p><p>When something looks suspicious, VEX investigates <span class="cs-late">and messages you in <b>Slack</b>.</span></p></div>
+          <div class="cs-scene">
+            <div class="cs-lift"><span class="cs-lift-card"></span><div class="cs-row"><span class="db-type"><img src="static/logo-hubspot.png" width="20" height="20" alt=""></span><span class="cs-name"><b>HubSpot data export detected</b><small>SaaS · CRM activity</small></span><span class="cs-asset">k.moore@example.com</span></div><div class="cs-row"><span class="db-type"><i class="db-vex"></i></span><span class="cs-name"><b>Missing DMARC record</b><small>Domain · Email authentication</small></span><span class="cs-asset">example.com</span></div><div class="cs-row"><span class="db-type"><img src="static/logo-level.svg" width="18" height="18" alt=""></span><span class="cs-name"><b>Suspicious script executed on laptop</b><small>Endpoint activity</small></span><span class="cs-asset">HR-laptop-428936</span></div></div>
+            <div class="cs-slack"><div class="cs-win cs-win--back2"><div class="cs-chrome"><span class="cs-lights"><i></i><i></i><i></i></span><b># security-ops</b><img src="../static/slack-logo.svg" width="22" height="22" alt=""></div><div class="cs-msgs"></div></div><div class="cs-win cs-win--back1"><div class="cs-chrome"><span class="cs-lights"><i></i><i></i><i></i></span><b># security-ops</b><img src="../static/slack-logo.svg" width="22" height="22" alt=""></div><div class="cs-msgs"></div></div><div class="cs-win cs-win--front"><div class="cs-chrome"><span class="cs-lights"><i></i><i></i><i></i></span><b># security-ops</b><img src="../static/slack-logo.svg" width="22" height="22" alt=""></div><div class="cs-msgs"><div class="cs-msg"><span class="cs-avatar"><i></i></span><div class="cs-body"><p class="cs-meta"><b>VEX</b><span class="cs-app">APP</span><span>3:07 PM</span></p><div class="cs-att cs-att--detected"><span class="cs-tag">DETECTED</span><p class="cs-att-title">Suspicious script executed on laptop</p><p>A script ran from a temporary folder on HR-laptop-428936 and connected to an unfamiliar external address.</p></div></div></div><div class="cs-msg"><span class="cs-avatar"><i></i></span><div class="cs-body"><p class="cs-meta"><b>VEX</b><span class="cs-app">APP</span><span>3:07 PM</span></p><div class="cs-att cs-att--contained"><span class="cs-tag">CONTAINED</span><p class="cs-att-title">Device isolated. Investigation ongoing.</p><p>VEX isolated HR-laptop-428936 from the network to limit further activity while it investigates.</p><div class="cs-btns"><span class="cs-btn cs-btn--go">Close</span><span class="cs-btn">Investigate</span></div></div></div></div></div></div></div>
+          </div>
+          <button class="vz-replay" type="button" hidden>Replay</button>
         </div>
       </figure>
     </div>
@@ -928,14 +1060,14 @@
         </ul>
         <p class="hw-more"><button class="text-link link-btn" type="button" data-drawer="drawer-detect" aria-haspopup="dialog">How detection works <img src="../static/icon-arrow-right-pink.svg" width="16" height="16" alt=""></button></p>
       </div>
-      <div class="hw-visual">
-        <figure class="cm" data-meter aria-label="How VEX decides: the AI analyst answers yes with 79% confidence. Reviewer 1 agrees, Reviewer 2 is unsure, and Reviewer 3, told the answer is wrong, checks the evidence and agrees. Confidence ends at 88%, above the threshold, so a signal opens for your team.">
-          <div class="cm-clip" aria-hidden="true"><ol class="cm-tray">
-            <li class="cm-step" data-v="79"><i class="cm-dot"></i><b>Analyst</b><span>Yes, compromised</span><em>79%</em></li>
-            <li class="cm-step" data-v="84"><i class="cm-dot"></i><b>Reviewer 1</b><span>Agrees</span><em>+5</em></li>
-            <li class="cm-step" data-v="81"><i class="cm-dot"></i><b>Reviewer 2</b><span>Unsure</span><em>−3</em></li>
-            <li class="cm-step" data-v="88"><i class="cm-dot"></i><b>Reviewer 3 · told it’s wrong</b><span>Checked, agrees</span><em>+7</em></li>
-          </ol></div>
+      <div class="hw-visual hw-visual--meter">
+        <figure class="cm" data-meter aria-label="How VEX decides: the AI analyst answers yes, compromised, with 79% confidence. AI reviewer 1 agrees, AI reviewer 2 is unsure, and AI reviewer 3 checks the evidence and agrees. Confidence ends at 88%, above the threshold, so a signal opens for your team.">
+          <ol class="cm-steps" aria-hidden="true">
+            <li class="cm-step cm-step--analyst" data-v="79"><i class="cm-dot"></i><span class="cm-who">AI Analyst</span><b>Yes, compromised</b></li>
+            <li class="cm-step" data-v="84"><i class="cm-dot"></i><span class="cm-who">AI Reviewer 1</span><b>I agree</b></li>
+            <li class="cm-step" data-v="81"><i class="cm-dot"></i><span class="cm-who">AI Reviewer 2</span><b>Unsure</b></li>
+            <li class="cm-step" data-v="88"><i class="cm-dot"></i><span class="cm-who">AI Reviewer 3</span><b>Checked, I agree</b></li>
+          </ol>
           <div class="cm-card">
             <p class="cm-q">“Given everything we know, has <i>HR-laptop-428936</i> been compromised?”</p>
             <div class="cm-meter" aria-hidden="true">
@@ -945,6 +1077,7 @@
             <p class="cm-out" aria-hidden="true">Signal opened for your team</p>
           </div>
         </figure>
+        <button class="vz-replay" type="button" hidden>Replay</button>
       </div>
     </div>
   </section>
@@ -1260,6 +1393,21 @@
       if(wide.addEventListener){ wide.addEventListener('change', onWide); } else { wide.addListener(onWide); }
     })();
 
+    // FINISH ONCE: run(ctx) plays an animation the first time its element is in view. Leave before it ends and it is
+    // reset and starts over when you come back; once it has finished it stays, and its Replay button appears.
+    function finishOnce(el, threshold, play, reset, replay){
+      var timers = [], state = 'idle';   // idle | running | done
+      function later(ms, fn){ timers.push(setTimeout(fn, ms)); }
+      function stop(){ timers.forEach(clearTimeout); timers = []; }
+      function done(){ state = 'done'; if(replay){ replay.hidden = false; } }
+      function start(){ stop(); reset(); state = 'running'; if(replay){ replay.hidden = true; } play(later, done); }
+      if(replay){ replay.addEventListener('click', start); }
+      new IntersectionObserver(function(es){
+        var e = es[0];
+        if(e.isIntersecting && e.intersectionRatio >= threshold && state === 'idle'){ start(); }
+        else if(!e.isIntersecting && state === 'running'){ stop(); reset(); state = 'idle'; }
+      }, { threshold:[0, threshold] }).observe(el);
+    }
     (function(){
       // SECTION NAV: sits under the site header; marks the section you're in
       var root = document.documentElement, head = document.querySelector('.site-top');
@@ -1311,37 +1459,30 @@
       });
     })();
     (function(){
-      // CONFIDENCE METER: plays once in view. The question sits alone; then each check slides up from behind the card:
-      // its name fades in, then its score, then the bar moves, then a pause. Crossing the threshold turns it pink.
+      // CONFIDENCE METER: the analyst's row is there; the bar moves to its confidence; then each reviewer fades in (in
+      // its own place) and the bar moves again. Crossing the threshold turns it pink.
       var m = document.querySelector('[data-meter]');
       if(!m || !('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches){ return; }
-      var tray = m.querySelector('.cm-tray'), rows = [].slice.call(tray.children);
+      var rows = [].slice.call(m.querySelectorAll('.cm-step'));
       var fill = m.querySelector('.cm-fill'), val = m.querySelector('.cm-val');
       var t = parseFloat(m.querySelector('.cm-track').style.getPropertyValue('--t'));
-      function show(n){   // reveal the tray down to the bottom of row n (0 = hidden behind the card)
-        var h = tray.offsetHeight, y = n ? h - (rows[n - 1].offsetTop + rows[n - 1].offsetHeight) : h;
-        tray.style.transform = 'translateY(' + Math.max(0, y) + 'px)';
-      }
       function set(v){ fill.style.setProperty('--v', v + '%'); val.textContent = v + '%'; m.classList.toggle('is-over', v >= t); }
-      m.classList.add('is-armed'); set(0); show(0);
-      var START = 1400, STEP = 3400, at = function(ms, fn){ setTimeout(fn, ms); };
-      var io = new IntersectionObserver(function(es){
-        if(!es[0].isIntersecting){ return; }
-        io.disconnect();
+      function reset(){ m.classList.add('is-armed'); m.classList.remove('is-done'); set(0); rows.forEach(function(r, i){ r.classList.toggle('is-in', i === 0); }); }
+      reset();
+      var START = 980, STEP = 2100;   // about 30% quicker than the first pass
+      finishOnce(m, 0.6, function(later, done){
         rows.forEach(function(r, i){
-          var s = START + i * STEP;
-          at(s, function(){ show(i + 1); r.classList.add('is-in'); });         // slides up, name fades in
-          at(s + 1300, function(){ r.classList.add('is-scored'); });          // then its score
-          at(s + 1800, function(){ set(+r.getAttribute('data-v')); });        // then the bar moves
+          var s0 = START + i * STEP;
+          if(i){ later(s0, function(){ r.classList.add('is-in'); }); }                 // a quick fade in
+          later(s0 + (i ? 560 : 0), function(){ set(+r.getAttribute('data-v')); });    // then the bar moves
         });
-        at(START + rows.length * STEP - 600, function(){ m.classList.add('is-done'); show(rows.length); });
-      }, { threshold:0.6 });
-      io.observe(m.querySelector('.cm-card'));
-      window.addEventListener('resize', function(){ if(m.classList.contains('is-done')){ tray.style.transform = 'none'; } });
+        later(START + rows.length * STEP - 840, function(){ m.classList.add('is-done'); });
+        later(START + rows.length * STEP - 280, done);
+      }, reset, m.parentNode.querySelector('.vz-replay'));
     })();
     (function(){
-      // HERO PANES: the drawing is static markup (Chad's frame); this plays the attack once. The beam draws by CSS;
-      // after the gap is sealed the attempt carries on at the beam's speed, its dot riding the tip, and fades into the X.
+      // HERO PANES: the drawing is static markup (Figma 1813:119208); this plays the attack. The beam draws by CSS; after
+      // the gap is sealed the attempt carries on at the beam's speed, its dot riding the tip, and fades into the X.
       var svg = document.getElementById('hp-stage');
       if(!svg){ return; }
       var line = document.getElementById('hp-attempt'), dot = document.getElementById('hp-stop'), deny = document.getElementById('hp-deny');
@@ -1354,17 +1495,65 @@
       var full = svg.getAttribute('viewBox'), crop = svg.getAttribute('data-crop'), phone = window.matchMedia('(max-width:600px)');
       function fit(){ svg.setAttribute('viewBox', phone.matches ? crop : full); }
       fit(); if(phone.addEventListener){ phone.addEventListener('change', fit); }
-      if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){ svg.classList.add('hp-play'); return; }   // the markup is the finished frame
+      if(window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)){ svg.classList.add('hp-play'); return; }   // the markup is the finished frame
+      var raf = 0;
       function tip(k){
         var x = A0[0] + (A1[0] - A0[0]) * k, y = A0[1] + (A1[1] - A0[1]) * k;
         line.setAttribute('x2', x); line.setAttribute('y2', y); dot.setAttribute('cx', x); dot.setAttribute('cy', y);
       }
-      tip(0); deny.classList.remove('hp-on'); svg.classList.add('hp-play');
-      setTimeout(function(){
-        var dur = Math.hypot(A1[0] - A0[0], A1[1] - A0[1]) / SPEED * 1000, t0 = performance.now();
-        dot.setAttribute('opacity', 1);
-        (function step(now){ var k = Math.min(1, (now - t0) / dur); tip(k); if(k < 1){ requestAnimationFrame(step); } else { dot.setAttribute('opacity', 0); deny.classList.add('hp-on'); } })(t0);
-      }, 2600);   // a beat after the gap is sealed (2.05s)
+      function reset(){
+        cancelAnimationFrame(raf); tip(0); dot.setAttribute('opacity', 0); deny.classList.remove('hp-on');
+        svg.classList.remove('hp-play'); void svg.getBoundingClientRect(); svg.classList.add('hp-play');   // restarts the CSS animations
+      }
+      reset();
+      finishOnce(svg, 0.3, function(later, done){
+        later(2600, function(){   // a beat after the gap is sealed (2.05s)
+          var dur = Math.hypot(A1[0] - A0[0], A1[1] - A0[1]) / SPEED * 1000, t0 = performance.now();
+          dot.setAttribute('opacity', 1);
+          (function step(now){ var k = Math.min(1, (now - t0) / dur); tip(k); if(k < 1){ raf = requestAnimationFrame(step); } else { dot.setAttribute('opacity', 0); deny.classList.add('hp-on'); done(); } })(t0);
+        });
+      }, reset, null);
+    })();
+    (function(){
+      // COLLECT: the dashboard sits; three rows highlight and pulse; a short pause; they travel out of the dashboard
+      // into a stack with the caption; a pause; they go, the Slack window arrives and the caption finishes.
+      var fig = document.querySelector('[data-collect]');
+      if(!fig){ return; }
+      var stage = fig.querySelector('.cs-stage'), scene = fig.querySelector('.cs-scene'), lift = fig.querySelector('.cs-lift');
+      // reserve the tallest state so nothing below jumps
+      function size(){ scene.style.minHeight = Math.max(lift.offsetHeight, fig.querySelector('.cs-slack').offsetHeight) + 'px';
+        fig.style.minHeight = Math.ceil(Math.max(fig.querySelector('.db').getBoundingClientRect().height, stage.getBoundingClientRect().height)) + 'px'; }
+      size(); window.addEventListener('resize', size);
+      if(window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)){ return; }   // stays on the finished frame
+      var from = [].slice.call(fig.querySelectorAll('.db-row--hl')), rows = [].slice.call(fig.querySelectorAll('.cs-row'));
+      function reset(){
+        fig.classList.remove('is-hl', 'is-lift', 'is-slack');
+        from.forEach(function(e){ e.style.visibility = ''; });
+        rows.forEach(function(r){ r.style.transition = 'none'; r.style.transform = ''; r.classList.remove('is-flying'); });
+      }
+      function fly(){
+        fig.classList.add('is-lift');
+        // each row starts where its dashboard row is (same height, pink) and travels to its place in the stack
+        rows.forEach(function(r, i){
+          var a = from[i].getBoundingClientRect(), b = r.getBoundingClientRect(), k = a.height / b.height;
+          r.style.transition = 'none'; r.style.transformOrigin = '0 0';
+          r.style.transform = 'translate(' + (a.left - b.left) + 'px,' + (a.top - b.top) + 'px) scale(' + k + ')';
+          r.classList.add('is-flying');
+        });
+        from.forEach(function(e){ e.style.visibility = 'hidden'; });
+        void fig.offsetWidth;
+        rows.forEach(function(r, i){
+          r.style.transition = 'transform 0.9s cubic-bezier(0.25,0.8,0.25,1) ' + (i * 0.09) + 's, background-color 0.5s ease 0.8s, box-shadow 0.5s ease 0.8s';
+          r.style.transform = 'none'; r.classList.remove('is-flying');
+        });
+      }
+      reset();
+      finishOnce(fig, 0.5, function(later, done){
+        later(1800, function(){ fig.classList.add('is-hl'); });              // the dashboard on its own first
+        later(4850, fly);                                                    // three pulses (they end at 4.15s), then a short pause
+        later(8450, function(){ fig.classList.remove('is-hl', 'is-lift'); fig.classList.add('is-slack'); });   // a pause on the stack
+        later(10600, done);                                                  // after the second message lands
+      }, reset, fig.querySelector('.vz-replay'));
     })();
   </script>
 </body>

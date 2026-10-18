@@ -557,38 +557,39 @@
     .compare,.route > div,.fields > div{grid-template-columns:minmax(0,1fr);}
   }
 
-  /* ---------- hero visual: the corridor of panes (drawn by the script) ---------- */
-  .hp{width:100%;max-width:560px;margin:0;}
+  /* ---------- hero visual: the corridor of panes (Figma 1813:119208) ---------- */
+  .hp{width:100%;max-width:520px;margin:0;}
   .hp-stage{display:block;width:100%;height:auto;overflow:visible;}
-  .hp-pane{stroke-width:1;}
-  .hp-pane--vex{fill:#d10176;fill-opacity:0.2;stroke:var(--pink);}
-  .hp-pane--glass{fill:#c4c4c4;fill-opacity:0.28;stroke:var(--surface-dark);}
-  .hp-pane--ghost{fill:none;stroke:#8a8a8e;stroke-dasharray:3 4;opacity:0.6;}
-  .hp-floor{fill:#f2f2ef;}
-  .hp-band{fill:var(--pink);}
-  .hp-band-label{font:600 17px var(--mono);letter-spacing:0.1em;fill:#fff;}
-  .hp-gap{fill:#fff;stroke:var(--pink);stroke-width:1.5;}
+  .hp-slab-right{fill:#f1f1ee;}
+  .hp-slab-front{fill:#c4c4c4;}
+  .hp-grid line{stroke:#8a8a8e;stroke-width:0.71;stroke-linecap:round;stroke-dasharray:0.71 3.54;opacity:0.3;}
+  .hp-floor{fill:#c5cfdf;fill-opacity:0.25;stroke:#8a8a8e;stroke-width:0.5;}
+  .hp-band{fill:#c5cfdf;fill-opacity:0.4;}
+  .hp-band-label{font:400 10px var(--mono);letter-spacing:0.08em;fill:#8a8a8e;}
+  .hp-pane{stroke-width:1;stroke-linejoin:miter;}
+  .hp-pane--vex{fill:var(--pink);fill-opacity:0.25;stroke:#d10176;}
+  .hp-pane--glass{fill:#c4c4c4;fill-opacity:0.3;stroke:#8a8a8e;}
+  .hp-pane--ghost{fill:none;stroke:#8a8a8e;stroke-dasharray:4 3;}
+  .hp-gap{fill:#d10176;stroke:#d10176;stroke-width:1;}
   .hp-seal{fill:none;stroke:var(--pink);stroke-width:1.5;opacity:0;}
   .hp-beam{fill:none;stroke:var(--ink);stroke-width:2;stroke-linecap:round;}
   .hp-attempt{fill:none;stroke:#8a8a8e;stroke-width:1.5;stroke-dasharray:3 4;stroke-linecap:round;}
   .hp-stop{fill:var(--pink);transition:opacity 0.35s ease;}
-  .hp-deny{stroke:var(--body-2);stroke-width:2.2;stroke-linecap:round;opacity:0;transition:opacity 0.35s ease;}
+  .hp-deny{stroke:var(--body-2);stroke-width:2;stroke-linecap:round;opacity:0;transition:opacity 0.35s ease;}
   .hp-deny.hp-on{opacity:1;}
-  .hp-title{font:600 13.5px Inter, sans-serif;fill:var(--ink);}
-  .hp-desc{font:400 12px Inter, sans-serif;fill:var(--surface-dark);}
-  .hp-ghost .hp-title,.hp-ghost .hp-desc{fill:#8a8a8e;}
-  .hp-labels .hp-desc.hp-vex{fill:var(--pink-text);}   /* pink = VEX acting: the two lines where VEX does something */
+  .hp-title{font:700 11px var(--mono);letter-spacing:0.08em;fill:var(--body-2);}
+  .hp-desc{font:400 12px Inter, sans-serif;fill:var(--body-2);}
+  .hp-labels .hp-desc.hp-vex{fill:#d10176;}   /* pink = VEX acting */
   .hp-legend{display:none;list-style:none;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 16px;margin:12px 0 0;padding:14px 0 0;border-top:1px solid var(--gray-line);text-align:left;}
   .hp-legend li{display:flex;flex-direction:column;gap:2px;min-width:0;}
-  .hp-legend b{font-weight:600;font-size:15px;line-height:22px;color:var(--ink);}
-  .hp-legend span{font-size:13px;line-height:19px;color:var(--surface-dark);}
-  .hp-legend-ghost b,.hp-legend-ghost span{color:#8a8a8e;}
-  .hp-legend .hp-legend-vex{color:var(--pink-text);}
-  /* plays once (about 4.5s): panes arrive near to far; the attack reaches the gap; VEX seals it (the pink moment);
-     the attempt (moved by the script) crosses the band and fades into an X on Access denied */
+  .hp-legend b{font:700 12px/18px var(--mono);letter-spacing:0.08em;text-transform:uppercase;color:var(--body-2);}
+  .hp-legend span{font-size:14px;line-height:20px;color:var(--body-2);}
+  .hp-legend .hp-legend-vex{color:#d10176;}
+  /* plays once (about 4.5s): the floor and panes arrive near to far; the attack reaches the gap; VEX seals it
+     (the pink moment); the attempt (moved by the script) crosses the prevention line and fades into the X */
   .hp-play .hp-seq{opacity:0;animation:hp-in 0.5s ease forwards;}
   .hp-play .hp-beam{stroke-dasharray:var(--len);stroke-dashoffset:var(--len);animation:hp-draw var(--dur) linear 1s forwards;}
-  .hp-play .hp-gap{animation:hp-in 0.5s ease 0.15s forwards, hp-sealfill 0.35s ease 2.05s forwards;}
+  .hp-play .hp-gap{opacity:0;fill:#fff;stroke:var(--pink);stroke-width:1.5;animation:hp-in 0.4s ease 0.15s forwards, hp-sealfill 0.35s ease 2.05s forwards;}
   .hp-play .hp-seal{transform-box:fill-box;transform-origin:center;animation:hp-flash 0.9s ease-out 2.05s;}
   @keyframes hp-in{to{opacity:1}}
   @keyframes hp-draw{to{stroke-dashoffset:0}}
@@ -600,7 +601,7 @@
     .hp-play .hp-seal{animation:none;}
     .hp-stop,.hp-deny{transition:none;}
   }
-  /* phones: the drawing gets too small for its labels, so they move to a list under it */
+  /* phones: the labels would be too small inside the drawing, so it crops to the panes and they move to a list */
   @media (max-width:600px){
     .hp-labels{display:none;}
     .hp-legend{display:grid;}
@@ -677,12 +678,34 @@
         </div>
       </div>
       <div class="hw-hero-art"><figure class="hp" aria-label="How VEX stops an attack early: VEX identifies a gap (missing MFA) and closes it. An odd sign-in attempt follows but fails at the prevention line, so access is denied and the incident never happens.">
-        <svg class="hp-stage" id="hp-stage" viewBox="0 0 560 360" aria-hidden="true"></svg>
+        <svg class="hp-stage" id="hp-stage" viewBox="0 0 465 385" data-crop="0 0 462 337" aria-hidden="true">
+          <g class="hp-seq" style="animation-delay:0.05s">
+            <path class="hp-slab-right" d="M138 332 L138 336 L458.5 134 L458.5 131 Z"/>
+            <path class="hp-slab-front" d="M138 331.95 L138 335.95 L3.5 303 L3.5 298.5 Z"/>
+            <g class="hp-grid"><line x1="23.04" y1="303.64" x2="345.83" y2="101.48"/><line x1="46.07" y1="309.35" x2="368.86" y2="107.19"/><line x1="69.11" y1="315.05" x2="391.90" y2="112.89"/><line x1="92.14" y1="320.75" x2="414.93" y2="118.59"/><line x1="115.18" y1="326.46" x2="437.97" y2="124.30"/><line x1="20.17" y1="285.31" x2="158.38" y2="319.53"/><line x1="40.35" y1="272.67" x2="178.56" y2="306.89"/><line x1="60.52" y1="260.03" x2="198.73" y2="294.25"/><line x1="80.70" y1="247.40" x2="218.91" y2="281.62"/><line x1="100.87" y1="234.76" x2="239.08" y2="268.99"/><line x1="121.05" y1="222.13" x2="259.26" y2="256.35"/><line x1="141.22" y1="209.50" x2="279.43" y2="243.72"/><line x1="161.40" y1="196.86" x2="299.61" y2="231.08"/><line x1="181.57" y1="184.22" x2="319.78" y2="218.45"/><line x1="201.74" y1="171.59" x2="339.95" y2="205.81"/><line x1="221.92" y1="158.96" x2="360.13" y2="193.18"/><line x1="242.09" y1="146.32" x2="380.30" y2="180.54"/><line x1="262.27" y1="133.69" x2="400.48" y2="167.91"/><line x1="282.44" y1="121.05" x2="420.65" y2="155.27"/><line x1="302.62" y1="108.41" x2="440.83" y2="142.64"/></g>
+            <polygon class="hp-floor" points="0.00,297.94 322.79,95.78 461.00,129.99 138.21,332.16"/>
+          </g>
+          <g class="hp-seq" style="animation-delay:0.5s">
+            <path class="hp-band" d="M168 193 L303.5 228 L283.5 240.5 L149 205 Z"/>
+            <text class="hp-band-label" transform="matrix(0.9704 0.2417 0 1 198 185)" x="0" y="10">PREVENTION LINE</text>
+          </g>
+          <line class="hp-beam" x1="18.22" y1="281.23" x2="93.87" y2="236.18"/>
+          <polygon class="hp-pane hp-pane--vex hp-seq" points="51.00,159.00 136.75,180.36 136.75,313.35 51.00,292.00" style="animation-delay:0.15s"/>
+          <polygon class="hp-gap" points="87.44,227.93 100.30,231.13 100.30,244.43 87.44,241.23"/>
+          <polygon class="hp-seal" points="87.44,227.93 100.30,231.13 100.30,244.43 87.44,241.23"/>
+          <line class="hp-attempt" id="hp-attempt" x1="93.87" y1="236.18" x2="271.87" y2="130.18"/>
+          <circle class="hp-stop" id="hp-stop" cx="271.87" cy="130.18" r="3.5" opacity="0"/>
+          <polygon class="hp-pane hp-pane--glass hp-seq" points="140.00,106.00 225.75,127.36 225.75,260.35 140.00,239.00" style="animation-delay:0.30s"/>
+          <polygon class="hp-pane hp-pane--ghost hp-seq" points="229.00,53.00 314.75,74.36 314.75,207.35 229.00,186.00" style="animation-delay:0.45s"/>
+          <g class="hp-deny hp-on" id="hp-deny"><line x1="265.87" y1="122.70" x2="277.88" y2="137.66"/><line x1="265.87" y1="134.67" x2="277.88" y2="125.69"/></g>
+          <polygon class="hp-pane hp-pane--ghost hp-seq" points="318.00,0.00 403.75,21.36 403.75,154.35 318.00,133.00" style="animation-delay:0.60s"/>
+          <g class="hp-labels"><g class="hp-seq" style="animation-delay:0.15s"><text class="hp-title" x="85" y="362">MISSING MFA</text><text class="hp-desc hp-vex" x="85" y="381">VEX identifies the gap</text></g><g class="hp-seq" style="animation-delay:0.30s"><text class="hp-title" x="198" y="315">ODD SIGN-IN</text><text class="hp-desc" x="198" y="334">Attempt is made</text></g><g class="hp-seq" style="animation-delay:0.45s"><text class="hp-title" x="286" y="261">ACCESS DENIED</text><text class="hp-desc hp-vex" x="286" y="280">VEX already shut the door</text></g><g class="hp-seq" style="animation-delay:0.60s"><text class="hp-title" x="378" y="200">INCIDENT</text><text class="hp-desc" x="378" y="219">Never happens</text></g></g>
+        </svg>
         <ol class="hp-legend">
           <li><b>Missing MFA</b><span class="hp-legend-vex">VEX identifies the gap</span></li>
           <li><b>Odd sign-in</b><span>Attempt is made</span></li>
-          <li class="hp-legend-ghost"><b>Access denied</b><span class="hp-legend-vex">VEX already closed the gap</span></li>
-          <li class="hp-legend-ghost"><b>Incident</b><span>Never happens</span></li>
+          <li><b>Access denied</b><span class="hp-legend-vex">VEX already shut the door</span></li>
+          <li><b>Incident</b><span>Never happens</span></li>
         </ol>
       </figure></div>
     </div>
@@ -1317,79 +1340,26 @@
       window.addEventListener('resize', function(){ if(m.classList.contains('is-done')){ tray.style.transform = 'none'; } });
     })();
     (function(){
-      // HERO PANES: a small isometric camera (no library). World x runs down the corridor, y is up, z is across.
-      // Class names are each quoted on their own so the build's CSS cleanup sees them.
+      // HERO PANES: the drawing is static markup (Chad's frame); this plays the attack once. The beam draws by CSS;
+      // after the gap is sealed the attempt carries on at the beam's speed, its dot riding the tip, and fades into the X.
       var svg = document.getElementById('hp-stage');
       if(!svg){ return; }
-      var NS = 'http://www.w3.org/2000/svg';
-      var yaw = 35 * Math.PI / 180, pitch = 22 * Math.PI / 180, S = 104, OX = 70, OY = 250;
-      function P(x, y, z){
-        var sx = x * Math.cos(yaw) - z * Math.sin(yaw), depth = x * Math.sin(yaw) + z * Math.cos(yaw);
-        return [OX + S * sx, OY - S * (y * Math.cos(pitch) + depth * Math.sin(pitch))];
-      }
-      function pts(list){ return list.map(function(p){ var q = P(p[0], p[1], p[2]); return q[0].toFixed(1) + ',' + q[1].toFixed(1); }).join(' '); }
-      function el(name, attrs, parent){ var e = document.createElementNS(NS, name); for(var k in attrs){ e.setAttribute(k, attrs[k]); } (parent || svg).appendChild(e); return e; }
-      function cls(){ return [].slice.call(arguments).filter(Boolean).join(' '); }
-      var A = 0.62, B = 0.78;   // pane half-width (z) and half-height (y)
-      function rect(x){ return [[x, B, -A], [x, B, A], [x, -B, A], [x, -B, -A]]; }
-      var X = { p1:0, p2:1.5, bound:2.15, p3:3.3, p4:4.55 };
-      var STEPS = [
-        { x:X.p1, t:'Missing MFA', d:'VEX identifies the gap', vex:true },
-        { x:X.p2, t:'Odd sign-in', d:'Attempt is made' },
-        { x:X.p3, t:'Access denied', d:'VEX already closed the gap', ghost:true, vex:true },
-        { x:X.p4, t:'Incident', d:'Never happens', ghost:true }];
-      var g = el('g', {}), labels = el('g', { 'class':cls('hp-labels') }, g), attempt, dot, deny, A0, A1;
-      function delay(i){ return 'animation-delay:' + (0.15 + i * 0.15) + 's'; }
-
-      // the floor, and the prevention band painted across it with PREVENTION laid flat inside (an affine matrix
-      // from the floor's own axes: the text reads along the band (-z), its glyphs stand toward the far end (+x))
-      var FZ = A + 0.3, BW = 0.2;
-      el('polygon', { 'class':cls('hp-floor', 'hp-seq'), points:pts([[-0.35, -B, -FZ], [X.p4 + 0.25, -B, -FZ], [X.p4 + 0.25, -B, FZ], [-0.35, -B, FZ]]), style:'animation-delay:0.1s' }, g);
-      el('polygon', { 'class':cls('hp-band', 'hp-seq'), points:pts([[X.bound - BW, -B, -A], [X.bound + BW, -B, -A], [X.bound + BW, -B, A], [X.bound - BW, -B, A]]), style:'animation-delay:0.5s' }, g);
-      var o = P(X.bound, -B, 0), ez = P(X.bound, -B, -1), ex = P(X.bound + 1, -B, 0);
-      var m = [(ez[0] - o[0]) / S, (ez[1] - o[1]) / S, -(ex[0] - o[0]) / S, -(ex[1] - o[1]) / S, o[0], o[1]].map(function(v){ return v.toFixed(4); });
-      el('text', { 'class':cls('hp-band-label', 'hp-seq'), x:0, y:0, 'text-anchor':'middle', 'dominant-baseline':'central', transform:'matrix(' + m.join(' ') + ')', style:'animation-delay:0.5s' }, g).textContent = 'PREVENTION';
-
-      // panes far to near, so nearer ones sit in front; each label sits under its pane
-      for(var i = 3; i >= 0; i--){
-        var s = STEPS[i], kind = i === 0 ? 'hp-pane--vex' : s.ghost ? 'hp-pane--ghost' : 'hp-pane--glass';
-        el('polygon', { 'class':cls('hp-pane', kind, 'hp-seq'), points:pts(rect(s.x)), style:delay(i) }, g);
-        var left = P(s.x, -B, A)[0], low = P(s.x, -B, -A)[1], lg = el('g', { 'class':cls('hp-seq', s.ghost && 'hp-ghost'), style:delay(i) }, labels);
-        el('text', { 'class':cls('hp-title'), x:left, y:low + 30 }, lg).textContent = s.t;
-        el('text', { 'class':cls('hp-desc', s.vex && 'hp-vex'), x:left, y:low + 46 }, lg).textContent = s.d;
-        if(i === 1){
-          // the attempt after the gap is sealed: dashed, it crosses the band and dies on Access denied (in front of 03, behind 02)
-          A0 = P(X.p1, 0, 0); A1 = P(X.p3, 0, 0);
-          attempt = el('line', { 'class':cls('hp-attempt'), x1:A0[0], y1:A0[1], x2:A0[0], y2:A0[1] }, g);
-          dot = el('circle', { 'class':cls('hp-stop'), cx:A0[0], cy:A0[1], r:4, opacity:0 }, g);
-          deny = el('g', { 'class':cls('hp-deny') }, g);
-          // the X lies in the pane's own plane, so it takes the pane's perspective
-          var r = 0.075, xa = P(X.p3, r, -r), xb = P(X.p3, -r, r), xc = P(X.p3, r, r), xd = P(X.p3, -r, -r);
-          el('line', { x1:xa[0], y1:xa[1], x2:xb[0], y2:xb[1] }, deny);
-          el('line', { x1:xc[0], y1:xc[1], x2:xd[0], y2:xd[1] }, deny);
-        }
-      }
-      // the attack up to the gap, solid; then the gap, open until VEX seals it
-      var b0 = P(-0.95, 0, 0), b1 = P(X.p1, 0, 0);
-      var beam = el('line', { 'class':cls('hp-beam'), x1:b0[0], y1:b0[1], x2:b1[0], y2:b1[1] }, g);
-      var beamLen = Math.hypot(b1[0] - b0[0], b1[1] - b0[1]), BEAM_S = 0.9, SPEED = beamLen / BEAM_S;   // px per second, both halves
+      var line = document.getElementById('hp-attempt'), dot = document.getElementById('hp-stop'), deny = document.getElementById('hp-deny');
+      var beam = svg.querySelector('.hp-beam');
+      function at(el, a){ return +el.getAttribute(a); }
+      var A0 = [at(line, 'x1'), at(line, 'y1')], A1 = [at(line, 'x2'), at(line, 'y2')];
+      var beamLen = Math.hypot(at(beam, 'x2') - at(beam, 'x1'), at(beam, 'y2') - at(beam, 'y1')), BEAM_S = 0.9, SPEED = beamLen / BEAM_S;
       beam.style.setProperty('--len', beamLen.toFixed(1)); beam.style.setProperty('--dur', BEAM_S + 's');
-      var gq = [[X.p1, 0.13, -0.13], [X.p1, 0.13, 0.13], [X.p1, -0.13, 0.13], [X.p1, -0.13, -0.13]];
-      el('polygon', { 'class':cls('hp-gap'), points:pts(gq) }, g);
-      el('polygon', { 'class':cls('hp-seal'), points:pts(gq) }, g);
-      g.appendChild(labels);   // labels over everything, the floor included
-      var bb = g.getBBox(), pad = 6;
-      svg.setAttribute('viewBox', [Math.floor(bb.x - pad), Math.floor(bb.y - pad), Math.ceil(bb.width + pad * 2), Math.ceil(bb.height + pad * 2)].join(' '));
-
-      // the attempt carries on at the beam's speed, its dot riding the tip; at Access denied the dot fades into the X
-      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      // phones: crop to the panes (their labels move to the list under the drawing)
+      var full = svg.getAttribute('viewBox'), crop = svg.getAttribute('data-crop'), phone = window.matchMedia('(max-width:600px)');
+      function fit(){ svg.setAttribute('viewBox', phone.matches ? crop : full); }
+      fit(); if(phone.addEventListener){ phone.addEventListener('change', fit); }
+      if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){ svg.classList.add('hp-play'); return; }   // the markup is the finished frame
       function tip(k){
         var x = A0[0] + (A1[0] - A0[0]) * k, y = A0[1] + (A1[1] - A0[1]) * k;
-        attempt.setAttribute('x2', x); attempt.setAttribute('y2', y); dot.setAttribute('cx', x); dot.setAttribute('cy', y);
+        line.setAttribute('x2', x); line.setAttribute('y2', y); dot.setAttribute('cx', x); dot.setAttribute('cy', y);
       }
-      svg.classList.add('hp-play');
-      if(reduce){ tip(1); deny.classList.add('hp-on'); return; }
-      tip(0);
+      tip(0); deny.classList.remove('hp-on'); svg.classList.add('hp-play');
       setTimeout(function(){
         var dur = Math.hypot(A1[0] - A0[0], A1[1] - A0[1]) / SPEED * 1000, t0 = performance.now();
         dot.setAttribute('opacity', 1);

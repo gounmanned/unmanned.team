@@ -6,6 +6,10 @@ class SignalSidebar {
         { status: "R1", label: "Contain asset",  when: isOpen },
     ];
 
+    static RECOMMEND = [
+        { status: "R4", label: "Get recommendation", primary: true, when: isOpen },
+    ];
+
     static CLOSES = [
         { status: "CH", label: "Resolve", when: isOpen },
         { status: "CR", label: "Accept risk", when: isOpen },
@@ -73,17 +77,17 @@ class SignalSidebar {
             ? `This one's closed as ${SignalSidebar.CLOSED_AS[status]}.`
             : status == "OB" ? "How do you want to handle this?" : "What's next?";
 
-        const choices = metadata?.threat
-            ? SignalSidebar.CHOICES.filter((c) => c.when(status)).map((c) => {
-                const button = document.createElement("button");
-                button.type = "button";
-                button.className = "choice";
-                button.classList.toggle("is-primary", !!c.primary);
-                button.dataset.status = c.status;
-                button.textContent = c.label;
-                return button;
-            })
-            : [];
+        const options = metadata?.threat ? SignalSidebar.CHOICES : SignalSidebar.RECOMMEND;
+        const choices = options.filter((c) => c.when(status)).map((c) => {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "choice";
+            button.classList.toggle("is-primary", !!c.primary);
+            button.dataset.status = c.status;
+            button.textContent = c.label;
+            return button;
+        });
+
         document.getElementById("next-turn-choices").replaceChildren(...choices);
 
         const closes = SignalSidebar.CLOSES.filter((c) => c.when(status)).flatMap((c, i) => {

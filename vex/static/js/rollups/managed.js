@@ -363,7 +363,6 @@ class ManagedHunt {
         this.field.classList.add('hunt');
     }
 
-    // a random spot clear of the stats and a good distance from the last one
     _spot() {
         const field = this.field.getBoundingClientRect();
         const stats = this.stats.getBoundingClientRect();

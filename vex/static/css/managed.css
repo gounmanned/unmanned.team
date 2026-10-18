@@ -150,9 +150,6 @@
   pointer-events: none;
 }
 
-/* detect + respond field
-   one 3.6s cycle per .hunt: threat appears → HUD glides over (0.5s–1.4s) → locks (1.6s) → neutralized (1.8s) → HUD rests */
-
 #managed-screen .hero-field {
   --threat: var(--risk-high, #dc2626);
   position: absolute;
@@ -170,8 +167,6 @@
   -webkit-mask-image: radial-gradient(70% 70% at 50% 50%, transparent 15%, #000 40%, transparent 95%);
           mask-image: radial-gradient(70% 70% at 50% 50%, transparent 15%, #000 40%, transparent 95%);
 }
-
-/* threat: the dot is ::before, the burst ring is ::after */
 
 #managed-screen .hero-target {
   position: absolute;
@@ -271,8 +266,6 @@
   #managed-screen .hero-target,
   #managed-screen .hero-hud { display: none; }
 }
-
-/* stats */
 
 #managed-screen .managed-hero-stats {
   display: flex;
@@ -404,9 +397,6 @@
 }
 #managed-screen .managed-enter-btn:hover { background: #c9106f; }
 #managed-screen .managed-enter-btn .material-symbols-outlined { font-size: 14px; }
-
-/* Shared row items (admins list + signals list) */
-
 #managed-screen .managed-admin-list,
 #managed-screen .managed-list {
   list-style: none; margin: 0; padding: 0;
@@ -430,8 +420,6 @@
   flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   font-size: 11.5px; color: var(--text-body);
 }
-
-/* Signal rows — grid layout so columns line up across rows regardless of content length */
 
 #managed-screen .managed-row-item--signal {
   display: grid;
@@ -523,7 +511,6 @@
   fill: none;
   stroke: currentColor;
   stroke-width: 1;
-  /* no animation — static is quieter than pulsing */
 }
 
 #managed-screen .managed-signals-empty .material-symbols-outlined {

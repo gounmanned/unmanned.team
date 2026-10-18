@@ -75,7 +75,7 @@ class Table {
 
     elapsed(signal) {
         const utc = v => Date.parse(/[zZ]|[+-]\d\d:?\d\d$/.test(v) ? v : `${v}Z`);
-        const end = signal.status == 'OB' ? Date.now() : utc(signal.updated ?? signal.created);
+        const end = signal.status == "OB" ? Date.now() : utc(signal.updated ?? signal.created);
         const t = Math.max(0, Math.floor((end - utc(signal.created)) / 1000));
 
         return [t / 3600, (t % 3600) / 60, t % 60]
@@ -99,7 +99,7 @@ class Table {
             <td class="metadata">${this.metadata(signal.metadata)}</td>
             <td class="source">${Workspace.esc(signal.asset)}</td>
             <td class="created">${Workspace.date(signal.created)}</td>
-            <td class="elapsed ${signal.status === 'OB' ? 'live' : ''}">${this.elapsed(signal)}</td>`;
+            <td class="elapsed ${signal.status == "OB" ? 'live' : ''}">${this.elapsed(signal)}</td>`;
 
         if (closed) return this.body.append(row);
 

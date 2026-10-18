@@ -2,8 +2,7 @@ const isOpen = (status) => !status.startsWith("C");
 
 class SignalSidebar {
     static CHOICES = [
-        { status: "R3", label: "Investigate", primary: true, when: isOpen },
-        { status: "R4", label: "Recommend", when: isOpen },
+        { status: "R3", label: "Run investigation", primary: true, when: isOpen },
         { status: "R1", label: "Contain asset",  when: isOpen },
     ];
 
@@ -72,7 +71,7 @@ class SignalSidebar {
 
         document.getElementById("next-turn-prompt").textContent = !open
             ? `This one's closed as ${SignalSidebar.CLOSED_AS[status]}.`
-            : status === "OB" ? "How do you want to handle this?" : "What's next?";
+            : status == "OB" ? "How do you want to handle this?" : "What's next?";
 
         const choices = SignalSidebar.CHOICES.filter((c) => c.when(status)).map((c) => {
             const button = document.createElement("button");

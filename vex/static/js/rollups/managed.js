@@ -6,6 +6,7 @@ class ManagedRollup {
         this.list = document.getElementById('managed-accounts');
         this.members = new Map();
         this.summary = new ManagedSummary(state);
+        this.hunt = new ManagedHunt();
         this.listen();
     }
 
@@ -337,5 +338,47 @@ class ManagedSummary {
         document.addEventListener("managed:asset", (ev) => {
             if (ev.asset?.metadata?.group === "identity") this.identities++;
         });
+    }
+}
+
+class ManagedHunt {
+    constructor() {
+        this.field = document.getElementById('managed-hero-field');
+        this.stats = this.field.nextElementSibling;
+        this.x = this.y = 0;
+
+        this.next();
+        setInterval(() => this.next(), 3600);
+    }
+
+    next() {
+        if (!this.field.offsetWidth) return;
+
+        const { x, y } = this._spot();
+        this.field.style.setProperty('--x', `${x}px`);
+        this.field.style.setProperty('--y', `${y}px`);
+
+        this.field.classList.remove('hunt');
+        void this.field.offsetWidth;
+        this.field.classList.add('hunt');
+    }
+
+    // a random spot clear of the stats and a good distance from the last one
+    _spot() {
+        const field = this.field.getBoundingClientRect();
+        const stats = this.stats.getBoundingClientRect();
+        const gap = 60;
+
+        while (true) {
+            const x = gap + Math.random() * (field.width - gap * 2);
+            const y = gap + Math.random() * (field.height - gap * 2);
+            const left = field.left + x, top = field.top + y;
+
+            const clear = left < stats.left - gap || left > stats.right + gap
+                       || top < stats.top - gap || top > stats.bottom + gap;
+            const far = Math.hypot(x - this.x, y - this.y) > field.width * 0.2;
+
+            if (clear && far) return { x: this.x = x, y: this.y = y };
+        }
     }
 }

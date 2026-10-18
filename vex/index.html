@@ -226,35 +226,32 @@
       </div>
       <div class="managed-right" id="managed-right">
         <div class="managed-hero">
-          <div class="managed-hero-radar" aria-hidden="true">
-            <svg viewBox="-210 -210 420 420">
-              <defs>
-                <radialGradient id="managed-hero-fade">
-                  <stop offset="0%" stop-color="#fff"/>
-                  <stop offset="35%" stop-color="#fff" stop-opacity=".8"/>
-                  <stop offset="100%" stop-color="#fff" stop-opacity="0"/>
-                </radialGradient>
-                <mask id="managed-hero-mask">
-                  <circle r="210" fill="url(#managed-hero-fade)"/>
-                </mask>
-              </defs>
+          <svg class="managed-hero-pulse" viewBox="0 0 960 160" aria-hidden="true">
+            <defs>
+              <linearGradient id="managed-pulse-fade" x1="0" x2="1">
+                <stop offset="0" stop-color="#fff" stop-opacity="0"/>
+                <stop offset=".25" stop-color="#fff"/>
+              </linearGradient>
+              <mask id="managed-pulse-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="960" height="160">
+                <rect width="960" height="160" fill="url(#managed-pulse-fade)"/>
+              </mask>
+            </defs>
 
-              <g mask="url(#managed-hero-mask)">
-                <circle class="hero-ring" r="50"/>
-                <circle class="hero-ring" r="100"/>
-                <circle class="hero-ring" r="150"/>
-                <circle class="hero-ring" r="200"/>
-                <circle class="hero-wave" r="200"/>
-                <circle class="hero-wave" r="200" style="animation-delay:-1.4s"/>
-                <circle class="hero-wave" r="200" style="animation-delay:-2.8s"/>
-              </g>
+            <g mask="url(#managed-pulse-mask)">
+              <line class="pulse-baseline" x1="0" x2="960" y1="100" y2="100"/>
+              <path class="pulse-line" d="M0,100 L110,100 L120,92 L128,100 L136,100 L144,62 L154,117 L162,100 L176,100 L190,88 L204,100 L300,100 L310,92 L318,100 L326,100 L334,42 L344,126 L352,100 L366,100 L380,88 L394,100 L470,100 L480,92 L488,100 L496,100 L504,72 L514,113 L522,100 L536,100 L550,88 L564,100 L640,100 L650,92 L658,100 L666,100 L674,34 L684,130 L692,100 L706,100 L720,88 L734,100 L790,100 L800,92 L808,100 L816,100 L824,54 L834,121 L842,100 L856,100 L870,88 L884,100 L920,100"/>
+              <path class="pulse-trace" d="M0,100 L110,100 L120,92 L128,100 L136,100 L144,62 L154,117 L162,100 L176,100 L190,88 L204,100 L300,100 L310,92 L318,100 L326,100 L334,42 L344,126 L352,100 L366,100 L380,88 L394,100 L470,100 L480,92 L488,100 L496,100 L504,72 L514,113 L522,100 L536,100 L550,88 L564,100 L640,100 L650,92 L658,100 L666,100 L674,34 L684,130 L692,100 L706,100 L720,88 L734,100 L790,100 L800,92 L808,100 L816,100 L824,54 L834,121 L842,100 L856,100 L870,88 L884,100 L920,100" pathLength="100"/>
+            </g>
 
-              <circle class="hero-halo" r="48"/>
-              <circle class="hero-reticle" r="27"/>
-              <circle class="hero-pulse" r="10.5"/>
-              <circle class="hero-dot" r="10.5"/>
-            </svg>
-          </div>
+            <circle class="pulse-rider" r="4">
+              <animateMotion dur="4s" repeatCount="indefinite" path="M0,100 L110,100 L120,92 L128,100 L136,100 L144,62 L154,117 L162,100 L176,100 L190,88 L204,100 L300,100 L310,92 L318,100 L326,100 L334,42 L344,126 L352,100 L366,100 L380,88 L394,100 L470,100 L480,92 L488,100 L496,100 L504,72 L514,113 L522,100 L536,100 L550,88 L564,100 L640,100 L650,92 L658,100 L666,100 L674,34 L684,130 L692,100 L706,100 L720,88 L734,100 L790,100 L800,92 L808,100 L816,100 L824,54 L834,121 L842,100 L856,100 L870,88 L884,100 L920,100"/>
+            </circle>
+
+            <circle class="pulse-halo" cx="920" cy="100" r="28"/>
+            <circle class="pulse-reticle" cx="920" cy="100" r="16"/>
+            <circle class="pulse-ping" cx="920" cy="100" r="6"/>
+            <circle class="pulse-dot" cx="920" cy="100" r="6"/>
+          </svg>
 
           <dl class="managed-hero-stats">
             <div><dt>Protected identities</dt><dd id="managed-summary-identity-value">0</dd></div>
@@ -263,7 +260,7 @@
             <div><dt>Open MTTR</dt><dd id="managed-summary-mttr-value">—</dd></div>
           </dl>
         </div>
-      </div>      
+      </div>
     </div>
   </site-rollup>
 

@@ -130,84 +130,115 @@
 #managed-screen .managed-hero {
   position: absolute;
   inset: 0;
+  isolation: isolate;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  padding: 32px;
+  gap: 40px;
+  padding: 48px 40px;
   box-sizing: border-box;
   overflow: hidden;
 }
 
-#managed-screen .managed-hero-radar {
-  width: min(360px, 55vh);
-  aspect-ratio: 1;
+#managed-screen .managed-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(70% 50% at 50% 45%, color-mix(in srgb, var(--brand) 6%, transparent), transparent 70%);
+  pointer-events: none;
 }
 
-#managed-screen .managed-hero-radar svg {
+/* heartbeat graphic */
+
+#managed-screen .managed-hero-pulse {
   display: block;
-  width: 100%;
-  height: 100%;
+  width: min(960px, 100%);
+  height: auto;
   overflow: visible;
 }
 
-#managed-screen .hero-ring {
-  fill: none;
-  stroke: var(--brand);
-  stroke-opacity: 0.16;
+#managed-screen .pulse-baseline {
+  stroke: var(--line);
   stroke-width: 1;
+  stroke-dasharray: 1 4;
+  stroke-linecap: round;
 }
 
-#managed-screen .hero-wave {
+#managed-screen .pulse-line,
+#managed-screen .pulse-trace {
   fill: none;
   stroke: var(--brand);
-  stroke-width: 1.25;
-  transform-box: fill-box;
-  transform-origin: center;
-  opacity: 0;
-  animation: managed-hero-wave 4.2s cubic-bezier(0.15, 0.55, 0.35, 1) infinite;
+  stroke-linejoin: round;
+  stroke-linecap: round;
 }
 
-#managed-screen .hero-halo { fill: var(--brand); fill-opacity: 0.1; }
-
-#managed-screen .hero-reticle {
-  fill: none;
-  stroke: var(--brand);
-  stroke-width: 2.5;
-  stroke-dasharray: 10 7.5;
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: managed-hero-spin 12s linear infinite reverse;
+#managed-screen .pulse-line {
+  stroke-opacity: 0.25;
+  stroke-width: 1.75;
 }
 
-#managed-screen .hero-pulse {
+/* dash head leads at the rider's position; 4s matches animateMotion in the markup */
+#managed-screen .pulse-trace {
+  stroke-width: 2.75;
+  stroke-dasharray: 14 86;
+  filter: drop-shadow(0 0 5px var(--brand));
+  animation: managed-pulse-trace 4s linear infinite;
+}
+
+#managed-screen .pulse-rider {
   fill: var(--brand);
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: managed-hero-pulse 2s ease-out infinite;
+  filter: drop-shadow(0 0 6px var(--brand));
 }
 
-#managed-screen .hero-dot {
+#managed-screen .pulse-halo { fill: var(--brand); fill-opacity: 0.1; }
+
+#managed-screen .pulse-reticle {
+  fill: none;
+  stroke: var(--brand);
+  stroke-width: 1.5;
+  stroke-dasharray: 5 4;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: managed-pulse-spin 12s linear infinite reverse;
+}
+
+#managed-screen .pulse-dot {
   fill: var(--brand);
   stroke: var(--surface);
-  stroke-width: 5;
+  stroke-width: 2.5;
 }
 
-@keyframes managed-hero-wave {
-  0%   { transform: scale(0.02); opacity: 0.85; }
-  60%  { opacity: 0.3; }
-  100% { transform: scale(1); opacity: 0; }
+#managed-screen .pulse-ping {
+  fill: var(--brand);
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: managed-pulse-ping 2s ease-out infinite;
 }
 
-@keyframes managed-hero-spin {
+@keyframes managed-pulse-trace {
+  from { stroke-dashoffset: 114; }
+  to   { stroke-dashoffset: 14; }
+}
+
+@keyframes managed-pulse-spin {
   to { transform: rotate(360deg); }
 }
 
-@keyframes managed-hero-pulse {
+@keyframes managed-pulse-ping {
   from { transform: scale(1);   opacity: 0.5; }
   to   { transform: scale(3.5); opacity: 0; }
 }
+
+@media (prefers-reduced-motion: reduce) {
+  #managed-screen .pulse-trace,
+  #managed-screen .pulse-rider,
+  #managed-screen .pulse-ping { display: none; }
+  #managed-screen .pulse-reticle { animation: none; }
+}
+
+/* stats */
 
 #managed-screen .managed-hero-stats {
   display: flex;
@@ -219,19 +250,22 @@
   flex-direction: column-reverse;
   align-items: center;
   gap: 8px;
-  padding: 0 28px;
+  padding: 0 32px;
 }
 
 #managed-screen .managed-hero-stats > div + div { border-left: 1px solid var(--line); }
 
 #managed-screen .managed-hero-stats dd {
   margin: 0;
-  font-size: 34px;
+  font-size: 38px;
   font-weight: 700;
   line-height: 1;
   font-variant-numeric: tabular-nums;
   color: var(--text-body);
+  transition: color 0.3s;
 }
+
+#managed-screen .managed-hero-stats dd.alert { color: var(--risk-high, #dc2626); }
 
 #managed-screen .managed-hero-stats dt {
   font-size: 10.5px;
@@ -255,12 +289,6 @@
     gap: 20px 0;
   }
   #managed-screen .managed-hero-stats > div:nth-child(3) { border-left: none; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  #managed-screen .hero-wave,
-  #managed-screen .hero-pulse { animation: none; opacity: 0; }
-  #managed-screen .hero-reticle { animation: none; }
 }
 
 /* Two-column detail layout (after an account is selected) */

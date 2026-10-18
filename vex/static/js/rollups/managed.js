@@ -285,13 +285,19 @@ class ManagedSummary {
     }
 
     renderSignals() {
-        const threats = this.open.filter(s => s.metadata?.threat);
-        const mttr = threats.length
-            ? threats.reduce((sum, s) => sum + (Date.now() - new Date(s.created)), 0) / threats.length
+        const ages = this.open
+            .filter(s => s.metadata?.threat)
+            .map(s => Date.now() - new Date(s.created))
+            .sort((a, b) => a - b);
+
+        const mid = Math.floor(ages.length / 2);
+        const median = ages.length
+            ? (ages.length % 2 ? ages[mid] : (ages[mid - 1] + ages[mid]) / 2)
             : null;
 
         this._set('managed-summary-signals-value', this.open.length.toLocaleString());
-        this._set('managed-summary-mttr-value', mttr === null ? '—' : this._duration(mttr));
+        this._set('managed-summary-mttr-value', median === null ? '—' : this._duration(median));
+        document.getElementById('managed-summary-signals-value')?.classList.toggle('alert', this.open.length > 0);
     }
 
     renderAssets() {

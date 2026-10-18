@@ -210,36 +210,6 @@
       </button>
     </div>
 
-    <div class="managed-summary-row" id="managed-summary-row">
-      <div class="managed-summary-stat" id="managed-summary-accounts">
-        <span class="material-symbols-outlined managed-summary-icon">group</span>
-        <div class="managed-summary-stat-text">
-          <span class="managed-summary-stat-value" id="managed-summary-accounts-value">0</span>
-          <span class="managed-summary-stat-label">managed accounts</span>
-        </div>
-      </div>
-
-      <div class="managed-summary-divider"></div>
-
-      <div class="managed-summary-stat" id="managed-summary-assets">
-        <span class="material-symbols-outlined managed-summary-icon">badge</span>
-        <div class="managed-summary-stat-text">
-          <span class="managed-summary-stat-value" id="managed-summary-identity-value">0</span>
-          <span class="managed-summary-stat-label">protected identities</span>
-        </div>
-      </div>
-
-      <div class="managed-summary-divider"></div>
-
-      <div class="managed-summary-stat" id="managed-summary-signals">
-        <span class="material-symbols-outlined managed-summary-icon">sensors</span>
-        <div class="managed-summary-stat-text">
-          <span class="managed-summary-stat-value" id="managed-summary-signals-value">0</span>
-          <span class="managed-summary-stat-label">open signals</span>
-        </div>
-      </div>
-    </div>
-
     <div class="managed-body">
       <div class="managed-left">
         <div class="managed-accounts-wrap">
@@ -255,54 +225,45 @@
         </div>
       </div>
       <div class="managed-right" id="managed-right">
-        <div class="managed-intro-watermark">
-          <div class="managed-intro-radar" aria-hidden="true">
-            <svg viewBox="0 0 800 800"><use href="#radar-rings"></use></svg>
+        <div class="managed-hero">
+          <div class="managed-hero-radar" aria-hidden="true">
+            <svg viewBox="-210 -210 420 420">
+              <defs>
+                <radialGradient id="managed-hero-fade">
+                  <stop offset="0%" stop-color="#fff"/>
+                  <stop offset="35%" stop-color="#fff" stop-opacity=".8"/>
+                  <stop offset="100%" stop-color="#fff" stop-opacity="0"/>
+                </radialGradient>
+                <mask id="managed-hero-mask">
+                  <circle r="210" fill="url(#managed-hero-fade)"/>
+                </mask>
+              </defs>
+
+              <g mask="url(#managed-hero-mask)">
+                <circle class="hero-ring" r="50"/>
+                <circle class="hero-ring" r="100"/>
+                <circle class="hero-ring" r="150"/>
+                <circle class="hero-ring" r="200"/>
+                <circle class="hero-wave" r="200"/>
+                <circle class="hero-wave" r="200" style="animation-delay:-1.4s"/>
+                <circle class="hero-wave" r="200" style="animation-delay:-2.8s"/>
+              </g>
+
+              <circle class="hero-halo" r="48"/>
+              <circle class="hero-reticle" r="27"/>
+              <circle class="hero-pulse" r="10.5"/>
+              <circle class="hero-dot" r="10.5"/>
+            </svg>
           </div>
-          <div class="corner tl managed-intro-corner"></div>
-          <div class="corner tr managed-intro-corner"></div>
-          <div class="corner bl managed-intro-corner"></div>
-          <div class="corner br managed-intro-corner"></div>
 
-          <div class="managed-intro-label"><span class="status-dot"></span>WHAT IS VEX</div>
-
-          <p class="managed-intro-lede">VEX is an offensive Security Operations Center.<br>One console for you and every customer you protect.</p>
-
-          <div class="managed-intro-accounts">
-            <div class="managed-intro-account-card">
-              <span class="material-symbols-outlined">home</span>
-              <div class="managed-intro-account-title">Root account</div>
-              <p>Your own company. Manage yourself just like any managed customer.</p>
-            </div>
-            <div class="managed-intro-account-card">
-              <span class="material-symbols-outlined">group_add</span>
-              <div class="managed-intro-account-title">Managed accounts</div>
-              <p>Invite customers to VEX so you can manage their cybersecurity.</p>
-            </div>
-          </div>
-
-          <div class="managed-intro-checklist">
-            <div class="managed-intro-checklist-title">For every account, connect</div>
-            <div class="managed-intro-checklist-grid">
-              <div class="managed-intro-checklist-item">
-                <span class="material-symbols-outlined">badge</span>
-                <div class="managed-intro-checklist-item-title">Identity</div>
-                <div class="managed-intro-hint">Google or Microsoft</div>
-              </div>
-              <div class="managed-intro-checklist-item">
-                <span class="material-symbols-outlined">dns</span>
-                <div class="managed-intro-checklist-item-title">Registrar</div>
-                <div class="managed-intro-hint">Cloudflare</div>
-              </div>
-              <div class="managed-intro-checklist-item">
-                <span class="material-symbols-outlined">laptop_mac</span>
-                <div class="managed-intro-checklist-item-title">Endpoint</div>
-                <div class="managed-intro-hint">RMM or EDR</div>
-              </div>
-            </div>
-          </div>
-        </div>     
-      </div>
+          <dl class="managed-hero-stats">
+            <div><dt>Protected identities</dt><dd id="managed-summary-identity-value">0</dd></div>
+            <div><dt>Managed accounts</dt><dd id="managed-summary-accounts-value">0</dd></div>
+            <div><dt>Open signals</dt><dd id="managed-summary-signals-value">0</dd></div>
+            <div><dt>Open MTTR</dt><dd id="managed-summary-mttr-value">—</dd></div>
+          </dl>
+        </div>
+      </div>      
     </div>
   </site-rollup>
 

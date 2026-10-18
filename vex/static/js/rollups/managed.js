@@ -273,16 +273,29 @@ class ManagedSummary {
     }
 
     resetSignals() {
-        this.signals = { open: 0 };
+        this.open = [];
     }
 
     resetAssets() {
-        this.assets = { identity: 0 };
+        this.identities = 0;
     }
 
     setAccountCount(count) {
-        const value = document.getElementById('managed-summary-accounts-value');
-        if (value) value.textContent = count;
+        this._set('managed-summary-accounts-value', count.toLocaleString());
+    }
+
+    renderSignals() {
+        const threats = this.open.filter(s => s.metadata?.threat);
+        const mttr = threats.length
+            ? threats.reduce((sum, s) => sum + (Date.now() - new Date(s.created)), 0) / threats.length
+            : null;
+
+        this._set('managed-summary-signals-value', this.open.length.toLocaleString());
+        this._set('managed-summary-mttr-value', mttr === null ? '—' : this._duration(mttr));
+    }
+
+    renderAssets() {
+        this._set('managed-summary-identity-value', this.identities.toLocaleString());
     }
 
     _resetCounts() {
@@ -290,41 +303,33 @@ class ManagedSummary {
         this.resetAssets();
     }
 
+    _duration(ms) {
+        const minutes = Math.round(ms / 60000);
+        if (minutes < 60) return `${minutes}m`;
+        if (minutes < 1440) return `${Math.round(minutes / 60)}h`;
+        return `${Math.round(minutes / 1440)}d`;
+    }
+
+    _set(id, text) {
+        const el = document.getElementById(id);
+        if (el) el.textContent = text;
+    }
+
     _setLoading() {
-        const ids = [
-            'managed-summary-accounts-value',
-            'managed-summary-signals-value',
-            'managed-summary-identity-value',
-        ];
-        ids.forEach(id => {
+        ['managed-summary-accounts-value', 'managed-summary-signals-value',
+         'managed-summary-identity-value', 'managed-summary-mttr-value'].forEach(id => {
             const el = document.getElementById(id);
             if (el) el.innerHTML = '<span class="managed-badge-spinner"></span>';
         });
     }
 
-    renderSignals() {
-        const value = document.getElementById('managed-summary-signals-value');
-        if (!value) return;
-
-        value.textContent = this.signals.open;
-    }
-
-    renderAssets() {
-        const identity = document.getElementById('managed-summary-identity-value');
-        if (identity) {
-            identity.textContent = this.assets.identity;
-        }
-    }
-
     listen() {
         document.addEventListener("signal:managed", (ev) => {
-            if (!ev.signal.status.startsWith('O')) return;
-            this.signals.open++;
+            if (ev.signal.status.startsWith('O')) this.open.push(ev.signal);
         });
 
         document.addEventListener("managed:asset", (ev) => {
-            if (ev.asset?.metadata?.group != "identity") return;
-            this.assets.identity++;
+            if (ev.asset?.metadata?.group === "identity") this.identities++;
         });
     }
 }

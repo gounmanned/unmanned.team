@@ -66,22 +66,24 @@ class SignalSidebar {
     }
 
     renderTurn() {
-        const { status } = this.signal;
+        const { status, metadata } = this.signal;
         const open = isOpen(status);
 
         document.getElementById("next-turn-prompt").textContent = !open
             ? `This one's closed as ${SignalSidebar.CLOSED_AS[status]}.`
             : status == "OB" ? "How do you want to handle this?" : "What's next?";
 
-        const choices = SignalSidebar.CHOICES.filter((c) => c.when(status)).map((c) => {
-            const button = document.createElement("button");
-            button.type = "button";
-            button.className = "choice";
-            button.classList.toggle("is-primary", !!c.primary);
-            button.dataset.status = c.status;
-            button.textContent = c.label;
-            return button;
-        });
+        const choices = metadata?.threat
+            ? SignalSidebar.CHOICES.filter((c) => c.when(status)).map((c) => {
+                const button = document.createElement("button");
+                button.type = "button";
+                button.className = "choice";
+                button.classList.toggle("is-primary", !!c.primary);
+                button.dataset.status = c.status;
+                button.textContent = c.label;
+                return button;
+            })
+            : [];
         document.getElementById("next-turn-choices").replaceChildren(...choices);
 
         const closes = SignalSidebar.CLOSES.filter((c) => c.when(status)).flatMap((c, i) => {
@@ -91,7 +93,8 @@ class SignalSidebar {
             button.textContent = c.label;
             return i ? [" · ", button] : [button];
         });
-        document.getElementById("next-turn-closes").replaceChildren(open ? "Or close it out: " : "", ...closes);
+
+        document.getElementById("next-turn-closes").replaceChildren(open ? "Close it out: " : "", ...closes);
     }
 
     add(update, when = update.updated) {

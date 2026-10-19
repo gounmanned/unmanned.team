@@ -234,93 +234,43 @@
   }
   @media (max-width:700px){.slack-band{padding:64px 0;}}
 
-  /* ---------- PREVENTION STORY ----------
-     Nothing is pinned any more (2026-10-17). The intro row (three layers, attacks dropping through them), then
-     "A different kind of prevention.": the top layer becomes a see-through box and the five beats play once on a
-     clock when seen (scan, find, assess, lock, retest). Desktop (1100px+) shows every line beside the cube, each a
-     button that replays from its moment; below 1100px one line at a time with tappable dots. */
-  :root{--amber-text:#946200;}   /* amber for text on white (5:1); the square itself uses Slack’s yellow */
-  .pv-title{font-weight:600;font-size:clamp(34px * 27 / 52, 4.2vw * 27 / 52, 27px);line-height:1.3;letter-spacing:-0.01em;}
+  /* ---------- PREVENTION ----------
+     One section (merged 2026-10-18): "A different kind of prevention." and its lede beside the layers (attacks
+     dropping through them), then prevent / detect / respond. Side by side from 720px; stacked below that. */
   .pv-lede{margin-top:16px;font-size:18px;font-weight:300;line-height:1.7;color:var(--body);}
   .pv-lede b{font-weight:600;}
-  .pv-head{font-weight:600;font-size:clamp(34px,4.2vw,52px);line-height:1.1;letter-spacing:-0.02em;}
-  .pv-lines{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:14px;}
-  .pv-lines li{font-size:16px;line-height:1.6;color:var(--body-soft);transition:opacity 0.4s ease, color 0.3s ease;}
-  .pv-lines li.is-now{font-weight:600;color:var(--ink);}
+  .pv-head{font-weight:600;letter-spacing:-0.02em;}
   .pv-stage{position:relative;}
   .pv-stage canvas{position:absolute;inset:0;width:100%;height:100%;}
-  .pv-call{position:absolute;bottom:auto;width:214px;font-family:var(--mono);font-size:10.5px;line-height:1.45;letter-spacing:0.08em;text-transform:uppercase;color:var(--surface-dark);
-    opacity:0;transition:opacity 0.3s ease;pointer-events:none;}
-  .pv-call.is-on{opacity:1;}
-  .pv-call b{display:block;padding-bottom:6px;margin-bottom:8px;border-bottom:1px solid var(--gray-line);font-weight:500;color:var(--c, var(--sev-1));transition:color 0.3s ease;}
-  .pv-call span{display:block;margin-top:5px;opacity:0;transform:translateY(3px);transition:opacity 0.3s ease, transform 0.3s ease;}
-  .pv-call span.is-on{opacity:1;transform:none;}
   .pv-pdr{padding-top:36px;}
   .pv-pdr .pdr{margin-top:0;}
+  /* the arrows sit on the pink lines, centered in a 32px gap (8px clear on each side) */
+  .pv-pdr .pdr{column-gap:32px;}
+  .pv-pdr .pdr-item:not(:last-child)::after{top:-7.5px;right:-24px;}   /* the shaft (y=8 in the icon) on the 1px line */
+  .pv-pdr .pv-more{margin-top:24px;font-weight:500;}
+  .pv-intro .pv-lede{max-width:60ch;}
+  .pv-intro .pv-head{font-size:clamp(34px * 32 / 52, 4.2vw * 32 / 52, 32px);line-height:1.2;}
+  /* body copy: the hero's lede matches How it works (20px, 17px on phones); the prevention lede is always a step smaller */
+  .hero-lede{max-width:680px;font-size:20px;line-height:1.6;}
+  @media (max-width:700px){ .hero-lede{font-size:17px;} .pv-intro .pv-lede{font-size:16px;} }
 
-  /* stacked (phones and tablets) */
+  /* stacked (under 720px): copy, the layers, then prevent / detect / respond */
   .pv-stack{padding:24px 0 72px;}
   .pv-stack .pv-stage{height:300px;margin-top:24px;}
-  .pv-stack .pv-pdr{margin-top:56px;}
-  .pv-stack .pv-story{margin-top:88px;display:flex;flex-direction:column;gap:24px;}
-  .pv-stack .pv-stage--box{height:300px;margin-top:0;}
-  .pv-stack .pv-call{position:static;width:auto;margin-top:8px;}
-  /* phones: one moment at a time, in a caption sized to the longest one (--cap-h, measured by the script),
-     so the cube below never moves; dots show where you are. Reduced motion shows every line. */
-  .pv-stack .pv-lines{min-height:var(--cap-h, 6.5em);}
-  .pv-stack .pv-lines li{display:none;font-size:17px;color:var(--ink);}
-  .pv-stack .pv-lines li.is-now{display:block;animation:pv-cap 0.5s ease both;}
-  @keyframes pv-cap{from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none}}
-  /* tappable: jump to a moment (the story carries on from there). The line fills pink up to the current dot. */
-  .pv-dots{position:relative;display:flex;justify-content:space-between;margin:-12px -14px 0;}
-  .pv-dots::before,.pv-dots::after{content:'';position:absolute;left:22px;top:50%;height:2px;margin-top:-1px;background:var(--gray-line);}
-  .pv-dots::before{right:22px;}
-  .pv-dots::after{width:calc((100% - 44px) * var(--done, 0));background:var(--pink);transition:width 0.5s ease;}
-  .pv-dots button{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;width:44px;height:44px;padding:0;border:0;background:none;cursor:pointer;}
-  .pv-dots button::before{content:'';width:14px;height:14px;box-sizing:border-box;border-radius:50%;border:2px solid var(--gray-faint);background:#fff;
-    transition:background-color 0.3s ease, border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;}
-  .pv-dots button.is-seen::before{background:var(--gray-faint);}
-  .pv-dots button.is-now::before{background:var(--pink);border-color:var(--pink);transform:scale(1.15);box-shadow:0 0 0 5px rgba(224,18,128,0.15);}
-  @media (prefers-reduced-motion: reduce){
-    .pv-stack .pv-lines li{display:block;animation:none;}
-    .pv-dots{display:none;}
-  }
-  .pv-replay{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;padding:0;border:0;background:none;font:500 14px var(--font-sans);color:var(--pink-text);cursor:pointer;
-    opacity:0;pointer-events:none;transition:opacity 0.3s ease;}
-  .pv-replay.is-on{opacity:1;pointer-events:auto;}
+  .pv-stack .pv-pdr{margin-top:0;}
   .pv-desk{display:none;}
-
-  /* Desktop (1100px+): no pinning. The intro and its layers, then "A different kind of
-     prevention." on gray: the cube plays the five moments once when it's seen and stops on the last; each line
-     is a button that replays the story from that moment. */
-  @media (min-width:1100px){
+  /* copy and layers side by side from 720px (two even columns until the drawing reaches its full 480px) */
+  @media (min-width:720px){
     .pv-stack{display:none;}
     .pv-desk{display:block;}
     .hero{padding-bottom:56px;}
     .pv-rule{border-top:1px solid var(--gray-line);}
-    .pv-d-intro{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,480px);column-gap:64px;align-items:center;padding:56px 0 88px;}
+    .pv-d-intro{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:40px;align-items:center;padding:56px 0 88px;}
     .pv-d-intro .pv-stage{height:260px;}
     .pv-d-intro .pv-pdr{grid-column:1 / -1;}
-    .pv-d-story{padding:96px 0 112px;background:var(--surface-gray);}
-    .pv-d-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,560px);column-gap:64px;align-items:start;margin-top:40px;}
-    .pv-d-box{height:480px;}
-    .pv-d-box canvas{pointer-events:none;width:calc(100% + 48px);height:calc(100% + 90px);}   /* room for the shadow to fade (PAD in the script) */
-    .pv-d-lines{gap:16px;padding-left:28px;}
-    .pv-d-lines li{position:relative;font-size:17px;line-height:1.55;}
-    /* the progress rail: a line down the left, a dot per moment */
-    .pv-d-lines li:not(.pv-more):not(:nth-last-child(2))::after{content:'';position:absolute;left:-24px;top:0;bottom:-16px;width:1px;background:var(--gray-line);}
-    .pv-d-lines li:first-child::after{top:12px;}
-    .pv-d-lines li.beat::before{content:'';position:absolute;z-index:1;left:-28px;top:9px;width:9px;height:9px;box-sizing:border-box;border-radius:50%;
-      border:1.5px solid var(--gray-faint);background:#fff;transition:background-color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;}
-    .pv-d-lines li.beat.is-seen::before{background:var(--gray-faint);}
-    .pv-d-lines li.beat.is-now::before{background:var(--pink);border-color:var(--pink);box-shadow:0 0 0 4px rgba(224,18,128,0.15);}
-    .pv-jump{display:block;width:100%;padding:0;border:0;background:none;font:inherit;text-align:left;color:inherit;cursor:pointer;opacity:0.45;transition:opacity 0.4s ease, color 0.4s ease;}
-    .pv-d-lines li.is-seen .pv-jump{opacity:0.6;}
-    .pv-d-lines li.is-old .pv-jump{opacity:0.4;}
-    .pv-d-lines li.is-now .pv-jump{opacity:1;color:var(--ink);}
-    .pv-jump:hover{opacity:1;}
-    .pv-jump:focus-visible{outline:2px solid var(--pink);outline-offset:4px;border-radius:2px;}
-    .pv-d-lines li.pv-more{margin-top:8px;}
+  }
+  @media (min-width:1100px){
+    .pv-d-intro{grid-template-columns:minmax(0,1fr) minmax(0,480px);column-gap:64px;}
   }
 
   /* hero: the try-it line sits under the button it belongs to */
@@ -328,17 +278,33 @@
   .cta-main{display:flex;flex-direction:column;align-items:center;gap:12px;}
   .ctas > .text-link{min-height:52px;}
   .slack-copy .slack-note{margin-top:-14px;font-size:13px;line-height:1.5;color:rgba(255,255,255,0.7);}
-  .hero-note{font-size:14px;line-height:1.5;color:var(--body-soft);}
+  .hero-note{font-size:12px;line-height:1.5;color:var(--body-soft);}
   /* team: centered body copy (Figma) */
   .sec-head--center p{max-width:680px;margin-left:auto;margin-right:auto;text-align:center;}
   #team .team{max-width:880px;margin-left:auto;margin-right:auto;}
+  /* 900px and below: David on top, John and Phil side by side under him, each hugging its content, all centered.
+     Under 560px they don't fit side by side: one centered column as wide as the widest person. */
+  @media (max-width:900px){
+    #team .team{width:max-content;max-width:100%;grid-template-columns:repeat(2,minmax(0,1fr));gap:33px 48px;}   /* two even columns, as wide as the widest */
+    #team .member:first-child{grid-column:1 / -1;justify-self:center;width:calc(50% - 24px);}
+    #team .member:last-child{position:relative;}   /* a 1px line between John and Phil, in the middle of the gap */
+    #team .member:last-child::before{content:'';position:absolute;top:0;bottom:0;left:-24px;width:1px;background:var(--gray-line);}
+    /* and a 1px line across both columns between David and the pair, 16px from each */
+    #team .member:nth-child(2){position:relative;}
+    #team .member:nth-child(2)::after{content:'';position:absolute;top:-17px;left:0;width:calc(200% + 48px);height:1px;background:var(--gray-line);}
+  }
+  @media (max-width:560px){
+    #team .team{grid-template-columns:minmax(0,1fr);gap:28px;}
+    #team .member:first-child{grid-column:auto;width:auto;justify-self:stretch;}
+    #team .member:last-child::before,#team .member:nth-child(2)::after{display:none;}
+  }
   /* closing banner (same as the earlier How it works one) */
   .close-band{padding:96px 0;background:var(--ink);}
-  .close-box{width:max-content;max-width:100%;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:16px;padding:16px 24px 24px;background:#17171c;border-radius:2px;}
+  .close-box{width:max-content;max-width:100%;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:16px;padding:0;}   /* no inner box: the dark band only */
   .close-box .eyebrow-label{color:var(--gray-faint);}
   .close-row{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:16px 32px;}
   .close-row p{font-weight:600;font-size:clamp(34px * 28 / 52, 4.2vw * 28 / 52, 28px);line-height:1.25;color:#fff;}
-  @media (max-width:700px){ .close-band{padding:64px 0;} .close-box{padding:16px;} .close-row{flex-direction:column;} .close-row p{text-align:center;} }
+  @media (max-width:700px){ .close-band{padding:64px 0;} .close-row{flex-direction:column;} .close-row p{text-align:center;} }
 
   .slack-copy .slack-lead{font-weight:600;font-size:clamp(34px * 22 / 52, 4.2vw * 22 / 52, 22px);line-height:1.35;color:#fff;}
 
@@ -348,17 +314,33 @@
   .slack-cards.will-arrive.is-in .card:nth-child(2){transition-delay:0.6s;}
   .slack-cards.will-arrive.is-in .card:nth-child(3){transition-delay:1.2s;}
 
-  /* the closing link arrives a beat after the last line */
-  .pv-lines li.pv-more{margin-top:6px;font-weight:500;}
-  .pv-lines li.pv-more.is-seen > *{transition-delay:0.9s;}
-
   /* ---------- INTEGRATIONS DRAWER ---------- */
-  @media (prefers-reduced-motion: reduce){
-    .pv-lines li.pv-more{transition:none !important;}
+  /* prevent / detect / respond stay three across down to 641px (they only stack on phones) */
+  @media (min-width:641px) and (max-width:900px){
+    .pv-pdr .pdr{grid-template-columns:repeat(3,minmax(0,1fr));gap:24px 32px;}
+    .pv-pdr .pdr-item:not(:last-child)::after{display:block;}
   }
-  @media (prefers-reduced-motion: reduce){
-    .pv-lines li,.pv-lines li::before,.pv-jump,.pv-call,.pv-call span{transition:none !important;}
+
+  /* stacked (640px and below): each label belongs to what's under it. Clear space above the label (about 26px from
+     the text before), a short step from its line to the title (about 13px); a little more before the link. */
+  @media (max-width:640px){
+    .pv-pdr .pdr{gap:47px;}
+    .pv-pdr .pv-more{margin-top:28px;}
+    .pv-pdr .pdr-key{margin-bottom:6px;}
   }
+
+  /* ---------- phones: a tighter pass (2026-10-18, as on How it works). Nothing is hidden; less air ---------- */
+  @media (max-width:700px){
+    .hero{padding:40px 0 40px;}
+    .section,.slack-band,.close-band{padding:48px 0;}
+    .pv-stack{padding:8px 0 48px;}
+    .pv-stack .pv-stage{height:240px;margin-top:16px;}
+    .pv-pdr{padding-top:24px;}
+    .slack-grid{gap:32px;}
+    #team .team{margin-top:32px;}
+    #team .member img{width:72px;height:72px;}
+  }
+  @media (max-width:560px){ #team .team{gap:24px;} }
   /* ---------- FOOTER ---------- */
   footer{
     border-top:1px solid var(--gray-line);padding:28px 56px 40px;display:flex;justify-content:space-between;align-items:center;
@@ -431,72 +413,39 @@
   </section>
 
   <section class="pv" id="prevention">
-    <!-- phones and tablets: stacked; the box plays by itself when it scrolls into view -->
+    <!-- phones and tablets: stacked -->
     <div class="pv-stack wrap">
       <div class="pv-intro">
-            <h2 class="pv-title">Prevention means less to detect and respond&nbsp;to.</h2>
-            <p class="pv-lede">Our background in offensive security operations gives us a different approach to the prevention layer. <b>Now that’s offensive.</b></p>
+            <h2 class="pv-head">A different kind of prevention.</h2>
+            <p class="pv-lede">Prevention means less to detect and respond to. Most AI SOCs start at the alert. VEX starts before, by knowing how attackers work, AI and human. <b>Now that’s offensive.</b></p>
           </div>
       <div class="pv-stage" role="img" aria-label="Three layers: prevent, detect and respond. Most attacks stop at prevent, a few reach detect, and rarely one reaches respond."><canvas data-scene="layers"></canvas></div>
       <div class="pv-pdr">
       <div class="pdr">
-        <div class="pdr-item"><p class="pdr-key">Prevent</p><h3>We attack first</h3><p>Gaps are closed before anyone else finds them.</p></div>
+        <div class="pdr-item"><p class="pdr-key">Prevent</p><h3>We attack first</h3><p>VEX scans your systems like an attacker, sizes up each gap, then locks it or tells you the next step. Then it tests again.</p></div>
         <div class="pdr-item"><p class="pdr-key">Detect</p><h3>VEX handles the noise</h3><p>See it in Slack, where you work.</p></div>
         <div class="pdr-item"><p class="pdr-key">Respond</p><h3>Human judgment</h3><p>Not another ticket. An expert who’s on it.</p></div>
       </div>
-      </div>
-      <div class="pv-story">
-        <h2 class="pv-head">A different kind of prevention.</h2>
-        <ol class="pv-lines" aria-live="polite">
-            <li class="beat" data-from="3"><span>Most AI SOCs start at the alert.</span></li>
-            <li data-from="3"><span>VEX starts before, by knowing how attackers work, AI and human.</span></li>
-            <li class="beat" data-from="4"><span>It scans the system and identifies weak points.</span></li>
-            <li class="beat" data-from="5"><span>When it finds a gap, it identifies patterns and assesses the threat potential.</span></li>
-            <li class="beat" data-from="6"><span>VEX locks the door or recommends next steps.</span></li>
-            <li class="beat" data-from="7"><span>The gap is tested again and watched.</span></li>
-            <li class="pv-more" data-from="7"><a class="text-link" href="/detections/" target="_blank" rel="noopener">Want to see everything we detect? <img src="../static/icon-arrow-right-pink.svg" width="16" height="16" alt=""></a></li>
-        </ol>
-        <div class="pv-dots" role="group" aria-label="Story moments"><button type="button" aria-label="Moment 1 of 5"></button><button type="button" aria-label="Moment 2 of 5"></button><button type="button" aria-label="Moment 3 of 5"></button><button type="button" aria-label="Moment 4 of 5"></button><button type="button" aria-label="Moment 5 of 5"></button></div>
-        <div>
-          <div class="pv-stage pv-stage--box" role="img" aria-label="VEX scans your systems, finds an old sign-in method that skips MFA, turns it off, then tests it again."><canvas data-scene="box"></canvas></div>
-          <div class="pv-call" aria-hidden="true"><b data-t></b><span></span><span></span><span></span></div>
-        </div>
-        <button class="pv-replay" type="button">Play again</button>
+        <p class="pv-more"><a class="text-link" href="/how-it-works/">See how VEX closes gaps <img src="../static/icon-arrow-right-pink.svg" width="16" height="16" alt=""></a></p>
       </div>
     </div>
-    <!-- desktop: the intro, then the story on gray; plays once when seen, lines replay it -->
+    <!-- desktop: copy beside the layers, then prevent / detect / respond -->
     <div class="pv-desk">
       <div class="wrap pv-rule"></div>
       <div class="wrap pv-d-intro">
         <div class="pv-intro">
-            <h2 class="pv-title">Prevention means less to detect and respond&nbsp;to.</h2>
-            <p class="pv-lede">Our background in offensive security operations gives us a different approach to the prevention layer. <b>Now that’s offensive.</b></p>
+            <h2 class="pv-head">A different kind of prevention.</h2>
+            <p class="pv-lede">Prevention means less to detect and respond to. Most AI SOCs start at the alert. VEX starts before, by knowing how attackers work, AI and human. <b>Now that’s offensive.</b></p>
           </div>
         <div class="pv-stage" role="img" aria-label="Three layers: prevent, detect and respond. Most attacks stop at prevent, a few reach detect, and rarely one reaches respond."><canvas data-scene="dlayers"></canvas></div>
         <div class="pv-pdr">
       <div class="pdr">
-        <div class="pdr-item"><p class="pdr-key">Prevent</p><h3>We attack first</h3><p>Gaps are closed before anyone else finds them.</p></div>
+        <div class="pdr-item"><p class="pdr-key">Prevent</p><h3>We attack first</h3><p>VEX scans your systems like an attacker, sizes up each gap, then locks it or tells you the next step. Then it tests again.</p></div>
         <div class="pdr-item"><p class="pdr-key">Detect</p><h3>VEX handles the noise</h3><p>See it in Slack, where you work.</p></div>
         <div class="pdr-item"><p class="pdr-key">Respond</p><h3>Human judgment</h3><p>Not another ticket. An expert who’s on it.</p></div>
       </div>
+        <p class="pv-more"><a class="text-link" href="/how-it-works/">See how VEX closes gaps <img src="../static/icon-arrow-right-pink.svg" width="16" height="16" alt=""></a></p>
       </div>
-      </div>
-      <div class="pv-d-story">
-        <div class="wrap">
-          <h2 class="pv-head">A different kind of prevention.</h2>
-          <div class="pv-d-grid">
-            <ol class="pv-lines pv-d-lines">
-            <li class="beat" data-from="3"><button class="pv-jump" type="button">Most AI SOCs start at the alert.</button></li>
-            <li data-from="3"><button class="pv-jump" type="button">VEX starts before, by knowing how attackers work, AI and human.</button></li>
-            <li class="beat" data-from="4"><button class="pv-jump" type="button">It scans the system and identifies weak points.</button></li>
-            <li class="beat" data-from="5"><button class="pv-jump" type="button">When it finds a gap, it identifies patterns and assesses the threat potential.</button></li>
-            <li class="beat" data-from="6"><button class="pv-jump" type="button">VEX locks the door or recommends next steps.</button></li>
-            <li class="beat" data-from="7"><button class="pv-jump" type="button">The gap is tested again and watched.</button></li>
-            <li class="pv-more" data-from="99"><a class="text-link" href="/detections/" target="_blank" rel="noopener">Want to see everything we detect? <img src="../static/icon-arrow-right-pink.svg" width="16" height="16" alt=""></a></li>
-            </ol>
-            <div class="pv-stage pv-d-box" role="img" aria-label="VEX scans your systems, finds an old sign-in method that skips MFA, turns it off, then tests it again."><canvas data-scene="dbox"></canvas><div class="pv-call" aria-hidden="true"><b data-t></b><span></span><span></span><span></span></div></div>
-          </div>
-        </div>
       </div>
     </div>
   </section>
@@ -618,81 +567,19 @@
     })();
 
     (function(){
-      // PREVENTION SCENE: one small 3D drawing on a canvas (orthographic, no library).
+      // PREVENTION LAYERS: three layers on a canvas (orthographic, no library), with attacks falling through them.
       // World: x right, y up, z toward the viewer. The prevent layer is the square -1..1 at y = 0.
       var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      var C = { pink:'224,18,128', ink:'11,12,13', gray:'108,108,112', red:'220,38,38', amber:'236,178,46', green:'14,124,82' };
-      var GAP = 0.42, H = 2.0, N = 6;        // layer gap, box height (2 = a cube), grid cells per side
-      var CELL = 2 / N;
+      var C = { pink:'224,18,128', ink:'11,12,13', gray:'108,108,112' };
+      var GAP = 0.42, N = 6, CELL = 2 / N;   // layer gap, grid cells per side
       function rgba(c, a){ return 'rgba(' + c + ',' + a + ')'; }
-      function ease(t){ t = Math.max(0, Math.min(1, t)); return t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3) / 2; }
       function clamp(t){ return Math.max(0, Math.min(1, t)); }
-      function mix(a, b, t){ return a + (b - a) * t; }
-      function mixC(a, b, t){ a = a.split(','); b = b.split(','); return a.map(function(v, i){ return Math.round(mix(+v, +b[i], t)); }).join(','); }
-      // a seeded random, so the scan and the paths look the same every time
+      // a seeded random, so the attacks land in the same places every visit
       function rng(seed){ return function(){ seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }; }
 
-      // Tweened number: set(to, ms, delay) eases from wherever it is now.
-      function Tw(v){ this.from = v; this.to = v; this.t0 = 0; this.d = 1; }
-      Tw.prototype.set = function(to, ms, delay, now){
-        if(to === this.to){ return; }
-        this.from = this.get(now); this.to = to; this.t0 = now + (delay || 0); this.d = reduce ? 1 : (ms || 1);
-        if(reduce){ this.t0 = now - 1; }
-      };
-      Tw.prototype.get = function(now){ return mix(this.from, this.to, ease((now - this.t0) / this.d)); };
-
-      // the cells on all six faces of the box: corners as functions of the box height h
-      var CELLS = [];
-      (function(){
-        var i, j;
-        for(i = 0; i < N; i++){ for(j = 0; j < N; j++){
-          var x0 = -1 + i*CELL, z0 = -1 + j*CELL;
-          CELLS.push({ f:'top', n:[0,1,0], q:[[x0,0,z0],[x0+CELL,0,z0],[x0+CELL,0,z0+CELL],[x0,0,z0+CELL]] });
-          CELLS.push({ f:'bot', n:[0,-1,0], q:[[x0,-H,z0],[x0+CELL,-H,z0],[x0+CELL,-H,z0+CELL],[x0,-H,z0+CELL]] });
-        } }
-        var rows = Math.round(H / CELL);
-        for(i = 0; i < N; i++){ for(j = 0; j < rows; j++){
-          var a = -1 + i*CELL, y0 = -j*CELL;
-          CELLS.push({ f:'zp', n:[0,0,1], q:[[a,y0,1],[a+CELL,y0,1],[a+CELL,y0-CELL,1],[a,y0-CELL,1]], col:i, row:rows-1-j });
-          CELLS.push({ f:'zn', n:[0,0,-1], q:[[a,y0,-1],[a+CELL,y0,-1],[a+CELL,y0-CELL,-1],[a,y0-CELL,-1]] });
-          CELLS.push({ f:'xp', n:[1,0,0], q:[[1,y0,a],[1,y0,a+CELL],[1,y0-CELL,a+CELL],[1,y0-CELL,a]] });
-          CELLS.push({ f:'xn', n:[-1,0,0], q:[[-1,y0,a],[-1,y0,a+CELL],[-1,y0-CELL,a+CELL],[-1,y0-CELL,a]] });
-        } }
-        var r = rng(7);
-        CELLS.forEach(function(c){ c.lit = r() < 0.5; c.at = r() * 1500; });
-      })();
-      // the weak spot: front face, second column, second row from the top (the callout sits above the cube)
-      var TARGET = CELLS.filter(function(c){ return c.f === 'zp' && c.col === 1 && c.row === N - 2; })[0];
-      TARGET.lit = false;
-      var TC = TARGET.q.reduce(function(s, p){ return [s[0]+p[0]/4, s[1]+p[1]/4, s[2]+p[2]/4]; }, [0,0,0]);
-
-      // the assessment paths: all leave the weak spot and run along the cube's grid (cell centers),
-      // checking where an attacker could go from there. Three dead-end; the last finds the threat and ripples.
-      var PAD = { r:48, b:90 };   // how far the desktop canvas runs past its stage (see the CSS)
-      var RIPPLE = 3450;   // ms after the paths start: the last one lands on the threat
-      var SETTLE = 7600;   // ms after "watched": two passes of the watching scan, then the cube holds still
-      function L(i, j, k){ return [-1 + (i + 0.5)*CELL, -H + (j + 0.5)*CELL, -1 + (k + 0.5)*CELL]; }
-      var PATHS = [
-        { p:[TC, L(1,4,4), L(4,4,4), L(4,5,4)], dead:true },
-        { p:[TC, L(1,4,3), L(1,1,3), L(3,1,3)], dead:true },
-        { p:[TC, L(1,4,2), L(1,4,0), L(3,4,0)], dead:true },
-        { p:[TC, L(1,4,3), L(4,4,3), L(4,2,3), L(4,2,1), [L(4,2,1)[0], -H, L(4,2,1)[2]]], dead:false }
-      ];
-
-      function Scene(canvas, opts){
-        this.c = canvas; this.ctx = canvas.getContext('2d'); this.opts = opts || {};
-        this.call = opts.call || null;
-        this.step = -1; this.w = 0; this.h = 0;
-        var now = performance.now();
-        this.layers = new Tw(1);   // the detect and respond layers
-        this.dotsOn = new Tw(1);   // attacks dropping through the layers
-        this.grayT = new Tw(0);    // the prevent layer turning blueprint gray
-        this.ext = new Tw(0);      // the prevent layer extruding into a box
-        this.cam = new Tw(0);      // camera: the layer view -> the box view
-        this.pathsA = new Tw(0);
-        this.sq = { c:C.red, from:C.red, t0:0 };
-        this.scanT = null; this.pathT = null; this.retestT = null; this.watchT = null;
-        this.dots = []; this.nextDot = now; this.dotN = 0;
+      function Scene(canvas){
+        this.c = canvas; this.ctx = canvas.getContext('2d'); this.w = 0; this.h = 0;
+        this.dots = []; this.nextDot = performance.now(); this.dotN = 0;
         this.resize();
         var self = this;
         if('ResizeObserver' in window){ new ResizeObserver(function(){ self.resize(); }).observe(canvas.parentNode); }
@@ -703,32 +590,12 @@
         this.c.width = Math.round(r.width * d); this.c.height = Math.round(r.height * d);
         this.ctx.setTransform(d, 0, 0, d, 0, 0);
       };
-      // camera at blend k (0 = the layers, 1 = the box)
-      function view(yawD, pitchD, s, my){
-        var yaw = yawD * Math.PI / 180, pitch = pitchD * Math.PI / 180;
-        return { cy:Math.cos(yaw), sy:Math.sin(yaw), cp:Math.cos(pitch), sp:Math.sin(pitch), s:s, my:my, ox:0, oy:0 };
-      }
-      // where the cube's corners land for a view, relative to its origin
-      function bounds(v){
-        var b = { x0:1e9, x1:-1e9, y0:1e9, y1:-1e9 };
-        [[-1,0,-1],[1,0,-1],[1,0,1],[-1,0,1],[-1,-H,-1],[1,-H,-1],[1,-H,1],[-1,-H,1]].forEach(function(p){
-          var X = v.s*(p[0]*v.cy - p[2]*v.sy), Z = p[0]*v.sy + p[2]*v.cy, Y = -v.s*((p[1] - v.my)*v.cp - Z*v.sp);
-          b.x0 = Math.min(b.x0, X); b.x1 = Math.max(b.x1, X); b.y0 = Math.min(b.y0, Y); b.y1 = Math.max(b.y1, Y);
-        });
-        return b;
-      }
-      // camera at blend k (0 = the layers, 1 = the cube). Desktop puts the cube bottom right, leaving room
-      // above it for the callout; phones center it.
-      Scene.prototype.camera = function(k){
-        var side = this.opts.callSide, w = this.w - (side ? PAD.r : 0), h = this.h - (side ? PAD.b : 0);   // fit to the stage, not the padded canvas
-        var a;
-        if(side){ a = view(45, 18.5, Math.min(120, w * 0.2), -GAP); a.ox = w - 64 - 1.414*a.s; a.oy = 29 + a.s*(1.414*a.sp + GAP*a.cp); }
-        else { a = view(45, 18.5, Math.min(w * (w < 600 ? 0.24 : 0.27), h * 0.5), -GAP); a.ox = w/2 - (w < 600 ? 28 : 0); a.oy = h/2 + 0.1*h; }
-        var b = view(36, 24, side ? Math.min((w - 24) / 2.9, (h - 130) / 2.95, 128) : Math.min(w * 0.3, (h - 16) / 3), -H/2), bb = bounds(b);
-        if(side){ b.ox = w - 14 - bb.x1; b.oy = h - 8 - bb.y1; }
-        else { b.ox = w/2 - (bb.x0 + bb.x1)/2; b.oy = h/2 - (bb.y0 + bb.y1)/2; }
-        var v = view(mix(45, 36, k), mix(18.5, 24, k), mix(a.s, b.s, k), mix(a.my, b.my, k));
-        v.ox = mix(a.ox, b.ox, k); v.oy = mix(a.oy, b.oy, k);
+      // the view: the stack sits a little low (room for the attacks above) and is never taller than the bottom allows
+      Scene.prototype.camera = function(){
+        var w = this.w, h = this.h, yaw = 45 * Math.PI / 180, pitch = 18.5 * Math.PI / 180;
+        var v = { cy:Math.cos(yaw), sy:Math.sin(yaw), cp:Math.cos(pitch), sp:Math.sin(pitch), my:-GAP };
+        var reach = GAP*v.cp + 1.414*v.sp;   // half the stack's height, per unit of scale
+        v.oy = h/2 + 0.06*h; v.s = Math.min(w * (w < 600 ? 0.24 : 0.27), h * 0.5, (h - v.oy - 6) / reach); v.ox = w/2 - (w < 600 ? 28 : 0);
         return v;
       };
       Scene.prototype.P = function(p){
@@ -736,111 +603,21 @@
         var X = p[0]*v.cy - p[2]*v.sy, Z = p[0]*v.sy + p[2]*v.cy, Y = p[1] - v.my;
         return [v.ox + v.s*X, v.oy - v.s*(Y*v.cp - Z*v.sp)];
       };
-      Scene.prototype.facing = function(n){ var v = this.v; return (n[0]*v.sy + n[2]*v.cy) * v.cp + n[1]*v.sp > 0; };   // faces the viewer?
       Scene.prototype.poly = function(pts){ var x = this.ctx; x.beginPath(); pts.forEach(function(p, i){ p = this.P(p); if(i){ x.lineTo(p[0], p[1]); } else { x.moveTo(p[0], p[1]); } }, this); x.closePath(); };
       Scene.prototype.line = function(a, b){ var x = this.ctx; a = this.P(a); b = this.P(b); x.beginPath(); x.moveTo(a[0], a[1]); x.lineTo(b[0], b[1]); x.stroke(); };
-
-      // ---- what each step looks like ----
-      Scene.prototype.setStep = function(n){
-        if(n === this.step){ return; }
-        var now = performance.now(), prev = this.step;
-        this.step = n;
-        // 0: three layers.  1+: the box (layers fade, top goes gray, then extrudes, then the camera settles)
-        var box = n >= 1;
-        this.dotsOn.set(box ? 0 : 1, 400, 0, now);
-        this.layers.set(box ? 0 : 1, 450, box ? 0 : 900, now);
-        this.grayT.set(box ? 1 : 0, 450, box ? 200 : 700, now);
-        this.ext.set(box ? 1 : 0, 750, box ? 450 : 0, now);
-        this.cam.set(box ? 1 : 0, 900, box ? 450 : 100, now);
-        // 2: scan every face, then land on the weak spot (only replays when coming up from step 1)
-        if(n >= 2 && prev < 2){ this.scanT = (prev < 0 || reduce) ? now - 99999 : now + (prev < 1 ? 1900 : 1000); }   // a beat to read first
-        if(n < 2){ this.scanT = null; }
-        // catch-up: moved on before the scan finished? finish it now (the paths, below, likewise)
-        if(n >= 3 && this.scanT != null && now - this.scanT < 2200){ this.scanT = now - 2200; }
-        // 3: the assessment paths
-        if(n === 3 && prev < 3){ this.pathT = reduce ? now - 99999 : Math.max(now + 800, this.scanT + 2400); }
-        this.pathsA.set(n === 3 ? 1 : 0, 400, 0, now);
-        if(n > 3 && prev < 3){ this.pathT = null; }
-        if(n >= 4 && this.pathT != null && now - this.pathT < RIPPLE){ this.pathT = now - RIPPLE; }
-        // The weak spot's color: 2 amber (a possible threat, being assessed) | 3 amber, red once the pattern
-        // lands on a threat (see draw) | 4 green (door locked) | 5 retest, then brand pink (watched) while the scan
-        // starts up again
-        if(n === 4 && prev < 4){ this.retestT = reduce ? now - 99999 : now + 200; }   // VEX's dot flies in: locks the door
-        if(n === 5 && prev < 5){ this.retestT = reduce ? now - 99999 : now + 200; this.watchT = reduce ? now - 99999 : now + 1300; }
-        if(n < 4){ this.retestT = null; }
-        if(n < 5){ this.watchT = null; }
-        if(n === 4 && prev === 3){ this.color(C.red, now, 0); }                             // still red as it arrives
-        this.color(n >= 4 ? C.green : C.amber, now, n === 4 && prev < 4 && !reduce ? 1100 : 0);   // green on the hit
-      };
-      Scene.prototype.color = function(c, now, delay){
-        if(c === this.sq.c){ return; }
-        var cur = this.sqColor(now);
-        this.sq.from = cur; this.sq.c = c; this.sq.t0 = now + delay;
-      };
-      Scene.prototype.sqColor = function(now){ return mixC(this.sq.from, this.sq.c, reduce ? 1 : clamp((now - this.sq.t0) / 450)); };
-
-      // ---- the callout beside the weak spot ----
-      var CALLS = {
-        2:{ t:'Legacy sign-in found', c:'var(--amber-text)', l:[] },
-        3:{ t:'Legacy sign-in found', c:'var(--amber-text)', l:['Checking…', 'Threat 0%', 'Sign-in works over IMAP, password only'] },
-        4:{ t:'Legacy sign-in', c:'var(--go-text)', l:['Legacy sign-in turned off', 'Messaging the user to turn on MFA'] },
-        5:{ t:'Legacy sign-in', c:'var(--pink-text)', l:['Tested again: blocked', 'Recommendation sent', 'Watching'] }
-      };
-      Scene.prototype.updateCall = function(now){
-        var el = this.call; if(!el){ return; }
-        var n = this.step, found = n >= 2 && this.scanT != null && now - this.scanT > 1900;
-        el.classList.toggle('is-on', found);
-        el.style.opacity = this.exit ? 1 - clamp(this.exit / 0.3) : '';
-        if(!found){ return; }
-        var d = CALLS[Math.min(n, 5)], b = el.querySelector('b'), sp = el.querySelectorAll('span');
-        var wait = n >= 4 && !reduce ? 1200 : 0;   // the callout changes when the dot hits
-        if(el._n !== n){
-          el._n = n; el._bAt = now + wait;
-          sp.forEach(function(s, i){ s.classList.remove('is-on'); s._at = now + (reduce ? 0 : wait + 250 + i * (n === 3 ? 1300 : 350)); });
-        }
-        if(now >= el._bAt && el._shown !== n){
-          el._shown = n; b.textContent = d.t; el.style.setProperty('--c', d.c);
-          sp.forEach(function(s, i){ s.textContent = d.l[i] || ''; });
-        }
-        sp.forEach(function(s, i){ if(d.l[i] && now >= s._at){ s.classList.add('is-on'); } });
-        if(n === 3 && el._shown === 3){ el.style.setProperty('--c', now >= this.pathT + RIPPLE ? 'var(--sev-1)' : 'var(--amber-text)'); }
-        if(n === 3){ var pct = reduce ? 91 : Math.round(91 * clamp((now - this.pathT - 600) / 2600)); sp[1].textContent = 'Threat ' + pct + '%'; }
-        // sit beside the weak spot (side callouts only)
-        if(this.opts.callSide){
-          var c = this.P(TC), top = this.cubeTop();
-          el.style.left = Math.min(c[0] + 12, this.w - PAD.r - 220) + 'px';
-          el.style.top = (top - 22 - el.offsetHeight) + 'px';
-          this.leadTop = top - 22 - el.offsetHeight + 4;
-        }
-      };
-
-      Scene.prototype.cubeTop = function(){ var self = this; return Math.min.apply(null, [[-1,0,-1],[1,0,-1],[1,0,1],[-1,0,1]].map(function(p){ return self.P(p)[1]; })); };
 
       // ---- drawing ----
       Scene.prototype.draw = function(now){
         var x = this.ctx, w = this.w, h = this.h;
         if(!w){ return; }
         x.clearRect(0, 0, w, h);
-        var cam = this.cam.get(now), ext = this.ext.get(now), lay = this.layers.get(now), gray = this.grayT.get(now), dots = this.dotsOn.get(now);
-        if(this.morph != null){   // desktop: the layers -> cube change follows the scroll
-          var m = this.morph;
-          dots = 1 - clamp(m / 0.25); lay = 1 - clamp(m / 0.3); gray = clamp((m - 0.15) / 0.3);
-          ext = ease(clamp((m - 0.3) / 0.55)); cam = clamp((m - 0.2) / 0.7);
-        }
-        this.v = this.camera(ease(cam));
+        this.v = this.camera();
         x.lineJoin = 'round';
-        // the lower layers (detect, respond)
-        if(lay > 0.01){
-          this.layer(-2*GAP, { fill:rgba(C.ink, 0.018*lay), edge:rgba(C.gray, 0.45*lay), grid:rgba(C.gray, 0.28*lay), label:'RESPOND', lc:rgba(C.gray, 0.9*lay) });
-          this.layer(-GAP, { fill:rgba(C.ink, 0.035*lay), edge:rgba(C.ink, 0.62*lay), grid:rgba(C.gray, 0.35*lay), label:'DETECT', lc:rgba(C.ink, 0.75*lay) });
-        }
-        if(dots > 0.01){ this.drawDots(now, dots, 'under'); }
-        if(this.step === 3 && this.pathT != null && now >= this.pathT + RIPPLE){ this.color(C.red, now, 0); }
-        if(this.step === 5 && this.watchT != null && now >= this.watchT){ this.color(C.pink, now, 0); }
-        // the box (or, before it extrudes, the prevent layer)
-        var e = this.exit || 0, detail = 1 - clamp(e / 0.3), flat = ease(clamp((e - 0.3) / 0.7));
-        this.box(now, ext * (1 - flat), gray * (1 - flat), lay, detail);
-        if(dots > 0.01){ this.drawDots(now, dots, 'over'); }
+        this.layer(-2*GAP, { fill:rgba(C.ink, 0.018), edge:rgba(C.gray, 0.45), grid:rgba(C.gray, 0.28), label:'RESPOND', lc:rgba(C.gray, 0.9) });
+        this.layer(-GAP, { fill:rgba(C.ink, 0.035), edge:rgba(C.ink, 0.62), grid:rgba(C.gray, 0.35), label:'DETECT', lc:rgba(C.ink, 0.75) });
+        this.drawDots(now, 'under');
+        this.layer(0, { fill:rgba(C.pink, 0.055), edge:rgba(C.pink, 0.95), grid:rgba(C.pink, 0.45), label:'PREVENT', lc:rgba(C.pink, 1) });
+        this.drawDots(now, 'over');
       };
       Scene.prototype.layer = function(y, st){
         var x = this.ctx;
@@ -850,7 +627,7 @@
         for(var i = 1; i < N; i++){ var a = -1 + i*CELL; this.line([a,y,-1],[a,y,1]); this.line([-1,y,a],[1,y,a]); }
         x.setLineDash([]); x.strokeStyle = st.edge; x.lineWidth = 1;
         this.poly([[-1,y,-1],[1,y,-1],[1,y,1],[-1,y,1]]); x.stroke();
-        if(st.label){ this.label(st.label, [1, y, 1], st.lc); }
+        this.label(st.label, [1, y, 1], st.lc);
       };
       Scene.prototype.label = function(t, corner, color){
         var x = this.ctx, p = this.P(corner), q = this.P([1, corner[1], -1]);
@@ -860,140 +637,17 @@
         x.fillText(t, r[0] + 10, r[1]);
         if('letterSpacing' in x){ x.letterSpacing = '0px'; }
       };
-      Scene.prototype.box = function(now, ext, gray, lay, detail){
-        var x = this.ctx, self = this, hh = H * ext;
-        var edge = mixC(C.pink, C.gray, gray), ea = mix(0.95, 0.7, gray);
-        var fillTop = gray < 1 ? rgba(mixC(C.pink, C.ink, gray), mix(0.055, 0.025, gray)) : rgba(C.ink, 0.025);
-        var faces = [
-          { n:[0,-1,0], q:[[-1,-hh,-1],[1,-hh,-1],[1,-hh,1],[-1,-hh,1]] },
-          { n:[0,0,-1], q:[[-1,0,-1],[1,0,-1],[1,-hh,-1],[-1,-hh,-1]] },
-          { n:[-1,0,0], q:[[-1,0,-1],[-1,0,1],[-1,-hh,1],[-1,-hh,-1]] },
-          { n:[1,0,0], q:[[1,0,-1],[1,0,1],[1,-hh,1],[1,-hh,-1]] },
-          { n:[0,0,1], q:[[-1,0,1],[1,0,1],[1,-hh,1],[-1,-hh,1]] },
-          { n:[0,1,0], q:[[-1,0,-1],[1,0,-1],[1,0,1],[-1,0,1]] }
-        ];
-        // back faces first, then the cells, then the front faces, so the box reads as glass
-        var back = faces.filter(function(f){ return !self.facing(f.n); }), front = faces.filter(function(f){ return self.facing(f.n); });
-        var faceFill = function(f, a){ self.poly(f.q); x.fillStyle = f.n[1] === 1 ? fillTop : rgba(C.ink, a); x.fill(); };
-        var grid = function(f, a){
-          x.setLineDash([2, 3]); x.strokeStyle = f.n[1] === 1 && gray < 1 ? rgba(mixC(C.pink, C.gray, gray), mix(0.45, a, gray)) : rgba(C.gray, a); x.lineWidth = 1;
-          var i, k;
-          if(f.n[1] !== 0){ var y = f.q[0][1]; for(i = 1; i < N; i++){ k = -1 + i*CELL; self.line([k,y,-1],[k,y,1]); self.line([-1,y,k],[1,y,k]); } }
-          else if(hh > 0.01){
-            var rows = Math.round(H / CELL);
-            for(i = 1; i < N; i++){ k = -1 + i*CELL;
-              if(f.n[2]){ self.line([k,0,f.n[2]],[k,-hh,f.n[2]]); } else { self.line([f.n[0],0,k],[f.n[0],-hh,k]); } }
-            for(i = 1; i < rows; i++){ k = -i*CELL*ext;
-              if(f.n[2]){ self.line([-1,k,f.n[2]],[1,k,f.n[2]]); } else { self.line([f.n[0],k,-1],[f.n[0],k,1]); } }
-          }
-          x.setLineDash([]);
-        };
-        var edges = function(f, a){ self.poly(f.q); x.strokeStyle = rgba(edge, a); x.lineWidth = 1; x.stroke(); };
-        var sideA = clamp(ext * 3);
-        // a soft shadow on the floor under the cube, so it sits on something (drawn off-canvas; only its blur shows)
-        if(hh > 0.01){
-          var g = -hh - 0.03, sh = 1.05, dpr = this.c.width / this.w;
-          x.save(); x.translate(-10000, 0); x.shadowOffsetX = 10000 * (this.c.width / this.w);   // shadow offsets ignore the canvas scale
-          x.shadowBlur = 34 * dpr; x.shadowColor = rgba(C.ink, 0.075 * clamp((ext - 0.2) * 1.6));
-          this.poly([[-sh,g,-sh],[sh,g,-sh],[sh,g,sh],[-sh,g,sh]]); x.fillStyle = '#000'; x.fill(); x.restore();
-        }
-        back.forEach(function(f){ if(f.n[1] === 1 || hh > 0.01){ faceFill(f, 0.02 * sideA); grid(f, 0.22 * sideA); edges(f, ea * 0.55 * (f.n[1] === 1 ? 1 : sideA)); } });
-        var det = ext > 0.98 && detail > 0.01;
-        if(det){ x.save(); x.globalAlpha = detail; this.cells(now, false); x.restore(); }
-        front.forEach(function(f){ if(f.n[1] === 1 || hh > 0.01){ faceFill(f, 0.03 * sideA); grid(f, 0.4 * (f.n[1] === 1 ? 1 : sideA)); } });
-        if(det){ x.save(); x.globalAlpha = detail; this.cells(now, true); this.paths(now); this.weakSpot(now); x.restore(); }
-        front.forEach(function(f){ if(f.n[1] === 1 || hh > 0.01){ edges(f, ea * (f.n[1] === 1 ? 1 : sideA)); } });
-        // the PREVENT label rides the top layer until the box forms
-        var la = Math.max(0, lay);
-        if(la > 0.01){ this.label('PREVENT', [1, 0, 1], rgba(C.pink, la)); }
-      };
-      // the scan: cells on all six faces light up amber, glow, then settle a shade darker ("checked")
-      Scene.prototype.cells = function(now, frontPass){
-        if(this.scanT == null){ return; }
-        var x = this.ctx, t = now - this.scanT, self = this;
-        CELLS.forEach(function(c){
-          if(!c.lit || self.facing(c.n) !== frontPass){ return; }
-          var k = t - c.at; if(k < 0){ return; }
-          if(self.watchT != null && now > self.watchT && !reduce){ k = now - self.watchT > SETTLE ? 9999 : (now - self.watchT - c.at * 1.6) % 3800; if(k < 0){ k = 9999; } }
-          var glow = k < 120 ? k / 120 : k < 420 ? 1 : Math.max(0, 1 - (k - 420) / 450);
-          var dim = frontPass ? 1 : 0.45;
-          self.poly(c.q);
-          x.fillStyle = rgba(C.ink, 0.028 * dim); x.fill();
-          if(glow > 0){   // checking: a quick gray tint, then it settles a shade darker
-            x.fillStyle = rgba(C.ink, 0.11 * glow * dim); x.fill();
-            x.strokeStyle = rgba(C.gray, 0.55 * glow * dim); x.lineWidth = 1; x.stroke();
-          }
-        });
-      };
-      Scene.prototype.weakSpot = function(now){
-        if(this.scanT == null){ return; }
-        var t = now - this.scanT; if(t < 1700){ return; }
-        var x = this.ctx, a = reduce ? 1 : clamp((t - 1700) / 300), col = this.sqColor(now);
-        var settled = this.watchT != null && now - this.watchT > SETTLE;
-        var pulse = reduce || settled ? 0.5 : 0.5 + 0.5 * Math.sin(now / 260);
-        this.poly(TARGET.q);
-        x.fillStyle = rgba(col, 0.14 * a); x.fill();
-        x.save(); x.shadowColor = rgba(col, 0.9 * a); x.shadowBlur = 8 + 14 * pulse;   // the glow behind the outline
-        x.strokeStyle = rgba(col, (0.25 + 0.25 * pulse) * a); x.lineWidth = 7; x.stroke(); x.restore();
-        x.strokeStyle = rgba(col, a); x.lineWidth = 2.5; x.stroke();
-        if(this.opts.callSide && this.leadTop != null && this.call.classList.contains('is-on')){
-          var c = this.P(TC), t = this.P([TC[0], TC[1] + CELL/2, 1]);
-          x.strokeStyle = rgba(C.gray, 0.55 * a); x.lineWidth = 1; x.beginPath(); x.moveTo(c[0], this.leadTop); x.lineTo(t[0], t[1]); x.stroke();
-        }
-        // the retest: a probe runs at the spot and stops at the wall
-        if(this.retestT != null){
-          var r = (now - this.retestT) / 900;
-          if(r > 0 && r < 1.4){
-            var p0 = [TC[0] - 0.05, TC[1] + 0.05, 2.1], p1 = [TC[0], TC[1], 1.02], k = ease(Math.min(r, 1));
-            var q = [mix(p0[0], p1[0], k), mix(p0[1], p1[1], k), mix(p0[2], p1[2], k)], P = this.P(q);
-            x.fillStyle = rgba(C.pink, r < 1 ? 1 : 1 - (r - 1) / 0.4); x.beginPath(); x.arc(P[0], P[1], 3.5, 0, 7); x.fill();
-            if(r >= 1){ this.ring(TC, 0.12 + (r - 1) * 0.5, 'z', rgba(C.pink, 1 - (r - 1) / 0.4)); }
-          }
-        }
-      };
-      // a circle drawn flat in a plane: 'y' = lying on a layer, 'z' = on the front face
-      Scene.prototype.ring = function(c, r, plane, stroke){
+      // a circle drawn flat on a layer
+      Scene.prototype.ring = function(c, r, stroke){
         var x = this.ctx; x.beginPath();
         for(var i = 0; i <= 28; i++){
-          var a = i / 28 * Math.PI * 2, p = plane === 'y' ? [c[0] + r*Math.cos(a), c[1], c[2] + r*Math.sin(a)] : [c[0] + r*Math.cos(a), c[1] + r*Math.sin(a), c[2]];
-          p = this.P(p); if(i){ x.lineTo(p[0], p[1]); } else { x.moveTo(p[0], p[1]); }
+          var a = i / 28 * Math.PI * 2, p = this.P([c[0] + r*Math.cos(a), c[1], c[2] + r*Math.sin(a)]);
+          if(i){ x.lineTo(p[0], p[1]); } else { x.moveTo(p[0], p[1]); }
         }
         x.strokeStyle = stroke; x.lineWidth = 1.2; x.stroke();
       };
-      Scene.prototype.paths = function(now){
-        var A = this.pathsA.get(now);
-        if(this.pathT == null || A < 0.01){ return; }
-        var x = this.ctx, t = now - this.pathT, self = this;
-        PATHS.forEach(function(path, i){
-          var segs0 = path.p.length - 1, start = i * 650, dur = 300 * segs0, k = clamp((t - start) / dur);
-          if(k <= 0){ return; }
-          var pts = path.p.map(function(p){ return self.P(p); });
-          var segs = pts.length - 1, upto = k * segs;
-          var fade = path.dead ? (t > start + dur + 500 ? 0.3 : 1) : 1;
-          x.strokeStyle = rgba(C.pink, (path.dead ? 0.6 : 1) * fade * A); x.lineWidth = path.dead ? 1.2 : 2;
-          x.beginPath(); x.moveTo(pts[0][0], pts[0][1]);
-          for(var s = 1; s <= segs; s++){
-            var f = clamp(upto - (s - 1)); if(f <= 0){ break; }
-            x.lineTo(mix(pts[s-1][0], pts[s][0], f), mix(pts[s-1][1], pts[s][1], f));
-          }
-          x.stroke();
-          pts.forEach(function(p, j){
-            if(j > upto + 0.001){ return; }
-            var end = j === segs;
-            x.fillStyle = rgba(end && path.dead ? C.gray : C.pink, fade * A);
-            x.beginPath(); x.arc(p[0], p[1], end && !path.dead ? 4.5 : 3, 0, 7); x.fill();
-          });
-          if(!path.dead && k >= 1){   // the threat: ripples on the floor where the path lands
-            var end = path.p[segs0];
-            [0, 700].forEach(function(off){
-              var r = ((t - start - dur + off) % 1400) / 1400;
-              self.ring(end, 0.05 + r * 0.3, 'y', rgba(C.pink, (1 - r) * 0.85 * A));
-            });
-          }
-        });
-      };
       // the intro: attacks drop onto the layers. Most stop at prevent, some at detect, rarely one at respond.
-      Scene.prototype.drawDots = function(now, A, pass){
+      Scene.prototype.drawDots = function(now, pass){
         var x = this.ctx, self = this;
         if(pass === 'under'){
           if(reduce){
@@ -1010,23 +664,44 @@
             }
           }
         }
-        var FALL = 1.6, SPEED = 1.5 / 1000;   // starts this far above the top layer; world units per ms
+        // each attack drops straight down in order (prevent, detect, respond), speeding up, with a short streak behind it.
+        // Stopped at prevent: a pink ripple. Getting through: it catches for a moment on each layer it crosses (a gray
+        // ripple), stays gray and goes on.
+        var FALL = 1.6, HOLD = 170, TAIL = 0.14;   // start height above the top layer; ms caught on a layer; streak length
+        function at(d, u){ return [d.x, FALL - (FALL - d.stopY)*u, d.z]; }
+        function prog(p){ return p * (0.35 + 0.65 * p); }   // eases in: slow far away, fast at the surface
+        function when(u){ return (-0.35 + Math.sqrt(0.1225 + 2.6 * u)) / 1.3; }   // inverse of prog
+        function inPass(y){ return (pass === 'over') === (y >= -0.001); }
         this.dots = this.dots.filter(function(d){
-          var stopY = -d.stop * GAP, dist = FALL - stopY, t = reduce ? 1e9 : now - d.t0, y = FALL - t * SPEED;
-          var hit = y <= stopY, since = hit ? (t - dist / SPEED) : 0;
+          if(d.T == null){
+            d.stopY = -d.stop * GAP; d.T = 950 + 280 * d.stop; d.cross = [];
+            for(var i = 0; i < d.stop; i++){ var ui = (FALL + i * GAP) / (FALL - d.stopY); d.cross.push({ u:ui, at:when(ui) * d.T + i * HOLD }); }
+          }
+          var t = reduce ? 1e9 : now - d.t0, end = d.T + d.stop * HOLD, hit = t >= end, since = hit ? t - end : 0;
           if(hit && since > 900 && !reduce){ return false; }
-          // draw dots above the top layer in the "over" pass, below it in the "under" pass
-          var above = (hit ? stopY : y) >= -0.001;
-          if((pass === 'over') !== above){ return true; }
-          var col = d.stop === 0 ? C.pink : C.ink;
+          // where it is on its way down: moving time leaves out the holds; "run" is how long since it last set off
+          var mv = t, run = t;
+          for(var k = 0; k < d.cross.length; k++){
+            var cr = d.cross[k], sk = t - cr.at;
+            if(sk >= 0 && sk < 700 && !reduce && inPass(-k * GAP)){   // the ripple where it went through
+              var kk = sk / 700; self.ring(at(d, cr.u), 0.04 + kk * 0.13, rgba(C.gray, (1 - kk) * 0.7));
+            }
+            if(sk >= HOLD){ mv -= HOLD; run = sk - HOLD; } else if(sk >= 0){ mv = cr.at - k * HOLD; run = 0; }
+          }
           if(!hit){
-            var p = self.P([d.x, y, d.z]), fa = clamp((FALL - y) / 0.4);
-            x.fillStyle = rgba(C.gray, 0.85 * fa * A); x.beginPath(); x.arc(p[0], p[1], 2.6, 0, 7); x.fill();
-            if(y < 0.02 && y > -0.12 && d.stop > 0){ self.ring([d.x, 0, d.z], 0.05, 'y', rgba(C.pink, 0.35 * A)); }
-          } else {
-            var k = reduce ? 0.35 : clamp(since / 900), q = self.P([d.x, stopY, d.z]);
-            self.ring([d.x, stopY, d.z], 0.04 + k * 0.16, 'y', rgba(col, (1 - k) * 0.9 * A));
-            x.fillStyle = rgba(col, (1 - k) * A); x.beginPath(); x.arc(q[0], q[1], 2.6 * (1 - k * 0.6), 0, 7); x.fill();
+            var p = clamp(mv / d.T), q = at(d, prog(p));
+            if(!inPass(q[1])){ return true; }
+            var fa = clamp(p / 0.25), head = self.P(q), tail = self.P(at(d, prog(Math.max(0, p - Math.min(TAIL, run / d.T)))));
+            if(run > 0){
+              var g = x.createLinearGradient(tail[0], tail[1], head[0], head[1]);
+              g.addColorStop(0, rgba(C.gray, 0)); g.addColorStop(1, rgba(C.gray, 0.55 * fa));
+              x.strokeStyle = g; x.lineWidth = 1.6; x.lineCap = 'round'; x.beginPath(); x.moveTo(tail[0], tail[1]); x.lineTo(head[0], head[1]); x.stroke();
+            }
+            x.fillStyle = rgba(C.gray, 0.9 * fa); x.beginPath(); x.arc(head[0], head[1], 2.6, 0, 7); x.fill();
+          } else if(inPass(d.stopY)){
+            var col = d.stop === 0 ? C.pink : C.gray, kh = reduce ? 0.35 : clamp(since / 900), e = self.P([d.x, d.stopY, d.z]);
+            self.ring([d.x, d.stopY, d.z], 0.04 + kh * 0.16, rgba(col, (1 - kh) * 0.9));
+            x.fillStyle = rgba(col, 1 - kh); x.beginPath(); x.arc(e[0], e[1], 2.6 * (1 - kh * 0.6), 0, 7); x.fill();
           }
           return true;
         });
@@ -1034,110 +709,15 @@
 
       // ---- wiring ----
       var scenes = [];
-      function loop(now){ scenes.forEach(function(s){ if(s.live){ s.draw(now); s.updateCall(now); } }); requestAnimationFrame(loop); }
+      function loop(now){ scenes.forEach(function(s){ if(s.live){ s.draw(now); } }); requestAnimationFrame(loop); }
       function visible(el, s){
         if(!('IntersectionObserver' in window)){ s.live = true; return; }
         new IntersectionObserver(function(es){ s.live = es[0].isIntersecting; }, { threshold:0 }).observe(el);
       }
-      var root = document.documentElement;
-      var desktop = window.matchMedia('(min-width:1100px)');
-
-      var desktop = window.matchMedia('(min-width:1100px)');
-      // story steps: 0-1 layers | 2 the layers become the cube | 3 first two lines | 4 scan | 5 paths | 6 lock | 7 retest, watched
-      var SCENE = [0, 0, 1, 1, 2, 3, 4, 5];
-      var AT = [0, 300, 1500, 3300, 5300, 9900, 14700, 17500];   // ms from the start of the story to each step
-      // lines arrive by step; the newest is bold, older ones fade
-      function showLines(list, n){
-        list.forEach(function(li){
-          var age = n - +li.dataset.from;
-          li.classList.toggle('is-seen', age >= 0); li.classList.toggle('is-now', age === 0); li.classList.toggle('is-old', age >= 2);
-        });
-      }
-
-      // desktop: the intro layers drop forever; the cube plays once when seen, then each line replays from its moment
-      var desk = document.querySelector('.pv-desk');
-      var dl = new Scene(desk.querySelector('[data-scene="dlayers"]'), {});
-      dl.setStep(0); scenes.push(dl); visible(dl.c.parentNode, dl);
-      var ds = new Scene(desk.querySelector('[data-scene="dbox"]'), { callSide:true, call:desk.querySelector('.pv-call') });
-      var dlines = [].slice.call(desk.querySelectorAll('.pv-d-lines li')), dtimers = [], dshown = 2, dplayed = false;
-      function dReset(){ ds.step = -1; ds.scanT = ds.pathT = ds.retestT = ds.watchT = null; ds.setStep(1); }
-      function dPlayFrom(start){
-        dtimers.forEach(clearTimeout); dtimers = [];
-        if(start <= dshown){ dReset(); }   // going back: rewind the cube so that moment replays
-        ds.setStep(SCENE[start]); dshown = start; showLines(dlines, start);
-        if(reduce){ return; }
-        AT.forEach(function(at, n){
-          if(n <= start){ return; }
-          dtimers.push(setTimeout(function(){ ds.setStep(SCENE[n]); dshown = n; showLines(dlines, n); }, at - AT[start]));
-        });
-      }
-      dReset();
-      if(reduce){ ds.setStep(5); dshown = 7; }
-      showLines(dlines, dshown);
-      dlines.forEach(function(li){
-        var b = li.querySelector('.pv-jump');
-        if(b){ b.addEventListener('click', function(){ dplayed = true; dPlayFrom(+li.dataset.from); }); }
+      // the layers drop attacks forever while they're on screen (desktop and stacked layouts each have one)
+      ['.pv-desk [data-scene="dlayers"]', '.pv-stack [data-scene="layers"]'].forEach(function(sel){
+        var sc = new Scene(document.querySelector(sel)); scenes.push(sc); visible(sc.c.parentNode, sc);
       });
-      scenes.push(ds);
-      if('IntersectionObserver' in window){
-        new IntersectionObserver(function(es){
-          ds.live = es[0].isIntersecting;
-          if(es[0].intersectionRatio >= 0.6 && !dplayed && !reduce && desktop.matches){ dplayed = true; dPlayFrom(2); }
-        }, { threshold:[0, 0.6] }).observe(ds.c.parentNode);
-      } else { ds.live = true; }
-
-      // phones and tablets: the layers drop forever; the cube plays its beats once when seen
-      var stack = document.querySelector('.pv-stack');
-      var ls = new Scene(stack.querySelector('[data-scene="layers"]'), {});
-      ls.setStep(0); scenes.push(ls); visible(ls.c.parentNode, ls);
-      var bs = new Scene(stack.querySelector('[data-scene="box"]'), { call:stack.querySelector('.pv-call') });
-      var blines = [].slice.call(stack.querySelectorAll('.pv-lines li')), replay = stack.querySelector('.pv-replay');
-      var timers = [], played = false;
-      // jump to a story step on the phone (a tapped dot): rewind the cube if going back so that moment replays,
-      // then carry on from there on the same clock
-      function playFrom(start){
-        timers.forEach(clearTimeout); timers = []; replay.classList.remove('is-on'); played = true;
-        if(start < shown){ bs.step = -1; bs.scanT = bs.pathT = bs.retestT = bs.watchT = null; bs.setStep(1); }
-        bs.setStep(SCENE[start]); showLinesPhone(start);
-        AT.forEach(function(at, n){
-          if(n <= start){ return; }
-          timers.push(setTimeout(function(){ bs.setStep(SCENE[n]); showLinesPhone(n); if(n === 7){ timers.push(setTimeout(function(){ replay.classList.add('is-on'); }, 2400)); } }, at - AT[start]));
-        });
-        if(start === 7){ timers.push(setTimeout(function(){ replay.classList.add('is-on'); }, 2400)); }
-      }
-      function play(){
-        timers.forEach(clearTimeout); timers = []; replay.classList.remove('is-on');
-        if(reduce){ bs.setStep(5); showLinesPhone(7); return; }
-        bs.step = -1; bs.scanT = null; bs.setStep(0); showLinesPhone(0);
-        AT.forEach(function(at, n){ timers.push(setTimeout(function(){ bs.setStep(SCENE[n]); showLinesPhone(n); if(n === 7){ timers.push(setTimeout(function(){ replay.classList.add('is-on'); }, 2400)); } }, at)); });
-      }
-      // phone caption: size it to its longest moment, and move the dots with the story
-      var bol = stack.querySelector('.pv-story .pv-lines'), dotRow = stack.querySelector('.pv-dots'), dots = [].slice.call(dotRow.querySelectorAll('button')), shown = 0;
-      function fitCaption(){
-        var tallest = 0;
-        for(var k = 3; k <= 7; k++){ showLines(blines, k); tallest = Math.max(tallest, bol.scrollHeight); }
-        bol.style.setProperty('--cap-h', tallest + 'px'); showLines(blines, shown);
-      }
-      var showLinesPhone = function(n){
-        shown = n; showLines(blines, n);
-        dots.forEach(function(d, i){
-          var at = i + 3, now = n === at;
-          d.classList.toggle('is-seen', n > at); d.classList.toggle('is-now', now);
-          if(now){ d.setAttribute('aria-current', 'step'); } else { d.removeAttribute('aria-current'); }
-        });
-        dotRow.style.setProperty('--done', Math.max(0, Math.min(4, n - 3)) / 4);
-      };
-      bs.setStep(reduce ? 5 : 0); showLinesPhone(reduce ? 7 : 0);
-      dots.forEach(function(d, i){ d.addEventListener('click', function(){ if(!reduce){ playFrom(i + 3); } }); });
-      bol.style.minHeight = '0px'; fitCaption(); bol.style.minHeight = '';
-      window.addEventListener('resize', function(){ if(!desktop.matches){ bol.style.minHeight = '0px'; fitCaption(); bol.style.minHeight = ''; } });
-      scenes.push(bs);
-      bs.onShow = function(){ if(!played && !desktop.matches){ played = true; play(); } };
-      if('IntersectionObserver' in window){
-        new IntersectionObserver(function(es){ bs.live = es[0].isIntersecting; if(es[0].intersectionRatio >= 0.6 && bs.onShow){ bs.onShow(); } }, { threshold:[0, 0.6] }).observe(bs.c.parentNode);
-      } else { bs.live = true; bs.onShow(); }
-      replay.addEventListener('click', play);
-
       requestAnimationFrame(loop);
     })();
 

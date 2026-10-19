@@ -542,6 +542,33 @@
     .status-dot{animation:none;}
     .classbar,.site-top .site-header,.nav-panel,.header-link--cta img,.btn,.guide{transition:none;}
   }
+
+  /* ---------- VEX AI SOC MENU ---------- */
+  .nav-drop{position:relative;}
+  .nav-drop-btn{padding:0;border:0;background:none;font-family:inherit;cursor:pointer;gap:6px;}
+  .nav-caret{width:14px;height:14px;background:currentColor;-webkit-mask:url(../static/icon-chevron-down.svg) center/contain no-repeat;mask:url(../static/icon-chevron-down.svg) center/contain no-repeat;transition:transform 0.2s ease;}
+  .nav-drop-btn[aria-expanded="true"],.nav-drop-btn.is-current{color:var(--ink);}
+  .nav-drop-menu a[aria-current="page"] b{color:var(--pink-text);}
+  .nav-list a[aria-current="page"] .nav-link{color:var(--pink-text);}
+  .nav-drop-btn[aria-expanded="true"] .nav-caret{transform:rotate(180deg);}
+  .nav-drop-btn:focus-visible{outline:2px solid var(--pink);outline-offset:4px;border-radius:2px;}
+  .nav-drop-menu{position:absolute;top:calc(100% + 14px);left:-16px;z-index:5;width:300px;padding:8px;display:flex;flex-direction:column;
+    background:#fff;border:1px solid var(--gray-line);border-radius:2px;box-shadow:0 12px 32px -12px rgba(11,12,13,0.25);}
+  .nav-drop-menu[hidden]{display:none;}   /* the display:flex above would otherwise beat [hidden] */
+  .nav-drop-menu a{display:flex;flex-direction:column;gap:2px;padding:10px 12px;border-radius:2px;text-decoration:none;}
+  .nav-drop-menu a:hover,.nav-drop-menu a:focus-visible{background:var(--surface-alt);outline:none;}
+  .nav-drop-menu b{font-weight:600;font-size:15px;line-height:1.4;color:var(--ink);}
+  .nav-drop-menu a:hover b{color:var(--pink-text);}
+  .nav-drop-menu span{font-size:13px;line-height:1.45;color:var(--surface-dark);}
+  /* phones: the three pages as a group in the menu panel */
+  .nav-group-label{display:block;margin-bottom:8px;font-family:var(--mono);font-weight:500;font-size:14px;letter-spacing:0.12em;text-transform:uppercase;color:var(--surface-dark);}
+  .nav-sublist{list-style:none;margin:0;padding:0 0 0 12px;display:flex;flex-direction:column;gap:16px;}
+  .nav-list .nav-sublist li{padding:0;border:0;}
+  /* the whole list: an even 16px rhythm and dividers in the page's own gray */
+  .nav-list{gap:16px;}
+  .nav-list > li{padding-bottom:16px;border-bottom-color:var(--gray-line);}
+  .nav-list a{gap:2px;}   /* each line sits with its title */
+  @media (prefers-reduced-motion: reduce){ .nav-caret{transition:none;} }
 </style>
 </head>
 <body>
@@ -559,7 +586,7 @@
           <span class="brand-tag">Don’t get hacked</span>
         </div>
         <nav class="header-links" aria-label="Main">
-          <a class="header-link" href="/managed">VEX MDR</a>
+          <div class="nav-drop"><button class="header-link nav-drop-btn" type="button" aria-expanded="false" aria-controls="soc-menu">VEX AI SOC<span class="nav-caret" aria-hidden="true"></span></button><div class="nav-drop-menu" id="soc-menu" hidden><a href="/how-it-works/"><b>How VEX works</b><span>Good prevention starts with great detection.</span></a><a href="/detections/"><b>What VEX detects</b><span>Every alert type VEX can raise.</span></a><a href="/api/"><b>VEX API</b><span>The actual API.</span></a></div></div>
           <a class="header-link header-link--slack" href="/slack" aria-current="page"><img src="../static/slack-logo.svg" width="24" height="24" alt="">VEX for Slack</a>
           <a class="header-link header-link--cta" href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener">Schedule a chat <img src="../static/icon-arrow-right-pink.svg" width="16" height="16" alt=""></a>
         </nav>
@@ -580,8 +607,8 @@
     </div>
     <nav class="wrap" aria-label="Menu">
       <ul class="nav-list">
-        <li><a href="/"><span class="nav-link">Home</span><span class="nav-sub">Can your defense catch a single attack?</span></a></li>
-        <li><a href="/managed"><span class="nav-link">VEX MDR</span><span class="nav-sub">Continuous prevention, detection and response</span></a></li>
+        <li><a href="/"><span class="nav-link">Home</span><span class="nav-sub">Your SOC, run by hackers.</span></a></li>
+        <li class="nav-group"><span class="nav-group-label">VEX AI SOC</span><ul class="nav-sublist"><li><a href="/how-it-works/"><span class="nav-link">How VEX works</span><span class="nav-sub">Good prevention starts with great detection.</span></a></li><li><a href="/detections/"><span class="nav-link">What VEX detects</span><span class="nav-sub">Every alert type VEX can raise.</span></a></li><li><a href="/api/"><span class="nav-link">VEX API</span><span class="nav-sub">The actual API.</span></a></li></ul></li>
         <li><a href="/slack" aria-current="page"><span class="nav-link">VEX for Slack</span><span class="nav-sub">Security, handled. Right in Slack.</span></a></li>
         <li><a href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener"><span class="nav-link">Schedule a chat</span></a></li>
       </ul>
@@ -1334,6 +1361,25 @@
         });
       }
     })();
-  </script>
+  
+    (function(){
+      // VEX AI SOC menu: opens on click; closes on a click outside, Escape, leaving it with Tab, or the header hiding
+      var drop = document.querySelector('.nav-drop'); if(!drop){ return; }
+      var btn = drop.querySelector('.nav-drop-btn'), menu = drop.querySelector('.nav-drop-menu');
+      function set(open, focusBtn){
+        btn.setAttribute('aria-expanded', String(open)); menu.hidden = !open;
+        if(!open && focusBtn){ btn.focus({ preventScroll:true }); }
+      }
+      btn.addEventListener('click', function(){ set(menu.hidden); });
+      document.addEventListener('click', function(e){ if(!menu.hidden && !drop.contains(e.target)){ set(false); } });
+      document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && !menu.hidden){ set(false, true); } });
+      drop.addEventListener('focusout', function(e){ if(!menu.hidden && e.relatedTarget && !drop.contains(e.relatedTarget)){ set(false); } });
+      window.addEventListener('scroll', function(){ if(!menu.hidden && document.documentElement.classList.contains('header-hidden')){ set(false); } }, { passive:true });
+      // closed again when you come back: close on following a link, and when the browser restores the page from its
+      // back/forward cache (which keeps the menu as it was)
+      menu.addEventListener('click', function(e){ if(e.target.closest('a')){ set(false); } });
+      window.addEventListener('pageshow', function(e){ if(e.persisted){ set(false); } });
+    })();
+</script>
 </body>
 </html>

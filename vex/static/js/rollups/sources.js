@@ -1,10 +1,10 @@
-class MonitorRollup {
+class SourceRollup {
     constructor(state) {
         this.state = state;
         this.api = state.api;
-        this.screen = document.getElementById('monitor-screen');
-        this.wrap = document.getElementById('monitor-table-wrap');
-        this.list = document.getElementById('monitor-list');
+        this.screen = document.getElementById('source-screen');
+        this.wrap = document.getElementById('source-table-wrap');
+        this.list = document.getElementById('source-list');
 
         this.pickerOpen = false;
         this.connectingKey = null;
@@ -36,14 +36,14 @@ class MonitorRollup {
 
     async reload() {
         await this.ready;
-        const monitors = await this.api.monitors.list();
+        const sources = await this.api.sources.list();
         Object.values(this.available).forEach(s => { s.instances = []; });
-        monitors.forEach(monitor => this.add(monitor));
+        sources.forEach(source => this.add(source));
         this._render();
     }
 
-    add(monitor) {
-        const [, , name, indexStr] = monitor.split("/");
+    add(source) {
+        const [, , name, indexStr] = source.split("/");
         const index = indexStr !== undefined ? parseInt(indexStr, 10) : 0;
         const source = this.available[name];
         if (source && !source.instances.includes(index)) {
@@ -58,7 +58,7 @@ class MonitorRollup {
 
         try {
             // Backend assigns the index; send only the source name (e.g. "google")
-            await this.api.monitors.connect(key, value);
+            await this.api.sources.connect(key, value);
         } catch {
             this.connecting = false;
             alert("Invalid JSON. Verify your quotes are correct.");
@@ -83,13 +83,13 @@ class MonitorRollup {
     }
 
     _icon(key) {
-        return `<span class="monitor-icon"><img src="static/img/source/${key}.png"></span>`;
+        return `<span class="source-icon"><img src="static/img/source/${key}.png"></span>`;
     }
 
     _renderCallout() {
-        document.getElementById('monitor-callout').innerHTML = `
-            <p class="monitor-callout-text">Every account has a unique mailbox that accepts signals. Forward alerts from routers, DMARC rua, and other services that send email notifications.</p>
-            <p class="monitor-callout-address">${this.emailAddress}</p>
+        document.getElementById('source-callout').innerHTML = `
+            <p class="source-callout-text">Every account has a unique mailbox that accepts signals. Forward alerts from routers, DMARC rua, and other services that send email notifications.</p>
+            <p class="source-callout-address">${this.emailAddress}</p>
         `;
     }
 
@@ -97,19 +97,19 @@ class MonitorRollup {
         const instances = this._allInstances();
         this.wrap.classList.toggle('empty', instances.length === 0 && !this.pickerOpen);
 
-        const rows = instances.map(({ key, idx, source }) => this._monitorRow(key, idx, source)).join('');
+        const rows = instances.map(({ key, idx, source }) => this._sourceRow(key, idx, source)).join('');
         this.list.innerHTML = rows + this._addSection();
     }
 
-    _monitorRow(key, idx, source) {
+    _sourceRow(key, idx, source) {
         const multi = source.instances.length > 1;
-        const id = multi ? `<span class="monitor-id">${idx}</span>` : '';
+        const id = multi ? `<span class="source-id">${idx}</span>` : '';
 
         return `
-            <div class="monitor-row">
+            <div class="source-row">
                 ${this._icon(key)}
-                <span class="monitor-name">${source.name}${id}</span>
-                <span class="monitor-status"><span class="monitor-dot"></span>Connected</span>
+                <span class="source-name">${source.name}${id}</span>
+                <span class="source-status"><span class="source-dot"></span>Connected</span>
                 <button class="icon-btn" data-disconnect="${key}/${idx}" aria-label="Disconnect ${source.name}${multi ? ` ${idx}` : ''}">×</button>
             </div>
         `;
@@ -118,22 +118,22 @@ class MonitorRollup {
     _addSection() {
         if (!this.pickerOpen) {
             return `
-                <button class="monitor-add-toggle" data-open-picker>
+                <button class="source-add-toggle" data-open-picker>
                     <span class="material-symbols-outlined">add</span>
-                    Add monitor
+                    Add source
                 </button>
             `;
         }
 
         if (!this.connectingKey) {
             const options = Object.entries(this.available).map(([key, s]) =>
-                `<button class="monitor-source-option" data-pick="${key}">${this._icon(key)}<span>${s.name}</span></button>`
+                `<button class="source-source-option" data-pick="${key}">${this._icon(key)}<span>${s.name}</span></button>`
             ).join('');
 
             return `
-                <div class="monitor-picker">
-                    <p class="monitor-picker-label">Choose a source</p>
-                    <div class="monitor-source-grid">${options}</div>
+                <div class="source-picker">
+                    <p class="source-picker-label">Choose a source</p>
+                    <div class="source-source-grid">${options}</div>
                     <button class="btn ghost" data-cancel-picker>Cancel</button>
                 </div>
             `;
@@ -144,22 +144,22 @@ class MonitorRollup {
 
         if (this.connecting) {
             return `
-                <div class="monitor-picker monitor-picker-connecting">
-                    <div class="monitor-connect-header">${this._icon(key)}<span class="monitor-name">${s.name}</span></div>
-                    <p class="monitor-connect-note">Connecting…</p>
+                <div class="source-picker source-picker-connecting">
+                    <div class="source-connect-header">${this._icon(key)}<span class="source-name">${s.name}</span></div>
+                    <p class="source-connect-note">Connecting…</p>
                 </div>
             `;
         }
 
         return `
-            <div class="monitor-picker">
-                <div class="monitor-connect-header">${this._icon(key)}<span class="monitor-name">${s.name}</span></div>
-                <p class="monitor-connect-note">Credentials are required for monitoring.</p>
+            <div class="source-picker">
+                <div class="source-connect-header">${this._icon(key)}<span class="source-name">${s.name}</span></div>
+                <p class="source-connect-note">Credentials are required.</p>
                 <textarea data-cred rows="2" placeholder="Paste your API key or credentials"></textarea>
-                <p class="monitor-connect-error" data-cred-error hidden>Enter your credentials first.</p>
-                <div class="monitor-connect-actions">
+                <p class="source-connect-error" data-cred-error hidden>Enter your credentials first.</p>
+                <div class="source-connect-actions">
                     <a href="docs/${key}.html" target="_blank" class="docs-link">Setup docs →</a>
-                    <div class="monitor-connect-actions-right">
+                    <div class="source-connect-actions-right">
                         <button class="btn ghost" data-back>Back</button>
                         <button class="btn primary" data-submit>Connect</button>
                     </div>
@@ -206,7 +206,7 @@ class MonitorRollup {
             if (disconnect) {
                 const [key, idxStr] = disconnect.dataset.disconnect.split('/');
                 const idx = parseInt(idxStr, 10);
-                this.api.monitors.disconnect(`${key}/${idx}`);
+                this.api.sources.disconnect(`${key}/${idx}`);
                 this.available[key].instances = this.available[key].instances.filter(i => i !== idx);
                 return this._render();
             }

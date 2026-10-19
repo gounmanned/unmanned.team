@@ -34,21 +34,21 @@ class SignalApi extends Gateway {
     }  
 }
 
-class MonitorApi extends Gateway {
+class SourceApi extends Gateway {
     constructor(){
         super();
     }
 
     async list() {
-        return await this.call("GET", `monitor`);
+        return await this.call("GET", `source`);
     }
     
     async connect(name, blob) {
-        await this.call("POST", `monitor/${name}`, JSON.parse(blob));
+        await this.call("POST", `source/${name}`, JSON.parse(blob));
     }
 
     async disconnect(key) {
-        await this.call("DELETE", `monitor/${key}`);
+        await this.call("DELETE", `source/${key}`);
     }
 }
 

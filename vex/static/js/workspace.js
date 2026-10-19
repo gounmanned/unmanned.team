@@ -29,7 +29,7 @@ class Api {
         this.managed = new ManagedApi(state);
         this.audit = new AuditApi(state);
         this.file = new FileApi(state);
-        this.monitors = new MonitorApi(state);
+        this.sources = new SourceApi(state);
         this.notification = new NotificationApi(state);
         this.attack = new AttackApi(state);
     }
@@ -40,7 +40,7 @@ class Api {
         this.managed.set("account", this.state.account());
         this.audit.set("account", this.state.account());
         this.file.set("account", this.state.account());
-        this.monitors.set("account", this.state.account());
+        this.sources.set("account", this.state.account());
         this.notification.set("account", this.state.account());
         this.attack.set("account", this.state.account());
     }
@@ -59,7 +59,7 @@ class Workspace {
 
                     this.rollups = {
                         managed: new ManagedRollup(state),
-                        monitor: new MonitorRollup(state),
+                        source: new SourceRollup(state),
                         inventory: new InventoryRollup(state),
                     };
 

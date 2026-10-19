@@ -95,9 +95,9 @@ body.attack textarea:focus {
 }
 
 body.attack .btn.ghost,
-body.attack .monitor-source-option,
+body.attack .source-source-option,
 body.attack .delete-btn { background:var(--surface-alt); }
-body.attack .monitor-source-option { color:var(--text-body); }
+body.attack .source-source-option { color:var(--text-body); }
 body.attack .delete-btn:hover {
   background:color-mix(in srgb, red 18%, var(--surface));
   border-color:red;

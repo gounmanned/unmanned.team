@@ -1,15 +1,13 @@
 <!DOCTYPE html>
-<html lang="en" class="no-js">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<script>document.documentElement.classList.replace('no-js','js');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Unmanned</title>
-<meta name="description" content="Can your defense catch a single attack? Security tools promise billions of blocked events. But there’s only one number that matters: your response time.">
+<meta name="description" content="Your SOC, run by hackers. VEX tests your defenses, investigates threats and brings our team into the response. Free to use in Slack.">
 <link rel="apple-touch-icon" href="https://cdn.unmanned.team/img/logo.png">
-<link rel="icon" type="image/png" href="https://cdn.unmanned.team/img/logo.png">
-<meta property="og:title" content="VEX · Unmanned, Inc." />
-<meta property="og:description" content="Can your defense catch a single attack? Security tools promise billions of blocked events. But there’s only one number that matters: your response time." />
+<meta property="og:title" content="Unmanned" />
+<meta property="og:description" content="Your SOC, run by hackers. VEX tests your defenses, investigates threats and brings our team into the response. Free to use in Slack." />
 <meta property="og:url" content="https://unmanned.team" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Unmanned" />
@@ -18,17 +16,15 @@
 <meta property="og:image:height" content="630" />
 <meta property="og:image:alt" content="VEX: Don’t get hacked" />
 <meta name="twitter:card" content="summary_large_image" />
+<link rel="icon" type="image/png" href="https://cdn.unmanned.team/img/logo.png">
 <link rel="stylesheet" href="https://cdn.unmanned.team/css/global.css">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;800&family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
   :root{
     --ink:#0b0c0d;
-    --white:#fcfcfa;
     --pink:#e01280;
     --pink-text:#d1107a;     /* pink for TEXT on light backgrounds (passes 4.5:1) */
-    --pink-on-dark:#e81385;  /* pink for TEXT on dark backgrounds */
-    --sev-1:#dc2626;         /* red: "missed" / DELETE (white text on it passes 4.5:1) */
     --gray-line:#dcdcd8;
     --gray-faint:#c4c4c4;
     --surface-dark:#6c6c70;
@@ -36,23 +32,33 @@
     --body:#2b2b2b;
     --body-soft:#4b4c52;
     --nav-link:#6b7280;      /* header links (4.8:1 on white) */
-    --db-ink:#f3f3f0;
-    --db-mid:#8a8a8e;
     --classbar-h:26px;
+    --gutter:24px;           /* page side margins; 16px on phones */
+    --mono:'JetBrains Mono',ui-monospace,monospace;
+    --slack:'Lato',system-ui,sans-serif;
+    --s-ink:#1d1c1d;
+    --s-gray:#616061;
+    --s-time:#868686;
+    --s-btn:#007a5a;         /* Slack's green button */
+    --s-green:#2eb67d;
+    --s-yellow:#ecb22e;
+    --s-red:#e01e5a;
+    --s-blue:#36c5f0;        /* Slack's blue (from its logo): Recommendation messages */
+    --go-text:#0e7c52;       /* green text (from the API and VEX MDR pages; passes 4.5:1) */
+    --sev-1:#dc2626;         /* error red (from the other pages; 4.5:1 on the light gray) */
   }
   *{box-sizing:border-box;}
-  html{overflow-x:hidden;scroll-behavior:smooth;scroll-padding-top:40px;scrollbar-gutter:stable;}
+  html{overflow-x:hidden;scroll-behavior:smooth;scrollbar-gutter:stable;}
   body{margin:0;padding-top:var(--classbar-h);background:var(--surface);color:var(--ink);-webkit-font-smoothing:antialiased;}
-  h1,h2,h3,p{margin:0;}
-  /* line breaks: headlines get even line lengths, body text avoids a single word alone on its last line
-     (browsers that don't support these just wrap as before) */
+  h1,h2,h3,h4,p{margin:0;}
   h1,h2,h3,h4{text-wrap:balance;}
   p,li{text-wrap:pretty;}
-  .mono{letter-spacing:0.04em;}
   a{color:inherit;}
+  img{display:block;}
   ::selection{background:var(--pink);color:#fff;}
   a:focus-visible,button:focus-visible{outline:1.5px solid var(--pink);outline-offset:4px;}
-  .wrap{width:min(1100px,calc(100% - 48px));margin:0 auto;}
+  .wrap{width:min(1100px,calc(100% - 2 * var(--gutter)));margin:0 auto;} /* the design's 900px content column */
+  @media (max-width:700px){:root{--gutter:16px;}}
 
   /* ---------- STATUS DOT ---------- */
   .status-dot{
@@ -65,36 +71,6 @@
     100%{box-shadow:0 0 0 0 rgba(224,18,128,0);}
   }
   .eyebrow-label{font-size:11px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;color:var(--surface-dark);display:flex;align-items:center;gap:11px;}
-  .dark-frame .eyebrow-label{color:var(--db-mid);}
-
-  /* ---------- CORNER MARKS ---------- */
-  .corner{position:absolute;width:var(--corner-size,28px);height:var(--corner-size,28px);border-color:var(--ink);opacity:0.55;}
-  .corner.tl{border-top:1px solid;border-left:1px solid;}
-  .corner.tr{border-top:1px solid;border-right:1px solid;}
-  .corner.bl{border-bottom:1px solid;border-left:1px solid;}
-  .corner.br{border-bottom:1px solid;border-right:1px solid;}
-
-  /* ---------- HUD CORNERS ----------
-     Four corner marks fixed to the screen. The top two sit just under the header and
-     slide up and down with it (hide on scroll); the bottom two stay put.
-     --hud-inset is the gap from the edges, --hud-size the length of each line. */
-  .hud-frame{--hud-inset:12px;--hud-size:12px;position:fixed;top:0;right:0;bottom:0;left:0;z-index:40;pointer-events:none;}
-  .hud-frame .corner{--corner-size:var(--hud-size);border-color:var(--gray-faint);border-width:2px;opacity:0.75;}
-  .hud-frame .corner.tl,.hud-frame .corner.tr{
-    top:calc(var(--classbar-h) + var(--top-h, 61px) + var(--hud-inset));
-    transition:transform 0.3s cubic-bezier(0.4,0,0.2,1); /* same timing as the header */
-  }
-  .hud-frame .corner.tl,.hud-frame .corner.bl{left:var(--hud-inset);}
-  .hud-frame .corner.tr,.hud-frame .corner.br{right:var(--hud-inset);}
-  .hud-frame .corner.bl,.hud-frame .corner.br{bottom:var(--hud-inset);}
-  html.header-hidden .hud-frame .corner.tl,html.header-hidden .hud-frame .corner.tr{
-    transform:translateY(calc(-1 * (var(--classbar-h) + var(--top-h, 61px))));
-  }
-  @media (max-width:700px){.hud-frame{--hud-inset:8px;--hud-size:8px;}}
-  /* When the script is running (.is-tracking), the corners frame the section you're looking at instead:
-     the script moves them up and down with transform. Without JavaScript they stay at the screen corners. */
-  .hud-frame.is-tracking .corner{top:0;bottom:auto;transition:border-color 0.3s ease, opacity 0.3s ease;will-change:transform;}
-  .hud-frame.on-dark .corner{border-color:var(--pink);opacity:1;} /* framing a dark section (the Get started CTA): brand pink */
 
   /* ---------- CLASSIFICATION BAR ---------- */
   .classbar{
@@ -102,24 +78,21 @@
     font-size:9.5px;line-height:1.5;letter-spacing:0.16em;text-transform:uppercase;text-align:center;padding:6px 0;
   }
 
-  /* ---------- STICKY HEADER ---------- */
+  /* ---------- STICKY HEADER (same as the homepage and VEX MDR) ---------- */
   .site-top{position:sticky;top:var(--classbar-h);z-index:50;}
-
   .site-header{background:var(--surface);border-bottom:1px solid var(--gray-line);}
-  .site-top .site-header{box-shadow:0 4px 8px -4px rgba(11,12,13,0.1);} /* very slight shadow, bottom edge only (the negative spread hides it on the sides) */
+  .site-top .site-header{box-shadow:0 4px 8px -4px rgba(11,12,13,0.1);}
   .header-inner{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:18px 0;}
   .header-left{display:flex;align-items:center;gap:16px;min-width:0;}
   .brand{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:800;line-height:1.5;letter-spacing:0.01em;text-decoration:none;color:var(--ink);}
-  .brand .status-dot{animation-iteration-count:2;} /* header logo dot ripples twice, then rests */
+  .brand .status-dot{animation-iteration-count:2;}
   .brand-tag{font-size:11px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;color:var(--surface-dark);white-space:nowrap;}
   .menu-btn{flex-shrink:0;width:32px;height:32px;padding:0;border:none;background:none;cursor:pointer;display:flex;}
   .menu-btn img{width:32px;height:32px;display:block;}
-
-  /* header links on desktop; on mobile they're swapped for the menu button */
   .header-links{display:flex;align-items:center;gap:32px;}
   .header-link{display:inline-flex;align-items:center;gap:4px;font-weight:600;font-size:15px;line-height:1.5;color:var(--nav-link);text-decoration:none;transition:color 0.2s ease;}
   .header-link:hover{color:var(--ink);}
-  .header-link[aria-current="page"]{color:var(--ink);} /* the page you're on */
+  .header-link[aria-current="page"]{color:var(--ink);}
   .header-link--slack{gap:8px;}
   .header-link--slack img{width:24px;height:24px;}
   .header-link--cta{border-bottom:1px solid var(--pink);}
@@ -131,19 +104,14 @@
     .site-top .menu-btn{display:flex;}
   }
 
-  /* ---------- HIDE ON SCROLL ----------
-     Scrolling down slides the class bar, promo banner and header up out of view;
-     scrolling up brings them back. Each piece has its own timing so they move
-     together but slightly independently. The script at the bottom toggles
-     html.header-hidden. */
+  /* ---------- HIDE ON SCROLL ---------- */
   .classbar{transition:transform 0.4s cubic-bezier(0.49,0.025,0.685,1), opacity 0.4s cubic-bezier(0.49,0.025,0.685,1);}
   .site-top .site-header{position:relative;z-index:1;transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);}
   html.header-hidden .classbar{transform:translateY(-100%);opacity:0;}
-  html.header-hidden .site-top .site-header{transform:translateY(calc(-100% - var(--classbar-h) - var(--banner-h, 0px)));}
-  html.header-hidden .site-top{pointer-events:none;} /* the hidden header's empty box stays put; let taps reach what's under it */
+  html.header-hidden .site-top .site-header{transform:translateY(calc(-100% - var(--classbar-h)));}
+  html.header-hidden .site-top{pointer-events:none;}
 
-  /* ---------- NAV MENU (opened by the menu button) ---------- */
-  /* slides down from under the class bar; visibility keeps closed links out of the tab order */
+  /* ---------- NAV MENU (phones) ---------- */
   .nav-panel{
     position:fixed;top:var(--classbar-h);left:0;right:0;bottom:0;z-index:55;background:var(--surface);
     overflow-y:auto;overscroll-behavior:contain;
@@ -160,227 +128,230 @@
   .nav-list a:hover .nav-link{color:var(--pink-text);}
 
   @media (max-width:700px){
-    :root{--classbar-h:24px;} /* the top bar is shorter on phones (smaller text) */
+    :root{--classbar-h:24px;}
     .classbar{font-size:8px;}
-      .nav-link{font-size:20px;}
+    .nav-link{font-size:20px;}
   }
   @media (max-width:560px){.brand-tag{display:none;}}
 
-  /* ---------- DIVIDER ---------- */
-  .divider{
-    position:relative;border-top:1px solid var(--gray-line);display:flex;justify-content:space-between;gap:16px;
-    padding:14px 56px;font-size:10px;line-height:1.5;color:var(--surface-dark);
-  }
-  @media (max-width:700px){.divider{padding:14px 20px;}}
-
-  /* ---------- SECTION SHELLS ---------- */
-  .band{position:relative;background:var(--surface);}
-  .band--gray{background:var(--surface-gray);}
-  /* 900px column with a 24px left gutter, matching the design grid (content starts at x=294 on a 1440 screen) */
-  .section{position:relative;max-width:900px;margin:0 auto;padding:52px 0 96px 24px;}
-  @media (max-width:948px){.section{padding-right:24px;}}
-  .section-head{display:flex;flex-direction:column;gap:16px;}
-  .section h2{font-weight:500;font-size:clamp(34px,4.2vw,52px);line-height:1.14;letter-spacing:-0.01em;}
-  .lede{font-size:16px;line-height:1.75;color:var(--body);max-width:680px;}
-  .lede b{font-weight:700;}
-  .section-head .lede{margin-top:8px;}
-  @media (max-width:820px){.section{padding-top:44px;padding-bottom:72px;}}
-
+  /* ---------- BUTTONS (as on the published pages) ---------- */
   .btn{
     display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:600;font-size:15px;line-height:1.5;
-    padding:15px 30px;text-decoration:none;background:var(--pink);color:#fff;border:none;cursor:pointer;white-space:nowrap;transition:opacity 0.2s ease;
+    padding:15px 30px;border-radius:2px;text-decoration:none;background:var(--pink);color:#fff;border:none;cursor:pointer;white-space:nowrap;transition:opacity 0.2s ease;
   }
   .btn:hover{opacity:0.8;}
-  .text-link{display:inline-flex;align-items:center;gap:4px;font-size:18px;line-height:1.5;letter-spacing:0.02em;color:var(--pink-text);text-decoration:none;}
-  .text-link img{width:20px;height:20px;transition:transform 0.2s ease;}
-  .text-link:hover img{transform:translateY(3px);}
 
-  /* ---------- HERO: THE QUESTION ---------- */
-  /* On landscape screens the hero stretches to fill the first screen (minus the class bar and header),
-     leaving --hero-peek of the next section in view as a hint to scroll. It's a MINIMUM height,
-     so on shorter screens the hero keeps its natural height. On portrait screens (phones, upright tablets)
-     filling the screen would only add empty space, so the page just flows. --top-h is measured by the script at the bottom. */
-  .hero{
-    --hero-peek:24px;
-    position:relative;overflow:hidden;background:var(--surface);padding:39px 0;
-    display:flex;flex-direction:column;justify-content:center;
-    min-height:calc(100vh - var(--classbar-h) - var(--top-h, 60px) - var(--hero-peek));
-    min-height:calc(100svh - var(--classbar-h) - var(--top-h, 60px) - var(--hero-peek)); /* svh accounts for mobile browser bars */
+  /* ---------- SLACK MOCKUPS: shared pieces ----------
+     Everything inside .slack is drawn to look like Slack: Lato, Slack's colors and spacing. */
+  .slack{font-family:var(--slack);color:var(--s-ink);text-align:left;}
+  .msg{display:flex;gap:8px;align-items:flex-start;}
+  .msg-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px;}
+  .msg-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+  .msg-name{font-weight:900;font-size:15px;}
+  .app-tag{padding:1px 4px;border-radius:3px;background:rgba(0,0,0,0.07);font-weight:700;font-size:10px;color:var(--s-gray);}
+  .msg-time{font-size:12px;color:var(--s-gray);}
+  .avatar{flex-shrink:0;}
+  .attach{display:flex;gap:8px;}
+  .attach::before{content:'';flex-shrink:0;width:4px;border-radius:2px;background:var(--bar);}
+  .attach-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px;align-items:flex-start;}
+  .tag{padding:2px 6px;border-radius:3px;font-weight:900;font-size:10px;line-height:normal;color:var(--s-ink);}
+  .tag--green{background:rgba(46,182,125,0.18);}
+  .tag--red{background:rgba(224,30,90,0.18);}
+  .tag--blue{background:rgba(54,197,240,0.18);}
+  .attach-title{font-weight:700;font-size:13px;}
+  .s-btns{display:flex;flex-wrap:wrap;gap:8px;padding-top:4px;}
+  .s-btn{padding:5px 8px;border-radius:4px;font-weight:700;font-size:13px;line-height:normal;background:#fff;color:var(--s-ink);box-shadow:inset 0 0 0 1px rgba(0,0,0,0.3);}
+  .s-btn--go{background:var(--s-btn);color:#fff;box-shadow:none;}
+
+  /* ---------- HERO ---------- */
+  .hero{position:relative;overflow:hidden;padding:104px 0 72px;text-align:center;}
+  .hero-backdrop{position:absolute;top:0;left:50%;margin-left:-1468px;pointer-events:none;max-width:none;}
+  .hero .wrap{position:relative;display:flex;flex-direction:column;align-items:center;gap:24px;}
+  .hero h1{max-width:720px;font-weight:600;font-size:clamp(40px,6vw,70px);line-height:1.03;letter-spacing:-0.03em;}
+  .hero-lede{max-width:640px;font-size:18px;font-weight:300;line-height:1.7;color:var(--body);}
+  .ctas{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:12px 28px;margin-top:8px;}
+  .text-link{display:inline-flex;align-items:center;gap:6px;font-weight:500;font-size:15px;line-height:1.5;color:var(--pink-text);text-decoration:none;}
+  .text-link img{width:16px;height:16px;transition:transform 0.2s ease;}
+  .text-link:hover img{transform:translateX(3px);}
+  .text-link--on-dark{color:#ff5aa8;}
+
+  /* ---------- SECTION SHELL ---------- */
+  .section{padding:96px 0;}
+  .sec-head{display:flex;flex-direction:column;gap:16px;max-width:760px;}
+  .sec-head h2{font-weight:600;font-size:clamp(34px,4.2vw,52px);line-height:1.12;letter-spacing:-0.02em;}
+  .sec-head p{font-size:17px;line-height:1.7;color:var(--body);}
+  .sec-head--center{margin:0 auto;align-items:center;text-align:center;}
+
+  /* ---------- PREVENT / DETECT / RESPOND ROW ---------- */
+  .pdr{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin-top:48px;}
+  .pdr-item{position:relative;display:flex;flex-direction:column;gap:6px;padding-top:14px;border-top:1px solid var(--pink);}
+  .pdr-key{font-family:var(--mono);font-weight:500;font-size:11px;line-height:1.5;letter-spacing:0.1em;text-transform:uppercase;color:var(--pink-text);margin-top:-36px;margin-bottom:18px;}
+  .pdr-item h3{font-weight:600;font-size:15px;line-height:1.5;}
+  .pdr-item p{font-size:14px;line-height:1.55;color:var(--body-soft);}
+  .pdr-item:not(:last-child)::after{content:'';position:absolute;right:-20px;top:-27px;width:16px;height:16px;opacity:0.5;
+    background:var(--ink);-webkit-mask:url(static/icon-arrow-right-pink.svg) center/contain no-repeat;mask:url(static/icon-arrow-right-pink.svg) center/contain no-repeat;}
+
+  /* ---------- WHAT YOU GET ---------- */
+
+  /* ---------- TWO PATHS ---------- */
+
+  /* ---------- PRODUCT MOCKUPS: shared frame ---------- */
+  .person-role{font-family:var(--mono);font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--surface-dark);}
+  .person-name{margin-top:4px;font-weight:700;font-size:20px;}
+
+  /* ---------- SMALLER SCREENS ---------- */
+  @media (max-width:900px){
+    .pdr{grid-template-columns:minmax(0,1fr);gap:40px;margin-top:64px;}
+    .pdr-item:not(:last-child)::after{display:none;}
   }
-  .hero .section{width:100%;padding-top:52px;padding-bottom:56px;}
-  @media (orientation:portrait){.hero{min-height:0;}}
-  .hero-backdrop{position:absolute;top:0;left:50%;margin-left:-1468px;pointer-events:none;}
-  /* the two big ring sets share one center with the small rings inside the black card (behind the "1"),
-     so they hang off the card's wrapper and stay lined up at any screen width */
-  .proof-slot{position:relative;display:flex;}
-  .proof-slot > .proof-card{flex:1;}
-  .hero-rings{position:absolute;pointer-events:none;z-index:-1;}
-  .hero-rings--lg{top:-341px;left:-392px;}
-  .hero-rings--sm{top:-141px;left:-192px;}
-  .hero-body{position:relative;z-index:1;}
-  .hero h1{
-    margin-top:16px;font-weight:600;
-    font-size:clamp(40px,6vw,70px);line-height:0.99;letter-spacing:-0.03em;
-  }
-  @media (max-width:480px){.hero h1 br{display:none;}} /* small phones: let the headline wrap on its own */
-  .hero-lede{margin-top:24px;max-width:680px;font-size:18px;font-weight:300;line-height:1.75;color:var(--ink);}
-  .hero-lede b{font-weight:700;}
-
-  .proof-cards{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:64px;}
-  .proof-card{position:relative;overflow:hidden;border-radius:2px;padding:36px;display:flex;flex-direction:column;justify-content:center;gap:14px;}
-  .proof-card--vendor{background:var(--white);border:1px solid var(--db-mid);color:var(--surface-dark);}
-  .proof-card--vex{background:var(--ink);color:#fff;box-shadow:0 0 14px rgba(224,18,128,0.6), 4px 4px 2px rgba(224,18,128,0.25);}
-  .proof-card > *{position:relative;z-index:1;}
-  .proof-card .proof-rings{position:absolute;left:-92px;top:-41px;z-index:0;pointer-events:none;opacity: .5;}
-  .proof-label{font-size:11px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;}
-  .proof-card--vex .proof-label{font-weight:700;color:var(--pink-on-dark);}
-  .proof-num{position:relative;font-family:'JetBrains Mono',monospace;line-height:normal;letter-spacing:-0.03em;}
-  .proof-card--vendor .proof-num{height:90px;display:flex;align-items:center;font-weight:500;font-size:44px;text-decoration:line-through;white-space:nowrap;}
-  .proof-card--vex .proof-num{align-self:flex-start;font-weight:800;font-size:68px;}
-  .proof-num .reticle{position:absolute;left:-23px;right:-28px;top:9px;bottom:18px;pointer-events:none;}
-  .proof-num .reticle{display:none;} /* hidden for now; delete this line to bring the reticle back */
-  .proof-num .corner{--corner-size:8px;border-color:var(--pink-on-dark);opacity:0.75;}
-  .proof-num .corner.tl{top:0;left:0;}
-  .proof-num .corner.tr{top:0;right:0;}
-  .proof-num .corner.bl{bottom:0;left:0;}
-  .proof-num .corner.br{bottom:0;right:0;}
-  .proof-desc{font-size:16px;line-height:1.5;}
-
-  .find-out{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;margin-top:48px;}
-  .find-out p{font-weight:600;font-size:18px;line-height:1.5;}
-
   @media (max-width:700px){
-    .hero{padding:0;}
-    .proof-cards{grid-template-columns:1fr;margin-top:48px;}
-    .proof-card{padding:28px;}
-    .proof-card--vendor .proof-num{height:auto;font-size:clamp(24px,8vw,44px);}
-    .hero-rings--sm{display:none;}
+    .hero{padding:64px 0 48px;}
+    .hero-lede{font-size:16px;}
+    .section{padding:64px 0;}
+    .person-name{margin-top:0;}
+    .person-role{align-self:end;}
   }
 
-  /* ---------- HOW IT WORKS: VERTICAL TIMELINE ---------- */
-  .timeline{--rail:138px;--rail-gap:32px;position:relative;margin-top:64px;max-width:589px;}
-  .timeline::before{content:'';position:absolute;top:47px;bottom:76px;left:calc(var(--rail) / 2 - 1px);width:1px;background:var(--gray-line);}
-  .timeline-tag{
-    display:block;width:var(--rail);padding-bottom:8px;text-align:center;
-    font-size:11px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;color:var(--pink-text);
-  }
-  .timeline-step{position:relative;z-index:1;display:grid;grid-template-columns:var(--rail) minmax(0,1fr);column-gap:var(--rail-gap);align-items:start;padding-bottom:44px;}
-  .timeline-node{
-    justify-self:center;width:64px;height:64px;border-radius:50%;background:var(--surface);
-    border:1.5px solid var(--gray-faint);box-shadow:0 2px 3px rgba(0,0,0,0.16);
-    display:flex;align-items:center;justify-content:center;
-    font-size:11px;line-height:1.5;letter-spacing:0.18em;padding-left:0.18em;color:var(--ink);
-  }
-  .timeline-heading{font-weight:500;font-size:clamp(34px * 27 / 52, 4.2vw * 27 / 52, 27px);line-height:1.5;letter-spacing:-0.01em;} /* stays 27/52 of the section headline */
-  .timeline-desc{font-size:14.5px;line-height:1.75;color:var(--body);}
-  .timeline-step--clock{align-items:center;}
-  .timeline-step--clock .clock{justify-self:center;width:140px;}
+  /* ---------- A DIFFERENT KIND OF PREVENTION ---------- */
 
-  /* ---------- MISSION CLOCK (same clock as the /test page) ----------
-     Drawn at 330px wide; every size inside is a multiple of --u (1/330 of the clock's width),
-     so the whole clock scales with its width. When it scrolls into view the script counts the readout
-     up from T+00:00:00 and steps the red hand once a second (one turn a minute). */
-  .clock{container-type:inline-size;width:330px;--u:calc(100cqw / 330);display:flex;flex-direction:column;align-items:center;}
-  .clock-cap{display:flex;flex-direction:column;align-items:center;width:calc(48 * var(--u));}
-  .clock-cap::before{content:'';width:100%;height:calc(9 * var(--u));border-radius:calc(8 * var(--u));background:var(--surface-dark);}
-  .clock-cap::after{content:'';width:calc(8 * var(--u));height:calc(4 * var(--u));background:#87878c;}
-  .clock-face{position:relative;width:100%;margin-top:calc(2 * var(--u));aspect-ratio:330 / 312;}
-  .clock-face > *{position:absolute;}
-  .clock-face img{display:block;max-width:none;}
-  .clock-face .face{left:calc(17 * var(--u));top:calc(7.49 * var(--u));width:calc(308.71 * var(--u));height:calc(308.71 * var(--u));}
-  .clock-face .ring-pink{left:calc(11 * var(--u));top:calc(1.49 * var(--u));width:calc(307.71 * var(--u));height:calc(307.71 * var(--u));}
-  .clock-face .ring-gray{left:calc(17.16 * var(--u));top:calc(7.8 * var(--u));width:calc(295.71 * var(--u));height:calc(295.71 * var(--u));}
-  .clock-face .ticks{left:calc(11 * var(--u));top:calc(2.71 * var(--u));width:calc(307.65 * var(--u));height:calc(306.65 * var(--u));}
-  .clock-num{width:calc(21 * var(--u));font-family:'JetBrains Mono',monospace;font-size:calc(17.143 * var(--u));line-height:normal;text-align:center;color:var(--surface-dark);}
-  .clock-num--00{left:calc(151.8 * var(--u));top:calc(27.9 * var(--u));}
-  .clock-num--03{left:calc(270 * var(--u));top:calc(142.1 * var(--u));}
-  .clock-num--06{left:calc(151.8 * var(--u));top:calc(264.4 * var(--u));}
-  .clock-num--09{left:calc(33.5 * var(--u));top:calc(142.1 * var(--u));}
-  /* same spot as on /test (above the 09 / 03 numbers); this page just doesn't show the label under it */
-  .clock-readout{left:calc(165 * var(--u));top:calc(107.5 * var(--u));transform:translateX(-50%);font-family:'JetBrains Mono',monospace;font-weight:500;font-size:calc(32 * var(--u));line-height:1.5;letter-spacing:0.02em;white-space:nowrap;color:var(--body);}
-  /* the hand pivots on the dial's center; it's short on purpose so it never crosses the readout */
-  .clock-hand{left:calc(165 * var(--u));top:calc(155.65 * var(--u));width:0;height:0;transition:transform 0.2s cubic-bezier(0.4,0,0.2,1);}
-  .clock-hand img{position:absolute;}
-  .clock-hand .arm{left:min(-0.5px, calc(-0.5 * var(--u)));top:calc(-125.5 * var(--u));width:max(1px, calc(1 * var(--u)));height:calc(28.88 * var(--u));}
-  .clock-hand .tip{left:calc(-5 * var(--u));top:calc(-120.6 * var(--u));width:calc(10 * var(--u));height:calc(10 * var(--u));}
+  /* ---------- SLACK BAND ---------- */
+  .slack-band{background:#49144a;color:#fff;padding:96px 0;}
+  .slack-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,360px);gap:64px;align-items:center;}
+  .slack-copy{display:flex;flex-direction:column;gap:20px;}
+  .slack-tiles{display:flex;align-items:center;gap:10px;font-weight:600;font-size:15px;color:rgba(255,255,255,0.85);}
+  .slack-tiles span{display:flex;align-items:center;justify-content:center;width:48px;height:48px;border-radius:8px;background:#fff;box-shadow:3px 3px 0 rgba(0,0,0,0.25);}
+  .slack-tiles span i{width:22px;height:22px;border-radius:50%;background:var(--pink);}
+  .slack-tiles img{width:26px;height:26px;}
+  .slack-tiles b{font-weight:400;font-size:20px;color:rgba(255,255,255,0.7);}
+  .slack-copy h2{font-weight:600;font-size:clamp(34px,4.2vw,52px);line-height:1.1;letter-spacing:-0.02em;}
+  .slack-copy p{max-width:520px;font-size:17px;line-height:1.7;color:rgba(255,255,255,0.75);}
+  .slack-cards{display:flex;flex-direction:column;gap:10px;}
+  .slack-cards .card{padding:14px;border-radius:8px;background:#fff;box-shadow:0 8px 24px -12px rgba(0,0,0,0.5);}
+  .slack-cards .avatar{width:32px;height:32px;}
+
+  /* ---------- TEAM ---------- */
+  .team{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin-top:48px;}
+  .member{display:flex;flex-direction:column;gap:12px;padding:0 24px;border-left:1px solid var(--gray-line);}
+  .member:first-child{border-left:0;padding-left:0;}
+  .member-top{display:flex;align-items:center;gap:14px;}
+  .member img{width:96px;height:96px;object-fit:cover;filter:grayscale(1);border-radius:2px;}
+  .member .person-name{font-size:17px;}
+  .member-past{font-size:13px;color:var(--body-soft);}
+
+  @media (max-width:900px){
+    .slack-grid{grid-template-columns:minmax(0,1fr);gap:40px;}
+    .team{grid-template-columns:minmax(0,1fr);gap:28px;}
+    .member{padding:0;border-left:0;}
+  }
+  @media (max-width:700px){.slack-band{padding:64px 0;}}
+
+  /* ---------- PREVENTION ----------
+     One section (merged 2026-10-18): "A different kind of prevention." and its lede beside the layers (attacks
+     dropping through them), then prevent / detect / respond. Side by side from 720px; stacked below that. */
+  .pv-lede{margin-top:16px;font-size:18px;font-weight:300;line-height:1.7;color:var(--body);}
+  .pv-lede b{font-weight:600;}
+  .pv-head{font-weight:600;letter-spacing:-0.02em;}
+  .pv-stage{position:relative;}
+  .pv-stage canvas{position:absolute;inset:0;width:100%;height:100%;}
+  .pv-pdr{padding-top:36px;}
+  .pv-pdr .pdr{margin-top:0;}
+  /* the arrows sit on the pink lines, centered in a 32px gap (8px clear on each side) */
+  .pv-pdr .pdr{column-gap:32px;}
+  .pv-pdr .pdr-item:not(:last-child)::after{top:-7.5px;right:-24px;}   /* the shaft (y=8 in the icon) on the 1px line */
+  .pv-pdr .pv-more{margin-top:24px;font-weight:500;}
+  .pv-intro .pv-lede{max-width:60ch;}
+  .pv-intro .pv-head{font-size:clamp(34px * 32 / 52, 4.2vw * 32 / 52, 32px);line-height:1.2;}
+  /* body copy: the hero's lede matches How it works (20px, 17px on phones); the prevention lede is always a step smaller */
+  .hero-lede{max-width:680px;font-size:20px;line-height:1.6;}
+  @media (max-width:700px){ .hero-lede{font-size:17px;} .pv-intro .pv-lede{font-size:16px;} }
+
+  /* stacked (under 720px): copy, the layers, then prevent / detect / respond */
+  .pv-stack{padding:24px 0 72px;}
+  .pv-stack .pv-stage{height:300px;margin-top:24px;}
+  .pv-stack .pv-pdr{margin-top:0;}
+  .pv-desk{display:none;}
+  /* copy and layers side by side from 720px (two even columns until the drawing reaches its full 480px) */
+  @media (min-width:720px){
+    .pv-stack{display:none;}
+    .pv-desk{display:block;}
+    .hero{padding-bottom:56px;}
+    .pv-rule{border-top:1px solid var(--gray-line);}
+    .pv-d-intro{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:40px;align-items:center;padding:56px 0 88px;}
+    .pv-d-intro .pv-stage{height:260px;}
+    .pv-d-intro .pv-pdr{grid-column:1 / -1;}
+  }
+  @media (min-width:1100px){
+    .pv-d-intro{grid-template-columns:minmax(0,1fr) minmax(0,480px);column-gap:64px;}
+  }
+
+  /* hero: the try-it line sits under the button it belongs to */
+  .ctas{align-items:flex-start;}
+  .cta-main{display:flex;flex-direction:column;align-items:center;gap:12px;}
+  .ctas > .text-link{min-height:52px;}
+  .slack-copy .slack-note{margin-top:-14px;font-size:13px;line-height:1.5;color:rgba(255,255,255,0.7);}
+  .hero-note{font-size:12px;line-height:1.5;color:var(--body-soft);}
+  /* team: centered body copy (Figma) */
+  .sec-head--center p{max-width:680px;margin-left:auto;margin-right:auto;text-align:center;}
+  #team .team{max-width:880px;margin-left:auto;margin-right:auto;}
+  /* 900px and below: David on top, John and Phil side by side under him, each hugging its content, all centered.
+     Under 560px they don't fit side by side: one centered column as wide as the widest person. */
+  @media (max-width:900px){
+    #team .team{width:max-content;max-width:100%;grid-template-columns:repeat(2,minmax(0,1fr));gap:33px 48px;}   /* two even columns, as wide as the widest */
+    #team .member:first-child{grid-column:1 / -1;justify-self:center;width:calc(50% - 24px);}
+    #team .member:last-child{position:relative;}   /* a 1px line between John and Phil, in the middle of the gap */
+    #team .member:last-child::before{content:'';position:absolute;top:0;bottom:0;left:-24px;width:1px;background:var(--gray-line);}
+    /* and a 1px line across both columns between David and the pair, 16px from each */
+    #team .member:nth-child(2){position:relative;}
+    #team .member:nth-child(2)::after{content:'';position:absolute;top:-17px;left:0;width:calc(200% + 48px);height:1px;background:var(--gray-line);}
+  }
   @media (max-width:560px){
-    .timeline{--rail:98px;--rail-gap:18px;}
-    .timeline-step--clock .clock{width:98px;}
+    #team .team{grid-template-columns:minmax(0,1fr);gap:28px;}
+    #team .member:first-child{grid-column:auto;width:auto;justify-self:stretch;}
+    #team .member:last-child::before,#team .member:nth-child(2)::after{display:none;}
+  }
+  /* closing banner (same as the earlier How it works one) */
+  .close-band{padding:96px 0;background:var(--ink);}
+  .close-box{width:max-content;max-width:100%;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:16px;padding:0;}   /* no inner box: the dark band only */
+  .close-box .eyebrow-label{color:var(--gray-faint);}
+  .close-row{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:16px 32px;}
+  .close-row p{font-weight:600;font-size:clamp(34px * 28 / 52, 4.2vw * 28 / 52, 28px);line-height:1.25;color:#fff;}
+  @media (max-width:700px){ .close-band{padding:64px 0;} .close-row{flex-direction:column;} .close-row p{text-align:center;} }
+
+  .slack-copy .slack-lead{font-weight:600;font-size:clamp(34px * 22 / 52, 4.2vw * 22 / 52, 22px);line-height:1.35;color:#fff;}
+
+  /* the Slack cards arrive one at a time, like new messages, the first time they're seen (set up by the script) */
+  .slack-cards.will-arrive .card{opacity:0;transform:translateY(14px);transition:opacity 0.45s ease, transform 0.5s cubic-bezier(0.2,0.8,0.2,1);}
+  .slack-cards.will-arrive.is-in .card{opacity:1;transform:none;}
+  .slack-cards.will-arrive.is-in .card:nth-child(2){transition-delay:0.6s;}
+  .slack-cards.will-arrive.is-in .card:nth-child(3){transition-delay:1.2s;}
+
+  /* ---------- INTEGRATIONS DRAWER ---------- */
+  /* prevent / detect / respond stay three across down to 641px (they only stack on phones) */
+  @media (min-width:641px) and (max-width:900px){
+    .pv-pdr .pdr{grid-template-columns:repeat(3,minmax(0,1fr));gap:24px 32px;}
+    .pv-pdr .pdr-item:not(:last-child)::after{display:block;}
   }
 
-  /* ---------- SCORECARD ---------- */
-  .metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin:48px 0;background:var(--white);border:1px solid var(--gray-line);border-radius:2px;filter:drop-shadow(4px 4px 1px rgba(0,0,0,0.15));}
-  .metric{display:flex;flex-direction:column;gap:10px;padding:28px;}
-  .metric + .metric{border-left:1px solid var(--gray-line);}
-  .metric-label{font-size:11px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;color:var(--surface-dark);}
-  .metric-value{display:flex;align-items:center;gap:10px;font-family:'JetBrains Mono',monospace;font-weight:500;font-size:24px;line-height:normal;letter-spacing:-0.02em;}
-  .metric-value img{width:32px;height:32px;}
-  .metric--missed{position:relative;background:var(--surface);box-shadow:0 0 0 1px var(--sev-1), 0 0 10px rgba(220,38,38,0.8);} /* a 1px red outline (as a shadow, so nothing shifts) plus the glow */
-  .metric + .metric--missed{border-left-color:transparent;}
-  .scorecard-note{max-width:664px;}
-  @media (max-width:760px){
-    .metrics{grid-template-columns:repeat(2,minmax(0,1fr));}
-    .metric:nth-child(3){border-left:none;}
-    .metric:nth-child(n+3){border-top:1px solid var(--gray-line);}
-    .metric{padding:22px;}
-    .metric-value{font-size:20px;}
+  /* stacked (640px and below): each label belongs to what's under it. Clear space above the label (about 26px from
+     the text before), a short step from its line to the title (about 13px); a little more before the link. */
+  @media (max-width:640px){
+    .pv-pdr .pdr{gap:47px;}
+    .pv-pdr .pv-more{margin-top:28px;}
+    .pv-pdr .pdr-key{margin-bottom:6px;}
   }
 
-  /* ---------- WHERE THIS COMES FROM ---------- */
-  .about .section{padding-top:64px;padding-bottom:64px;}
-  .about-body{margin-top:8px;max-width:700px;}
-  .about-body .lede{max-width:none;}
-  .about-body .lede b{font-weight:600;}
-
-  /* team cards: photo + role + name, with a thin line between cards */
-  .team{margin-top:24px;display:flex;flex-direction:column;gap:16px;}
-  .team-intro{font-weight:600;font-size:16px;line-height:1.75;color:var(--body);}
-  .team-list{list-style:none;margin:0;padding:0;display:flex;gap:48px;}
-  .team-list[hidden]{display:none;}
-  .team-card{position:relative;flex:0 0 252px;display:flex;flex-direction:column;gap:8px;}
-  .team-card + .team-card::before{content:'';position:absolute;top:0;bottom:0;left:-24px;border-left:1px solid var(--gray-line);}
-  .team-person{display:flex;align-items:center;gap:12px;}
-  .team-photo{flex-shrink:0;width:104px;height:104px;background:var(--surface-alt);border:1px solid var(--gray-faint);border-radius:2px;overflow:hidden;}
-  .team-photo img{display:block;width:100%;height:100%;object-fit:cover;}
-  .team-role{font-size:11px;line-height:1.5;letter-spacing:0.13em;text-transform:uppercase;color:var(--body);}
-  .team-name{margin-top:4px;font-weight:600;font-size:16px;line-height:normal;color:var(--body);}
-  .team-detail{font-size:12px;line-height:1.5;letter-spacing:0.03em;color:var(--body-soft);}
-  @media (max-width:820px){
-    .team-list{flex-direction:column;gap:16px;}
-    .team-card{flex-basis:auto;}
-    .team-card + .team-card{padding-top:16px;}
-    .team-card + .team-card::before{top:0;bottom:auto;left:0;right:0;border-left:none;border-top:1px solid var(--gray-line);}
-  }
-
-  /* ---------- CONTACT ---------- */
-  .dark-frame{background:var(--ink);color:var(--db-ink);}
-  .contact-section{position:relative;overflow:hidden;padding:96px 24px;text-align:center;}
-  .contact-section .body-wrap{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:36px;}
-  .radar-echo{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:1;opacity:0.1;pointer-events:none;}
-  .contact-statement{font-weight:600;font-size:clamp(34px,6vw,58px);line-height:1.06;letter-spacing:-0.03em;color:var(--db-ink);}
-  @media (max-width:700px){.contact-section{padding:72px 20px;}}
-
-  /* ---------- CROSS-SELL BANNER ---------- */
-  .cross-sell{border-top:3px solid var(--pink);background:var(--surface);padding:48px 0;}
-  .cross-sell-inner{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:24px 48px;padding:10px 48px;}
-  .cross-sell-copy{flex:1 1 420px;display:flex;flex-direction:column;gap:16px;}
-  .cross-sell h2{font-weight:500;font-size:30px;line-height:1.12;letter-spacing:-0.01em;}
-  .cross-sell p{max-width:609px;font-weight:300;font-size:20px;line-height:1.3;letter-spacing:-0.01em;}
-  .cross-sell p b{font-weight:600;}
-  .banner-link{
-    display:inline-flex;align-items:baseline;gap:8px;font-weight:500;font-size:15px;line-height:1.5;color:var(--ink);
-    text-decoration:none;border-bottom:1px solid var(--pink-on-dark);padding-bottom:4px;white-space:nowrap;transition:opacity 0.2s ease;
-  }
-  .banner-link:hover{opacity:0.65;}
-  .banner-link .arrow{color:var(--pink-text);transition:transform 0.2s ease;display:inline-block;}
-  .banner-link:hover .arrow{transform:translateX(3px);}
+  /* ---------- phones: a tighter pass (2026-10-18, as on How it works). Nothing is hidden; less air ---------- */
   @media (max-width:700px){
-    .cross-sell{padding:40px 0;}
-    .cross-sell-inner{padding:0;}
-    .cross-sell h2{font-size:26px;}
-    .cross-sell p{font-size:18px;}
+    .hero{padding:40px 0 40px;}
+    .section,.slack-band,.close-band{padding:48px 0;}
+    .pv-stack{padding:8px 0 48px;}
+    .pv-stack .pv-stage{height:240px;margin-top:16px;}
+    .pv-pdr{padding-top:24px;}
+    .slack-grid{gap:32px;}
+    #team .team{margin-top:32px;}
+    #team .member img{width:72px;height:72px;}
   }
-
+  @media (max-width:560px){ #team .team{gap:24px;} }
   /* ---------- FOOTER ---------- */
   footer{
     border-top:1px solid var(--gray-line);padding:28px 56px 40px;display:flex;justify-content:space-between;align-items:center;
@@ -391,47 +362,37 @@
   footer .fmark{color:var(--ink);font-weight:500;}
   @media (max-width:700px){footer{padding:22px 20px 36px;flex-direction:column;gap:10px;text-align:center;}}
 
-  /* ---------- SCROLL REVEAL ----------
-     .reveal        fades up one element as it scrolls into view
-     .reveal-group  fades up each child on its own (timeline steps, cards, rows);
-                    children that sit side by side come in one after another */
-  .js .reveal,.js .reveal-group > *{opacity:0;transform:translateY(18px);transition:opacity 0.6s ease, transform 0.6s ease;}
-  .js .reveal.in-view,.js .reveal-group > .in-view{opacity:1;transform:translateY(0);}
-  .reveal-group > :nth-child(2){transition-delay:0.1s;}
-  .reveal-group > :nth-child(3){transition-delay:0.2s;}
-  .reveal-group > :nth-child(4){transition-delay:0.3s;}
-  .timeline.reveal-group > *,.steps.reveal-group > *{transition-delay:0s;}
-
-  /* ---------- GLITCH (the headline's "single attack") ----------
-     One burst, 2–3 seconds after the page opens. The words are drawn as horizontal strips that jump
-     sideways in 4px steps, with a pink and a gray outline copy: line art in the site's colors, no blur. */
-  .glitch{position:relative;display:inline-block;}
-  .glitch .strip,.glitch .ghost{position:absolute;inset:0;pointer-events:none;opacity:0;}
-  .glitch.active .base{opacity:0;}                       /* the strips carry the words during a burst */
-  .glitch.active .strip,.glitch.active .ghost{opacity:1;}
-  .glitch .ghost{color:transparent;-webkit-text-stroke:1.5px var(--pink);}
-  .glitch .ghost--gray{-webkit-text-stroke-color:var(--db-mid);}
-
-  @media (prefers-reduced-motion: reduce){
-    html{scroll-behavior:auto;}
-    .status-dot{animation:none;}
-    .classbar,.site-top .site-header,.hud-frame .corner{transition:none;}
-    .nav-panel,.nav-panel.is-open{transition:none;}
-    .js .reveal,.js .reveal-group > *{opacity:1 !important;transform:none !important;transition:none !important;}
-    .clock-hand{transition:none;}
-  }
+  /* ---------- VEX AI SOC MENU ---------- */
+  .nav-drop{position:relative;}
+  .nav-drop-btn{padding:0;border:0;background:none;font-family:inherit;cursor:pointer;gap:6px;}
+  .nav-caret{width:14px;height:14px;background:currentColor;-webkit-mask:url(static/icon-chevron-down.svg) center/contain no-repeat;mask:url(static/icon-chevron-down.svg) center/contain no-repeat;transition:transform 0.2s ease;}
+  .nav-drop-btn[aria-expanded="true"]{color:var(--ink);}
+  .nav-drop-menu a[aria-current="page"] b{color:var(--pink-text);}
+  .nav-list a[aria-current="page"] .nav-link{color:var(--pink-text);}
+  .nav-drop-btn[aria-expanded="true"] .nav-caret{transform:rotate(180deg);}
+  .nav-drop-btn:focus-visible{outline:2px solid var(--pink);outline-offset:4px;border-radius:2px;}
+  .nav-drop-menu{position:absolute;top:calc(100% + 14px);left:-16px;z-index:5;width:300px;padding:8px;display:flex;flex-direction:column;
+    background:#fff;border:1px solid var(--gray-line);border-radius:2px;box-shadow:0 12px 32px -12px rgba(11,12,13,0.25);}
+  .nav-drop-menu[hidden]{display:none;}   /* the display:flex above would otherwise beat [hidden] */
+  .nav-drop-menu a{display:flex;flex-direction:column;gap:2px;padding:10px 12px;border-radius:2px;text-decoration:none;}
+  .nav-drop-menu a:hover,.nav-drop-menu a:focus-visible{background:var(--surface-alt);outline:none;}
+  .nav-drop-menu b{font-weight:600;font-size:15px;line-height:1.4;color:var(--ink);}
+  .nav-drop-menu a:hover b{color:var(--pink-text);}
+  .nav-drop-menu span{font-size:13px;line-height:1.45;color:var(--surface-dark);}
+  /* phones: the three pages as a group in the menu panel */
+  .nav-group-label{display:block;margin-bottom:8px;font-family:var(--mono);font-weight:500;font-size:14px;letter-spacing:0.12em;text-transform:uppercase;color:var(--surface-dark);}
+  .nav-sublist{list-style:none;margin:0;padding:0 0 0 12px;display:flex;flex-direction:column;gap:16px;}
+  .nav-list .nav-sublist li{padding:0;border:0;}
+  /* the whole list: an even 16px rhythm and dividers in the page's own gray */
+  .nav-list{gap:16px;}
+  .nav-list > li{padding-bottom:16px;border-bottom-color:var(--gray-line);}
+  .nav-list a{gap:2px;}   /* each line sits with its title */
+  @media (prefers-reduced-motion: reduce){ .nav-caret{transition:none;} }
 </style>
 </head>
 <body>
 
   <div class="classbar">UNMANNED · SIMPLY SECURE</div>
-
-  <div class="hud-frame" aria-hidden="true">
-    <span class="corner tl"></span>
-    <span class="corner tr"></span>
-    <span class="corner bl"></span>
-    <span class="corner br"></span>
-  </div>
 
   <!-- ============================================================
        HEADER (sticky)
@@ -444,7 +405,7 @@
           <span class="brand-tag">Don’t get hacked</span>
         </div>
         <nav class="header-links" aria-label="Main">
-          <a class="header-link" href="/managed">VEX MDR</a>
+          <div class="nav-drop"><button class="header-link nav-drop-btn" type="button" aria-expanded="false" aria-controls="soc-menu">VEX AI SOC<span class="nav-caret" aria-hidden="true"></span></button><div class="nav-drop-menu" id="soc-menu" hidden><a href="/how-it-works/"><b>How VEX works</b><span>Good prevention starts with great detection.</span></a><a href="/detections/"><b>What VEX detects</b><span>Every alert type VEX can raise.</span></a><a href="/api/"><b>VEX API</b><span>The actual API.</span></a></div></div>
           <a class="header-link header-link--slack" href="/slack"><img src="static/slack-logo.svg" width="24" height="24" alt="">VEX for Slack</a>
           <a class="header-link header-link--cta" href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener">Schedule a chat <img src="static/icon-arrow-right-pink.svg" width="16" height="16" alt=""></a>
         </nav>
@@ -454,7 +415,7 @@
   </div>
 
   <!-- ============================================================
-       NAV MENU
+       NAV MENU (phones)
        ============================================================ -->
   <div class="nav-panel" id="site-nav">
     <div class="site-header">
@@ -465,8 +426,8 @@
     </div>
     <nav class="wrap" aria-label="Menu">
       <ul class="nav-list">
-        <li><a href="/"><span class="nav-link">Home</span><span class="nav-sub">Can your defense catch a single attack?</span></a></li>
-        <li><a href="/managed"><span class="nav-link">VEX MDR</span><span class="nav-sub">Continuous prevention, detection and response</span></a></li>
+        <li><a href="/" aria-current="page"><span class="nav-link">Home</span><span class="nav-sub">Your SOC, run by hackers.</span></a></li>
+        <li class="nav-group"><span class="nav-group-label">VEX AI SOC</span><ul class="nav-sublist"><li><a href="/how-it-works/"><span class="nav-link">How VEX works</span><span class="nav-sub">Good prevention starts with great detection.</span></a></li><li><a href="/detections/"><span class="nav-link">What VEX detects</span><span class="nav-sub">Every alert type VEX can raise.</span></a></li><li><a href="/api/"><span class="nav-link">VEX API</span><span class="nav-sub">The actual API.</span></a></li></ul></li>
         <li><a href="/slack"><span class="nav-link">VEX for Slack</span><span class="nav-sub">Security, handled. Right in Slack.</span></a></li>
         <li><a href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener"><span class="nav-link">Schedule a chat</span></a></li>
       </ul>
@@ -475,233 +436,106 @@
 
   <main>
 
-  <!-- ============================================================
-       HERO — THE QUESTION
-       ============================================================ -->
   <section class="hero">
     <img class="hero-backdrop" src="static/glow-grid-bg.svg" width="2936" height="258" alt="" aria-hidden="true">
-    <div class="section">
-      <div class="hero-body">
-        <div class="eyebrow-label"><span class="status-dot"></span>The question</div>
-        <h1>Can your defense catch <br>a <span class="glitch" data-glitch-delay="2500-4000" data-glitch-count="1" data-glitch-duration="900-1200" data-glitch-gap="4000-8000">single attack</span>?</h1>
-        <p class="hero-lede">Security tools promise billions of blocked events. But there’s only one number that matters: <b>your response time</b>.</p>
-
-        <div class="proof-cards">
-          <div class="proof-card proof-card--vendor">
-            <p class="proof-label">What vendors promise</p>
-            <p class="proof-num">1,000,000,000</p>
-            <p class="proof-desc">Events blocked. Can’t be verified.</p>
-          </div>
-          <div class="proof-slot">
-            <img class="hero-rings hero-rings--lg" src="static/radar-rings-900.svg" width="900" height="900" alt="" aria-hidden="true">
-            <img class="hero-rings hero-rings--sm" src="static/radar-rings-500.svg" width="500" height="500" alt="" aria-hidden="true">
-            <div class="proof-card proof-card--vex">
-              <img class="proof-rings" src="static/radar-rings-card.svg" width="300" height="300" alt="" aria-hidden="true">
-              <p class="proof-label">What VEX proves</p>
-              <p class="proof-num">1<span class="reticle" aria-hidden="true"><span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span></span></p>
-              <p class="proof-desc">Real attack. Verified result.</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="find-out">
-          <p>There’s one way to find out.</p>
-          <a class="text-link" href="#how">See how it works <img src="static/icon-arrow-down.svg" width="20" height="20" alt=""></a>
-        </div>
+    <div class="wrap">
+      <div class="eyebrow-label"><span class="status-dot"></span>VEX AI SOC</div>
+      <h1>Your SOC, run&nbsp;by&nbsp;hackers.</h1>
+      <p class="hero-lede">An AI-powered SOC built and run by offensive-security experts. VEX tests your defenses, investigates threats and brings our team into the response. You know what’s handled and what needs your attention.</p>
+      <div class="ctas">
+        <div class="cta-main"><a class="btn" href="/slack">Get VEX for Slack</a><p class="hero-note">Free to use. No demo needed.</p></div>
+        <a class="text-link" href="/how-it-works/">See how VEX works <img src="static/icon-arrow-right-pink.svg" width="16" height="16" alt=""></a>
       </div>
     </div>
   </section>
 
-  <!-- ============================================================
-       HOW IT WORKS
-       ============================================================ -->
-  <section class="band band--gray" id="how">
-    <div class="divider mono">
-      <span>REC · 00:00:01</span>
-      <span>LAUNCHING ATTACK</span>
-    </div>
-    <div class="section">
-      <div class="section-head">
-        <div class="eyebrow-label"><span class="status-dot"></span>How it works</div>
-        <h2>One attack. One clock.<br>One answer.</h2>
-        <p class="lede">One real attack, launched when you say. Your defenses respond as normal.<br><b>Then the clock stops</b>.</p>
+  <section class="pv" id="prevention">
+    <!-- phones and tablets: stacked -->
+    <div class="pv-stack wrap">
+      <div class="pv-intro">
+            <h2 class="pv-head">A different kind of prevention.</h2>
+            <p class="pv-lede">Prevention means less to detect and respond to. Most AI SOCs start at the alert. VEX starts before, by knowing how attackers work, AI and human. <b>Now that’s offensive.</b></p>
+          </div>
+      <div class="pv-stage" role="img" aria-label="Three layers: prevent, detect and respond. Most attacks stop at prevent, a few reach detect, and rarely one reaches respond."><canvas data-scene="layers"></canvas></div>
+      <div class="pv-pdr">
+      <div class="pdr">
+        <div class="pdr-item"><p class="pdr-key">Prevent</p><h3>We attack first</h3><p>VEX looks for openings an attacker could exploit, helps close them, then tests again.</p></div>
+        <div class="pdr-item"><p class="pdr-key">Detect</p><h3>VEX handles the noise</h3><p>VEX investigates suspicious activity and closes routine signals. What needs you shows up in Slack.</p></div>
+        <div class="pdr-item"><p class="pdr-key">Respond</p><h3>Human judgment</h3><p>When a threat needs a person, our security experts step in and help guide the response.</p></div>
       </div>
-
-      <div class="timeline reveal-group">
-        <span class="timeline-tag">Setup</span>
-        <div class="timeline-step">
-          <div class="timeline-node">01</div>
-          <div>
-            <h3 class="timeline-heading">Connect VEX</h3>
-            <p class="timeline-desc">In about an hour VEX understands your business.</p>
+        <p class="pv-more"><a class="text-link" href="/how-it-works/">See how VEX closes gaps <img src="static/icon-arrow-right-pink.svg" width="16" height="16" alt=""></a></p>
+      </div>
+    </div>
+    <!-- desktop: copy beside the layers, then prevent / detect / respond -->
+    <div class="pv-desk">
+      <div class="wrap pv-rule"></div>
+      <div class="wrap pv-d-intro">
+        <div class="pv-intro">
+            <h2 class="pv-head">A different kind of prevention.</h2>
+            <p class="pv-lede">Prevention means less to detect and respond to. Most AI SOCs start at the alert. VEX starts before, by knowing how attackers work, AI and human. <b>Now that’s offensive.</b></p>
           </div>
-        </div>
-        <div class="timeline-step">
-          <div class="timeline-node">02</div>
-          <div>
-            <h3 class="timeline-heading">Identify the breach</h3>
-            <p class="timeline-desc">VEX surfaces the single most probable way an attacker goes after your business right now.</p>
-          </div>
-        </div>
-
-        <span class="timeline-tag">Attack</span>
-        <div class="timeline-step timeline-step--clock">
-          <div class="clock" aria-hidden="true">
-            <div class="clock-cap"></div>
-            <div class="clock-face">
-              <img class="face" src="static/clock-face.svg" width="309" height="309" alt="">
-              <img class="ring-pink" src="static/clock-ring-pink.svg" width="308" height="308" alt="">
-              <img class="ring-gray" src="static/clock-ring-gray.svg" width="296" height="296" alt="">
-              <span class="clock-num clock-num--00">00</span>
-              <span class="clock-num clock-num--03">03</span>
-              <span class="clock-num clock-num--06">06</span>
-              <span class="clock-num clock-num--09">09</span>
-              <img class="ticks" src="static/clock-ticks.svg" width="308" height="307" alt="">
-              <span class="clock-readout" id="clock-readout">T+00:00:00</span>
-              <div class="clock-hand" id="clock-hand">
-                <img class="arm" src="static/clock-hand.svg" width="1" height="29" alt="">
-                <img class="tip" src="static/clock-hand-dot.svg" width="10" height="10" alt="">
-              </div>
-            </div>
-          </div>
-          <div>
-            <h3 class="timeline-heading">You start the clock</h3>
-            <p class="timeline-desc">You or anyone on your team can click to launch that attack. <b>The clock starts now</b>.</p>
-          </div>
-        </div>
-        <div class="timeline-step">
-          <div class="timeline-node">04</div>
-          <div>
-            <h3 class="timeline-heading">Your defense hunts</h3>
-            <p class="timeline-desc">Whatever protects your business goes on watch looking for where it happened and what it was: your SOC, your MDR, your security tools or VEX.</p>
-          </div>
-        </div>
-
-        <span class="timeline-tag">Result</span>
-        <div class="timeline-step">
-          <div class="timeline-node">05</div>
-          <div>
-            <h3 class="timeline-heading">Make the call</h3>
-            <p class="timeline-desc">Name where it happened and what it was. VEX verifies it and stops the clock: a provable response time.</p>
-          </div>
-        </div>
+        <div class="pv-stage" role="img" aria-label="Three layers: prevent, detect and respond. Most attacks stop at prevent, a few reach detect, and rarely one reaches respond."><canvas data-scene="dlayers"></canvas></div>
+        <div class="pv-pdr">
+      <div class="pdr">
+        <div class="pdr-item"><p class="pdr-key">Prevent</p><h3>We attack first</h3><p>VEX looks for openings an attacker could exploit, helps close them, then tests again.</p></div>
+        <div class="pdr-item"><p class="pdr-key">Detect</p><h3>VEX handles the noise</h3><p>VEX investigates suspicious activity and closes routine signals. What needs you shows up in Slack.</p></div>
+        <div class="pdr-item"><p class="pdr-key">Respond</p><h3>Human judgment</h3><p>When a threat needs a person, our security experts step in and help guide the response.</p></div>
+      </div>
+        <p class="pv-more"><a class="text-link" href="/how-it-works/">See how VEX closes gaps <img src="static/icon-arrow-right-pink.svg" width="16" height="16" alt=""></a></p>
+      </div>
       </div>
     </div>
   </section>
 
-  <!-- ============================================================
-       THE SCORECARD
-       ============================================================ -->
-  <section class="band">
-    <div class="divider mono">
-      <span>REC · 00:00:02</span>
-      <span>RESULTS READY</span>
-    </div>
-    <div class="section">
-      <div class="section-head">
-        <div class="eyebrow-label"><span class="status-dot"></span>The scorecard</div>
-        <h2>Proof, not promises.</h2>
-        <p class="lede">Every exercise ends with a verified result you can put in front of the board: caught or missed, and how long it took.</p>
+  <section class="slack-band" id="vex-slack" tabindex="-1">
+    <div class="wrap slack-grid">
+      <div class="slack-copy">
+        <div class="slack-tiles"><span><i></i></span><b>+</b><span><img src="static/slack-logo.svg" width="26" height="26" alt=""></span>&nbsp;VEX app for Slack</div>
+        <h2>Your security operations, in&nbsp;Slack.</h2>
+        <p class="slack-lead">You don’t need another UI or dashboard.</p>
+        <p>VEX is autonomous. All you need to see what’s found, what’s been handled and what needs a decision is a Slack account. Ask questions and follow each investigation right in the thread.</p>
+        <a class="text-link text-link--on-dark" href="/slack">Get VEX for Slack, free <img src="static/icon-arrow-right-pink.svg" width="16" height="16" alt=""></a>
+        <p class="slack-note">No demo needed. Set it up and see how it works.</p>
       </div>
-
-      <div class="metrics reveal-group">
-        <div class="metric">
-          <span class="metric-label">Time to respond</span>
-          <span class="metric-value">00:14:32</span>
-        </div>
-        <div class="metric">
-          <span class="metric-label">Where</span>
-          <span class="metric-value">Host B</span>
-        </div>
-        <div class="metric">
-          <span class="metric-label">What</span>
-          <span class="metric-value">T1015</span>
-        </div>
-        <div class="metric metric--missed">
-          <span class="metric-label">Result</span>
-          <span class="metric-value"><img src="static/icon-warning-octagon.svg" width="32" height="32" alt="">Too late</span>
-        </div>
+      <div class="slack-cards" aria-hidden="true">
+          <div class="card slack"><div class="msg"><img class="avatar" src="slack/static/vex-avatar-32.svg" width="32" height="32" alt="">
+            <div class="msg-body"><div class="msg-meta"><span class="msg-name">VEX</span><span class="app-tag">APP</span><span class="msg-time">9:14 AM</span></div>
+              <div class="attach" style="--bar:var(--s-blue)"><div class="attach-body"><span class="tag tag--blue">RECOMMENDATION</span><p class="attach-title">Turn on MFA for 2 admin accounts</p><div class="s-btns"><span class="s-btn s-btn--go">Fixed</span><span class="s-btn">Accept risk</span><span class="s-btn">Ask VEX</span></div></div></div>
+            </div></div></div>
+          <div class="card slack"><div class="msg"><img class="avatar" src="slack/static/vex-avatar-32.svg" width="32" height="32" alt="">
+            <div class="msg-body"><div class="msg-meta"><span class="msg-name">VEX</span><span class="app-tag">APP</span><span class="msg-time">11:02 AM</span></div>
+              <div class="attach" style="--bar:var(--s-green)"><div class="attach-body"><span class="tag tag--green">AUTO-RESOLVED</span><p class="attach-title">Email spoofing blocked</p><div class="s-btns"><span class="s-btn s-btn--go">Reopen</span></div></div></div>
+            </div></div></div>
+          <div class="card slack"><div class="msg"><img class="avatar" src="slack/static/vex-avatar-32.svg" width="32" height="32" alt="">
+            <div class="msg-body"><div class="msg-meta"><span class="msg-name">VEX</span><span class="app-tag">APP</span><span class="msg-time">2:47 PM</span></div>
+              <div class="attach" style="--bar:var(--s-red)"><div class="attach-body"><span class="tag tag--red">EXPERT ON IT</span><p class="attach-title">Investigating 2 accounts</p></div></div>
+            </div></div></div>
       </div>
-
-      <p class="lede scorecard-note"><b>Missed it?</b> You’ll see exactly where the trail went cold and VEX shows you the one fix that closes the gap.</p>
     </div>
   </section>
 
-  <!-- ============================================================
-       WHERE THIS COMES FROM
-       ============================================================ -->
-  <section class="band band--gray about" id="about">
-    <div class="section">
-      <div class="section-head">
-        <div class="eyebrow-label"><span class="status-dot"></span>How it started</div>
-        <h2>It started in an auditorium.</h2>
+  <section class="section" id="team">
+    <div class="wrap">
+      <div class="sec-head sec-head--center">
+        <div class="eyebrow-label"><span class="status-dot"></span>Hackers make better defenders</div>
+        <h2>Built by people who know how attacks&nbsp;work.</h2>
+        <p>VEX is built by people who’ve worked on both sides of the attack: offensive research, detection engineering and incident response. They bring attacker thinking to the judgment your defense needs.</p>
       </div>
-      <div class="about-body">
-        <p class="lede">For years, our founder <b>David Hunt</b> ran a simple exercise with U.S. Army cyber defenders: one attack, one endpoint, 100+ defenders. The first to find it rang a bell. The point wasn’t the score. It was finding out whether the defense worked when it mattered.</p>
-      </div>
-
       <div class="team">
-        <p class="team-intro">VEX is built by people who’ve spent their careers on both sides of the attack.</p>
-        <!-- Team bios. Photos are square black-and-white headshots, saved at 208×208px (twice the 104px display size).
-             To hide the whole row again, add the word "hidden" to the <ul> tag below. -->
-        <ul class="team-list reveal-group">
-          <li class="team-card">
-            <div class="team-person">
-              <div class="team-photo"><img src="static/team-david-hunt.jpg" width="104" height="104" alt="David Hunt"></div>
-              <div>
-                <p class="team-role">Founder</p>
-                <p class="team-name">David Hunt</p>
-              </div>
-            </div>
-            <p class="team-detail">MITRE • Mandiant • USG</p>
-          </li>
-          <li class="team-card">
-            <div class="team-person">
-              <div class="team-photo"><img src="static/team-john-jackman.jpg" width="104" height="104" alt="John Jackman"></div>
-              <div>
-                <p class="team-role">Head of security</p>
-                <p class="team-name">John Jackman</p>
-              </div>
-            </div>
-            <p class="team-detail">REDLattice • DoD</p>
-          </li>
-          <li class="team-card">
-            <div class="team-person">
-              <div class="team-photo"><img src="static/team-phil-urquhart.jpg" width="104" height="104" alt="Phil Urquhart"></div>
-              <div>
-                <p class="team-role">Head engineer</p>
-                <p class="team-name">Phil Urquhart</p>
-              </div>
-            </div>
-            <p class="team-detail">Mandiant • DoD</p>
-          </li>
-        </ul>
+        <div class="member"><div class="member-top"><img src="static/team-david-hunt.jpg" width="96" height="96" alt=""><div><p class="person-role">Founder</p><p class="person-name">David Hunt</p></div></div><p class="member-past">MITRE · Mandiant · USG</p></div>
+        <div class="member"><div class="member-top"><img src="static/team-john-jackman.jpg" width="96" height="96" alt=""><div><p class="person-role">Head of security</p><p class="person-name">John Jackman</p></div></div><p class="member-past">REDLattice · DoD</p></div>
+        <div class="member"><div class="member-top"><img src="static/team-phil-urquhart.jpg" width="96" height="96" alt=""><div><p class="person-role">Head engineer</p><p class="person-name">Phil Urquhart</p></div></div><p class="member-past">Mandiant · DoD</p></div>
       </div>
     </div>
   </section>
 
-  <!-- ============================================================
-       CONTACT
-       ============================================================ -->
-  <section class="dark-frame contact-section" id="contact">
-    <img class="radar-echo" src="static/radar-circles.svg" width="903" height="903" alt="" aria-hidden="true">
-    <div class="body-wrap">
-      <div class="eyebrow-label"><span class="status-dot"></span>Get started</div>
-      <h2 class="contact-statement">Start the clock</h2>
-      <a class="btn" data-hud-target href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener">Schedule a chat</a>
-    </div>
-  </section>
 
-  <!-- ============================================================
-       CROSS-SELL — VEX MDR
-       ============================================================ -->
-  <section class="cross-sell">
-    <div class="wrap cross-sell-inner">
-      <div class="cross-sell-copy">
-        <h2>Need a defense?</h2>
-        <p><b>VEX MDR</b> — Human-led 24/7 SOC providing detection and response, backed by the operators who built it.</p>
+  <section class="close-band">
+    <div class="wrap">
+      <div class="close-box">
+        <div class="eyebrow-label"><span class="status-dot"></span>Get started with VEX</div>
+        <div class="close-row"><p>Ready to start using VEX?</p><a class="btn" href="/slack">Get VEX for Slack</a></div>
       </div>
-      <a class="banner-link" href="/managed">Explore VEX MDR <span class="arrow">→</span></a>
     </div>
   </section>
 
@@ -715,164 +549,38 @@
 
   <script>
     (function(){
-      // hide-on-scroll header: see HIDE ON SCROLL in the styles
+      // hide-on-scroll header (same as the other pages)
       var root = document.documentElement;
       var top = document.querySelector('.site-top');
       var classbar = document.querySelector('.classbar');
       if(!top){ return; }
-      var banner = top.querySelector('.promo-banner');
-      function measure(){
-        root.style.setProperty('--banner-h', (banner ? banner.offsetHeight : 0) + 'px');
-        root.style.setProperty('--top-h', top.offsetHeight + 'px'); // header height, used by the hero's min-height
-      }
-      measure();
-      window.addEventListener('resize', measure);
       var lastY = window.scrollY;
       var ticking = false;
       function update(){
         ticking = false;
         var y = window.scrollY;
-        var showZone = top.offsetHeight + (classbar ? classbar.offsetHeight : 0); // always show near the top
-        if(root.classList.contains('nav-open')){ lastY = y; return; }
+        var showZone = top.offsetHeight + (classbar ? classbar.offsetHeight : 0);
+        if(root.classList.contains('nav-open') || root.hasAttribute('data-auto-scroll') || root.hasAttribute('data-story-pinned')){ lastY = y; return; } // menu open, a click-scroll, or the story pinned
         if(y <= showZone){ root.classList.remove('header-hidden'); lastY = y; return; }
-        if(Math.abs(y - lastY) < 6){ return; } // ignore tiny scroll jitters
+        if(Math.abs(y - lastY) < 6){ return; }
         root.classList.toggle('header-hidden', y > lastY);
         lastY = y;
       }
       window.addEventListener('scroll', function(){
         if(!ticking){ ticking = true; requestAnimationFrame(update); }
       }, { passive:true });
-      // keyboard users tabbing into the header should always see it
       top.addEventListener('focusin', function(){ root.classList.remove('header-hidden'); });
     })();
 
     (function(){
-      // HUD corners frame the section you're looking at (see HUD CORNERS in the styles).
-      // Top corners sit just inside the section's top edge, bottom corners just inside its bottom edge,
-      // each waiting at the header / screen edge when the section runs past it. When the frame squeezes
-      // to MIN_GAP (the section is nearly scrolled away) the corners glide to the next section.
-      // In a section with a [data-hud-target] element (the final CTA button), the corners pause at the
-      // section's corners, then close in around that element.
-      var hud = document.querySelector('.hud-frame');
-      var header = document.querySelector('.site-top .site-header');
-      var sections = document.querySelectorAll('main > section:not(.cross-sell)'); // the frame's last stop is the dark CTA
-      if(!hud || !header || !sections.length){ return; }
-      var corners = { tl:hud.querySelector('.tl'), tr:hud.querySelector('.tr'), bl:hud.querySelector('.bl'), br:hud.querySelector('.br') };
-
-      var MIN_GAP = 150;     // frame height that triggers the move to the next section
-      var GLIDE = 0.93;       // glide speed: closer to 1 = slower (0.8 is quick, 0.93 is lazy)
-      var PAUSE = 200;       // ms the corners rest at the CTA section's corners before closing in
-      var TARGET_GAP = 8;    // space between the corners and the CTA button
-
-      var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      var current = 0, inset = 12, size = 12;
-      var shown = null;                 // where the corners are drawn right now { top, bottom, left, right }
-      var gliding = false, lastActivity = 0, running = false, lastFrame = 0;
-      var onTarget = false, settledAt = 0, waitingForTarget = false;
-
-      function readSizes(){
-        var cs = getComputedStyle(hud);
-        inset = parseFloat(cs.getPropertyValue('--hud-inset')) || 12;
-        size = parseFloat(cs.getPropertyValue('--hud-size')) || 12;
-      }
-      function screenWidth(){ return document.documentElement.clientWidth; }
-      // the frame for section i, kept between the header and the bottom of the screen
-      function frameFor(i, viewTop, viewBottom){
-        var r = sections[i].getBoundingClientRect();
-        return { top:Math.max(r.top + inset, viewTop), bottom:Math.min(r.bottom - inset, viewBottom),
-                 left:inset, right:screenWidth() - inset, edgeTop:r.top + inset, edgeBottom:r.bottom - inset };
-      }
-      function moveTo(i){
-        current = i; gliding = !!shown && !reduceMotion; onTarget = false; settledAt = 0;
-      }
-      function update(){
-        var now = performance.now();
-        var viewTop = Math.max(header.getBoundingClientRect().bottom, 0) + inset;
-        var viewBottom = window.innerHeight - inset;
-        var f = frameFor(current, viewTop, viewBottom);
-        // hand off while the frame is squeezed: down if its bottom edge came up, up if its top edge came down
-        for(var tries = 0; tries < sections.length && f.bottom - f.top < MIN_GAP; tries++){
-          var next = f.edgeBottom < viewBottom && current < sections.length - 1 ? current + 1
-                   : f.edgeTop > viewTop && current > 0 ? current - 1 : current;
-          if(next === current){ break; }
-          moveTo(next);
-          f = frameFor(current, viewTop, viewBottom);
-        }
-        // at the very bottom of the page the last sections can't scroll far enough to squeeze the frame,
-        // so move on to any following section that's fully on screen
-        var atEnd = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2;
-        while(atEnd && current < sections.length - 1 && sections[current + 1].getBoundingClientRect().bottom - inset <= viewBottom){
-          moveTo(current + 1);
-          f = frameFor(current, viewTop, viewBottom);
-        }
-        // the CTA moment: after resting at the section's corners, close in around the target (while it's on screen)
-        var target = sections[current].querySelector('[data-hud-target]');
-        var t = target && target.getBoundingClientRect();
-        var targetVisible = t && t.top - TARGET_GAP >= viewTop && t.bottom + TARGET_GAP <= viewBottom;
-        if(!targetVisible){
-          if(onTarget){ onTarget = false; gliding = !reduceMotion; settledAt = 0; } // button scrolled away: back out to the section
-        }
-        else if(!onTarget && settledAt && now - settledAt >= PAUSE){ onTarget = true; gliding = !reduceMotion; }
-        if(onTarget){
-          f = { top:t.top - TARGET_GAP, bottom:t.bottom + TARGET_GAP, left:t.left - TARGET_GAP, right:t.right + TARGET_GAP };
-        }
-
-        if(!shown || !gliding){ shown = { top:f.top, bottom:f.bottom, left:f.left, right:f.right }; }
-        else {
-          // glide: close part of the gap each frame (timed, so it's the same speed on 60Hz and 120Hz screens),
-          // then snap once it's close enough
-          var dt = Math.min(now - (lastFrame || now - 16), 64);
-          var k = 1 - Math.pow(GLIDE, dt / 16.7);
-          shown.top += (f.top - shown.top) * k;
-          shown.bottom += (f.bottom - shown.bottom) * k;
-          shown.left += (f.left - shown.left) * k;
-          shown.right += (f.right - shown.right) * k;
-          if(Math.abs(f.top - shown.top) < 1 && Math.abs(f.bottom - shown.bottom) < 1 &&
-             Math.abs(f.left - shown.left) < 1 && Math.abs(f.right - shown.right) < 1){
-            shown = { top:f.top, bottom:f.bottom, left:f.left, right:f.right }; gliding = false;
-          }
-        }
-        if(!gliding && !settledAt){ settledAt = now; } // start the rest before closing in on a target
-        waitingForTarget = !!targetVisible && !onTarget;
-        lastFrame = now;
-
-        hud.classList.toggle('on-dark', sections[current].classList.contains('dark-frame'));
-        // corners are pinned to the screen edges in CSS; shift them from there
-        var leftX = shown.left - inset, rightX = shown.right - (screenWidth() - inset);
-        var topY = shown.top, bottomY = shown.bottom - size;
-        corners.tl.style.transform = 'translate(' + leftX.toFixed(1) + 'px,' + topY.toFixed(1) + 'px)';
-        corners.tr.style.transform = 'translate(' + rightX.toFixed(1) + 'px,' + topY.toFixed(1) + 'px)';
-        corners.bl.style.transform = 'translate(' + leftX.toFixed(1) + 'px,' + bottomY.toFixed(1) + 'px)';
-        corners.br.style.transform = 'translate(' + rightX.toFixed(1) + 'px,' + bottomY.toFixed(1) + 'px)';
-      }
-      // runs every frame while scrolling (plus a moment after, for the header's slide), while gliding,
-      // and while resting before closing in on a target
-      function loop(){
-        update();
-        if(gliding || waitingForTarget || performance.now() - lastActivity < 500){ requestAnimationFrame(loop); }
-        else { running = false; }
-      }
-      function wake(){
-        lastActivity = performance.now();
-        if(!running){ running = true; requestAnimationFrame(loop); }
-      }
-      readSizes();
-      hud.classList.add('is-tracking');
-      update();
-      wake();
-      window.addEventListener('scroll', wake, { passive:true });
-      window.addEventListener('resize', function(){ readSizes(); wake(); });
-      window.addEventListener('load', wake);
-    })();
-
-    (function(){
+      // phone menu (same as the other pages)
       var openBtn = document.querySelector('.menu-btn[aria-controls="site-nav"]');
       var panel = document.getElementById('site-nav');
       if(!openBtn || !panel){ return; }
       var closeBtn = panel.querySelector('.menu-close');
       function openNav(){
         panel.classList.add('is-open');
-        document.documentElement.classList.add('nav-open'); // locks the page behind the menu
+        document.documentElement.classList.add('nav-open');
         openBtn.setAttribute('aria-expanded','true');
         closeBtn.focus({ preventScroll:true });
       }
@@ -890,124 +598,211 @@
       panel.addEventListener('click', function(e){
         if(e.target.closest('a')){ closeNav(false); }
       });
-      // the menu is mobile-only: close it if the window is widened past the mobile size
       var wide = window.matchMedia('(min-width:701px)');
       function onWide(){ if(wide.matches && panel.classList.contains('is-open')){ closeNav(false); } }
       if(wide.addEventListener){ wide.addEventListener('change', onWide); } else { wide.addListener(onWide); }
     })();
 
     (function(){
-      // the timeline clock: counts up in real time from T+00:00:00 once it scrolls into view ("the clock
-      // starts now") and stops at T+24:00:00. The hand steps 6° a second; its angle keeps growing past 360°
-      // so the step from :59 to :00 still turns forward. With reduced motion it stays at T+00:00:00.
-      var readout = document.getElementById('clock-readout');
-      var hand = document.getElementById('clock-hand');
-      if(!readout || !hand || !('IntersectionObserver' in window)){ return; }
-      if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){ return; }
-      var END = 24 * 60 * 60, start = 0;
-      function pad(n){ return (n < 10 ? '0' : '') + n; }
-      function tick(){
-        var s = Math.min(END, Math.floor((Date.now() - start) / 1000));
-        readout.textContent = 'T+' + pad(Math.floor(s / 3600)) + ':' + pad(Math.floor(s % 3600 / 60)) + ':' + pad(s % 60);
-        hand.style.transform = 'rotate(' + (s * 6) + 'deg)';
-        if(s < END){ setTimeout(tick, 1000 - (Date.now() - start) % 1000); } // line up with the next whole second
-      }
-      var io = new IntersectionObserver(function(entries){
-        if(entries[0].isIntersecting){ io.disconnect(); start = Date.now(); tick(); }
-      }, { threshold:0.6 });
-      io.observe(hand.closest('.clock'));
-    })();
+      // PREVENTION LAYERS: three layers on a canvas (orthographic, no library), with attacks falling through them.
+      // World: x right, y up, z toward the viewer. The prevent layer is the square -1..1 at y = 0.
+      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var C = { pink:'224,18,128', ink:'11,12,13', gray:'108,108,112' };
+      var GAP = 0.42, N = 6, CELL = 2 / N;   // layer gap, grid cells per side
+      function rgba(c, a){ return 'rgba(' + c + ',' + a + ')'; }
+      function clamp(t){ return Math.max(0, Math.min(1, t)); }
+      // a seeded random, so the attacks land in the same places every visit
+      function rng(seed){ return function(){ seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }; }
 
-    (function(){
-      // the headline glitch (see GLITCH in the styles). Settings live on the element, in milliseconds;
-      // a single number ("2500") or a random range ("2000-3000"):
-      //   data-glitch-delay     wait before the first burst
-      //   data-glitch-count     how many bursts: 1, 3, … or "infinite"
-      //   data-glitch-duration  how long each burst lasts
-      //   data-glitch-gap       wait between bursts (only matters when count is more than 1)
-      // The extra copies it draws with exist only during a burst, so the rest of the time the
-      // headline is just its plain text (for screen readers, search engines and copy-paste).
-      var el = document.querySelector('.glitch');
-      if(!el || (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)){ return; }
-      var original = el.textContent;
-      function range(v, fallback){
-        var p = String(v || fallback).split('-').map(Number);
-        if(!p.every(function(n){ return isFinite(n) && n >= 0; })){ p = fallback.split('-').map(Number); }
-        return [Math.min(p[0], p[p.length - 1]), Math.max(p[0], p[p.length - 1])];
+      function Scene(canvas){
+        this.c = canvas; this.ctx = canvas.getContext('2d'); this.w = 0; this.h = 0;
+        this.dots = []; this.nextDot = performance.now(); this.dotN = 0;
+        this.resize();
+        var self = this;
+        if('ResizeObserver' in window){ new ResizeObserver(function(){ self.resize(); }).observe(canvas.parentNode); }
       }
-      var countAttr = String(el.getAttribute('data-glitch-count') || '1').toLowerCase();
-      var remaining = countAttr === 'infinite' ? Infinity : Math.max(0, Math.floor(Number(countAttr) || 0));
-      var delay = range(el.getAttribute('data-glitch-delay'), '2000-3000');
-      var duration = range(el.getAttribute('data-glitch-duration'), '500-900');
-      var gap = range(el.getAttribute('data-glitch-gap'), '4000-8000');
-      var STRIPS = 5, STEP = 4, GLYPHS = '/\\|+-·:_';
-      var base, strips, ghosts;
-      function rnd(a, b){ return a + Math.random() * (b - a); }
-      function snap(max){ return Math.round(rnd(-max, max) / STEP) * STEP; }   // whole 4px steps only
-      function mk(cls){ var s = document.createElement('span'); s.className = cls; s.textContent = original; s.setAttribute('aria-hidden', 'true'); el.appendChild(s); return s; }
-      function build(){
-        el.textContent = '';
-        base = mk('base');
-        strips = [];
-        for(var i = 0; i < STRIPS; i++){
-          var strip = mk('strip'), top = (100 / STRIPS) * i;
-          strip.style.clipPath = 'inset(' + top + '% 0 ' + (100 - top - 100 / STRIPS) + '% 0)';
-          strips.push(strip);
+      Scene.prototype.resize = function(){
+        var r = this.c.getBoundingClientRect(), d = window.devicePixelRatio || 1;
+        this.w = r.width; this.h = r.height;
+        this.c.width = Math.round(r.width * d); this.c.height = Math.round(r.height * d);
+        this.ctx.setTransform(d, 0, 0, d, 0, 0);
+      };
+      // the view: the stack sits a little low (room for the attacks above) and is never taller than the bottom allows
+      Scene.prototype.camera = function(){
+        var w = this.w, h = this.h, yaw = 45 * Math.PI / 180, pitch = 18.5 * Math.PI / 180;
+        var v = { cy:Math.cos(yaw), sy:Math.sin(yaw), cp:Math.cos(pitch), sp:Math.sin(pitch), my:-GAP };
+        var reach = GAP*v.cp + 1.414*v.sp;   // half the stack's height, per unit of scale
+        v.oy = h/2 + 0.06*h; v.s = Math.min(w * (w < 600 ? 0.24 : 0.27), h * 0.5, (h - v.oy - 6) / reach); v.ox = w/2 - (w < 600 ? 28 : 0);
+        return v;
+      };
+      Scene.prototype.P = function(p){
+        var v = this.v;
+        var X = p[0]*v.cy - p[2]*v.sy, Z = p[0]*v.sy + p[2]*v.cy, Y = p[1] - v.my;
+        return [v.ox + v.s*X, v.oy - v.s*(Y*v.cp - Z*v.sp)];
+      };
+      Scene.prototype.poly = function(pts){ var x = this.ctx; x.beginPath(); pts.forEach(function(p, i){ p = this.P(p); if(i){ x.lineTo(p[0], p[1]); } else { x.moveTo(p[0], p[1]); } }, this); x.closePath(); };
+      Scene.prototype.line = function(a, b){ var x = this.ctx; a = this.P(a); b = this.P(b); x.beginPath(); x.moveTo(a[0], a[1]); x.lineTo(b[0], b[1]); x.stroke(); };
+
+      // ---- drawing ----
+      Scene.prototype.draw = function(now){
+        var x = this.ctx, w = this.w, h = this.h;
+        if(!w){ return; }
+        x.clearRect(0, 0, w, h);
+        this.v = this.camera();
+        x.lineJoin = 'round';
+        this.layer(-2*GAP, { fill:rgba(C.ink, 0.018), edge:rgba(C.gray, 0.45), grid:rgba(C.gray, 0.28), label:'RESPOND', lc:rgba(C.gray, 0.9) });
+        this.layer(-GAP, { fill:rgba(C.ink, 0.035), edge:rgba(C.ink, 0.62), grid:rgba(C.gray, 0.35), label:'DETECT', lc:rgba(C.ink, 0.75) });
+        this.drawDots(now, 'under');
+        this.layer(0, { fill:rgba(C.pink, 0.055), edge:rgba(C.pink, 0.95), grid:rgba(C.pink, 0.45), label:'PREVENT', lc:rgba(C.pink, 1) });
+        this.drawDots(now, 'over');
+      };
+      Scene.prototype.layer = function(y, st){
+        var x = this.ctx;
+        this.poly([[-1,y,-1],[1,y,-1],[1,y,1],[-1,y,1]]);
+        x.fillStyle = st.fill; x.fill();
+        x.setLineDash([2, 3]); x.strokeStyle = st.grid; x.lineWidth = 1;
+        for(var i = 1; i < N; i++){ var a = -1 + i*CELL; this.line([a,y,-1],[a,y,1]); this.line([-1,y,a],[1,y,a]); }
+        x.setLineDash([]); x.strokeStyle = st.edge; x.lineWidth = 1;
+        this.poly([[-1,y,-1],[1,y,-1],[1,y,1],[-1,y,1]]); x.stroke();
+        this.label(st.label, [1, y, 1], st.lc);
+      };
+      Scene.prototype.label = function(t, corner, color){
+        var x = this.ctx, p = this.P(corner), q = this.P([1, corner[1], -1]);
+        var r = p[0] > q[0] ? p : q;   // the right-hand corner
+        x.font = '500 9px "JetBrains Mono", monospace'; x.fillStyle = color; x.textBaseline = 'middle';
+        if('letterSpacing' in x){ x.letterSpacing = '1px'; }
+        x.fillText(t, r[0] + 10, r[1]);
+        if('letterSpacing' in x){ x.letterSpacing = '0px'; }
+      };
+      // a circle drawn flat on a layer
+      Scene.prototype.ring = function(c, r, stroke){
+        var x = this.ctx; x.beginPath();
+        for(var i = 0; i <= 28; i++){
+          var a = i / 28 * Math.PI * 2, p = this.P([c[0] + r*Math.cos(a), c[1], c[2] + r*Math.sin(a)]);
+          if(i){ x.lineTo(p[0], p[1]); } else { x.moveTo(p[0], p[1]); }
         }
-        ghosts = [mk('ghost'), mk('ghost ghost--gray')];
-      }
-      function scramble(amount){
-        return original.split('').map(function(ch){ return ch === ' ' || Math.random() >= amount ? ch : GLYPHS.charAt(Math.floor(Math.random() * GLYPHS.length)); }).join('');
-      }
-      function setText(t){ base.textContent = t; strips.concat(ghosts).forEach(function(n){ n.textContent = t; }); }
-      function frame(intensity){
-        setText(Math.random() < 0.2 ? scramble(intensity * 0.12) : original);   // a letter or two, now and then
-        strips.forEach(function(s){ s.style.transform = Math.random() < 0.45 ? 'none' : 'translateX(' + snap(16 * intensity) + 'px)'; });
-        ghosts.forEach(function(g){
-          var top = Math.floor(rnd(0, 4)) * 20, h = Math.floor(rnd(2, 4)) * 20;   // each outline shows one thick band
-          g.style.clipPath = 'inset(' + top + '% 0 ' + Math.max(0, 100 - top - h) + '% 0)';
-          g.style.transform = 'translate(' + (snap(14 * intensity) || STEP * 2) + 'px,' + snap(4) + 'px)';
-        });
-      }
-      function rest(){ el.classList.remove('active'); setText(original); strips.concat(ghosts).forEach(function(n){ n.style.transform = ''; }); }
-      function burst(){
-        if(remaining <= 0){ return; }
-        remaining--;
-        var total = rnd(duration[0], duration[1]), intensity = rnd(0.6, 1.1), start = performance.now();
-        build();
-        el.classList.add('active');
-        (function tick(){
-          var t = (performance.now() - start) / total;
-          if(t >= 1){   // back to plain text, then wait for the next burst (if any)
-            el.classList.remove('active'); el.textContent = original;
-            if(remaining > 0){ setTimeout(burst, rnd(gap[0], gap[1])); }
-            return;
+        x.strokeStyle = stroke; x.lineWidth = 1.2; x.stroke();
+      };
+      // the intro: attacks drop onto the layers. Most stop at prevent, some at detect, rarely one at respond.
+      Scene.prototype.drawDots = function(now, pass){
+        var x = this.ctx, self = this;
+        if(pass === 'under'){
+          if(reduce){
+            this.dots = [[0.35,0,0.2,0],[-0.5,0,-0.3,0],[0.1,0,-0.65,0],[-0.2,0,0.55,0],[0.6,0,-0.4,0],[-0.6,-GAP,0.3,1],[0.4,-GAP,0.5,1],[0.05,-2*GAP,-0.1,2]]
+              .map(function(d){ return { x:d[0], z:d[2], stop:d[3], t0:-1e9 }; });
+          } else {
+            if(now - this.nextDot > 2000){ this.nextDot = now - 2000; }
+            // spread out: anywhere on the layer, but not in the same screen column as the last few (on screen a
+            // column is x - z, so points on one diagonal would otherwise stack their trails)
+            var R = this.rand || (this.rand = rng(4242)), recent = this.recent || (this.recent = []);
+            while(now > this.nextDot){
+              var n = ++this.dotN, stop = n % 13 === 0 ? 2 : n % 5 === 0 ? 1 : 0, px, pz, col, tries = 0;
+              do { px = -0.82 + 1.64 * R(); pz = -0.82 + 1.64 * R(); col = px - pz; }
+              while(tries++ < 16 && recent.some(function(c){ return Math.abs(c - col) < 0.3; }));
+              recent.push(col); if(recent.length > 5){ recent.shift(); }
+              this.dots.push({ x:px, z:pz, stop:stop, t0:this.nextDot });
+              this.nextDot += 208 + R() * 208;   // about 3 a second
+            }
           }
-          if(Math.random() < 0.18){ rest(); el.classList.add('active'); }   // a brief clean flash mid-burst
-          else { frame(intensity * (1 - t) + 0.25); }
-          setTimeout(tick, rnd(60, 120));   // held frames, more like drawn animation than video
-        })();
+        }
+        // each attack drops straight down in order (prevent, detect, respond), speeding up. Above prevent it leaves a
+        // pink light trail from where it started (a beam, not a raindrop); the trail ends at prevent and fades slowly once
+        // the attack gets there. Stopped at prevent: a pink ripple. Getting through: below prevent only a short streak; it
+        // catches for a moment on each layer it crosses (a gray ripple), stays gray and goes on.
+        var FALL = 1.6, HOLD = 170, TAIL = 0.14, BEAM_FADE = 1400;   // start height; ms caught on a layer; streak length; ms
+        function at(d, u){ return [d.x, FALL - (FALL - d.stopY)*u, d.z]; }
+        function prog(p){ return p * (0.35 + 0.65 * p); }   // eases in: slow far away, fast at the surface
+        function when(u){ return (-0.35 + Math.sqrt(0.1225 + 2.6 * u)) / 1.3; }   // inverse of prog
+        function inPass(y){ return (pass === 'over') === (y >= -0.001); }
+        this.dots = this.dots.filter(function(d){
+          if(d.T == null){
+            d.stopY = -d.stop * GAP; d.T = 950 + 280 * d.stop; d.cross = [];
+            for(var i = 0; i < d.stop; i++){ var ui = (FALL + i * GAP) / (FALL - d.stopY); d.cross.push({ u:ui, at:when(ui) * d.T + i * HOLD }); }
+          }
+          var t = reduce ? 1e9 : now - d.t0, end = d.T + d.stop * HOLD, hit = t >= end, since = hit ? t - end : 0;
+          if(hit && since > 900 && !reduce){ return false; }
+          // the beam: from the start down to the dot, or to prevent once it's there (then it fades)
+          if(pass === 'over' && !reduce){
+            var tz = d.stop === 0 ? d.T : d.cross[0].at, gone = t - tz;
+            if(gone < BEAM_FADE){
+              var top = self.P(at(d, 0)), bot = gone >= 0 ? self.P([d.x, 0, d.z]) : self.P(at(d, prog(clamp(t / d.T))));
+              var ba = gone >= 0 ? 1 - gone / BEAM_FADE : 1;
+              var bg = x.createLinearGradient(top[0], top[1], bot[0], bot[1]);
+              bg.addColorStop(0, rgba(C.pink, 0)); bg.addColorStop(1, rgba(C.pink, 0.6 * ba));
+              x.strokeStyle = bg; x.lineWidth = 1.4; x.lineCap = 'round'; x.beginPath(); x.moveTo(top[0], top[1]); x.lineTo(bot[0], bot[1]); x.stroke();
+            }
+          }
+          // where it is on its way down: moving time leaves out the holds; "run" is how long since it last set off
+          var mv = t, run = t;
+          for(var k = 0; k < d.cross.length; k++){
+            var cr = d.cross[k], sk = t - cr.at;
+            if(sk >= 0 && sk < 700 && !reduce && inPass(-k * GAP)){   // the ripple where it went through
+              var kk = sk / 700; self.ring(at(d, cr.u), 0.04 + kk * 0.13, rgba(C.gray, (1 - kk) * 0.7));
+            }
+            if(sk >= HOLD){ mv -= HOLD; run = sk - HOLD; } else if(sk >= 0){ mv = cr.at - k * HOLD; run = 0; }
+          }
+          if(!hit){
+            var p = clamp(mv / d.T), q = at(d, prog(p));
+            if(!inPass(q[1])){ return true; }
+            var fa = clamp(p / 0.25), head = self.P(q), tail = self.P(at(d, prog(Math.max(0, p - Math.min(TAIL, run / d.T)))));
+            if(run > 0 && q[1] < 0){
+              var g = x.createLinearGradient(tail[0], tail[1], head[0], head[1]);
+              g.addColorStop(0, rgba(C.gray, 0)); g.addColorStop(1, rgba(C.gray, 0.55 * fa));
+              x.strokeStyle = g; x.lineWidth = 1.6; x.lineCap = 'round'; x.beginPath(); x.moveTo(tail[0], tail[1]); x.lineTo(head[0], head[1]); x.stroke();
+            }
+            x.fillStyle = rgba(C.gray, 0.9 * fa); x.beginPath(); x.arc(head[0], head[1], 2.6, 0, 7); x.fill();
+          } else if(inPass(d.stopY)){
+            var col = d.stop === 0 ? C.pink : C.gray, kh = reduce ? 0.35 : clamp(since / 900), e = self.P([d.x, d.stopY, d.z]);
+            self.ring([d.x, d.stopY, d.z], 0.04 + kh * 0.16, rgba(col, (1 - kh) * 0.9));
+            x.fillStyle = rgba(col, 1 - kh); x.beginPath(); x.arc(e[0], e[1], 2.6 * (1 - kh * 0.6), 0, 7); x.fill();
+          }
+          return true;
+        });
+      };
+
+      // ---- wiring ----
+      var scenes = [];
+      function loop(now){ scenes.forEach(function(s){ if(s.live){ s.draw(now); } }); requestAnimationFrame(loop); }
+      function visible(el, s){
+        if(!('IntersectionObserver' in window)){ s.live = true; return; }
+        new IntersectionObserver(function(es){ s.live = es[0].isIntersecting; }, { threshold:0 }).observe(el);
       }
-      if(remaining > 0){ setTimeout(burst, rnd(delay[0], delay[1])); }
+      // the layers drop attacks forever while they're on screen (desktop and stacked layouts each have one)
+      ['.pv-desk [data-scene="dlayers"]', '.pv-stack [data-scene="layers"]'].forEach(function(sel){
+        var sc = new Scene(document.querySelector(sel)); scenes.push(sc); visible(sc.c.parentNode, sc);
+      });
+      requestAnimationFrame(loop);
     })();
 
     (function(){
-      var els = document.querySelectorAll('.reveal, .reveal-group > *');
-      if(!els.length){ return; }
-      var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if(!('IntersectionObserver' in window) || reduceMotion){
-        els.forEach(function(el){ el.classList.add('in-view'); });
-        return;
-      }
-      var io = new IntersectionObserver(function(entries){
-        entries.forEach(function(entry){
-          // shown once it rises above a line near the bottom of the screen; hidden again
-          // (so it can replay) when you scroll back up and it drops below that line
-          entry.target.classList.toggle('in-view', entry.isIntersecting);
-        });
-      }, { threshold:0, rootMargin:'100000px 0px -10% 0px' }); // the zone reaches far above the screen, so items you've scrolled past stay shown
-      els.forEach(function(el){ io.observe(el); });
+      // SLACK CARDS: one at a time, once, when the cards come into view (all at once with reduced motion)
+      var cards = document.querySelector('.slack-cards');
+      if(!cards || window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)){ return; }
+      cards.classList.add('will-arrive');
+      var io = new IntersectionObserver(function(es){
+        if(es[0].isIntersecting){ cards.classList.add('is-in'); io.disconnect(); }
+      }, { threshold:0.35 });
+      io.observe(cards);
     })();
-  </script>
+  
+    (function(){
+      // VEX AI SOC menu: opens on click; closes on a click outside, Escape, leaving it with Tab, or the header hiding
+      var drop = document.querySelector('.nav-drop'); if(!drop){ return; }
+      var btn = drop.querySelector('.nav-drop-btn'), menu = drop.querySelector('.nav-drop-menu');
+      function set(open, focusBtn){
+        btn.setAttribute('aria-expanded', String(open)); menu.hidden = !open;
+        if(!open && focusBtn){ btn.focus({ preventScroll:true }); }
+      }
+      btn.addEventListener('click', function(){ set(menu.hidden); });
+      document.addEventListener('click', function(e){ if(!menu.hidden && !drop.contains(e.target)){ set(false); } });
+      document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && !menu.hidden){ set(false, true); } });
+      drop.addEventListener('focusout', function(e){ if(!menu.hidden && e.relatedTarget && !drop.contains(e.relatedTarget)){ set(false); } });
+      window.addEventListener('scroll', function(){ if(!menu.hidden && document.documentElement.classList.contains('header-hidden')){ set(false); } }, { passive:true });
+      // closed again when you come back: close on following a link, and when the browser restores the page from its
+      // back/forward cache (which keeps the menu as it was)
+      menu.addEventListener('click', function(e){ if(e.target.closest('a')){ set(false); } });
+      window.addEventListener('pageshow', function(e){ if(e.persisted){ set(false); } });
+    })();
+</script>
 </body>
 </html>

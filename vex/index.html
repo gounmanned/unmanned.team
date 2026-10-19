@@ -19,7 +19,7 @@
       <link rel="stylesheet" href="static/css/attack.css?v=${v}">
       <link rel="stylesheet" href="static/css/inventory.css?v=${v}">
       <link rel="stylesheet" href="static/css/tenant.css?v=${v}">
-      <link rel="stylesheet" href="static/css/monitors.css?v=${v}">
+      <link rel="stylesheet" href="static/css/sources.css?v=${v}">
       <link rel="stylesheet" href="static/css/backups.css?v=${v}">
       <link rel="stylesheet" href="static/css/signal.css?v=${v}">
     `);
@@ -187,7 +187,7 @@
 
       <a id="open-inventory-rollup">Identities</a>
       <a id="open-backup-sidebar">Backups</a>
-      <a id="open-monitor-rollup">Monitors</a>
+      <a id="open-source-rollup">Sources</a>
       <a id="open-signal-sidebar" class="cta">+ Add Signal</a>
     </footer>
   </main>
@@ -289,19 +289,19 @@
     </div>
   </site-rollup>
 
-  <site-rollup id="monitor-screen">
+  <site-rollup id="source-screen">
     <div class="rollup-head">
       <span class="material-symbols-outlined rollup-head-icon">radar</span>
       <div class="rollup-head-text">
-        <h2>Monitors</h2>
-        <p>Connected sources VEX collects signals from.</p>
+        <h2>Sources</h2>
+        <p>Connected integrations VEX collects signals from.</p>
       </div>
     </div>
 
-    <div id="monitor-callout" class="monitor-callout"></div>
+    <div id="source-callout" class="source-callout"></div>
 
-    <div class="table-wrap" id="monitor-table-wrap">
-      <div id="monitor-list"></div>
+    <div class="table-wrap" id="source-table-wrap">
+      <div id="source-list"></div>
     </div>
   </site-rollup>
 
@@ -398,7 +398,7 @@
     <script src="static/js/sidebars/signal.js?v=${v}"><\/script>
     <script src="static/js/sidebars/backup.js?v=${v}"><\/script>
     <script src="static/js/rollups/managed.js?v=${v}"><\/script>
-    <script src="static/js/rollups/monitors.js?v=${v}"><\/script>
+    <script src="static/js/rollups/sources.js?v=${v}"><\/script>
     <script src="static/js/rollups/inventory.js?v=${v}"><\/script>
   `);
 </script>

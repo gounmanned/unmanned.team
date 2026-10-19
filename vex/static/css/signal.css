@@ -282,6 +282,7 @@
 
   .send-btn {
     grid-area: input;
+    z-index: 1;
     align-self: end;
     justify-self: end;
     display: grid;

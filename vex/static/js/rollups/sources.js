@@ -38,17 +38,17 @@ class SourceRollup {
         await this.ready;
         const sources = await this.api.sources.list();
         Object.values(this.available).forEach(s => { s.instances = []; });
-        sources.forEach(source => this.add(source));
+        sources.forEach(s => this.add(s));
         this._render();
     }
 
     add(source) {
         const [, , name, indexStr] = source.split("/");
         const index = indexStr !== undefined ? parseInt(indexStr, 10) : 0;
-        const source = this.available[name];
-        if (source && !source.instances.includes(index)) {
-            source.instances.push(index);
-            source.instances.sort((a, b) => a - b);
+        const found = this.available[name];
+        if (found && !found.instances.includes(index)) {
+            found.instances.push(index);
+            found.instances.sort((a, b) => a - b);
         }
     }
 
@@ -57,7 +57,7 @@ class SourceRollup {
         this._render();
 
         try {
-            // Backend assigns the index; send only the source name (e.g. "google")
+            // Backend assigns the index; send only the name (e.g. "google")
             await this.api.sources.connect(key, value);
         } catch {
             this.connecting = false;

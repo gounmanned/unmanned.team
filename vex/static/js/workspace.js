@@ -31,7 +31,7 @@ class Api {
         this.file = new FileApi(state);
         this.sources = new SourceApi(state);
         this.notification = new NotificationApi(state);
-        this.attack = new AttackApi(state);
+        this.action = new ActionApi(state);
     }
 
     reset(){
@@ -42,7 +42,7 @@ class Api {
         this.file.set("account", this.state.account());
         this.sources.set("account", this.state.account());
         this.notification.set("account", this.state.account());
-        this.attack.set("account", this.state.account());
+        this.action.set("account", this.state.account());
     }
 }
 

@@ -31,7 +31,6 @@ class TenantScreen {
             this.clearSearch();
             this.renderSpotlight();
             this.renderTrend();
-            this.attack.reset();
         }).then(() => {
             this.notifications.refresh();
         });
@@ -254,7 +253,6 @@ class TenantScreen {
             this.state.track(signal);
             this.table.add(signal);
             this.scheduleTrend();
-            this.attack.onSignal(signal);
             if (!this.query) this.count();
         });
 

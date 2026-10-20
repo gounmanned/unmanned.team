@@ -146,13 +146,13 @@ class NotificationApi extends Gateway {
     }
 }
 
-class AttackApi extends Gateway {
+class ActionApi extends Gateway {
     constructor(){
         super();
     }
 
-    async run(asset, procedure = "impossible travel") {
-        return await this.call("POST", `attack/${procedure}?target=${asset}`);
+    async get(name) {
+        return await this.call("GET", `action?name=${name}`);
     }
 }
 

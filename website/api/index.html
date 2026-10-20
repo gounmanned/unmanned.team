@@ -5,11 +5,11 @@
 <script>document.documentElement.classList.replace('no-js','js');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Unmanned / API</title>
-<meta name="description" content="Every VEX endpoint: signals, monitors, identities, notifications, files and the audit log. Base URL, auth and the actual request bodies.">
+<meta name="description" content="Every VEX endpoint: signals, sources, identities, notifications, files and the audit log. Base URL, auth and the actual request bodies.">
 <link rel="apple-touch-icon" href="https://cdn.unmanned.team/img/logo.png">
 <link rel="icon" type="image/png" href="https://cdn.unmanned.team/img/logo.png">
 <meta property="og:title" content="VEX: API Reference" />
-<meta property="og:description" content="Every VEX endpoint: signals, monitors, identities, notifications, files and the audit log. Base URL, auth and the actual request bodies." />
+<meta property="og:description" content="Every VEX endpoint: signals, sources, identities, notifications, files and the audit log. Base URL, auth and the actual request bodies." />
 <meta property="og:url" content="https://unmanned.team/api/" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Unmanned" />
@@ -404,7 +404,7 @@
     <div class="wrap">
       <div class="eyebrow-label"><span class="status-dot"></span>For developers</div>
       <h1>The actual API.</h1>
-      <p class="lede">A handful of endpoints for everything VEX does: signals, monitors, identities, notifications, files and the audit log. No metaphors required.</p>
+      <p class="lede">A handful of endpoints for everything VEX does: signals, sources, identities, notifications, files and the audit log. No metaphors required.</p>
       <div class="base-url">
         <span class="base-url-label">Base URL</span>
         <code id="base-url">https://4ycv63am8b.execute-api.us-east-2.amazonaws.com</code>
@@ -431,7 +431,7 @@
           <li><a class="jump-link" href="#auth">Authentication</a></li>
           <li><a class="jump-link" href="#managed">Managed</a></li>
           <li><a class="jump-link" href="#signals">Signals</a></li>
-          <li><a class="jump-link" href="#monitors">Monitors</a></li>
+          <li><a class="jump-link" href="#sources">Sources</a></li>
           <li><a class="jump-link" href="#identities">Identities</a></li>
           <li><a class="jump-link" href="#notifications">Notifications</a></li>
           <li><a class="jump-link" href="#files">Files</a></li>
@@ -444,7 +444,7 @@
     <section class="api-section" id="auth">
       <div class="section-head">
         <h2>Authentication</h2>
-        <p class="lede">Two steps: trade your username and password for a token, then send that token on everything else. Nothing exotic — a standard AWS Cognito exchange.</p>
+        <p class="lede">Two steps: trade your username and password for a token, then send that token on everything else. Nothing exotic: a standard AWS Cognito exchange.</p>
       </div>
       <div class="endpoint" id="post-auth-token">
         <div class="endpoint-head">
@@ -452,7 +452,7 @@
           <h3 class="endpoint-path">cognito-idp.us-east-2.amazonaws.com</h3>
           <span class="endpoint-status">200 OK</span>
         </div>
-        <p class="endpoint-desc">Exchanges your username and password for a bearer token via AWS Cognito. This call goes straight to Cognito, not the VEX base URL. Email <code>go@unmanned.team</code> to get credentials if you don't have them yet — this is the first call you'll ever make.</p>
+        <p class="endpoint-desc">Exchanges your username and password for a bearer token via AWS Cognito. This call goes straight to Cognito, not the VEX base URL. Email <code>go@unmanned.team</code> to get credentials if you don’t have them yet. This is the first call you’ll ever make.</p>
         <table class="param-table">
           <thead><tr><th>Parameter</th><th>In</th><th>Type</th><th></th><th>Description</th></tr></thead>
           <tbody>
@@ -481,13 +481,13 @@
    <span class="t-key">"ChallengeParameters"</span> : {}
 }</code></pre>
         </div>
-        <p class="note">Cognito also returns <code>AccessToken</code> and <code>RefreshToken</code> alongside <code>IdToken</code> — VEX only checks <code>IdToken</code>, so the other two can be ignored for these examples. Tokens are short-lived on purpose. Cache the <code>IdToken</code> until it expires, then call this again — don't request a fresh token on every API call.</p>
+        <p class="note">Cognito also returns <code>AccessToken</code> and <code>RefreshToken</code> alongside <code>IdToken</code>. VEX only checks <code>IdToken</code>, so the other two can be ignored for these examples. Tokens are short-lived on purpose. Cache the <code>IdToken</code> until it expires, then call this again. Don’t request a fresh token on every API call.</p>
       </div>
       <div class="endpoint" id="use-auth-token">
         <div class="endpoint-head">
           <h3 class="endpoint-title">Using the token</h3>
         </div>
-        <p class="endpoint-desc">Every other request in this reference carries that token as a bearer header. Scoped to one workspace — no per-request signing, no separate keys per endpoint.</p>
+        <p class="endpoint-desc">Every other request in this reference carries that token as a bearer header. Scoped to one workspace: no per-request signing, no separate keys per endpoint.</p>
         <div class="code-panel">
           <div class="code-head"><span class="code-file">save-token.sh</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy save-token.sh to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code><span class="t-fn">export</span> VEX_TOKEN=$(<span class="t-fn">curl</span> https://cognito-idp.us-east-2.amazonaws.com/ \
@@ -496,13 +496,13 @@
   -d <span class="t-str">'{"AuthFlow": "USER_PASSWORD_AUTH", "ClientId": "2314edi18c3o3t8sroh2u2hucf", "AuthParameters": {"USERNAME": "you@yourcompany.com", "PASSWORD": "your-password"}}'</span> \
   | jq -r <span class="t-str">'.AuthenticationResult.IdToken'</span>)</code></pre>
         </div>
-        <p class="note">Every curl example in this reference assumes <code>$VEX_TOKEN</code> is already set this way — run it once per session and the rest just work.</p>
+        <p class="note">Every curl example in this reference assumes <code>$VEX_TOKEN</code> is already set this way. Run it once per session and the rest just work.</p>
         <div class="code-panel">
           <div class="code-head"><span class="code-file">auth-header.sh</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy auth-header.sh to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
-          <pre><code><span class="t-fn">curl</span> https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/monitor \
+          <pre><code><span class="t-fn">curl</span> https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/source \
   -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span></code></pre>
         </div>
-        <p class="note">Tokens expire on their own; there's no need to rotate them by hand. Rotate your password if it ever leaks.</p>
+        <p class="note">Tokens expire on their own; there’s no need to rotate them by hand. Rotate your password if it ever leaks.</p>
       </div>
       <div class="endpoint" id="account-delegation">
         <div class="endpoint-head">
@@ -512,7 +512,7 @@
         <div class="callout">
           <div class="eyebrow-label"><span class="status-dot"></span>Account header</div>
           <p>Pass the <code>account</code> header on any request and the call runs inside that account instead of your own. Accounts are named by their domain, like <code>example.com</code>, not an internal ID.</p>
-          <p>It works the same on every endpoint in this reference: signals, monitors, identities, notifications, files and audit. Leave it out and the call runs against your own account.</p>
+          <p>It works the same on every endpoint in this reference: signals, sources, identities, notifications, files and audit. Leave it out and the call runs against your own account.</p>
           <p>You need permission to manage the account you name. To see every managed account at once instead of one at a time, use the <a href="#managed">managed routes</a>.</p>
         </div>
         <table class="param-table">
@@ -523,8 +523,8 @@
         </table>
         <div class="code-panel">
           <div class="code-head"><span class="code-file">delegate.sh</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy delegate.sh to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
-          <pre><code><span class="t-cmnt"># Lists the monitors in example.com instead of your own account</span>
-<span class="t-fn">curl</span> https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/monitor \
+          <pre><code><span class="t-cmnt"># Lists the sources in example.com instead of your own account</span>
+<span class="t-fn">curl</span> https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/source \
   -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span> \
   -H <span class="t-str">"account: example.com"</span></code></pre>
         </div>
@@ -555,7 +555,7 @@
         <p class="endpoint-desc">Every open signal across every account you manage, in one call.</p>
         <div class="callout">
           <div class="eyebrow-label"><span class="status-dot"></span>Multi-tenant shortcut</div>
-          <p>If you manage several accounts, this is the one call worth knowing about: it returns every open signal across all of them in a single response, so you don't have to loop over each account with the <code>account</code> header just to check for open work.</p>
+          <p>If you manage several accounts, this is the one call worth knowing about: it returns every open signal across all of them in a single response, so you don’t have to loop over each account with the <code>account</code> header just to check for open work.</p>
         </div>
         <div class="code-panel">
           <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy request to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
@@ -581,7 +581,7 @@
     <section class="api-section" id="signals">
       <div class="section-head">
         <h2>Signals</h2>
-        <p class="lede">Everything a monitor noticed, and whether VEX thinks it's part of something bigger. Signals represent actionable security weaknesses.</p>
+        <p class="lede">Everything a source noticed, and whether VEX thinks it’s part of something bigger. Signals represent actionable security weaknesses.</p>
       </div>
       <div class="callout">
         <div class="eyebrow-label"><span class="status-dot"></span>Signal status values</div>
@@ -602,7 +602,7 @@
           <h3 class="endpoint-path">/signal</h3>
           <span class="endpoint-status">200 OK</span>
         </div>
-        <p class="endpoint-desc">Every signal VEX has collected, newest first. Query params exist so you don't have to scroll forever.</p>
+        <p class="endpoint-desc">Every signal VEX has collected, newest first. Query params exist so you don’t have to scroll forever.</p>
         <table class="param-table">
           <thead><tr><th>Parameter</th><th>In</th><th>Type</th><th></th><th>Description</th></tr></thead>
           <tbody>
@@ -696,7 +696,7 @@
           <tbody>
             <tr><td>status</td><td>body</td><td>string</td><td><span class="req">Required</span></td><td>Where the signal starts, as a status code, e.g. <code>OB</code> for Open.</td></tr>
             <tr><td>asset</td><td>body</td><td>string</td><td><span class="req">Required</span></td><td>Who the signal is about, e.g. <code>priya.shah@acmecorp.com</code>.</td></tr>
-            <tr><td>source</td><td>body</td><td>string</td><td><span class="req">Required</span></td><td>Where it came from, as a monitor slug, e.g. <code>google</code>.</td></tr>
+            <tr><td>source</td><td>body</td><td>string</td><td><span class="req">Required</span></td><td>Where it came from, as a source slug, e.g. <code>google</code>.</td></tr>
             <tr><td>value</td><td>body</td><td>string</td><td><span class="req">Required</span></td><td>What happened, in plain words.</td></tr>
           </tbody>
         </table>
@@ -716,27 +716,27 @@
       </div>
     </section>
 
-    <section class="api-section" id="monitors">
+    <section class="api-section" id="sources">
       <div class="section-head">
-        <h2>Monitors</h2>
-        <p class="lede">Connect, check, and disconnect the things watching your business. Slugs match the site: <code>google</code>, <code>microsoft</code>, <code>aws</code>, <code>cloudflare</code>, <code>level</code>, <code>shopify</code>, <code>quickbooks</code>, <code>hubspot</code>, <code>constant-contact</code>, <code>slack</code>, <code>squarespace</code>, and the many more we didn't have room to list here either.</p>
+        <h2>Sources</h2>
+        <p class="lede">Connect, check, and disconnect the things watching your business. Slugs match the site: <code>google</code>, <code>microsoft</code>, <code>aws</code>, <code>cloudflare</code>, <code>level</code>, <code>shopify</code>, <code>quickbooks</code>, <code>hubspot</code>, <code>constant-contact</code>, <code>slack</code>, <code>squarespace</code>, and the many more we didn’t have room to list here either.</p>
       </div>
       <div class="callout">
-        <div class="eyebrow-label"><span class="status-dot"></span>Monitor keys</div>
-        <p>Every monitor is identified by a three-part key: <code>account/vendor/index</code>, e.g. <code>acmecorp.com/google/0</code>.</p>
-        <p>The <code>account</code> is the domain the monitor belongs to, and <code>vendor</code> is the slug for what it’s watching (<code>google</code>, <code>microsoft</code> and so on). The <code>index</code> tells apart two monitors for the same vendor, say two separate Microsoft 365 tenants.</p>
-        <p>You don’t choose the index: VEX assigns it when you connect a monitor, and <code>GET /monitor</code> lists it. You only need it to disconnect a monitor.</p>
+        <div class="eyebrow-label"><span class="status-dot"></span>Source keys</div>
+        <p>Every source is identified by a three-part key: <code>account/vendor/index</code>, e.g. <code>acmecorp.com/google/0</code>.</p>
+        <p>The <code>account</code> is the domain the source belongs to, and <code>vendor</code> is the slug for what it’s watching (<code>google</code>, <code>microsoft</code> and so on). The <code>index</code> tells apart two sources for the same vendor, say two separate Microsoft 365 tenants.</p>
+        <p>You don’t choose the index: VEX assigns it when you connect a source, and <code>GET /source</code> lists it. You only need it to disconnect a source.</p>
       </div>
-      <div class="endpoint" id="get-monitor">
+      <div class="endpoint" id="get-source">
         <div class="endpoint-head">
           <span class="method method--get">GET</span>
-          <h3 class="endpoint-path">/monitor</h3>
+          <h3 class="endpoint-path">/source</h3>
           <span class="endpoint-status">200 OK</span>
         </div>
-        <p class="endpoint-desc">Lists every monitor currently connected to your account. This is the "yes, it's still working" button.</p>
+        <p class="endpoint-desc">Lists every source currently connected to your account. This is the “yes, it’s still working” button.</p>
         <div class="code-panel">
           <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy request to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
-          <pre><code><span class="t-fn">curl</span> https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/monitor \
+          <pre><code><span class="t-fn">curl</span> https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/source \
   -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span></code></pre>
         </div>
         <div class="code-panel">
@@ -747,24 +747,24 @@
 ]</code></pre>
         </div>
       </div>
-      <div class="endpoint" id="post-monitor">
+      <div class="endpoint" id="post-source">
         <div class="endpoint-head">
           <span class="method method--post">POST</span>
-          <h3 class="endpoint-path">/monitor/{name}</h3>
+          <h3 class="endpoint-path">/source/{name}</h3>
           <span class="endpoint-status">201 Created</span>
         </div>
-        <p class="endpoint-desc">Connects a new monitor. It wants credentials, not your firstborn.</p>
+        <p class="endpoint-desc">Connects a new source. It wants credentials, not your firstborn.</p>
         <table class="param-table">
           <thead><tr><th>Parameter</th><th>In</th><th>Type</th><th></th><th>Description</th></tr></thead>
           <tbody>
-            <tr><td>name</td><td>path</td><td>string</td><td><span class="req">Required</span></td><td>Monitor slug, e.g. <code>google</code> or <code>microsoft</code>. No index: VEX assigns one.</td></tr>
+            <tr><td>name</td><td>path</td><td>string</td><td><span class="req">Required</span></td><td>Source slug, e.g. <code>google</code> or <code>microsoft</code>. No index: VEX assigns one.</td></tr>
           </tbody>
         </table>
         <p class="note">Body shape depends on the provider. The two most common patterns:</p>
         <div class="code-panel">
-          <div class="code-head"><span class="code-file">connect-monitor.sh</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy connect-monitor.sh to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
+          <div class="code-head"><span class="code-file">connect-source.sh</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy connect-source.sh to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code><span class="t-cmnt"># Google Workspace: service account JSON key</span>
-<span class="t-fn">curl</span> -X POST https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/monitor/google \
+<span class="t-fn">curl</span> -X POST https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/source/google \
   -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span> \
   -H <span class="t-str">"Content-Type: application/json"</span> \
   -d <span class="t-str">'{
@@ -776,7 +776,7 @@
   }'</span>
 
 <span class="t-cmnt"># Microsoft 365: app registration credentials</span>
-<span class="t-fn">curl</span> -X POST https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/monitor/microsoft \
+<span class="t-fn">curl</span> -X POST https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/source/microsoft \
   -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span> \
   -H <span class="t-str">"Content-Type: application/json"</span> \
   -d <span class="t-str">'{
@@ -786,23 +786,23 @@
   }'</span></code></pre>
         </div>
       </div>
-      <div class="endpoint" id="delete-monitor">
+      <div class="endpoint" id="delete-source">
         <div class="endpoint-head">
           <span class="method method--delete">DELETE</span>
-          <h3 class="endpoint-path">/monitor/{name}/{index}</h3>
+          <h3 class="endpoint-path">/source/{name}/{index}</h3>
           <span class="endpoint-status">204 No Content</span>
         </div>
-        <p class="endpoint-desc">Disconnects a monitor. VEX stops watching that surface immediately. We'll miss it more than you will.</p>
+        <p class="endpoint-desc">Disconnects a source. VEX stops watching that surface immediately. We’ll miss it more than you will.</p>
         <table class="param-table">
           <thead><tr><th>Parameter</th><th>In</th><th>Type</th><th></th><th>Description</th></tr></thead>
           <tbody>
-            <tr><td>name</td><td>path</td><td>string</td><td><span class="req">Required</span></td><td>Monitor slug, e.g. <code>google</code>.</td></tr>
-            <tr><td>index</td><td>path</td><td>integer</td><td><span class="req">Required</span></td><td>Which monitor to disconnect, e.g. <code>0</code>. <code>GET /monitor</code> lists each monitor with its index.</td></tr>
+            <tr><td>name</td><td>path</td><td>string</td><td><span class="req">Required</span></td><td>Source slug, e.g. <code>google</code>.</td></tr>
+            <tr><td>index</td><td>path</td><td>integer</td><td><span class="req">Required</span></td><td>Which source to disconnect, e.g. <code>0</code>. <code>GET /source</code> lists each source with its index.</td></tr>
           </tbody>
         </table>
         <div class="code-panel">
           <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy request to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
-          <pre><code><span class="t-fn">curl</span> -X DELETE https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/monitor/google/0 \
+          <pre><code><span class="t-fn">curl</span> -X DELETE https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/source/google/0 \
   -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span></code></pre>
         </div>
       </div>
@@ -811,7 +811,7 @@
     <section class="api-section" id="identities">
       <div class="section-head">
         <h2>Identities</h2>
-        <p class="lede">The people VEX knows about in your business, found through the monitors you’ve connected. Each identity is a person, named by their email address.</p>
+        <p class="lede">The people VEX knows about in your business, found through the sources you’ve connected. Each identity is a person, named by their email address.</p>
       </div>
       <div class="endpoint" id="get-asset">
         <div class="endpoint-head">
@@ -819,7 +819,7 @@
           <h3 class="endpoint-path">/asset</h3>
           <span class="endpoint-status">200 OK</span>
         </div>
-        <p class="endpoint-desc">Every identity VEX currently knows about, across every connected monitor. No filtering needed: this is the full list.</p>
+        <p class="endpoint-desc">Every identity VEX currently knows about, across every connected source. No filtering needed: this is the full list.</p>
         <div class="code-panel">
           <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy request to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code><span class="t-fn">curl</span> https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/asset \
@@ -854,14 +854,14 @@
   }
 ]</code></pre>
         </div>
-        <p class="note">Identities accumulate as monitors connect, and expire on their own via <code>ttl</code> if they haven’t been seen in a while. No need to remove them by hand.</p>
+        <p class="note">Identities accumulate as sources connect, and expire on their own via <code>ttl</code> if they haven’t been seen in a while. No need to remove them by hand.</p>
       </div>
     </section>
 
     <section class="api-section" id="notifications">
       <div class="section-head">
         <h2>Notifications</h2>
-        <p class="lede">Not signals about your business — signals about VEX itself. Expired credentials, a monitor that stopped checking in, anything that means the watching has a gap in it.</p>
+        <p class="lede">Not signals about your business: signals about VEX itself. Expired credentials, a source that stopped checking in, anything that means the watching has a gap in it.</p>
       </div>
       <div class="endpoint" id="get-notification">
         <div class="endpoint-head">
@@ -869,7 +869,7 @@
           <h3 class="endpoint-path">/notification</h3>
           <span class="endpoint-status">200 OK</span>
         </div>
-        <p class="endpoint-desc">Every open notification about your VEX setup: broken auth, a stalled monitor, anything worth fixing before it becomes a blind spot.</p>
+        <p class="endpoint-desc">Every open notification about your VEX setup: broken auth, a stalled source, anything worth fixing before it becomes a blind spot.</p>
         <div class="code-panel">
           <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy request to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code><span class="t-fn">curl</span> https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/notification \
@@ -888,14 +888,14 @@
   }
 ]</code></pre>
         </div>
-        <p class="note">These are about the plumbing, not the threat landscape — see Threat and Signals for that.</p>
+        <p class="note">These are about the plumbing, not the threat landscape. For that, see Signals.</p>
       </div>
     </section>
 
     <section class="api-section" id="files">
       <div class="section-head">
         <h2>Files</h2>
-        <p class="lede">Reports, exports, and anything else VEX generates and hands back to you, organized into namespaces the same way you'd organize a directory tree.</p>
+        <p class="lede">Reports, exports, and anything else VEX generates and hands back to you, organized into namespaces the same way you’d organize a directory tree.</p>
       </div>
       <div class="endpoint" id="get-file-namespace">
         <div class="endpoint-head">
@@ -903,7 +903,7 @@
           <h3 class="endpoint-path">/file/{namespace}</h3>
           <span class="endpoint-status">200 OK</span>
         </div>
-        <p class="endpoint-desc">Lists the files inside a namespace. <code>namespace</code> is optional — omit it to list from the root.</p>
+        <p class="endpoint-desc">Lists the files inside a namespace. <code>namespace</code> is optional: omit it to list from the root.</p>
         <table class="param-table">
           <thead><tr><th>Parameter</th><th>In</th><th>Type</th><th></th><th>Description</th></tr></thead>
           <tbody>
@@ -949,14 +949,14 @@
   <span class="t-key">"url"</span>: <span class="t-str">"https://vex-file-system.s3.us-east-2.amazonaws.com/acmecorp.com/signal/4827193650228?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Checksum-Mode=ENABLED&X-Amz-Credential=..."</span>
 }</code></pre>
         </div>
-        <p class="note">The actual file lives at the returned <code>url</code> — it's a pre-signed, time-limited S3 URL, so fetch it directly (no auth header needed) to download the file itself.</p>
+        <p class="note">The actual file lives at the returned <code>url</code>. It’s a pre-signed, time-limited S3 URL, so fetch it directly (no auth header needed) to download the file itself.</p>
       </div>
     </section>
 
     <section class="api-section" id="audit">
       <div class="section-head">
         <h2>Audit</h2>
-        <p class="lede">Raw SIEM log lines, for whoever needs to look at the actual record instead of VEX's take on it.</p>
+        <p class="lede">Raw SIEM log lines, for whoever needs to look at the actual record instead of VEX’s take on it.</p>
       </div>
       <div class="endpoint" id="get-audit">
         <div class="endpoint-head">
@@ -964,7 +964,7 @@
           <h3 class="endpoint-path">/audit</h3>
           <span class="endpoint-status">200 OK</span>
         </div>
-        <p class="endpoint-desc">SIEM log entries from your connected monitors that match your search, or that fall between two times.</p>
+        <p class="endpoint-desc">SIEM log entries from your connected sources that match your search, or that fall between two times.</p>
         <table class="param-table">
           <thead><tr><th>Parameter</th><th>In</th><th>Type</th><th></th><th>Description</th></tr></thead>
           <tbody>
@@ -995,7 +995,7 @@
   }
 ]</code></pre>
         </div>
-        <p class="note">This is the unfiltered feed, so expect volume. Use Signals if you want VEX's opinion on which of these lines actually matter.</p>
+        <p class="note">This is the unfiltered feed, so expect volume. Use Signals if you want VEX’s opinion on which of these lines actually matter.</p>
       </div>
     </section>
 

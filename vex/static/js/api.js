@@ -134,6 +134,10 @@ class FileApi extends Gateway {
     async get(name) {
         return await this.download(`file/${this.root}?name=${name}`);
     }
+
+    async add(file) {
+        await this.upload(`file/${this.root}?name=${file.name}`, file);
+    }
 }
 
 class NotificationApi extends Gateway {
@@ -153,6 +157,10 @@ class ActionApi extends Gateway {
 
     async get(name) {
         return await this.call("GET", `action?name=${name}`);
+    }
+
+    async add(action) {
+        return await this.call("POST", "action", action);
     }
 }
 

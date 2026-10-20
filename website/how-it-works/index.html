@@ -70,6 +70,7 @@
     70%{box-shadow:0 0 0 8px rgba(224,18,128,0);}
     100%{box-shadow:0 0 0 0 rgba(224,18,128,0);}
   }
+  .eyebrow-label{font-size:11px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;color:var(--surface-dark);display:flex;align-items:center;gap:11px;}
 
   /* ---------- CLASSIFICATION BAR ---------- */
   .classbar{
@@ -188,7 +189,6 @@
   .hw-hero-glow{position:absolute;top:0;left:50%;width:2160px;max-width:none;height:auto;margin-left:-1080px;pointer-events:none;}   /* this page's blue-gray */
   .hw-hero-inner{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:60px;align-items:center;}
   .hw-hero-copy{display:flex;flex-direction:column;align-items:flex-start;}
-  .eyebrow--bold{font-weight:600;}
   .hw-hero h1{margin-top:16px;font-weight:600;font-size:clamp(40px,5.2vw,64px);line-height:1.0625;letter-spacing:-0.02em;color:var(--ink);}
   .hw-lede{margin-top:24px;font-size:20px;line-height:32px;color:var(--ink);}
   .hw-hero .btn{margin-top:32px;}
@@ -764,7 +764,11 @@
   }
   footer a{text-decoration:none;}
   footer a:hover{color:var(--ink);}
-  footer .fmark{color:var(--ink);font-weight:500;}
+  footer .flinks{display:flex;align-items:center;gap:10px;}   /* About · Our research (2026-10-20) */
+  footer a[aria-current="page"]{color:var(--ink);}
+  /* opens in a new tab: Phosphor arrow-square-out as a mask, so it takes the link's color (gray, dark on hover) */
+  footer .fext{display:inline-flex;align-items:center;gap:4px;}
+  footer .fext::after{content:'';width:12px;height:12px;background:currentColor;-webkit-mask:url(../static/icon-arrow-square-out.svg) center/contain no-repeat;mask:url(../static/icon-arrow-square-out.svg) center/contain no-repeat;}
   @media (max-width:700px){footer{padding:22px 20px 36px;flex-direction:column;gap:10px;text-align:center;}}
 
   /* ---------- VEX AI SOC MENU ---------- */
@@ -845,7 +849,7 @@
     <img class="hw-hero-glow" src="static/hero-glow.svg" width="2160" height="228" alt="" aria-hidden="true">
     <div class="wrap hw-hero-inner">
       <div class="hw-hero-copy">
-        <p class="eyebrow eyebrow--dot eyebrow--bold"><span class="status-dot"></span>VEX AI SOC</p>
+        <div class="eyebrow-label"><span class="status-dot"></span>VEX AI SOC</div>
         <h1>Good prevention starts with great detection.</h1>
         <p class="hw-lede">We call it an Offensive SOC. VEX looks for the accounts, settings and behaviors likely to become part of an attack, so there’s less to detect and respond to in the first place.</p>
         <a class="btn" href="#loop">See how VEX works <img src="static/icon-arrow-down-white.svg" width="20" height="20" alt=""></a>
@@ -1391,9 +1395,8 @@
   </main>
 
   <footer>
-    <span class="fmark">UNMANNED</span>
     <span>© 2026 UNMANNED, INC.</span>
-    <a href="https://gounmanned.substack.com/" target="_blank" rel="noopener noreferrer">OUR RESEARCH</a>
+    <nav class="flinks" aria-label="Company"><a href="/team/">ABOUT</a><span aria-hidden="true">·</span><a class="fext" href="https://gounmanned.substack.com/" target="_blank" rel="noopener noreferrer">OUR RESEARCH</a></nav>
   </footer>
 
   <script>

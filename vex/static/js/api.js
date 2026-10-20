@@ -156,6 +156,16 @@ class AttackApi extends Gateway {
     }
 }
 
+class PolicyApi extends Gateway {
+    constructor(){
+        super();
+    }
+
+    async list() {
+        return await this.call("GET", "policy");
+    }
+}
+
 class Auth {
     static async init(code) {
         const backend = "us.unmanned.team";

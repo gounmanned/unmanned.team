@@ -21,6 +21,7 @@
       <link rel="stylesheet" href="static/css/tenant.css?v=${v}">
       <link rel="stylesheet" href="static/css/sources.css?v=${v}">
       <link rel="stylesheet" href="static/css/backups.css?v=${v}">
+      <link rel="stylesheet" href="static/css/policy.css?v=${v}">
       <link rel="stylesheet" href="static/css/signal.css?v=${v}">
     `);
   </script>
@@ -185,8 +186,9 @@
         <span class="count" id="signal-count">0 signals</span>
       </div>
 
-      <a id="open-inventory-rollup">Identities</a>
       <a id="open-backup-sidebar">Backups</a>
+      <a id="open-inventory-rollup">Identities</a>
+      <a id="open-policy-rollup">CMMC</a>
       <a id="open-source-rollup">Sources</a>
       <a id="open-signal-sidebar" class="cta">+ Add Signal</a>
     </footer>
@@ -305,6 +307,53 @@
     </div>
   </site-rollup>
 
+  <site-rollup id="policy-screen">
+    <div class="rollup-head">
+      <span class="material-symbols-outlined rollup-head-icon">verified_user</span>
+      <div class="rollup-head-text">
+          <h2>CMMC</h2>
+          <p>Assessment objectives across all 14 CMMC Level 2 families.</p>
+      </div>
+
+      <div class="cmmc-count">
+          <span class="cmmc-count-value" id="cmmc-count">0%</span>
+          <span class="cmmc-count-label">Objectives met</span>
+          <span class="cmmc-count-note" id="cmmc-note"></span>
+      </div>
+    </div>
+
+    <div class="cmmc-body">
+      <div class="cmmc-families" id="cmmc-families" role="tablist" aria-label="CMMC family"></div>
+
+      <div class="cmmc-toolbar">
+          <span class="cmmc-scope" id="cmmc-scope"></span>
+          <div class="cmmc-search">
+              <span class="material-symbols-outlined">search</span>
+              <input type="text" id="cmmc-search" placeholder="Search ID, requirement, owner…">
+          </div>
+      </div>
+
+      <div class="cmmc-table">
+        <table id="cmmc-table">
+          <thead>
+              <tr>
+                <th>Family</th>
+                <th>Practice</th>
+                <th>Requirement</th>
+                <th>Requirement text</th>
+                <th>Objective</th>
+                <th>Objective text</th>
+                <th>Status</th>
+                <th>Owner</th>
+                <th>Evidence</th>
+              </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </site-rollup>
+ 
   <!--Sidebars-->
 
   <site-sidebar id="signal-sidebar">
@@ -398,6 +447,7 @@
     <script src="static/js/sidebars/signal.js?v=${v}"><\/script>
     <script src="static/js/sidebars/backup.js?v=${v}"><\/script>
     <script src="static/js/rollups/managed.js?v=${v}"><\/script>
+    <script src="static/js/rollups/policy.js?v=${v}"><\/script>
     <script src="static/js/rollups/sources.js?v=${v}"><\/script>
     <script src="static/js/rollups/inventory.js?v=${v}"><\/script>
   `);

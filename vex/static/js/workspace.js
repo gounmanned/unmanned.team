@@ -32,6 +32,7 @@ class Api {
         this.sources = new SourceApi(state);
         this.notification = new NotificationApi(state);
         this.attack = new AttackApi(state);
+        this.policy = new PolicyApi(state);
     }
 
     reset(){
@@ -43,6 +44,7 @@ class Api {
         this.sources.set("account", this.state.account());
         this.notification.set("account", this.state.account());
         this.attack.set("account", this.state.account());
+        this.policy.set("account", this.state.account());
     }
 }
 
@@ -61,6 +63,7 @@ class Workspace {
                         managed: new ManagedRollup(state),
                         source: new SourceRollup(state),
                         inventory: new InventoryRollup(state),
+                        policy: new PolicyRollup(state),
                     };
 
                     this.sidebars = {

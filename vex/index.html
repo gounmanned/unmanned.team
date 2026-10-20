@@ -359,6 +359,20 @@
       <ul id="file-list" class="hacker-list"></ul>
     </div>
   </site-sidebar>
+
+  <!-- Modals -->
+
+  <site-modal id="action-modal">
+    <form id="action-form">
+      <h3>New action</h3>
+      <label>Name <input name="label" required></label>
+      <label>Action ID <input name="actionId" required pattern="\d{14}" inputmode="numeric"></label>
+      <div class="modal-buttons">
+        <button type="button" data-cancel>Cancel</button>
+        <button type="submit">Add</button>
+      </div>
+    </form>
+  </site-modal>
 </body>
 
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>

@@ -41,18 +41,15 @@ class AttackPanel {
         this.dots = new Map();
         this.selected = null;
 
+        this.modal = document.getElementById('action-modal');
+        this.form = document.getElementById('action-form');
+        this.pending = null;
+
         this.search.addEventListener('input', () => this._filter());
+        this._listenForDrops();
     }
 
-    _filter() {
-        const q = this.search.value.trim().toLowerCase();
-        let visible = 0;
-        [...this.list.children].forEach(li => {
-            li.hidden = !li.dataset.name.toLowerCase().includes(q);
-            if (!li.hidden) visible++;
-        });
-        this.wrap.classList.toggle('no-match', !visible && this.dots.size > 0);
-    }
+    // --- dots list ---------------------------------------------------------
 
     async load() {
         this.list.innerHTML = '';
@@ -68,31 +65,14 @@ class AttackPanel {
         this._filter();
     }
 
-    _ago(ts) {
-        const minutes = Math.round((Date.now() - new Date(ts)) / 60000);
-        if (minutes < 1) return 'just now';
-        if (minutes < 60) return `${minutes}m ago`;
-        if (minutes < 1440) return `${Math.round(minutes / 60)}h ago`;
-        return `${Math.round(minutes / 1440)}d ago`;
-    }
-
-    _clock(ts) {
-        return new Date(ts).toLocaleString([], {
-            month: 'short', day: 'numeric',
-            hour: '2-digit', minute: '2-digit',
-        });
-    }
-
     _add(asset) {
         this.dots.set(asset.name, asset);
-
-        const fresh = new Date(asset.updated).toDateString() === new Date().toDateString();
 
         const li = document.createElement('li');
         li.className = 'attack-dot-item';
         li.dataset.name = asset.name;
         li.innerHTML = `
-            <span class="attack-dot-status ${fresh ? 'fresh' : 'stale'}"></span>
+            <span class="attack-dot-status ${this._freshness(asset.updated)}"></span>
             <span class="attack-dot-name">${asset.name}</span>
             <span class="attack-dot-seen">${this._ago(asset.updated)}</span>
         `;
@@ -101,45 +81,60 @@ class AttackPanel {
         this.list.appendChild(li);
     }
 
-    async _select(name) {
+    _filter() {
+        const q = this.search.value.trim().toLowerCase();
+        let visible = 0;
+        [...this.list.children].forEach(li => {
+            li.hidden = !li.dataset.name.toLowerCase().includes(q);
+            if (!li.hidden) visible++;
+        });
+        this.wrap.classList.toggle('no-match', !visible && this.dots.size > 0);
+    }
+
+    // --- selection ---------------------------------------------------------
+
+    _select(name) {
         const asset = this.dots.get(name);
         this.selected = name;
 
         [...this.list.children].forEach(li =>
             li.classList.toggle('selected', li.dataset.name === name));
 
-        this.mid.innerHTML = '<div class="attack-col-body loading"></div>';
         this._renderTerminal(asset);
-
-        const actions = await this.api.action.get(asset.name) ?? [];
-        if (this.selected !== name) return;
-        this._renderActions(asset, actions);
+        this._loadActions(asset);
     }
 
-    _renderActions(asset, actions) {
+    async _loadActions(asset) {
+        this.mid.innerHTML = '<div class="attack-col-body loading"></div>';
+        const actions = await this.api.action.get(asset.name) ?? [];
+        if (this.selected !== asset.name) return;   // bailed if they switched dots mid-fetch
+        this._renderActions(actions);
+    }
+
+    _renderActions(actions) {
         const sorted = [...actions].sort((a, b) => b.created.localeCompare(a.created));
 
-        const tone = (s) => s === '-1' ? 'pending' : s === '0' ? 'ok' : 'bad';
-        const label = (s) => s === '-1' ? 'Pending' : s === '0' ? 'Success' : 'Failed';
+        const status = (s) =>
+            s === '-1' ? { tone: 'pending', label: 'Pending' } :
+            s === '0'  ? { tone: 'ok',      label: 'Success' } :
+                         { tone: 'bad',     label: 'Failed'  };
 
         this.mid.innerHTML = sorted.length ? `
             <div class="attack-col-body attack-col-body--scroll">
                 <ul class="attack-action-list">
-                    ${sorted.map(a => `
-                        <li class="attack-action-item attack-action-item--${tone(a.status)}">
-                            <span class="attack-action-status" title="${label(a.status)}"></span>
-                            <span class="attack-action-name"><span class="attack-action-label">${a.name}</span><span class="attack-action-id">${a.id}</span></span>
-                            <span class="attack-action-time">${this._clock(a.created)}</span>
-                        </li>
-                    `).join('')}
+                    ${sorted.map(a => {
+                        const { tone, label } = status(a.status);
+                        return `
+                            <li class="attack-action-item attack-action-item--${tone}">
+                                <span class="attack-action-status" title="${label}"></span>
+                                <span class="attack-action-name"><span class="attack-action-label">${a.name}</span><span class="attack-action-id">${a.id}</span></span>
+                                <span class="attack-action-time">${this._clock(a.created)}</span>
+                            </li>
+                        `;
+                    }).join('')}
                 </ul>
             </div>
-        ` : `
-            <div class="attack-empty">
-                <span class="material-symbols-outlined">history</span>
-                <p>No activity</p>
-            </div>
-        `;
+        ` : this._placeholder('attack-empty', 'history', 'No activity');
     }
 
     _renderTerminal(asset) {
@@ -161,13 +156,108 @@ class AttackPanel {
     }
 
     _watermark() {
-        const mark = (icon, text) => `
-            <div class="attack-watermark">
+        this.mid.innerHTML = this._placeholder('attack-watermark', 'ads_click', 'Select a dot to view its activity');
+        this.right.innerHTML = this._placeholder('attack-watermark', 'terminal', 'Select a dot to open a session');
+    }
+
+    // --- drop / modal ------------------------------------------------------
+
+    _listenForDrops() {
+        this.mid.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            this.mid.classList.add('drop-active');
+        });
+
+        this.mid.addEventListener('dragleave', (e) => {
+            if (!this.mid.contains(e.relatedTarget)) this.mid.classList.remove('drop-active');
+        });
+
+        this.mid.addEventListener('drop', (e) => {
+            e.preventDefault();
+            this.mid.classList.remove('drop-active');
+            this._openModal(e.dataTransfer.files[0]);
+        });
+
+        this.form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            this._submitAction();
+        });
+
+        this.form.querySelector('[data-cancel]').addEventListener('click', () => this._closeModal());
+    }
+
+    _openModal(file) {
+        if (!file) return;
+        this.pending = file;
+
+        const { label, actionId } = this.form.elements;
+        label.value = file.name.replace(/\.[^.]+$/, '');
+        actionId.value = this._randomActionId();
+
+        this.modal.show();
+        label.focus();
+    }
+
+    async _submitAction() {
+        const { label, actionId } = this.form.elements;
+        const id = actionId.value;
+        const name = label.value;
+        const asset = this.selected;
+        const ext = this.pending.name.includes('.')
+            ? this.pending.name.slice(this.pending.name.lastIndexOf('.'))
+            : '';
+        const file = new File([this.pending], id + ext, { type: this.pending.type });
+
+        this.pending = null;
+        this._closeModal();
+
+        this.api.file.root = 'action';
+        await this.api.file.add(file);
+        await this.api.action.add({ id: parseInt(id), name, asset, status: '-1' });
+
+        if (this.selected === asset) this._loadActions(this.dots.get(asset));
+    }
+
+    _closeModal() {
+        this.pending = null;
+        document.querySelector('site-overlay').click();
+    }
+
+    _randomActionId() {
+        const [n] = crypto.getRandomValues(new BigUint64Array(1));
+        return String(10n ** 13n + n % (9n * 10n ** 13n));
+    }
+
+    // --- time helpers ------------------------------------------------------
+
+    _ago(ts) {
+        const minutes = Math.round((Date.now() - new Date(ts)) / 60000);
+        if (minutes < 1) return 'just now';
+        if (minutes < 60) return `${minutes}m ago`;
+        if (minutes < 1440) return `${Math.round(minutes / 60)}h ago`;
+        return `${Math.round(minutes / 1440)}d ago`;
+    }
+
+    _clock(ts) {
+        return new Date(ts).toLocaleString([], {
+            month: 'short', day: 'numeric',
+            hour: '2-digit', minute: '2-digit',
+        });
+    }
+
+    _freshness(ts) {
+        const minutes = (Date.now() - new Date(ts)) / 60000;
+        if (minutes < 15) return 'live';
+        if (new Date(ts).toDateString() === new Date().toDateString()) return 'today';
+        return 'cold';
+    }
+
+    _placeholder(cls, icon, text) {
+        return `
+            <div class="${cls}">
                 <span class="material-symbols-outlined">${icon}</span>
                 <p>${text}</p>
             </div>
         `;
-        this.mid.innerHTML = mark('ads_click', 'Select a dot to view its activity');
-        this.right.innerHTML = mark('terminal', 'Select a dot to open a session');
     }
 }

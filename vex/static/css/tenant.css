@@ -38,7 +38,6 @@
 
 .trend-chart {
   --radar: var(--brand);
-
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -126,7 +125,7 @@
   transform-box: fill-box;
   transform-origin: center;
   opacity: 0;
-  animation: trend-wave 4.2s cubic-bezier(0.15, 0.55, 0.35, 1) infinite;
+  animation: trend-wave 6s cubic-bezier(0.15, 0.55, 0.35, 1) infinite;
 }
 
 @keyframes trend-wave {

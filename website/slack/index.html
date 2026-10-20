@@ -387,7 +387,11 @@
   }
   footer a{text-decoration:none;}
   footer a:hover{color:var(--ink);}
-  footer .fmark{color:var(--ink);font-weight:500;}
+  footer .flinks{display:flex;align-items:center;gap:10px;}   /* About · Our research (2026-10-20) */
+  footer a[aria-current="page"]{color:var(--ink);}
+  /* opens in a new tab: Phosphor arrow-square-out as a mask, so it takes the link's color (gray, dark on hover) */
+  footer .fext{display:inline-flex;align-items:center;gap:4px;}
+  footer .fext::after{content:'';width:12px;height:12px;background:currentColor;-webkit-mask:url(../static/icon-arrow-square-out.svg) center/contain no-repeat;mask:url(../static/icon-arrow-square-out.svg) center/contain no-repeat;}
   @media (max-width:700px){footer{padding:22px 20px 36px;flex-direction:column;gap:10px;text-align:center;}}
 
   /* ---------- SMALLER SCREENS ----------
@@ -1179,9 +1183,8 @@
   </main>
 
   <footer>
-    <span class="fmark">UNMANNED</span>
     <span>© 2026 UNMANNED, INC.</span>
-    <a href="https://gounmanned.substack.com/" target="_blank" rel="noopener noreferrer">OUR RESEARCH</a>
+    <nav class="flinks" aria-label="Company"><a href="/team/">ABOUT</a><span aria-hidden="true">·</span><a class="fext" href="https://gounmanned.substack.com/" target="_blank" rel="noopener noreferrer">OUR RESEARCH</a></nav>
   </footer>
 
   <script>

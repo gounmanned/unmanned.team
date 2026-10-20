@@ -147,8 +147,10 @@
     padding:15px 30px;border-radius:2px;text-decoration:none;background:var(--pink);color:#fff;border:none;cursor:pointer;white-space:nowrap;transition:opacity 0.2s ease;
   }
   .btn:hover{opacity:0.8;}
-  .btn--secondary{background:var(--surface);color:var(--ink);box-shadow:inset 0 0 0 1px var(--surface-dark);}
-  .btn--secondary:hover{opacity:1;box-shadow:inset 0 0 0 1px var(--ink);}
+  /* the hero's second action: a quiet link, as on the homepage (down arrow: it moves down this page) */
+  .text-link{display:inline-flex;align-items:center;gap:6px;font-weight:500;font-size:15px;line-height:1.5;color:var(--pink-text);text-decoration:none;}
+  .text-link img{width:16px;height:16px;transition:transform 0.2s ease;}
+  .text-link:hover img{transform:translateY(2px);}
 
   /* ---------- HERO ---------- */
   .hero{position:relative;overflow:hidden;padding:70px 0 32px;text-align:center;}
@@ -157,7 +159,8 @@
   .hero-mark{display:flex;flex-direction:column;align-items:center;gap:16px;}
   .hero-mark img{width:64px;height:64px;}
   .hero h1{max-width:660px;font-weight:600;font-size:clamp(40px,6vw,70px);line-height:1.03;letter-spacing:-0.03em;color:var(--aubergine);}
-  .ctas{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;}
+  .ctas{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:12px 28px;}
+  .ctas > .text-link{min-height:52px;}   /* the button's height, so the two line up */
   .hero-note{width:100%;max-width:660px;font-size:14px;line-height:22px;color:var(--surface-dark);} /* a set width: Safari measured it too narrow and wrapped it */
   .hero-note strong{font-weight:600;color:var(--ink);}
 
@@ -468,6 +471,7 @@
   @media (max-width:420px){
     .ctas{flex-direction:column;align-self:stretch;}
     .ctas .btn{width:100%;}
+    .ctas > .text-link{align-self:center;min-height:44px;}
   }
 
   /* ---------- STORY (desktop only) ----------
@@ -538,7 +542,7 @@
 
   @media (prefers-reduced-motion: reduce){
     html{scroll-behavior:auto;}
-    .story-step,.scene,.scene.is-on,.js-story .intro-msg,.story-skip img{transition:none;}
+    .story-step,.scene,.scene.is-on,.js-story .intro-msg,.story-skip img,.text-link img{transition:none;}
     .status-dot{animation:none;}
     .classbar,.site-top .site-header,.nav-panel,.header-link--cta img,.btn,.guide{transition:none;}
   }
@@ -630,7 +634,7 @@
       <h1>Security, handled. Right in Slack.</h1>
       <div class="ctas">
         <a class="btn" href="https://slack.com/oauth/v2/authorize?client_id=11574043500291.12158197069719&amp;scope=users:read,app_mentions:read,channels:history,chat:write,commands,incoming-webhook,users:read.email&amp;user_scope=">Add to Slack</a>
-        <a class="btn btn--secondary" href="#how">See how it works</a>
+        <a class="text-link" href="#how">See VEX in Slack <img src="../static/icon-arrow-down.svg" width="16" height="16" alt=""></a>
       </div>
       <p class="hero-note"><strong>Free to use.</strong> No sign-up, no payment. Install it and it just works.<br>For security and IT teams who already live in Slack</p>
     </div>
@@ -1319,13 +1323,29 @@
       window.addEventListener('resize', update);
       update();
 
+      // a slower, eased scroll than the browser's own smooth scroll (about 0.9s for the hero link; this takes 1.3s).
+      // Scrolling, touching or a key stops it, so the reader stays in control.
+      var anim = 0;
+      function slowScrollTo(y, ms){
+        if(reduce){ window.scrollTo({ top:y, behavior:'auto' }); return; }
+        cancelAnimationFrame(anim);
+        var y0 = window.scrollY, d = y - y0, t0 = null;
+        function stop(){ cancelAnimationFrame(anim); ['wheel', 'touchstart', 'keydown'].forEach(function(ev){ window.removeEventListener(ev, stop); }); }
+        ['wheel', 'touchstart', 'keydown'].forEach(function(ev){ window.addEventListener(ev, stop, { passive:true }); });
+        anim = requestAnimationFrame(function step(now){
+          if(t0 === null){ t0 = now; }
+          var k = Math.min(1, (now - t0) / ms), e = k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
+          window.scrollTo({ top:y0 + d * e, behavior:'instant' });
+          if(k < 1){ anim = requestAnimationFrame(step); } else { stop(); }
+        });
+      }
       // scroll there with the header kept hidden (otherwise scrolling back up would bring it in and shift the
       // pinned window); the header takes over again once the page has stopped moving
       var settle;
-      function glideTo(y){
+      function glideTo(y, ms){
         root.setAttribute('data-auto-scroll', '');
         root.classList.add('header-hidden');
-        window.scrollTo({ top:y, behavior: reduce ? 'auto' : 'smooth' });
+        if(ms){ slowScrollTo(y, ms); } else { window.scrollTo({ top:y, behavior: reduce ? 'auto' : 'smooth' }); }
         clearTimeout(settle);
         settle = setTimeout(release, 1200);  // in case the page doesn't need to move at all
       }
@@ -1357,7 +1377,7 @@
           e.preventDefault();
           var target = desktop.matches ? track.getBoundingClientRect().top + window.scrollY + (INTRO + STEP / 2) * window.innerHeight
                                        : document.getElementById('how-stacked').getBoundingClientRect().top + window.scrollY - 24;
-          if(desktop.matches){ glideTo(target); } else { window.scrollTo({ top:target, behavior: reduce ? 'auto' : 'smooth' }); }
+          if(desktop.matches){ glideTo(target, 1300); } else { slowScrollTo(target, 1300); }   // 50% slower than the browser's
         });
       }
     })();

@@ -28,6 +28,10 @@ class AttackMode {
             this.el.boot.classList.remove('show');
         }
     }
+
+    refresh() {
+        if (this.on) this.panel.refresh();
+    }
 }
 
 class AttackPanel {
@@ -65,6 +69,28 @@ class AttackPanel {
         this._filter();
     }
 
+    async refresh() {
+        const assets = (await this.api.inventory.list()).filter(a => a.source === 'vex');
+        this._sync(assets);
+
+        if (this.selected) this._loadActions(this.dots.get(this.selected), true);
+        else this._watermark();
+    }
+
+    _sync(assets) {
+        const names = new Set(assets.map(a => a.name));
+
+        for (const name of [...this.dots.keys()]) {
+            if (names.has(name)) continue;
+            this.list.querySelector(`[data-name="${name}"]`)?.remove();
+            this.dots.delete(name);
+            if (this.selected === name) this.selected = null;
+        }
+
+        assets.forEach(a => this.dots.has(a.name) ? this._update(a) : this._add(a));
+        this._filter();
+    }
+
     _add(asset) {
         this.dots.set(asset.name, asset);
 
@@ -79,6 +105,13 @@ class AttackPanel {
 
         li.addEventListener('click', () => this._select(asset.name));
         this.list.appendChild(li);
+    }
+
+    _update(asset) {
+        this.dots.set(asset.name, asset);
+        const li = this.list.querySelector(`[data-name="${asset.name}"]`);
+        li.querySelector('.attack-dot-status').className = `attack-dot-status ${this._freshness(asset.updated)}`;
+        li.querySelector('.attack-dot-seen').textContent = this._ago(asset.updated);
     }
 
     _filter() {
@@ -104,8 +137,8 @@ class AttackPanel {
         this._loadActions(asset);
     }
 
-    async _loadActions(asset) {
-        this.mid.innerHTML = '<div class="attack-col-body loading"></div>';
+    async _loadActions(asset, quiet = false) {
+        if (!quiet) this.mid.innerHTML = '<div class="attack-col-body loading"></div>';
         const actions = await this.api.action.get(asset.name) ?? [];
         if (this.selected !== asset.name) return;   // bailed if they switched dots mid-fetch
         this._renderActions(actions);
@@ -199,23 +232,25 @@ class AttackPanel {
     }
 
     async _submitAction() {
-        const { label, actionId } = this.form.elements;
-        const id = actionId.value;
-        const name = label.value;
-        const asset = this.selected;
-        const ext = this.pending.name.includes('.')
-            ? this.pending.name.slice(this.pending.name.lastIndexOf('.'))
-            : '';
-        const file = new File([this.pending], id + ext, { type: this.pending.type });
+        await SiteSpinner.withLoading(async() => {
+            const { label, actionId } = this.form.elements;
+            const id = actionId.value;
+            const name = label.value;
+            const asset = this.selected;
+            const ext = this.pending.name.includes('.')
+                ? this.pending.name.slice(this.pending.name.lastIndexOf('.'))
+                : '';
+            const file = new File([this.pending], id + ext, { type: this.pending.type });
 
-        this.pending = null;
-        this._closeModal();
+            this.pending = null;
+            this._closeModal();
 
-        this.api.file.root = 'action';
-        await this.api.file.add(file);
-        await this.api.action.add({ id: parseInt(id), name, asset, status: '-1' });
-
-        if (this.selected === asset) this._loadActions(this.dots.get(asset));
+            this.api.file.root = 'action';
+            await this.api.file.add(file);
+            await this.api.action.add({ id: parseInt(id), name, asset, status: '-1' });
+        }).then(() => {
+            this.refresh();
+        });
     }
 
     _closeModal() {
@@ -241,7 +276,7 @@ class AttackPanel {
     _clock(ts) {
         return new Date(ts).toLocaleString([], {
             month: 'short', day: 'numeric',
-            hour: '2-digit', minute: '2-digit',
+            hour: '2-digit', minute: '2-digit', second: '2-digit',
         });
     }
 

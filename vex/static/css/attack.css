@@ -304,7 +304,6 @@ main[hidden] { display: none; }
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 2px;
 }
 
 #attack-screen .attack-action-item {
@@ -312,13 +311,19 @@ main[hidden] { display: none; }
   grid-template-columns: 10px minmax(0, 1fr) 120px;
   align-items: center;
   gap: 12px;
-  padding: 8px 10px;
-  background: var(--surface-alt);
-  border: 1px solid var(--line);
-  border-radius: 5px;
+  padding: 9px 10px;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid color-mix(in srgb, var(--line) 55%, transparent);
+  border-radius: 0;
+  transition: background 0.12s;
 }
 
-#attack-screen .attack-action-item:hover { border-color: #3a4049; }
+#attack-screen .attack-action-item:last-child { border-bottom: none; }
+
+#attack-screen .attack-action-item:hover {
+  background: color-mix(in srgb, var(--text-body) 4%, transparent);
+}
 
 #attack-screen .attack-action-status {
   width: 8px;
@@ -333,8 +338,6 @@ main[hidden] { display: none; }
   background: var(--pending);
   animation: attack-pulse 1.4s ease-in-out infinite;
 }
-
-#attack-screen .attack-action-item--pending { border-style: dashed; }
 
 @keyframes attack-pulse {
   50% { opacity: 0.35; }
@@ -491,7 +494,6 @@ main[hidden] { display: none; }
   overflow: hidden;
 }
 
-/* concentric radar rings behind the empty state */
 #attack-screen .attack-watermark::before,
 #attack-screen .attack-empty::before {
   content: '';

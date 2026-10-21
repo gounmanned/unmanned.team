@@ -1,13 +1,13 @@
-class AttackMode {
+class ActionMode {
     constructor(state) {
         this.on = false;
-        this.panel = new AttackPanel(state);
+        this.panel = new ActionPanel(state);
 
         this.el = {
-            btn: document.getElementById('attack-toggle'),
+            btn: document.getElementById('action-toggle'),
             tenant: document.getElementById('tenant-screen'),
-            section: document.getElementById('attack-section'),
-            boot: document.getElementById('attack-boot'),
+            section: document.getElementById('action-section'),
+            boot: document.getElementById('action-boot'),
         };
 
         this.el.btn.addEventListener('click', () => this.toggle());
@@ -18,7 +18,7 @@ class AttackMode {
 
         if (this.on) this.el.boot.classList.add('show');
         this.el.btn.classList.toggle('active', this.on);
-        document.body.classList.toggle('attack', this.on);
+        document.body.classList.toggle('action', this.on);
         this.el.tenant.hidden = this.on;
         this.el.section.hidden = !this.on;
 
@@ -34,14 +34,14 @@ class AttackMode {
     }
 }
 
-class AttackPanel {
+class ActionPanel {
     constructor(state) {
         this.api = state.api;
-        this.list = document.getElementById('attack-dots');
+        this.list = document.getElementById('action-dots');
         this.wrap = this.list.parentElement;
-        this.mid = document.getElementById('attack-mid');
-        this.right = document.getElementById('attack-right');
-        this.search = document.getElementById('attack-search-input');
+        this.mid = document.getElementById('action-mid');
+        this.right = document.getElementById('action-right');
+        this.search = document.getElementById('action-search-input');
         this.dots = new Map();
         this.selected = null;
 
@@ -95,12 +95,12 @@ class AttackPanel {
         this.dots.set(asset.name, asset);
 
         const li = document.createElement('li');
-        li.className = 'attack-dot-item';
+        li.className = 'action-dot-item';
         li.dataset.name = asset.name;
         li.innerHTML = `
-            <span class="attack-dot-status ${this._freshness(asset.updated)}"></span>
-            <span class="attack-dot-name">${asset.name}</span>
-            <span class="attack-dot-seen">${this._ago(asset.updated)}</span>
+            <span class="action-dot-status ${this._freshness(asset.updated)}"></span>
+            <span class="action-dot-name">${asset.name}</span>
+            <span class="action-dot-seen">${this._ago(asset.updated)}</span>
         `;
 
         li.addEventListener('click', () => this._select(asset.name));
@@ -110,8 +110,8 @@ class AttackPanel {
     _update(asset) {
         this.dots.set(asset.name, asset);
         const li = this.list.querySelector(`[data-name="${asset.name}"]`);
-        li.querySelector('.attack-dot-status').className = `attack-dot-status ${this._freshness(asset.updated)}`;
-        li.querySelector('.attack-dot-seen').textContent = this._ago(asset.updated);
+        li.querySelector('.action-dot-status').className = `action-dot-status ${this._freshness(asset.updated)}`;
+        li.querySelector('.action-dot-seen').textContent = this._ago(asset.updated);
     }
 
     _filter() {
@@ -138,7 +138,7 @@ class AttackPanel {
     }
 
     async _loadActions(asset, quiet = false) {
-        if (!quiet) this.mid.innerHTML = '<div class="attack-col-body loading"></div>';
+        if (!quiet) this.mid.innerHTML = '<div class="action-col-body loading"></div>';
         const actions = await this.api.action.get(asset.name) ?? [];
         if (this.selected !== asset.name) return;   // bailed if they switched dots mid-fetch
         this._renderActions(actions);
@@ -153,35 +153,35 @@ class AttackPanel {
                         { tone: 'bad',     label: 'Failed'  };
 
         this.mid.innerHTML = sorted.length ? `
-            <div class="attack-col-body attack-col-body--scroll">
-                <ul class="attack-action-list">
+            <div class="action-col-body action-col-body--scroll">
+                <ul class="action-action-list">
                     ${sorted.map(a => {
                         const { tone, label } = status(a.status);
                         return `
-                            <li class="attack-action-item attack-action-item--${tone}">
-                                <span class="attack-action-status" title="${label}"></span>
-                                <span class="attack-action-name"><span class="attack-action-label">${a.name}</span><span class="attack-action-id">${a.id}</span></span>
-                                <span class="attack-action-time">${this._clock(a.created)}</span>
+                            <li class="action-action-item action-action-item--${tone}">
+                                <span class="action-action-status" title="${label}"></span>
+                                <span class="action-action-name"><span class="action-action-label">${a.name}</span><span class="action-action-id">${a.id}</span></span>
+                                <span class="action-action-time">${this._clock(a.created)}</span>
                             </li>
                         `;
                     }).join('')}
                 </ul>
             </div>
-        ` : this._placeholder('attack-empty', 'history', 'No activity');
+        ` : this._placeholder('action-empty', 'history', 'No activity');
     }
 
     _renderTerminal(asset) {
         this.right.innerHTML = `
-            <div class="attack-terminal">
-                <div class="attack-terminal-body" aria-disabled="true">
-                    <p class="attack-terminal-line">
-                        <span class="attack-terminal-prompt">${asset.name} ~ $</span>
-                        <span class="attack-terminal-cursor"></span>
+            <div class="action-terminal">
+                <div class="action-terminal-body" aria-disabled="true">
+                    <p class="action-terminal-line">
+                        <span class="action-terminal-prompt">${asset.name} ~ $</span>
+                        <span class="action-terminal-cursor"></span>
                     </p>
 
-                    <button class="attack-shell" type="button" role="switch" aria-checked="false" disabled>
-                        <span class="attack-shell-track"><span class="attack-shell-thumb"></span></span>
-                        <span class="attack-shell-label">Request shell</span>
+                    <button class="action-shell" type="button" role="switch" aria-checked="false" disabled>
+                        <span class="action-shell-track"><span class="action-shell-thumb"></span></span>
+                        <span class="action-shell-label">Request shell</span>
                     </button>
                 </div>
             </div>
@@ -189,8 +189,8 @@ class AttackPanel {
     }
 
     _watermark() {
-        this.mid.innerHTML = this._placeholder('attack-watermark', 'ads_click', 'Select a dot to view its activity');
-        this.right.innerHTML = this._placeholder('attack-watermark', 'terminal', 'Select a dot to open a session');
+        this.mid.innerHTML = this._placeholder('action-watermark', 'ads_click', 'Select a dot to view its activity');
+        this.right.innerHTML = this._placeholder('action-watermark', 'terminal', 'Select a dot to open a session');
     }
 
     // --- drop / modal ------------------------------------------------------

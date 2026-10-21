@@ -16,7 +16,7 @@
       <link rel="stylesheet" href="static/css/app.css?v=${v}">
       <link rel="stylesheet" href="static/css/notification.css?v=${v}">
       <link rel="stylesheet" href="static/css/managed.css?v=${v}">
-      <link rel="stylesheet" href="static/css/attack.css?v=${v}">
+      <link rel="stylesheet" href="static/css/action.css?v=${v}">
       <link rel="stylesheet" href="static/css/inventory.css?v=${v}">
       <link rel="stylesheet" href="static/css/tenant.css?v=${v}">
       <link rel="stylesheet" href="static/css/sources.css?v=${v}">
@@ -51,9 +51,8 @@
       <span class="bell-dot"></span>
     </button>
 
-    <button id="attack-toggle" class="attack-toggle" type="button"
-            aria-label="Attack mode" title="Enter attack mode">
-      <span class="material-symbols-outlined">swords</span>
+    <button id="action-toggle" class="action-toggle" type="button" title="Enter action mode">
+      <span class="material-symbols-outlined">target</span>
     </button>
 
     <div class="notification-panel" id="notification-panel">
@@ -149,34 +148,34 @@
     </footer>
   </main>
 
-  <main class="container" id="attack-section" hidden>
-    <div id="attack-screen">
-      <div class="attack-body">
-        <div class="attack-left">
-          <div class="attack-search">
+  <main class="container" id="action-section" hidden>
+    <div id="action-screen">
+      <div class="action-body">
+        <div class="action-left">
+          <div class="action-search">
             <span class="material-symbols-outlined">search</span>
-            <input id="attack-search-input" type="text" placeholder="Filter dots…" spellcheck="false">
+            <input id="action-search-input" type="text" placeholder="Filter dots…" spellcheck="false">
           </div>
-          <div class="attack-dots-wrap">
-            <ul id="attack-dots"></ul>
-            <div class="attack-dots-empty">No matching dots</div>
+          <div class="action-dots-wrap">
+            <ul id="action-dots"></ul>
+            <div class="action-dots-empty">No matching dots</div>
           </div>
         </div>
-        <div class="attack-mid" id="attack-mid"></div>
-        <div class="attack-right" id="attack-right"></div>
+        <div class="action-mid" id="action-mid"></div>
+        <div class="action-right" id="action-right"></div>
       </div>
 
-      <footer class="attack-links" id="attack-links"></footer>
+      <footer class="action-links" id="action-links"></footer>
     </div>
   </main>
 
-  <div class="attack-boot" id="attack-boot" aria-hidden="true">
-    <div class="attack-boot-radar">
+  <div class="action-boot" id="action-boot" aria-hidden="true">
+    <div class="action-boot-radar">
       <svg viewBox="0 0 800 800"><use href="#radar-rings"></use></svg>
-      <span class="attack-boot-sweep"></span>
-      <span class="material-symbols-outlined">swords</span>
+      <span class="action-boot-sweep"></span>
+      <span class="material-symbols-outlined">target</span>
     </div>
-    <div class="attack-boot-text">Entering attack mode<span class="attack-boot-caret"></span></div>
+    <div class="action-boot-text">Entering action mode<span class="action-boot-caret"></span></div>
   </div>
 
   <div class="notification-stack" id="notification-stack"></div>
@@ -386,7 +385,7 @@
     <script src="static/js/table.js?v=${v}"><\/script>
     <script src="static/js/notification.js?v=${v}"><\/script>
     <script src="static/js/tenant.js?v=${v}"><\/script>
-    <script src="static/js/attack.js?v=${v}"><\/script>
+    <script src="static/js/action.js?v=${v}"><\/script>
     <script src="static/js/sidebars/signal.js?v=${v}"><\/script>
     <script src="static/js/sidebars/backup.js?v=${v}"><\/script>
     <script src="static/js/rollups/managed.js?v=${v}"><\/script>

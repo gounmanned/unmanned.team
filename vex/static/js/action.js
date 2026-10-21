@@ -44,12 +44,18 @@ class ActionPanel {
         this.search = document.getElementById('action-search-input');
         this.dots = new Map();
         this.selected = null;
+        this.actions = new Map();        // id → action, for the mid column
+        this.selectedAction = null;
 
         this.modal = document.getElementById('action-modal');
         this.form = document.getElementById('action-form');
         this.pending = null;
 
         this.search.addEventListener('input', () => this._filter());
+        this.mid.addEventListener('click', (e) => {
+            const li = e.target.closest('.action-action-item');
+            if (li) this._selectAction(li.dataset.id);
+        });
         this._listenForDrops();
     }
 
@@ -58,7 +64,9 @@ class ActionPanel {
     async load() {
         this.list.innerHTML = '';
         this.dots.clear();
+        this.actions.clear();
         this.selected = null;
+        this.selectedAction = null;
         this._watermark();
 
         this.wrap.classList.add('loading');
@@ -133,7 +141,7 @@ class ActionPanel {
         [...this.list.children].forEach(li =>
             li.classList.toggle('selected', li.dataset.name === name));
 
-        this._renderTerminal(asset);
+        this._clearOutput();
         this._loadActions(asset);
     }
 
@@ -146,19 +154,15 @@ class ActionPanel {
 
     _renderActions(actions) {
         const sorted = [...actions].sort((a, b) => b.created.localeCompare(a.created));
-
-        const status = (s) =>
-            s == 'T2' ? { tone: 'pending', label: 'Pending' } :
-            s == 'T0' ? { tone: 'ok',      label: 'Success' } :
-                        { tone: 'bad',     label: 'Failed'  };
+        this.actions = new Map(sorted.map(a => [String(a.id), a]));
 
         this.mid.innerHTML = sorted.length ? `
             <div class="action-col-body action-col-body--scroll">
                 <ul class="action-action-list">
                     ${sorted.map(a => {
-                        const { tone, label } = status(a.status);
+                        const { tone, label } = this._statusInfo(a.status);
                         return `
-                            <li class="action-action-item action-action-item--${tone}">
+                            <li class="action-action-item action-action-item--${tone}" data-id="${a.id}">
                                 <span class="action-action-status" title="${label}"></span>
                                 <span class="action-action-name"><span class="action-action-label">${a.name}</span><span class="action-action-id">${a.id}</span></span>
                                 <span class="action-action-time">${this._clock(a.created)}</span>
@@ -168,24 +172,76 @@ class ActionPanel {
                 </ul>
             </div>
         ` : this._placeholder('action-empty', 'history', 'No activity');
+
+        if (this.actions.has(this.selectedAction)) this._selectAction(this.selectedAction);
+        else if (this.selectedAction) this._clearOutput();
     }
 
-    _renderTerminal(asset) {
+    _statusInfo(s) {
+        if (s == 'T0') return { tone: 'ok', label: 'Success' };
+        if (s == 'T2') return { tone: 'pending', label: 'Pending' };
+        return { tone: 'bad', label: 'Failed' };
+    }
+
+    _selectAction(id) {
+        const action = this.actions.get(id);
+        if (!action) return;
+        this.selectedAction = id;
+
+        this.mid.querySelectorAll('.action-action-item').forEach(li =>
+            li.classList.toggle('selected', li.dataset.id === id));
+
+        this._renderOutput(action);
+    }
+
+    _renderOutput(action) {
+        const { tone, label } = this._statusInfo(action.status);
+        const asset = action.asset ?? this.selected;
+        const output = this._outputText(action);
+        const running = tone === 'pending';
+
+        const body = running
+            ? `<p class="action-terminal-line action-terminal-running"><span class="action-terminal-spinner"></span>running…</p>`
+            : output.trim()
+                ? `<pre class="action-terminal-output">${this._escape(output)}</pre>`
+                : `<p class="action-terminal-line action-terminal-muted">(no output)</p>`;
+
+        const exit = running ? '' : `
+            <p class="action-terminal-line action-terminal-exit action-terminal-exit--${tone}">
+                <span class="action-terminal-exit-mark"></span>process exited — ${label}
+            </p>`;
+
         this.right.innerHTML = `
             <div class="action-terminal">
-                <div class="action-terminal-body" aria-disabled="true">
-                    <p class="action-terminal-line">
-                        <span class="action-terminal-prompt">${asset.name} ~ $</span>
+                <div class="action-terminal-body action-terminal-body--output">
+                    <p class="action-terminal-line action-terminal-line--cmd">
+                        <span class="action-terminal-prompt">${asset} ~ $</span>
+                        <span class="action-terminal-cmd">${action.name}<span class="action-terminal-cmd-id">${action.id}</span></span>
+                    </p>
+                    ${body}
+                    ${exit}
+                    <p class="action-terminal-line action-terminal-line--foot">
+                        <span class="action-terminal-prompt">${asset} ~ $</span>
                         <span class="action-terminal-cursor"></span>
                     </p>
-
-                    <button class="action-shell" type="button" role="switch" aria-checked="false" disabled>
-                        <span class="action-shell-track"><span class="action-shell-thumb"></span></span>
-                        <span class="action-shell-label">Request shell</span>
-                    </button>
                 </div>
             </div>
         `;
+    }
+
+    _clearOutput() {
+        this.selectedAction = null;
+        this.right.innerHTML = this._placeholder('action-watermark', 'terminal', 'Select an action');
+    }
+
+    _outputText(action) {
+        if (!action.value) return '';
+        const bytes = Uint8Array.from(atob(action.value), c => c.charCodeAt(0));
+        return new TextDecoder().decode(bytes);
+    }
+
+    _escape(s) {
+        return String(s).replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
     }
 
     _watermark() {

@@ -316,6 +316,7 @@ main[hidden] { display: none; }
   border: none;
   border-bottom: 1px solid color-mix(in srgb, var(--line) 55%, transparent);
   border-radius: 0;
+  cursor: pointer;
   transition: background 0.12s;
 }
 
@@ -323,6 +324,13 @@ main[hidden] { display: none; }
 
 #action-screen .action-action-item:hover {
   background: color-mix(in srgb, var(--text-body) 4%, transparent);
+}
+
+#action-screen .action-action-item.selected {
+  background: color-mix(in srgb, var(--action) 12%, transparent);
+}
+#action-screen .action-action-item.selected:hover {
+  background: color-mix(in srgb, var(--action) 16%, transparent);
 }
 
 #action-screen .action-action-status {
@@ -373,7 +381,7 @@ main[hidden] { display: none; }
   font-variant-numeric: tabular-nums;
 }
 
-/* ── SECTION 3 — TERMINAL ───────────────────────────────────────── */
+/* ── SECTION 3 — TERMINAL OUTPUT ────────────────────────────────── */
 
 #action-screen .action-terminal {
   position: relative;
@@ -406,6 +414,13 @@ main[hidden] { display: none; }
   overflow: hidden;
 }
 
+#action-screen .action-terminal-body--output {
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
 #action-screen .action-terminal-line {
   display: flex;
   align-items: center;
@@ -413,7 +428,6 @@ main[hidden] { display: none; }
   margin: 0;
   font-size: 11.5px;
   color: var(--text-body);
-  opacity: 0.55;
 }
 
 #action-screen .action-terminal-prompt { color: var(--action); }
@@ -425,56 +439,60 @@ main[hidden] { display: none; }
   opacity: 0.6;
 }
 
-#action-screen .action-shell {
-  all: unset;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 14px;
-  cursor: not-allowed;
+#action-screen .action-terminal-cmd {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+  color: var(--text-body);
 }
-
-#action-screen .action-shell-track {
-  position: relative;
-  width: 54px;
-  height: 30px;
-  border-radius: 15px;
-  background: var(--surface-alt);
-  border: 1px solid var(--line);
-  transition: background 0.2s, border-color 0.2s;
-}
-
-#action-screen .action-shell-thumb {
-  position: absolute;
-  top: 3px;
-  left: 3px;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: #6b7280;
-  transition: transform 0.2s, background 0.2s;
-}
-
-#action-screen .action-shell[aria-checked="true"] .action-shell-track {
-  background: color-mix(in srgb, var(--action) 30%, transparent);
-  border-color: var(--action);
-}
-
-#action-screen .action-shell[aria-checked="true"] .action-shell-thumb {
-  transform: translateX(24px);
-  background: var(--action);
-}
-
-#action-screen .action-shell-label {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+#action-screen .action-terminal-cmd-id {
+  font-size: 10.5px;
   color: var(--text-faint);
+}
+
+#action-screen .action-terminal-output {
+  margin: 0;
+  font: inherit;
+  font-size: 11.5px;
+  line-height: 1.6;
+  color: var(--text-body);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+#action-screen .action-terminal-muted { opacity: 0.45; }
+
+#action-screen .action-terminal-running { color: var(--pending); }
+#action-screen .action-terminal-spinner {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: action-pulse 1.4s ease-in-out infinite;
+}
+
+#action-screen .action-terminal-exit {
+  gap: 8px;
+  font-size: 11px;
+}
+#action-screen .action-terminal-exit-mark {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+#action-screen .action-terminal-exit--ok  { color: var(--ok); }
+#action-screen .action-terminal-exit--bad { color: var(--bad); }
+
+#action-screen .action-terminal-line--foot { opacity: 0.55; }
+#action-screen .action-terminal-line--foot .action-terminal-cursor {
+  animation: action-blink 1.1s step-end infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #action-screen .action-terminal-spinner,
+  #action-screen .action-terminal-line--foot .action-terminal-cursor { animation: none; }
 }
 
 /* ── WATERMARK / EMPTY ──────────────────────────────────────────── */

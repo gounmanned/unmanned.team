@@ -155,6 +155,10 @@ class ActionApi extends Gateway {
         super();
     }
 
+    async list() {
+        return await this.call("GET", "action");
+    }
+
     async get(name) {
         return await this.call("GET", `action?name=${name}`);
     }

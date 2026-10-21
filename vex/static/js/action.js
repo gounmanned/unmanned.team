@@ -42,6 +42,7 @@ class ActionPanel {
         this.mid = document.getElementById('action-mid');
         this.right = document.getElementById('action-right');
         this.search = document.getElementById('action-search-input');
+        this.bannerCount = document.getElementById('action-banner-count');
         this.dots = new Map();
         this.selected = null;
         this.actions = new Map();        // id → action, for the mid column
@@ -68,6 +69,7 @@ class ActionPanel {
         this.selected = null;
         this.selectedAction = null;
         this._watermark();
+        this._loadBannerStat();
 
         this.wrap.classList.add('loading');
         const assets = await this.api.inventory.list();
@@ -97,6 +99,11 @@ class ActionPanel {
 
         assets.forEach(a => this.dots.has(a.name) ? this._update(a) : this._add(a));
         this._filter();
+    }
+
+    async _loadBannerStat() {
+        const actions = await this.api.action.list();
+        this.bannerCount.textContent = actions.length.toLocaleString();
     }
 
     _add(asset) {
@@ -156,7 +163,8 @@ class ActionPanel {
         const sorted = [...actions].sort((a, b) => b.created.localeCompare(a.created));
         this.actions = new Map(sorted.map(a => [String(a.id), a]));
 
-        this.mid.innerHTML = sorted.length ? `
+        const asset = this.dots.get(this.selected);
+        const list = sorted.length ? `
             <div class="action-col-body action-col-body--scroll">
                 <ul class="action-action-list">
                     ${sorted.map(a => {
@@ -173,8 +181,35 @@ class ActionPanel {
             </div>
         ` : this._placeholder('action-empty', 'history', 'No activity');
 
+        this.mid.innerHTML = this._actionsHeader(asset, sorted) + list;
+
         if (this.actions.has(this.selectedAction)) this._selectAction(this.selectedAction);
         else if (this.selectedAction) this._clearOutput();
+    }
+
+    _actionsHeader(asset, actions) {
+        const total = actions.length;
+        const success = actions.filter(a => this._statusInfo(a.status).tone === 'ok').length;
+        const rate = total ? Math.round((success / total) * 100) : 0;
+
+        return `
+            <div class="action-mid-header">
+                <img class="action-mid-logo" src="static/img/platform/${asset.metadata.platform}.png" alt="${asset.metadata.platform}">
+                <div class="action-mid-meta">
+                    <span class="action-mid-name">${asset.name}</span>
+                </div>
+                <div class="action-mid-stats">
+                    <div class="action-mid-stat">
+                        <span class="action-mid-stat-value">${total}</span>
+                        <span class="action-mid-stat-label">actions</span>
+                    </div>
+                    <div class="action-mid-stat">
+                        <span class="action-mid-stat-value">${rate}%</span>
+                        <span class="action-mid-stat-label">success</span>
+                    </div>
+                </div>
+            </div>
+        `;
     }
 
     _statusInfo(s) {
@@ -220,10 +255,6 @@ class ActionPanel {
                     </p>
                     ${body}
                     ${exit}
-                    <p class="action-terminal-line action-terminal-line--foot">
-                        <span class="action-terminal-prompt">${asset} ~ $</span>
-                        <span class="action-terminal-cursor"></span>
-                    </p>
                 </div>
             </div>
         `;

@@ -148,9 +148,9 @@ class AttackPanel {
         const sorted = [...actions].sort((a, b) => b.created.localeCompare(a.created));
 
         const status = (s) =>
-            s === '-1' ? { tone: 'pending', label: 'Pending' } :
-            s === '0'  ? { tone: 'ok',      label: 'Success' } :
-                         { tone: 'bad',     label: 'Failed'  };
+            s == 'T2' ? { tone: 'pending', label: 'Pending' } :
+            s == 'T0' ? { tone: 'ok',      label: 'Success' } :
+                        { tone: 'bad',     label: 'Failed'  };
 
         this.mid.innerHTML = sorted.length ? `
             <div class="attack-col-body attack-col-body--scroll">

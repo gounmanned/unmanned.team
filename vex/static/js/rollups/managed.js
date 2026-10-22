@@ -334,7 +334,7 @@ class ManagedSummary {
         });
 
         document.addEventListener("managed:asset", (ev) => {
-            if (ev.asset?.metadata?.group === "identity") this.identities++;
+            if (ev.asset) this.identities++;
         });
     }
 }

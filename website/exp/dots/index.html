@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dots by Unmanned</title>
 <meta name="robots" content="noindex">
-<meta name="description" content="Dots: the first EDR made for code. A tiny library that attaches to any codebase and reports to VEX, your AI SOC.">
+<meta name="description" content="Dots: The first EDR made for code. A tiny library that attaches to any codebase and reports to VEX, your AI SOC.">
 <link rel="apple-touch-icon" href="https://cdn.unmanned.team/img/logo.png">
 <meta property="og:title" content="Dots: The first EDR made for code" />
 <meta property="og:description" content="A tiny library that attaches to any codebase and reports to VEX, your AI SOC." />
@@ -26,9 +26,18 @@
   // the hero intro plays unless motion is reduced; without JS the page shows the finished hero
   if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){ document.documentElement.classList.add('intro'); }
 
-  // The hero backdrop: Figma's 80px dots on an 84px grid, half the warm gray and half a whisper of a Dot color (3% over
-  // the gray). An 11 x 7 tile, so the repeat isn't noticeable. The intro clears its wall to these same colors.
-  window.DOTS_TINTS = [[250,249,246], [250,249,246], [243,246,242], [243,248,246], [248,242,245], [250,247,240]];  // gray x2; green, cyan, purple, yellow at 3% over the gray
+  // The hero backdrop: Figma's 80px dots on an 84px grid, half the warm gray and half a whisper of a Dot color.
+  // An 11 x 7 tile, so the repeat isn't noticeable. The intro clears its wall to these same colors.
+  // Two dials to play with:
+  var DOTS_STRENGTH = .75;   // how visible the dots are: 0 = gone (white), 0.5 = half as visible, 1 = as designed, 1.5 = stronger
+  var DOTS_COLOR = .5;      // how much Dot color is in them: 0 = all warm gray, 1 = as designed (3% of each Dot color), 2 = twice as colorful
+  (function(){
+    var GRAY = [250,249,246], WHITE = [255,255,255];
+    var COLORS = [[2,146,102], [30,198,236], [184,17,222], [247,184,40]];   // green, cyan, purple, yellow
+    var mixTo = function(a, b, p){ return a.map(function(v, i){ return Math.max(0, Math.min(255, Math.round(v + (b[i] - v) * p))); }); };
+    var tints = [GRAY, GRAY].concat(COLORS.map(function(c){ return mixTo(GRAY, c, 0.03 * DOTS_COLOR); }));   // gray x2, then the four colors
+    window.DOTS_TINTS = tints.map(function(t){ return mixTo(WHITE, t, DOTS_STRENGTH); });
+  })();
   window.dotsTint = function(c, r){
     var i = (r % 7) * 11 + (c % 11), h = (Math.imul(i * 7 + 131, 2654435761) >>> 0) % 1000;
     return window.DOTS_TINTS[h < 500 ? 0 : 2 + (h % 4)];
@@ -194,14 +203,14 @@
   .section-intro > p{max-width:603px;font-size:18px;line-height:28px;color:var(--body-soft);}
 
   /* the big Dot with five callouts; 1012px wide so the Dot sits on the center line */
-  .concepts{position:relative;width:1012px;height:371px;}
-  .big-dot{position:absolute;left:343px;top:0;width:326px;height:326px;}
-  .big-dot .ground{position:absolute;left:39px;top:317px;width:236px;height:14px;border-radius:50%;background:var(--d-sunken);}
-  .big-dot .ball{position:absolute;inset:0 0 auto;height:326px;border-radius:50%;background:var(--d-cyan);isolation:isolate;overflow:hidden;}
+  .concepts{position:relative;width:1050px;height:404px;}
+  .big-dot{position:absolute;left:359.54px;top:0;width:330.92px;height:336px;}
+  .big-dot .ground{position:absolute;left:39.59px;top:321.79px;width:239.56px;height:14.21px;border-radius:50%;background:var(--d-sunken);}
+  .big-dot .ball{position:absolute;inset:0 0 auto;height:330.92px;border-radius:50%;background:var(--d-cyan);isolation:isolate;overflow:hidden;}
   .big-dot .ball::before{content:"";position:absolute;inset:0;border-radius:50%;opacity:0.1;mix-blend-mode:multiply;
     background:radial-gradient(circle at 2px 2px,#9698a5 2px,transparent 2.5px) 0 0/8px 8px;}
-  .big-dot .ball svg{position:absolute;left:0;top:32.64px;width:279.814px;height:293.358px;opacity:0.15;mix-blend-mode:difference;}
-  .big-dot .name{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:32px;font-weight:600;letter-spacing:0.08em;color:var(--ink);opacity:0.5;}
+  .big-dot .ball svg{position:absolute;left:0;top:33.13px;width:284.04px;height:297.8px;opacity:0.15;mix-blend-mode:difference;}
+  .big-dot .name{position:absolute;inset:0 0 auto;height:330.92px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:32px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink);opacity:0.5;}
   .callout{position:absolute;display:flex;flex-direction:column;gap:12px;}
   .callout hr{width:100%;height:0;margin:0 0 -1px;border:0;border-top:1px solid var(--gray-faint);} /* Figma's lines take no height */
   .callout dl{margin:0;font-size:14px;line-height:20px;color:var(--ink);display:flex;flex-direction:column;gap:4px;}
@@ -210,26 +219,38 @@
   .callout--l dl{width:157px;}
   .callout--r{align-items:flex-end;}
   .callout--r .eyebrow,.callout--r dl{width:200px;}
-  .c-size{left:135px;top:44px;width:292px;}
-  .c-lives{left:76px;top:212px;width:379px;}
-  .c-hours{left:597px;top:12px;width:293px;}
-  .c-specialty{left:633px;top:131px;width:379px;}
-  .c-reports{left:582px;top:262px;width:303px;}
-  .badge{position:absolute;left:50%;top:347px;transform:translateX(-50%);display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border:1px solid var(--d-mute);border-radius:2px;background:var(--surface-gray);white-space:nowrap;}
+  .c-size{left:129px;top:44px;width:317px;}
+  .c-lives{left:171px;top:212px;width:303px;}
+  .c-hours{left:616px;top:12px;width:293px;}
+  .c-specialty{left:652px;top:131px;width:398px;}
+  .c-reports{left:601px;top:262px;width:303px;}
+  /* the joke footnote under the giant Dot, then the badge */
+  .dot-meta{position:absolute;left:50%;top:344px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:24px;}
+  .dot-meta .fine{font-size:10px;line-height:12px;font-weight:300;color:var(--body-soft);white-space:nowrap;}
+  .badge{display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border:1px solid var(--d-mute);border-radius:2px;background:var(--surface-gray);white-space:nowrap;}
   .badge::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--d-green);}
   .badge .eyebrow{color:var(--body-soft);}
+  /* four places a Dot can live, each with its own job */
+  .envs{width:100%;display:flex;flex-direction:column;align-items:center;gap:16px;padding:32px 0;}
+  .envs-title{font-size:16px;line-height:24px;font-weight:600;color:var(--ink);text-align:center;}
+  .envs-row{width:100%;margin:0;padding:0;list-style:none;display:flex;justify-content:space-between;gap:36px;}
+  .envs-row li{width:248px;display:flex;flex-direction:column;align-items:center;text-align:center;}
+  .envs-row img{width:100%;height:auto;margin-bottom:16px;}
+  .envs-row b{margin-top:4px;font-size:14px;line-height:20px;font-weight:600;color:var(--ink);}
+  @media (max-width:1099px){ .envs-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px;} .envs-row li{width:auto;} }
+  @media (max-width:768px){ .envs-row{grid-template-columns:repeat(2,minmax(0,1fr));gap:32px 16px;} }
   .along{display:flex;align-items:center;gap:12px;padding:16px 64px;border:1px solid var(--gray-faint);border-radius:999px;font-size:18px;line-height:28px;color:var(--ink);}
   .along img{flex-shrink:0;width:26px;height:26px;}
   .along b{font-weight:600;}
 
-  @media (max-width:1059px) and (min-width:901px){ .concepts{zoom:0.84;} }
+  @media (max-width:1099px) and (min-width:901px){ .concepts{zoom:0.8;} }
   @media (max-width:900px){
     .concepts{width:100%;height:auto;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:32px 24px;}
-    .big-dot,.badge{position:relative;left:auto;top:auto;transform:none;grid-column:1 / -1;justify-self:center;}
-    .big-dot{width:326px;height:331px;zoom:0.8;}
-    .badge{order:-1;margin-top:-8px;}
+    .big-dot,.dot-meta{position:relative;left:auto;top:auto;transform:none;grid-column:1 / -1;justify-self:center;}
+    .big-dot{zoom:0.8;}
+    .dot-meta{order:-1;margin-top:-16px;}
     .big-dot{order:-2;}
-    .callout{position:static;width:auto;}
+    .callout{position:static;width:auto;gap:8px;}
     .callout--r{align-items:stretch;}
     .callout--l dl,.callout--r .eyebrow,.callout--r dl{width:auto;}
     .along{padding:16px 24px;border-radius:28px;align-items:flex-start;}
@@ -335,7 +356,7 @@
             <div class="dot dot--cyan" data-dot="cyan"><svg viewBox="0 0 125 125"><path d="M24.9814 12.5117C14.0194 23.7714 7.26769 39.1506 7.26758 56.1064C7.26758 90.6244 35.2498 118.607 69.7676 118.607C83.8444 118.607 96.8329 113.952 107.281 106.099C95.9276 117.759 80.0603 125.003 62.5 125.003C27.9822 125.003 0 97.0199 0 62.502C9.03362e-05 42.0627 9.81158 23.9152 24.9814 12.5117Z"/></svg></div>
           </div>
           <p class="dot-label">Dot #001</p>
-          <a class="dot-link" href="#meet">Meet your dot <img src="static/icon-arrow-down-pink.svg" width="20" height="20" alt=""></a>
+          <a class="dot-link" href="#meet">Meet your Dot <img src="static/icon-arrow-down-pink.svg" width="20" height="20" alt=""></a>
         </div>
       </div>
       <button class="vz-replay" type="button" hidden>Replay</button>
@@ -348,7 +369,7 @@
       <div class="wrap">
         <div class="section-intro">
           <div class="titles">
-            <p class="eyebrow eyebrow--pink">Meet your dot</p>
+            <p class="eyebrow eyebrow--pink">Meet your Dot</p>
             <h2 id="meet-title">Small dot. Big job.</h2>
           </div>
           <p>Meet the tiniest member of your security team. It lives inside your code, examining it for security issues while it runs. When your code stops, your Dot stops.</p>
@@ -358,7 +379,7 @@
           <div class="big-dot" aria-hidden="true">
             <span class="ground"></span>
             <div class="ball"><svg viewBox="0 0 280 294"><path d="M65.1328 0C36.5541 29.3636 18.9522 69.464 18.9521 113.676C18.9521 203.698 91.9292 276.675 181.951 276.675C218.675 276.675 252.561 264.528 279.814 244.036C250.203 274.46 208.808 293.358 162.999 293.358C72.9771 293.358 0 220.381 0 130.359C4.88234e-06 77.0624 25.5805 29.7409 65.1328 0Z" fill="#1EC6EC"/></svg></div>
-            <span class="name">DOT #001</span>
+            <span class="name">Dot #001</span>
           </div>
           <div class="callout callout--l c-size">
             <p class="eyebrow eyebrow--pink">Size</p><hr>
@@ -374,13 +395,26 @@
           </div>
           <div class="callout callout--r c-specialty">
             <p class="eyebrow eyebrow--pink">Specialty</p><hr>
-            <dl><dt>Penetration testing</dt><dd>Continuously examines your code for security issues.</dd></dl>
+            <dl><dt>Security checks and offensive testing</dt><dd>Continuously examines your code for security issues.</dd></dl>
           </div>
           <div class="callout callout--r c-reports">
             <p class="eyebrow eyebrow--pink">Reports to</p><hr>
-            <dl><dt>VEX, the AI SOC.</dt><dd>Sends findings back for analysis and response.</dd></dl>
+            <dl><dt>VEX, the AI SOC</dt><dd>Sends findings back for analysis and response.</dd></dl>
           </div>
-          <p class="badge"><span class="eyebrow">Security team dot · active</span></p>
+          <div class="dot-meta">
+            <p class="fine">*Enlarged 5,000% to show properties</p>
+            <p class="badge"><span class="eyebrow">Security team Dot · active</span></p>
+          </div>
+        </div>
+
+        <div class="envs">
+          <p class="envs-title">Different environments. Different assignments.</p>
+          <ul class="envs-row">
+            <li><img src="static/env-endpoint.svg" width="248" height="147" alt=""><span class="eyebrow">Endpoint</span><b>Automatic patching</b></li>
+            <li><img src="static/env-website.svg" width="248" height="147" alt=""><span class="eyebrow">Website</span><b>AI penetration testing</b></li>
+            <li><img src="static/env-api.svg" width="248" height="147" alt=""><span class="eyebrow">API</span><b>Hunts for abuse</b></li>
+            <li><img src="static/env-ot.svg" width="248" height="147" alt=""><span class="eyebrow">Operational tech</span><b>Flags anomalies</b></li>
+          </ul>
         </div>
 
         <p class="along"><img src="static/dots-logo.svg" width="26" height="26" alt=""><span><b>Gets along with everyone</b>. Dots can run alongside your existing EDR and antivirus.</span></p>
@@ -394,7 +428,7 @@
       <div class="wrap">
         <div class="flow" aria-hidden="true">
           <div class="flow-dots">
-            <div class="who"><span class="eyebrow eyebrow--pink">Dots</span><span>Find security issues.</span></div>
+            <div class="who"><span class="eyebrow eyebrow--pink">Dots</span><span>Find security issues</span></div>
             <svg class="flow-scatter" width="185" height="152" viewBox="0 0 185 152" fill="none" xmlns="http://www.w3.org/2000/svg">
               <circle cx="60" cy="44" r="16" fill="#F7B828"/>
               <circle cx="169" cy="76" r="12" fill="#F7B828"/>
@@ -431,7 +465,7 @@
             <p class="eyebrow eyebrow--pink">Meet VEX</p>
             <h2 id="vex-title">Dots find the issues. VEX makes sense <br>of them.</h2>
           </div>
-          <p>Every Dot pipes security findings back to VEX, your AI SOC. VEX brings them into context, investigates, and helps turn findings into action.</p>
+          <p>Every Dot pipes security findings back to VEX, your AI SOC. VEX brings them into context, investigates and helps turn findings into action.</p>
           <a class="pill" href="/how-it-works/">Learn about VEX</a>
         </div>
       </div>

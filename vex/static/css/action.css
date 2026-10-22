@@ -484,7 +484,7 @@ main[hidden] { display: none; }
 
 #action-screen .action-action-item {
   display: grid;
-  grid-template-columns: 10px minmax(0, 1fr) 130px;
+  grid-template-columns: 18px minmax(0, 1fr) 130px;
   align-items: center;
   gap: 12px;
   padding: 10px;
@@ -505,22 +505,17 @@ main[hidden] { display: none; }
 }
 
 #action-screen .action-action-status {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: currentColor;
-}
-
-#action-screen .action-action-item.selected .action-action-status {
-  box-shadow: 0 0 0 4px color-mix(in srgb, currentColor 18%, transparent);
+  font-size: 18px;
+  line-height: 1;
+  width: auto;
+  height: auto;
+  background: none;
+  border-radius: 0;
 }
 
 #action-screen .action-action-item--ok      .action-action-status { color: var(--ok); }
-#action-screen .action-action-item--bad     .action-action-status { color: var(--bad); }
-#action-screen .action-action-item--pending .action-action-status {
-  color: var(--pending);
-  animation: action-pulse 1.4s ease-in-out infinite;
-}
+#action-screen .action-action-item--bad      .action-action-status { color: var(--bad); }
+#action-screen .action-action-item--pending  .action-action-status { color: var(--pending); }
 
 #action-screen .action-action-name {
   display: flex;

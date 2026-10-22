@@ -168,10 +168,10 @@ class ActionPanel {
             <div class="action-col-body action-col-body--scroll">
                 <ul class="action-action-list">
                     ${sorted.map(a => {
-                        const { tone, label } = this._statusInfo(a.status);
+                        const { tone, label, icon } = this._statusInfo(a.status);
                         return `
                             <li class="action-action-item action-action-item--${tone}" data-id="${a.id}">
-                                <span class="action-action-status" title="${label}"></span>
+                                <span class="action-action-status material-symbols-outlined" title="${label}">${icon}</span>
                                 <span class="action-action-name"><span class="action-action-label">${a.name}</span><span class="action-action-id">${a.id}</span></span>
                                 <span class="action-action-time">${this._clock(a.created)}</span>
                             </li>
@@ -213,9 +213,9 @@ class ActionPanel {
     }
 
     _statusInfo(s) {
-        if (s == 'T0') return { tone: 'ok', label: 'Success' };
-        if (s == 'T2') return { tone: 'pending', label: 'Pending' };
-        return { tone: 'bad', label: 'Failed' };
+        if (s == 'T0') return { tone: 'ok', label: 'Success', icon: 'check' };
+        if (s == 'T2') return { tone: 'pending', label: 'Pending', icon: 'pending' };
+        return { tone: 'bad', label: 'Failed', icon: 'close' };
     }
 
     _selectAction(id) {

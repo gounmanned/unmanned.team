@@ -276,8 +276,8 @@ class ActionPanel {
     }
 
     _watermark() {
-        this.mid.innerHTML = this._placeholder('action-watermark', 'ads_click', 'Select a dot');
-        this.right.innerHTML = this._placeholder('action-watermark', 'terminal', 'Select a dot');
+        this.mid.innerHTML = this._placeholder('action-watermark', 'ads_click', 'View activity');
+        this.right.innerHTML = this._placeholder('action-watermark', 'terminal', 'Action output');
     }
 
     // --- drop / modal ------------------------------------------------------

@@ -12,10 +12,10 @@
 <meta property="og:url" content="https://unmanned.team/exp/dots/" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Unmanned" />
-<meta property="og:image" content="https://unmanned.team/static/og/default.png" />
+<meta property="og:image" content="https://unmanned.team/static/og/dots.png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
-<meta property="og:image:alt" content="VEX: Don’t get hacked" />
+<meta property="og:image:alt" content="Dots: The first EDR made for code" />
 <meta name="twitter:card" content="summary_large_image" />
 <link rel="icon" type="image/png" href="https://cdn.unmanned.team/img/logo.png">
 <link rel="stylesheet" href="https://cdn.unmanned.team/css/global.css">
@@ -67,6 +67,9 @@
   .dots-brand{display:flex;align-items:center;gap:16px;text-decoration:none;color:var(--ink);}
   .dots-word{font-size:32px;font-weight:900;line-height:26px;letter-spacing:0.01em;}
   .dots-brand img{width:26px;height:26px;}
+  /* no phone menu here: the two links stay visible, and under 560px only Get early access */
+  @media (max-width:700px){ .site-header .dots-nav{display:flex;gap:20px;} }
+  @media (max-width:560px){ .dots-nav-vex{display:none;} .dots-word{font-size:28px;} .dots-brand{gap:12px;} }
 
   /* ---------- SHARED BITS ---------- */
   .eyebrow{font-family:var(--mono);font-size:12px;line-height:16px;letter-spacing:0.08em;text-transform:uppercase;color:var(--surface-dark);}
@@ -295,6 +298,10 @@
           <img src="static/dots-logo.svg" width="26" height="26" alt="">
           <span class="brand-tag">By Unmanned</span>
         </a>
+        <nav class="header-links dots-nav" aria-label="Main">
+          <a class="header-link dots-nav-vex" href="/">VEX AI SOC</a>
+          <a class="header-link header-link--cta" href="mailto:go@unmanned.team?subject=Dots%20early%20access">Get early access <img src="../../static/icon-arrow-right-pink.svg" width="16" height="16" alt=""></a>
+        </nav>
       </div>
     </header>
   </div>
@@ -313,7 +320,7 @@
           </div>
           <div class="intro-word" aria-hidden="true">Introducing <span>Dots</span></div>
           <p class="hero-lede">A tiny library that attaches to any codebase. Frontend or backend. IT or operational technology. Website or server. And it can even run alongside your existing EDR/AV.</p>
-          <a class="pill hero-cta" href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener">Get early access</a>
+          <a class="pill hero-cta" href="mailto:go@unmanned.team?subject=Dots%20early%20access">Get early access</a>
         </div>
 
         <div class="stage-col">
@@ -367,7 +374,7 @@
           </div>
           <div class="callout callout--r c-specialty">
             <p class="eyebrow eyebrow--pink">Specialty</p><hr>
-            <dl><dt>Runtime security</dt><dd>Continuously examines your code for security issues.</dd></dl>
+            <dl><dt>Penetration testing</dt><dd>Continuously examines your code for security issues.</dd></dl>
           </div>
           <div class="callout callout--r c-reports">
             <p class="eyebrow eyebrow--pink">Reports to</p><hr>
@@ -415,7 +422,7 @@
                 <circle cx="16" cy="124" r="16" fill="#D10176"/><circle cx="52" cy="124" r="16" fill="#F1F1EE"/><circle cx="88" cy="124" r="16" fill="#D10176"/><circle cx="124" cy="124" r="16" fill="#D10176"/><circle cx="160" cy="124" r="16" fill="#D10176"/>
               </svg>
               <hr>
-              <ul><li>Analyze</li><li>Investigate</li><li>Respond</li></ul>
+              <ul><li>Prevent</li><li>Detect</li><li>Respond</li></ul>
             </div>
           </div>
         </div>
@@ -430,6 +437,11 @@
       </div>
     </section>
   </main>
+
+  <footer>
+    <span>© 2026 UNMANNED, INC.</span>
+    <nav class="flinks" aria-label="Company"><a href="/team/">ABOUT</a><span aria-hidden="true">·</span><a class="fext" href="https://gounmanned.substack.com/" target="_blank" rel="noopener noreferrer">OUR RESEARCH</a></nav>
+  </footer>
 
   <script>
     (function(){

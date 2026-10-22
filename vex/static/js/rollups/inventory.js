@@ -1,10 +1,4 @@
 class InventoryRollup {
-    static TYPES = {
-        human:   { label: 'Human',    icon: 'person' },
-        service: { label: 'Service',  icon: 'key' },
-        agent:   { label: 'AI agent', icon: 'smart_toy' },
-    };
-
     static idOf(a) { return a.id ?? a.name; }
     static isActive(a) { return a.status.startsWith('A'); }
     static isOpen(s) { return s.status.startsWith('O'); }
@@ -16,13 +10,11 @@ class InventoryRollup {
 
         this.tbody = document.querySelector('#asset-table tbody');
         this.search = document.getElementById('asset-search');
-        this.filter = document.getElementById('identity-filter');
         this.count = document.getElementById('inv-identity-count');
         this.countNote = document.getElementById('inv-identity-note');
 
         this.assets = [];
         this.query = '';
-        this.type = 'all';
         this.expandedId = null;
         this.signalsByAsset = new Map();
         this.listen();
@@ -31,7 +23,6 @@ class InventoryRollup {
     async reset() {
         this.assets = [];
         this.query = '';
-        this.type = 'all';
         this.expandedId = null;
         this.signalsByAsset.clear();
         this.search.value = '';
@@ -40,7 +31,7 @@ class InventoryRollup {
 
     async reload() {
         const assets = await this.api.list();
-        this.assets = assets.map(a => ({ ...a, metadata: { ...a.metadata, type: a.metadata?.type || 'human' } }));
+        this.assets = assets.map(a => ({ ...a, metadata: { ...a.metadata } }));
         this.signalsByAsset.clear();
         this.render();
     }
@@ -53,7 +44,6 @@ class InventoryRollup {
 
     render() {
         this.renderCount();
-        this.renderFilter();
         this.renderRows();
     }
 
@@ -64,25 +54,12 @@ class InventoryRollup {
         this.countNote.textContent = disabled ? `${total - disabled} active · ${disabled} disabled` : 'All active';
     }
 
-    renderFilter() {
-        const tabs = { all: { label: 'All' }, ...InventoryRollup.TYPES };
-        this.filter.innerHTML = Object.entries(tabs).map(([key, { label }]) => {
-            const n = key === 'all' ? this.assets.length : this.assets.filter(a => a.metadata.type === key).length;
-            return `
-                <button type="button" role="tab" data-type="${key}" class="${this.type === key ? 'active' : ''}">
-                    ${label}<span class="inv-filter-count">${n}</span>
-                </button>
-            `;
-        }).join('');
-    }
-
     renderRows() {
         const rows = this.assets.filter(a =>
-            (this.type === 'all' || a.metadata.type === this.type)
-            && `${a.name} ${a.source} ${a.metadata.platform ?? ''}`.toLowerCase().includes(this.query));
+            `${a.name} ${a.source} ${a.metadata.platform ?? ''}`.toLowerCase().includes(this.query));
 
         if (!rows.length) {
-            this.tbody.innerHTML = `<tr class="inv-empty"><td colspan="9">No identities match</td></tr>`;
+            this.tbody.innerHTML = `<tr class="inv-empty"><td colspan="8">No identities match</td></tr>`;
             return;
         }
 
@@ -99,10 +76,7 @@ class InventoryRollup {
 
     rowHtml(a, openCount, expanded) {
         const active = InventoryRollup.isActive(a);
-        const { type, platform, priority } = a.metadata;
-        const options = Object.entries(InventoryRollup.TYPES)
-            .map(([key, t]) => `<option value="${key}" ${key === type ? 'selected' : ''}>${t.label}</option>`)
-            .join('');
+        const { platform, priority } = a.metadata;
 
         return `
             <tr data-id="${InventoryRollup.idOf(a)}" class="${active ? '' : 'is-locked'} ${expanded ? 'is-expanded' : ''}">
@@ -115,12 +89,6 @@ class InventoryRollup {
                     <button type="button" class="row-btn ${priority === '1' ? 'is-on' : ''}" data-action="priority" title="Priority">
                         <span class="material-symbols-outlined">star</span>
                     </button>
-                </td>
-                <td>
-                    <label class="type-select" data-type="${type}">
-                        <span class="material-symbols-outlined">${InventoryRollup.TYPES[type].icon}</span>
-                        <select data-action="type" aria-label="Identity type">${options}</select>
-                    </label>
                 </td>
                 <td class="identity-name">${a.name}</td>
                 <td><img class="inv-logo" src="static/img/source/${a.source}.png" alt="" title="${a.source}"></td>
@@ -137,7 +105,7 @@ class InventoryRollup {
         if (!signals?.length) {
             return `
                 <tr class="signal-row">
-                    <td colspan="3"></td>
+                    <td colspan="2"></td>
                     <td colspan="6"><span class="branch"></span>${signals ? 'No signals for this identity' : 'Loading signals…'}</td>
                 </tr>
             `;
@@ -149,7 +117,7 @@ class InventoryRollup {
                 const open = InventoryRollup.isOpen(s);
                 return `
                     <tr class="signal-row ${open ? 'is-open' : ''}">
-                        <td colspan="3"></td>
+                        <td colspan="2"></td>
                         <td colspan="3"><span class="branch"></span><span class="signal-dot"></span>${s.name ?? s.id}</td>
                         <td class="signal-status">${open ? 'Open' : 'Closed'}</td>
                         <td>${InventoryRollup.date(s.created)}</td>
@@ -167,16 +135,9 @@ class InventoryRollup {
             this.render();
         });
 
-        this.filter.addEventListener('click', ev => {
-            const tab = ev.target.closest('[data-type]');
-            if (!tab) return;
-            this.type = tab.dataset.type;
-            this.render();
-        });
-
         this.tbody.addEventListener('click', ev => {
             const row = ev.target.closest('tr[data-id]');
-            if (!row || ev.target.closest('.type-select')) return;
+            if (!row) return;
 
             const asset = this.find(row.dataset.id);
             switch (ev.target.closest('[data-action]')?.dataset.action) {
@@ -184,11 +145,6 @@ class InventoryRollup {
                 case 'priority': return this.update(asset, { priority: asset.metadata.priority === '1' ? '' : '1' });
                 default:         return this.toggleExpanded(asset);
             }
-        });
-
-        this.tbody.addEventListener('change', ev => {
-            if (ev.target.dataset.action !== 'type') return;
-            this.update(this.find(ev.target.closest('tr').dataset.id), { type: ev.target.value });
         });
     }
 

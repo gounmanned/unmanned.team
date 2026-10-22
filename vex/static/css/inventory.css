@@ -42,41 +42,8 @@
 
 #inventory-screen .inv-toolbar {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+  justify-content: flex-end;
 }
-
-/* ---------- type filter ---------- */
-
-#inventory-screen .inv-filter {
-  display: inline-flex;
-  gap: 2px;
-  padding: 3px;
-  border-radius: 8px;
-  background: var(--surface-alt);
-}
-#inventory-screen .inv-filter button {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 5px 10px;
-  border: none;
-  border-radius: 6px;
-  background: none;
-  font: inherit;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-faint);
-  cursor: pointer;
-}
-#inventory-screen .inv-filter button:hover { color: var(--inv-ink); }
-#inventory-screen .inv-filter button.active {
-  background: var(--surface);
-  color: var(--inv-ink);
-  box-shadow: 0 1px 2px rgba(0,0,0,0.08);
-}
-#inventory-screen .inv-filter-count { font-size: 10.5px; font-weight: 700; color: var(--text-faint); }
 
 /* ---------- search ---------- */
 
@@ -174,7 +141,6 @@
   text-decoration: line-through;
   text-decoration-color: rgba(220,38,38,0.4);
 }
-#inventory-screen tr.is-locked .type-select,
 #inventory-screen tr.is-locked .inv-logo { opacity: 0.4; filter: grayscale(1); }
 
 /* ---------- status + priority buttons ---------- */
@@ -198,42 +164,6 @@
 #inventory-screen .row-btn[data-action="priority"].is-on { color: var(--inv-amber); }
 #inventory-screen .row-btn[data-action="priority"].is-on { background: rgba(245,158,11,0.15); }
 #inventory-screen .row-btn[data-action="priority"].is-on .material-symbols-outlined { font-variation-settings: 'FILL' 1; }
-
-/* ---------- type select: a tinted chip around a native <select> ---------- */
-
-#inventory-screen .type-select {
-  --c: #2563eb;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 3px 4px 3px 6px;
-  border-radius: 7px;
-  background: color-mix(in srgb, var(--c) 12%, transparent);
-  color: var(--c);
-  cursor: pointer;
-}
-#inventory-screen .type-select[data-type="service"] { --c: #d97706; }
-#inventory-screen .type-select[data-type="agent"]   { --c: #7c3aed; }
-#inventory-screen .type-select .material-symbols-outlined { font-size: 15px; }
-#inventory-screen .type-select select {
-  appearance: none;
-  padding: 0 14px 0 0;
-  border: none;
-  background: none;
-  font: inherit;
-  font-size: 12px;
-  font-weight: 600;
-  color: inherit;
-  cursor: pointer;
-  outline: none;
-  /* small caret, drawn in the chip's color */
-  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%),
-                    linear-gradient(135deg, currentColor 50%, transparent 50%);
-  background-position: right 5px center, right 1px center;
-  background-size: 4px 4px;
-  background-repeat: no-repeat;
-}
-#inventory-screen .type-select:focus-within { box-shadow: 0 0 0 2px color-mix(in srgb, var(--c) 35%, transparent); }
 
 /* ---------- expanded signal rows ---------- */
 
@@ -283,6 +213,5 @@
 
 @media (max-width: 760px) {
   #inventory-screen .inv-count { display: none; }
-  #inventory-screen .inv-toolbar { flex-wrap: wrap; }
   #inventory-screen .inv-search { flex-basis: 100%; }
 }

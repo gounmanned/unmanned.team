@@ -69,13 +69,13 @@ class ActionPanel {
         this.selected = null;
         this.selectedKey = null;
         this._watermark();
-        this._loadBannerStat();
 
         this.wrap.classList.add('loading');
         const assets = await this.api.inventory.list();
         this.wrap.classList.remove('loading');
 
         assets.filter(a => a.source === 'vex').forEach(a => this._add(a));
+        this._loadDotStat();
         this._filter();
     }
 
@@ -98,12 +98,12 @@ class ActionPanel {
         }
 
         assets.forEach(a => this.dots.has(a.name) ? this._update(a) : this._add(a));
+        this._loadDotStat();
         this._filter();
     }
 
-    async _loadBannerStat() {
-        const actions = await this.api.action.list();
-        this.bannerCount.textContent = actions.length.toLocaleString();
+    _loadDotStat() {
+        this.bannerCount.textContent = this.dots.size.toLocaleString();
     }
 
     _add(asset) {

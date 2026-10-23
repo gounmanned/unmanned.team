@@ -45,8 +45,8 @@ class ActionPanel {
         this.bannerCount = document.getElementById('action-banner-count');
         this.dots = new Map();
         this.selected = null;
-        this.actions = new Map();        // id → action, for the mid column
-        this.selectedAction = null;
+        this.sorted = [];                // actions in display order
+        this.selectedKey = null;
 
         this.modal = document.getElementById('action-modal');
         this.form = document.getElementById('action-form');
@@ -55,7 +55,7 @@ class ActionPanel {
         this.search.addEventListener('input', () => this._filter());
         this.mid.addEventListener('click', (e) => {
             const li = e.target.closest('.action-action-item');
-            if (li) this._selectAction(li.dataset.id);
+            if (li) this._selectAction(li.dataset.key);
         });
         this._listenForDrops();
     }
@@ -65,9 +65,9 @@ class ActionPanel {
     async load() {
         this.list.innerHTML = '';
         this.dots.clear();
-        this.actions.clear();
+        this.sorted = [];
         this.selected = null;
-        this.selectedAction = null;
+        this.selectedKey = null;
         this._watermark();
         this._loadBannerStat();
 
@@ -161,7 +161,7 @@ class ActionPanel {
 
     _renderActions(actions) {
         const sorted = [...actions].sort((a, b) => b.created.localeCompare(a.created));
-        this.actions = new Map(sorted.map(a => [String(a.id), a]));
+        this.sorted = sorted;
 
         const asset = this.dots.get(this.selected);
         const list = sorted.length ? `
@@ -170,7 +170,7 @@ class ActionPanel {
                     ${sorted.map(a => {
                         const { tone, label, icon } = this._statusInfo(a.status);
                         return `
-                            <li class="action-action-item action-action-item--${tone}" data-id="${a.id}">
+                            <li class="action-action-item action-action-item--${tone}" data-key="${a.key}">
                                 <span class="action-action-status material-symbols-outlined" title="${label}">${icon}</span>
                                 <span class="action-action-name"><span class="action-action-label">${a.name}</span><span class="action-action-id">${a.id}</span></span>
                                 <span class="action-action-time">${this._clock(a.created)}</span>
@@ -183,8 +183,9 @@ class ActionPanel {
 
         this.mid.innerHTML = this._actionsHeader(asset, sorted) + list;
 
-        if (this.actions.has(this.selectedAction)) this._selectAction(this.selectedAction);
-        else if (this.selectedAction) this._clearOutput();
+        if (this.selectedKey == null) return;
+        if (this.sorted.some(a => a.key === this.selectedKey)) this._selectAction(this.selectedKey);
+        else this._clearOutput();
     }
 
     _actionsHeader(asset, actions) {
@@ -218,13 +219,13 @@ class ActionPanel {
         return { tone: 'bad', label: 'Failed', icon: 'close' };
     }
 
-    _selectAction(id) {
-        const action = this.actions.get(id);
+    _selectAction(key) {
+        const action = this.sorted.find(a => a.key === key);
         if (!action) return;
-        this.selectedAction = id;
+        this.selectedKey = key;
 
         this.mid.querySelectorAll('.action-action-item').forEach(li =>
-            li.classList.toggle('selected', li.dataset.id === id));
+            li.classList.toggle('selected', li.dataset.key === key));
 
         this._renderOutput(action);
     }
@@ -261,7 +262,7 @@ class ActionPanel {
     }
 
     _clearOutput() {
-        this.selectedAction = null;
+        this.selectedKey = null;
         this.right.innerHTML = this._placeholder('action-watermark', 'terminal', 'Select an action');
     }
 

@@ -32,6 +32,7 @@ class Api {
         this.sources = new SourceApi(state);
         this.notification = new NotificationApi(state);
         this.action = new ActionApi(state);
+        this.operation = new OperationApi(state);
     }
 
     reset(){
@@ -43,6 +44,7 @@ class Api {
         this.sources.set("account", this.state.account());
         this.notification.set("account", this.state.account());
         this.action.set("account", this.state.account());
+        this.operation.set("account", this.state.account());
     }
 }
 
@@ -66,6 +68,7 @@ class Workspace {
                     this.sidebars = {
                         signal: new SignalSidebar(state),
                         backup: new BackupSidebar(state),
+                        hacker: new HackerSidebar(state),
                     }
 
                     this.tenant = new TenantScreen(state);

@@ -168,6 +168,20 @@ class ActionApi extends Gateway {
     }
 }
 
+class OperationApi extends Gateway {
+    constructor(){
+        super();
+    }
+
+    async run(trigger) {
+        return await this.call("POST", "operation", { trigger });
+    }
+
+    async get(id) {
+        return await this.call("GET", `operation/${id}`);
+    }
+}
+
 class Auth {
     static async init(code) {
         const backend = "us.unmanned.team";

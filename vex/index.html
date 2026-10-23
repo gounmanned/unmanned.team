@@ -21,6 +21,7 @@
       <link rel="stylesheet" href="static/css/tenant.css?v=${v}">
       <link rel="stylesheet" href="static/css/sources.css?v=${v}">
       <link rel="stylesheet" href="static/css/backups.css?v=${v}">
+      <link rel="stylesheet" href="static/css/hacker.css?v=${v}">
       <link rel="stylesheet" href="static/css/signal.css?v=${v}">
     `);
   </script>
@@ -183,7 +184,9 @@
         <div class="action-right" id="action-right"></div>
       </div>
 
-      <footer class="action-links" id="action-links"></footer>
+      <footer class="links action-links" id="action-links">
+        <a id="open-hacker-sidebar" class="cta">+ Run operation</a>
+      </footer>
     </div>
   </main>
 
@@ -376,6 +379,22 @@
     </div>
   </site-sidebar>
 
+  <site-sidebar id="hacker-sidebar">
+    <header class="hacker-banner">
+      <span class="material-symbols-outlined">terminal</span>
+      <span class="banner-label">Start operation</span>
+    </header>
+
+    <div class="thread">
+      <ol class="updates" id="hacker-updates"></ol>
+    </div>
+
+    <form class="composer" id="hacker-form">
+      <textarea class="composer-input" id="hacker-question" placeholder="What do you want?"></textarea>
+      <button type="submit" class="ask-btn">Get started</button>
+    </form>
+  </site-sidebar>
+
   <!-- Modals -->
 
   <site-modal id="action-modal">
@@ -405,6 +424,7 @@
     <script src="static/js/action.js?v=${v}"><\/script>
     <script src="static/js/sidebars/signal.js?v=${v}"><\/script>
     <script src="static/js/sidebars/backup.js?v=${v}"><\/script>
+    <script src="static/js/sidebars/hacker.js?v=${v}"><\/script>
     <script src="static/js/rollups/managed.js?v=${v}"><\/script>
     <script src="static/js/rollups/sources.js?v=${v}"><\/script>
     <script src="static/js/rollups/inventory.js?v=${v}"><\/script>

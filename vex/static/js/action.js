@@ -334,7 +334,7 @@ class ActionPanel {
 
             this.api.file.root = 'action';
             await this.api.file.add(file);
-            await this.api.action.add({ id: parseInt(id), name, asset, status: '-1' });
+            await this.api.action.add({ id: parseInt(id), name, asset });
         }).then(() => {
             this.refresh();
         });

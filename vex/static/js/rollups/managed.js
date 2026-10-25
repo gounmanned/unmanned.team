@@ -6,7 +6,6 @@ class ManagedRollup {
         this.list = document.getElementById('managed-accounts');
         this.members = new Map();
         this.summary = new ManagedSummary(state);
-        this.hunt = new ManagedHunt();
         this.listen();
     }
 
@@ -14,6 +13,7 @@ class ManagedRollup {
         this.members.forEach((_, domain) => {
             this._setBadgeLoading(domain);
             this._setUnread(domain, false);
+            this._setThreat(domain, false);
         });
         this.summary.reset();
     }
@@ -59,6 +59,11 @@ class ManagedRollup {
         return d;
     }
 
+    _open(domain) {
+        return Object.values(this.state.signals[domain] ?? {})
+            .filter(t => t.status.startsWith('O'));
+    }
+
     _updateEmptyState() {
         const wrap = document.querySelector('.managed-accounts-wrap');
         if (wrap) wrap.classList.toggle('empty', this.members.size === 0);
@@ -83,11 +88,11 @@ class ManagedRollup {
     }
 
     _settleBadge(domain) {
-        const open = Object.values(this.state.signals[domain] ?? {})
-            .filter(t => t.status.startsWith('O'));
+        const open = this._open(domain);
 
         this._setBadge(domain, open.length);
         this._setUnread(domain, open.some(t => !t.read));
+        this._setThreat(domain, open.some(t => t.metadata?.threat));
     }
 
     _setUnread(domain, unread) {
@@ -95,9 +100,13 @@ class ManagedRollup {
         if (badge) badge.classList.toggle('has-unread', unread);
     }
 
+    _setThreat(domain, threat) {
+        const li = document.getElementById(`managed-account-${domain}`);
+        if (li) li.classList.toggle('has-threat', threat);
+    }
+
     _sortAccounts() {
-        const count = (li) => Object.values(this.state.signals[li.id.replace('managed-account-', '')] ?? {})
-            .filter(t => t.status.startsWith('O')).length;
+        const count = (li) => this._open(li.id.replace('managed-account-', '')).length;
 
         [...this.list.children]
             .sort((a, b) => count(b) - count(a))
@@ -116,6 +125,7 @@ class ManagedRollup {
                 <span class="managed-badge-content" id="managed-badge-content-${domain}"></span>
             </span>
             <span class="managed-account-name">${domain}</span>
+            <span class="managed-account-threat material-symbols-outlined" title="Active threat">warning</span>
         `;
 
         if (enabled) li.addEventListener('click', () => {
@@ -129,8 +139,7 @@ class ManagedRollup {
     async _selectAccount(domain) {
         const right = document.getElementById('managed-right');
         const account = this.members.get(domain);
-        const signals = Object.values(this.state.signals[domain] ?? {})
-            .filter(t => t.status.startsWith('O'))
+        const signals = this._open(domain)
             .sort((a, b) => b.created.localeCompare(a.created));
 
         const midnight = this._midnight();
@@ -336,46 +345,5 @@ class ManagedSummary {
         document.addEventListener("managed:asset", (ev) => {
             if (ev.asset) this.identities++;
         });
-    }
-}
-
-class ManagedHunt {
-    constructor() {
-        this.field = document.getElementById('managed-hero-field');
-        this.stats = this.field.nextElementSibling;
-        this.x = this.y = 0;
-
-        this.next();
-        setInterval(() => this.next(), 3600);
-    }
-
-    next() {
-        if (!this.field.offsetWidth) return;
-
-        const { x, y } = this._spot();
-        this.field.style.setProperty('--x', `${x}px`);
-        this.field.style.setProperty('--y', `${y}px`);
-
-        this.field.classList.remove('hunt');
-        void this.field.offsetWidth;
-        this.field.classList.add('hunt');
-    }
-
-    _spot() {
-        const field = this.field.getBoundingClientRect();
-        const stats = this.stats.getBoundingClientRect();
-        const gap = 60;
-
-        while (true) {
-            const x = gap + Math.random() * (field.width - gap * 2);
-            const y = gap + Math.random() * (field.height - gap * 2);
-            const left = field.left + x, top = field.top + y;
-
-            const clear = left < stats.left - gap || left > stats.right + gap
-                       || top < stats.top - gap || top > stats.bottom + gap;
-            const far = Math.hypot(x - this.x, y - this.y) > field.width * 0.2;
-
-            if (clear && far) return { x: this.x = x, y: this.y = y };
-        }
     }
 }

@@ -18,59 +18,16 @@
 <meta name="twitter:card" content="summary_large_image" />
 <link rel="icon" type="image/png" href="https://cdn.unmanned.team/img/logo.png">
 <link rel="stylesheet" href="https://cdn.unmanned.team/css/global.css">
+<link rel="stylesheet" href="static/site.css">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;800&family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --ink:#0b0c0d;
-    --pink:#e01280;
-    --pink-text:#d1107a;     /* pink for TEXT on light backgrounds (passes 4.5:1) */
-    --gray-line:#dcdcd8;
-    --gray-faint:#c4c4c4;
-    --surface-dark:#6c6c70;
-    --surface-gray:#f7f7f7;
-    --body:#2b2b2b;
-    --body-soft:#4b4c52;
-    --nav-link:#6b7280;      /* header links (4.8:1 on white) */
-    --classbar-h:26px;
-    --gutter:24px;           /* page side margins; 16px on phones */
-    --mono:'JetBrains Mono',ui-monospace,monospace;
-    --slack:'Lato',system-ui,sans-serif;
-    --s-ink:#1d1c1d;
-    --s-gray:#616061;
-    --s-time:#868686;
-    --s-btn:#007a5a;         /* Slack's green button */
-    --s-green:#2eb67d;
-    --s-yellow:#ecb22e;
-    --s-red:#e01e5a;
-    --s-blue:#36c5f0;        /* Slack's blue (from its logo): Recommendation messages */
-    --go-text:#0e7c52;       /* green text (from the API and VEX MDR pages; passes 4.5:1) */
-    --sev-1:#dc2626;         /* error red (from the other pages; 4.5:1 on the light gray) */
-  }
-  *{box-sizing:border-box;}
-  html{overflow-x:hidden;scroll-behavior:smooth;scrollbar-gutter:stable;}
-  body{margin:0;padding-top:var(--classbar-h);background:var(--surface);color:var(--ink);-webkit-font-smoothing:antialiased;}
   h1,h2,h3,h4,p{margin:0;}
-  h1,h2,h3,h4{text-wrap:balance;}
-  p,li{text-wrap:pretty;}
-  a{color:inherit;}
   img{display:block;}
-  ::selection{background:var(--pink);color:#fff;}
-  a:focus-visible,button:focus-visible{outline:1.5px solid var(--pink);outline-offset:4px;}
   .wrap{width:min(1100px,calc(100% - 2 * var(--gutter)));margin:0 auto;} /* the design's 900px content column */
   @media (max-width:700px){:root{--gutter:16px;}}
 
   /* ---------- STATUS DOT ---------- */
-  .status-dot{
-    width:8px;height:8px;border-radius:50%;background:var(--pink);
-    box-shadow:0 0 0 0 rgba(224,18,128,0.5);animation:pulse 2.2s infinite;flex-shrink:0;display:inline-block;
-  }
-  @keyframes pulse{
-    0%{box-shadow:0 0 0 0 rgba(224,18,128,0.45);}
-    70%{box-shadow:0 0 0 8px rgba(224,18,128,0);}
-    100%{box-shadow:0 0 0 0 rgba(224,18,128,0);}
-  }
-  .eyebrow-label{font-size:11px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;color:var(--surface-dark);display:flex;align-items:center;gap:11px;}
 
   /* ---------- CLASSIFICATION BAR ---------- */
   .classbar{
@@ -79,89 +36,25 @@
   }
 
   /* ---------- STICKY HEADER (same as the homepage and VEX MDR) ---------- */
-  .site-top{position:sticky;top:var(--classbar-h);z-index:50;}
   .site-header{background:var(--surface);border-bottom:1px solid var(--gray-line);}
   .site-top .site-header{box-shadow:0 4px 8px -4px rgba(11,12,13,0.1);}
-  .header-inner{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:18px 0;}
-  .header-left{display:flex;align-items:center;gap:16px;min-width:0;}
   .brand{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:800;line-height:1.5;letter-spacing:0.01em;text-decoration:none;color:var(--ink);}
-  .brand .status-dot{animation-iteration-count:2;}
-  .brand-tag{font-size:11px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;color:var(--surface-dark);white-space:nowrap;}
-  .menu-btn{flex-shrink:0;width:32px;height:32px;padding:0;border:none;background:none;cursor:pointer;display:flex;}
-  .menu-btn img{width:32px;height:32px;display:block;}
-  .header-links{display:flex;align-items:center;gap:32px;}
-  .header-link{display:inline-flex;align-items:center;gap:4px;font-weight:600;font-size:15px;line-height:1.5;color:var(--nav-link);text-decoration:none;transition:color 0.2s ease;}
-  .header-link:hover{color:var(--ink);}
-  .header-link[aria-current="page"]{color:var(--ink);}
-  .header-link--slack{gap:8px;}
-  .header-link--slack img{width:24px;height:24px;}
-  .header-link--cta{border-bottom:1px solid var(--pink);}
-  .header-link--cta img{width:16px;height:16px;transition:transform 0.2s ease;}
-  .header-link--cta:hover img{transform:translateX(3px);}
-  .site-top .menu-btn{display:none;}
-  @media (max-width:700px){
-    .header-links{display:none;}
-    .site-top .menu-btn{display:flex;}
-  }
 
   /* ---------- HIDE ON SCROLL ---------- */
   .classbar{transition:transform 0.4s cubic-bezier(0.49,0.025,0.685,1), opacity 0.4s cubic-bezier(0.49,0.025,0.685,1);}
-  .site-top .site-header{position:relative;z-index:1;transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);}
   html.header-hidden .classbar{transform:translateY(-100%);opacity:0;}
-  html.header-hidden .site-top .site-header{transform:translateY(calc(-100% - var(--classbar-h)));}
-  html.header-hidden .site-top{pointer-events:none;}
 
   /* ---------- NAV MENU (phones) ---------- */
-  .nav-panel{
-    position:fixed;top:var(--classbar-h);left:0;right:0;bottom:0;z-index:55;background:var(--surface);
-    overflow-y:auto;overscroll-behavior:contain;
-    transform:translateY(-100%);visibility:hidden;
-    transition:transform 0.3s cubic-bezier(0.4,0,0.2,1), visibility 0s linear 0.3s;
-  }
-  .nav-panel.is-open{transform:translateY(0);visibility:visible;transition:transform 0.3s cubic-bezier(0.2,0.8,0.2,1), visibility 0s;}
-  html.nav-open,html.nav-open body{overflow:hidden;}
-  .nav-list{list-style:none;margin:0;padding:32px 0;display:flex;flex-direction:column;gap:13px;}
-  .nav-list li{padding-bottom:13px;border-bottom:1px solid var(--surface-alt);}
-  .nav-list a{display:flex;flex-direction:column;gap:4px;text-decoration:none;}
-  .nav-link{font-size:24px;line-height:1.5;letter-spacing:0.02em;color:var(--ink);}
-  .nav-sub{font-size:13.5px;line-height:1.5;color:var(--surface-dark);}
-  .nav-list a:hover .nav-link{color:var(--pink-text);}
 
   @media (max-width:700px){
     :root{--classbar-h:24px;}
     .classbar{font-size:8px;}
-    .nav-link{font-size:20px;}
   }
-  @media (max-width:560px){.brand-tag{display:none;}}
 
   /* ---------- BUTTONS (as on the published pages) ---------- */
-  .btn{
-    display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:600;font-size:15px;line-height:1.5;
-    padding:15px 30px;border-radius:2px;text-decoration:none;background:var(--pink);color:#fff;border:none;cursor:pointer;white-space:nowrap;transition:opacity 0.2s ease;
-  }
-  .btn:hover{opacity:0.8;}
 
   /* ---------- SLACK MOCKUPS: shared pieces ----------
      Everything inside .slack is drawn to look like Slack: Lato, Slack's colors and spacing. */
-  .slack{font-family:var(--slack);color:var(--s-ink);text-align:left;}
-  .msg{display:flex;gap:8px;align-items:flex-start;}
-  .msg-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px;}
-  .msg-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
-  .msg-name{font-weight:900;font-size:15px;}
-  .app-tag{padding:1px 4px;border-radius:3px;background:rgba(0,0,0,0.07);font-weight:700;font-size:10px;color:var(--s-gray);}
-  .msg-time{font-size:12px;color:var(--s-gray);}
-  .avatar{flex-shrink:0;}
-  .attach{display:flex;gap:8px;}
-  .attach::before{content:'';flex-shrink:0;width:4px;border-radius:2px;background:var(--bar);}
-  .attach-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px;align-items:flex-start;}
-  .tag{padding:2px 6px;border-radius:3px;font-weight:900;font-size:10px;line-height:normal;color:var(--s-ink);}
-  .tag--green{background:rgba(46,182,125,0.18);}
-  .tag--red{background:rgba(224,30,90,0.18);}
-  .tag--blue{background:rgba(54,197,240,0.18);}
-  .attach-title{font-weight:700;font-size:13px;}
-  .s-btns{display:flex;flex-wrap:wrap;gap:8px;padding-top:4px;}
-  .s-btn{padding:5px 8px;border-radius:4px;font-weight:700;font-size:13px;line-height:normal;background:#fff;color:var(--s-ink);box-shadow:inset 0 0 0 1px rgba(0,0,0,0.3);}
-  .s-btn--go{background:var(--s-btn);color:#fff;box-shadow:none;}
 
   /* ---------- HERO ---------- */
   .hero{position:relative;overflow:hidden;padding:104px 0 72px;text-align:center;}
@@ -170,8 +63,6 @@
   .hero h1{max-width:720px;font-weight:600;font-size:clamp(40px,6vw,70px);line-height:1.03;letter-spacing:-0.03em;}
   .hero-lede{max-width:640px;font-size:18px;font-weight:300;line-height:1.7;color:var(--body);}
   .ctas{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:12px 28px;margin-top:8px;}
-  .text-link{display:inline-flex;align-items:center;gap:6px;font-weight:500;font-size:15px;line-height:1.5;color:var(--pink-text);text-decoration:none;}
-  .text-link img{width:16px;height:16px;transition:transform 0.2s ease;}
   .text-link:hover img{transform:translateX(3px);}
   .text-link--on-dark{color:#ff5aa8;}
 
@@ -288,7 +179,6 @@
   /* hero: the try-it line sits under the button it belongs to */
   .ctas{align-items:flex-start;}
   .cta-main{display:flex;flex-direction:column;align-items:center;gap:12px;}
-  .ctas > .text-link{min-height:52px;}
   .slack-copy .slack-note{margin-top:-14px;font-size:13px;line-height:1.5;color:rgba(255,255,255,0.7);}
   .hero-note{font-size:12px;line-height:1.5;color:var(--body-soft);}
   /* team: centered body copy (Figma) */
@@ -310,13 +200,6 @@
     #team .member:first-child{grid-column:auto;width:auto;justify-self:stretch;}
     #team .member:last-child::before,#team .member:nth-child(2)::after{display:none;}
   }
-  /* closing banner (same as the earlier How it works one) */
-  .close-band{padding:96px 0;background:var(--ink);}
-  .close-box{width:max-content;max-width:100%;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:16px;padding:0;}   /* no inner box: the dark band only */
-  .close-box .eyebrow-label{color:var(--gray-faint);}
-  .close-row{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:16px 32px;}
-  .close-row p{font-weight:600;font-size:clamp(34px * 28 / 52, 4.2vw * 28 / 52, 28px);line-height:1.25;color:#fff;}
-  @media (max-width:700px){ .close-band{padding:64px 0;} .close-row{flex-direction:column;} .close-row p{text-align:center;} }
 
   .slack-copy .slack-lead{font-weight:600;font-size:clamp(34px * 22 / 52, 4.2vw * 22 / 52, 22px);line-height:1.35;color:#fff;}
 
@@ -354,50 +237,35 @@
   }
   @media (max-width:560px){ #team .team{gap:24px;} }
   /* ---------- FOOTER ---------- */
-  footer{
-    border-top:1px solid var(--gray-line);padding:28px 56px 40px;display:flex;justify-content:space-between;align-items:center;
-    font-size:10.5px;line-height:1.5;color:var(--surface-dark);text-transform:uppercase;letter-spacing:0.08em;
-  }
-  footer a{text-decoration:none;}
-  footer a:hover{color:var(--ink);}
-  footer .flinks{display:flex;align-items:center;gap:10px;}   /* About · Our research (2026-10-20) */
-  footer a[aria-current="page"]{color:var(--ink);}
-  /* opens in a new tab: Phosphor arrow-square-out as a mask, so it takes the link's color (gray, dark on hover) */
-  footer .fext{display:inline-flex;align-items:center;gap:4px;}
-  footer .fext::after{content:'';width:12px;height:12px;background:currentColor;-webkit-mask:url(static/icon-arrow-square-out.svg) center/contain no-repeat;mask:url(static/icon-arrow-square-out.svg) center/contain no-repeat;}
-  @media (max-width:700px){footer{padding:22px 20px 36px;flex-direction:column;gap:10px;text-align:center;}}
 
   /* ---------- VEX AI SOC MENU ---------- */
-  .nav-drop{position:relative;}
-  .nav-drop-btn{padding:0;border:0;background:none;font-family:inherit;cursor:pointer;gap:6px;}
-  .nav-caret{width:14px;height:14px;background:currentColor;-webkit-mask:url(static/icon-chevron-down.svg) center/contain no-repeat;mask:url(static/icon-chevron-down.svg) center/contain no-repeat;transition:transform 0.2s ease;}
-  .nav-drop-btn[aria-expanded="true"]{color:var(--ink);}
-  .nav-drop-menu a[aria-current="page"] b{color:var(--pink-text);}
-  .nav-list a[aria-current="page"] .nav-link{color:var(--pink-text);}
-  .nav-drop-btn[aria-expanded="true"] .nav-caret{transform:rotate(180deg);}
-  .nav-drop-btn:focus-visible{outline:2px solid var(--pink);outline-offset:4px;border-radius:2px;}
-  .nav-drop-menu{position:absolute;top:calc(100% + 14px);left:-16px;z-index:5;width:300px;padding:8px;display:flex;flex-direction:column;
-    background:#fff;border:1px solid var(--gray-line);border-radius:2px;box-shadow:0 12px 32px -12px rgba(11,12,13,0.25);}
-  .nav-drop-menu[hidden]{display:none;}   /* the display:flex above would otherwise beat [hidden] */
-  .nav-drop-menu a{display:flex;flex-direction:column;gap:2px;padding:10px 12px;border-radius:2px;text-decoration:none;}
-  .nav-drop-menu a:hover,.nav-drop-menu a:focus-visible{background:var(--surface-alt);outline:none;}
-  .nav-drop-menu b{font-weight:600;font-size:15px;line-height:1.4;color:var(--ink);}
-  .nav-drop-menu a:hover b{color:var(--pink-text);}
-  .nav-drop-menu span{font-size:13px;line-height:1.45;color:var(--surface-dark);}
-  /* phones: the three pages as a group in the menu panel */
-  .nav-group-label{display:block;margin-bottom:8px;font-family:var(--mono);font-weight:500;font-size:14px;letter-spacing:0.12em;text-transform:uppercase;color:var(--surface-dark);}
-  .nav-sublist{list-style:none;margin:0;padding:0 0 0 12px;display:flex;flex-direction:column;gap:16px;}
-  .nav-list .nav-sublist li{padding:0;border:0;}
-  /* the whole list: an even 16px rhythm and dividers in the page's own gray */
-  .nav-list{gap:16px;}
-  .nav-list > li{padding-bottom:16px;border-bottom-color:var(--gray-line);}
-  .nav-list a{gap:2px;}   /* each line sits with its title */
-  @media (prefers-reduced-motion: reduce){ .nav-caret{transition:none;} }
+
+  /* ---------- DOTS BANNER ---------- */
+  .promo{background:var(--pink);color:#fff;padding:11px var(--gutter);}
+  .promo-in{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:center;gap:24px;}
+  .promo-copy{margin:0;display:flex;align-items:center;gap:16px;font-size:16px;line-height:24px;white-space:nowrap;}
+  .promo-copy b{font-weight:800;}
+  .promo-logo{width:28px;height:28px;margin:-1px;}
+  .promo-link{display:inline-flex;align-items:center;gap:8px;padding:1px 2px;border-radius:2px;color:#fff;font-weight:500;font-size:16px;line-height:24px;text-decoration:none;white-space:nowrap;}
+  .promo-link img{width:16px;height:16px;transition:transform 0.2s ease;}
+  .promo-link:hover{text-decoration:underline;}
+  .promo-link:hover img{transform:translateX(3px);}
+  .promo-link:focus-visible{outline:2px solid #fff;outline-offset:2px;}
+  @media (max-width:760px){ .promo-line{display:none;} }
+  @media (max-width:400px){ .promo-in{gap:12px;} .promo-copy{gap:10px;font-size:14px;} .promo-link{font-size:14px;} }
+  @media (max-width:330px){ .promo-logo{display:none;} }
+  @media (prefers-reduced-motion: reduce){ .promo-link img{transition:none;} }
 </style>
 </head>
 <body>
 
   <div class="classbar">UNMANNED · SIMPLY SECURE</div>
+  <aside class="promo" aria-label="Introducing Dots">
+    <div class="promo-in">
+      <p class="promo-copy"><b>Introducing Dots</b><img class="promo-logo" src="static/dots-logo-ring.svg" width="28" height="28" alt=""><span class="promo-line">The modern approach to offensive security.</span></p>
+      <a class="promo-link" href="/dots/">Meet your Dot <img src="static/icon-arrow-right-white.svg" width="16" height="16" alt=""></a>
+    </div>
+  </aside>
 
   <!-- ============================================================
        HEADER (sticky)

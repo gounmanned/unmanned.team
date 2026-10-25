@@ -19,49 +19,15 @@
 <meta property="og:image:alt" content="VEX: Don’t get hacked" />
 <meta name="twitter:card" content="summary_large_image" />
 <link rel="stylesheet" href="https://cdn.unmanned.team/css/global.css">
+<link rel="stylesheet" href="../static/site.css">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;800&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --ink:#0b0c0d;
-    --white:#fcfcfa;
-    --pink:#e01280;
-    --pink-text:#d1107a;     /* pink for TEXT on light backgrounds (passes 4.5:1) */
-    --gray-line:#dcdcd8;
-    --gray-faint:#c4c4c4;
-    --surface-dark:#6c6c70;
-    --surface-gray:#f7f7f7;
-    --body:#2b2b2b;
-    --go-text:#0e7c52;       /* green for text / GET badges (passes 4.5:1) */
-    --sev-1:#dc2626;         /* red: "missed" / DELETE (white text on it passes 4.5:1) */
-    --classbar-h:26px;
-    --mono:'JetBrains Mono',ui-monospace,monospace;
-  }
-  *{box-sizing:border-box;}
-  html{overflow-x:hidden;scroll-behavior:smooth;scrollbar-gutter:stable;}
-  body{margin:0;padding-top:var(--classbar-h);background:var(--surface);color:var(--ink);-webkit-font-smoothing:antialiased;}
   h1,h2,h3,p{margin:0;}
-  /* line breaks: headlines get even line lengths, body text avoids a single word alone on its last line
-     (browsers that don't support these just wrap as before) */
-  h1,h2,h3,h4{text-wrap:balance;}
-  p,li{text-wrap:pretty;}
-  a{color:inherit;}
-  ::selection{background:var(--pink);color:#fff;}
-  a:focus-visible,button:focus-visible{outline:1.5px solid var(--pink);outline-offset:4px;}
   .wrap{width:min(1100px,calc(100% - 48px));margin:0 auto;}
   code{font-family:var(--mono);font-size:0.92em;color:var(--ink);}
 
   /* ---------- STATUS DOT ---------- */
-  .status-dot{
-    width:8px;height:8px;border-radius:50%;background:var(--pink);
-    box-shadow:0 0 0 0 rgba(224,18,128,0.5);animation:pulse 2.2s infinite;flex-shrink:0;display:inline-block;
-  }
-  @keyframes pulse{
-    0%{box-shadow:0 0 0 0 rgba(224,18,128,0.45);}
-    70%{box-shadow:0 0 0 8px rgba(224,18,128,0);}
-    100%{box-shadow:0 0 0 0 rgba(224,18,128,0);}
-  }
-  .eyebrow-label{font-size:11px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;color:var(--surface-dark);display:flex;align-items:center;gap:11px;}
 
   /* ---------- CLASSIFICATION BAR ---------- */
   .classbar{
@@ -71,35 +37,25 @@
 
   /* ---------- STICKY HEADER ----------
      Same header as the other pages. On this page the logo isn't a link and there are no nav links (for now). */
-  .site-top{position:sticky;top:var(--classbar-h);z-index:50;}
   .site-header{background:var(--surface);border-bottom:1px solid var(--gray-line);box-shadow:0 4px 8px -4px rgba(11,12,13,0.1);}
-  .header-inner{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:18px 0;}
-  .header-left{display:flex;align-items:center;gap:16px;min-width:0;}
   .brand{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:800;line-height:1.5;letter-spacing:0.01em;color:var(--ink);}
-  .brand .status-dot{animation-iteration-count:2;} /* header logo dot ripples twice, then rests */
-  .brand-tag{font-size:11px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;color:var(--surface-dark);white-space:nowrap;}
 
   /* ---------- HIDE ON SCROLL ----------
      Scrolling down slides the class bar and header up out of view; scrolling up brings them back.
      The script at the bottom toggles html.header-hidden. */
   .classbar{transition:transform 0.4s cubic-bezier(0.49,0.025,0.685,1), opacity 0.4s cubic-bezier(0.49,0.025,0.685,1);}
-  .site-top .site-header{position:relative;z-index:1;transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);}
-  html.header-hidden .classbar{transform:translateY(-100%);opacity:0;}
-  html.header-hidden .site-top .site-header{transform:translateY(calc(-100% - var(--classbar-h)));}
-  html.header-hidden .site-top{pointer-events:none;} /* the hidden header's empty box stays put; let taps reach what's under it */
+  html.header-hidden .classbar{transform:translateY(-100%);opacity:0;} /* the hidden header's empty box stays put; let taps reach what's under it */
 
   @media (max-width:700px){
     :root{--classbar-h:24px;} /* the top bar is shorter on phones (smaller text) */
     .classbar{font-size:8px;}
   }
-  @media (max-width:560px){.brand-tag{display:none;}}
 
   /* ---------- HERO ---------- */
   .hero{position:relative;overflow:hidden;padding:96px 0 72px;}
   .hero-backdrop{position:absolute;top:0;left:50%;margin-left:-1468px;pointer-events:none;}
   .hero .wrap{position:relative;z-index:1;display:flex;flex-direction:column;align-items:flex-start;gap:24px;}
   .hero h1{font-weight:600;font-size:clamp(40px,6vw,70px);line-height:0.99;letter-spacing:-0.03em;}
-  .lede{font-size:16px;line-height:1.75;color:var(--body);max-width:680px;}
   .base-url{
     display:flex;align-items:center;gap:12px;padding:12px 12px 12px 16px;max-width:100%;
     background:var(--surface-alt);border:1px solid var(--gray-line);border-radius:4px;
@@ -116,45 +72,15 @@
   /* ---------- COPY BUTTON (same pattern as the install page) ----------
      Copies the base URL or a code panel's code. The tooltip shows on hover / keyboard focus
      and says "Copied" for a moment after a click. */
-  .copy-btn{position:relative;flex-shrink:0;display:flex;padding:2px;border:none;background:none;cursor:pointer;border-radius:4px;}
-  .copy-btn:hover{background:rgba(11,12,13,0.06);}
-  .copy-btn img{width:20px;height:20px;display:block;}
-  .tooltip{
-    position:absolute;top:calc(100% + 12px);left:50%;transform:translateX(-50%) translateY(-4px);
-    padding:8px 12px;border-radius:4px;background:var(--surface-dark);color:#fff;
-    font-family:var(--font-sans);font-size:13px;line-height:normal;white-space:nowrap;
-    filter:drop-shadow(0 6px 4px rgba(0,0,0,0.16));
-    opacity:0;visibility:hidden;pointer-events:none;
-    transition:opacity 0.15s ease, transform 0.15s ease, visibility 0s linear 0.15s;z-index:5;
-  }
-  .tooltip::before{
-    content:'';position:absolute;bottom:100%;left:50%;margin-left:-8px;
-    border:8px solid transparent;border-top:0;border-bottom-color:var(--surface-dark);
-  }
-  .copy-btn:hover .tooltip,.copy-btn:focus-visible .tooltip,.copy-btn.is-copied .tooltip{
-    opacity:1;visibility:visible;transform:translateX(-50%) translateY(0);transition:opacity 0.15s ease, transform 0.15s ease, visibility 0s;
-  }
-  .visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
-  .code-head .tooltip{left:auto;right:-6px;transform:translateY(-4px);} /* keep the tooltip inside the panel */
-  .code-head .tooltip::before{left:auto;right:8px;margin-left:0;}
-  .code-head .copy-btn:hover .tooltip,.code-head .copy-btn:focus-visible .tooltip,.code-head .copy-btn.is-copied .tooltip{transform:translateY(0);}
 
   /* ---------- BODY: JUMP MENU + CONTENT ---------- */
   .api-body{border-top:1px solid var(--gray-line);}
   .api-layout{display:grid;grid-template-columns:240px minmax(0,804px);justify-content:space-between;padding-bottom:96px;}
-
-  /* jump menu, desktop: a sidebar that stays in view below the header (and moves up when the header hides) */
-  .jump{position:sticky;top:calc(var(--classbar-h) + var(--top-h, 61px) - 40px);align-self:start;padding-top:64px;transition:top 0.3s cubic-bezier(0.4,0,0.2,1);}
-  html.header-hidden .jump{top:-40px;}
-  .jump-label{font-size:11px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;color:var(--surface-dark);margin-bottom:16px;}
-  .jump-toggle{display:none;}
   .jump-list{list-style:none;margin:0;padding:0;}
   .jump-link{
     display:block;padding:10px 0 12px 16px;border-left:1px solid var(--gray-line);
     font-weight:500;font-size:14px;line-height:1.5;color:var(--body);text-decoration:none;transition:color 0.2s ease;
-  }
-  .jump-link:hover{color:var(--pink-text);}
-  .jump-link.is-active{border-left:2px solid var(--pink);padding-left:15px;font-weight:600;color:var(--ink);} /* the section you're reading */
+  } /* the section you're reading */
 
   /* ---------- SECTIONS ---------- */
   .api-section{display:flex;flex-direction:column;gap:56px;padding:64px 0 40px;scroll-margin-top:calc(var(--classbar-h) + var(--top-h, 61px) - 40px);}
@@ -197,37 +123,11 @@
   .req{color:var(--pink-text);}
   .opt{color:var(--surface-dark);}
 
-  /* code panel: gray header (file, language, copy) over a light code body */
-  .code-panel{border:1px solid var(--gray-line);border-radius:4px;background:var(--surface-gray);}
-  .code-head{display:flex;align-items:center;gap:10px;padding:8px 10px 8px 16px;background:var(--surface-alt);border-bottom:1px solid var(--gray-line);border-radius:4px 4px 0 0;}
-  .code-file{font-family:var(--mono);font-weight:500;font-size:12px;color:var(--ink);}
-  .code-lang{flex:1;font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--pink-text);}
-  .code-panel pre{margin:0;padding:16px 16px 18px;overflow-x:auto;} /* long lines scroll sideways inside the panel */
-  .code-panel pre code{font-size:12.5px;line-height:1.7;white-space:pre;}
-  /* code colours (all pass 4.5:1 on the light panel) */
-  .t-fn{color:#2f5f96;}
-  .t-kw{color:var(--pink-text);}
-  .t-str{color:var(--go-text);}
-  .t-num{color:#8a5a00;}
-  .t-key{color:#7a3fc4;}
-  .t-cmnt{color:var(--surface-dark);font-style:italic;}
-
   /* ---------- JUMP MENU + TABLES ON SMALLER SCREENS ---------- */
   @media (max-width:900px){
     .api-layout{grid-template-columns:minmax(0,1fr);}
-    /* the menu becomes a sticky bar under the header; tapping it opens the list */
-    .jump,html.header-hidden .jump{z-index:40;}
-    .jump{top:calc(var(--classbar-h) + var(--top-h, 61px));margin:0 calc(50% - 50vw);padding:0;background:var(--surface-gray);border-bottom:1px solid var(--gray-line);}
-    .jump-label{display:none;}
-    .jump-toggle{
-      display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;
-      padding:10px 24px;border:none;background:none;cursor:pointer;text-align:left;font:inherit;color:var(--ink);
-    }
     .jump-toggle-text{display:flex;flex-direction:column;}
-    .jump-toggle-label{font-size:10px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;color:var(--surface-dark);}
     .jump-current{font-weight:600;font-size:14px;line-height:1.5;}
-    .jump-toggle img{width:20px;height:20px;transition:transform 0.2s ease;}
-    .jump.is-open .jump-toggle img{transform:rotate(180deg);}
     .jump-list{
       display:none;position:absolute;top:100%;left:0;right:0;max-height:calc(100vh - 160px);overflow-y:auto;overscroll-behavior:contain;
       padding:8px 24px 16px;background:var(--surface);border-bottom:1px solid var(--gray-line);box-shadow:0 12px 24px -12px rgba(11,12,13,0.18);
@@ -235,7 +135,6 @@
     .jump.is-open .jump-list{display:block;}
     .jump-link{padding:12px 0 12px 16px;}
     .jump-link.is-active{padding-left:15px;}
-    html.header-hidden .jump{top:0;}
     .api-section{scroll-margin-top:calc(var(--classbar-h) + var(--top-h, 61px) + 64px);}
     /* 4) the page behind the open menu doesn't scroll */
     html.jump-open{overflow:hidden;} /* lock html only: locking body too would break the sticky bar */
@@ -259,34 +158,9 @@
   }
 
   /* ---------- FOOTER ---------- */
-  footer{
-    border-top:1px solid var(--gray-line);padding:28px 56px 40px;display:flex;justify-content:space-between;align-items:center;
-    font-size:10.5px;line-height:1.5;color:var(--surface-dark);text-transform:uppercase;letter-spacing:0.08em;
-  }
-  footer a{text-decoration:none;}
-  footer a:hover{color:var(--ink);}
-  footer .flinks{display:flex;align-items:center;gap:10px;}   /* About · Our research (2026-10-20) */
-  footer a[aria-current="page"]{color:var(--ink);}
-  /* opens in a new tab: Phosphor arrow-square-out as a mask, so it takes the link's color (gray, dark on hover) */
-  footer .fext{display:inline-flex;align-items:center;gap:4px;}
-  footer .fext::after{content:'';width:12px;height:12px;background:currentColor;-webkit-mask:url(../static/icon-arrow-square-out.svg) center/contain no-repeat;mask:url(../static/icon-arrow-square-out.svg) center/contain no-repeat;}
-  @media (max-width:700px){footer{padding:22px 20px 36px;flex-direction:column;gap:10px;text-align:center;}}
 
   /* ---------- BACK TO TOP ----------
      Floats in the bottom corner when you scroll back up after reading down the page; hides again when you scroll down. */
-  .to-top{
-    position:fixed;right:24px;bottom:24px;z-index:45;display:flex;align-items:center;gap:8px;height:44px;padding:0 16px 0 12px;
-    background:var(--surface);border:1px solid var(--gray-line);border-radius:2px;box-shadow:0 4px 12px rgba(11,12,13,0.12);
-    font:600 14px var(--font-sans);color:var(--ink);cursor:pointer;
-    opacity:0;visibility:hidden;transform:translateY(8px);
-    transition:opacity 0.2s ease, transform 0.2s ease, visibility 0s linear 0.2s;
-  }
-  .to-top.is-shown{opacity:1;visibility:visible;transform:none;transition:opacity 0.2s ease, transform 0.2s ease;}
-  .to-top:hover{border-color:var(--ink);}
-  .to-top-icon{width:20px;height:20px;background:currentColor;transform:rotate(180deg);
-    -webkit-mask:url(../static/icon-arrow-down.svg) center/contain no-repeat;mask:url(../static/icon-arrow-down.svg) center/contain no-repeat;}
-
-  @media (max-width:700px){ .to-top{right:16px;bottom:16px;} }
 
   @media (prefers-reduced-motion: reduce){
     html{scroll-behavior:auto;}
@@ -294,66 +168,11 @@
     .classbar,.site-top .site-header,.jump,.jump-toggle img,.to-top,.to-top.is-shown{transition:none;}
   }
 
-  /* ---------- SITE NAV (as on the other pages) ---------- */
-  :root{--nav-link:#6b7280;}   /* header links (4.8:1 on white) */
+  /* ---------- SITE NAV (as on the other pages) ---------- */   /* header links (4.8:1 on white) */
   a.brand{text-decoration:none;}
-  .menu-btn{flex-shrink:0;width:32px;height:32px;padding:0;border:none;background:none;cursor:pointer;display:flex;}
-  .menu-btn img{width:32px;height:32px;display:block;}
-  .header-links{display:flex;align-items:center;gap:32px;}
-  .header-link{display:inline-flex;align-items:center;gap:4px;font-weight:600;font-size:15px;line-height:1.5;color:var(--nav-link);text-decoration:none;transition:color 0.2s ease;}
-  .header-link:hover{color:var(--ink);}
-  .header-link[aria-current="page"]{color:var(--ink);}
-  .header-link--slack{gap:8px;}
-  .header-link--slack img{width:24px;height:24px;}
-  .header-link--cta{border-bottom:1px solid var(--pink);}
-  .header-link--cta img{width:16px;height:16px;transition:transform 0.2s ease;}
-  .header-link--cta:hover img{transform:translateX(3px);}
-  .site-top .menu-btn{display:none;}
-  @media (max-width:700px){ .header-links{display:none;} .site-top .menu-btn{display:flex;} }
-  /* phones: the menu panel */
-  .nav-panel{
-    position:fixed;top:var(--classbar-h);left:0;right:0;bottom:0;z-index:55;background:var(--surface);
-    overflow-y:auto;overscroll-behavior:contain;
-    transform:translateY(-100%);visibility:hidden;
-    transition:transform 0.3s cubic-bezier(0.4,0,0.2,1), visibility 0s linear 0.3s;
-  }
-  .nav-panel.is-open{transform:translateY(0);visibility:visible;transition:transform 0.3s cubic-bezier(0.2,0.8,0.2,1), visibility 0s;}
-  html.nav-open,html.nav-open body{overflow:hidden;}
-  .nav-list{list-style:none;margin:0;padding:32px 0;display:flex;flex-direction:column;gap:13px;}
-  .nav-list li{padding-bottom:13px;border-bottom:1px solid var(--surface-alt);}
-  .nav-list a{display:flex;flex-direction:column;gap:4px;text-decoration:none;}
-  .nav-link{font-size:24px;line-height:1.5;letter-spacing:0.02em;color:var(--ink);}
-  .nav-sub{font-size:13.5px;line-height:1.5;color:var(--surface-dark);}
-  .nav-list a:hover .nav-link{color:var(--pink-text);}
-  @media (max-width:700px){ .nav-link{font-size:20px;} }
   @media (prefers-reduced-motion: reduce){ .nav-panel,.nav-panel.is-open,.header-link,.header-link--cta img{transition:none;} }
 
   /* ---------- VEX AI SOC MENU ---------- */
-  .nav-drop{position:relative;}
-  .nav-drop-btn{padding:0;border:0;background:none;font-family:inherit;cursor:pointer;gap:6px;}
-  .nav-caret{width:14px;height:14px;background:currentColor;-webkit-mask:url(../static/icon-chevron-down.svg) center/contain no-repeat;mask:url(../static/icon-chevron-down.svg) center/contain no-repeat;transition:transform 0.2s ease;}
-  .nav-drop-btn[aria-expanded="true"],.nav-drop-btn.is-current{color:var(--ink);}
-  .nav-drop-menu a[aria-current="page"] b{color:var(--pink-text);}
-  .nav-list a[aria-current="page"] .nav-link{color:var(--pink-text);}
-  .nav-drop-btn[aria-expanded="true"] .nav-caret{transform:rotate(180deg);}
-  .nav-drop-btn:focus-visible{outline:2px solid var(--pink);outline-offset:4px;border-radius:2px;}
-  .nav-drop-menu{position:absolute;top:calc(100% + 14px);left:-16px;z-index:5;width:300px;padding:8px;display:flex;flex-direction:column;
-    background:#fff;border:1px solid var(--gray-line);border-radius:2px;box-shadow:0 12px 32px -12px rgba(11,12,13,0.25);}
-  .nav-drop-menu[hidden]{display:none;}   /* the display:flex above would otherwise beat [hidden] */
-  .nav-drop-menu a{display:flex;flex-direction:column;gap:2px;padding:10px 12px;border-radius:2px;text-decoration:none;}
-  .nav-drop-menu a:hover,.nav-drop-menu a:focus-visible{background:var(--surface-alt);outline:none;}
-  .nav-drop-menu b{font-weight:600;font-size:15px;line-height:1.4;color:var(--ink);}
-  .nav-drop-menu a:hover b{color:var(--pink-text);}
-  .nav-drop-menu span{font-size:13px;line-height:1.45;color:var(--surface-dark);}
-  /* phones: the three pages as a group in the menu panel */
-  .nav-group-label{display:block;margin-bottom:8px;font-family:var(--mono);font-weight:500;font-size:14px;letter-spacing:0.12em;text-transform:uppercase;color:var(--surface-dark);}
-  .nav-sublist{list-style:none;margin:0;padding:0 0 0 12px;display:flex;flex-direction:column;gap:16px;}
-  .nav-list .nav-sublist li{padding:0;border:0;}
-  /* the whole list: an even 16px rhythm and dividers in the page's own gray */
-  .nav-list{gap:16px;}
-  .nav-list > li{padding-bottom:16px;border-bottom-color:var(--gray-line);}
-  .nav-list a{gap:2px;}   /* each line sits with its title */
-  @media (prefers-reduced-motion: reduce){ .nav-caret{transition:none;} }
 </style>
 </head>
 <body>

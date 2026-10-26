@@ -15,14 +15,12 @@ class TenantScreen {
 
         new ResizeObserver(() => this.renderTrend()).observe(document.getElementById('trend-svg'));
         this.notifications = new Notifications(this.state);
-        this.actions = new ActionMode(this.state);
     }
 
     async reload() {
         const filter = this.month ? `date=${this.month.toISOString().slice(0, 7)}` : "";
         await this.api.signals.list(filter, new CustomEvent("signal:account"));
         await this.api.signals.list(`status=O`, new CustomEvent("signal:account"));
-        this.actions.refresh();
     }
 
     async reset() {

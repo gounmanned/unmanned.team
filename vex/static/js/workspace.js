@@ -60,7 +60,7 @@ class Workspace {
                     this.rollups = {
                         managed: new ManagedRollup(state),
                         source: new SourceRollup(state),
-                        inventory: new InventoryRollup(state),
+                        dot: new DotRollup(state),
                     };
 
                     this.sidebars = {

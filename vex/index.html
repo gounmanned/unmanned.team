@@ -16,8 +16,7 @@
       <link rel="stylesheet" href="static/css/app.css?v=${v}">
       <link rel="stylesheet" href="static/css/notification.css?v=${v}">
       <link rel="stylesheet" href="static/css/managed.css?v=${v}">
-      <link rel="stylesheet" href="static/css/action.css?v=${v}">
-      <link rel="stylesheet" href="static/css/inventory.css?v=${v}">
+      <link rel="stylesheet" href="static/css/dot.css?v=${v}">
       <link rel="stylesheet" href="static/css/tenant.css?v=${v}">
       <link rel="stylesheet" href="static/css/sources.css?v=${v}">
       <link rel="stylesheet" href="static/css/backups.css?v=${v}">
@@ -27,16 +26,6 @@
   <title>VEX</title>
 </head>
 <body>
-
-  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
-    <defs>
-      <g id="radar-rings">
-        <circle class="radar-ring r1" cx="400" cy="400" r="120" fill="none" stroke="currentColor"></circle>
-        <circle class="radar-ring r2" cx="400" cy="400" r="240" fill="none" stroke="currentColor"></circle>
-        <circle class="radar-ring r3" cx="400" cy="400" r="360" fill="none" stroke="currentColor"></circle>
-      </g>
-    </defs>
-  </svg>
 
   <site-spinner></site-spinner>
   <site-overlay></site-overlay>
@@ -49,10 +38,6 @@
     <button id="notification-bell" class="bell-btn" type="button" aria-label="Notifications">
       <span class="material-symbols-outlined">notifications</span>
       <span class="bell-dot"></span>
-    </button>
-
-    <button id="action-toggle" class="action-toggle" type="button" title="Enter dot mode">
-      <span class="material-symbols-outlined">target</span>
     </button>
 
     <div class="notification-panel" id="notification-panel">
@@ -126,7 +111,7 @@
           </thead>
           <tbody></tbody>
         </table>
-        
+
         <div class="signal-board" id="signal-board"></div>
         <ul class="signal-search-results" id="signal-search-results"></ul>
       </div>
@@ -141,60 +126,12 @@
         <span class="count" id="signal-count">0 signals</span>
       </div>
 
-      <a id="open-inventory-rollup">Identities</a>
+      <a id="open-dot-rollup">Dots</a>
       <a id="open-backup-sidebar">Backups</a>
       <a id="open-source-rollup">Sources</a>
       <a id="open-signal-sidebar" class="cta">+ Add Signal</a>
     </footer>
   </main>
-
-  <main class="container" id="action-section" hidden>
-    <div id="action-screen">
-      <div class="action-banner">
-        <div class="action-banner-graphic">
-          <span class="action-banner-dot"></span>
-          <span class="action-banner-dot"></span>
-          <span class="action-banner-dot"></span>
-          <span class="action-banner-dot"></span>
-          <span class="action-banner-dot"></span>
-        </div>
-        <div class="action-banner-copy">
-          <h2 class="action-banner-title">Meet dots. The smallest member of your security team.</h2>
-          <p class="action-banner-text">Under a kilobyte, dots attach to any codebase to prevent, detect, and respond.</p>
-        </div>
-        <div class="action-banner-stat">
-          <span class="action-banner-stat-value" id="action-banner-count">—</span>
-          <span class="action-banner-stat-label">dots deployed</span>
-        </div>
-      </div>
-
-      <div class="action-body">
-        <div class="action-left">
-          <div class="action-search">
-            <span class="material-symbols-outlined">search</span>
-            <input id="action-search-input" type="text" placeholder="Filter dots" spellcheck="false">
-          </div>
-          <div class="action-dots-wrap">
-            <ul id="action-dots"></ul>
-            <div class="action-dots-empty">No matching dots</div>
-          </div>
-        </div>
-        <div class="action-mid" id="action-mid"></div>
-        <div class="action-right" id="action-right"></div>
-      </div>
-
-      <footer class="action-links" id="action-links"></footer>
-    </div>
-  </main>
-
-  <div class="action-boot" id="action-boot" aria-hidden="true">
-    <div class="action-boot-radar">
-      <svg viewBox="0 0 800 800"><use href="#radar-rings"></use></svg>
-      <span class="action-boot-sweep"></span>
-      <span class="material-symbols-outlined">target</span>
-    </div>
-    <div class="action-boot-text">Entering dot mode<span class="action-boot-caret"></span></div>
-  </div>
 
   <div class="notification-stack" id="notification-stack"></div>
 
@@ -241,51 +178,42 @@
         </div>
       </div>
     </div>
-  </site-rollup>  
+  </site-rollup>
 
   <!-- Rollups -->
 
-  <site-rollup id="inventory-screen">
-    <div class="rollup-head">
-      <span class="material-symbols-outlined rollup-head-icon">badge</span>
-      <div class="rollup-head-text">
-        <h2>Identities</h2>
-        <p>Every person, service account, and AI agent VEX protects.</p>
+  <site-rollup id="dot-screen">
+    <div class="dot-banner">
+      <div class="dot-banner-graphic">
+        <span class="dot-banner-dot"></span>
+        <span class="dot-banner-dot"></span>
+        <span class="dot-banner-dot"></span>
+        <span class="dot-banner-dot"></span>
+        <span class="dot-banner-dot"></span>
       </div>
-
-      <div class="inv-count">
-        <span class="inv-count-value" id="inv-identity-count">0</span>
-        <span class="inv-count-label">Protected identities</span>
-        <span class="inv-count-note" id="inv-identity-note"></span>
+      <div class="dot-banner-copy">
+        <h2 class="dot-banner-title">Dots</h2>
+        <p class="dot-banner-text">The smallest member of your security team — under a kilobyte, deployed to any codebase.</p>
+      </div>
+      <div class="dot-banner-stat">
+        <span class="dot-banner-stat-value" id="dot-banner-count">—</span>
+        <span class="dot-banner-stat-label">dots deployed</span>
       </div>
     </div>
 
-    <div class="inv-body">
-      <div class="inv-toolbar">
-        <div class="inv-filter" id="identity-filter" role="tablist" aria-label="Identity type"></div>
-        <div class="inv-search">
+    <div class="dot-body">
+      <div class="dot-left">
+        <div class="dot-search">
           <span class="material-symbols-outlined">search</span>
-          <input type="text" id="asset-search" placeholder="Search email, source, or platform…">
+          <input id="dot-search-input" type="text" placeholder="Filter dots" spellcheck="false">
+        </div>
+        <div class="dot-list-wrap">
+          <ul id="dot-list"></ul>
+          <div class="dot-list-empty">No matching dots</div>
         </div>
       </div>
-
-      <div class="inv-table">
-        <table id="asset-table">
-          <thead>
-            <tr>
-              <th>Status</th>
-              <th>Priority</th>
-              <th>Identity</th>
-              <th>Source</th>
-              <th>Platform</th>
-              <th>Signals</th>
-              <th>Last seen</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
+      <div class="dot-mid" id="dot-mid"></div>
+      <div class="dot-right" id="dot-right"></div>
     </div>
   </site-rollup>
 
@@ -370,20 +298,6 @@
       <ul id="file-list" class="hacker-list"></ul>
     </div>
   </site-sidebar>
-
-  <!-- Modals -->
-
-  <site-modal id="action-modal">
-    <form id="action-form">
-      <h3>New action</h3>
-      <label>Name <input name="label" required></label>
-      <label>Action ID <input name="actionId" required pattern="\d{14}" inputmode="numeric"></label>
-      <div class="modal-buttons">
-        <button type="button" data-cancel>Cancel</button>
-        <button type="submit">Add</button>
-      </div>
-    </form>
-  </site-modal>
 </body>
 
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -397,12 +311,11 @@
     <script src="static/js/table.js?v=${v}"><\/script>
     <script src="static/js/notification.js?v=${v}"><\/script>
     <script src="static/js/tenant.js?v=${v}"><\/script>
-    <script src="static/js/action.js?v=${v}"><\/script>
     <script src="static/js/sidebars/signal.js?v=${v}"><\/script>
     <script src="static/js/sidebars/backup.js?v=${v}"><\/script>
     <script src="static/js/rollups/managed.js?v=${v}"><\/script>
     <script src="static/js/rollups/sources.js?v=${v}"><\/script>
-    <script src="static/js/rollups/inventory.js?v=${v}"><\/script>
+    <script src="static/js/rollups/dot.js?v=${v}"><\/script>
   `);
 </script>
 

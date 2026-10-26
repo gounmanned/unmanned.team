@@ -192,7 +192,7 @@
   overflow: hidden; background: var(--surface);
 }
 
-/* ── HERO: INSTALL CTA ───────────────────────────────────────────────────── */
+/* ── HERO: THREATS / ALL CLEAR ───────────────────────────────────────────── */
 
 #managed-screen .managed-hero {
   position: absolute; inset: 0;
@@ -200,6 +200,10 @@
   padding: 40px;
   text-align: center;
   background: radial-gradient(60% 55% at 50% 42%, color-mix(in srgb, var(--brand) 6%, transparent), transparent 75%);
+}
+
+#managed-screen .managed-hero.is-threat {
+  --brand: var(--risk-high, #dc2626);
 }
 
 #managed-screen .managed-hero-flair {
@@ -254,7 +258,18 @@
 #managed-screen .managed-hero-title {
   margin: 0;
   font-size: 22px; font-weight: 700; letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
   color: var(--text-body);
+}
+#managed-screen .managed-hero.is-threat .managed-hero-title {
+  font-size: 44px; line-height: 1;
+  color: var(--brand);
+}
+
+#managed-screen .managed-hero-of {
+  margin-left: 4px;
+  font-size: 20px; font-weight: 600;
+  color: var(--text-faint);
 }
 
 #managed-screen .managed-hero-text {

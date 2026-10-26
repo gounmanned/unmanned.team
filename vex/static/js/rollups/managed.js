@@ -27,6 +27,7 @@ class ManagedRollup {
             await this.api.managed.signals(new CustomEvent("signal:managed"));
             this.members.forEach((_, domain) => this._settleBadge(domain));
             this._sortAccounts();
+            this._renderHero();
             if (this.selected) this._selectAccount(this.selected);
         })();
 
@@ -44,11 +45,10 @@ class ManagedRollup {
         const pending = await this.api.managed.grants("pending");
         (pending ?? []).forEach((email) => {
             const domain = email.split("@")[1];
-            this._add(domain, [domain], false);
+            this._add(domain, [], false);
         });
 
         document.querySelector('.managed-accounts-wrap').classList.toggle('empty', this.members.size === 0);
-        this.summary.setAccountCount(this.members.size);
     }
 
     _showDetail(show) {
@@ -59,6 +59,43 @@ class ManagedRollup {
     _open(domain) {
         return Object.values(this.state.signals[domain] ?? {})
             .filter(t => t.status.startsWith('O'));
+    }
+
+    _renderHero() {
+        const accounts = [...this.members.keys()].map(domain => {
+            const open = this._open(domain);
+            return {
+                domain,
+                open: open.length,
+                threats: open.filter(t => t.metadata?.threat).length,
+            };
+        });
+
+        const sum = (key) => accounts.reduce((n, a) => n + a[key], 0);
+        const open = sum('open');
+        const threats = sum('threats');
+        const affected = accounts.filter(a => a.threats);
+        const worst = affected.sort((a, b) => b.threats - a.threats)[0];
+
+        const plural = (n, word) => `${n.toLocaleString()} ${word}${n === 1 ? '' : 's'}`;
+        const title = this.hero.querySelector('.managed-hero-title');
+        const text = this.hero.querySelector('.managed-hero-text');
+        const icon = document.getElementById('managed-hero-icon');
+        const cta = document.getElementById('managed-hero-cta');
+
+        this.hero.classList.toggle('is-threat', threats > 0);
+        icon.src = threats ? 'https://cdn.unmanned.team/img/logo.png' : 'static/img/status/CH.svg';
+        cta.hidden = !threats;
+
+        if (threats) {
+            title.innerHTML = `${threats.toLocaleString()}<span class="managed-hero-of">/${open.toLocaleString()}</span>`;
+            text.textContent = `Active threats across ${affected.length.toLocaleString()} of ${plural(accounts.length, 'account')}`;
+            cta.querySelector('.managed-hero-cta-label').textContent = `Review ${worst.domain}`;
+            cta.dataset.domain = worst.domain;
+        } else {
+            title.textContent = 'All clear.';
+            text.textContent = `No active threats across ${plural(accounts.length, 'account')}`;
+        }
     }
 
     _setBadge(domain, count) {
@@ -230,6 +267,7 @@ class ManagedRollup {
         document.addEventListener("signal:managed", (ev) => {
             this.state.track(ev.signal);
             this._settleBadge(ev.signal.account);
+            this._renderHero();
         });
 
         this.list.addEventListener('click', (e) => {
@@ -252,8 +290,8 @@ class ManagedRollup {
 
         document.getElementById('managed-root-btn').addEventListener('click', () => this._enter(null));
 
-        document.getElementById('managed-install-btn').addEventListener('click', () => {
-            window.open('https://unmanned.team/install', '_blank', 'noopener');
+        document.getElementById('managed-hero-cta').addEventListener('click', (e) => {
+            this._selectAccount(e.currentTarget.dataset.domain);
         });
 
         document.getElementById('managed-invite-btn').addEventListener('click', async () => {
@@ -280,7 +318,7 @@ class ManagedSummary {
     reset() {
         this.resetAssets();
 
-        ['dots', 'coverage', 'accounts'].forEach(key => {
+        ['dots', 'coverage'].forEach(key => {
             this._el(key).innerHTML = '<span class="managed-badge-spinner"></span>';
         });
         this._el('assets').textContent = '—';
@@ -289,11 +327,6 @@ class ManagedSummary {
     resetAssets() {
         this.assets = 0;
         this.dots = 0;
-    }
-
-    setAccountCount(count) {
-        this._el('accounts').textContent = count.toLocaleString();
-        this._el('accounts-label').textContent = count === 1 ? 'Account' : 'Accounts';
     }
 
     renderAssets() {

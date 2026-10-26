@@ -1,4 +1,6 @@
 class DotRollup {
+    static platforms = ['windows', 'mac'];
+
     constructor(state) {
         this.api = state.api;
         this.list = document.getElementById('dot-list');
@@ -96,7 +98,7 @@ class DotRollup {
         const q = this.search.value.trim().toLowerCase();
         let visible = 0;
         for (const li of this.list.children) {
-            li.hidden = !li.dataset.name.toLowerCase().includes(q);
+            li.hidden = !JSON.stringify(this.dots.get(li.dataset.name)).toLowerCase().includes(q);
             if (!li.hidden) visible++;
         }
         this.wrap.classList.toggle('no-match', !visible && this.dots.size > 0);
@@ -152,10 +154,12 @@ class DotRollup {
         const total = this.sorted.length;
         const success = this.sorted.filter(a => a.status === 'T0').length;
         const rate = total ? Math.round((success / total) * 100) : 0;
+        const platform = asset.metadata.platform ?? '';
+        const icon = DotRollup.platforms.find(p => platform.toLowerCase().includes(p));
 
         return `
             <div class="dot-mid-header">
-                <img class="dot-mid-logo" src="static/img/platform/${asset.metadata.platform}.png" alt="${asset.metadata.platform}">
+                ${icon ? `<img class="dot-mid-logo" src="static/img/platform/${icon}.png" alt="" title="${platform}">` : ''}
                 <div class="dot-mid-meta">
                     <span class="dot-mid-name">${asset.name}</span>
                 </div>

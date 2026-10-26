@@ -126,8 +126,8 @@
         <span class="count" id="signal-count">0 signals</span>
       </div>
 
-      <a id="open-dot-rollup">Dots</a>
       <a id="open-backup-sidebar">Backups</a>
+      <a id="open-dot-rollup">Dots</a>
       <a id="open-source-rollup">Sources</a>
       <a id="open-signal-sidebar" class="cta">+ Add Signal</a>
     </footer>
@@ -169,11 +169,24 @@
       </div>
       <div class="managed-right" id="managed-right">
         <div class="managed-hero">
+          <section class="managed-hero-dots">
+            <span class="managed-hero-label">
+              <span class="material-symbols-outlined">adjust</span>Dots deployed
+            </span>
+            <span class="managed-hero-dots-value" id="managed-summary-dots-value">0</span>
+            <div class="managed-hero-coverage">
+              <div class="managed-hero-coverage-bar"><span id="managed-summary-coverage-fill"></span></div>
+              <p class="managed-hero-coverage-meta">
+                <strong id="managed-summary-coverage-value">—</strong> of
+                <strong id="managed-summary-identity-value">0</strong> assets fully monitored
+              </p>
+            </div>
+          </section>
+
           <dl class="managed-hero-stats">
-            <div><dt>Managed accounts</dt><dd id="managed-summary-accounts-value">0</dd></div>
-            <div><dt>Dots deployed</dt><dd id="managed-summary-identity-value">0</dd></div>
-            <div><dt>Active threats</dt><dd id="managed-summary-signals-value">0</dd></div>
-            <div><dt>Open MTTR</dt><dd id="managed-summary-mttr-value">-</dd></div>
+            <div><dt id="managed-summary-accounts-label">Managed accounts</dt><dd id="managed-summary-accounts-value">0</dd></div>
+            <div class="managed-hero-threats"><dt id="managed-summary-signals-label">Active threats</dt><dd id="managed-summary-signals-value">0</dd></div>
+            <div><dt>Open MTTR</dt><dd id="managed-summary-mttr-value">—</dd></div>
           </dl>
         </div>
       </div>

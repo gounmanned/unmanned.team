@@ -95,9 +95,18 @@
 #managed-screen .managed-account-threat {
   display: none;
   flex-shrink: 0;
-  font-size: 16px;
-  color: var(--risk-high, #dc2626);
-  font-variation-settings: 'FILL' 1;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: var(--risk-high, #dc2626);
+  font-size: 10px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: #fff;
 }
 
 #managed-screen .managed-account-item.has-threat .managed-account-threat { display: inline-flex; }
@@ -145,12 +154,8 @@
   isolation: isolate;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 40px;
-  padding: 48px 40px;
   box-sizing: border-box;
-  overflow: hidden;
+  overflow-y: auto;
 }
 
 #managed-screen .managed-hero::before {
@@ -158,39 +163,24 @@
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: radial-gradient(70% 50% at 50% 45%, color-mix(in srgb, var(--brand) 6%, transparent), transparent 70%);
+  background:
+    radial-gradient(70% 60% at 50% 45%, color-mix(in srgb, var(--brand) 5%, transparent), transparent 75%),
+    linear-gradient(to top, color-mix(in srgb, var(--brand) 5%, transparent), transparent 35%);
   pointer-events: none;
 }
 
-#managed-screen .managed-hero-stats {
-  display: flex;
-  margin: 0;
+#managed-screen .managed-hero .managed-badge-spinner {
+  width: 16px;
+  height: 16px;
+  border-color: rgba(0, 0, 0, 0.15);
+  border-top-color: var(--brand);
 }
 
-#managed-screen .managed-hero-stats > div {
-  display: flex;
-  flex-direction: column-reverse;
-  align-items: center;
-  gap: 12px;
-  padding: 0 40px;
-}
-
-#managed-screen .managed-hero-stats > div + div { border-left: 1px solid var(--line); }
-
-#managed-screen .managed-hero-stats dd {
-  margin: 0;
-  font-size: clamp(40px, 5vw, 64px);
-  letter-spacing: -0.02em;
-  font-weight: 700;
-  line-height: 1;
-  font-variant-numeric: tabular-nums;
-  color: var(--text-body);
-  transition: color 0.3s;
-}
-
-#managed-screen .managed-hero-stats dd.alert { color: var(--risk-high, #dc2626); }
-
+#managed-screen .managed-hero-label,
 #managed-screen .managed-hero-stats dt {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   font-size: 11px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -198,20 +188,106 @@
   color: var(--text-faint);
 }
 
-#managed-screen .managed-hero-stats dd .managed-badge-spinner {
-  width: 18px;
-  height: 18px;
-  border-color: rgba(0, 0, 0, 0.15);
-  border-top-color: var(--brand);
+#managed-screen .managed-hero-label .material-symbols-outlined {
+  font-size: 14px;
+  color: var(--brand);
+}
+
+/* Primary: dots deployed */
+
+#managed-screen .managed-hero-dots {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  padding: 48px 40px;
+  text-align: center;
+}
+
+#managed-screen .managed-hero-dots-value {
+  font-size: clamp(140px, 16vw, 220px);
+  font-weight: 700;
+  line-height: 0.8;
+  letter-spacing: -0.05em;
+  font-variant-numeric: tabular-nums;
+  color: var(--brand);
+}
+
+#managed-screen .managed-hero-coverage {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: min(420px, 100%);
+  margin-top: 16px;
+}
+
+#managed-screen .managed-hero-coverage-bar {
+  height: 4px;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--text-body) 8%, transparent);
+  overflow: hidden;
+}
+
+#managed-screen .managed-hero-coverage-bar span {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--brand);
+  transition: width 0.6s ease;
+}
+
+#managed-screen .managed-hero-coverage-meta {
+  margin: 0;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-faint);
+}
+
+#managed-screen .managed-hero-coverage-meta strong {
+  font-weight: 700;
+  color: var(--text-body);
+}
+
+/* Secondary: footer strip */
+
+#managed-screen .managed-hero-stats {
+  display: flex;
+  justify-content: center;
+  gap: 48px;
+  margin: 0;
+  padding: 20px 40px 28px;
+}
+
+#managed-screen .managed-hero-stats > div {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+#managed-screen .managed-hero-stats dd {
+  order: -1;
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-body);
+  transition: color 0.3s;
+}
+
+#managed-screen .managed-hero-stats dd.alert { color: var(--risk-high, #dc2626); }
+
+#managed-screen .managed-hero-threats:has(dd.alert) { cursor: pointer; }
+#managed-screen .managed-hero-threats:has(dd.alert):hover dt { color: var(--risk-high, #dc2626); }
+
+@media (prefers-reduced-motion: reduce) {
+  #managed-screen .managed-hero-coverage-bar span { transition: none; }
 }
 
 @media (max-width: 640px) {
-  #managed-screen .managed-hero-stats {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px 0;
-  }
-  #managed-screen .managed-hero-stats > div:nth-child(3) { border-left: none; }
+  #managed-screen .managed-hero-stats { flex-wrap: wrap; gap: 12px 32px; }
 }
 
 /* Two-column detail layout (after an account is selected) */

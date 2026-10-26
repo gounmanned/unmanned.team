@@ -13,7 +13,7 @@ class ManagedRollup {
         this.members.forEach((_, domain) => {
             this._setBadgeLoading(domain);
             this._setUnread(domain, false);
-            this._setThreat(domain, false);
+            this._setThreat(domain, 0);
         });
         this.summary.reset();
     }
@@ -87,12 +87,16 @@ class ManagedRollup {
         badge.innerHTML = '<span class="managed-badge-spinner"></span>';
     }
 
+    _threats(domain) {
+        return this._open(domain).filter(t => t.metadata?.threat);
+    }
+
     _settleBadge(domain) {
         const open = this._open(domain);
 
         this._setBadge(domain, open.length);
         this._setUnread(domain, open.some(t => !t.read));
-        this._setThreat(domain, open.some(t => t.metadata?.threat));
+        this._setThreat(domain, this._threats(domain).length);
     }
 
     _setUnread(domain, unread) {
@@ -100,9 +104,12 @@ class ManagedRollup {
         if (badge) badge.classList.toggle('has-unread', unread);
     }
 
-    _setThreat(domain, threat) {
+    _setThreat(domain, count) {
         const li = document.getElementById(`managed-account-${domain}`);
-        if (li) li.classList.toggle('has-threat', threat);
+        if (!li) return;
+
+        li.classList.toggle('has-threat', count > 0);
+        li.querySelector('.managed-account-threat').textContent = count > 99 ? '99+' : count;
     }
 
     _sortAccounts() {
@@ -125,7 +132,7 @@ class ManagedRollup {
                 <span class="managed-badge-content" id="managed-badge-content-${domain}"></span>
             </span>
             <span class="managed-account-name">${domain}</span>
-            <span class="managed-account-threat material-symbols-outlined" title="Active threat">warning</span>
+            <span class="managed-account-threat" title="Active threats"></span>
         `;
 
         if (enabled) li.addEventListener('click', () => {
@@ -249,6 +256,17 @@ class ManagedRollup {
             this._settleBadge(ev.signal.account);
         });
 
+        this.screen.addEventListener('click', (e) => {
+            if (!e.target.closest('.managed-hero-threats')) return;
+
+            const count = (domain) => this._threats(domain).length;
+            const domain = [...this.members.keys()]
+                .filter(d => count(d) > 0)
+                .sort((a, b) => count(b) - count(a))[0];
+
+            if (domain) this._selectAccount(domain);
+        });
+
         document.getElementById('managed-root-btn').addEventListener('click', () => {
             this.state.delegate = null;
             document.dispatchEvent(new CustomEvent('page:reset'));
@@ -287,11 +305,13 @@ class ManagedSummary {
     }
 
     resetAssets() {
-        this.identities = 0;
+        this.assets = 0;
+        this.dots = 0;
     }
 
     setAccountCount(count) {
         this._set('managed-summary-accounts-value', count.toLocaleString());
+        this._set('managed-summary-accounts-label', this._plural(count, 'Managed account'));
     }
 
     renderSignals() {
@@ -304,17 +324,28 @@ class ManagedSummary {
             : null;
 
         this._set('managed-summary-signals-value', threats.length.toLocaleString());
+        this._set('managed-summary-signals-label', this._plural(threats.length, 'Active threat'));
         this._set('managed-summary-mttr-value', median === null ? '—' : this._duration(median));
         document.getElementById('managed-summary-signals-value').classList.toggle('alert', threats.length > 0);
     }
 
     renderAssets() {
-        this._set('managed-summary-identity-value', this.identities.toLocaleString());
+        const coverage = this.assets ? this.dots / this.assets * 100 : 0;
+        const label = coverage > 0 && coverage < 10 ? coverage.toFixed(1) : Math.round(coverage);
+
+        this._set('managed-summary-identity-value', this.assets.toLocaleString());
+        this._set('managed-summary-dots-value', this.dots.toLocaleString());
+        this._set('managed-summary-coverage-value', `${label}%`);
+        document.getElementById('managed-summary-coverage-fill').style.width = this.dots ? `max(6px, ${coverage}%)` : '0';
     }
 
     _resetCounts() {
         this.resetSignals();
         this.resetAssets();
+    }
+
+    _plural(count, word) {
+        return count === 1 ? word : `${word}s`;
     }
 
     _duration(ms) {
@@ -331,10 +362,15 @@ class ManagedSummary {
 
     _setLoading() {
         ['managed-summary-accounts-value', 'managed-summary-signals-value',
-         'managed-summary-identity-value', 'managed-summary-mttr-value'].forEach(id => {
+         'managed-summary-identity-value', 'managed-summary-dots-value',
+         'managed-summary-mttr-value'].forEach(id => {
             const el = document.getElementById(id);
             if (el) el.innerHTML = '<span class="managed-badge-spinner"></span>';
         });
+
+        this._set('managed-summary-coverage-value', '—');
+        const fill = document.getElementById('managed-summary-coverage-fill');
+        if (fill) fill.style.width = '0';
     }
 
     listen() {
@@ -343,7 +379,9 @@ class ManagedSummary {
         });
 
         document.addEventListener("managed:asset", (ev) => {
-            if (ev.asset) this.identities++;
+            if (!ev.asset) return;
+            this.assets++;
+            if (ev.asset.metadata?.runtime) this.dots++;
         });
     }
 }

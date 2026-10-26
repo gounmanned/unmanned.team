@@ -15,9 +15,7 @@
   font-size: 18px; font-weight: 700; line-height: 1.1;
   font-variant-numeric: tabular-nums;
   color: var(--text-body);
-  transition: color 0.3s;
 }
-#managed-screen .managed-stats dd.alert { color: var(--risk-high, #dc2626); }
 
 #managed-screen .managed-stats dt {
   font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
@@ -28,9 +26,6 @@
   margin-left: 2px;
   font-size: 12px; font-weight: 600; color: var(--text-faint);
 }
-
-#managed-screen .managed-stat-threats:has(dd.alert) { cursor: pointer; }
-#managed-screen .managed-stat-threats:has(dd.alert):hover dt { color: var(--risk-high, #dc2626); }
 
 #managed-screen .managed-stats .managed-badge-spinner {
   width: 12px; height: 12px;

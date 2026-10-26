@@ -24,11 +24,9 @@ class ManagedRollup {
         await this.load();
 
         (async () => {
-            this.summary.open = [];
             await this.api.managed.signals(new CustomEvent("signal:managed"));
             this.members.forEach((_, domain) => this._settleBadge(domain));
             this._sortAccounts();
-            this.summary.renderSignals();
             if (this.selected) this._selectAccount(this.selected);
         })();
 
@@ -63,10 +61,6 @@ class ManagedRollup {
             .filter(t => t.status.startsWith('O'));
     }
 
-    _threats(domain) {
-        return this._open(domain).filter(t => t.metadata?.threat);
-    }
-
     _setBadge(domain, count) {
         const badge = document.getElementById(`managed-badge-content-${domain}`);
         if (!badge) return;
@@ -88,7 +82,7 @@ class ManagedRollup {
 
         this._setBadge(domain, open.length);
         this._setUnread(domain, open.some(t => !t.read));
-        this._setThreat(domain, this._threats(domain).length);
+        this._setThreat(domain, open.filter(t => t.metadata?.threat).length);
     }
 
     _setUnread(domain, unread) {
@@ -232,15 +226,6 @@ class ManagedRollup {
         document.querySelector('site-overlay').click();
     }
 
-    _openTopThreat() {
-        const count = (domain) => this._threats(domain).length;
-        const domain = [...this.members.keys()]
-            .filter(d => count(d) > 0)
-            .sort((a, b) => count(b) - count(a))[0];
-
-        if (domain) this._selectAccount(domain);
-    }
-
     listen() {
         document.addEventListener("signal:managed", (ev) => {
             this.state.track(ev.signal);
@@ -265,9 +250,6 @@ class ManagedRollup {
             if (e.target.closest('.managed-enter-btn')) this._enter(this.selected);
         });
 
-        document.querySelector('#managed-screen .managed-stat-threats')
-            .addEventListener('click', () => this._openTopThreat());
-
         document.getElementById('managed-root-btn').addEventListener('click', () => this._enter(null));
 
         document.getElementById('managed-install-btn').addEventListener('click', () => {
@@ -291,16 +273,14 @@ class ManagedRollup {
 
 class ManagedSummary {
     constructor() {
-        this.open = [];
         this.resetAssets();
         this.listen();
     }
 
     reset() {
-        this.open = [];
         this.resetAssets();
 
-        ['dots', 'coverage', 'accounts', 'threats', 'mttr'].forEach(key => {
+        ['dots', 'coverage', 'accounts'].forEach(key => {
             this._el(key).innerHTML = '<span class="managed-badge-spinner"></span>';
         });
         this._el('assets').textContent = '—';
@@ -313,22 +293,7 @@ class ManagedSummary {
 
     setAccountCount(count) {
         this._el('accounts').textContent = count.toLocaleString();
-        this._el('accounts-label').textContent = this._plural(count, 'Account');
-    }
-
-    renderSignals() {
-        const threats = this.open.filter(s => s.metadata?.threat);
-        const ages = threats.map(s => Date.now() - new Date(s.created)).sort((a, b) => a - b);
-
-        const mid = Math.floor(ages.length / 2);
-        const median = ages.length
-            ? (ages.length % 2 ? ages[mid] : (ages[mid - 1] + ages[mid]) / 2)
-            : null;
-
-        this._el('threats').textContent = threats.length.toLocaleString();
-        this._el('threats').classList.toggle('alert', threats.length > 0);
-        this._el('threats-label').textContent = this._plural(threats.length, 'Threat');
-        this._el('mttr').textContent = median === null ? '—' : this._duration(median);
+        this._el('accounts-label').textContent = count === 1 ? 'Account' : 'Accounts';
     }
 
     renderAssets() {
@@ -344,22 +309,7 @@ class ManagedSummary {
         return document.getElementById(`managed-stat-${key}`);
     }
 
-    _plural(count, word) {
-        return count === 1 ? word : `${word}s`;
-    }
-
-    _duration(ms) {
-        const minutes = Math.round(ms / 60000);
-        if (minutes < 60) return `${minutes}m`;
-        if (minutes < 1440) return `${Math.round(minutes / 60)}h`;
-        return `${Math.round(minutes / 1440)}d`;
-    }
-
     listen() {
-        document.addEventListener("signal:managed", (ev) => {
-            if (ev.signal.status.startsWith('O')) this.open.push(ev.signal);
-        });
-
         document.addEventListener("managed:asset", (ev) => {
             if (!ev.asset) return;
             this.assets++;

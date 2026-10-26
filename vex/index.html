@@ -136,7 +136,7 @@
   <div class="notification-stack" id="notification-stack"></div>
 
   <!-- Managed -->
-
+  
   <site-rollup id="managed-screen">
     <div class="rollup-head">
       <span class="material-symbols-outlined rollup-head-icon">group</span>
@@ -144,9 +144,21 @@
         <h2>Welcome back</h2>
         <p>Switch between the accounts you manage or invite a new one.</p>
       </div>
+
+      <dl class="managed-stats">
+        <div>
+          <dt>Dots deployed</dt>
+          <dd><span id="managed-stat-dots">0</span><span class="managed-stat-of">/<span id="managed-stat-assets">0</span></span></dd>
+        </div>
+        <div><dt>Coverage</dt><dd id="managed-stat-coverage">—</dd></div>
+        <div><dt id="managed-stat-accounts-label">Accounts</dt><dd id="managed-stat-accounts">0</dd></div>
+        <div class="managed-stat-threats"><dt id="managed-stat-threats-label">Threats</dt><dd id="managed-stat-threats">0</dd></div>
+        <div><dt>Open MTTR</dt><dd id="managed-stat-mttr">—</dd></div>
+      </dl>
+
       <button class="rollup-head-action" id="managed-root-btn">
         <span class="rollup-head-action-badge">
-            <img src="https://cdn.unmanned.team/img/logo.png" alt="">
+          <img src="https://cdn.unmanned.team/img/logo.png" alt="">
         </span>
         Enter root account
         <span class="material-symbols-outlined">arrow_forward</span>
@@ -158,35 +170,36 @@
         <div class="managed-accounts-wrap">
           <ul id="managed-accounts"></ul>
         </div>
-        <div class="managed-invite" id="managed-invite">
-          <div class="managed-invite-row">
-            <input id="managed-invite-input" type="text" placeholder="Invite account by email">
-            <button id="managed-invite-btn">
-                <span class="material-symbols-outlined">person_add</span>
-            </button>
-          </div>
+        <div class="managed-invite">
+          <input id="managed-invite-input" type="text" placeholder="Invite account by email">
+          <button id="managed-invite-btn">
+            <span class="material-symbols-outlined">person_add</span>
+          </button>
         </div>
       </div>
-      <div class="managed-right" id="managed-right">
-        <div class="managed-hero">
-          <section class="managed-hero-dots">
-            <span class="managed-hero-label">Dots deployed</span>
-            <span class="managed-hero-dots-value" id="managed-summary-dots-value">0</span>
-            <div class="managed-hero-coverage">
-              <div class="managed-hero-coverage-bar"><span id="managed-summary-coverage-fill"></span></div>
-              <p class="managed-hero-coverage-meta">
-                <strong id="managed-summary-coverage-value">—</strong> of
-                <strong id="managed-summary-identity-value">0</strong> assets fully monitored
-              </p>
-            </div>
-          </section>
 
-          <dl class="managed-hero-stats">
-            <div><dt id="managed-summary-accounts-label">Managed accounts</dt><dd id="managed-summary-accounts-value">0</dd></div>
-            <div class="managed-hero-threats"><dt id="managed-summary-signals-label">Active threats</dt><dd id="managed-summary-signals-value">0</dd></div>
-            <div><dt>Open MTTR</dt><dd id="managed-summary-mttr-value">—</dd></div>
-          </dl>
+      <div class="managed-right">
+        <div class="managed-hero">
+          <div class="managed-hero-flair">
+            <span class="managed-hero-ring">
+              <i style="--a: 20deg"></i><i style="--a: 140deg"></i><i style="--a: 260deg"></i>
+            </span>
+            <span class="managed-hero-ring managed-hero-ring--inner">
+              <i style="--a: 80deg"></i><i style="--a: 200deg"></i><i style="--a: 320deg"></i>
+            </span>
+            <img src="https://cdn.unmanned.team/img/logo.png" alt="VEX">
+          </div>
+
+          <h3 class="managed-hero-title">Put a dot everywhere.</h3>
+          <p class="managed-hero-text">Under a kilobyte and deployed in seconds.</p>
+
+          <button class="managed-hero-cta" id="managed-install-btn">
+            How to install dots
+            <span class="material-symbols-outlined">arrow_forward</span>
+          </button>
         </div>
+
+        <div class="managed-detail" hidden></div>
       </div>
     </div>
   </site-rollup>

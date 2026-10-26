@@ -154,12 +154,15 @@ class DotRollup {
         const total = this.sorted.length;
         const success = this.sorted.filter(a => a.status === 'T0').length;
         const rate = total ? Math.round((success / total) * 100) : 0;
-        const platform = asset.metadata.platform ?? '';
-        const icon = DotRollup.platforms.find(p => platform.toLowerCase().includes(p));
+        const { runtime } = asset.metadata;
+
+        const logo = runtime
+            ? `<img class="dot-mid-logo" src="static/img/runtime/${runtime}.png" alt="" title="${runtime}">`
+            : `<span class="dot-mid-logo dot-mid-logo--empty"></span>`;
 
         return `
             <div class="dot-mid-header">
-                ${icon ? `<img class="dot-mid-logo" src="static/img/platform/${icon}.png" alt="" title="${platform}">` : ''}
+                ${logo}
                 <div class="dot-mid-meta">
                     <span class="dot-mid-name">${asset.name}</span>
                 </div>
@@ -228,8 +231,12 @@ class DotRollup {
 
     _outputText(action) {
         if (!action.value) return '';
-        const bytes = Uint8Array.from(atob(action.value), c => c.charCodeAt(0));
-        return new TextDecoder().decode(bytes);
+        try {
+            const bytes = Uint8Array.from(atob(action.value), c => c.charCodeAt(0));
+            return new TextDecoder().decode(bytes);
+        } catch {
+            return '';
+        }
     }
 
     _escape(s) {

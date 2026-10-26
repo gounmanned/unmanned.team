@@ -340,6 +340,15 @@
   box-sizing: border-box;
 }
 
+.dot-mid-logo--empty {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    color: var(--muted, #c4c4c4);
+}
+
 #dot-screen .dot-mid-meta {
   display: flex;
   flex-direction: column;

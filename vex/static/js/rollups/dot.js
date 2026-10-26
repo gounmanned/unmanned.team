@@ -9,7 +9,7 @@ class DotRollup {
         this.bannerCount = document.getElementById('dot-banner-count');
         this.dots = new Map();
         this.selected = null;
-        this.sorted = [];                // actions in display order
+        this.sorted = [];
         this.selectedKey = null;
 
         this.search.addEventListener('input', () => this._filter());
@@ -95,7 +95,6 @@ class DotRollup {
         `;
     }
 
-    // assets still missing a dot sort to the top — those are the ones to deploy to
     static byDot(a, b) {
         return (a.metadata.runtime ? 1 : 0) - (b.metadata.runtime ? 1 : 0)
             || a.name.localeCompare(b.name);

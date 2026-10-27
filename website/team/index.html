@@ -57,6 +57,7 @@
      Everything inside .slack is drawn to look like Slack: Lato, Slack's colors and spacing. */
 
   /* ---------- HERO ---------- */
+  .text-link:hover img{transform:translateX(3px);}
 
   /* ---------- SECTION SHELL ---------- */
 
@@ -125,11 +126,15 @@
   .tm-backers .tm-wrap{display:flex;flex-direction:column;gap:24px;padding:64px 0;}
   .tm-logo{display:grid;place-items:center;aspect-ratio:1;background:var(--surface);border:1px solid var(--gray-faint);border-radius:2px;}
   .tm-logo img{width:58.75%;height:auto;}
+  /* "Visit TheGP": the site's text link, opening a new tab; the external icon takes the link's pink */
+  .tm-visit{grid-column:1 / -1;justify-self:start;}
+  .tm-visit::after{content:'';width:16px;height:16px;background:currentColor;-webkit-mask:url(../static/icon-arrow-square-out.svg) center/contain no-repeat;mask:url(../static/icon-arrow-square-out.svg) center/contain no-repeat;}
+  .tm-visit:hover{text-decoration:underline;text-underline-offset:3px;}
   @media (min-width:901px){
     .tm-backers .tm-grid{grid-template-columns:repeat(2, minmax(0,1fr));}
     .tm-backers .tm-person{display:grid;grid-template-columns:160px minmax(0,1fr);column-gap:24px;row-gap:16px;align-content:start;}
     .tm-backers .tm-person > :first-child{grid-row:1 / span 2;}
-    .tm-backers .tm-name,.tm-backers .tm-bio{grid-column:2;}
+    .tm-backers .tm-name,.tm-backers .tm-bio,.tm-backers .tm-visit{grid-column:2;}
   }
 
   /* 900px and under: a compact person header. Every photo (David's too) is the same 140px with the role and name beside
@@ -297,6 +302,7 @@
           <div class="tm-logo"><img src="static/thegp.png" width="94" height="48" alt="TheGP logo" loading="lazy"></div>
           <div class="tm-name"><p class="tm-role">Partner &amp; investor</p><h3>The General Partnership (TheGP)</h3></div>
           <p class="tm-bio">Unmanned is backed by TheGP, a firm that pairs investment with hands-on company-building support. Its team brings experience across engineering, hiring and bringing products to market.</p>
+          <a class="text-link tm-visit" href="https://www.thegp.com/" target="_blank" rel="noopener" aria-label="Visit TheGP (opens in a new tab)">Visit TheGP</a>
         </li>
       </ul>
     </div>

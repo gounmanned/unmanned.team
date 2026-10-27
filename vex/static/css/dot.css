@@ -42,30 +42,18 @@
   display: flex;
   align-items: center;
   gap: 18px;
-  padding: 12px 22px;
+  padding: 16px 24px;
   border-bottom: 1px solid var(--dot-line);
-  background:
-    radial-gradient(circle at 16px 16px, var(--dot-faint) 15.5px, transparent 16px) 0 0 / 34px 34px,
-    var(--dot-surface);
-}
-
-#dot-screen .dot-banner-graphic {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  flex-shrink: 0;
+  background: var(--dot-faint);
 }
 
 #dot-screen .dot-banner-dot {
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
-  box-shadow: var(--dot-shade);
+  background: var(--dot-accent);
 }
-
-#dot-screen .dot-banner-dot:nth-child(1) { width: 22px; height: 22px; background: var(--dot-cyan); }
-#dot-screen .dot-banner-dot:nth-child(2) { width: 17px; height: 17px; background: var(--dot-green); }
-#dot-screen .dot-banner-dot:nth-child(3) { width: 13px; height: 13px; background: var(--dot-purple); }
-#dot-screen .dot-banner-dot:nth-child(4) { width: 10px; height: 10px; background: var(--dot-yellow); }
-#dot-screen .dot-banner-dot:nth-child(5) { width: 7px;  height: 7px;  background: var(--dot-accent); box-shadow: none; }
 
 #dot-screen .dot-banner-copy {
   min-width: 0;
@@ -291,7 +279,6 @@
 }
 
 #dot-screen .dot-item.no-dot .dot-item-name { color: var(--dot-body-soft); }
-#dot-screen .dot-item.no-dot .dot-item-seen { color: var(--dot-accent-text); }
 
 #dot-screen .dot-list-empty {
   display: none;

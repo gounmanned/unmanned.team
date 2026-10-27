@@ -16,6 +16,7 @@ class DotRollup {
 
         this.search.addEventListener('input', () => this._filter());
         this.mid.addEventListener('click', (e) => {
+            if (e.target.closest('.dot-mid-delete')) return this._deleteAsset();
             const li = e.target.closest('.dot-action-item');
             if (li) this._selectAction(li.dataset.key);
         });
@@ -77,13 +78,9 @@ class DotRollup {
         const mark = runtime
             ? `<span class="dot-item-status dot-item-status--${this._freshness(asset.updated)}" title="${runtime}"></span>`
             : `<span class="dot-item-nodot material-symbols-outlined">radio_button_unchecked</span>`;
-        const source = asset.source
-            ? `<img class="dot-item-source" src="static/img/source/${asset.source}.png" alt="" title="${asset.source}">`
-            : '';
-
         return `
             <li class="dot-item ${runtime ? '' : 'no-dot'}" data-name="${asset.name}">
-                <span class="dot-item-mark">${mark}${source}</span>
+                <span class="dot-item-mark">${mark}</span>
                 <span class="dot-item-name">${asset.name}</span>
                 <span class="dot-item-seen">${runtime ? this._ago(asset.updated) : 'No dot'}</span>
             </li>
@@ -121,6 +118,16 @@ class DotRollup {
         this._renderActions(asset, actions);
     }
 
+    async _deleteAsset() {
+        const name = this.selected;
+        if (!confirm(`Delete ${name}?`)) return;
+
+        await SiteSpinner.withLoading(() => this.api.inventory.delete(name));
+        this.dots.delete(name);
+        this._clearSelection();
+        this._renderList();
+    }
+
     _renderActions(asset, actions) {
         this.sorted = [...actions].sort((a, b) => b.created.localeCompare(a.created));
 
@@ -130,7 +137,7 @@ class DotRollup {
                     ${this.sorted.map(a => this._actionRow(a)).join('')}
                 </ul>
             </div>
-        ` : this._placeholder('dot-empty', 'history', 'No activity');
+        ` : this._placeholder('dot-empty', 'No activity');
 
         this.mid.innerHTML = this._actionsHeader(asset) + list;
 
@@ -176,6 +183,10 @@ class DotRollup {
                         <span class="dot-mid-stat-label">success</span>
                     </div>
                 </div>
+                <span class="dot-mid-divider"></span>
+                <button type="button" class="dot-mid-delete" title="Delete asset" aria-label="Delete asset">
+                    <span class="material-symbols-outlined">delete</span>
+                </button>
             </div>
         `;
     }
@@ -226,7 +237,7 @@ class DotRollup {
 
     _clearOutput() {
         this.selectedKey = null;
-        this.right.innerHTML = this._placeholder('dot-watermark', 'terminal', 'Select an action');
+        this.right.innerHTML = this._placeholder('dot-watermark', 'Select an action');
     }
 
     _outputText(action) {
@@ -244,8 +255,8 @@ class DotRollup {
     }
 
     _watermark() {
-        this.mid.innerHTML = this._placeholder('dot-watermark', 'ads_click', 'View activity');
-        this.right.innerHTML = this._placeholder('dot-watermark', 'terminal', 'Action output');
+        this.mid.innerHTML = this._placeholder('dot-watermark', 'Actions');
+        this.right.innerHTML = this._placeholder('dot-watermark', 'Response');
     }
 
     // --- drop ------------------------------------------------------------
@@ -312,11 +323,12 @@ class DotRollup {
         });
     }
 
-    _placeholder(cls, icon, text) {
+    _placeholder(cls, text) {
         return `
             <div class="${cls}">
-                <span class="material-symbols-outlined">${icon}</span>
-                <p>${text}</p>
+                <div class="dot-watermark-line">
+                    <span class="dot-watermark-label">${text}</span>
+                </div>
             </div>
         `;
     }

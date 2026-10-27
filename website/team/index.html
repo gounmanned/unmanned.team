@@ -95,7 +95,7 @@
   .tm-founder .tm-wrap{padding:64px 0 40px;}
   /* David's photo always takes one column of the team grid below, so the photos match in size and line up at every
      width (4 columns on desktop, 2 on tablets and large phones, 1 on phones) */
-  .tm-founder-row{position:relative;display:grid;grid-template-columns:repeat(4, minmax(0,1fr));gap:24px;align-items:start;}
+  .tm-founder-row{position:relative;display:grid;grid-template-columns:repeat(4, minmax(0,1fr));gap:32px;align-items:start;}
   .tm-founder-copy{grid-column:2 / -1;max-width:649px;}
   .tm-founder-glow{position:absolute;left:-155px;top:-149px;width:456px;height:531px;pointer-events:none;max-width:none;}
   .tm-founder .tm-photo{position:relative;border:1px solid var(--surface-dark);}
@@ -111,13 +111,26 @@
   /* the team */
   .tm-team{background:var(--surface-gray);}
   .tm-team .tm-wrap{display:flex;flex-direction:column;gap:24px;padding:40px 0 64px;}
-  .tm-team h2{font-weight:600;font-size:clamp(34px * 32 / 52, 4.2vw * 32 / 52, 32px);line-height:1.25;letter-spacing:-0.01em;color:var(--ink);}
-  .tm-grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4, minmax(0,1fr));gap:24px;}
+  .tm-team h2,.tm-backers h2{font-weight:600;font-size:clamp(34px * 32 / 52, 4.2vw * 32 / 52, 32px);line-height:1.25;letter-spacing:-0.01em;color:var(--ink);}
+  .tm-grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4, minmax(0,1fr));gap:32px;}
   .tm-person{display:flex;flex-direction:column;gap:16px;color:var(--body);}
   .tm-person .tm-photo{border:1px solid var(--gray-faint);border-radius:2px;}
   .tm-name{display:flex;flex-direction:column;gap:4px;padding-bottom:16px;border-bottom:0.5px solid var(--pink-text);}
   .tm-name h3{font-weight:500;font-size:18px;line-height:28px;}
   .tm-person .tm-bio{font-size:14px;line-height:20px;}
+
+  /* advisor and backer: white band, the team's card with the photo (or logo) beside the copy, two across.
+     Under 900px they fall into the team's compact card below. */
+  .tm-backers{background:var(--surface);}
+  .tm-backers .tm-wrap{display:flex;flex-direction:column;gap:24px;padding:64px 0;}
+  .tm-logo{display:grid;place-items:center;aspect-ratio:1;background:var(--surface);border:1px solid var(--gray-faint);border-radius:2px;}
+  .tm-logo img{width:58.75%;height:auto;}
+  @media (min-width:901px){
+    .tm-backers .tm-grid{grid-template-columns:repeat(2, minmax(0,1fr));}
+    .tm-backers .tm-person{display:grid;grid-template-columns:160px minmax(0,1fr);column-gap:24px;row-gap:16px;align-content:start;}
+    .tm-backers .tm-person > :first-child{grid-row:1 / span 2;}
+    .tm-backers .tm-name,.tm-backers .tm-bio{grid-column:2;}
+  }
 
   /* 900px and under: a compact person header. Every photo (David's too) is the same 140px with the role and name beside
      it, the pink rule runs under that row, and the bio is full width below. Two people per row while there's room for
@@ -139,6 +152,7 @@
     .tm-lede{font-size:17px;line-height:26px;}
     .tm-founder .tm-wrap{padding:48px 0 40px;}
     .tm-team .tm-wrap{padding:40px 0 48px;}
+    .tm-backers .tm-wrap{padding:48px 0;}
     .tm-grid{grid-template-columns:minmax(0,1fr);gap:40px;}
   }
   @media (max-width:360px){
@@ -265,6 +279,24 @@
           <div class="tm-photo"><img src="static/chad.jpg" alt="Chad Carr" loading="lazy" style="width:106.99%;height:110.63%;left:-3.46%;top:-0.21%"></div>
           <div class="tm-name"><p class="tm-role">Head of UX</p><h3>Chad Carr</h3></div>
           <p class="tm-bio">Chad has spent more than 20 years leading UX at Best Buy, Star Tribune and Thomson Reuters, turning complex problems into clear, usable products. At Unmanned, he shapes how people understand and use VEX, from a business owner reading a Slack message to a security team digging into an investigation.</p>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="tm-backers" aria-labelledby="backers-title">
+    <div class="tm-wrap">
+      <h2 id="backers-title">Backed by people who know what it takes.</h2>
+      <ul class="tm-grid">
+        <li class="tm-person">
+          <div class="tm-photo"><img src="static/mark.jpg" alt="Mark Petrinovic" loading="lazy" style="width:100%;height:100%;left:0%;top:0%"></div>
+          <div class="tm-name"><p class="tm-role">Senior advisor</p><h3>Mark Petrinovic</h3></div>
+          <p class="tm-bio">Mark has spent three decades in corporate banking and risk management at J.P. Morgan, HSBC and MUFG. He managed multi-billion-dollar risk positions and served on business, credit and risk committees. At Unmanned, he helps connect technical security findings with the business decisions executives and boards need to make.</p>
+        </li>
+        <li class="tm-person">
+          <div class="tm-logo"><img src="static/thegp.png" width="94" height="48" alt="TheGP logo" loading="lazy"></div>
+          <div class="tm-name"><p class="tm-role">Partner &amp; investor</p><h3>The General Partnership (TheGP)</h3></div>
+          <p class="tm-bio">Unmanned is backed by TheGP, a firm that pairs investment with hands-on company-building support. Its team brings experience across engineering, hiring and bringing products to market.</p>
         </li>
       </ul>
     </div>

@@ -1,0 +1,34 @@
+<svg width="248" height="147" viewBox="0 0 248 147" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect x="0.0866089" y="139.382" width="247.827" height="7.23582" rx="3.61791" fill="#F1F1EE"/>
+<rect x="25.0144" y="1.35672" width="197.971" height="133.051" rx="2.26119" fill="#C4C4C4" stroke="#6C6C70" stroke-width="2.71343"/>
+<rect x="31.2545" y="8.34981" width="184.513" height="116.259" rx="3.16567" fill="#FAF9F6"/>
+<rect x="31.2545" y="8.34981" width="184.513" height="116.259" rx="3.16567" fill="url(#grid)"/>
+<rect x="31.2545" y="8.34981" width="184.513" height="116.259" rx="3.16567" stroke="#8A8A8E" stroke-width="0.904477"/>
+<ellipse cx="83" cy="66.364" rx="16" ry="15.9999" fill="#029266"/>
+<g opacity="0.3" style="mix-blend-mode:multiply">
+<path d="M73.4004 53.5629C70.5914 56.4458 68.8604 60.3839 68.8604 64.727C68.8604 73.5634 76.0238 80.727 84.8604 80.727C88.4626 80.7269 91.7858 79.5348 94.46 77.5258C91.5536 80.5092 87.4941 82.3637 83 82.3637C74.1634 82.3637 67 75.2002 67 66.3637C67 61.1291 69.5141 56.4819 73.4004 53.5629Z" fill="#029266"/>
+</g>
+<ellipse cx="110" cy="66.364" rx="16" ry="15.9999" fill="#B811DE"/>
+<g opacity="0.15" style="mix-blend-mode:difference">
+<path d="M100.4 53.5629C97.5914 56.4458 95.8604 60.3839 95.8604 64.727C95.8604 73.5634 103.024 80.727 111.86 80.727C115.463 80.7269 118.786 79.5348 121.46 77.5258C118.554 80.5092 114.494 82.3637 110 82.3637C101.163 82.3637 94 75.2002 94 66.3637C94 61.1291 96.5141 56.4819 100.4 53.5629Z" fill="#B811DE"/>
+</g>
+<ellipse cx="137" cy="66.364" rx="16" ry="15.9999" fill="#F7B828"/>
+<g opacity="0.3" style="mix-blend-mode:exclusion">
+<path d="M127.4 53.5629C124.591 56.4458 122.86 60.3839 122.86 64.727C122.86 73.5634 130.024 80.727 138.86 80.727C142.463 80.7269 145.786 79.5348 148.46 77.5258C145.554 80.5092 141.494 82.3637 137 82.3637C128.163 82.3637 121 75.2002 121 66.3637C121 61.1291 123.514 56.4819 127.4 53.5629Z" fill="#F7B828"/>
+</g>
+<ellipse cx="164" cy="66.364" rx="16" ry="15.9999" fill="#1BA8EE"/>
+<g opacity="0.15" style="mix-blend-mode:difference">
+<path d="M154.4 53.5629C151.591 56.4458 149.86 60.3839 149.86 64.727C149.86 73.5634 157.024 80.727 165.86 80.727C169.463 80.7269 172.786 79.5348 175.46 77.5258C172.554 80.5092 168.494 82.3637 164 82.3637C155.163 82.3637 148 75.2002 148 66.3637C148 61.1291 150.514 56.4819 154.4 53.5629Z" fill="#1BA8EE"/>
+</g>
+<rect x="0.0477295" y="135.764" width="247.905" height="7.23582" rx="3.61791" fill="#8A8A8E"/>
+<rect x="105.872" y="137.69" width="36.1791" height="3.61791" rx="1.80895" fill="#6C6C70"/>
+<defs>
+<pattern id="grid" patternUnits="userSpaceOnUse" patternTransform="matrix(28.9433 0 0 28.9433 30.8022 7.89757)" preserveAspectRatio="none" viewBox="0 0 32 32" width="1" height="1">
+<g clip-path="url(#clip)">
+<line opacity="0.3" x1="16.5" y1="0.5" x2="16.5" y2="31.5" stroke="#8A8A8E" stroke-linecap="round" stroke-dasharray="1 5"/>
+<line opacity="0.3" x1="0.5" y1="15.5" x2="31.5" y2="15.5" stroke="#8A8A8E" stroke-linecap="round" stroke-dasharray="1 5"/>
+</g>
+</pattern>
+<clipPath id="clip"><rect width="32" height="32" fill="white"/></clipPath>
+</defs>
+</svg>

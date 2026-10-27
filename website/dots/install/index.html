@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Install your Dot</title>
+<meta name="description" content="Install a Dot on your computer to connect it to VEX and your security team.">
+<!-- Reached from an install link, not the nav, and the install scripts aren't live yet -->
+<meta name="robots" content="noindex">
+<meta property="og:title" content="Install your Dot" />
+<meta property="og:description" content="Install a Dot on your computer to connect it to VEX and your security team." />
+<meta property="og:url" content="https://unmanned.team/dots/install/" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Unmanned" />
+<meta property="og:image" content="https://unmanned.team/static/og/dots.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="Dots: The first EDR made for code" />
+<meta name="twitter:card" content="summary_large_image" />
+<link rel="icon" type="image/png" href="https://cdn.unmanned.team/img/logo.png">
+<link rel="apple-touch-icon" href="https://cdn.unmanned.team/img/logo.png">
+<link rel="stylesheet" href="https://cdn.unmanned.team/css/global.css">
+<link rel="stylesheet" href="../../static/site.css">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800;900&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+  /* Dots install page. Figma: Unmanned Website - SOT, frames 2199:2365 (Mac) and 2202:3601 (Windows).
+     The steps follow /install/ (VEX's install page); the header is the Dots page's. */
+  :root{--d-faint:#faf9f6;--d-sunken:#f1f1ee;--d-mute:#8a8a8e;--accent-text:#d10176;}
+  h1,h2,h3,h4,p{margin:0;}
+  p,li{text-wrap:pretty;}
+  img{display:block;}
+  b{font-weight:600;}
+  .wrap{width:min(1100px,calc(100% - 2 * var(--gutter)));margin:0 auto;}
+  .visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
+  a:focus-visible,button:focus-visible{outline:1.5px solid var(--pink);outline-offset:4px;}
+  @media (max-width:700px){:root{--gutter:16px;}}
+
+  /* ---------- CLASSIFICATION BAR ---------- */
+  .classbar{
+    position:fixed;top:0;left:0;right:0;z-index:60;background:var(--ink);color:var(--gray-faint);
+    font-size:9.5px;line-height:1.5;letter-spacing:0.16em;text-transform:uppercase;text-align:center;padding:6px 0;
+    transition:transform 0.4s cubic-bezier(0.49,0.025,0.685,1), opacity 0.4s cubic-bezier(0.49,0.025,0.685,1);
+  }
+  html.header-hidden .classbar{transform:translateY(-100%);opacity:0;}
+  @media (max-width:700px){
+    :root{--classbar-h:24px;}
+    .classbar{font-size:8px;}
+  }
+
+  /* ---------- HEADER: the Dots mark, as on /dots/ ---------- */
+  .site-header{background:var(--surface);border-bottom:1px solid var(--gray-line);}
+  .dots-brand{display:flex;align-items:center;gap:16px;text-decoration:none;color:var(--ink);}
+  .dots-word{font-size:32px;font-weight:900;line-height:26px;letter-spacing:0.01em;}
+  .dots-brand img{width:26px;height:26px;}
+  /* no phone menu: the one link (VEX AI SOC) stays visible at every width */
+  @media (max-width:700px){ .site-header .dots-nav{display:flex;} }
+  @media (max-width:560px){ .dots-word{font-size:28px;} .dots-brand{gap:12px;} }
+
+  /* ---------- HERO ----------
+     Figma's backdrop: 80px dots on an 84px grid, warm gray and light gray in a checkerboard,
+     faded out by an oval that's strongest at the top center. */
+  .hero{position:relative;overflow:hidden;padding:64px 0 0;text-align:center;}
+  .hero::before{
+    content:'';position:absolute;inset:0;z-index:0;pointer-events:none;
+    background:
+      radial-gradient(circle at 40px 40px,var(--d-sunken) 39.5px,transparent 40px),
+      radial-gradient(circle at 124px 124px,var(--d-sunken) 39.5px,transparent 40px),
+      radial-gradient(circle at 124px 40px,var(--surface-gray) 39.5px,transparent 40px),
+      radial-gradient(circle at 40px 124px,var(--surface-gray) 39.5px,transparent 40px);
+    background-size:168px 168px;background-position:calc(50% - 42px) 0;
+    -webkit-mask-image:radial-gradient(901px 303px at 50% 99px,rgba(0,0,0,0.88),transparent);
+    mask-image:radial-gradient(901px 303px at 50% 99px,rgba(0,0,0,0.88),transparent);
+  }
+  .hero .wrap{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;}
+  .hero-art{width:248px;max-width:100%;height:auto;}
+  .hero h1{margin-top:32px;font-size:clamp(34px,6vw,48px);line-height:1.1667;font-weight:600;letter-spacing:-0.015em;}
+  .hero .lede{margin-top:32px;max-width:680px;font-size:16px;line-height:28px;color:var(--body);}
+
+  /* ---------- INSTRUCTIONS ---------- */
+  .instructions{padding:48px 0 64px;}
+  .instructions .wrap{max-width:700px;display:flex;flex-direction:column;gap:32px;}
+  .os-head{display:flex;flex-direction:column;align-items:center;gap:24px;text-align:center;}
+  .os-picker{display:flex;flex-direction:column;align-items:center;gap:8px;font-size:12px;line-height:16px;}
+  .os-toggle{display:inline-flex;gap:4px;padding:4px;background:var(--d-sunken);border-radius:4px;}
+  .os-toggle button{
+    height:40px;padding:0 16px;border:1px solid transparent;border-radius:2px;background:none;cursor:pointer;
+    font:inherit;font-size:16px;line-height:24px;color:var(--surface-dark);
+  }
+  .os-toggle button:hover{color:var(--ink);}
+  .os-toggle [aria-pressed="true"]{background:var(--surface);border-color:var(--d-mute);color:var(--ink);font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,0.3);}
+  .os-head h2{font-size:clamp(26px,4vw,32px);line-height:1.25;font-weight:600;letter-spacing:-0.01em;}
+  .needs{font-size:14px;line-height:20px;}
+
+  .install-steps{margin:0;padding:0;list-style:none;counter-reset:step;text-align:left;}
+  .install-step{display:flex;align-items:flex-start;gap:16px;padding:20px 0;border-top:1px solid var(--gray-line);counter-increment:step;}
+  .install-step[hidden],[data-os][hidden]{display:none;}   /* display:flex would otherwise override [hidden] */
+  .step-num{
+    flex-shrink:0;display:flex;align-items:center;justify-content:center;
+    width:20px;height:20px;margin-top:5px;border:1.5px solid var(--pink);border-radius:50%;
+    font-weight:600;font-size:13px;line-height:1;color:var(--accent-text);
+  }
+  .step-num::before{content:counter(step);}
+  .step-body{flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:16px;}
+  .step-body h3{font-size:20px;line-height:30px;font-weight:600;letter-spacing:-0.01em;}
+  .step-body p{font-size:16px;line-height:28px;color:var(--body-soft);}
+  .step-body .step-note{font-size:14px;line-height:20px;}
+  .step-note b{color:var(--ink);}
+  .terminal-look{display:flex;align-items:center;gap:16px;}
+
+  /* the command to copy, and the output to look for (same box, no copy button) */
+  .command{display:flex;align-items:flex-start;gap:36px;width:100%;padding:16px 16px 18px;background:var(--surface-gray);border:1px solid var(--gray-line);border-radius:2px;}
+  .command code,.command pre{flex:1;min-width:0;margin:0;font-family:var(--mono);font-size:12.5px;line-height:21px;color:var(--ink);overflow-wrap:anywhere;white-space:pre-wrap;}
+
+  /* copy button and its tooltip come from site.css; the button sits at the box's right edge, so the tooltip lines up on the right */
+  .command .tooltip{left:auto;right:-6px;transform:translateY(-4px);}
+  .command .tooltip::before{left:auto;right:8px;margin-left:0;}
+  .command .copy-btn:hover .tooltip,.command .copy-btn:focus-visible .tooltip,.command .copy-btn.is-copied .tooltip{transform:translateY(0);}
+
+  @media (max-width:560px){
+    .hero{padding-top:40px;}
+    .hero .lede{margin-top:24px;}
+    .instructions{padding:40px 0 48px;}
+    .command{gap:16px;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .classbar,.site-top .site-header,.tooltip{transition:none;}
+  }
+</style>
+</head>
+<body>
+
+  <div class="classbar">UNMANNED · SIMPLY SECURE</div>
+
+  <div class="site-top">
+    <header class="site-header">
+      <div class="wrap header-inner">
+        <a href="../" class="dots-brand" aria-label="Dots by Unmanned">
+          <span class="dots-word">dots</span>
+          <img src="../static/dots-logo.svg" width="26" height="26" alt="">
+          <span class="brand-tag">By Unmanned</span>
+        </a>
+        <nav class="header-links dots-nav" aria-label="Main">
+          <a class="header-link" href="/">VEX AI SOC</a>
+        </nav>
+      </div>
+    </header>
+  </div>
+
+  <main>
+    <section class="hero">
+      <div class="wrap">
+        <img class="hero-art" src="static/dots-laptop.svg" width="248" height="147" alt="">
+        <h1>Let’s get your Dot set up.</h1>
+        <p class="lede">Install a Dot on your computer to connect it to VEX and your security team.</p>
+      </div>
+    </section>
+
+    <!-- The Mac / Windows switch shows the elements marked data-os="mac" or data-os="windows".
+         It starts on the visitor's system; ?os=mac or ?os=windows picks one (for support links). -->
+    <section class="instructions">
+      <div class="wrap">
+        <div class="os-head">
+          <div class="os-picker">
+            <span id="os-label">Select your computer type</span>
+            <div class="os-toggle" role="group" aria-labelledby="os-label">
+              <button type="button" data-os-select="mac" aria-pressed="true">Mac</button>
+              <button type="button" data-os-select="windows" aria-pressed="false">Windows</button>
+            </div>
+          </div>
+          <h2 data-os="mac">Install on Mac</h2>
+          <h2 data-os="windows" hidden>Install on Windows</h2>
+          <p class="needs" data-os="mac">You’ll need your <b>VEX account email</b> and a Mac account with <b>administrator permissions</b>.</p>
+          <p class="needs" data-os="windows" hidden>You’ll need your <b>VEX account email</b> and a Windows account with <b>administrator permissions</b>.</p>
+        </div>
+
+        <!-- Mac -->
+        <ol class="install-steps" data-os="mac">
+          <li class="install-step">
+            <span class="step-num" aria-hidden="true"></span>
+            <div class="step-body">
+              <h3>Open the Terminal application</h3>
+              <div class="terminal-look">
+                <p>It looks like this:</p>
+                <img src="static/icon-terminal.png" width="32" height="32" alt="Terminal app icon">
+              </div>
+              <p class="step-note"><b>To find the Terminal application:</b> Open Applications → Utilities → Terminal<br>Or press ⌘ Space and type “Terminal”.</p>
+            </div>
+          </li>
+          <li class="install-step">
+            <span class="step-num" aria-hidden="true"></span>
+            <div class="step-body">
+              <h3>Run the installation command</h3>
+              <p>Copy and paste this in Terminal then press Return.</p>
+              <div class="command">
+                <code id="mac-command">curl -fsSL https://us.unmanned.team/install/setup.sh | sudo bash</code>
+                <button class="copy-btn" type="button" data-copy="mac-command" aria-label="Copy the Terminal command to clipboard">
+                  <img src="static/icon-copy.svg" width="20" height="20" alt="">
+                  <span class="tooltip" aria-hidden="true">Copy to clipboard</span>
+                </button>
+              </div>
+            </div>
+          </li>
+          <li class="install-step">
+            <span class="step-num" aria-hidden="true"></span>
+            <div class="step-body">
+              <h3>Enter admin password</h3>
+              <p>When prompted, enter the admin password used to log in to this Mac, then press Return. Characters won’t appear as you type. This is normal.</p>
+            </div>
+          </li>
+          <li class="install-step">
+            <span class="step-num" aria-hidden="true"></span>
+            <div class="step-body">
+              <h3>Enter your VEX account email</h3>
+              <p>When you see “Enter email address,” enter the email associated with your VEX account, then press Return.</p>
+            </div>
+          </li>
+          <li class="install-step">
+            <span class="step-num" aria-hidden="true"></span>
+            <div class="step-body">
+              <h3>Confirm your Dot is running</h3>
+              <p>Wait for the installation to finish. Look for this confirmation in Terminal:</p>
+              <div class="command"><pre>✓ Dot loaded and running</pre></div>
+              <p>Your Dot is installed and running on this Mac. You can now close Terminal.</p>
+            </div>
+          </li>
+        </ol>
+
+        <!-- Windows -->
+        <ol class="install-steps" data-os="windows" hidden>
+          <li class="install-step">
+            <span class="step-num" aria-hidden="true"></span>
+            <div class="step-body">
+              <h3>Run the Terminal application as administrator</h3>
+              <div class="terminal-look">
+                <p>It looks like this:</p>
+                <img src="static/icon-terminal-windows.png" width="48" height="36" alt="Windows Terminal app icon">
+              </div>
+              <p class="step-note"><b>To find the Terminal application:</b> Press the Windows key and type “Terminal”.<br>On older Windows 10 computers, type “PowerShell” instead.</p>
+              <p class="step-note"><b>Right-click the app to show the options menu:</b> Choose “Run as administrator”.</p>
+            </div>
+          </li>
+          <li class="install-step">
+            <span class="step-num" aria-hidden="true"></span>
+            <div class="step-body">
+              <h3>Run the installation command</h3>
+              <p>Copy and paste this in Terminal then press Enter.</p>
+              <div class="command">
+                <code id="windows-command">powershell -NoProfile -ExecutionPolicy Bypass -Command "iex (New-Object Net.WebClient).DownloadString('https://us.unmanned.team/install/setup.ps1')"</code>
+                <button class="copy-btn" type="button" data-copy="windows-command" aria-label="Copy the Terminal command to clipboard">
+                  <img src="static/icon-copy.svg" width="20" height="20" alt="">
+                  <span class="tooltip" aria-hidden="true">Copy to clipboard</span>
+                </button>
+              </div>
+            </div>
+          </li>
+          <li class="install-step">
+            <span class="step-num" aria-hidden="true"></span>
+            <div class="step-body">
+              <h3>Enter your VEX account email</h3>
+              <p>When you see “Enter email address,” enter the email associated with your VEX account, then press Enter.</p>
+            </div>
+          </li>
+          <li class="install-step">
+            <span class="step-num" aria-hidden="true"></span>
+            <div class="step-body">
+              <h3>Confirm your Dot is running</h3>
+              <p>Wait for the installation to finish. Look for this confirmation:</p>
+              <div class="command"><pre>Installation complete!
+No reboot required. The script is already running.</pre></div>
+              <p>Your Dot is installed and running on this computer.</p>
+            </div>
+          </li>
+        </ol>
+        <span class="visually-hidden" id="copy-status" role="status"></span>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span>© 2026 UNMANNED, INC.</span>
+    <nav class="flinks" aria-label="Company"><a href="/team/">ABOUT</a><span aria-hidden="true">·</span><a class="fext" href="https://gounmanned.substack.com/" target="_blank" rel="noopener noreferrer">OUR RESEARCH</a></nav>
+  </footer>
+
+  <script>
+    (function(){
+      // hide-on-scroll header (same as the other pages)
+      var root = document.documentElement;
+      var top = document.querySelector('.site-top');
+      var classbar = document.querySelector('.classbar');
+      var lastY = window.scrollY;
+      var ticking = false;
+      function update(){
+        ticking = false;
+        var y = window.scrollY;
+        var showZone = top.offsetHeight + classbar.offsetHeight;
+        if(y <= showZone){ root.classList.remove('header-hidden'); lastY = y; return; }
+        if(Math.abs(y - lastY) < 6){ return; }
+        root.classList.toggle('header-hidden', y > lastY);
+        lastY = y;
+      }
+      window.addEventListener('scroll', function(){
+        if(!ticking){ ticking = true; requestAnimationFrame(update); }
+      }, { passive:true });
+      top.addEventListener('focusin', function(){ root.classList.remove('header-hidden'); });
+
+      // Mac / Windows switch. Starts on ?os= if given, else the visitor's system (Mac for anything that isn't Windows).
+      var buttons = document.querySelectorAll('.os-toggle button');
+      function setOS(os){
+        document.querySelectorAll('[data-os]').forEach(function(el){ el.hidden = el.dataset.os !== os; });
+        buttons.forEach(function(btn){ btn.setAttribute('aria-pressed', btn.dataset.osSelect === os); });
+      }
+      buttons.forEach(function(btn){ btn.addEventListener('click', function(){ setOS(btn.dataset.osSelect); }); });
+      var asked = new URLSearchParams(location.search).get('os');
+      var platform = (navigator.userAgentData && navigator.userAgentData.platform) || navigator.platform || navigator.userAgent;
+      setOS(asked === 'mac' || asked === 'windows' ? asked : (/win/i.test(platform) ? 'windows' : 'mac'));
+
+      // copy buttons: each copies the text of the element named in its data-copy
+      var status = document.getElementById('copy-status');
+      document.querySelectorAll('[data-copy]').forEach(function(btn){
+        var tip = btn.querySelector('.tooltip');
+        var timer;
+        btn.addEventListener('click', function(){
+          navigator.clipboard.writeText(document.getElementById(btn.dataset.copy).textContent).then(function(){
+            tip.textContent = 'Copied';
+            status.textContent = 'Copied to clipboard';
+            btn.classList.add('is-copied');
+            clearTimeout(timer);
+            timer = setTimeout(function(){
+              btn.classList.remove('is-copied');
+              tip.textContent = 'Copy to clipboard';
+              status.textContent = '';
+            }, 1600);
+          });
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

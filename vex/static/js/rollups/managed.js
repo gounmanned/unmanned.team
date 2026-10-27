@@ -62,39 +62,27 @@ class ManagedRollup {
     }
 
     _renderHero() {
-        const accounts = [...this.members.keys()].map(domain => {
-            const open = this._open(domain);
-            return {
-                domain,
-                open: open.length,
-                threats: open.filter(t => t.metadata?.threat).length,
-            };
-        });
+        const threatCounts = [...this.members.keys()].map(domain =>
+            this._open(domain).filter(t => t.metadata?.threat).length
+        );
 
-        const sum = (key) => accounts.reduce((n, a) => n + a[key], 0);
-        const open = sum('open');
-        const threats = sum('threats');
-        const affected = accounts.filter(a => a.threats);
-        const worst = affected.sort((a, b) => b.threats - a.threats)[0];
+        const threats = threatCounts.reduce((n, c) => n + c, 0);
+        const affected = threatCounts.filter(Boolean).length;
 
         const plural = (n, word) => `${n.toLocaleString()} ${word}${n === 1 ? '' : 's'}`;
         const title = this.hero.querySelector('.managed-hero-title');
         const text = this.hero.querySelector('.managed-hero-text');
         const icon = document.getElementById('managed-hero-icon');
-        const cta = document.getElementById('managed-hero-cta');
 
         this.hero.classList.toggle('is-threat', threats > 0);
         icon.src = threats ? 'https://cdn.unmanned.team/img/logo.png' : 'static/img/status/CH.svg';
-        cta.hidden = !threats;
 
         if (threats) {
-            title.innerHTML = `${threats.toLocaleString()}<span class="managed-hero-of">/${open.toLocaleString()}</span>`;
-            text.textContent = `Active threats across ${affected.length.toLocaleString()} of ${plural(accounts.length, 'account')}`;
-            cta.querySelector('.managed-hero-cta-label').textContent = `Review ${worst.domain}`;
-            cta.dataset.domain = worst.domain;
+            title.textContent = threats.toLocaleString();
+            text.textContent = `Active threats across ${affected.toLocaleString()} of ${plural(threatCounts.length, 'account')}`;
         } else {
             title.textContent = 'All clear.';
-            text.textContent = `No active threats across ${plural(accounts.length, 'account')}`;
+            text.textContent = `No active threats across ${plural(threatCounts.length, 'account')}`;
         }
     }
 
@@ -289,10 +277,6 @@ class ManagedRollup {
         });
 
         document.getElementById('managed-root-btn').addEventListener('click', () => this._enter(null));
-
-        document.getElementById('managed-hero-cta').addEventListener('click', (e) => {
-            this._selectAccount(e.currentTarget.dataset.domain);
-        });
 
         document.getElementById('managed-invite-btn').addEventListener('click', async () => {
             const input = document.getElementById('managed-invite-input');

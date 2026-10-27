@@ -266,34 +266,11 @@
   color: var(--brand);
 }
 
-#managed-screen .managed-hero-of {
-  margin-left: 4px;
-  font-size: 20px; font-weight: 600;
-  color: var(--text-faint);
-}
-
 #managed-screen .managed-hero-text {
-  margin: 8px 0 24px;
+  margin: 8px 0 0;
   font-size: 13px; line-height: 1.5;
   color: var(--text-faint);
 }
-
-#managed-screen .managed-hero-cta {
-  display: inline-flex; align-items: center; gap: 6px;
-  height: 34px; padding: 0 16px;
-  border: 1px solid color-mix(in srgb, var(--brand) 30%, transparent);
-  border-radius: 17px;
-  background: none;
-  font-size: 12px; font-weight: 600; font-family: inherit;
-  color: var(--brand); cursor: pointer;
-  transition: background 0.2s, border-color 0.2s;
-}
-#managed-screen .managed-hero-cta:hover {
-  background: color-mix(in srgb, var(--brand) 6%, transparent);
-  border-color: var(--brand);
-}
-#managed-screen .managed-hero-cta .material-symbols-outlined { font-size: 14px; transition: transform 0.2s; }
-#managed-screen .managed-hero-cta:hover .material-symbols-outlined { transform: translateX(2px); }
 
 /* ── DETAIL (account selected) ───────────────────────────────────────────── */
 

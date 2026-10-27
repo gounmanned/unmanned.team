@@ -311,7 +311,7 @@ class DotRollup {
 
     _freshness(ts) {
         const seen = new Date(ts);
-        if (Date.now() - seen < 15 * 60000) return 'fresh';
+        if (Date.now() - seen < 5 * 60000) return 'fresh';
         if (seen.toDateString() === new Date().toDateString()) return 'today';
         return 'stale';
     }

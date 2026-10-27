@@ -243,7 +243,7 @@ class DotRollup {
     _outputText(action) {
         if (!action.value) return '';
         try {
-            const bytes = Uint8Array.from(atob(action.value), c => c.charCodeAt(0));
+            const bytes = Uint8Array.from(action.value, c => c.charCodeAt(0));
             return new TextDecoder().decode(bytes);
         } catch {
             return '';

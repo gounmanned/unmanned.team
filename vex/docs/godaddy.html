@@ -145,15 +145,6 @@
             <strong>Note:</strong> GoDaddy only shows the secret once. GoDaddy keys can't be scoped, so this key can manage every domain in the account &mdash; treat it like a password and store it accordingly.
         </div>
 
-        <h2>What VEX Changes</h2>
-        <p>For domains whose DNS is hosted at GoDaddy, VEX automatically fixes these email security issues:</p>
-        <ul>
-            <li>Removes duplicate TXT records.</li>
-            <li>Adds <code>v=spf1 -all</code> to domains that don't receive email and have no SPF record.</li>
-            <li>Adds or tightens your DMARC record to <code>p=quarantine</code> and adds VEX as a report recipient.</li>
-        </ul>
-        <p>Registrar issues, like a disabled transfer lock or an expiring domain without auto-renew, are reported but never changed.</p>
-
         <h2>Step 3: Save</h2>
         <p>Add the following JSON to VEX, using the key and secret from Step 2:</p>
         <pre>

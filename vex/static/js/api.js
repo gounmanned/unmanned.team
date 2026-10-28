@@ -61,13 +61,20 @@ class AssetApi extends Gateway {
         return await this.call("GET", `asset`);
     }
 
-    async delete(name) {
-        return await this.call("DELETE", `asset/${name}`);
+    async get(asset) {
+        return await this.call("GET", `asset/${asset}`);
     }
 
-    async update(name, metadata = {}, status = "") {
-        const patch = { metadata: metadata, status: status };
-        return await this.call("PATCH", `asset/${name}`, patch);
+    async delete(asset) {
+        return await this.call("DELETE", `asset/${asset}`);
+    }
+
+    async action(asset, action) {
+        return await this.call("GET", `asset/${asset}/${action}`);
+    }
+
+    async run(asset, payload) {
+        return await this.call("POST", `asset/${asset}`, payload);
     }
 }
 
@@ -147,24 +154,6 @@ class NotificationApi extends Gateway {
 
     async list() {
         return await this.call("GET", "notification");
-    }
-}
-
-class ActionApi extends Gateway {
-    constructor(){
-        super();
-    }
-
-    async list() {
-        return await this.call("GET", "action");
-    }
-
-    async get(name) {
-        return await this.call("GET", `action?name=${name}`);
-    }
-
-    async add(action) {
-        return await this.call("POST", "action", action);
     }
 }
 

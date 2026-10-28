@@ -22,7 +22,7 @@ class DotRollup {
         });
         this.list.addEventListener('click', (e) => {
             const li = e.target.closest('.dot-item');
-            if (li) this._select(li.dataset.name);
+            if (li) this._select(li.dataset.key);
         });
         this._listenForDrops();
     }
@@ -52,7 +52,7 @@ class DotRollup {
 
     async _load() {
         const assets = await this.api.inventory.list();
-        this.dots = new Map(assets.map(a => [a.name, a]));
+        this.dots = new Map(assets.map(a => [a.key, a]));
         this._renderList();
     }
 
@@ -66,7 +66,7 @@ class DotRollup {
     _renderList() {
         const rows = [...this.dots.values()].sort(DotRollup.byDot);
         this.list.innerHTML = rows.map(a => this._row(a)).join('');
-        if (this.selected) this.list.querySelector(`[data-name="${this.selected}"]`)?.classList.add('selected');
+        if (this.selected) this.list.querySelector(`[data-key="${this.selected}"]`)?.classList.add('selected');
         this._filter();
 
         const deployed = rows.filter(a => a.metadata.runtime).length;
@@ -79,7 +79,7 @@ class DotRollup {
             ? `<span class="dot-item-status dot-item-status--${this._freshness(asset.updated)}" title="${runtime}"></span>`
             : `<span class="dot-item-nodot material-symbols-outlined">radio_button_unchecked</span>`;
         return `
-            <li class="dot-item ${runtime ? '' : 'no-dot'}" data-name="${asset.name}">
+            <li class="dot-item ${runtime ? '' : 'no-dot'}" data-key="${asset.key}">
                 <span class="dot-item-mark">${mark}</span>
                 <span class="dot-item-name">${asset.name}</span>
                 <span class="dot-item-seen">${runtime ? this._ago(asset.updated) : 'No dot'}</span>
@@ -95,7 +95,7 @@ class DotRollup {
         const q = this.search.value.trim().toLowerCase();
         let visible = 0;
         for (const li of this.list.children) {
-            li.hidden = !JSON.stringify(this.dots.get(li.dataset.name)).toLowerCase().includes(q);
+            li.hidden = !JSON.stringify(this.dots.get(li.dataset.key)).toLowerCase().includes(q);
             if (!li.hidden) visible++;
         }
         this.wrap.classList.toggle('no-match', !visible && this.dots.size > 0);
@@ -103,27 +103,27 @@ class DotRollup {
 
     // --- selection ---------------------------------------------------------
 
-    _select(name) {
-        this.selected = name;
-        for (const li of this.list.children) li.classList.toggle('selected', li.dataset.name === name);
+    _select(key) {
+        this.selected = key;
+        for (const li of this.list.children) li.classList.toggle('selected', li.dataset.key === key);
 
         this._clearOutput();
-        this._loadActions(this.dots.get(name));
+        this._loadActions(this.dots.get(key));
     }
 
     async _loadActions(asset, quiet = false) {
         if (!quiet) this.mid.innerHTML = '<div class="dot-col-body loading"></div>';
-        const actions = await this.api.action.get(asset.name) ?? [];
-        if (this.selected !== asset.name) return;   // they switched dots mid-fetch
+        const actions = await this.api.inventory.get(asset.key) ?? [];
+        if (this.selected !== asset.key) return;   // they switched dots mid-fetch
         this._renderActions(asset, actions);
     }
 
     async _deleteAsset() {
-        const name = this.selected;
-        if (!confirm(`Delete ${name}?`)) return;
+        const asset = this.dots.get(this.selected);
+        if (!confirm(`Delete ${asset.name}?`)) return;
 
-        await SiteSpinner.withLoading(() => this.api.inventory.delete(name));
-        this.dots.delete(name);
+        await SiteSpinner.withLoading(() => this.api.inventory.delete(this.selected));
+        this.dots.delete(this.selected);
         this._clearSelection();
         this._renderList();
     }
@@ -211,6 +211,7 @@ class DotRollup {
     _renderOutput(action) {
         const { tone, label } = this._statusInfo(action.status);
         const output = this._outputText(action);
+        const prompt = this.dots.get(this.selected)?.name ?? this.selected;
 
         const body = tone === 'pending'
             ? `<p class="dot-terminal-line dot-terminal-running"><span class="dot-terminal-spinner"></span>running…</p>`
@@ -226,7 +227,7 @@ class DotRollup {
             <div class="dot-terminal">
                 <div class="dot-terminal-body dot-terminal-body--output">
                     <p class="dot-terminal-line">
-                        <span class="dot-terminal-prompt">${action.asset ?? this.selected} ~ $</span>
+                        <span class="dot-terminal-prompt">${prompt} ~ $</span>
                         <span class="dot-terminal-cmd">${action.name}<span class="dot-terminal-cmd-id">${action.id}</span></span>
                     </p>
                     ${body}
@@ -288,7 +289,8 @@ class DotRollup {
 
             this.api.file.root = 'action';
             await this.api.file.add(new File([file], `${id}${ext}`, { type: file.type }));
-            await this.api.action.add({ id, name, asset: this.selected, status: '-1' });
+
+            await this.api.inventory.run(this.selected, { id, name });
         });
         await this.refresh();
     }

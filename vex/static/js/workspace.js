@@ -142,6 +142,10 @@ class Workspace {
         return String(s ?? '').replace(/[&<>"']/g, c => `&#${c.charCodeAt(0)};`);
     }
 
+    static encode(s) {
+        return Array.from(s).map(c => c.charCodeAt(0).toString(16).padStart(2, '0')).join('');        
+    }
+
     static get sidebars() {
         document.querySelector('site-overlay').click();
         return Workspace.#instance?.sidebars;

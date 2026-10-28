@@ -57,7 +57,6 @@ class SourceRollup {
         this._render();
 
         try {
-            // Backend assigns the index; send only the name (e.g. "google")
             await this.api.sources.connect(key, value);
         } catch {
             this.connecting = false;
@@ -89,7 +88,7 @@ class SourceRollup {
     _renderCallout() {
         document.getElementById('source-callout').innerHTML = `
             <p class="source-callout-text">Every account has a unique mailbox that accepts signals. Forward alerts from routers, DMARC rua, and other services that send email notifications.</p>
-            <p class="source-callout-address">${this.emailAddress}</p>
+            <p class="source-callout-address">${`${Workspace.encode(this.state.account())}`}@vex.unmanned.team</p>
         `;
     }
 
@@ -166,13 +165,6 @@ class SourceRollup {
                 </div>
             </div>
         `;
-    }
-
-    get emailAddress() {
-        const hex = Array.from(this.state.account())
-            .map(c => c.charCodeAt(0).toString(16).padStart(2, '0'))
-            .join('');
-        return `${hex}@vex.unmanned.team`;
     }
 
     _resetPicker() {

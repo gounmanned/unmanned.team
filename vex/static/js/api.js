@@ -58,7 +58,7 @@ class AssetApi extends Gateway {
     }
 
     async list() {
-        return await this.call("GET", `asset`);
+        return await this.call("GET", "asset");
     }
 
     async get(asset) {

@@ -17,6 +17,7 @@ class DotRollup {
         this.search.addEventListener('input', () => this._filter());
         this.mid.addEventListener('click', (e) => {
             if (e.target.closest('.dot-mid-delete')) return this._deleteAsset();
+            if (e.target.closest('.dot-mid-key')) return this._copyKey();
             const li = e.target.closest('.dot-action-item');
             if (li) this._selectAction(li.dataset.key);
         });
@@ -118,6 +119,25 @@ class DotRollup {
         this._renderActions(asset, actions);
     }
 
+    _copyKey() {
+        navigator.clipboard.writeText(Workspace.encode(this.selected))
+            .then(() => this._toast('Key copied to clipboard'));
+    }
+
+    _toast(message) {
+        let toast = document.getElementById('dot-toast');
+        if (!toast) {
+            toast = document.createElement('div');
+            toast.id = 'dot-toast';
+            toast.className = 'dot-toast';
+            document.getElementById('dot-screen').appendChild(toast);
+        }
+        toast.textContent = message;
+        toast.classList.add('dot-toast--show');
+        clearTimeout(this._toastTimer);
+        this._toastTimer = setTimeout(() => toast.classList.remove('dot-toast--show'), 2000);
+    }
+
     async _deleteAsset() {
         const asset = this.dots.get(this.selected);
         await SiteSpinner.withLoading(() => this.api.inventory.delete(this.selected));
@@ -135,7 +155,7 @@ class DotRollup {
                     ${this.sorted.map(a => this._actionRow(a)).join('')}
                 </ul>
             </div>
-        ` : this._placeholder('dot-empty', 'No activity');
+        ` : this._placeholder('dot-empty dot-empty--overlay', 'No activity');
 
         this.mid.innerHTML = this._actionsHeader(asset) + list;
 
@@ -182,6 +202,9 @@ class DotRollup {
                     </div>
                 </div>
                 <span class="dot-mid-divider"></span>
+                <button type="button" class="dot-mid-key" title="Copy key" aria-label="Copy key">
+                    <span class="material-symbols-outlined">key</span>
+                </button>
                 <button type="button" class="dot-mid-delete" title="Delete asset" aria-label="Delete asset">
                     <span class="material-symbols-outlined">delete</span>
                 </button>

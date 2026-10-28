@@ -69,10 +69,6 @@ class AssetApi extends Gateway {
         return await this.call("DELETE", `asset/${encodeURIComponent(asset)}`);
     }
 
-    async action(asset, action) {
-        return await this.call("GET", `asset/${encodeURIComponent(asset)}/${encodeURIComponent(action)}`);
-    }
-
     async run(asset, payload) {
         return await this.call("POST", `asset/${encodeURIComponent(asset)}`, payload);
     }

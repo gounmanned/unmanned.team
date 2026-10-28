@@ -155,7 +155,7 @@ class DotRollup {
                     ${this.sorted.map(a => this._actionRow(a)).join('')}
                 </ul>
             </div>
-        ` : this._placeholder('dot-empty dot-empty--overlay', 'No activity');
+        ` : this._placeholder('dot-empty dot-empty--overlay', 'No actions');
 
         this.mid.innerHTML = this._actionsHeader(asset) + list;
 
@@ -259,7 +259,7 @@ class DotRollup {
 
     _clearOutput() {
         this.selectedKey = null;
-        this.right.innerHTML = this._placeholder('dot-watermark', 'Select an action');
+        this.right.innerHTML = this._placeholder('dot-watermark', 'Select action');
     }
 
     _outputText(action) {

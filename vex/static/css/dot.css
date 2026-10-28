@@ -26,6 +26,7 @@
   display: flex;
   flex-direction: column;
   min-height: 0;
+  position: relative;
   color: var(--dot-ink);
 }
 
@@ -133,6 +134,7 @@
 
 #dot-screen .dot-mid {
   flex: 3;
+  position: relative;
   border-right: 1px solid var(--dot-line);
   background: var(--surface);
 }
@@ -376,6 +378,7 @@
   background: var(--dot-line);
 }
 
+#dot-screen .dot-mid-key,
 #dot-screen .dot-mid-delete {
   display: grid;
   place-items: center;
@@ -391,12 +394,22 @@
   transition: background-color 0.12s, color 0.12s;
 }
 
+#dot-screen .dot-mid-delete { margin-left: -6px; }
+
+#dot-screen .dot-mid-key:hover {
+  background: color-mix(in srgb, var(--dot-accent) 10%, transparent);
+  color: var(--dot-accent-text);
+}
+
 #dot-screen .dot-mid-delete:hover {
   background: color-mix(in srgb, var(--dot-bad) 10%, transparent);
   color: var(--dot-bad);
 }
 
+#dot-screen .dot-mid-key .material-symbols-outlined,
 #dot-screen .dot-mid-delete .material-symbols-outlined { font-size: 20px; }
+
+#dot-screen .dot-mid-key .material-symbols-outlined { transform: rotate(90deg); }
 
 #dot-screen .dot-action-list {
   list-style: none;
@@ -555,6 +568,15 @@
   padding: 24px 28px;
 }
 
+/* Overlay the empty state across the full column so it centers over the
+   whole height rather than just the space below the header — keeping it
+   level with the watermark in the response column. */
+#dot-screen .dot-empty--overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
 #dot-screen .dot-watermark-line {
   display: flex;
   align-items: center;
@@ -577,6 +599,31 @@
   text-transform: uppercase;
   letter-spacing: 0.14em;
   color: var(--dot-text-faint);
+}
+
+/* ── TOAST ──────────────────────────────────────────────────────── */
+
+#dot-screen .dot-toast {
+  position: absolute;
+  bottom: 22px;
+  left: 50%;
+  z-index: 10;
+  padding: 9px 16px;
+  border-radius: 6px;
+  background: var(--dot-ink);
+  color: var(--dot-surface);
+  font-size: 12px;
+  font-weight: 600;
+  box-shadow: 0 4px 16px rgb(11 12 13 / 0.2);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-50%) translateY(8px);
+  transition: opacity 0.18s, transform 0.18s;
+}
+
+#dot-screen .dot-toast--show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
 }
 
 /* ── MOTION ─────────────────────────────────────────────────────── */

@@ -120,8 +120,6 @@ class DotRollup {
 
     async _deleteAsset() {
         const asset = this.dots.get(this.selected);
-        if (!confirm(`Delete ${asset.name}?`)) return;
-
         await SiteSpinner.withLoading(() => this.api.inventory.delete(this.selected));
         this.dots.delete(this.selected);
         this._clearSelection();

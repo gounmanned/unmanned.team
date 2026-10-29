@@ -87,17 +87,46 @@
 #managed-accounts {
   flex: 1; overflow-y: auto;
   list-style: none; margin: 0; padding: 6px;
-  display: flex; flex-direction: column; gap: 1px;
+  display: flex; flex-direction: column; gap: 0;
 }
 
+/* --depth, .has-children and .collapsed are set by ManagedRollup._arrange().
+   Each level indents 16px; leaf rows keep an invisible toggle slot so badges
+   line up within a level. */
 #managed-screen .managed-account-item {
   display: flex; align-items: center; gap: 9px;
-  padding: 8px 10px;
+  padding: 8px 10px 8px calc(4px + var(--depth, 0) * 16px);
   border-radius: 5px;
   cursor: pointer;
 }
 #managed-screen .managed-account-item:hover { background: var(--surface); }
 #managed-screen .managed-account-item.pending { opacity: 0.4; pointer-events: none; }
+
+#managed-screen .managed-account-toggle {
+  all: unset;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  width: 16px; height: 16px; border-radius: 3px;
+  color: var(--text-faint);
+  visibility: hidden;
+}
+#managed-screen .managed-account-item.has-children .managed-account-toggle { visibility: visible; }
+#managed-screen .managed-account-toggle:hover { color: var(--text-body); background: var(--line); }
+
+#managed-screen .managed-account-toggle .material-symbols-outlined {
+  font-size: 16px;
+  transform: rotate(90deg);
+  transition: transform 0.15s ease;
+}
+#managed-screen .managed-account-item.collapsed .managed-account-toggle .material-symbols-outlined {
+  transform: none;
+}
+
+/* collapsed parent: badge, dot and pill include the whole subtree */
+#managed-screen .managed-account-item.collapsed .managed-account-badge {
+  outline: 1.5px dashed var(--text-faint);
+  outline-offset: 2px;
+}
 
 #managed-screen .managed-account-badge {
   position: relative;

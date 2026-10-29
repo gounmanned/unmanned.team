@@ -645,11 +645,12 @@
         else if(T >= COD + 0.9 && T < COD + 1.35){ dive(CODE, COD + 0.9, COD + 1.35, 110, PURPLE); }
         else if(T >= COD + 1.95 && T < A0){ popDot(COD + 1.95, CYAN, 1); }
         else if(T >= A0){
-          // blue settles into its spot and waits; the other three roll back in, then everyone takes the Figma positions
+          // blue settles into its spot and waits; the other three roll back in from the right (green first, passing behind
+          // blue to the far left), then everyone takes the Figma positions
           var g = prog(T, GROW, GROW + 0.8), ge = softBack(g);
           [
             { k:'cyan', from:ANCHOR.x, to:213, a:A0, b:A0 + 0.9 },
-            { k:'green', from:-160, to:113, a:A0 + 0.5, b:A0 + 1.4 },
+            { k:'green', from:526 + 160, to:113, a:A0 + 0.4, b:A0 + 1.6 },
             { k:'purple', from:526 + 160, to:313, a:A0 + 0.7, b:A0 + 1.6 },
             { k:'yellow', from:526 + 260, to:413, a:A0 + 0.9, b:A0 + 1.8 }
           ].forEach(function(rl){

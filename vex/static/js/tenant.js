@@ -1,10 +1,15 @@
 class TenantScreen {
+    static TAIL_INTERVAL = 30000;
+
     constructor(state) {
         this.state = state;
         this.api = state.api;
         this.month = new Date();
         this.query = '';
-        this.results = [];
+        this.tailTimer = null;
+
+        this.input = document.getElementById('signal-search-input');
+        this.tailSwitch = document.getElementById('tail-switch');
 
         this.table = new Table('signal-table', {
             open: signal => this.open(signal),
@@ -16,19 +21,24 @@ class TenantScreen {
     }
 
     async reload() {
-        const filter = this.month ? `date=${this.month.toISOString().slice(0, 7)}` : "";
-        await this.api.signals.list(filter, new CustomEvent("signal:account"));
-        await this.api.signals.list(`status=O`, new CustomEvent("signal:account"));
+        const filter = this.month ? `date=${this.month.toISOString().slice(0, 7)}` : '';
+        await this.api.signals.list(filter, new CustomEvent('signal:account'));
+        await this.api.signals.list('status=O', new CustomEvent('signal:account'));
     }
 
     async reset() {
-        await SiteSpinner.withLoading(async() => {
+        await SiteSpinner.withLoading(async () => {
             this.api.reset();
             this.table.clear();
+            this.stopTail();
             this.clearSearch();
             this.renderSpotlight();
             this.renderTrend();
         });
+    }
+
+    signals() {
+        return Object.values(this.state.signals?.[this.state.account()] ?? {});
     }
 
     count() {
@@ -36,19 +46,18 @@ class TenantScreen {
         el.hidden = !!this.query;
         if (this.query) return;
 
-        const all = [...this.table.signals.values()];
-        const total = all.length;
-        const open = all.filter(s => String(s.status).startsWith('O')).length;
-        const closed = all.filter(s => String(s.status).startsWith('C')).length;
-        const auto = all.filter(s => s.status === 'CV').length;
-        const pct = closed ? Math.round((auto / closed) * 100) : 0;
+        const all = this.signals();
+        const open = all.filter(s => s.status.startsWith('O')).length;
+        const closed = all.filter(s => s.status.startsWith('C'));
+        const auto = closed.filter(s => s.status === 'CV').length;
+        const pct = closed.length ? Math.round((auto / closed.length) * 100) : 0;
 
-        const responded = all.filter(s => s.metadata?.threat && String(s.status).startsWith('C'));
+        const responded = closed.filter(s => s.metadata?.threat);
         const mttr = responded.length
             ? Math.round(responded.reduce((sum, s) => sum + (new Date(s.updated) - new Date(s.created)), 0) / responded.length / 60000)
             : 0;
 
-        el.innerHTML = `${total.toLocaleString()} signals · ${open.toLocaleString()} open · ${mttr.toLocaleString()}m MTTR · ${pct}% autoclosed`;
+        el.textContent = `${all.length.toLocaleString()} signals · ${open.toLocaleString()} open · ${mttr.toLocaleString()}m MTTR · ${pct}% autoclosed`;
     }
 
     async open(signal) {
@@ -70,43 +79,52 @@ class TenantScreen {
         this.query = q.trim();
         if (!this.query) return this.clearSearch();
 
+        this.stopTail();
         const query = this.query;
-        document.getElementById('signal-table-wrap').classList.add('searching');
 
         let logs = [];
         await SiteSpinner.withLoading(async () => {
-            try {
-                logs = await this.api.audit.search(query) ?? [];
-            } catch (err) {
-                console.error('audit query failed', err);
-            }
+            logs = await this.api.audit.search(query) ?? [];
         });
 
-        if (query !== this.query) return;
-        this.results = logs;
-        this.renderResults();
+        if (query === this.query) this.table.showLogs(logs, query);
     }
 
     clearSearch() {
         this.query = '';
-        this.results = [];
-        document.getElementById('signal-search-input').value = '';
-        document.getElementById('signal-search-results').innerHTML = '';
-        document.getElementById('signal-table-wrap').classList.remove('searching');
+        this.input.value = '';
+        this.table.hideLogs();
         this.count();
     }
 
-    renderResults() {
-        const pattern = new RegExp(`(${this.query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-        const highlight = text => String(text).split(pattern)
-            .map((part, i) => i % 2 ? `<mark>${Workspace.esc(part)}</mark>` : Workspace.esc(part))
-            .join('');
+    // ── tail ───────────────────────────────────────────────────────
 
-        document.getElementById('signal-search-results').innerHTML = this.results.length
-            ? this.results.map(log => `<li>${highlight(log.message ?? log)}</li>`).join('')
-            : `<li class="search-empty">No logs match "${Workspace.esc(this.query)}"</li>`;
+    toggleTail() {
+        this.tailTimer ? this.stopTail() : this.startTail();
+    }
 
-        document.getElementById('signal-table-wrap').scrollTop = 0;
+    startTail() {
+        this.clearSearch();
+        this.tailFrom = new Date(Date.now() - TenantScreen.TAIL_INTERVAL);
+        this.tailSwitch.setAttribute('aria-pressed', 'true');
+        this.table.placeholder('Tailing logs · please wait');
+
+        this.tailTimer = setInterval(() => this.pollTail(), TenantScreen.TAIL_INTERVAL);
+        this.pollTail();
+    }
+
+    stopTail() {
+        clearInterval(this.tailTimer);
+        this.tailTimer = null;
+        this.tailSwitch.setAttribute('aria-pressed', 'false');
+        this.table.hideLogs();
+    }
+
+    async pollTail() {
+        const start = this.tailFrom;
+        const end = this.tailFrom = new Date();
+        const logs = await this.api.audit.get(start.toISOString(), end.toISOString()) ?? [];
+        if (this.tailTimer) this.table.prependLogs(logs);
     }
 
     // ── overview ───────────────────────────────────────────────────
@@ -125,13 +143,11 @@ class TenantScreen {
         const year = now.getFullYear(), month = now.getMonth(), today = now.getDate();
         const days = new Date(year, month + 1, 0).getDate();
 
-        const signals = Object.values(this.state.signals?.[this.state.account()] ?? {}).filter(s => {
-            const d = new Date(s.created);
-            return d.getFullYear() === year && d.getMonth() === month;
-        });
-
         const counts = new Array(days).fill(0);
-        signals.forEach(s => counts[new Date(s.created).getDate() - 1]++);
+        this.signals().forEach(s => {
+            const d = new Date(s.created);
+            if (d.getFullYear() === year && d.getMonth() === month) counts[d.getDate() - 1]++;
+        });
 
         document.getElementById('trend-month').textContent =
             now.toLocaleString(undefined, { month: 'long', year: 'numeric' });
@@ -165,18 +181,13 @@ class TenantScreen {
 
         // ── radar centered on today ──
         const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
-        const R = Math.min(480, Math.max(220, W * 0.3));
-        const at = (deg, r = R) => {
-            const a = deg * Math.PI / 180;
-            return [lx + r * Math.cos(a), ly + r * Math.sin(a)].map(n => n.toFixed(1)).join(',');
-        };
-        const spin = (dur, dir = 1) => still ? '' :
+        const spin = still ? '' :
             `<animateTransform attributeName="transform" type="rotate"
-            from="0 ${lx} ${ly}" to="${360 * dir} ${lx} ${ly}" dur="${dur}s" repeatCount="indefinite"/>`;
+            from="0 ${lx} ${ly}" to="-360 ${lx} ${ly}" dur="12s" repeatCount="indefinite"/>`;
 
+        const R = Math.min(480, Math.max(220, W * 0.3));
         const rings = [0.25, 0.5, 0.75, 1]
             .map(f => `<circle class="trend-ring" cx="${lx}" cy="${ly}" r="${R * f}"/>`).join('');
-
         const waves = [0, 1, 2]
             .map(i => `<circle class="trend-wave" cx="${lx}" cy="${ly}" r="${R}" style="animation-delay:${-i * 1.4}s"/>`).join('');
 
@@ -214,7 +225,7 @@ class TenantScreen {
             <circle class="trend-halo" cx="${lx}" cy="${ly}" r="16"/>
             <g>
                 <circle class="trend-reticle" cx="${lx}" cy="${ly}" r="9"/>
-                ${spin(12, -1)}
+                ${spin}
             </g>
             <circle class="trend-today-pulse" cx="${lx}" cy="${ly}" r="3.5"/>
             <circle class="trend-today" cx="${lx}" cy="${ly}" r="3.5"/>
@@ -225,19 +236,17 @@ class TenantScreen {
     }
 
     renderSpotlight() {
-        const signal = Object.values(this.state.signals?.[this.state.account()] ?? {})
-            .filter(s => String(s.status).startsWith('O') && s.metadata?.threat)
+        const signal = this.signals()
+            .filter(s => s.status.startsWith('O') && s.metadata?.threat)
             .sort((a, b) => new Date(b.created) - new Date(a.created))[0];
 
         this._spotlight = signal;
         document.getElementById('overview').classList.toggle('critical', !!signal);
         if (!signal) return;
 
-        const set = (id, text) => document.getElementById(id).textContent = text;
-
-        set('spotlight-name', signal.name);
-        set('spotlight-created', Workspace.date(signal.created));
-        set('spotlight-updated', Workspace.date(signal.updated ?? signal.created));
+        document.getElementById('spotlight-name').textContent = signal.name;
+        document.getElementById('spotlight-created').textContent = Workspace.date(signal.created);
+        document.getElementById('spotlight-updated').textContent = Workspace.date(signal.updated ?? signal.created);
         document.getElementById('spotlight-img').src = `static/img/source/${signal.source}.png`;
     }
 
@@ -248,47 +257,45 @@ class TenantScreen {
             this.state.track(signal);
             this.table.add(signal);
             this.scheduleTrend();
-            if (!this.query) this.count();
+            this.count();
         });
+
+        this.tailSwitch.addEventListener('click', () => this.toggleTail());
 
         document.getElementById('view-switch').addEventListener('click', (e) => {
-            e.currentTarget.querySelector('span').textContent = this.table.toggleView() ? 'table_rows' : 'view_kanban';
+            this.stopTail();
+            this.clearSearch();
+            e.currentTarget.querySelector('span').textContent = this.table.toggleBoard() ? 'table_rows' : 'view_kanban';
         });
 
-        document.getElementById('toggle').addEventListener('click', async () => {
-            const active = document.getElementById('toggle').classList.toggle('active');
+        document.getElementById('toggle').addEventListener('click', async (e) => {
+            const active = e.currentTarget.classList.toggle('active');
             document.getElementById('toggle-label').textContent = active ? 'This month' : 'This year';
 
             this.state.reset();
             this.month = active ? new Date() : null;
 
-            await SiteSpinner.withLoading(async() => {
+            await SiteSpinner.withLoading(async () => {
                 await this.reset();
                 await this.reload();
             });
         });
 
-        document.getElementById('spotlight').addEventListener('click', async () => {
-            if (!this._spotlight) return;
-            await this.open(this._spotlight);
+        document.getElementById('spotlight').addEventListener('click', () => {
+            if (this._spotlight) this.open(this._spotlight);
         });
 
         document.getElementById('signal-search').addEventListener('submit', (e) => {
             e.preventDefault();
-            this.search(document.getElementById('signal-search-input').value);
+            this.search(this.input.value);
         });
 
-        document.getElementById('signal-search-input').addEventListener('input', () => {
-            if (!document.getElementById('signal-search-input').value.trim() && this.query) this.clearSearch();
+        this.input.addEventListener('input', () => {
+            if (!this.input.value.trim() && this.query) this.clearSearch();
         });
 
-        document.getElementById('signal-search-input').addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') this.clearSearch();
-        });
-
-        document.getElementById('signal-search-results').addEventListener('click', (e) => {
-            if (getSelection().toString()) return;
-            e.target.closest('li:not(.search-empty)')?.classList.toggle('expanded');
+        this.input.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') this.tailTimer ? this.stopTail() : this.clearSearch();
         });
     }
 }

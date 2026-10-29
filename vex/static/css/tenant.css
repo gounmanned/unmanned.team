@@ -143,12 +143,6 @@
   stroke-dasharray: 3.5 2.6;
 }
 
-#trend-svg .trend-tick {
-  stroke: var(--radar);
-  stroke-width: 1.5;
-  stroke-linecap: round;
-}
-
 #trend-svg .trend-today {
   fill: var(--radar);
   stroke: var(--surface);
@@ -182,8 +176,7 @@
   border-top: 1px solid color-mix(in srgb, var(--critical) 18%, var(--line));
   border-radius: 0;
   background: color-mix(in srgb, var(--surface) 55%, transparent);
-  -webkit-backdrop-filter: blur(14px) saturate(160%);
-          backdrop-filter: blur(14px) saturate(160%);
+  backdrop-filter: blur(14px) saturate(160%);
   box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.6);
   color: inherit;
   font: inherit;
@@ -320,15 +313,9 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  width: 100%;
   height: 42px;
   margin: 0 0 14px;
-  padding: 0;
-  border: 0;
   border-bottom: 1px solid color-mix(in srgb, var(--text-faint) 40%, var(--line));
-  border-radius: 0;
-  background: transparent;
-  box-sizing: border-box;
   transition: border-color 0.15s;
 }
 
@@ -357,7 +344,9 @@
   color: var(--text-body);
 }
 
-#signal-table-wrap.searching > table { display: none; }
+/* SIEM view — search results or the live tail */
+
+#signal-table-wrap.logs > table { display: none; }
 
 .signal-search-results {
   display: none;
@@ -370,18 +359,30 @@
   line-height: 1.55;
 }
 
-#signal-table-wrap.searching .signal-search-results { display: block; }
+#signal-table-wrap.logs .signal-search-results { display: block; }
 
 .signal-search-results li {
   --row-bg: var(--surface);
   position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 16px;
   padding: 7px 8px;
   border-bottom: 1px solid var(--line);
   color: var(--text-body);
+  cursor: pointer;
+}
+
+.signal-search-results time {
+  font-variant-numeric: tabular-nums;
+  color: var(--text-faint);
+  white-space: nowrap;
+}
+
+.signal-search-results li span {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  cursor: pointer;
 }
 
 .signal-search-results li:hover {
@@ -405,10 +406,11 @@
 
 .signal-search-results li:hover::after { opacity: 1; }
 
-.signal-search-results li.expanded {
+.signal-search-results li.expanded { padding-right: 52px; }
+
+.signal-search-results li.expanded span {
   white-space: pre-wrap;
   word-break: break-all;
-  padding-right: 52px;
 }
 
 .signal-search-results li.expanded::after {
@@ -425,6 +427,7 @@
 }
 
 .signal-search-results li.search-empty {
+  display: block;
   padding: 48px 8px;
   border: 0;
   font-family: inherit;
@@ -437,6 +440,17 @@
 }
 
 .signal-search-results li.search-empty::after { display: none; }
+
+/* freshly tailed lines flash in */
+
+.signal-search-results li.tail-new {
+  animation: tail-flash 2.4s ease-out;
+}
+
+@keyframes tail-flash {
+  from { background: color-mix(in srgb, var(--brand) 14%, var(--surface)); }
+  to   { background: var(--row-bg); }
+}
 
 /* ── signals: shared ────────────────────────────────────────────── */
 
@@ -452,7 +466,7 @@
   overflow-y: auto;
 }
 
-/* view switch (table ↔ board) */
+/* view switches (tail · table ↔ board) */
 
 .signal-search .view-switch {
   all: unset;
@@ -473,6 +487,11 @@
 .signal-search .view-switch:focus-visible {
   outline: 2px solid var(--brand);
   outline-offset: 2px;
+}
+
+.signal-search .view-switch[aria-pressed="true"] {
+  color: var(--brand);
+  background: color-mix(in srgb, var(--brand) 12%, transparent);
 }
 
 /* threat chip */
@@ -507,9 +526,7 @@
   table-layout: fixed;
 }
 
-#signal-table:not(:has(tbody tr:not(.signal-row-hidden))) thead {
-  display: none;
-}
+#signal-table:not(:has(tbody tr)) thead { display: none; }
 
 #signal-table,
 #signal-table th,
@@ -551,7 +568,6 @@ td.created { font-variant-numeric: tabular-nums; }
 
 tr.closed { opacity: 0.38; }
 tr.unread { font-weight: 600; }
-tr.signal-row-hidden { display: none; }
 
 tr.unread td.name::before {
   content: '';
@@ -634,9 +650,10 @@ td.elapsed.live {
 
 #signal-table-wrap.board { overflow: hidden; }
 #signal-table-wrap.board > table { display: none; }
-#signal-table-wrap.board.searching { overflow-y: auto; }
 
-#signal-table-wrap.board:not(.searching):not(.empty) .signal-board {
+#signal-table-wrap.board.logs { overflow-y: auto; }
+
+#signal-table-wrap.board:not(.logs):not(.empty) .signal-board {
   display: grid;
   grid-template-columns: repeat(4, minmax(200px, 1fr));
   height: 100%;
@@ -774,12 +791,10 @@ td.elapsed.live {
   color: #fff;
 }
 
-.links a.cta .material-symbols-outlined { font-size: 16px; }
-
 .links .count {
   font-size: 12px;
   font-weight: 500;
-  color: var(--text-faint, #8a8f98);
+  color: var(--text-faint);
   white-space: nowrap;
 }
 
@@ -850,4 +865,5 @@ td.elapsed.live {
   #trend-svg .trend-today-pulse,
   #trend-svg .trend-wave { animation: none; opacity: 0; }
   .spotlight-pulse { animation: none; opacity: 0.15; transform: scale(1.3); }
+  .signal-search-results li.tail-new { animation: none; }
 }

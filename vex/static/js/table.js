@@ -6,10 +6,17 @@ class Table {
         CV: 'Autoclosed by VEX',
     };
 
+    static LOG_LIMIT = 1000;
+    static CLOCK = new Intl.DateTimeFormat(undefined, {
+        month: 'short', day: '2-digit',
+        hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23',
+    });
+
     constructor(id, { open, move }) {
         this.body = document.querySelector(`#${id} tbody`);
         this.wrap = this.body.closest('.table-wrap');
         this.board = this.wrap.querySelector('.signal-board');
+        this.logs = this.wrap.querySelector('.signal-search-results');
         this.open = open;
         this.move = move;
         this.signals = new Map();
@@ -34,7 +41,8 @@ class Table {
         this.wrap.classList.add('empty');
     }
 
-    toggleView() {
+    toggleBoard() {
+        this.hideLogs();
         return this.wrap.classList.toggle('board');
     }
 
@@ -45,7 +53,47 @@ class Table {
         this.renderCard(signal);
     }
 
-    // ── rendering ──────────────────────────────────────────────────
+    // ── logs ───────────────────────────────────────────────────────
+
+    showLogs(logs, query) {
+        const pattern = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+        const highlight = text => text.split(pattern)
+            .map((part, i) => i % 2 ? `<mark>${Workspace.esc(part)}</mark>` : Workspace.esc(part))
+            .join('');
+
+        if (!logs.length) return this.placeholder(`No logs match "${Workspace.esc(query)}"`);
+
+        this.wrap.classList.add('logs');
+        this.logs.innerHTML = logs.map(log => `<li>${this.logLine(log, highlight(log.message))}</li>`).join('');
+        this.wrap.scrollTop = 0;
+    }
+
+    prependLogs(logs) {
+        if (!logs.length) return;
+
+        this.logs.querySelector('.search-empty')?.remove();
+        this.logs.insertAdjacentHTML('afterbegin',
+            logs.map(log => `<li class="tail-new">${this.logLine(log)}</li>`).join(''));
+
+        while (this.logs.children.length > Table.LOG_LIMIT) this.logs.lastElementChild.remove();
+    }
+
+    placeholder(text) {
+        this.wrap.classList.add('logs');
+        this.logs.innerHTML = `<li class="search-empty">${text}</li>`;
+    }
+
+    hideLogs() {
+        this.wrap.classList.remove('logs');
+        this.logs.innerHTML = '';
+    }
+
+    logLine(log, message = Workspace.esc(log.message)) {
+        const time = Table.CLOCK.format(new Date(log.timestamp));
+        return `<time datetime="${log.timestamp}">${time}</time><span>${message}</span>`;
+    }
+
+    // ── signals ────────────────────────────────────────────────────
 
     find(selector, id) {
         return this.wrap.querySelector(`${selector}[data-id="${CSS.escape(String(id))}"]`);
@@ -75,7 +123,7 @@ class Table {
 
     elapsed(signal) {
         const utc = v => Date.parse(/[zZ]|[+-]\d\d:?\d\d$/.test(v) ? v : `${v}Z`);
-        const end = signal.status == "OB" ? Date.now() : utc(signal.updated ?? signal.created);
+        const end = signal.status === 'OB' ? Date.now() : utc(signal.updated ?? signal.created);
         const t = Math.max(0, Math.floor((end - utc(signal.created)) / 1000));
 
         return [t / 3600, (t % 3600) / 60, t % 60]
@@ -164,6 +212,11 @@ class Table {
             if (!el) return;
             e.stopPropagation();
             this.open(this.signals.get(el.dataset.id));
+        });
+
+        this.logs.addEventListener('click', (e) => {
+            if (getSelection().toString()) return;
+            e.target.closest('li:not(.search-empty)')?.classList.toggle('expanded');
         });
 
         this.board.addEventListener('dragstart', (e) => {

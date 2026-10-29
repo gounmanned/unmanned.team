@@ -344,10 +344,9 @@
   color: var(--text-body);
 }
 
-/* SIEM view — shared by search results and the live tail */
+/* SIEM view — search results or the live tail */
 
-#signal-table-wrap.searching > table,
-#signal-table-wrap.tailing > table { display: none; }
+#signal-table-wrap.logs > table { display: none; }
 
 .signal-search-results {
   display: none;
@@ -360,8 +359,7 @@
   line-height: 1.55;
 }
 
-#signal-table-wrap.searching .signal-search-results,
-#signal-table-wrap.tailing .signal-search-results { display: block; }
+#signal-table-wrap.logs .signal-search-results { display: block; }
 
 .signal-search-results li {
   --row-bg: var(--surface);
@@ -653,10 +651,9 @@ td.elapsed.live {
 #signal-table-wrap.board { overflow: hidden; }
 #signal-table-wrap.board > table { display: none; }
 
-#signal-table-wrap.board.searching,
-#signal-table-wrap.board.tailing { overflow-y: auto; }
+#signal-table-wrap.board.logs { overflow-y: auto; }
 
-#signal-table-wrap.board:not(.searching):not(.tailing):not(.empty) .signal-board {
+#signal-table-wrap.board:not(.logs):not(.empty) .signal-board {
   display: grid;
   grid-template-columns: repeat(4, minmax(200px, 1fr));
   height: 100%;

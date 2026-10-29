@@ -1,10 +1,5 @@
 class TenantScreen {
     static TAIL_INTERVAL = 30000;
-    static TAIL_LIMIT = 1000;
-    static CLOCK = new Intl.DateTimeFormat(undefined, {
-        month: 'short', day: '2-digit',
-        hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23',
-    });
 
     constructor(state) {
         this.state = state;
@@ -13,8 +8,6 @@ class TenantScreen {
         this.query = '';
         this.tailTimer = null;
 
-        this.wrap = document.getElementById('signal-table-wrap');
-        this.logs = document.getElementById('signal-search-results');
         this.input = document.getElementById('signal-search-input');
         this.tailSwitch = document.getElementById('tail-switch');
 
@@ -83,41 +76,21 @@ class TenantScreen {
         if (!this.query) return this.clearSearch();
 
         this.stopTail();
-        this.wrap.classList.add('searching');
-
         const query = this.query;
+
         let logs = [];
         await SiteSpinner.withLoading(async () => {
             logs = await this.api.audit.search(query) ?? [];
         });
 
-        if (query === this.query) this.renderResults(logs);
+        if (query === this.query) this.table.showLogs(logs, query);
     }
 
     clearSearch() {
         this.query = '';
         this.input.value = '';
-        this.logs.innerHTML = '';
-        this.wrap.classList.remove('searching');
+        this.table.hideLogs();
         this.count();
-    }
-
-    renderResults(logs) {
-        const pattern = new RegExp(`(${this.query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-        const highlight = text => String(text).split(pattern)
-            .map((part, i) => i % 2 ? `<mark>${Workspace.esc(part)}</mark>` : Workspace.esc(part))
-            .join('');
-
-        this.logs.innerHTML = logs.length
-            ? logs.map(log => `<li>${this.line(log, highlight(log.message))}</li>`).join('')
-            : `<li class="search-empty">No logs match "${Workspace.esc(this.query)}"</li>`;
-
-        this.wrap.scrollTop = 0;
-    }
-
-    line(log, message = Workspace.esc(log.message)) {
-        const time = TenantScreen.CLOCK.format(new Date(log.timestamp));
-        return `<time datetime="${log.timestamp}">${time}</time><span>${message}</span>`;
     }
 
     // ── tail ───────────────────────────────────────────────────────
@@ -129,10 +102,8 @@ class TenantScreen {
     startTail() {
         this.clearSearch();
         this.tailFrom = new Date(Date.now() - TenantScreen.TAIL_INTERVAL);
-
-        this.wrap.classList.add('tailing');
         this.tailSwitch.setAttribute('aria-pressed', 'true');
-        this.logs.innerHTML = `<li class="search-empty">Tailing logs · please wait</li>`;
+        this.table.placeholder('Tailing logs · please wait');
 
         this.tailTimer = setInterval(() => this.pollTail(), TenantScreen.TAIL_INTERVAL);
         this.pollTail();
@@ -141,25 +112,15 @@ class TenantScreen {
     stopTail() {
         clearInterval(this.tailTimer);
         this.tailTimer = null;
-
-        this.wrap.classList.remove('tailing');
         this.tailSwitch.setAttribute('aria-pressed', 'false');
-        this.logs.innerHTML = '';
+        this.table.hideLogs();
     }
 
     async pollTail() {
-        // each window starts exactly where the last one ended
         const start = this.tailFrom;
         const end = this.tailFrom = new Date();
-
         const logs = await this.api.audit.get(start.toISOString(), end.toISOString()) ?? [];
-        if (!this.tailTimer || !logs.length) return;
-
-        this.logs.querySelector('.search-empty')?.remove();
-        this.logs.insertAdjacentHTML('afterbegin',
-            logs.map(log => `<li class="tail-new">${this.line(log)}</li>`).join(''));
-
-        while (this.logs.children.length > TenantScreen.TAIL_LIMIT) this.logs.lastElementChild.remove();
+        if (this.tailTimer) this.table.prependLogs(logs);
     }
 
     // ── overview ───────────────────────────────────────────────────
@@ -299,7 +260,8 @@ class TenantScreen {
 
         document.getElementById('view-switch').addEventListener('click', (e) => {
             this.stopTail();
-            e.currentTarget.querySelector('span').textContent = this.table.toggleView() ? 'table_rows' : 'view_kanban';
+            this.clearSearch();
+            e.currentTarget.querySelector('span').textContent = this.table.toggleBoard() ? 'table_rows' : 'view_kanban';
         });
 
         document.getElementById('toggle').addEventListener('click', async (e) => {
@@ -330,11 +292,6 @@ class TenantScreen {
 
         this.input.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') this.tailTimer ? this.stopTail() : this.clearSearch();
-        });
-
-        this.logs.addEventListener('click', (e) => {
-            if (getSelection().toString()) return;
-            e.target.closest('li:not(.search-empty)')?.classList.toggle('expanded');
         });
     }
 }

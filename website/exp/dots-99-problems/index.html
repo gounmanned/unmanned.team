@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Got 99 problems | Dots</title>
+<meta name="description" content="Ransomware, rogue AI agents, the printer from 2009. One very small Dot looks after your computer for 99¢ a month.">
+<!-- A campaign experiment (2026-10-28): unlinked, shared by link only. Built by homepage-tools/build_dot_campaigns.py -->
+<meta name="robots" content="noindex">
+<meta property="og:title" content="Got 99 problems | Dots" />
+<meta property="og:description" content="Ransomware, rogue AI agents, the printer from 2009. One very small Dot looks after your computer for 99¢ a month." />
+<meta property="og:url" content="https://unmanned.team/exp/dots-99-problems/" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Unmanned" />
+<meta property="og:image" content="https://unmanned.team/static/og/dots.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="Dots by Unmanned" />
+<meta name="twitter:card" content="summary_large_image" />
+<link rel="icon" type="image/png" href="https://cdn.unmanned.team/img/logo.png">
+<link rel="apple-touch-icon" href="https://cdn.unmanned.team/img/logo.png">
+<link rel="stylesheet" href="https://cdn.unmanned.team/css/global.css">
+<link rel="stylesheet" href="../../static/site.css">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  /* Dots campaign page. Shared pieces first (header, hero frame, stage, the four sections), then this page's hero. */
+  :root{--d-green:#029266;--accent-text:#d10176;--d-faint:#faf9f6;--success:#057c56;--line-strong:#8a8a8e;--anton:'Anton',Impact,sans-serif;}
+  h1,h2,h3,h4{text-wrap:balance;} p,li{text-wrap:pretty;}
+  h1,h2,h3,h4,p{margin:0;}
+  img{display:block;}
+  .wrap{width:min(1100px,calc(100% - 2 * var(--gutter)));margin:0 auto;}
+  a:focus-visible,button:focus-visible,summary:focus-visible{outline:1.5px solid var(--pink);outline-offset:4px;}
+  @media (max-width:700px){:root{--gutter:16px;}}
+
+  /* ---------- CLASSIFICATION BAR + HEADER (as /dots/) ---------- */
+  .classbar{
+    position:fixed;top:0;left:0;right:0;z-index:60;background:var(--ink);color:var(--gray-faint);
+    font-size:9.5px;line-height:1.5;letter-spacing:0.16em;text-transform:uppercase;text-align:center;padding:6px 0;
+    transition:transform 0.4s cubic-bezier(0.49,0.025,0.685,1), opacity 0.4s cubic-bezier(0.49,0.025,0.685,1);
+  }
+  html.header-hidden .classbar{transform:translateY(-100%);opacity:0;}
+  @media (max-width:700px){ :root{--classbar-h:24px;} .classbar{font-size:8px;} }
+  .site-header{background:var(--surface);border-bottom:1px solid var(--gray-line);}
+  .dots-brand{display:flex;align-items:center;gap:16px;text-decoration:none;color:var(--ink);}
+  .dots-word{font-size:32px;font-weight:900;line-height:26px;letter-spacing:0.01em;}
+  .dots-brand img{width:26px;height:26px;}
+  @media (max-width:700px){ .site-header .dots-nav{display:flex;} }
+  @media (max-width:560px){ .dots-word{font-size:28px;} .dots-brand{gap:12px;} }
+  @media (max-width:400px){ .dots-brand .brand-tag{display:none;} }
+
+  /* ---------- SHARED BITS ---------- */
+  .eyebrow{font-family:var(--mono);font-size:12px;line-height:16px;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent-text);}
+  .pill{display:inline-flex;align-items:center;justify-content:center;height:52px;padding:0 28px;border-radius:999px;background:var(--pink);color:#fff;font-size:18px;font-weight:600;line-height:28px;text-decoration:none;white-space:nowrap;transition:background-color 0.2s ease;}
+  .pill:hover{background:var(--pink-press);}
+  /* The sections below the hero use the design system's text styles (Figma 2273:23869, 2026-10-29):
+     section heading 48/56, subsection 32/40, body/lg 18/28, body/md 16/24, label 18/28 and 16/24 medium. */
+  .section{padding:96px 0;scroll-margin-top:110px;}
+  .section--subtle{background:var(--d-faint);}
+  .section--gray{background:var(--surface-gray);}
+  .head{display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center;max-width:920px;margin:0 auto 56px;}
+  .head h2,.trust h2,.price-head h2{font-size:clamp(34px,4.2vw,48px);line-height:1.1667;font-weight:800;letter-spacing:-0.015em;color:var(--ink);}
+  .head h3{font-size:clamp(34px * 32 / 48,4.2vw * 32 / 48,32px);line-height:1.25;font-weight:600;letter-spacing:-0.01em;color:var(--ink);margin-top:8px;}
+  .head p:not(.eyebrow){max-width:774px;margin-top:8px;font-size:18px;line-height:28px;color:var(--body-soft);}
+  .check{flex-shrink:0;width:20px;height:20px;margin-top:2px;background:var(--success);
+    -webkit-mask:url(../../static/icon-check.svg) center/contain no-repeat;mask:url(../../static/icon-check.svg) center/contain no-repeat;}
+  .check--lg{width:24px;height:24px;margin-top:0;}
+  /* links: label/lg (18/28) and label/md (16/24), accent text, a Phosphor icon */
+  .link{display:inline-flex;align-items:center;gap:8px;font-size:18px;line-height:28px;font-weight:500;color:var(--accent-text);text-decoration:none;cursor:pointer;}
+  .link:hover{text-decoration:underline;text-underline-offset:3px;}
+  .link--md{gap:6px;font-size:16px;line-height:24px;}
+  .link .icon{flex-shrink:0;width:20px;height:20px;background:currentColor;-webkit-mask:var(--icon) center/contain no-repeat;mask:var(--icon) center/contain no-repeat;}
+  .link--md .icon{width:16px;height:16px;}
+  .ask{display:flex;flex-wrap:wrap;align-items:center;gap:4px 24px;font-size:18px;line-height:28px;color:var(--body-soft);}
+
+  /* ---------- SECTION NAV (as How VEX works): sticks under the site header, rises when the header hides ---------- */
+  .hw-nav{position:sticky;top:calc(var(--classbar-h) + var(--header-h, 61px));z-index:40;display:flex;flex-direction:column;align-items:center;gap:8px;padding-top:16px;background:#fff;
+    border-top:1px solid var(--gray-line);border-bottom:1px solid var(--gray-line);box-shadow:0 2px 6px rgba(11,12,13,0.06),0 1px 2px rgba(11,12,13,0.06);transition:top 0.3s cubic-bezier(0.4,0,0.2,1);}
+  html.header-hidden .hw-nav{top:0;}
+  .hw-tabs{display:flex;max-width:100%;overflow-x:auto;scrollbar-width:none;}
+  .hw-tabs::-webkit-scrollbar{display:none;}
+  .hw-tabs a{flex-shrink:0;padding:0 16px 16px;border-bottom:2px solid transparent;font-size:14px;line-height:1.5;color:#8a8a8e;text-decoration:none;white-space:nowrap;transition:color 0.2s ease, border-color 0.2s ease;}
+  .hw-tabs a:hover{color:var(--ink);}
+  .hw-tabs a[aria-current="true"]{border-bottom-color:var(--pink);color:var(--ink);font-weight:600;}
+
+  /* ---------- HERO FRAME ----------
+     Each hero sets its own colors. The art is a .stage: a crop of the concept's 1440x820 scene, scaled to fit. */
+  .hero{position:relative;overflow:hidden;}
+  .hero-grid{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:48px;align-items:center;padding:clamp(48px,7vw,96px) 0;}
+  .hero-copy{position:relative;z-index:2;display:flex;flex-direction:column;align-items:flex-start;gap:24px;}
+  .hero-center{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center;padding-top:clamp(48px,7vw,88px);}
+  .hero h1{font-size:clamp(40px,6vw,70px);line-height:1.04;font-weight:800;letter-spacing:-0.025em;}
+  .hero-lede{max-width:540px;font-size:20px;line-height:30px;}
+  .hero-cta{display:flex;flex-wrap:wrap;align-items:center;gap:12px 28px;margin-top:8px;}
+  .hero-center .hero-cta{justify-content:center;}
+  /* every hero's main button: Get your Dot for 99¢, to the price card first (Chad, 2026-10-29) */
+  .down-link{display:inline-flex;align-items:center;gap:6px;min-height:44px;font-size:16px;font-weight:500;color:inherit;text-decoration:none;}
+  .down-link::after{content:'';width:16px;height:16px;background:currentColor;
+    -webkit-mask:url(../../static/icon-arrow-down.svg) center/contain no-repeat;mask:url(../../static/icon-arrow-down.svg) center/contain no-repeat;}
+  .down-link:hover{text-decoration:underline;text-underline-offset:3px;}
+  /* two lines that trade places in the same spot (no layout shift) */
+  .swap{display:grid;}
+  .swap > *{grid-area:1/1;transition:opacity 0.5s ease;}
+  .swap > :last-child{opacity:0;}
+  .swap.is-b > :first-child{opacity:0;}
+  .swap.is-b > :last-child{opacity:1;}
+  .stage-fit{position:relative;width:100%;aspect-ratio:var(--w) / var(--h);}
+  .stage{position:absolute;left:0;top:0;transform-origin:0 0;}
+  .stage--clip{overflow:hidden;}
+  .world{position:absolute;left:calc(var(--ox) * -1px);top:calc(var(--oy) * -1px);width:1440px;height:820px;}
+  .world > span,.world > div{position:absolute;}
+  .dot{display:block;overflow:visible;}
+  .replay{position:absolute;right:24px;bottom:20px;z-index:6;display:flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;background:transparent;border:1px solid;border-radius:2px;font-family:var(--mono);font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:inherit;cursor:pointer;}
+  .replay svg{width:14px;height:14px;}
+
+  /* ---------- HOW IT WORKS ---------- */
+  .story{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:32px;}
+  .story li{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;}
+  .story svg{width:100%;max-width:248px;height:auto;margin-bottom:16px;}
+  .story b{font-size:18px;line-height:28px;font-weight:600;color:var(--ink);}
+  .story p{font-size:16px;line-height:24px;color:var(--body-soft);max-width:240px;}
+  /* the full list: an accordion opened by its link (a native <details>, so it works without JS) */
+  .full{max-width:608px;margin:56px auto 0;}
+  .full summary{display:flex;justify-content:center;list-style:none;}
+  .full summary::-webkit-details-marker{display:none;}
+  .full summary .icon{transform:rotate(180deg);transition:transform 0.2s ease;}
+  .full[open] summary .icon{transform:none;}
+  .full ul{list-style:none;margin:16px 0 0;padding:0;}
+  .full li{display:flex;align-items:center;gap:24px;padding:20px 0;border-bottom:1px solid var(--gray-line);font-size:16px;line-height:24px;color:var(--ink);text-align:left;}
+  .report{max-width:720px;margin:56px auto 0;text-align:center;font-size:18px;line-height:28px;color:var(--body-soft);}
+
+  /* ---------- TRUST ---------- */
+  .trust{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:64px;align-items:center;}
+  .trust-copy{display:flex;flex-direction:column;align-items:flex-start;gap:24px;}
+  .trust-copy .eyebrow,.price-head .eyebrow{margin-bottom:-8px;}
+  .trust-copy > p:not(.eyebrow){font-size:18px;line-height:28px;color:var(--body-soft);}
+  .trust-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;border-top:1px solid var(--gray-line);}
+  .trust-list li{display:flex;gap:16px;padding:20px 0;border-bottom:1px solid var(--gray-line);}
+  .trust-list b{display:block;font-size:16px;line-height:24px;font-weight:600;color:var(--ink);}
+  .trust-list span{font-size:16px;line-height:24px;color:var(--body-soft);}
+
+  /* ---------- PRICE ---------- */
+  .price-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:56px;align-items:center;}
+  .price-card{padding:40px;background:var(--surface);border:1px solid var(--line-strong);border-radius:2px;box-shadow:4px 4px 0 rgba(11,12,13,0.15);display:flex;flex-direction:column;align-items:center;gap:24px;text-align:center;}
+  .price{display:flex;align-items:center;gap:10px;}
+  .price b{font-size:64px;line-height:68px;font-weight:800;letter-spacing:-0.02em;color:var(--ink);}
+  .price span{font-size:16px;line-height:24px;color:var(--body-soft);text-align:left;}
+  .incl{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px;text-align:left;align-self:stretch;}
+  .incl li{display:flex;gap:12px;font-size:16px;line-height:24px;color:var(--body);}
+  .price-card .pill{align-self:stretch;height:48px;font-weight:500;}
+  .fine{font-size:12px;line-height:16px;color:var(--surface-dark);}
+  .price-head{display:flex;flex-direction:column;align-items:flex-start;gap:24px;}
+  .price-head p:not(.eyebrow){font-size:18px;line-height:28px;color:var(--body-soft);}
+
+  /* ---------- FAQ ---------- */
+  .faq{max-width:760px;margin:0 auto;border-top:1px solid var(--gray-line);}
+  .faq details{border-bottom:1px solid var(--gray-line);}
+  .faq summary{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:22px 0;cursor:pointer;list-style:none;font-size:18px;line-height:28px;font-weight:600;color:var(--ink);}
+  .faq summary::-webkit-details-marker{display:none;}
+  .faq summary::after{content:'';flex-shrink:0;width:14px;height:14px;background:linear-gradient(var(--accent-text),var(--accent-text)) center/14px 2px no-repeat,linear-gradient(var(--accent-text),var(--accent-text)) center/2px 14px no-repeat;transition:transform 0.2s ease;}
+  .faq details[open] summary::after{transform:rotate(45deg);}
+  .faq details p{padding:0 32px 24px 0;font-size:16px;line-height:24px;color:var(--body-soft);}
+  .faq a{color:var(--accent-text);}
+  .faq-ask{justify-content:center;margin-top:56px;text-align:center;}
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width:900px){
+    .hero-grid{grid-template-columns:minmax(0,1fr);gap:32px;}
+    .story{grid-template-columns:repeat(2,minmax(0,1fr));gap:40px 24px;}
+    .trust,.price-row{grid-template-columns:minmax(0,1fr);gap:40px;}
+    .price-row .price-head{order:-1;}
+  }
+  @media (max-width:700px){
+    .section{padding:64px 0;}
+    .head{margin-bottom:40px;}
+    .head p:not(.eyebrow),.hero-lede,.trust-copy > p:not(.eyebrow),.price-head p:not(.eyebrow),.report{font-size:17px;line-height:26px;}
+    .report,.full,.faq-ask{margin-top:40px;}
+    .full li{gap:16px;padding:16px 0;}
+    .ask{font-size:17px;line-height:26px;}
+    .hw-tabs{padding:0 8px;}
+    .price-card{padding:32px 20px;}
+    .replay{right:16px;bottom:12px;}
+    .hero .down-link{display:none;}   /* phones don't need the nudge to scroll (Chad, 2026-10-29) */
+    .hero .pill{height:44px;padding:0 22px;font-size:16px;}   /* the medium button on phones; 44 keeps a comfortable tap */
+  }
+  @media (max-width:480px){
+    .story{grid-template-columns:minmax(0,1fr);}
+    .hero-cta{align-self:stretch;}   /* the row spans the column, so the button can */
+    .hero-cta .pill{width:100%;}
+    .hero-copy{gap:18px;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .classbar,.site-top .site-header,.pill,.faq summary::after,.swap > *,.hw-nav,.hw-tabs a,.full summary .icon{transition:none;}
+  }
+
+  /* ==================== THIS PAGE’S HERO ==================== */
+  /* 01 · 99 problems: the Dot takes the mic. Dark lounge, a spotlight, problems hovering over the stage.
+     The Dot sings, notices them, gulps them all down, and drops the mic. */
+  .h99{background:#140f18;color:#fff;}
+  .h99-bg{position:absolute;inset:0;background:repeating-linear-gradient(90deg,#1c0f19 0 36px,#170b14 36px 72px);opacity:0.9;}
+  .h99 .eyebrow{font-weight:700;letter-spacing:0.22em;color:#ff5aa8;text-shadow:0 0 10px rgba(255,90,168,0.85),0 0 26px rgba(224,18,128,0.6);}
+  .h99 h1 span{color:#ff5aa8;}
+  .h99 .hero-lede{color:#cfc8d8;}
+  .h99-count{display:flex;align-items:flex-end;gap:18px;min-width:min(340px,100%);padding:18px 22px;border:1px solid rgba(255,255,255,0.18);border-radius:2px;}
+  .h99-count > div{display:flex;flex-direction:column;gap:4px;}
+  .h99-count small{font-family:var(--mono);font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:#a9a2b3;}
+  .h99-count b{font-family:var(--mono);font-size:64px;line-height:1;font-weight:700;font-variant-numeric:tabular-nums;}
+  .h99-count > span{padding-bottom:8px;font-family:var(--mono);font-size:14px;color:#ff5aa8;}
+  .h99 .pill{background:#fff;color:#140f18;}
+  .h99 .pill:hover{background:#ffe3f1;}
+  .h99 .replay{border-color:transparent;color:#cfc8d8;}   /* no box: just the word and the icon */
+  .h99-spot{left:780px;top:64px;width:600px;height:640px;clip-path:polygon(42% 0,58% 0,100% 100%,0 100%);background:linear-gradient(180deg,rgba(255,236,190,0.26),rgba(255,236,190,0.08));}
+  .h99-floor{left:700px;top:628px;width:740px;height:130px;border-radius:50%;background:#3a2d42;box-shadow:inset 0 3px 0 rgba(255,255,255,0.1);}
+  .h99-tag{position:absolute;font-family:var(--mono);font-size:13px;font-weight:700;letter-spacing:0.1em;white-space:nowrap;color:#fff;background:#e5484d;padding:6px 11px;border-radius:2px;}
+  .h99-note{position:absolute;font-size:30px;font-weight:700;color:#ff5aa8;}
+  .h99-singer{left:970px;top:450px;width:220px;height:229px;transform-origin:50% 100%;}
+  .h99-singer .dot{width:220px;height:229px;}
+  .h99-shades{position:absolute;left:48px;top:74px;width:124px;height:31px;}
+  .h99-shades i{position:absolute;background:#0b0c0d;}
+  .h99-mic{left:1200px;top:528px;width:44px;height:132px;transform-origin:50% 85%;}
+  .h99-mic i{display:block;margin:0 auto;}
+  /* Encore lives in the grid so phones can sit it on the stage; on desktop it's still placed against the whole hero */
+  .h99 .hero-grid{position:static;}
+  @media (max-width:900px){
+    /* phones and tablets: eyebrow, headline, lede, then the show, then the count and the buttons */
+    .h99 .hero-grid{grid-template-columns:minmax(0,1fr) auto;gap:20px 12px;}
+    .h99 .hero-copy{display:contents;}
+    .h99 .hero-copy > *{position:relative;z-index:2;grid-column:1 / -1;}
+    .h99 .eyebrow{grid-row:1;} .h99 h1{grid-row:2;} .h99 .hero-lede{grid-row:3;}
+    .h99 .stage-fit{grid-row:4;grid-column:1 / -1;width:100%;max-width:520px;margin:0 auto;}
+    /* the count box and Encore share a row */
+    .h99 .h99-count{grid-row:5;grid-column:1;}
+    .h99 .replay{grid-row:5;grid-column:2;position:relative;z-index:6;right:auto;bottom:auto;align-self:stretch;padding:0 0 0 8px;}
+    /* the counter row rides up over the front of the floor (world y 700 of the crop's 765); the mic lands nearer the Dot */
+    .h99 .h99-count,.h99 .replay{margin-top:calc(-20px - min(100vw - 48px, 520px) * 65 / 700);}
+    .h99-count{background:rgba(20,15,24,0.88);}
+    .h99-tag{font-size:19px;letter-spacing:0.04em;padding:5px 8px;}
+    .h99 .hero-cta{grid-row:6;margin-top:0;}
+    /* a tighter crop of the show: the tags sit just over the Dot, so little spotlight above them (world y 250 to 765) */
+    .h99 .stage-fit{aspect-ratio:700 / 515;clip-path:inset(0 -100vw);}
+    .h99 .world{--oy:250 !important;}   /* beats the inline --oy:70, phones and tablets only */
+    /* the count box: label left, number right, a little smaller */
+    .h99-count{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;column-gap:12px;min-width:0;padding:10px 16px;}
+    .h99-count > div{display:contents;}
+    .h99-count small,.h99-count > span{grid-column:1;grid-row:1;}
+    .h99-count b{grid-column:2;grid-row:1;font-size:44px;}
+    /* "(it’s the mic)" takes the label's place for its moment, so the box never grows */
+    .h99-count > span{padding:0;font-size:13px;}
+    .h99-count:has(> span:not(:empty)) small{visibility:hidden;}
+  }
+  @media (max-width:700px){
+    .h99 .hero-grid{padding:32px 0;}
+    /* phones: the stage runs edge to edge so the tags stay readable (about 8px at 302 wide, 10px at 375) */
+    .h99 .stage-fit{width:auto;max-width:none;margin:0 calc(var(--gutter) * -1);}
+    /* tighter on phones: 12 between eyebrow, headline, lede and the show; a 32px count */
+    .h99 .hero-grid{row-gap:12px;}
+    .h99 .h99-count,.h99 .replay{margin-top:calc(-12px - 100vw * 65 / 700);}
+    .h99 .hero-cta{margin-top:8px;}
+    .h99-count b{font-size:32px;}
+  }
+</style>
+</head>
+<body>
+
+  <div class="classbar">UNMANNED · SIMPLY SECURE</div>
+
+  <div class="site-top">
+    <header class="site-header">
+      <div class="wrap header-inner">
+        <a href="/dots/" class="dots-brand" aria-label="Dots by Unmanned">
+          <span class="dots-word">dots</span>
+          <img src="../../dots/static/dots-logo.svg" width="26" height="26" alt="">
+          <span class="brand-tag">By Unmanned</span>
+        </a>
+        <nav class="header-links dots-nav" aria-label="Main">
+          <a class="header-link header-link--cta" href="#price">Get your Dot <img src="../../static/icon-arrow-right-pink.svg" width="16" height="16" alt=""></a>
+        </nav>
+      </div>
+    </header>
+  </div>
+
+  <!-- One laptop, drawn once and reused by the story pictures (the /dots/ environment illustrations' style) -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <pattern id="lt-grid" patternUnits="userSpaceOnUse" patternTransform="matrix(28.9433 0 0 28.9433 30.8 7.9)" viewBox="0 0 32 32" width="1" height="1">
+        <line opacity="0.3" x1="16.5" y1="0.5" x2="16.5" y2="31.5" stroke="#8A8A8E" stroke-linecap="round" stroke-dasharray="1 5"/>
+        <line opacity="0.3" x1="0.5" y1="15.5" x2="31.5" y2="15.5" stroke="#8A8A8E" stroke-linecap="round" stroke-dasharray="1 5"/>
+      </pattern>
+      <filter id="lt-shadow" x="-10%" y="-10%" width="130%" height="130%"><feDropShadow dx="1.8" dy="1.8" stdDeviation="0" flood-color="#0b0c0d" flood-opacity="0.15"/></filter>
+      <symbol id="laptop" viewBox="0 0 248 147">
+        <rect x="0.09" y="139.38" width="247.83" height="7.24" rx="3.62" fill="#F1F1EE"/>
+        <rect x="25.01" y="1.36" width="197.97" height="133.05" rx="2.26" fill="#C4C4C4" stroke="#6C6C70" stroke-width="2.71"/>
+        <rect x="31.25" y="8.35" width="184.51" height="116.26" rx="3.17" fill="#FAF9F6"/>
+        <rect x="31.25" y="8.35" width="184.51" height="116.26" rx="3.17" fill="url(#lt-grid)"/>
+        <rect x="31.25" y="8.35" width="184.51" height="116.26" rx="3.17" stroke="#8A8A8E" stroke-width="0.9"/>
+        <rect x="0.05" y="135.77" width="247.91" height="7.24" rx="3.62" fill="#8A8A8E"/>
+        <rect x="105.87" y="137.69" width="36.18" height="3.62" rx="1.81" fill="#6C6C70"/>
+      </symbol>
+      <symbol id="window" viewBox="0 0 120 84">
+        <rect x="0.25" y="0.25" width="119.5" height="83.5" rx="3.37" fill="#fff" stroke="#8A8A8E" stroke-width="0.5"/>
+        <circle cx="5" cy="5" r="1.5" fill="#D9D9D9"/>
+        <line x1="0" y1="10" x2="120" y2="10" stroke="#8A8A8E" stroke-width="0.5"/>
+        <line x1="22" y1="24" x2="84" y2="24" stroke="#8A8A8E" stroke-width="1.8"/>
+        <line x1="22" y1="40" x2="96" y2="40" stroke="#8A8A8E" stroke-width="1.8"/>
+        <line x1="22" y1="56" x2="74" y2="56" stroke="#8A8A8E" stroke-width="1.8"/>
+        <line x1="22" y1="72" x2="90" y2="72" stroke="#8A8A8E" stroke-width="1.8"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <main>
+    <!-- ============================== HERO: 99 problems ============================== -->
+    <section class="hero h99" aria-labelledby="hero-title">
+      <div class="h99-bg" aria-hidden="true"></div>
+      <div class="wrap hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow">The Tunnel Lounge · JZ Night</p>
+          <h1 id="hero-title">Got 99 problems but <span>this Dot ain’t one.</span></h1>
+          <p class="hero-lede">Ransomware. Rogue AI agents. The printer from 2009. One very small Dot, one very big set. Tonight and every night after.</p>
+          <div class="h99-count" aria-hidden="true">
+            <div><small>Problems remaining</small><b id="h99-count">99</b></div>
+            <span id="h99-note"></span>
+          </div>
+          <div class="hero-cta">
+            <a class="pill" href="#price">Get your Dot for 99¢</a>
+            <a class="down-link" href="#how">What’s a Dot?</a>
+          </div>
+        </div>
+        <div class="stage-fit" style="--w:700;--h:720" aria-hidden="true">
+          <div class="stage" data-w="700" data-h="720" style="width:700px;height:720px">
+            <div class="world" style="--ox:740;--oy:70">
+              <span class="h99-spot"></span>
+              <span class="h99-floor"></span>
+              <div id="h99-problems"></div>
+              <div class="h99-singer" id="h99-singer">
+                <svg class="dot" id="h99-dot" data-dot='{"color":"#5bc0eb","shade":"#4499c7","mood":"smug","floor":false}'></svg>
+                <div class="h99-shades" id="h99-shades">
+                  <i style="left:0;top:0;width:124px;height:10px"></i>
+                  <i style="left:6px;top:0;width:44px;height:31px"></i>
+                  <i style="left:72px;top:0;width:44px;height:31px"></i>
+                  <i style="left:13px;top:7px;width:9px;height:9px;background:#fff"></i>
+                  <i style="left:79px;top:7px;width:9px;height:9px;background:#fff"></i>
+                </div>
+              </div>
+              <div class="h99-mic" id="h99-mic">
+                <i style="width:44px;height:44px;border-radius:50%;background:repeating-linear-gradient(45deg,#4a4a52 0 3px,#2c2c33 3px 6px);box-shadow:inset 2px -4px 0 rgba(0,0,0,0.35)"></i>
+                <i style="width:30px;height:8px;margin-top:-2px;background:#c9c9ce"></i>
+                <i style="width:18px;height:80px;background:var(--surface-dark);border-radius:0 0 6px 6px"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button class="replay" type="button" id="h99-replay">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>Encore
+        </button>
+      </div>
+    </section>
+
+    <!-- Section nav: the same piece as How VEX works -->
+    <nav class="hw-nav" aria-label="On this page">
+      <div class="hw-tabs"><a href="#how">Meet your Dot</a><a href="#trust">Who’s behind your Dot</a><a href="#price">Pricing</a><a href="#faq">Questions</a></div>
+    </nav>
+
+    <!-- ============================== HOW IT WORKS (shared) ============================== -->
+    <section class="section" id="how" aria-labelledby="how-title">
+      <div class="wrap">
+        <div class="head">
+          <p class="eyebrow">Meet your Dot</p>
+          <h2 id="how-title">What does a Dot actually do?</h2>
+          <h3>It’s a little peace of mind, quietly keeping cyber-badness out.</h3>
+          <p>A Dot is a small program that looks after your computer by itself. It checks for the openings attackers use to get in, like an app that missed an update. Your Dot finds them first and fixes them. No settings, no jargon and nothing to babysit.</p>
+        </div>
+        <ol class="story">
+          <li>
+            <svg width="248" height="147" viewBox="0 0 248 147" fill="none" aria-hidden="true">
+              <use href="#laptop"/>
+              <line x1="64" y1="58" x2="128" y2="58" stroke="#8A8A8E" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="2 6"/>
+              <line x1="80" y1="66" x2="128" y2="66" stroke="#8A8A8E" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="2 6"/>
+              <line x1="70" y1="74" x2="128" y2="74" stroke="#8A8A8E" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="2 6"/>
+              <circle cx="146" cy="66" r="14" fill="#1BA8EE" filter="url(#lt-shadow)"/>
+            </svg>
+            <b>Tiny and light</b>
+            <p>Your Dot is built to be small. It runs quietly in the background, so you can get on with your day.</p>
+          </li>
+          <li>
+            <svg width="248" height="147" viewBox="0 0 248 147" fill="none" aria-hidden="true">
+              <use href="#laptop"/>
+              <use href="#window" x="54" y="22" width="120" height="84" filter="url(#lt-shadow)"/>
+              <circle cx="66" cy="46" r="4" fill="#029266"/>
+              <circle cx="66" cy="62" r="4" fill="#029266"/>
+              <circle cx="66" cy="78" r="4" fill="#F7B828"/>
+              <circle cx="66" cy="94" r="4" fill="#D9D9D9"/>
+              <circle cx="66" cy="78" r="8.5" stroke="#F7B828" stroke-width="1" stroke-dasharray="2 2.5"/>
+              <circle cx="190" cy="78" r="11" fill="#B811DE" filter="url(#lt-shadow)"/>
+              <line x1="176" y1="78" x2="158" y2="78" stroke="#B811DE" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="2 4"/>
+            </svg>
+            <b>Looks for weak spots</b>
+            <p>It checks for the things attackers look for, like missing updates or phishing emails.</p>
+          </li>
+          <li>
+            <svg width="248" height="147" viewBox="0 0 248 147" fill="none" aria-hidden="true">
+              <use href="#laptop"/>
+              <use href="#window" x="54" y="22" width="120" height="84" filter="url(#lt-shadow)"/>
+              <circle cx="66" cy="46" r="4" fill="#029266"/>
+              <circle cx="66" cy="62" r="4" fill="#029266"/>
+              <circle cx="66" cy="78" r="4" fill="#029266"/>
+              <circle cx="66" cy="94" r="4" fill="#029266"/>
+              <circle cx="190" cy="78" r="11" fill="#029266" filter="url(#lt-shadow)"/>
+              <path d="M185 78.5l3.5 3.5 7-7" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <b>Fixes what it finds</b>
+            <p>Your Dot patches what it can, so the door is closed before anyone tries it.</p>
+          </li>
+          <li>
+            <svg width="248" height="147" viewBox="0 0 248 147" fill="none" aria-hidden="true">
+              <use href="#laptop"/>
+              <g filter="url(#lt-shadow)">
+                <rect x="50" y="20" width="118" height="84" rx="3.37" fill="#fff" stroke="#8A8A8E" stroke-width="0.5"/>
+                <line x1="50" y1="30" x2="168" y2="30" stroke="#8A8A8E" stroke-width="0.5"/>
+              </g>
+              <circle cx="55" cy="25" r="1.5" fill="#D9D9D9"/>
+              <rect x="60" y="38" width="98" height="56" rx="2" fill="#F1F1EE"/>
+              <circle cx="80" cy="56" r="7" fill="#F7B828"/>
+              <path d="M60 90l28-24 18 14 14-10 38 24v0H60z" fill="#C4C4C4"/>
+              <circle cx="196" cy="108" r="12" stroke="#1BA8EE" stroke-width="1" stroke-dasharray="2 3" opacity="0.7"/>
+              <circle cx="196" cy="108" r="6" fill="#1BA8EE"/>
+            </svg>
+            <b>Then stays out of your way</b>
+            <p>Back to your photos, email and bills. Your Dot keeps watch in the background.</p>
+          </li>
+        </ol>
+        <details class="full">
+          <summary><span class="link">See the full list<span class="icon" style="--icon:url(../../static/icon-caret-up.svg)" aria-hidden="true"></span></span></summary>
+          <ul>
+            <li><span class="check check--lg" aria-hidden="true"></span>Looks for suspicious AI behavior</li>
+            <li><span class="check check--lg" aria-hidden="true"></span>Makes sure your security settings are turned on</li>
+            <li><span class="check check--lg" aria-hidden="true"></span>Closes security gaps with software updates</li>
+            <li><span class="check check--lg" aria-hidden="true"></span>Lets you report any concerns to our team</li>
+            <li><span class="check check--lg" aria-hidden="true"></span>Reviews your browser add-ons</li>
+            <li><span class="check check--lg" aria-hidden="true"></span>Keeps a record of what happens on your computer</li>
+          </ul>
+        </details>
+        <p class="report">Your Dot will send you a monthly report. It’s easy to understand and simple to follow.</p>
+      </div>
+    </section>
+
+    <!-- ============================== TRUST (shared) ============================== -->
+    <section class="section section--subtle" id="trust" aria-labelledby="trust-title">
+      <div class="wrap trust">
+        <div class="trust-copy">
+          <p class="eyebrow">Who’s behind your Dot</p>
+          <h2 id="trust-title">Made by people who stop attackers for a living.</h2>
+          <p>Dots come from Unmanned, the security team behind VEX. We’ve spent decades in cybersecurity, including work for U.S. intelligence agencies, the Department of Defense and Mandiant. Now we’re bringing that know-how home.</p>
+          <a class="link link--md" href="/team/">Meet the team<span class="icon" style="--icon:url(../../static/icon-arrow-right-pink.svg)" aria-hidden="true"></span></a>
+        </div>
+        <ul class="trust-list">
+          <!-- about the team, from the facts on /team/ (2026-10-29) -->
+          <li><span class="check" aria-hidden="true"></span><div><b>We think like attackers</b><span>Our team has found zero-days and built offensive tools, so we know where attackers look first.</span></div></li>
+          <li><span class="check" aria-hidden="true"></span><div><b>Tools the pros use</b><span>Our founder led development of MITRE’s CALDERA, an open-source tool security teams use to test their defenses.</span></div></li>
+          <li><span class="check" aria-hidden="true"></span><div><b>Defending businesses every day</b><span>The same team runs VEX, the AI SOC that looks after our business customers.</span></div></li>
+          <li><span class="check" aria-hidden="true"></span><div><b>Built and supported in the U.S.</b><span>The people who build your Dot are the people who help you.</span></div></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============================== PRICE (shared) ============================== -->
+    <section class="section" id="price" aria-labelledby="price-title">
+      <div class="wrap price-row">
+        <div class="price-card">
+          <div class="price"><b>99¢</b><span>a month<br>per computer</span></div>
+          <ul class="incl">
+            <li><span class="check check--lg" aria-hidden="true"></span>Works on Mac and Windows</li>
+            <li><span class="check check--lg" aria-hidden="true"></span>Checks and fixes on its own, all day, every day</li>
+            <li><span class="check check--lg" aria-hidden="true"></span>A plain-English report every month</li>
+            <li><span class="check check--lg" aria-hidden="true"></span>Help from real people at our U.S.-based team</li>
+            <li><span class="check check--lg" aria-hidden="true"></span>Cancel anytime, and your Dot removes itself</li>
+          </ul>
+          <a class="pill" href="https://buy.stripe.com/7sY00bdxr8ob1O5e9gfQI00?utm_campaign=dots-99-problems" data-checkout>Get your Dot</a>
+          <p class="fine">Secure checkout with Stripe. Billed monthly.</p>
+        </div>
+        <div class="price-head">
+          <p class="eyebrow">Simple pricing</p>
+          <h2 id="price-title">Less than a dollar a month.</h2>
+          <p>One Dot looks after one computer. No contracts, no surprise fees.</p>
+          <p class="ask">Want to talk to someone first? <a class="link" href="mailto:support@unmanned.team"><span class="icon" style="--icon:url(../../static/icon-envelope.svg)" aria-hidden="true"></span>Send us a message</a></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== FAQ (shared) ============================== -->
+    <section class="section section--gray" id="faq" aria-labelledby="faq-title">
+      <div class="wrap">
+        <div class="head">
+          <p class="eyebrow">Questions</p>
+          <h2 id="faq-title">Good questions, plain answers.</h2>
+        </div>
+        <div class="faq">
+          <!-- privacy answer: a draft, confirm with David before launch -->
+          <details open>
+            <summary>Can my Dot see my personal files?</summary>
+            <p>Your Dot looks at how your computer is set up, like updates and security settings. It isn’t there to read your files, photos or messages.</p>
+          </details>
+          <details>
+            <summary>Will it slow down my computer?</summary>
+            <p>Dots are tiny by design and built to stay out of your way. Most people never notice it’s there.</p>
+          </details>
+          <details>
+            <summary>Do I still need antivirus?</summary>
+            <p>Keep it. Your Dot runs alongside your antivirus and covers different ground: closing the gaps attackers use to get in.</p>
+          </details>
+          <details>
+            <summary>How do I install it?</summary>
+            <p>After you sign up, follow our <a href="/dots/install/">step-by-step install guide</a>. It works on Mac and Windows and takes a couple of minutes.</p>
+          </details>
+          <!-- report and uninstall answers: drafts, confirm with the team before launch -->
+          <details>
+            <summary>What’s in the monthly report?</summary>
+            <p>A short summary of what your Dot checked and what it fixed, in plain English. It’s easy to understand and simple to follow.</p>
+          </details>
+          <details>
+            <summary>Can I uninstall it myself?</summary>
+            <p>Yes, anytime. Remove it like any other app, or send us a message and we’ll walk you through it.</p>
+          </details>
+          <details>
+            <summary>What happens if I cancel?</summary>
+            <p>Your Dot removes itself from your computer. There’s nothing left to clean up.</p>
+          </details>
+          <details>
+            <summary>I have more than one computer. How does that work?</summary>
+            <p>Each computer gets its own Dot, at 99¢ a month each.</p>
+          </details>
+        </div>
+        <p class="ask faq-ask">Have more questions? A person is here to help. <a class="link" href="mailto:support@unmanned.team"><span class="icon" style="--icon:url(../../static/icon-envelope.svg)" aria-hidden="true"></span>Send us a message</a></p>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <span>© 2026 UNMANNED, INC.</span>
+    <nav class="flinks" aria-label="Company"><a href="/team/">ABOUT</a><span aria-hidden="true">·</span><a class="fext" href="https://gounmanned.substack.com/" target="_blank" rel="noopener noreferrer">OUR RESEARCH</a></nav>
+  </footer>
+
+  <script>
+    var PAGE = 'dots-99-problems';
+    var REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // ---------- Checkout ----------
+    // The button's Stripe Payment Link already carries utm_campaign=<this page> (it works without JS).
+    // Here any utm_source, utm_medium, utm_content and utm_term the visitor arrived with ride along too, plus
+    // client_reference_id (utm_source-utm_campaign, or this page's name), so each Stripe payment shows where it came from.
+    (function(){
+      var q = new URLSearchParams(location.search);
+      var ref = [q.get('utm_source'), q.get('utm_campaign') || PAGE].filter(Boolean).join('-').replace(/[^A-Za-z0-9_-]/g, '').slice(0, 200);
+      document.querySelectorAll('[data-checkout]').forEach(function(a){
+        var u = new URL(a.href);
+        ['utm_source', 'utm_medium', 'utm_content', 'utm_term'].forEach(function(k){ if(q.get(k)){ u.searchParams.set(k, q.get(k)); } });
+        u.searchParams.set('client_reference_id', ref);
+        a.href = u.toString();
+      });
+    })();
+
+    // ---------- Header: hides on scroll down (same as the other pages) ----------
+    (function(){
+      var root = document.documentElement, top = document.querySelector('.site-top'), classbar = document.querySelector('.classbar');
+      var lastY = window.scrollY, ticking = false;
+      function update(){
+        ticking = false;
+        var y = window.scrollY, showZone = top.offsetHeight + classbar.offsetHeight;
+        if(y <= showZone){ root.classList.remove('header-hidden'); lastY = y; return; }
+        if(Math.abs(y - lastY) < 6) return;
+        root.classList.toggle('header-hidden', y > lastY);
+        lastY = y;
+      }
+      window.addEventListener('scroll', function(){ if(!ticking){ ticking = true; requestAnimationFrame(update); } }, { passive:true });
+      top.addEventListener('focusin', function(){ root.classList.remove('header-hidden'); });
+    })();
+
+    // ---------- Section nav (as How VEX works): sits under the site header; marks the section you're in ----------
+    (function(){
+      var root = document.documentElement, head = document.querySelector('.site-top');
+      function setHead(){ if(head){ root.style.setProperty('--header-h', head.offsetHeight + 'px'); } }
+      setHead(); window.addEventListener('resize', setHead);
+      var links = [].slice.call(document.querySelectorAll('.hw-tabs a')), strip = document.querySelector('.hw-tabs');
+      var secs = links.map(function(a){ return document.getElementById(a.getAttribute('href').slice(1)); });
+      function mark(){
+        var y = window.innerHeight * 0.35, cur = -1;   // nothing marked while in the hero
+        secs.forEach(function(s, i){ if(s.getBoundingClientRect().top < y){ cur = i; } });
+        links.forEach(function(a, i){
+          var on = i === cur;
+          if(on && a.getAttribute('aria-current') !== 'true'){
+            var l = a.offsetLeft - 16, r = a.offsetLeft + a.offsetWidth + 16;   // keep it in view inside the strip only
+            if(l < strip.scrollLeft){ strip.scrollLeft = l; } else if(r > strip.scrollLeft + strip.clientWidth){ strip.scrollLeft = r - strip.clientWidth; }
+          }
+          if(on){ a.setAttribute('aria-current', 'true'); } else { a.removeAttribute('aria-current'); }
+        });
+      }
+      var t = false;
+      window.addEventListener('scroll', function(){ if(!t){ t = true; requestAnimationFrame(function(){ t = false; mark(); }); } }, { passive:true });
+      mark();
+    })();
+
+    // ---------- Helpers for the hero animations ----------
+    var cl = function(v){ return Math.max(0, Math.min(1, v)); };
+    var lerp = function(a, b, p){ return a + (b - a) * p; };
+    var prog = function(T, a, b){ return cl((T - a) / (b - a)); };
+    var outCubic = function(p){ return 1 - Math.pow(1 - p, 3); };
+    var inOut = function(p){ return p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2; };
+    var $ = function(id){ return document.getElementById(id); };
+
+    // ---------- The Dot ----------
+    // A port of the canvas's Dot: a circle with a darker slice bottom-left, pixel eyes and a pixel mouth.
+    // Drawn in a 100 x 104 box (the last 4 hold the floor shadow). o: color, shade, mood, look, open, pupil, floor.
+    var dotId = 0;
+    function dotMarkup(o, id){
+      var look = o.look || 'center', open = +o.open || 0, mood = o.mood || 'smug';
+      var lx = look.indexOf('left') >= 0 ? -2.6 : look.indexOf('right') >= 0 ? 2.6 : 0;
+      var ly = look.indexOf('up') === 0 ? -5.5 : 0;
+      var W = '#fff', K = '#0b0c0d', P = o.pupil || K, s = '';
+      function f(n){ return Math.round(n * 100) / 100; }
+      // k: how far the brow slants in (a percent of the eye's height); flip for the right eye
+      function r(x, y, w, h, c, k, flip){
+        if(k){
+          var pts = flip ? [x, y + h * k / 100, x + w, y, x + w, y + h, x, y + h] : [x, y, x + w, y + h * k / 100, x + w, y + h, x, y + h];
+          s += '<polygon points="' + pts.map(f).join(' ') + '" fill="' + c + '"/>';
+        } else {
+          s += '<rect x="' + f(x) + '" y="' + f(y) + '" width="' + f(w) + '" height="' + f(h) + '" fill="' + c + '"/>';
+        }
+      }
+      function eyes(k, py, pw){
+        r(27.2, 31.8, 13.6, 18, W, k, false);
+        r(57.5, 31.8, 13.6, 18, W, k, true);
+        var w = pw || 9.1, off = (9.1 - w) / 2;
+        r(29.4 + off + lx, (py || 38.5) + ly, w, w, P);
+        r(59.8 + off + lx, (py || 38.5) + ly, w, w, P);
+      }
+      function openMouth(){
+        var w = 12 + 22 * open, h = 5 + 25 * open, x = 48.3 - w / 2;
+        r(x, 60, w, h, K);
+        if(open > 0.35) r(x + w * 0.2, 60 + h * 0.62, w * 0.6, h * 0.3, '#e5484d');
+      }
+      function smile(){ if(open > 0.02) return openMouth(); r(37, 60.5, 4.5, 4.5, K); r(55.1, 60.5, 4.5, 4.5, K); r(41.5, 65, 13.6, 4.5, K); }
+      function frown(){ if(open > 0.02) return openMouth(); r(41.5, 60.5, 13.6, 4.5, K); r(37, 65, 4.5, 4.5, K); r(55.1, 65, 4.5, 4.5, K); }
+      if(mood === 'smug'){ eyes(13); smile(); }
+      else if(mood === 'happy'){ eyes(0); smile(); }
+      else if(mood === 'angry'){ eyes(36, 40.5); frown(); }
+      else if(mood === 'evil'){ eyes(36, 40.5); r(33, 60.5, 4.5, 4.5, K); r(59.6, 60.5, 4.5, 4.5, K); r(37.5, 65, 22.1, 4.5, K); }
+      else if(mood === 'shocked'){ eyes(0, 40, 6); if(open > 0.02) openMouth(); else r(45, 58, 9, 12, K); }
+      else if(mood === 'flat'){ eyes(13); r(37, 62.5, 22.6, 4.5, K); }   // unimpressed: a straight mouth
+      else if(mood === 'chill'){ r(27.2, 42, 13.6, 4.5, K); r(57.5, 42, 13.6, 4.5, K); smile(); }
+      else if(mood === 'shades'){
+        r(22, 33.5, 56, 4.5, K); r(24.5, 33.5, 20, 14, K); r(54.5, 33.5, 20, 14, K);
+        r(27.5, 36.5, 4, 4, W); r(57.5, 36.5, 4, 4, W); smile();
+      }
+      var floor = o.floor === false ? '' : '<ellipse cx="51.5" cy="98" rx="48.5" ry="4.5" fill="rgba(0,0,0,0.09)"/>';
+      return floor + '<clipPath id="' + id + '"><circle cx="50" cy="50" r="50"/></clipPath>' +
+        '<g clip-path="url(#' + id + ')"><circle cx="50" cy="50" r="50" fill="' + (o.shade || '#4499c7') + '"/>' +
+        '<circle cx="52.6" cy="42.7" r="50" fill="' + (o.color || '#5bc0eb') + '"/><g class="dot-face">' + s + '</g></g>';   // the face in its own group, so it can turn
+    }
+    // Turns <svg class="dot" data-dot='{...}'> into a Dot; returns set(changes), which redraws only when something changed
+    function makeDot(svg, base){
+      var o = Object.assign({}, base || JSON.parse(svg.getAttribute('data-dot') || '{}')), key = '', id = 'dotc' + (dotId++);
+      svg.setAttribute('viewBox', '0 0 100 104');
+      svg.setAttribute('aria-hidden', 'true');
+      function set(ch){
+        if(ch) Object.assign(o, ch);
+        var k = JSON.stringify(o);
+        if(k !== key){ key = k; svg.innerHTML = dotMarkup(o, id); }
+      }
+      set();
+      return set;
+    }
+    var dots = {};
+    document.querySelectorAll('svg.dot').forEach(function(svg){ var set = makeDot(svg); if(svg.id) dots[svg.id] = set; });
+
+    // ---------- Stages: scale each scene to its column ----------
+    function fitStages(){
+      document.querySelectorAll('.stage').forEach(function(st){
+        var s = st.parentNode.clientWidth / +st.getAttribute('data-w');
+        st.style.transform = 'scale(' + s + ')';
+        var hero = st.closest('.hero');
+        if(hero && st.hasAttribute('data-main')) hero.style.setProperty('--s', s);
+      });
+    }
+    fitStages();
+    if(window.ResizeObserver){ new ResizeObserver(fitStages).observe(document.body); } else { window.addEventListener('resize', fitStages); }
+
+    // ---------- Scenes: play once when seen (or loop), Replay restarts, reduced motion shows the end ----------
+    function scene(opts){
+      var raf = 0, t0 = null, started = false, visible = false;
+      function tick(now){
+        if(t0 === null) t0 = now;
+        var T = (now - t0) / 1000;
+        if(opts.loop) T = T % opts.loop; else T = Math.min(T, opts.end);
+        opts.frame(T);
+        if((opts.loop && visible) || T < opts.end) raf = requestAnimationFrame(tick);
+      }
+      function play(){ cancelAnimationFrame(raf); t0 = null; raf = requestAnimationFrame(tick); }
+      if(REDUCED){ opts.frame(opts.end); }
+      else {
+        opts.frame(0);
+        new IntersectionObserver(function(es){
+          visible = es[0].isIntersecting;
+          if(visible && (!started || opts.loop)){ started = true; play(); }
+        }, { threshold:0.3 }).observe(opts.root);
+      }
+      if(opts.replay) opts.replay.addEventListener('click', function(){ if(REDUCED) opts.frame(opts.end); else play(); });
+    }
+
+    // ==================== THIS PAGE’S HERO ====================
+    (function(){
+      // where each problem hovers (centers), spaced so every label can be read
+      var TAGS = [
+        // name, desktop x, y, then phones and tablets x, y (bigger tags, packed closer)
+        ['Ransomware', 880, 150, 851, 290], ['Deepfake CEO', 1036, 146, 1019, 288], ['Phishing', 1186, 152, 1175, 291], ['Password123', 1326, 147, 1324, 288],
+        ['Rogue AI agent', 922, 230, 898, 344], ['Zero-day', 1068, 234, 1072, 346], ['Unpatched printer', 1236, 229, 1264, 343],
+        ['AI swarm', 950, 312, 929, 398], ['Shadow IT', 1102, 308, 1078, 400], ['Legacy VPN', 1262, 313, 1239, 397]
+      ];
+      var box = $('h99-problems');
+      var ITEMS = TAGS.map(function(t, i){
+        var el = document.createElement('span'); el.className = 'h99-tag'; el.textContent = t[0].toUpperCase(); box.appendChild(el);
+        return { el:el, bx:t[1], by:t[2], mx:t[3], my:t[4], i:i };
+      });
+      var NOTES = ['♪', '♫', '♪', '♬'].map(function(g){
+        var el = document.createElement('span'); el.className = 'h99-note'; el.textContent = g; box.appendChild(el); return el;
+      });
+      var MOUTH = { x:1076, y:604 };                 // where the gulp lands
+      // gulp order: nearest to the mouth first
+      var RANK = ITEMS.map(function(it, i){ return [i, Math.hypot(it.bx - MOUTH.x, it.by - MOUTH.y)]; })
+        .sort(function(a, b){ return a[1] - b[1]; }).map(function(a){ return a[0]; });
+      var SING_END = 3.0, NOTICE = 3.4, LOOK1 = 3.9, LOOK2 = 4.4, LOCK = 4.9, OPEN = 5.15, SUCK0 = 5.45;
+      var SUCKSTEP = 0.07, SUCKLEN = 0.5;
+      var SUCK_END = SUCK0 + (ITEMS.length - 1) * SUCKSTEP + SUCKLEN;
+      var GULP = SUCK_END + 0.05, SHADES_DOWN = GULP + 0.55, DROP = SHADES_DOWN + 0.45, END = DROP + 2.0;
+      var outBack = function(p){ var c1 = 1.7, c3 = c1 + 1; return 1 + c3 * Math.pow(p - 1, 3) + c1 * Math.pow(p - 1, 2); };
+      var bounceOut = function(x){ var n = 7.5625, d = 2.75;
+        if(x < 1 / d) return n * x * x;
+        if(x < 2 / d) return n * (x -= 1.5 / d) * x + 0.75;
+        if(x < 2.5 / d) return n * (x -= 2.25 / d) * x + 0.9375;
+        return n * (x -= 2.625 / d) * x + 0.984375; };
+      var singer = $('h99-singer'), shades = $('h99-shades'), mic = $('h99-mic');
+      var count = $('h99-count'), note = $('h99-note');
+
+      var small = window.matchMedia('(max-width:900px)'), SMALL;
+      function frame(T){
+        SMALL = small.matches;
+        var remaining = 0;
+        ITEMS.forEach(function(it, idx){
+          // drift in from above, then hover slowly so the labels stay readable
+          var enter = outCubic(prog(T, 0.1 + it.i * 0.1, 1.1 + it.i * 0.1));
+          var x = (SMALL ? it.mx : it.bx) + Math.sin(T * 0.8 + it.i * 1.7) * (SMALL ? 5 : 12);
+          var y = (SMALL ? it.my : it.by) + Math.sin(T * 0.6 + it.i * 0.9) * (SMALL ? 4 : 7) - (1 - enter) * 160;
+          var sc = 1, rot = Math.sin(T * 0.5 + it.i) * 2, o = enter;
+          // the gulp: pulled into the mouth with a little swirl
+          var s0 = SUCK0 + RANK.indexOf(idx) * SUCKSTEP, p = prog(T, s0, s0 + SUCKLEN);
+          if(p > 0){
+            var e = Math.pow(p, 2.2), side = it.bx > MOUTH.x ? 1 : -1;
+            x = lerp(x, MOUTH.x, e) + Math.sin(p * Math.PI) * 40 * side; y = lerp(y, MOUTH.y, e);
+            sc = 1 - 0.85 * e; rot += p * 160 * side;
+            if(p >= 1) o = 0;
+          }
+          if(p < 1) remaining++;
+          it.el.style.opacity = o.toFixed(2);
+          it.el.style.left = x + 'px'; it.el.style.top = y + 'px';
+          it.el.style.transform = 'translate(-50%,-50%) rotate(' + rot.toFixed(1) + 'deg) scale(' + sc.toFixed(3) + ')';
+        });
+
+        // the singer's performance
+        var singing = T < SING_END;
+        var open = singing ? 0.12 + 0.3 * Math.abs(Math.sin(T * 6.5)) : 0;
+        var openP = prog(T, OPEN, OPEN + 0.3), closeP = prog(T, GULP, GULP + 0.15);
+        if(T >= OPEN) open = Math.max(0, outCubic(openP) - closeP);
+        var mood = 'smug', look = 'center';
+        if(T >= NOTICE){ mood = 'shocked'; look = 'up'; }
+        if(T >= LOOK1){ mood = 'smug'; look = 'up-left'; }
+        if(T >= LOOK2){ look = 'up-right'; }
+        if(T >= LOCK){ mood = 'angry'; look = 'up'; }
+        if(T >= GULP){ mood = 'happy'; look = 'center'; }
+        dots['h99-dot']({ mood:mood, look:look, open:open.toFixed(2) });
+        var sway = singing ? Math.sin(T * 3.2) * 3 : 0;
+        // squash and stretch: stretch while inhaling, bulge on the gulp
+        var inhale = T >= OPEN && T < GULP ? outCubic(openP) : 0;
+        var gulpP = prog(T, GULP, GULP + 0.5);
+        var bulge = gulpP > 0 && gulpP < 1 ? Math.sin(gulpP * Math.PI) * (1 - gulpP * 0.4) : 0;
+        singer.style.transform = 'rotate(' + sway.toFixed(2) + 'deg) scale(' + (1 - 0.04 * inhale + 0.14 * bulge).toFixed(3) + ',' + (1 + 0.07 * inhale + 0.08 * bulge).toFixed(3) + ')';
+        // shades lift when it notices, drop back after the gulp
+        var up = prog(T, SING_END, SING_END + 0.35) - prog(T, SHADES_DOWN, SHADES_DOWN + 0.3);
+        shades.style.transform = 'translateY(' + (-up * 72).toFixed(1) + 'px) rotate(' + (-9 * up).toFixed(1) + 'deg)';
+        NOTES.forEach(function(el, i){
+          var ph = ((T + i * 0.75) % 3) / 3, live = T + i * 0.75 < SING_END + 0.6 && T < SING_END + 0.6;
+          el.style.left = (1150 + ph * 90 + Math.sin(ph * 6 + i) * 12) + 'px';
+          el.style.top = (520 - ph * 170) + 'px';
+          el.style.opacity = live ? Math.sin(ph * Math.PI).toFixed(2) : 0;
+        });
+        var mp = prog(T, DROP, DROP + 0.6), landed = T >= DROP + 0.35, N = ITEMS.length;
+        count.textContent = landed ? 0 : remaining === N ? 99 : Math.max(1, Math.ceil(99 * remaining / N));
+        note.textContent = landed ? '' : remaining === 0 ? '(it’s the mic)' : '';
+        mic.style.transform = 'translateY(' + ((SMALL ? 50 : 118) * bounceOut(mp)).toFixed(1) + 'px) rotate(' + (-24 + 118 * outCubic(mp)).toFixed(1) + 'deg)';
+      }
+      scene({ root:document.querySelector('.h99'), end:END, frame:frame, replay:$('h99-replay') });
+    })();
+  </script>
+</body>
+</html>

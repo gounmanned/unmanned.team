@@ -87,7 +87,7 @@ class SourceRollup {
 
     _renderCallout() {
         document.getElementById('source-callout').innerHTML = `
-            <p class="source-callout-text">Every account has a unique mailbox that accepts signals. Forward alerts from routers, DMARC rua, and other services that send email notifications.</p>
+            <p class="source-callout-text">Every account has a unique mailbox that accepts signals. Forward alerts from routers, firewalls, DMARC, and other services that send email notifications.</p>
             <p class="source-callout-address">${`${Workspace.encode(this.state.account())}`}@vex.unmanned.team</p>
         `;
     }

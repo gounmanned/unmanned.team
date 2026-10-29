@@ -14,7 +14,6 @@
   <script>
     document.write(`
       <link rel="stylesheet" href="static/css/app.css?v=${v}">
-      <link rel="stylesheet" href="static/css/notification.css?v=${v}">
       <link rel="stylesheet" href="static/css/managed.css?v=${v}">
       <link rel="stylesheet" href="static/css/dot.css?v=${v}">
       <link rel="stylesheet" href="static/css/tenant.css?v=${v}">
@@ -34,17 +33,6 @@
     <button slot="account-switcher" id="open-managed-rollup">
       <span class="material-symbols-outlined">keyboard_arrow_down</span>
     </button>
-
-    <button id="notification-bell" class="bell-btn" type="button" aria-label="Notifications">
-      <span class="material-symbols-outlined">notifications</span>
-      <span class="bell-dot"></span>
-    </button>
-
-    <div class="notification-panel" id="notification-panel">
-      <div class="notification-panel-header">Notifications</div>
-      <ul id="notification-panel-list"></ul>
-      <div class="notification-panel-empty" id="notification-panel-empty">You're all caught up</div>
-    </div>
   </site-header>
 
   <main class="container" id="tenant-screen">
@@ -132,8 +120,6 @@
       <a id="open-signal-sidebar" class="cta">+ Add Signal</a>
     </footer>
   </main>
-
-  <div class="notification-stack" id="notification-stack"></div>
 
   <!-- Managed -->
   
@@ -319,7 +305,6 @@
     <script src="static/js/api.js?v=${v}"><\/script>
     <script src="static/js/workspace.js?v=${v}"><\/script>
     <script src="static/js/table.js?v=${v}"><\/script>
-    <script src="static/js/notification.js?v=${v}"><\/script>
     <script src="static/js/tenant.js?v=${v}"><\/script>
     <script src="static/js/sidebars/signal.js?v=${v}"><\/script>
     <script src="static/js/sidebars/backup.js?v=${v}"><\/script>

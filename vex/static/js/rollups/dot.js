@@ -182,7 +182,7 @@ class DotRollup {
         const { runtime } = asset.metadata;
 
         const logo = runtime
-            ? `<img class="dot-mid-logo" src="static/img/runtime/${runtime}.png" alt="" title="${runtime}">`
+            ? `<span class="dot-mid-logo" title="${runtime}"><img src="static/img/runtime/${runtime}.png" alt=""></span>`
             : `<span class="dot-mid-logo dot-mid-logo--empty"></span>`;
 
         return `
@@ -190,6 +190,7 @@ class DotRollup {
                 ${logo}
                 <div class="dot-mid-meta">
                     <span class="dot-mid-name">${asset.name}</span>
+                    ${this._metadata(asset.metadata)}
                 </div>
                 <div class="dot-mid-stats">
                     <div class="dot-mid-stat">
@@ -210,6 +211,21 @@ class DotRollup {
                 </button>
             </div>
         `;
+    }
+
+    _metadata(meta) {
+        const entries = Object.entries(meta ?? {});
+        if (!entries.length) {
+            return `<span class="dot-meta-icon empty material-symbols-outlined">data_object</span>`;
+        }
+
+        return `
+            <span class="dot-meta-hover">
+                <span class="dot-meta-icon material-symbols-outlined">data_object</span>
+                <dl class="dot-meta-tooltip">
+                    ${entries.map(([k, v]) => `<dt>${Workspace.esc(k)}</dt><dd>${Workspace.esc(v)}</dd>`).join('')}
+                </dl>
+            </span>`;
     }
 
     _statusInfo(s) {

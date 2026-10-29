@@ -308,35 +308,35 @@
 }
 
 #dot-screen .dot-mid-logo {
+  display: grid;
+  place-items: center;
   width: 40px;
   height: 40px;
   flex-shrink: 0;
-  padding: 6px;
+}
+
+#dot-screen .dot-mid-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+#dot-screen .dot-mid-logo--empty {
   border-radius: 50%;
   background: var(--dot-surface-alt);
   box-shadow: var(--dot-shade);
-  object-fit: contain;
-  box-sizing: border-box;
-}
-
-.dot-mid-logo--empty {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background: none;
-    border: none;
-    color: var(--muted, #c4c4c4);
 }
 
 #dot-screen .dot-mid-meta {
   display: flex;
-  flex-direction: column;
-  gap: 2px;
+  align-items: center;
+  gap: 6px;
   min-width: 0;
   margin-right: auto;
 }
 
 #dot-screen .dot-mid-name {
+  min-width: 0;
   font-size: 15px;
   font-weight: 800;
   letter-spacing: -0.01em;
@@ -344,6 +344,54 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+/* metadata icon + tooltip */
+
+#dot-screen .dot-meta-hover {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+#dot-screen .dot-meta-icon {
+  flex-shrink: 0;
+  font-size: 18px;
+  color: var(--dot-accent-text);
+  cursor: help;
+}
+
+#dot-screen .dot-meta-icon.empty {
+  color: var(--dot-mute);
+  opacity: 0.35;
+  cursor: default;
+}
+
+#dot-screen .dot-meta-tooltip {
+  display: none;
+  position: absolute;
+  top: calc(100% + 8px);
+  left: -10px;
+  z-index: 5;
+  grid-template-columns: auto 1fr;
+  gap: 4px 14px;
+  width: max-content;
+  max-width: 320px;
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: var(--dot-ink);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.18);
+  font-size: 11.5px;
+  font-weight: 400;
+  line-height: 1.45;
+  color: #f9fafb;
+  white-space: normal;
+}
+
+#dot-screen .dot-meta-hover:hover .dot-meta-tooltip { display: grid; }
+
+#dot-screen .dot-meta-tooltip dt { font-weight: 600; color: #9ca3af; white-space: nowrap; }
+#dot-screen .dot-meta-tooltip dd { margin: 0; word-break: break-word; }
 
 #dot-screen .dot-mid-stats {
   display: flex;

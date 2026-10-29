@@ -1,6 +1,10 @@
 class TenantScreen {
     static TAIL_INTERVAL = 30000;
     static TAIL_LIMIT = 1000;
+    static CLOCK = new Intl.DateTimeFormat(undefined, {
+        month: 'short', day: '2-digit',
+        hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23',
+    });
 
     constructor(state) {
         this.state = state;
@@ -105,10 +109,15 @@ class TenantScreen {
             .join('');
 
         this.logs.innerHTML = logs.length
-            ? logs.map(log => `<li>${highlight(log.message ?? log)}</li>`).join('')
+            ? logs.map(log => `<li>${this.line(log, highlight(log.message))}</li>`).join('')
             : `<li class="search-empty">No logs match "${Workspace.esc(this.query)}"</li>`;
 
         this.wrap.scrollTop = 0;
+    }
+
+    line(log, message = Workspace.esc(log.message)) {
+        const time = TenantScreen.CLOCK.format(new Date(log.timestamp));
+        return `<time datetime="${log.timestamp}">${time}</time><span>${message}</span>`;
     }
 
     // ── tail ───────────────────────────────────────────────────────
@@ -123,7 +132,7 @@ class TenantScreen {
 
         this.wrap.classList.add('tailing');
         this.tailSwitch.setAttribute('aria-pressed', 'true');
-        this.logs.innerHTML = `<li class="search-empty">Tailing logs · waiting for activity</li>`;
+        this.logs.innerHTML = `<li class="search-empty">Tailing logs · please wait</li>`;
 
         this.tailTimer = setInterval(() => this.pollTail(), TenantScreen.TAIL_INTERVAL);
         this.pollTail();
@@ -139,6 +148,7 @@ class TenantScreen {
     }
 
     async pollTail() {
+        // each window starts exactly where the last one ended
         const start = this.tailFrom;
         const end = this.tailFrom = new Date();
 
@@ -146,9 +156,8 @@ class TenantScreen {
         if (!this.tailTimer || !logs.length) return;
 
         this.logs.querySelector('.search-empty')?.remove();
-        this.logs.insertAdjacentHTML('afterbegin', logs.reverse()
-            .map(log => `<li class="tail-new">${Workspace.esc(log.message ?? log)}</li>`)
-            .join(''));
+        this.logs.insertAdjacentHTML('afterbegin',
+            logs.map(log => `<li class="tail-new">${this.line(log)}</li>`).join(''));
 
         while (this.logs.children.length > TenantScreen.TAIL_LIMIT) this.logs.lastElementChild.remove();
     }

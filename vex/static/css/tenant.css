@@ -366,13 +366,25 @@
 .signal-search-results li {
   --row-bg: var(--surface);
   position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 16px;
   padding: 7px 8px;
   border-bottom: 1px solid var(--line);
   color: var(--text-body);
+  cursor: pointer;
+}
+
+.signal-search-results time {
+  font-variant-numeric: tabular-nums;
+  color: var(--text-faint);
+  white-space: nowrap;
+}
+
+.signal-search-results li span {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  cursor: pointer;
 }
 
 .signal-search-results li:hover {
@@ -396,10 +408,11 @@
 
 .signal-search-results li:hover::after { opacity: 1; }
 
-.signal-search-results li.expanded {
+.signal-search-results li.expanded { padding-right: 52px; }
+
+.signal-search-results li.expanded span {
   white-space: pre-wrap;
   word-break: break-all;
-  padding-right: 52px;
 }
 
 .signal-search-results li.expanded::after {
@@ -416,6 +429,7 @@
 }
 
 .signal-search-results li.search-empty {
+  display: block;
   padding: 48px 8px;
   border: 0;
   font-family: inherit;

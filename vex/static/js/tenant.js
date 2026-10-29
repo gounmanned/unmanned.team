@@ -37,12 +37,16 @@ class TenantScreen {
         });
     }
 
+    signals() {
+        return Object.values(this.state.signals?.[this.state.account()] ?? {});
+    }
+
     count() {
         const el = document.getElementById('signal-count');
         el.hidden = !!this.query;
         if (this.query) return;
 
-        const all = [...this.table.signals.values()];
+        const all = this.signals();
         const open = all.filter(s => s.status.startsWith('O')).length;
         const closed = all.filter(s => s.status.startsWith('C'));
         const auto = closed.filter(s => s.status === 'CV').length;
@@ -140,7 +144,7 @@ class TenantScreen {
         const days = new Date(year, month + 1, 0).getDate();
 
         const counts = new Array(days).fill(0);
-        Object.values(this.state.signals?.[this.state.account()] ?? {}).forEach(s => {
+        this.signals().forEach(s => {
             const d = new Date(s.created);
             if (d.getFullYear() === year && d.getMonth() === month) counts[d.getDate() - 1]++;
         });
@@ -232,7 +236,7 @@ class TenantScreen {
     }
 
     renderSpotlight() {
-        const signal = Object.values(this.state.signals?.[this.state.account()] ?? {})
+        const signal = this.signals()
             .filter(s => s.status.startsWith('O') && s.metadata?.threat)
             .sort((a, b) => new Date(b.created) - new Date(a.created))[0];
 

@@ -7,6 +7,9 @@ class ManagedRollup {
         this.detail = document.querySelector('#managed-screen .managed-detail');
         this.members = new Map();
         this.selected = null;
+        this.expanded = new Set();
+        this.parents = new Map();
+        this.children = new Map();
         this.summary = new ManagedSummary();
         this.listen();
     }
@@ -26,7 +29,7 @@ class ManagedRollup {
         (async () => {
             await this.api.managed.signals(new CustomEvent("signal:managed"));
             this.members.forEach((_, domain) => this._settleBadge(domain));
-            this._sortAccounts();
+            this._arrange();
             this._renderHero();
             if (this.selected) this._selectAccount(this.selected);
         })();
@@ -48,6 +51,7 @@ class ManagedRollup {
             this._add(domain, [], false);
         });
 
+        this._arrange();
         document.querySelector('.managed-accounts-wrap').classList.toggle('empty', this.members.size === 0);
     }
 
@@ -86,9 +90,12 @@ class ManagedRollup {
         }
     }
 
+    _row(domain) {
+        return document.getElementById(`managed-account-${domain}`);
+    }
+
     _setBadge(domain, count) {
-        const badge = document.getElementById(`managed-badge-content-${domain}`);
-        if (!badge) return;
+        const badge = this._row(domain).querySelector('.managed-badge-content');
 
         if (count === 0) {
             badge.innerHTML = '<img src="static/img/status/CH.svg" class="managed-badge-icon">';
@@ -98,12 +105,12 @@ class ManagedRollup {
     }
 
     _setBadgeLoading(domain) {
-        const badge = document.getElementById(`managed-badge-content-${domain}`);
-        if (badge) badge.innerHTML = '<span class="managed-badge-spinner"></span>';
+        this._row(domain).querySelector('.managed-badge-content').innerHTML = '<span class="managed-badge-spinner"></span>';
     }
 
     _settleBadge(domain) {
-        const open = this._open(domain);
+        const scope = this._collapsed(domain) ? this._subtree(domain) : [domain];
+        const open = scope.flatMap(d => this._open(d));
 
         this._setBadge(domain, open.length);
         this._setUnread(domain, open.some(t => !t.read));
@@ -111,24 +118,80 @@ class ManagedRollup {
     }
 
     _setUnread(domain, unread) {
-        const badge = document.getElementById(`managed-badge-${domain}`);
-        if (badge) badge.classList.toggle('has-unread', unread);
+        this._row(domain).querySelector('.managed-account-badge').classList.toggle('has-unread', unread);
     }
 
     _setThreat(domain, count) {
-        const li = document.getElementById(`managed-account-${domain}`);
-        if (!li) return;
-
+        const li = this._row(domain);
         li.classList.toggle('has-threat', count > 0);
         li.querySelector('.managed-account-threat').textContent = count > 99 ? '99+' : count;
     }
 
-    _sortAccounts() {
-        const count = (li) => this._open(li.dataset.domain).length;
+    _collapsed(domain) {
+        return this.children.has(domain) && !this.expanded.has(domain);
+    }
 
-        [...this.list.children]
-            .sort((a, b) => count(b) - count(a))
-            .forEach(li => this.list.appendChild(li));
+    _parent(domain) {
+        return this.members.get(domain)
+            .map(email => email.split('@')[1])
+            .find(d => d !== domain && this.members.has(d));
+    }
+
+    _subtree(domain, seen = new Set()) {
+        if (seen.has(domain)) return [];
+        seen.add(domain);
+        return [domain, ...(this.children.get(domain) ?? []).flatMap(child => this._subtree(child, seen))];
+    }
+
+    _branch(domain) {
+        const chain = [];
+        while (domain && !chain.includes(domain)) {
+            chain.push(domain);
+            domain = this.parents.get(domain);
+        }
+        return chain;
+    }
+
+    _arrange() {
+        this.parents = new Map();
+        this.children = new Map();
+        const roots = [];
+
+        this.members.forEach((_, domain) => {
+            const parent = this._parent(domain);
+            if (!parent) return roots.push(domain);
+            this.parents.set(domain, parent);
+            if (!this.children.has(parent)) this.children.set(parent, []);
+            this.children.get(parent).push(domain);
+        });
+
+        const totals = new Map();
+        this.members.forEach((_, domain) => {
+            totals.set(domain, this._subtree(domain).reduce((n, d) => n + this._open(d).length, 0));
+        });
+
+        const byTotal = (a, b) => totals.get(b) - totals.get(a);
+        const placed = new Set();
+
+        const place = (domain, depth, hidden = false) => {
+            if (placed.has(domain)) return;
+            placed.add(domain);
+
+            const kids = (this.children.get(domain) ?? []).sort(byTotal);
+            const collapsed = this._collapsed(domain);
+
+            const li = this._row(domain);
+            li.style.setProperty('--depth', depth);
+            li.classList.toggle('has-children', kids.length > 0);
+            li.classList.toggle('collapsed', collapsed);
+            li.hidden = hidden;
+            this.list.appendChild(li);
+
+            kids.forEach(child => place(child, depth + 1, hidden || collapsed));
+        };
+
+        roots.sort(byTotal).forEach(domain => place(domain, 0));
+        this.members.forEach((_, domain) => place(domain, 0));
     }
 
     _add(domain, members = [], enabled = true) {
@@ -140,8 +203,11 @@ class ManagedRollup {
         li.dataset.domain = domain;
         li.className = `managed-account-item${enabled ? '' : ' pending'}`;
         li.innerHTML = `
-            <span class="managed-account-badge" id="managed-badge-${domain}">
-                <span class="managed-badge-content" id="managed-badge-content-${domain}"></span>
+            <button class="managed-account-toggle" title="Expand / collapse">
+                <span class="material-symbols-outlined">chevron_right</span>
+            </button>
+            <span class="managed-account-badge">
+                <span class="managed-badge-content"></span>
             </span>
             <span class="managed-account-name">${domain}</span>
             <span class="managed-account-threat" title="Active threats"></span>
@@ -235,6 +301,7 @@ class ManagedRollup {
         const domain = this.selected;
         await SiteSpinner.withLoading(() => this.api.managed.unassign(domain, email));
         this.members.set(domain, this.members.get(domain).filter(m => m !== email));
+        this._arrange();
         this._selectAccount(domain);
     }
 
@@ -242,6 +309,7 @@ class ManagedRollup {
         const domain = this.selected;
         await SiteSpinner.withLoading(() => this.api.managed.assign(domain, email));
         this.members.get(domain).push(email);
+        this._arrange();
         this._selectAccount(domain);
     }
 
@@ -254,13 +322,22 @@ class ManagedRollup {
     listen() {
         document.addEventListener("signal:managed", (ev) => {
             this.state.track(ev.signal);
-            this._settleBadge(ev.signal.account);
+            this._branch(ev.signal.account).forEach(domain => this._settleBadge(domain));
             this._renderHero();
         });
 
         this.list.addEventListener('click', (e) => {
             const li = e.target.closest('.managed-account-item:not(.pending)');
-            if (li) this._selectAccount(li.dataset.domain);
+            if (!li) return;
+
+            if (e.target.closest('.managed-account-toggle')) {
+                const domain = li.dataset.domain;
+                this.expanded.has(domain) ? this.expanded.delete(domain) : this.expanded.add(domain);
+                this._arrange();
+                return this._settleBadge(domain);
+            }
+
+            this._selectAccount(li.dataset.domain);
         });
 
         this.detail.addEventListener('click', (e) => {

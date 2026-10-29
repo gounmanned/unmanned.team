@@ -49,42 +49,14 @@
 }
 
 #dot-screen .dot-banner-dot {
-  position: relative;
   flex-shrink: 0;
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background:
-    radial-gradient(circle at 30% 26%, rgb(255 255 255 / 0.95), rgb(255 255 255 / 0) 24%),
-    radial-gradient(circle at 72% 82%, color-mix(in srgb, var(--dot-purple) 60%, transparent), transparent 55%),
-    radial-gradient(circle at 40% 35%, #ff5cb6, var(--dot-accent) 48%, #8f0852);
+  background: radial-gradient(circle at 35% 30%, #ff5cb6, var(--dot-accent) 55%, #b00a66);
   box-shadow:
-    inset -3px -4px 6px rgb(11 12 13 / 0.28),
-    inset 2px 2px 3px rgb(255 255 255 / 0.4),
-    0 4px 14px color-mix(in srgb, var(--dot-accent) 35%, transparent),
+    inset -2px -3px 4px rgb(11 12 13 / 0.2),
     3px 3px 0 rgb(11 12 13 / 0.15);
-}
-
-/* glint that sweeps across the bead */
-#dot-screen .dot-banner-dot::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: linear-gradient(115deg, transparent 38%, rgb(255 255 255 / 0.6) 50%, transparent 62%) no-repeat;
-  background-size: 260% 100%;
-  animation: dot-sheen 5s ease-in-out infinite;
-}
-
-/* orbiting halo */
-#dot-screen .dot-banner-dot::after {
-  content: '';
-  position: absolute;
-  inset: -5px;
-  border-radius: 50%;
-  background: conic-gradient(transparent 0 60%, var(--dot-accent) 85%, var(--dot-cyan));
-  mask: radial-gradient(farthest-side, transparent calc(100% - 1.5px), #000 calc(100% - 1px));
-  animation: dot-orbit 6s linear infinite;
 }
 
 #dot-screen .dot-banner-copy {
@@ -712,16 +684,7 @@
   100% { box-shadow: 0 0 0 3px color-mix(in srgb, var(--status) 20%, transparent); }
 }
 
-@keyframes dot-sheen {
-  0%        { background-position: 130% 0; }
-  35%, 100% { background-position: -30% 0; }
-}
-
-@keyframes dot-orbit { to { transform: rotate(1turn); } }
-
 @media (prefers-reduced-motion: reduce) {
   #dot-screen .dot-terminal-spinner,
-  #dot-screen .dot-item-status--fresh::before,
-  #dot-screen .dot-banner-dot::before,
-  #dot-screen .dot-banner-dot::after { animation: none; }
+  #dot-screen .dot-item-status--fresh::before { animation: none; }
 }

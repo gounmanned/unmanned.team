@@ -12,9 +12,7 @@ class TenantScreen {
         });
 
         this.listen();
-
         new ResizeObserver(() => this.renderTrend()).observe(document.getElementById('trend-svg'));
-        this.notifications = new Notifications(this.state);
     }
 
     async reload() {
@@ -30,8 +28,6 @@ class TenantScreen {
             this.clearSearch();
             this.renderSpotlight();
             this.renderTrend();
-        }).then(() => {
-            this.notifications.refresh();
         });
     }
 

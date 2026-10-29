@@ -1,8 +1,13 @@
 class DotRollup {
     static platforms = ['windows', 'mac'];
 
+    static packs = [
+        { name: 'Triage', actions: 7, logo: 'static/img/packs/triage.png' },
+    ];
+
     constructor(state) {
         this.api = state.api;
+        this.shelf = document.getElementById('dot-shelf');
         this.list = document.getElementById('dot-list');
         this.wrap = this.list.parentElement;
         this.mid = document.getElementById('dot-mid');
@@ -25,7 +30,37 @@ class DotRollup {
             const li = e.target.closest('.dot-item');
             if (li) this._select(li.dataset.key);
         });
+        this._renderShelf();
         this._listenForDrops();
+    }
+
+    // --- action packs ------------------------------------------------------
+
+    _renderShelf() {
+        this.shelf.innerHTML = DotRollup.packs.map(p => `
+            <li class="dot-pack" draggable="true" data-pack="${p.name}" title="${p.name} · ${p.actions} actions">
+                <span class="dot-pack-logo">
+                    <img src="${p.logo}" alt="">
+                    <span class="dot-pack-count">${p.actions}</span>
+                </span>
+                <span class="dot-pack-name">${p.name}</span>
+            </li>
+        `).join('');
+
+        this.shelf.addEventListener('dragstart', (e) => {
+            const card = e.target.closest('.dot-pack');
+            e.dataTransfer.setData('application/x-dot-pack', card.dataset.pack);
+            e.dataTransfer.effectAllowed = 'copy';
+            card.classList.add('dragging');
+        });
+
+        this.shelf.addEventListener('dragend', (e) => {
+            e.target.closest('.dot-pack').classList.remove('dragging');
+        });
+    }
+
+    _runPack(name) {
+        console.log(`run pack "${name}" on dot ${this.selected}`);
     }
 
     // --- dots list ---------------------------------------------------------
@@ -301,6 +336,7 @@ class DotRollup {
 
     _listenForDrops() {
         this.mid.addEventListener('dragover', (e) => {
+            if (!this.selected) return;
             e.preventDefault();
             this.mid.classList.add('drop-active');
         });
@@ -312,6 +348,8 @@ class DotRollup {
         this.mid.addEventListener('drop', (e) => {
             e.preventDefault();
             this.mid.classList.remove('drop-active');
+            const pack = e.dataTransfer.getData('application/x-dot-pack');
+            if (pack) return this._runPack(pack);
             const file = e.dataTransfer.files[0];
             if (file) this._submitAction(file);
         });

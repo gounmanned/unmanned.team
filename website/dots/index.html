@@ -4,17 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dots by Unmanned</title>
-<meta name="description" content="Dots: The first EDR made for code. A tiny library that attaches to any codebase and reports to VEX, your AI SOC.">
+<meta name="description" content="Dots: One Dot. One thing protected. A laptop, an identity, a server or a website. Each Dot connects to VEX, your AI SOC.">
 <link rel="apple-touch-icon" href="https://cdn.unmanned.team/img/logo.png">
-<meta property="og:title" content="Dots: The first EDR made for code" />
-<meta property="og:description" content="A tiny library that attaches to any codebase and reports to VEX, your AI SOC." />
+<meta property="og:title" content="Dots: One Dot. One thing protected." />
+<meta property="og:description" content="A laptop, an identity, a server or a website. Choose what you want to protect. Each Dot connects to VEX, your AI SOC." />
 <meta property="og:url" content="https://unmanned.team/dots/" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Unmanned" />
 <meta property="og:image" content="https://unmanned.team/static/og/dots.png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
-<meta property="og:image:alt" content="Dots: The first EDR made for code" />
+<meta property="og:image:alt" content="Dots by Unmanned" />
 <meta name="twitter:card" content="summary_large_image" />
 <link rel="icon" type="image/png" href="https://cdn.unmanned.team/img/logo.png">
 <link rel="stylesheet" href="https://cdn.unmanned.team/css/global.css">
@@ -92,14 +92,17 @@
   .hero-grid{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:48px;align-items:center;}
   .hero-copy{position:relative;display:flex;flex-direction:column;gap:24px;align-items:flex-start;}
   .hero-head{display:flex;flex-direction:column;gap:16px;}
-  .h1-clip{overflow:hidden;}
-  .hero h1,.intro-word{font-size:clamp(40px,6vw,64px);line-height:1.0625;font-weight:800;letter-spacing:-0.02em;color:var(--ink);}
+  /* the clip hides the headline before it rises; the extra room below keeps the "g" descender visible */
+  .h1-clip{overflow:hidden;padding-bottom:14px;margin-bottom:-14px;}
+  /* 6vw as before, capped by the copy column so "One Dot. One / thing protected." stays two lines, as in Figma */
+  .hero-copy{container-type:inline-size;}
+  .hero h1,.intro-word{font-size:clamp(40px,min(6vw,12.2cqi),64px);line-height:1.0625;font-weight:800;letter-spacing:-0.02em;color:var(--ink);}
   .hero h1{max-width:509px;}
   /* "code" in the four Dot colors; cyan and yellow deepened so every letter is at least 3:1 on white (large text) */
-  .hero h1 .code span:nth-child(1){color:#01a1c6;}
-  .hero h1 .code span:nth-child(2){color:var(--d-green);}
-  .hero h1 .code span:nth-child(3){color:var(--d-purple);}
-  .hero h1 .code span:nth-child(4){color:#be8400;}
+  .code span:nth-child(1){color:#01a1c6;}
+  .code span:nth-child(2){color:var(--d-green);}
+  .code span:nth-child(3){color:var(--d-purple);}
+  .code span:nth-child(4){color:#be8400;}
   .hero-lede{font-size:18px;line-height:28px;color:var(--body-soft);max-width:526px;}
 
   /* the dots: --x/--y/--s in Figma units (526 x 217 box), scaled by --u when the column is narrower */
@@ -210,8 +213,8 @@
     background:radial-gradient(circle at 2px 2px,#9698a5 2px,transparent 2.5px) 0 0/8px 8px;}
   .big-dot .ball svg{position:absolute;left:0;top:33.13px;width:284.04px;height:297.8px;opacity:0.15;mix-blend-mode:difference;}
   .big-dot .name{position:absolute;inset:0 0 auto;height:330.92px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:32px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink);opacity:0.5;}
-  .callout{position:absolute;display:flex;flex-direction:column;gap:12px;}
-  .callout hr{width:100%;height:0;margin:0 0 -1px;border:0;border-top:1px solid var(--gray-faint);} /* Figma's lines take no height */
+  .callout{position:absolute;display:flex;flex-direction:column;gap:9px;} /* 12px above the line, 8px under it */
+  .callout hr{width:100%;height:0;margin:3px 0 -1px;border:0;border-top:1px solid var(--gray-faint);} /* Figma's lines take no height */
   .callout dl{margin:0;font-size:14px;line-height:20px;color:var(--ink);display:flex;flex-direction:column;gap:4px;}
   .callout dt{font-weight:600;}
   .callout dd{margin:0;}
@@ -234,6 +237,7 @@
   .envs-title{font-size:16px;line-height:24px;font-weight:600;color:var(--ink);text-align:center;}
   .envs-row{width:100%;margin:0;padding:0;list-style:none;display:flex;justify-content:space-between;gap:36px;}
   .envs-row li{width:248px;display:flex;flex-direction:column;align-items:center;text-align:center;}
+  .envs-row li[hidden]{display:none;}
   .envs-row img{width:100%;height:auto;margin-bottom:16px;}
   .envs-row b{margin-top:4px;font-size:14px;line-height:20px;font-weight:600;color:var(--ink);}
   @media (max-width:1099px){ .envs-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px;} .envs-row li{width:auto;} }
@@ -249,7 +253,7 @@
     .big-dot{zoom:0.8;}
     .dot-meta{order:-1;margin-top:-16px;}
     .big-dot{order:-2;}
-    .callout{position:static;width:auto;gap:8px;}
+    .callout{position:static;width:auto;gap:8px;} .callout hr{margin:0;}
     .callout--r{align-items:stretch;}
     .callout--l dl,.callout--r .eyebrow,.callout--r dl{width:auto;}
     .along{padding:16px 24px;border-radius:28px;align-items:flex-start;}
@@ -335,11 +339,11 @@
       <div class="wrap hero-grid">
         <div class="hero-copy">
           <div class="hero-head">
-            <p class="eyebrow">Introducing Dots · Runtime security</p>
-            <div class="h1-clip"><h1 id="hero-title">The first EDR<br>made for <span class="code"><span>c</span><span>o</span><span>d</span><span>e</span></span>.</h1></div>
+            <p class="eyebrow">Introducing Dots</p>
+            <div class="h1-clip"><h1 id="hero-title">One Dot. One thing protected.</h1></div>
           </div>
           <div class="intro-word" aria-hidden="true">Introducing <span>Dots</span></div>
-          <p class="hero-lede">A tiny library that attaches to any codebase. Frontend or backend. IT or operational technology. Website or server. It tests your code from the inside, the way an attacker would.</p>
+          <p class="hero-lede">A laptop, an identity, a server or a website. Choose what you want to protect. Each Dot connects to VEX, the AI SOC behind your protection.</p>
           <a class="pill hero-cta" href="mailto:go@unmanned.team?subject=Dots%20early%20access">Get early access</a>
         </div>
 
@@ -355,7 +359,7 @@
             <div class="dot dot--cyan" data-dot="cyan"><svg viewBox="0 0 125 125"><path d="M24.9814 12.5117C14.0194 23.7714 7.26769 39.1506 7.26758 56.1064C7.26758 90.6244 35.2498 118.607 69.7676 118.607C83.8444 118.607 96.8329 113.952 107.281 106.099C95.9276 117.759 80.0603 125.003 62.5 125.003C27.9822 125.003 0 97.0199 0 62.502C9.03362e-05 42.0627 9.81158 23.9152 24.9814 12.5117Z"/></svg></div>
           </div>
           <p class="dot-label">Dot #001</p>
-          <a class="dot-link" href="#meet">Meet your Dot <img src="static/icon-arrow-down-pink.svg" width="20" height="20" alt=""></a>
+          <a class="dot-link" href="#meet">Meet a code Dot <img src="static/icon-arrow-down-pink.svg" width="20" height="20" alt=""></a>
         </div>
       </div>
       <button class="vz-replay" type="button" hidden>Replay</button>
@@ -368,10 +372,10 @@
       <div class="wrap">
         <div class="section-intro">
           <div class="titles">
-            <p class="eyebrow eyebrow--pink">Meet your Dot</p>
-            <h2 id="meet-title">Small dot. Big job.</h2>
+            <p class="eyebrow eyebrow--pink">Meet your code Dot</p>
+            <h2 id="meet-title">The first EDR made for <span class="code"><span>c</span><span>o</span><span>d</span><span>e</span></span>.</h2>
           </div>
-          <p>Meet the tiniest member of your security team. Your Dot lives inside your code and probes it for the weak spots attackers go after, so you find them first. When your code stops, your Dot stops.</p>
+          <p>The tiniest member of your security team. A lightweight library that adds runtime security to any codebase, testing it from the inside for the weaknesses an attacker would exploit.</p>
         </div>
 
         <div class="concepts">
@@ -386,7 +390,7 @@
           </div>
           <div class="callout callout--l c-lives">
             <p class="eyebrow eyebrow--pink">Where it lives</p><hr>
-            <dl><dt>Your code</dt><dd>Frontend, backend, websites, servers, IT and OT.</dd></dl>
+            <dl><dt>Your code</dt><dd>Frontend, backend, websites, servers, APIs, IT and OT.</dd></dl>
           </div>
           <div class="callout callout--r c-hours">
             <p class="eyebrow eyebrow--pink">Working hours</p><hr>
@@ -411,7 +415,9 @@
           <ul class="envs-row">
             <li><img src="static/env-endpoint.svg" width="248" height="147" alt=""><span class="eyebrow">Endpoint</span><b>Automatic patching</b></li>
             <li><img src="static/env-website.svg" width="248" height="147" alt=""><span class="eyebrow">Website</span><b>AI penetration testing</b></li>
-            <li><img src="static/env-api.svg" width="248" height="147" alt=""><span class="eyebrow">API</span><b>Hunts for abuse</b></li>
+            <!-- hidden for now (Chad, 2026-10-29): remove "hidden" to bring the API card back -->
+            <li hidden><img src="static/env-api.svg" width="248" height="147" alt=""><span class="eyebrow">API</span><b>Hunts for abuse</b></li>
+            <li><img src="static/env-identity.svg" width="248" height="147" alt=""><span class="eyebrow">Identity</span><b>Flags risky sign-ins</b></li>
             <li><img src="static/env-ot.svg" width="248" height="147" alt=""><span class="eyebrow">Operational tech</span><b>Flags anomalies</b></li>
           </ul>
         </div>
@@ -464,7 +470,7 @@
             <p class="eyebrow eyebrow--pink">Meet VEX</p>
             <h2 id="vex-title">Dots find the issues. VEX makes sense <br>of them.</h2>
           </div>
-          <p>Every Dot pipes security findings back to VEX, your AI SOC. VEX brings them into context, investigates and helps turn findings into action.</p>
+          <p>Every Dot reports to VEX, your AI SOC. VEX maps connections between the things you protect, helping identify attack paths, investigate findings and coordinate response.</p>
           <a class="pill" href="/how-it-works/">Learn about VEX</a>
         </div>
       </div>

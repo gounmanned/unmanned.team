@@ -230,7 +230,7 @@ class DotRollup {
 
     _statusInfo(s) {
         if (s === 'T0') return { tone: 'ok', label: 'Success', icon: 'check' };
-        if (s === 'T2') return { tone: 'pending', label: 'Pending', icon: 'pending' };
+        if (s === 'PENDING') return { tone: 'pending', label: 'Pending', icon: 'pending' };
         return { tone: 'bad', label: 'Failed', icon: 'close' };
     }
 

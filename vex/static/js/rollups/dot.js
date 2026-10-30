@@ -470,7 +470,7 @@ class DotRollup {
     }
 
     static isActive(ts) {
-        return Date.now() - new Date(ts) < 10 * 60000;
+        return Date.now() - new Date(ts) < 15 * 60000;
     }
 
     _clock(ts) {

@@ -652,7 +652,7 @@
 
 #dot-screen .dot-action-item {
   display: grid;
-  grid-template-columns: 18px minmax(0, 1fr) 130px;
+  grid-template-columns: 18px minmax(0, 1fr) 130px 28px;
   align-items: center;
   gap: 12px;
   padding: 10px;
@@ -705,6 +705,31 @@
 
 #dot-screen .dot-action-id { flex-shrink: 0; }
 #dot-screen .dot-action-time { justify-self: end; }
+
+#dot-screen .dot-action-rerun {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--dot-text-faint);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.12s, background-color 0.12s, color 0.12s;
+}
+
+#dot-screen .dot-action-item:hover .dot-action-rerun,
+#dot-screen .dot-action-rerun:focus-visible { opacity: 1; }
+
+#dot-screen .dot-action-rerun:hover {
+  background: color-mix(in srgb, var(--dot-accent) 10%, transparent);
+  color: var(--dot-accent-text);
+}
+
+#dot-screen .dot-action-rerun .material-symbols-outlined { font-size: 18px; }
 
 #dot-mid.drop-ready {
   outline: 2px dashed var(--dot-line-strong);

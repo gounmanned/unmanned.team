@@ -22,7 +22,9 @@ class DotRollup {
             if (e.target.closest('.dot-mid-delete')) return this._deleteAsset();
             if (e.target.closest('.dot-mid-key')) return this._copyKey();
             const li = e.target.closest('.dot-action-item');
-            if (li) this._selectAction(li.dataset.key);
+            if (!li) return;
+            if (e.target.closest('.dot-action-rerun')) return this._rerun(li.dataset.key);
+            this._selectAction(li.dataset.key);
         });
         this.list.addEventListener('click', (e) => {
             const li = e.target.closest('.dot-item');
@@ -30,6 +32,15 @@ class DotRollup {
         });
         this._initShelf();
         this._listenForDrops();
+    }
+
+    // --- rerun -------------------------------------------------------------
+
+    async _rerun(key) {
+        const { id, name } = this.sorted.find(a => a.key === key);
+        await SiteSpinner.withLoading(() => this.api.inventory.run(this.selected, { id, name }));
+        this._toast(`${name} queued`);
+        await this.refresh();
     }
 
     // --- action packs ------------------------------------------------------
@@ -275,6 +286,9 @@ class DotRollup {
                 <span class="dot-action-status material-symbols-outlined" title="${label}">${icon}</span>
                 <span class="dot-action-name"><span class="dot-action-label">${action.name}</span><span class="dot-action-id">${action.id}</span>${badge}</span>
                 <span class="dot-action-time">${this._clock(action.created)}</span>
+                <button type="button" class="dot-action-rerun" title="Rerun" aria-label="Rerun ${action.name}">
+                    <span class="material-symbols-outlined">replay</span>
+                </button>
             </li>
         `;
     }

@@ -203,13 +203,13 @@ class ManagedRollup {
         li.dataset.domain = domain;
         li.className = `managed-account-item${enabled ? '' : ' pending'}`;
         li.innerHTML = `
-            <button class="managed-account-toggle" title="Expand / collapse">
-                <span class="material-symbols-outlined">chevron_right</span>
-            </button>
             <span class="managed-account-badge">
                 <span class="managed-badge-content"></span>
             </span>
             <span class="managed-account-name">${domain}</span>
+            <button class="managed-account-toggle" title="Expand / collapse">
+                <span class="material-symbols-outlined">chevron_right</span>
+            </button>
             <span class="managed-account-threat" title="Active threats"></span>
         `;
 

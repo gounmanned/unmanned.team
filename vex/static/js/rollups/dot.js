@@ -3,6 +3,7 @@ class DotRollup {
 
     constructor(state) {
         this.api = state.api;
+        this.shelf = document.getElementById('dot-shelf');
         this.list = document.getElementById('dot-list');
         this.wrap = this.list.parentElement;
         this.mid = document.getElementById('dot-mid');
@@ -10,6 +11,7 @@ class DotRollup {
         this.search = document.getElementById('dot-search-input');
         this.bannerCount = document.getElementById('dot-banner-count');
         this.dots = new Map();
+        this.packs = new Map();
         this.selected = null;
         this.sorted = [];
         this.selectedKey = null;
@@ -25,13 +27,70 @@ class DotRollup {
             const li = e.target.closest('.dot-item');
             if (li) this._select(li.dataset.key);
         });
+        this._initShelf();
         this._listenForDrops();
+    }
+
+    // --- action packs ------------------------------------------------------
+
+    _initShelf() {
+        this.shelf.insertAdjacentHTML('beforebegin', `
+            <div class="dot-shelf-head">
+                <span class="dot-shelf-title">Action packs</span>
+                <span class="dot-shelf-hint">
+                    <span class="material-symbols-outlined">drag_pan</span>
+                    Drag onto a selected dot to run
+                </span>
+            </div>
+        `);
+
+        this.shelf.addEventListener('dragstart', (e) => {
+            const card = e.target.closest('.dot-pack');
+            e.dataTransfer.setData('application/x-dot-pack', card.dataset.pack);
+            e.dataTransfer.effectAllowed = 'copy';
+            card.classList.add('dragging');
+            if (this.selected) this.mid.classList.add('drop-ready');
+            else this._toast('Select a dot first, then drop the pack on it');
+        });
+
+        this.shelf.addEventListener('dragend', (e) => {
+            e.target.closest('.dot-pack').classList.remove('dragging');
+            this.mid.classList.remove('drop-ready');
+        });
+    }
+
+    async _loadPacks() {
+        const packs = await this.api.action.list();
+        this.packs = new Map(Object.entries(packs));
+        this._renderShelf();
+    }
+
+    _renderShelf() {
+        this.shelf.innerHTML = [...this.packs].map(([name, actions]) => `
+            <li class="dot-pack" draggable="true" data-pack="${name}" title="${name} · ${actions.map(a => a.name).join(', ')}">
+                <span class="dot-pack-logo">
+                    <img src="static/img/packs/${name.toLowerCase()}.png" alt="">
+                    <span class="dot-pack-count">${actions.length}</span>
+                </span>
+                <span class="dot-pack-name">${name}</span>
+            </li>
+        `).join('');
+    }
+
+    async _runPack(pack) {
+        const actions = this.packs.get(pack);
+        await SiteSpinner.withLoading(() => Promise.all(
+            actions.map(({ id, name }) => this.api.inventory.run(this.selected, { id, name }))
+        ));
+        this._toast(`${pack} queued · ${actions.length} action${actions.length === 1 ? '' : 's'}`);
+        await this.refresh();
     }
 
     // --- dots list ---------------------------------------------------------
 
     async reload() {
         this._clearSelection();
+        this._loadPacks();
         this.wrap.classList.add('loading');
         await this._load();
         this.wrap.classList.remove('loading');
@@ -40,7 +99,9 @@ class DotRollup {
     reset() {
         this._clearSelection();
         this.dots.clear();
+        this.packs.clear();
         this.list.innerHTML = '';
+        this.shelf.innerHTML = '';
         this.search.value = '';
         this.bannerCount.textContent = '—';
     }
@@ -65,19 +126,40 @@ class DotRollup {
     }
 
     _renderList() {
-        const rows = [...this.dots.values()].sort(DotRollup.byDot);
-        this.list.innerHTML = rows.map(a => this._row(a)).join('');
+        const rows = [...this.dots.values()];
+        const dotted = rows.filter(a => a.metadata.runtime).sort(DotRollup.byActivity);
+        const undotted = rows.filter(a => !a.metadata.runtime).sort(DotRollup.byName);
+        const open = this.list.querySelector('.dot-group details')?.open ?? false;
+
+        this.list.innerHTML = dotted.map(a => this._row(a)).join('')
+            + (undotted.length ? this._group(undotted, open) : '');
         if (this.selected) this.list.querySelector(`[data-key="${this.selected}"]`)?.classList.add('selected');
         this._filter();
 
-        const deployed = rows.filter(a => a.metadata.runtime).length;
-        this.bannerCount.innerHTML = `${deployed.toLocaleString()}<span class="dot-banner-stat-total"> / ${rows.length.toLocaleString()}</span>`;
+        this.bannerCount.innerHTML = `${dotted.length.toLocaleString()}<span class="dot-banner-stat-total"> / ${rows.length.toLocaleString()}</span>`;
+    }
+
+    _group(assets, open) {
+        return `
+            <li class="dot-group">
+                <details ${open ? 'open' : ''}>
+                    <summary class="dot-group-toggle">
+                        <span class="dot-group-chevron material-symbols-outlined">chevron_right</span>
+                        <span class="dot-group-label">Missing dot</span>
+                        <span class="dot-group-count">${assets.length}</span>
+                    </summary>
+                    <ul class="dot-group-list">
+                        ${assets.map(a => this._row(a)).join('')}
+                    </ul>
+                </details>
+            </li>
+        `;
     }
 
     _row(asset) {
         const { runtime } = asset.metadata;
         const mark = runtime
-            ? `<span class="dot-item-status dot-item-status--${this._freshness(asset.updated)}" title="${runtime}"></span>`
+            ? `<span class="dot-item-status dot-item-status--${DotRollup.isActive(asset.updated) ? 'active' : 'inactive'}" title="${runtime}"></span>`
             : `<span class="dot-item-nodot material-symbols-outlined">radio_button_unchecked</span>`;
         return `
             <li class="dot-item ${runtime ? '' : 'no-dot'}" data-key="${asset.key}">
@@ -88,25 +170,35 @@ class DotRollup {
         `;
     }
 
-    static byDot(a, b) {
-        return !!a.metadata.runtime - !!b.metadata.runtime || a.name.localeCompare(b.name);
+    static byName(a, b) {
+        return a.name.localeCompare(b.name);
+    }
+
+    static byActivity(a, b) {
+        return DotRollup.isActive(b.updated) - DotRollup.isActive(a.updated) || DotRollup.byName(a, b);
     }
 
     _filter() {
         const q = this.search.value.trim().toLowerCase();
         let visible = 0;
-        for (const li of this.list.children) {
+        for (const li of this.list.querySelectorAll('.dot-item')) {
             li.hidden = !JSON.stringify(this.dots.get(li.dataset.key)).toLowerCase().includes(q);
             if (!li.hidden) visible++;
         }
         this.wrap.classList.toggle('no-match', !visible && this.dots.size > 0);
+
+        const group = this.list.querySelector('.dot-group');
+        if (!group) return;
+        const shown = group.querySelectorAll('.dot-item:not([hidden])').length;
+        group.hidden = !shown;
+        group.querySelector('.dot-group-count').textContent = shown;
     }
 
     // --- selection ---------------------------------------------------------
 
     _select(key) {
         this.selected = key;
-        for (const li of this.list.children) li.classList.toggle('selected', li.dataset.key === key);
+        for (const li of this.list.querySelectorAll('.dot-item')) li.classList.toggle('selected', li.dataset.key === key);
 
         this._clearOutput();
         this._loadActions(this.dots.get(key));
@@ -155,7 +247,7 @@ class DotRollup {
                     ${this.sorted.map(a => this._actionRow(a)).join('')}
                 </ul>
             </div>
-        ` : this._placeholder('dot-empty dot-empty--overlay', 'No actions');
+        ` : this._placeholder('dot-empty dot-empty--overlay', 'Drop an action pack here');
 
         this.mid.innerHTML = this._actionsHeader(asset) + list;
 
@@ -301,6 +393,7 @@ class DotRollup {
 
     _listenForDrops() {
         this.mid.addEventListener('dragover', (e) => {
+            if (!this.selected) return;
             e.preventDefault();
             this.mid.classList.add('drop-active');
         });
@@ -311,7 +404,9 @@ class DotRollup {
 
         this.mid.addEventListener('drop', (e) => {
             e.preventDefault();
-            this.mid.classList.remove('drop-active');
+            this.mid.classList.remove('drop-active', 'drop-ready');
+            const pack = e.dataTransfer.getData('application/x-dot-pack');
+            if (pack) return this._runPack(pack);
             const file = e.dataTransfer.files[0];
             if (file) this._submitAction(file);
         });
@@ -348,11 +443,8 @@ class DotRollup {
         return `${Math.round(minutes / 1440)}d ago`;
     }
 
-    _freshness(ts) {
-        const seen = new Date(ts);
-        if (Date.now() - seen < 5 * 60000) return 'fresh';
-        if (seen.toDateString() === new Date().toDateString()) return 'today';
-        return 'stale';
+    static isActive(ts) {
+        return Date.now() - new Date(ts) < 5 * 60000;
     }
 
     _clock(ts) {

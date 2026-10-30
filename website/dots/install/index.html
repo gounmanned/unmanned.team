@@ -107,6 +107,10 @@
   .step-body .step-note{font-size:14px;line-height:20px;}
   .step-note b{color:var(--ink);}
   .terminal-look{display:flex;align-items:center;gap:16px;}
+  /* step 2: the blog post on how Dots work, in a new tab */
+  .script-link{font-size:14px;line-height:20px;}
+  .script-link::after{content:'';width:14px;height:14px;background:currentColor;-webkit-mask:url(../../static/icon-arrow-square-out.svg) center/contain no-repeat;mask:url(../../static/icon-arrow-square-out.svg) center/contain no-repeat;}
+  .script-link:hover{text-decoration:underline;text-underline-offset:3px;}
 
   /* the command to copy, and the output to look for (same box, no copy button) */
   .command{display:flex;align-items:flex-start;gap:36px;width:100%;padding:16px 16px 18px;background:var(--surface-gray);border:1px solid var(--gray-line);border-radius:2px;}
@@ -199,6 +203,7 @@
                   <span class="tooltip" aria-hidden="true">Copy to clipboard</span>
                 </button>
               </div>
+              <a class="text-link script-link" href="https://gounmanned.substack.com/p/meet-your-dot-a-little-army-of-friendly" target="_blank" rel="noopener noreferrer">How Dots work<span class="visually-hidden"> (opens in a new tab)</span></a>
             </div>
           </li>
           <li class="install-step">
@@ -252,6 +257,7 @@
                   <span class="tooltip" aria-hidden="true">Copy to clipboard</span>
                 </button>
               </div>
+              <a class="text-link script-link" href="https://gounmanned.substack.com/p/meet-your-dot-a-little-army-of-friendly" target="_blank" rel="noopener noreferrer">How Dots work<span class="visually-hidden"> (opens in a new tab)</span></a>
             </div>
           </li>
           <li class="install-step">

@@ -9,7 +9,6 @@ class DotRollup {
         this.right = document.getElementById('dot-right');
         this.search = document.getElementById('dot-search-input');
         this.bannerCount = document.getElementById('dot-banner-count');
-        this.createInput = document.getElementById('dot-create-input');
         this.dots = new Map();
         this.selected = null;
         this.sorted = [];
@@ -25,10 +24,6 @@ class DotRollup {
         this.list.addEventListener('click', (e) => {
             const li = e.target.closest('.dot-item');
             if (li) this._select(li.dataset.key);
-        });
-        document.getElementById('dot-create').addEventListener('submit', (e) => {
-            e.preventDefault();
-            this._createAsset();
         });
         this._listenForDrops();
     }
@@ -47,7 +42,6 @@ class DotRollup {
         this.dots.clear();
         this.list.innerHTML = '';
         this.search.value = '';
-        this.createInput.value = '';
         this.bannerCount.textContent = '—';
     }
 
@@ -150,14 +144,6 @@ class DotRollup {
         this.dots.delete(this.selected);
         this._clearSelection();
         this._renderList();
-    }
-
-    async _createAsset() {
-        const name = this.createInput.value.trim();
-        if (!name) return;
-        await SiteSpinner.withLoading(() => this.api.inventory.create({ asset: name, source: "vex" }));
-        this.createInput.value = '';
-        await this._load();
     }
 
     _renderActions(asset, actions) {

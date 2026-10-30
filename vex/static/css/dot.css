@@ -299,47 +299,6 @@
 
 #dot-screen .dot-list-wrap.no-match .dot-list-empty { display: flex; }
 
-#dot-screen .dot-create {
-  display: flex;
-  flex-shrink: 0;
-  margin: 0;
-  border-top: 1px solid var(--dot-line);
-  background: var(--dot-faint);
-}
-
-#dot-create-input {
-  flex: 1;
-  min-width: 0;
-  height: 36px;
-  padding: 0 14px;
-  border: none;
-  background: transparent;
-  outline: none;
-  font: inherit;
-  font-size: 11.5px;
-  color: var(--dot-ink);
-}
-
-#dot-create-input::placeholder { color: var(--dot-text-faint); }
-#dot-create-input:focus { background: var(--dot-surface); }
-
-#dot-create-btn {
-  width: 36px;
-  height: 36px;
-  flex-shrink: 0;
-  display: grid;
-  place-items: center;
-  padding: 0;
-  border: none;
-  border-left: 1px solid var(--dot-line);
-  background: transparent;
-  color: var(--dot-accent-text);
-  cursor: pointer;
-}
-
-#dot-create-btn:hover { background: color-mix(in srgb, var(--dot-accent) 6%, transparent); }
-#dot-create-btn .material-symbols-outlined { font-size: 16px; }
-
 /* ── SECTION 2 — ACTIONS ────────────────────────────────────────── */
 
 #dot-screen .dot-mid-header {

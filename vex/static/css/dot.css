@@ -629,6 +629,20 @@
 
 #dot-screen .dot-mid-key .material-symbols-outlined { transform: rotate(90deg); }
 
+#dot-screen .dot-action-pack {
+  flex-shrink: 0;
+  align-self: center;
+  margin-left: auto;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--dot-surface-alt);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--dot-body-soft);
+}
+
 #dot-screen .dot-action-list {
   list-style: none;
   margin: 0;

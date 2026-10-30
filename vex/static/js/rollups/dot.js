@@ -12,6 +12,7 @@ class DotRollup {
         this.bannerCount = document.getElementById('dot-banner-count');
         this.dots = new Map();
         this.packs = new Map();
+        this.packOf = new Map();
         this.selected = null;
         this.sorted = [];
         this.selectedKey = null;
@@ -62,14 +63,20 @@ class DotRollup {
     async _loadPacks() {
         const packs = await this.api.action.list();
         this.packs = new Map(Object.entries(packs));
+        this.packOf = new Map([...this.packs].flatMap(([name, actions]) => actions.map(a => [String(a.id), name])));
         this._renderShelf();
+        if (this.sorted.length) this._renderActions(this.dots.get(this.selected), this.sorted);
+    }
+
+    static packLogo(name) {
+        return `static/img/packs/${name.toLowerCase()}.png`;
     }
 
     _renderShelf() {
         this.shelf.innerHTML = [...this.packs].map(([name, actions]) => `
             <li class="dot-pack" draggable="true" data-pack="${name}" title="${name} · ${actions.map(a => a.name).join(', ')}">
                 <span class="dot-pack-logo">
-                    <img src="static/img/packs/${name.toLowerCase()}.png" alt="">
+                    <img src="${DotRollup.packLogo(name)}" alt="">
                     <span class="dot-pack-count">${actions.length}</span>
                 </span>
                 <span class="dot-pack-name">${name}</span>
@@ -100,6 +107,7 @@ class DotRollup {
         this._clearSelection();
         this.dots.clear();
         this.packs.clear();
+        this.packOf.clear();
         this.list.innerHTML = '';
         this.shelf.innerHTML = '';
         this.search.value = '';
@@ -258,10 +266,14 @@ class DotRollup {
 
     _actionRow(action) {
         const { tone, label, icon } = this._statusInfo(action.status);
+        const pack = this.packOf.get(String(action.id));
+        const badge = pack
+            ? `<span class="dot-action-pack" title="${pack} action pack">${pack}</span>`
+            : '';
         return `
             <li class="dot-action-item dot-action-item--${tone}" data-key="${action.key}">
                 <span class="dot-action-status material-symbols-outlined" title="${label}">${icon}</span>
-                <span class="dot-action-name"><span class="dot-action-label">${action.name}</span><span class="dot-action-id">${action.id}</span></span>
+                <span class="dot-action-name"><span class="dot-action-label">${action.name}</span><span class="dot-action-id">${action.id}</span>${badge}</span>
                 <span class="dot-action-time">${this._clock(action.created)}</span>
             </li>
         `;

@@ -94,7 +94,7 @@
   .hero-lede{max-width:540px;font-size:20px;line-height:30px;}
   .hero-cta{display:flex;flex-wrap:wrap;align-items:center;gap:12px 28px;margin-top:8px;}
   .hero-center .hero-cta{justify-content:center;}
-  /* every hero's main button: Get your Dot for 99¢, to the price card first (Chad, 2026-10-29) */
+  /* every hero's main button: Buy a Dot for 99¢, to the price card first; the card's own button, Get your Dot, goes to checkout (Chad, 2026-10-30) */
   .down-link{display:inline-flex;align-items:center;gap:6px;min-height:44px;font-size:16px;font-weight:500;color:inherit;text-decoration:none;}
   .down-link::after{content:'';width:16px;height:16px;background:currentColor;
     -webkit-mask:url(../../static/icon-arrow-down.svg) center/contain no-repeat;mask:url(../../static/icon-arrow-down.svg) center/contain no-repeat;}
@@ -127,6 +127,10 @@
   .does li{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:16px;padding:16px 0;border-bottom:1px solid var(--gray-line);font-size:16px;line-height:24px;color:var(--ink);text-align:left;}
   .tag{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;line-height:16px;letter-spacing:0.08em;text-transform:uppercase;white-space:nowrap;color:var(--surface-dark);}
   .tag::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--tag);}
+  .does-more{display:flex;margin:16px auto 0;padding:0;background:none;border:0;font-family:inherit;}
+  .does-more[aria-expanded="true"] .icon{transform:rotate(180deg);}
+  .does-more[hidden]{display:none;}
+  @media (min-width:701px){ .does-more{display:none;} }
   .tag--test{--tag:#1ba8ee;} .tag--fix{--tag:var(--d-green);} .tag--ask{--tag:var(--d-purple);} .tag--tell{--tag:#f7b828;} .tag--person{--tag:var(--pink);}
   .report{max-width:720px;margin:56px auto 0;text-align:center;font-size:18px;line-height:28px;color:var(--body-soft);}
 
@@ -164,39 +168,71 @@
   .faq a{color:var(--accent-text);}
   .faq-ask{justify-content:center;margin-top:56px;text-align:center;}
 
+  /* ---------- BUY BAR (phones) ---------- */
+  .buybar{display:none;}
+
   /* ---------- RESPONSIVE ---------- */
   @media (max-width:900px){
     .hero-grid{grid-template-columns:minmax(0,1fr);gap:32px;}
     .story{grid-template-columns:repeat(2,minmax(0,1fr));gap:40px 24px;}
     .trust,.price-row{grid-template-columns:minmax(0,1fr);gap:40px;}
-    .price-row .price-head{order:-1;}
+    /* stacked: eyebrow and headline, then the price card, then the rest of the copy */
+    .price-row{gap:0;}
+    .price-head{display:contents;}
+    .price-head .eyebrow{order:1;margin:0;}
+    .price-head h2{order:2;margin-top:16px;}
+    .price-row .price-card{order:3;margin-top:28px;}
+    .price-head p:not(.eyebrow):not(.ask){order:4;margin-top:28px;}
+    .price-head .ask{order:5;margin-top:12px;}
   }
   @media (max-width:700px){
     .section{padding:64px 0;}
     .head{margin-bottom:40px;}
     .head p:not(.eyebrow),.hero-lede,.trust-copy > p:not(.eyebrow),.price-head p:not(.eyebrow),.report{font-size:17px;line-height:26px;}
     .head p.kicker{font-size:20px;line-height:26px;}
+    /* phones read one way: section heads and copy left-aligned; the cards (tiles) and the price card stay centered */
+    .head{align-items:flex-start;margin-left:0;text-align:left;}
+    .does h3,.report{text-align:left;}
+    .report{margin-left:0;}
+    .does-more{margin-left:0;}
+    .faq-ask{align-items:flex-start;text-align:left;}
     .report,.faq-ask{margin-top:40px;}
     .does{margin-top:48px;}
+    /* phones keep two cards per row: smaller drawings and text, about 40% shorter */
+    .story{gap:32px 16px;}
+    .story svg{margin-bottom:10px;}
+    .story b{font-size:16px;line-height:22px;}
+    .story p{font-size:14px;line-height:20px;}
     .does li{gap:12px;padding:14px 0;}
+    .does.is-short li:nth-child(n+4){display:none;}
     .ask{font-size:17px;line-height:26px;}
+    /* the FAQ's closing line: smaller than the questions, its link on its own line */
+    .faq-ask{flex-direction:column;gap:4px;font-size:16px;line-height:24px;}
+    .faq-ask .link{font-size:16px;line-height:24px;}
     .hw-tabs{padding:0 8px;}
     .price-card{padding:32px 20px;}
+    .price b{font-size:56px;line-height:60px;}
+    .faq summary{padding:18px 0;font-size:16px;line-height:24px;}   /* questions a step under the 17px ledes; they scan faster */
     .replay{right:16px;bottom:12px;}
     .hero .down-link{display:none;}   /* phones don't need the nudge to scroll (Chad, 2026-10-29) */
     .hero .pill{height:44px;padding:0 22px;font-size:16px;}   /* the medium button on phones; 44 keeps a comfortable tap */
+    .buybar{display:block;position:fixed;left:0;right:0;bottom:0;z-index:50;padding:10px var(--gutter) calc(10px + env(safe-area-inset-bottom));
+      background:rgba(255,255,255,0.94);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-top:1px solid var(--gray-line);box-shadow:0 -2px 8px rgba(11,12,13,0.06);
+      transform:translateY(100%);visibility:hidden;transition:transform 0.3s ease,visibility 0s linear 0.3s;}
+    .buybar.is-on{transform:none;visibility:visible;transition:transform 0.3s ease;}
+    .buybar .pill{width:100%;height:44px;font-size:16px;}
+    body{padding-bottom:calc(64px + env(safe-area-inset-bottom));}   /* so the bar never covers the footer */
   }
   @media (max-width:480px){
     /* small phones: the tag goes under its line */
     .does li{grid-template-columns:auto minmax(0,1fr);row-gap:4px;}
     .does .tag{grid-column:2;}
-    .story{grid-template-columns:minmax(0,1fr);}
     .hero-cta{align-self:stretch;}   /* the row spans the column, so the button can */
     .hero-cta .pill{width:100%;}
     .hero-copy{gap:18px;}
   }
   @media (prefers-reduced-motion:reduce){
-    .classbar,.site-top .site-header,.pill,.faq summary::after,.swap > *,.hw-nav,.hw-tabs a{transition:none;}
+    .classbar,.site-top .site-header,.pill,.faq summary::after,.swap > *,.hw-nav,.hw-tabs a,.buybar,.buybar.is-on{transition:none;}
   }
 
   /* ==================== THIS PAGE’S HERO ==================== */
@@ -205,6 +241,7 @@
   .h99{background:#140f18;color:#fff;}
   .h99-bg{position:absolute;inset:0;background:repeating-linear-gradient(90deg,#1c0f19 0 36px,#170b14 36px 72px);opacity:0.9;}
   .h99 .eyebrow{font-weight:700;letter-spacing:0.22em;color:#ff5aa8;text-shadow:0 0 10px rgba(255,90,168,0.85),0 0 26px rgba(224,18,128,0.6);}
+  .h99 h1{font-size:clamp(40px,5vw,54px);}   /* this hero tops out at 54px so the button stays in view on a laptop */
   .h99 h1 span{color:#ff5aa8;}
   .h99 .hero-lede{color:#cfc8d8;}
   .h99-count{display:flex;align-items:flex-end;gap:18px;min-width:min(340px,100%);padding:18px 22px;border:1px solid rgba(255,255,255,0.18);border-radius:2px;}
@@ -220,6 +257,7 @@
   .h99-tag{position:absolute;font-family:var(--mono);font-size:13px;font-weight:700;letter-spacing:0.1em;white-space:nowrap;color:#fff;background:#e5484d;padding:6px 11px;border-radius:2px;}
   .h99-note{position:absolute;font-size:30px;font-weight:700;color:#ff5aa8;}
   .h99-singer{left:970px;top:450px;width:220px;height:229px;transform-origin:50% 100%;}
+  #h99-problems{z-index:3;}   /* the problems fly in front of the Dot, into its open mouth */
   .h99-singer .dot{width:220px;height:229px;}
   .h99-shades{position:absolute;left:48px;top:74px;width:124px;height:31px;}
   .h99-shades i{position:absolute;background:#0b0c0d;}
@@ -282,7 +320,7 @@
           <span class="brand-tag">By Unmanned</span>
         </a>
         <nav class="header-links dots-nav" aria-label="Main">
-          <a class="header-link header-link--cta" href="#price">Get your Dot <img src="../../static/icon-arrow-right-pink.svg" width="16" height="16" alt=""></a>
+          <a class="header-link header-link--cta" href="#price">Buy a Dot <img src="../../static/icon-arrow-right-pink.svg" width="16" height="16" alt=""></a>
         </nav>
       </div>
     </header>
@@ -331,7 +369,7 @@
             <span id="h99-note"></span>
           </div>
           <div class="hero-cta">
-            <a class="pill" href="#price">Get your Dot for 99¢</a>
+            <a class="pill" href="#price">Buy a Dot for 99¢</a>
             <a class="down-link" href="#how">What’s a Dot?</a>
           </div>
         </div>
@@ -466,6 +504,8 @@
             <li><span class="check check--lg" aria-hidden="true"></span><span>Keeps a record of what happens on your computer</span><span class="tag tag--tell">Tells you</span></li>
             <li><span class="check check--lg" aria-hidden="true"></span><span>Lets you report any concerns to our team</span><span class="tag tag--person">A person</span></li>
           </ul>
+          <!-- phones show the first three; the rest are a tap away (without JS everything shows and this stays hidden) -->
+          <button class="link link--md does-more" type="button" aria-expanded="false" hidden><span>Show 4 more</span><span class="icon" style="--icon:url(../../static/icon-chevron-down.svg)" aria-hidden="true"></span></button>
         </div>
         <p class="report">Every month you get a plain-English report: what was tested, what was fixed and what needs you.</p>
       </div>
@@ -477,7 +517,7 @@
         <div class="trust-copy">
           <p class="eyebrow">Who’s behind your Dot</p>
           <h2 id="trust-title">Made by people who stop attackers for a living.</h2>
-          <p>Dots come from Unmanned, the security team behind VEX. We’ve spent decades in cybersecurity, including work for U.S. intelligence agencies, the Department of Defense and Mandiant. Now we’re bringing that know-how home.</p>
+          <p>Dots come from Unmanned. We’ve spent decades in cybersecurity, including work for U.S. intelligence agencies, the Department of Defense and Mandiant.</p>
           <a class="link link--md" href="/team/">Meet the team<span class="icon" style="--icon:url(../../static/icon-arrow-right-pink.svg)" aria-hidden="true"></span></a>
         </div>
         <ul class="trust-list">
@@ -507,7 +547,7 @@
         <div class="price-head">
           <p class="eyebrow">Simple pricing</p>
           <h2 id="price-title">Less than a dollar a month.</h2>
-          <p>One Dot looks after one computer. No contracts, no surprise fees.</p>
+          <p>No contracts, no surprise fees.</p>
           <p class="ask">Want to talk to someone first? <a class="link" href="mailto:support@unmanned.team"><span class="icon" style="--icon:url(../../static/icon-envelope.svg)" aria-hidden="true"></span>Send us a message</a></p>
         </div>
       </div>
@@ -556,11 +596,14 @@
             <p>Each computer gets its own Dot, at 99¢ a month each.</p>
           </details>
         </div>
-        <p class="ask faq-ask">Have more questions? A person is here to help. <a class="link" href="mailto:support@unmanned.team"><span class="icon" style="--icon:url(../../static/icon-envelope.svg)" aria-hidden="true"></span>Send us a message</a></p>
+        <p class="ask faq-ask">More questions? Ask a person. <a class="link" href="mailto:support@unmanned.team"><span class="icon" style="--icon:url(../../static/icon-envelope.svg)" aria-hidden="true"></span>Send us a message</a></p>
       </div>
     </section>
 
   </main>
+
+  <!-- phones: a buy bar that slides up once the hero's button has scrolled away, and steps aside at the price card -->
+  <div class="buybar" id="buybar"><a class="pill" href="#price">Buy a Dot for 99¢</a></div>
 
   <footer>
     <span>© 2026 UNMANNED, INC.</span>
@@ -600,6 +643,29 @@
       }
       window.addEventListener('scroll', function(){ if(!ticking){ ticking = true; requestAnimationFrame(update); } }, { passive:true });
       top.addEventListener('focusin', function(){ root.classList.remove('header-hidden'); });
+    })();
+
+    // ---------- Buy bar (phones): on once the hero's button is scrolled past, off while the price card is on screen ----------
+    (function(){
+      var bar = document.getElementById('buybar'), heroBtn = document.querySelector('.hero .pill'), card = document.querySelector('.price-card');
+      if(!bar || !heroBtn || !card || !window.IntersectionObserver) return;
+      var past = false, atPrice = false;
+      function set(){ bar.classList.toggle('is-on', past && !atPrice); }
+      new IntersectionObserver(function(es){ var e = es[0]; past = !e.isIntersecting && e.boundingClientRect.top < 0; set(); }).observe(heroBtn);
+      new IntersectionObserver(function(es){ atPrice = es[0].isIntersecting; set(); }).observe(card);
+    })();
+
+    // ---------- Everything your Dot does: on phones, the first three and a "Show 4 more" button ----------
+    (function(){
+      var box = document.querySelector('.does'), btn = box && box.querySelector('.does-more');
+      if(!btn) return;
+      var extra = box.querySelectorAll('li').length - 3, label = btn.querySelector('span');
+      box.classList.add('is-short'); btn.hidden = false;
+      btn.addEventListener('click', function(){
+        var open = box.classList.toggle('is-short') === false;
+        btn.setAttribute('aria-expanded', open);
+        label.textContent = open ? 'Show less' : 'Show ' + extra + ' more';
+      });
     })();
 
     // ---------- Section nav (as How VEX works): sits under the site header; marks the section you're in ----------

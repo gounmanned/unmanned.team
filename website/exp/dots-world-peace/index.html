@@ -166,6 +166,7 @@
   .faq details[open] summary::after{transform:rotate(45deg);}
   .faq details p{padding:0 32px 24px 0;font-size:16px;line-height:24px;color:var(--body-soft);}
   .faq a{color:var(--accent-text);}
+  .faq .ext::after{content:'';display:inline-block;width:14px;height:14px;margin-left:4px;vertical-align:-2px;background:currentColor;-webkit-mask:url(../../static/icon-arrow-square-out.svg) center/contain no-repeat;mask:url(../../static/icon-arrow-square-out.svg) center/contain no-repeat;}
   .faq-ask{justify-content:center;margin-top:56px;text-align:center;}
 
   /* ---------- BUY BAR (phones) ---------- */
@@ -518,7 +519,7 @@
           </details>
           <details>
             <summary>How do I install it?</summary>
-            <p>After you sign up, follow our <a href="/dots/install/">step-by-step install guide</a>. It works on Mac and Windows and takes a couple of minutes.</p>
+            <p>After you sign up, we’ll email you the instructions. Dots work on Mac and Windows and take only a couple of minutes to install.</p>
           </details>
           <!-- report and uninstall answers: drafts, confirm with the team before launch -->
           <details>
@@ -532,6 +533,10 @@
           <details>
             <summary>I have more than one computer. How does that work?</summary>
             <p>Each computer gets its own Dot, at 99¢ a month each, billed yearly.</p>
+          </details>
+          <details>
+            <summary>I’m a security researcher. Can we work together?</summary>
+            <p>We’d love to. For more on how Dots work, <a class="ext" href="https://gounmanned.substack.com/" target="_blank" rel="noopener noreferrer">read our research<span class="visually-hidden"> (opens in a new tab)</span></a>. Then <a href="mailto:go@unmanned.team">let us know</a> what you have in mind.</p>
           </details>
         </div>
         <p class="ask faq-ask">More questions? Ask a person. <a class="link" href="mailto:security@vex.unmanned.team"><span class="icon" style="--icon:url(../../static/icon-envelope.svg)" aria-hidden="true"></span>Send us a message</a></p>

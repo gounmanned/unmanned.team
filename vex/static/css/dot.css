@@ -12,15 +12,10 @@
   --dot-line-strong: #d9d9d4;
   --dot-mute: #8a8a8e;
   --dot-text-faint: #6b6b70;
-  --dot-cyan: #1ec6ec;
-  --dot-green: #029266;
-  --dot-purple: #b811de;
-  --dot-yellow: #f7b828;
   --dot-orange: #f2711c;
-  --dot-ok: var(--dot-green);
+  --dot-ok: #029266;
   --dot-bad: #d92d20;
-  --dot-pending: var(--dot-yellow);
-  --dot-card-shadow: 4px 4px 0 rgb(11 12 13 / 0.15);
+  --dot-pending: #f7b828;
   --dot-shade: inset 2px -2px 0 rgb(11 12 13 / 0.12);
 
   display: flex;
@@ -28,12 +23,6 @@
   min-height: 0;
   position: relative;
   color: var(--dot-ink);
-}
-
-#dot-screen .dot-mid-stat-label,
-#dot-screen .dot-list-empty {
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
 }
 
 /* ── BANNER ─────────────────────────────────────────────────────── */
@@ -348,8 +337,6 @@
   width: 24px;
   flex-shrink: 0;
   display: flex;
-  align-items: center;
-  gap: 4px;
 }
 
 #dot-screen .dot-item-status,
@@ -461,6 +448,8 @@
   padding: 24px;
   text-align: center;
   font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
   color: var(--dot-text-faint);
 }
 
@@ -563,13 +552,8 @@
 #dot-screen .dot-meta-tooltip dt { font-weight: 600; color: #9ca3af; white-space: nowrap; }
 #dot-screen .dot-meta-tooltip dd { margin: 0; word-break: break-word; }
 
-#dot-screen .dot-mid-stats {
-  display: flex;
-  gap: 20px;
-  flex-shrink: 0;
-}
-
 #dot-screen .dot-mid-stat {
+  flex-shrink: 0;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -585,6 +569,8 @@
 
 #dot-screen .dot-mid-stat-label {
   font-size: 9.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
   color: var(--dot-text-faint);
 }
 
@@ -596,13 +582,18 @@
   background: var(--dot-line);
 }
 
+#dot-screen .dot-mid-tools {
+  flex-shrink: 0;
+  display: flex;
+}
+
+#dot-screen .dot-mid-invite,
 #dot-screen .dot-mid-key,
 #dot-screen .dot-mid-delete {
   display: grid;
   place-items: center;
-  width: 32px;
-  height: 32px;
-  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
   padding: 0;
   border: none;
   border-radius: 50%;
@@ -612,8 +603,7 @@
   transition: background-color 0.12s, color 0.12s;
 }
 
-#dot-screen .dot-mid-delete { margin-left: -6px; }
-
+#dot-screen .dot-mid-invite:hover,
 #dot-screen .dot-mid-key:hover {
   background: color-mix(in srgb, var(--dot-accent) 10%, transparent);
   color: var(--dot-accent-text);
@@ -624,9 +614,7 @@
   color: var(--dot-bad);
 }
 
-#dot-screen .dot-mid-key .material-symbols-outlined,
-#dot-screen .dot-mid-delete .material-symbols-outlined { font-size: 20px; }
-#dot-screen .dot-mid-key .material-symbols-outlined { transform: rotate(90deg); }
+#dot-screen .dot-mid-tools .material-symbols-outlined { font-size: 20px; }
 
 #dot-screen .dot-action-pack {
   flex-shrink: 0;

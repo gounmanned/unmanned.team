@@ -19,6 +19,7 @@ class DotRollup {
 
         this.search.addEventListener('input', () => this._filter());
         this.mid.addEventListener('click', (e) => {
+            if (e.target.closest('.dot-mid-invite')) return this._invite();
             if (e.target.closest('.dot-mid-delete')) return this._deleteAsset();
             if (e.target.closest('.dot-mid-key')) return this._copyKey();
             const li = e.target.closest('.dot-action-item');
@@ -235,6 +236,12 @@ class DotRollup {
             .then(() => this._toast('Key copied to clipboard'));
     }
 
+    async _invite() {
+        const asset = this.dots.get(this.selected);
+        await SiteSpinner.withLoading(() => this.api.inventory.invite(asset));
+        this._toast(`Invitation sent to ${asset.name}`);
+    }
+
     _toast(message) {
         let toast = document.getElementById('dot-toast');
         if (!toast) {
@@ -250,7 +257,6 @@ class DotRollup {
     }
 
     async _deleteAsset() {
-        const asset = this.dots.get(this.selected);
         await SiteSpinner.withLoading(() => this.api.inventory.delete(this.selected));
         this.dots.delete(this.selected);
         this._clearSelection();
@@ -296,7 +302,7 @@ class DotRollup {
     _actionsHeader(asset) {
         const total = this.sorted.length;
         const success = this.sorted.filter(a => a.status === 'T0').length;
-        const rate = total ? Math.round((success / total) * 100) : 0;
+        const rate = Math.round((success / total) * 100);
         const { runtime } = asset.metadata;
 
         const logo = runtime
@@ -310,23 +316,22 @@ class DotRollup {
                     <span class="dot-mid-name">${asset.name}</span>
                     ${this._metadata(asset.metadata)}
                 </div>
-                <div class="dot-mid-stats">
-                    <div class="dot-mid-stat">
-                        <span class="dot-mid-stat-value">${total}</span>
-                        <span class="dot-mid-stat-label">actions</span>
-                    </div>
-                    <div class="dot-mid-stat">
-                        <span class="dot-mid-stat-value">${rate}%</span>
-                        <span class="dot-mid-stat-label">success</span>
-                    </div>
+                <div class="dot-mid-stat">
+                    <span class="dot-mid-stat-value">${total}</span>
+                    ${total ? `<span class="dot-mid-stat-label">${rate}% success</span>` : ''}
                 </div>
                 <span class="dot-mid-divider"></span>
-                <button type="button" class="dot-mid-key" title="Copy key" aria-label="Copy key">
-                    <span class="material-symbols-outlined">key</span>
-                </button>
-                <button type="button" class="dot-mid-delete" title="Delete asset" aria-label="Delete asset">
-                    <span class="material-symbols-outlined">delete</span>
-                </button>
+                <div class="dot-mid-tools">
+                    <button type="button" class="dot-mid-invite" title="Send invite" aria-label="Send invite">
+                        <span class="material-symbols-outlined">mail</span>
+                    </button>
+                    <button type="button" class="dot-mid-key" title="Copy key" aria-label="Copy key">
+                        <span class="material-symbols-outlined">key</span>
+                    </button>
+                    <button type="button" class="dot-mid-delete" title="Delete asset" aria-label="Delete asset">
+                        <span class="material-symbols-outlined">delete</span>
+                    </button>
+                </div>
             </div>
         `;
     }
@@ -372,7 +377,7 @@ class DotRollup {
             ? `<p class="dot-terminal-line dot-terminal-running"><span class="dot-terminal-spinner"></span>running…</p>`
             : `
                 ${output.trim()
-                    ? `<pre class="dot-terminal-output">${this._escape(output)}</pre>`
+                    ? `<pre class="dot-terminal-output">${Workspace.esc(output)}</pre>`
                     : `<p class="dot-terminal-line dot-terminal-muted">(no output)</p>`}
                 <p class="dot-terminal-line dot-terminal-exit dot-terminal-exit--${tone}">
                     <span class="dot-terminal-exit-mark"></span>process exited — ${label}
@@ -404,10 +409,6 @@ class DotRollup {
         } catch {
             return '';
         }
-    }
-
-    _escape(s) {
-        return String(s).replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
     }
 
     _watermark() {

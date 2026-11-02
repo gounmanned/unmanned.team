@@ -416,7 +416,7 @@
       <div class="wrap">
         <div class="head">
           <p class="eyebrow">Meet your Dot</p>
-          <p class="kicker">What does a Dot actually do?</p>   <!-- the bridge from the heroes' claims to the real answer -->
+          <p class="kicker">What does a Dot do?</p>   <!-- the bridge from the heroes' claims to the real answer -->
           <h2 id="how-title">Dots make your computer hard to hack.</h2>
           <p>A small program that looks after your computer by itself. It finds the openings attackers use to get in, like an app that missed an update, and closes what it can before anyone tries them. No jargon and nothing to babysit.</p>
         </div>
@@ -539,15 +539,14 @@
             <li><span class="check check--lg" aria-hidden="true"></span>Works on Mac and Windows</li>
             <li><span class="check check--lg" aria-hidden="true"></span>A plain-English report every month</li>
             <li><span class="check check--lg" aria-hidden="true"></span>Help from real people at our U.S.-based team</li>
-            <li><span class="check check--lg" aria-hidden="true"></span>Cancel anytime, and your Dot removes itself</li>
           </ul>
-          <a class="pill" href="https://buy.stripe.com/7sY00bdxr8ob1O5e9gfQI00?utm_campaign=dots-99-problems" data-checkout>Get your Dot</a>
-          <p class="fine">Secure checkout with Stripe. Billed monthly.</p>
+          <a class="pill" href="https://buy.stripe.com/cNi7sDalf8ob8ct5CKfQI01?utm_campaign=dots-99-problems" data-checkout>Get your Dot</a>
+          <p class="fine">Secure checkout with Stripe. Billed yearly at $11.88.</p>
         </div>
         <div class="price-head">
           <p class="eyebrow">Simple pricing</p>
           <h2 id="price-title">Less than a dollar a month.</h2>
-          <p>No contracts, no surprise fees.</p>
+          <p>No surprise fees.</p>
           <p class="ask">Want to talk to someone first? <a class="link" href="mailto:security@vex.unmanned.team"><span class="icon" style="--icon:url(../../static/icon-envelope.svg)" aria-hidden="true"></span>Send us a message</a></p>
         </div>
       </div>
@@ -563,8 +562,8 @@
         <div class="faq">
           <!-- privacy answer: a draft, confirm with David before launch -->
           <details>
-            <summary>Can my Dot see my personal files?</summary>
-            <p>Your Dot looks at how your computer is set up, like updates and security settings. It isn’t there to read your files, photos or messages.</p>
+            <summary>Is my information private?</summary>
+            <p>Yes. Your Dot only looks at how your computer is set up, like updates and security settings. It isn’t there to read your files, photos or messages. We never sell your information.</p>
           </details>
           <details>
             <summary>Will it slow down my computer?</summary>
@@ -588,12 +587,8 @@
             <p>Yes, anytime. Remove it like any other app, or send us a message and we’ll walk you through it.</p>
           </details>
           <details>
-            <summary>What happens if I cancel?</summary>
-            <p>Your Dot removes itself from your computer. There’s nothing left to clean up.</p>
-          </details>
-          <details>
             <summary>I have more than one computer. How does that work?</summary>
-            <p>Each computer gets its own Dot, at 99¢ a month each.</p>
+            <p>Each computer gets its own Dot, at 99¢ a month each, billed yearly.</p>
           </details>
         </div>
         <p class="ask faq-ask">More questions? Ask a person. <a class="link" href="mailto:security@vex.unmanned.team"><span class="icon" style="--icon:url(../../static/icon-envelope.svg)" aria-hidden="true"></span>Send us a message</a></p>
@@ -617,10 +612,10 @@
     // ---------- Checkout ----------
     // The button's Stripe Payment Link already carries utm_campaign=<this page> (it works without JS).
     // Here any utm_source, utm_medium, utm_content and utm_term the visitor arrived with ride along too, plus
-    // client_reference_id (utm_source-utm_campaign, or this page's name), so each Stripe payment shows where it came from.
+    // client_reference_id (utm_source-utm_medium-utm_campaign, or this page's name), so each Stripe payment shows where it came from.
     (function(){
       var q = new URLSearchParams(location.search);
-      var ref = [q.get('utm_source'), q.get('utm_campaign') || PAGE].filter(Boolean).join('-').replace(/[^A-Za-z0-9_-]/g, '').slice(0, 200);
+      var ref = [q.get('utm_source'), q.get('utm_medium'), q.get('utm_campaign') || PAGE].filter(Boolean).join('-').replace(/[^A-Za-z0-9_-]/g, '').slice(0, 200);
       document.querySelectorAll('[data-checkout]').forEach(function(a){
         var u = new URL(a.href);
         ['utm_source', 'utm_medium', 'utm_content', 'utm_term'].forEach(function(k){ if(q.get(k)){ u.searchParams.set(k, q.get(k)); } });

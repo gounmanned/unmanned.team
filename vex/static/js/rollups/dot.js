@@ -232,8 +232,7 @@ class DotRollup {
     }
 
     _copyKey() {
-        navigator.clipboard.writeText(Workspace.encode(this.selected))
-            .then(() => this._toast('Key copied to clipboard'));
+        navigator.clipboard.writeText(this.dots.get(this.selected).token).then(() => this._toast('Dot key copied'));
     }
 
     async _invite() {

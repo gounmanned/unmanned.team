@@ -60,21 +60,25 @@ class AssetApi extends Gateway {
     async list() {
         return await this.call("GET", "asset");
     }
-
-    async create(asset) {
-        return await this.call("POST", "asset", asset);
-    }
-
+    
     async get(asset) {
         return await this.call("GET", `asset/${encodeURIComponent(asset)}`);
     }
 
-    async delete(asset) {
-        return await this.call("DELETE", `asset/${encodeURIComponent(asset)}`);
+    async create(asset) {
+        return await this.call("POST", "asset", asset);
+    }
+    
+    async invite(asset) {
+        return await this.call("PUT", "asset/invite", asset);
     }
 
     async run(asset, payload) {
         return await this.call("PUT", `asset/${encodeURIComponent(asset)}`, payload);
+    }
+
+    async delete(asset) {
+        return await this.call("DELETE", `asset/${encodeURIComponent(asset)}`);
     }
 }
 

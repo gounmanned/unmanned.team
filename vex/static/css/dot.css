@@ -585,6 +585,7 @@
 #dot-screen .dot-mid-tools {
   flex-shrink: 0;
   display: flex;
+  gap: 4px;
 }
 
 #dot-screen .dot-mid-invite,

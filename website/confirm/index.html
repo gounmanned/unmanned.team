@@ -40,6 +40,9 @@
   .link:hover svg{transform:translateX(3px);}
   .link:focus-visible{outline:3px solid var(--ink);outline-offset:3px;}
   .help{margin:32px 0 0;padding:24px 0 0;border-top:1px solid var(--rule);font-size:14px;line-height:20px;color:var(--faint);}
+  .help a{color:var(--pink-text);font-weight:600;text-decoration:none;overflow-wrap:anywhere;}
+  .help a:hover{text-decoration:underline;}
+  .help a:focus-visible{outline:3px solid var(--ink);outline-offset:2px;}
   .foot{margin:24px 0 0;font-size:12px;line-height:16px;color:var(--faint);}
 
   @media (max-width:480px){
@@ -58,9 +61,9 @@
     <!-- Phosphor check-circle, drawn inline (this page can't use the site's icon files) -->
     <svg class="icon" viewBox="0 0 256 256" aria-hidden="true"><circle cx="128" cy="128" r="96" fill="none" stroke="#029266" stroke-width="16"/><polyline points="88 136 112 160 168 104" fill="none" stroke="#029266" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/></svg>
     <h1>You’re all set.</h1>
-    <p class="lede">You’ve accepted the invitation, so VEX can now look after your security. There’s nothing else you need to do.</p>
+    <p class="lede">Your invitation has been accepted. VEX will take it from here.</p>
     <a class="link" href="https://unmanned.team/how-it-works/">See how VEX works <svg viewBox="0 0 256 256" aria-hidden="true"><line x1="40" y1="128" x2="216" y2="128" stroke="currentColor" stroke-width="20" stroke-linecap="round"/><polyline points="144 56 216 128 144 200" fill="none" stroke="currentColor" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-    <p class="help">Need help? Reply to the email you got from us, and we’ll sort it out.</p>
+    <p class="help">Need help? <a href="mailto:security@vex.unmanned.team">security@vex.unmanned.team</a></p>
   </main>
 
   <p class="foot">© 2026 Unmanned, Inc.</p>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Invitation accepted | VEX</title>
+<!-- Confirm page: where links in our emails land after the system has acted on them (e.g. "Accept invitation").
+     One state for now: the invitation is accepted. Built to grow: later states (verified, expired, already verified)
+     can sit here as sibling blocks, picked by ?state= in the URL, with "accepted" kept as the default.
+     Self-contained (no site stylesheets); same look as the emails: pink top rule, white card, VEX mark. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0b0c0d; --body:#4b4c52; --faint:#6c6c70; --line:#c4c4c4; --rule:#dedee3;
+    --page:#f4f4f4; --card:#ffffff; --pink:#e01280; --pink-text:#d1107a; --green:#029266;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;}
+  body{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:48px 16px;background:var(--page);color:var(--body);font:16px/24px Inter,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;}
+  h1{text-wrap:balance;} p{text-wrap:pretty;}
+
+  /* the VEX mark, as the emails sign off */
+  .mark{display:flex;align-items:center;gap:12px;margin:0 0 24px;color:var(--ink);text-decoration:none;}
+  .mark-dot{width:12px;height:12px;border-radius:50%;background:var(--pink);margin-right:-7px;}
+  .mark-name{font-size:22px;line-height:24px;font-weight:800;letter-spacing:0.02em;}
+  .mark-by{font-size:10px;line-height:15px;letter-spacing:0.18em;text-transform:uppercase;color:var(--faint);}
+
+  .card{width:100%;max-width:480px;background:var(--card);border:1px solid var(--line);border-top:4px solid var(--pink);border-radius:2px;
+    padding:40px;}
+  .icon{display:block;width:48px;height:48px;margin:0 0 24px;}
+  h1{margin:0;font-size:clamp(28px,6vw,34px);line-height:1.2;font-weight:600;letter-spacing:-0.01em;color:var(--ink);}
+  .lede{margin:16px 0 0;}
+  .link{display:inline-flex;align-items:center;gap:6px;margin:24px 0 0;font-weight:600;color:var(--pink-text);text-decoration:none;}
+  .link svg{width:16px;height:16px;transition:transform 0.2s ease;}
+  .link:hover svg{transform:translateX(3px);}
+  .link:focus-visible{outline:3px solid var(--ink);outline-offset:3px;}
+  .help{margin:32px 0 0;padding:24px 0 0;border-top:1px solid var(--rule);font-size:14px;line-height:20px;color:var(--faint);}
+  .help a{color:var(--pink-text);font-weight:600;text-decoration:none;overflow-wrap:anywhere;}
+  .help a:hover{text-decoration:underline;}
+  .help a:focus-visible{outline:3px solid var(--ink);outline-offset:2px;}
+  .foot{margin:24px 0 0;font-size:12px;line-height:16px;color:var(--faint);}
+
+  @media (max-width:480px){
+    body{justify-content:flex-start;padding-top:32px;}
+    .card{padding:32px 24px;}
+  }
+  @media (prefers-reduced-motion:reduce){ .link svg{transition:none;} }
+</style>
+</head>
+<body>
+  <a class="mark" href="https://unmanned.team/" aria-label="VEX by Unmanned">
+    <span class="mark-dot" aria-hidden="true"></span><span class="mark-name">VEX</span><span class="mark-by">By Unmanned</span>
+  </a>
+
+  <main class="card" data-state="accepted">
+    <!-- Phosphor check-circle, drawn inline (this page can't use the site's icon files) -->
+    <svg class="icon" viewBox="0 0 256 256" aria-hidden="true"><circle cx="128" cy="128" r="96" fill="none" stroke="#029266" stroke-width="16"/><polyline points="88 136 112 160 168 104" fill="none" stroke="#029266" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <h1>You’re all set.</h1>
+    <p class="lede">Your invitation has been accepted. VEX will take it from here.</p>
+    <a class="link" href="https://unmanned.team/how-it-works/">See how VEX works <svg viewBox="0 0 256 256" aria-hidden="true"><line x1="40" y1="128" x2="216" y2="128" stroke="currentColor" stroke-width="20" stroke-linecap="round"/><polyline points="144 56 216 128 144 200" fill="none" stroke="currentColor" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    <p class="help">Need help? <a href="mailto:security@vex.unmanned.team">security@vex.unmanned.team</a></p>
+  </main>
+
+  <p class="foot">© 2026 Unmanned, Inc.</p>
+</body>
+</html>

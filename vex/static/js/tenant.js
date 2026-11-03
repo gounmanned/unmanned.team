@@ -24,6 +24,7 @@ class TenantScreen {
         const filter = this.month ? `date=${this.month.toISOString().slice(0, 7)}` : '';
         await this.api.signals.list(filter, new CustomEvent('signal:account'));
         await this.api.signals.list('status=O', new CustomEvent('signal:account'));
+        await this.loadSetup();
     }
 
     async reset() {
@@ -125,6 +126,25 @@ class TenantScreen {
         const end = this.tailFrom = new Date();
         const logs = await this.api.audit.get(start.toISOString(), end.toISOString()) ?? [];
         if (this.tailTimer) this.table.prependLogs(logs);
+    }
+
+    // ── setup ──────────────────────────────────────────────────────
+
+    async loadSetup() {
+        const [assets, sources] = await Promise.all([this.api.inventory.list(), this.api.sources.list()]);
+        this.renderSetup({
+            dots: assets.filter(a => a.metadata?.runtime).length,
+            sources: sources.length,
+        });
+    }
+
+    renderSetup({ dots, sources, warn = {} }) {
+        for (const [key, count] of Object.entries({ dot: dots, source: sources })) {
+            const chip = document.getElementById(`open-${key}-rollup`);
+            chip.dataset.state = !count ? 'empty' : warn[key] ? 'warn' : 'ok';
+            chip.querySelector('.setup-chip-count').textContent = count.toLocaleString();
+            chip.querySelector('.setup-chip-noun').textContent = count === 1 ? chip.dataset.noun.slice(0, -1) : chip.dataset.noun;
+        }
     }
 
     // ── overview ───────────────────────────────────────────────────

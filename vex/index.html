@@ -33,6 +33,17 @@
     <button slot="account-switcher" id="open-managed-rollup">
       <span class="material-symbols-outlined">keyboard_arrow_down</span>
     </button>
+
+    <button class="setup-chip" id="open-dot-rollup" data-state="empty" data-noun="Dots" title="Install the endpoint agent">
+      <span class="setup-chip-dot"></span>
+      <span class="setup-chip-count">0</span>
+      <span class="setup-chip-noun">Dots</span>
+    </button>
+    <button class="setup-chip" id="open-source-rollup" data-state="empty" data-noun="Sources" title="Connect an integration">
+      <span class="setup-chip-dot"></span>
+      <span class="setup-chip-count">0</span>
+      <span class="setup-chip-noun">Sources</span>
+    </button>
   </site-header>
 
   <main class="container" id="tenant-screen">
@@ -118,8 +129,6 @@
       </div>
 
       <a id="open-backup-sidebar">Backups</a>
-      <a id="open-dot-rollup">Dots</a>
-      <a id="open-source-rollup">Sources</a>
       <a id="open-signal-sidebar" class="cta">+ Add Signal</a>
     </footer>
   </main>

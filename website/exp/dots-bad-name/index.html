@@ -715,7 +715,7 @@
 
     // ---------- The Dot ----------
     // A port of the canvas's Dot: a circle with a darker slice bottom-left, pixel eyes and a pixel mouth.
-    // Drawn in a 100 x 104 box (the last 4 hold the floor shadow). o: color, shade, mood, look, open, pupil, floor.
+    // Drawn in a 100 x 104 box (the last 4 hold the floor shadow). o: color, shade, mood, look, open, pupil, floor, raise.
     var dotId = 0;
     function dotMarkup(o, id){
       var look = o.look || 'center', open = +o.open || 0, mood = o.mood || 'smug';
@@ -732,9 +732,13 @@
           s += '<rect x="' + f(x) + '" y="' + f(y) + '" width="' + f(w) + '" height="' + f(h) + '" fill="' + c + '"/>';
         }
       }
+      // o.raise ('left' or 'right'): that eye opens taller under a raised brow; the other narrows
       function eyes(k, py, pw){
-        r(27.2, 31.8, 13.6, 18, W, k, false);
-        r(57.5, 31.8, 13.6, 18, W, k, true);
+        var rl = o.raise === 'left', rr = o.raise === 'right';
+        r(27.2, rl ? 25.8 : 31.8, 13.6, rl ? 24 : 18, W, rr ? 45 : k, false);
+        r(57.5, rr ? 25.8 : 31.8, 13.6, rr ? 24 : 18, W, rl ? 45 : k, true);
+        if(rl) r(25.4, 17.5, 17.2, 4.5, K, -60, true);   // a pixel brow over the raised eye, tilted up at the outside
+        if(rr) r(55.7, 17.5, 17.2, 4.5, K, -60);
         var w = pw || 9.1, off = (9.1 - w) / 2;
         r(29.4 + off + lx, (py || 38.5) + ly, w, w, P);
         r(59.8 + off + lx, (py || 38.5) + ly, w, w, P);
@@ -752,6 +756,7 @@
       else if(mood === 'evil'){ eyes(36, 40.5); r(33, 60.5, 4.5, 4.5, K); r(59.6, 60.5, 4.5, 4.5, K); r(37.5, 65, 22.1, 4.5, K); }
       else if(mood === 'shocked'){ eyes(0, 40, 6); if(open > 0.02) openMouth(); else r(45, 58, 9, 12, K); }
       else if(mood === 'flat'){ eyes(13); r(37, 62.5, 22.6, 4.5, K); }   // unimpressed: a straight mouth
+      else if(mood === 'straight'){ eyes(0); r(37, 62.5, 22.6, 4.5, K); }   // a straight face, eyes open
       else if(mood === 'chill'){ r(27.2, 42, 13.6, 4.5, K); r(57.5, 42, 13.6, 4.5, K); smile(); }
       else if(mood === 'shades'){
         r(22, 33.5, 56, 4.5, K); r(24.5, 33.5, 20, 14, K); r(54.5, 33.5, 20, 14, K);

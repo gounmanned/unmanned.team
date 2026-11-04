@@ -14,7 +14,7 @@ class OperationRollup {
         this.nodes = [];
         this.links = [];
         this.nodeById = {};
-        this.pos = {};              // cached x/y by node id, survives reloads
+        this.pos = {};
 
         this.selectedOp = null;     // operation id, as a string
         this.selectedAsset = null;  // asset node id
@@ -93,13 +93,11 @@ class OperationRollup {
             return node;
         });
 
-        // degree per source — denser hubs push their leaves out further
         const degree = {};
         links.forEach(l => (degree[l.source] = (degree[l.source] || 0) + 1));
         sourceNodes.forEach(s => (s.degree = degree[s.id] || 0));
 
         const nodes = [...sourceNodes, ...assetNodes];
-        // seed from last layout so reloads don't jump the map around
         nodes.forEach(n => {
             const p = this.pos[n.id];
             if (p) { n.x = p.x; n.y = p.y; }
@@ -139,7 +137,7 @@ class OperationRollup {
         this._openDossier(op);
 
         const updates = await this.api.operation.get(op.id);
-        if (this.selectedOp !== String(op.id)) return;   // selection moved on while loading
+        if (this.selectedOp !== String(op.id)) return;
         this._renderUpdates(updates);
     }
 
@@ -223,7 +221,6 @@ class OperationRollup {
             .on('zoom', e => scene.attr('transform', e.transform));
         svg.call(zoom).on('dblclick.zoom', null);
 
-        // click on empty canvas clears the asset selection
         svg.on('click', () => {
             this.selectedAsset = null;
             this._renderRun();

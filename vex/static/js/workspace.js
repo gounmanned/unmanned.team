@@ -31,6 +31,7 @@ class Api {
         this.file = new FileApi(state);
         this.sources = new SourceApi(state);
         this.action = new ActionApi(state);
+        this.operation = new OperationApi(state);
     }
 
     reset(){
@@ -41,6 +42,7 @@ class Api {
         this.file.set("account", this.state.account());
         this.sources.set("account", this.state.account());
         this.action.set("account", this.state.account());
+        this.operation.set("account", this.state.account());
     }
 }
 
@@ -56,6 +58,7 @@ class Workspace {
                     const state = new AppState(user);
 
                     this.rollups = {
+                        operation: new OperationRollup(state),
                         managed: new ManagedRollup(state),
                         source: new SourceRollup(state),
                         dot: new DotRollup(state),

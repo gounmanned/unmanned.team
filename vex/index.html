@@ -20,6 +20,7 @@
       <link rel="stylesheet" href="static/css/sources.css?v=${v}">
       <link rel="stylesheet" href="static/css/backups.css?v=${v}">
       <link rel="stylesheet" href="static/css/signal.css?v=${v}">
+      <link rel="stylesheet" href="static/css/operation.css?v=${v}">
     `);
   </script>
   <title>VEX</title>
@@ -128,6 +129,7 @@
         <span class="count" id="signal-count">0 signals</span>
       </div>
 
+      <a id="open-operation-rollup"></a>
       <a id="open-backup-sidebar">Backups</a>
       <a id="open-signal-sidebar" class="cta">+ Add Signal</a>
     </footer>
@@ -245,6 +247,31 @@
     </div>
   </site-rollup>
 
+  <site-rollup id="operation-screen">
+    <div class="rollup-head">
+      <span class="material-symbols-outlined rollup-head-icon">swords</span>
+      <div class="rollup-head-text">
+        <h2>Operations</h2>
+        <p>Launch new offensive cyber operations.</p>
+      </div>
+    </div>
+
+    <div class="operation-body">
+      <div class="operation-left">
+        <div class="operation-list-head" id="operation-list-head"></div>
+        <div class="table-wrap" id="operation-list-wrap">
+          <div id="operation-list"></div>
+        </div>
+      </div>
+
+      <div class="operation-canvas">
+        <div class="operation-graph" id="operation-graph"></div>
+      </div>
+
+      <div class="operation-detail" id="operation-detail"></div>
+    </div>
+  </site-rollup>
+ 
   <!--Sidebars-->
 
   <site-sidebar id="signal-sidebar">
@@ -312,6 +339,7 @@
   </site-sidebar>
 </body>
 
+<script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script>
 <script src="https://cdn.unmanned.team/js/components.js"></script>
@@ -327,6 +355,7 @@
     <script src="static/js/rollups/managed.js?v=${v}"><\/script>
     <script src="static/js/rollups/sources.js?v=${v}"><\/script>
     <script src="static/js/rollups/dot.js?v=${v}"><\/script>
+    <script src="static/js/rollups/operation.js?v=${v}"><\/script>
   `);
 </script>
 

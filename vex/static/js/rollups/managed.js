@@ -285,10 +285,6 @@ class ManagedRollup {
                 </div>
             </div>
         `;
-
-        Workspace.favicon(domain).then(src => {
-            if (src && this.selected == domain) this.detail.querySelector('.managed-overview-favicon').src = src;
-        });
     }
 
     async _unassign(email) {

@@ -134,9 +134,8 @@ class SiteHeader extends HTMLElement {
   }
 
   setAccount(name, logo) {
-      this.shadowRoot.querySelector('.account-name').textContent = name;
-      const img = this.shadowRoot.querySelector('.account-logo');
-      logo ? img.src = logo : img.removeAttribute('src');
+    this.shadowRoot.querySelector('.account-name').textContent = name;
+    this.shadowRoot.querySelector('.account-logo').src = logo;
   }
 }
 

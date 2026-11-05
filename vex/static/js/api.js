@@ -116,10 +116,6 @@ class ManagedApi extends Gateway {
     async unassign(group, user) {
         await this.call('DELETE', `managed/grants/${group}/${user}`);
     }
-
-    async invite(email) {
-        await this.call('POST', 'managed/invite', {to: email});
-    }
 }
 
 class AuditApi extends Gateway {

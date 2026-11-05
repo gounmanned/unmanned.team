@@ -223,10 +223,6 @@ class ManagedRollup {
         this.detail.innerHTML = `
             <div class="managed-detail-col managed-detail-col--admins">
                 <div class="managed-col-header">
-                    <img class="managed-overview-favicon"
-                        src="https://www.google.com/s2/favicons?domain=${domain}&sz=64"
-                        onerror="this.src='https://cdn.unmanned.team/img/logo.png'"
-                        alt="${domain}">
                     <span class="managed-col-header-title">${domain}</span>
                 </div>
                 <div class="managed-col-body">
@@ -289,6 +285,10 @@ class ManagedRollup {
                 </div>
             </div>
         `;
+
+        Workspace.favicon(domain).then(src => {
+            if (src && this.selected == domain) this.detail.querySelector('.managed-overview-favicon').src = src;
+        });
     }
 
     async _unassign(email) {

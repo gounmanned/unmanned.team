@@ -45,12 +45,6 @@ class ManagedRollup {
         const grants = await this.api.managed.grants(this.state.user.email);
         Object.entries(grants).forEach(([domain, members]) => this._add(domain, members));
 
-        const pending = await this.api.managed.grants("pending");
-        (pending ?? []).forEach((email) => {
-            const domain = email.split("@")[1];
-            this._add(domain, [], false);
-        });
-
         this._arrange();
         document.querySelector('.managed-accounts-wrap').classList.toggle('empty', this.members.size === 0);
     }
@@ -194,14 +188,14 @@ class ManagedRollup {
         this.members.forEach((_, domain) => place(domain, 0));
     }
 
-    _add(domain, members = [], enabled = true) {
+    _add(domain, members = []) {
         if (this.members.has(domain)) return;
         this.members.set(domain, members);
 
         const li = document.createElement('li');
         li.id = `managed-account-${domain}`;
         li.dataset.domain = domain;
-        li.className = `managed-account-item${enabled ? '' : ' pending'}`;
+        li.className = 'managed-account-item';
         li.innerHTML = `
             <span class="managed-account-badge">
                 <span class="managed-badge-content"></span>
@@ -327,7 +321,7 @@ class ManagedRollup {
         });
 
         this.list.addEventListener('click', (e) => {
-            const li = e.target.closest('.managed-account-item:not(.pending)');
+            const li = e.target.closest('.managed-account-item');
             if (!li) return;
 
             if (e.target.closest('.managed-account-toggle')) {
@@ -354,19 +348,6 @@ class ManagedRollup {
         });
 
         document.getElementById('managed-root-btn').addEventListener('click', () => this._enter(null));
-
-        document.getElementById('managed-invite-btn').addEventListener('click', async () => {
-            const input = document.getElementById('managed-invite-input');
-            const email = input.value.trim();
-            if (!email) return;
-
-            await SiteSpinner.withLoading(async () => {
-                await this.api.managed.invite(email);
-                await this.load();
-            }).finally(() => {
-                input.value = '';
-            });
-        });
     }
 }
 

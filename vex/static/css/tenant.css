@@ -5,37 +5,66 @@
   --state: #16a34a;
   display: inline-flex;
   align-items: center;
-  gap: 7px;
+  gap: 6px;
   height: 28px;
-  padding: 0 12px 0 11px;
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  background: var(--surface);
-  font-size: 12.5px;
-  color: var(--text-body);
+  padding: 0 4px 0 8px;
+  border-radius: 6px;
   white-space: nowrap;
   cursor: pointer;
-  transition: border-color 0.15s;
+  transition: background 0.15s;
 }
 
-.setup-chip:hover { border-color: color-mix(in srgb, var(--state) 45%, var(--line)); }
+.setup-chip:hover { background: color-mix(in srgb, var(--text-faint) 10%, transparent); }
 .setup-chip:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
 
 .setup-chip-dot {
+  order: 0;
   position: relative;
-  width: 7px;
-  height: 7px;
-  margin-right: 2px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   background: var(--state);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--state) 16%, transparent);
 }
 
-.setup-chip-count { font-weight: 700; font-variant-numeric: tabular-nums; }
-.setup-chip-noun  { font-weight: 500; color: var(--ink-3); }
+.setup-chip-noun {
+  order: 1;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  transition: color 0.15s;
+}
+
+.setup-chip-count {
+  order: 2;
+  font-size: 13px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-body);
+}
+
+.setup-chip::after {
+  content: 'keyboard_arrow_down';
+  order: 3;
+  margin-left: -2px;
+  font-family: 'Material Symbols Outlined';
+  font-size: 16px;
+  line-height: 1;
+  font-feature-settings: 'liga';
+  color: var(--text-faint);
+  transition: color 0.15s, transform 0.15s;
+}
+
+.setup-chip:hover .setup-chip-noun { color: var(--text-body); }
+.setup-chip:hover::after { color: var(--brand); transform: translateY(1px); }
+.setup-chip[aria-expanded="true"]::after { transform: rotate(180deg); }
 
 .setup-chip[data-state="warn"]  { --state: var(--risk-medium, #ea580c); }
 .setup-chip[data-state="empty"] { --state: var(--brand); }
+
+.setup-chip[data-state="warn"] .setup-chip-count { color: var(--state); }
+.setup-chip[data-state="empty"] .setup-chip-count { color: var(--text-faint); }
 
 .setup-chip[data-state="empty"] .setup-chip-dot::after {
   content: '';

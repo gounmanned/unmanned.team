@@ -33,17 +33,18 @@ class SiteHeader extends HTMLElement {
           gap: 12px;
           flex-shrink: 0;
         }
-        .logo-area img {
-          height: 22px;
-          width: 22px;
-          object-fit: contain;
-        }
         .brand {
           display: flex;
           align-items: center;
           padding-right: 8px;
+          gap: 4px;
           text-decoration: none;
           color: var(--text-body);
+        }
+        .brand img {
+          height: 40px;
+          width: 40px;
+          object-fit: contain;
         }
         .brand span {
           font-size: 0.95rem;
@@ -55,9 +56,6 @@ class SiteHeader extends HTMLElement {
           height: 24px;
           background: var(--line);
           flex-shrink: 0;
-        }
-        .account-logo:not([src]) {
-          display: none;
         }
         .account-group {
           display: flex;
@@ -104,11 +102,11 @@ class SiteHeader extends HTMLElement {
       <div class="header-container">
         <div class="logo-area">
           <a class="brand" href="/">
+            <img class="brand-logo" src="https://cdn.unmanned.team/img/logo.png"/>
             <span class="brand-name">VEX</span>
           </a>
           <span class="divider"></span>
           <span class="account-group">
-            <img class="account-logo"/>
             <span class="account-name"></span>
             <slot name="account-switcher"></slot>
           </span>
@@ -125,6 +123,10 @@ class SiteHeader extends HTMLElement {
         .assignedElements()[0];
       switcher?.click();
     });
+  }
+
+  setAccount(name) {
+    this.shadowRoot.querySelector('.account-name').textContent = name;
   }
 }
 

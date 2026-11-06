@@ -869,8 +869,8 @@
         active = list;
         // per card: when its stamp lands and when it flies off
         TIMES = list.map(function(c, k){
-          var s = 0.6 + 3 * k;                                   // long enough to read each card; the swipe itself stays quick
-          return c.last ? { stamp:s + 1.2, f0:s + 2.9, f1:s + 3.25, dir:1 } : { stamp:s + 1.6, f0:s + 2.4, f1:s + 2.75, dir:-1 };
+          var s = 0.6 + 4 * k;                                   // long enough to read each card; the swipe itself stays quick
+          return c.last ? { stamp:s + 1.2, f0:s + 2.9, f1:s + 3.25, dir:1 } : { stamp:s + 2.6, f0:s + 3.4, f1:s + 3.75, dir:-1 };
         });
         LAST = TIMES[TIMES.length - 1];
         opts.end = LAST.f1 + 1;

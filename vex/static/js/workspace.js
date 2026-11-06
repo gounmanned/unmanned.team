@@ -7,7 +7,7 @@ class AppState {
     }
 
     account(){
-        return this.delegate || this.user.email.split('@').pop();
+        return this.delegate;
     }
 
     reset() {
@@ -67,8 +67,6 @@ class Workspace {
                     }
 
                     this.tenant = new TenantScreen(state);
-                    this.reset(state);
-                    this.reload();
                     this.listen();
 
                     setInterval(() => this.reload(), 60000);
@@ -76,7 +74,7 @@ class Workspace {
                     document.addEventListener('page:reset', () => this.reset(state));
                     document.getElementById("open-managed-rollup").click();
                 });
-                document.getElementById('auth-gate')?.remove();
+                document.getElementById('auth-gate').remove();
             })
             .catch(err => {
                 console.error(err);

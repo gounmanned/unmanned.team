@@ -386,8 +386,6 @@ class ManagedRollup {
             const email = new FormData(e.target).get('email').trim().toLowerCase();
             if (email) this._assign(email);
         });
-
-        document.getElementById('managed-root-btn').addEventListener('click', () => this._enter(null));
     }
 }
 

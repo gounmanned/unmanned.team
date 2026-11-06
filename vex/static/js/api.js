@@ -110,11 +110,11 @@ class ManagedApi extends Gateway {
     }
 
     async assign(group, user) {
-        await this.call('POST', `managed/grants/${group}/${user}`);
+        return await this.call('POST', `managed/grants/${group}/${user}`);
     }
 
     async unassign(group, user) {
-        await this.call('DELETE', `managed/grants/${group}/${user}`);
+        return await this.call('DELETE', `managed/grants/${group}/${user}`);
     }
 }
 

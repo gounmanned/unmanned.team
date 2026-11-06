@@ -21,6 +21,7 @@ class ManagedRollup {
 
         this.members = new Map();   // domain -> admin emails
         this.assets = new Map();    // domain -> { assets, dots }
+        this.rejected = null;       // last name the server refused to create
         this.selected = null;
         this.scanning = true;
         this.counting = true;
@@ -111,7 +112,12 @@ class ManagedRollup {
 
         if (query && !this.members.has(query)) rows.unshift(this._createRow(query));
 
-        this.list.innerHTML = rows.length ? `
+        this.search.closest('.managed-search').hidden = !this.members.size;
+        this.list.innerHTML = this._head() + (rows.length ? rows.join('') : this._empty());
+    }
+
+    _head() {
+        return `
             <li class="tenant-head">
                 <span>Account</span>
                 <span>Signals</span>
@@ -120,11 +126,45 @@ class ManagedRollup {
                 <span>Admins</span>
                 <span></span>
             </li>
-            ${rows.join('')}
-        ` : `
+        `;
+    }
+
+    // A faded preview of the table, with a field to create the first workspace beneath it.
+    _empty() {
+        const { rejected } = this;
+
+        const ghost = (name, status) => `
+            <li class="tenant tenant--ghost" aria-hidden="true">
+                <span class="tenant-account">
+                    <span class="tenant-mark"></span>
+                    <span class="tenant-text"><i style="width:${name}px"></i><i style="width:${status}px"></i></span>
+                </span>
+                <span class="tenant-num"><i></i></span>
+                <span class="tenant-num"><i></i></span>
+                <span class="tenant-num"><i></i></span>
+                <span class="tenant-num"><i></i></span>
+                <span></span>
+            </li>
+        `;
+
+        return `
+            ${ghost(132, 64)}${ghost(104, 80)}${ghost(150, 56)}
+
             <li class="managed-empty">
-                <p>No accounts yet</p>
-                <span>Type a name above and press enter to create one.</span>
+                <h3>Create your workspace</h3>
+                <p>Your workspace brings together the devices, identities, and services you want to protect.</p>
+
+                <form class="managed-start ${rejected ? 'is-rejected' : ''}">
+                    <input name="workspace" value="${rejected ?? ''}" placeholder="acme.com" aria-label="Workspace name"
+                           required pattern="\\S+" autocomplete="off" spellcheck="false">
+                    <button type="submit">Create <span class="material-symbols-outlined">arrow_forward</span></button>
+                </form>
+
+                <p class="managed-start-note">
+                    ${rejected
+                        ? `Sorry, <b>${rejected}</b> isn't available. Try a different name.`
+                        : 'One word, no spaces. Your company\'s domain works well.'}
+                </p>
             </li>
         `;
     }
@@ -158,6 +198,15 @@ class ManagedRollup {
     }
 
     _createRow(name) {
+        if (name === this.rejected) return `
+            <li class="tenant tenant--create is-taken" data-create="${name}">
+                <span class="tenant-account">
+                    <span class="tenant-mark"><span class="material-symbols-outlined">block</span></span>
+                    <span class="tenant-name">Sorry, <b>${name}</b> isn't available. Try a different name.</span>
+                </span>
+            </li>
+        `;
+
         return `
             <li class="tenant tenant--create" data-create="${name}">
                 <span class="tenant-account">
@@ -185,6 +234,7 @@ class ManagedRollup {
     }
 
     _renderDetail() {
+        this.detail.hidden = !this.members.size;
         this.detail.innerHTML = this.selected ? this._accountPanel(this.selected) : this._overview();
     }
 
@@ -286,7 +336,13 @@ class ManagedRollup {
     }
 
     async _create(account) {
-        await SiteSpinner.withLoading(() => this.api.managed.assign(account, this.me));
+        const created = await SiteSpinner.withLoading(() => this.api.managed.assign(account, this.me));
+        if (!created) {
+            this.rejected = account;
+            this._renderList();
+            return this.list.querySelector('.managed-start input')?.focus();
+        }
+
         this.members.set(account, [this.me]);
         this.search.value = '';
         this.selected = account;
@@ -364,9 +420,13 @@ class ManagedRollup {
 
         this.list.addEventListener('click', (e) => {
             const row = e.target.closest('.tenant');
-            if (!row) return;
-            if (row.dataset.create) return this._create(row.dataset.create);
-            this._select(row.dataset.domain);
+            if (row?.dataset.create) return this._create(row.dataset.create);
+            if (row?.dataset.domain) this._select(row.dataset.domain);
+        });
+
+        this.list.addEventListener('submit', (e) => {
+            e.preventDefault();
+            this._create(new FormData(e.target).get('workspace').trim().toLowerCase());
         });
 
         this.list.addEventListener('dblclick', (e) => {

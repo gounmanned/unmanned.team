@@ -445,7 +445,6 @@ class SiteRollup extends HTMLElement {
           background-color: var(--surface);
           border-top: 1px solid var(--line);
           box-shadow: 0 0 5px rgba(224, 18, 128, 0.5), 0 0 40px rgba(224, 18, 128, 0.2);
-          border-radius: 12px 12px 0 0;
           z-index: 1000;
           visibility: hidden;
           transform: translateY(100%);

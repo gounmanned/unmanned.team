@@ -134,13 +134,13 @@
   </main>
 
   <!-- Managed -->
-  
+
   <site-rollup id="managed-screen">
     <div class="rollup-head">
       <span class="material-symbols-outlined rollup-head-icon">group</span>
       <div class="rollup-head-text">
         <h2>Welcome back</h2>
-        <p>Switch between the accounts you manage or invite a new one.</p>
+        <p>Switch between the accounts you manage or create a new one.</p>
       </div>
 
       <dl class="managed-stats">
@@ -161,30 +161,16 @@
     </div>
 
     <div class="managed-body">
-      <div class="managed-left">
-        <div class="managed-accounts-wrap">
-          <ul id="managed-accounts"></ul>
-        </div>
+      <div class="managed-main">
+        <label class="managed-search">
+          <span class="material-symbols-outlined">search</span>
+          <input id="managed-search" type="text" placeholder="Find or create an account" spellcheck="false" autocomplete="off">
+          <kbd>/</kbd>
+        </label>
+        <ul class="managed-accounts" id="managed-accounts"></ul>
       </div>
 
-      <div class="managed-right">
-        <div class="managed-hero">
-          <div class="managed-hero-flair">
-            <span class="managed-hero-ring">
-                <i style="--a: 20deg"></i><i style="--a: 140deg"></i><i style="--a: 260deg"></i>
-            </span>
-            <span class="managed-hero-ring managed-hero-ring--inner">
-                <i style="--a: 80deg"></i><i style="--a: 200deg"></i><i style="--a: 320deg"></i>
-            </span>
-            <img id="managed-hero-icon" src="https://cdn.unmanned.team/img/logo.png" alt="">
-          </div>
-
-          <h3 class="managed-hero-title"></h3>
-          <p class="managed-hero-text"></p>
-        </div>
-
-        <div class="managed-detail" hidden></div>
-      </div>
+      <aside class="managed-detail" id="managed-detail"></aside>
     </div>
   </site-rollup>
 

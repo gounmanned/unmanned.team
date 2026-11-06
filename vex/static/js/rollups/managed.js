@@ -180,7 +180,7 @@ class ManagedRollup {
     }
 
     _status(state) {
-        const icon = state === 'scanning' ? SPINNER : '<i></i>';
+        const icon = state === 'scanning' ? SPINNER : '';
         return `<span class="tenant-status" data-state="${state}">${icon}${ACCOUNT_STATES[state]}</span>`;
     }
 

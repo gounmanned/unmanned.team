@@ -146,11 +146,6 @@ class Workspace {
         return Array.from(s).map(c => c.charCodeAt(0).toString(16).padStart(2, '0')).join('');        
     }
 
-    static get sidebars() {
-        document.querySelector('site-overlay').click();
-        return Workspace.#instance?.sidebars;
-    }
-
     static risk(threat) {
         if (threat == null || Number.isNaN(Number(threat))) return null;
         const pct = Math.min(100, Math.max(0, Math.round(Number(threat) * 100)));
@@ -158,5 +153,10 @@ class Workspace {
         if (pct <= 50) return { pct, level: 'low',    label: 'Likely benign',    icon: 'verified_user' };
         if (pct <= 75) return { pct, level: 'medium', label: 'Suspicious',       icon: 'warning' };
         return               { pct, level: 'high',   label: 'Likely malicious', icon: 'dangerous' };
+    }
+
+    static get sidebars() {
+        document.querySelector('site-overlay').click();
+        return Workspace.#instance?.sidebars;
     }
 }

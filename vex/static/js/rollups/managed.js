@@ -25,6 +25,7 @@ class ManagedRollup {
         this.scanning = true;
         this.counting = true;
 
+        document.getElementById('managed-user').textContent = this.me;
         this.listen();
     }
 
@@ -81,6 +82,11 @@ class ManagedRollup {
             dots,
             state: this.scanning ? 'scanning' : threats ? 'threat' : open.length ? 'open' : 'clear',
         };
+    }
+
+    _counts() {
+        const states = [...this.members.keys()].map(domain => this._stats(domain).state);
+        return state => states.filter(s => s === state).length;
     }
 
     _query() {
@@ -187,8 +193,7 @@ class ManagedRollup {
             return `<div class="managed-overview"><h3>Scanning accounts…</h3></div>`;
         }
 
-        const states = [...this.members.keys()].map(domain => this._stats(domain).state);
-        const count = state => states.filter(s => s === state).length;
+        const count = this._counts();
 
         const title =
             count('threat') ? `${plural(count('threat'), 'account')} under active threat` :

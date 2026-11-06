@@ -136,11 +136,17 @@
   <!-- Managed -->
 
   <site-rollup id="managed-screen">
-    <div class="rollup-head">
-      <span class="material-symbols-outlined rollup-head-icon">group</span>
-      <div class="rollup-head-text">
+    <header class="managed-head">
+      <div class="managed-brand">
+        <img src="https://cdn.unmanned.team/img/logo.png" alt="">
+        <span>VEX</span>
+      </div>
+
+      <span class="managed-divider"></span>
+
+      <div class="managed-greeting">
         <h2>Welcome back</h2>
-        <p>Switch between the accounts you manage or create a new one.</p>
+        <p id="managed-user"></p>
       </div>
 
       <dl class="managed-stats">
@@ -150,7 +156,7 @@
         </div>
         <div><dt>Coverage</dt><dd id="managed-stat-coverage">—</dd></div>
       </dl>
-    </div>
+    </header>
 
     <div class="managed-body">
       <div class="managed-main">

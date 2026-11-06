@@ -8,7 +8,6 @@ const ACCOUNT_STATES = {
 const SPINNER = '<span class="managed-spinner"></span>';
 
 const fmt = n => n.toLocaleString();
-const plural = (n, word) => `${fmt(n)} ${word}${n === 1 ? '' : 's'}`;
 
 class ManagedRollup {
     constructor(state) {
@@ -23,6 +22,7 @@ class ManagedRollup {
         this.assets = new Map();    // domain -> { assets, dots }
         this.rejected = null;       // last name the server refused to create
         this.selected = null;
+        this.loading = true;        // until grants() returns
         this.scanning = true;
         this.counting = true;
 
@@ -35,6 +35,7 @@ class ManagedRollup {
     }
 
     reset() {
+        this.loading = true;
         this.scanning = true;
         this.counting = true;
         this.summary.reset();
@@ -50,6 +51,7 @@ class ManagedRollup {
     async load() {
         const grants = await this.api.managed.grants(this.me);
         this.members = new Map(Object.entries(grants));
+        this.loading = false;
         if (!this.members.has(this.selected)) this.selected = null;
         this.render();
     }
@@ -85,11 +87,6 @@ class ManagedRollup {
         };
     }
 
-    _counts() {
-        const states = [...this.members.keys()].map(domain => this._stats(domain).state);
-        return state => states.filter(s => s === state).length;
-    }
-
     _query() {
         return this.search.value.trim().toLowerCase();
     }
@@ -97,11 +94,21 @@ class ManagedRollup {
     // ── render ──────────────────────────────────────────────────────────────
 
     render() {
+        if (!this.loading) this.summary.accounts(this.members.size);
         this._renderList();
         this._renderDetail();
     }
 
     _renderList() {
+        const searchBar = this.search.closest('.managed-search');
+        this.list.classList.toggle('loading', this.loading);
+
+        if (this.loading) {
+            searchBar.hidden = true;
+            this.list.innerHTML = '';
+            return;
+        }
+
         const query = this._query();
         const stats = new Map([...this.members.keys()].map(domain => [domain, this._stats(domain)]));
 
@@ -112,7 +119,7 @@ class ManagedRollup {
 
         if (query && !this.members.has(query)) rows.unshift(this._createRow(query));
 
-        this.search.closest('.managed-search').hidden = !this.members.size;
+        searchBar.hidden = !this.members.size;
         this.list.innerHTML = this._head() + (rows.length ? rows.join('') : this._empty());
     }
 
@@ -234,33 +241,8 @@ class ManagedRollup {
     }
 
     _renderDetail() {
-        this.detail.hidden = !this.members.size;
-        this.detail.innerHTML = this.selected ? this._accountPanel(this.selected) : this._overview();
-    }
-
-    _overview() {
-        if (this.scanning) {
-            return `<div class="managed-overview"><h3>Scanning accounts…</h3></div>`;
-        }
-
-        const count = this._counts();
-
-        const title =
-            count('threat') ? `${plural(count('threat'), 'account')} under active threat` :
-            count('open')   ? `${plural(count('open'), 'account')} waiting on a decision` :
-                              'Every account is protected';
-
-        return `
-            <div class="managed-overview">
-                <h3>${title}</h3>
-                <ul class="managed-breakdown">
-                    ${['threat', 'open', 'clear'].map(state => `
-                        <li data-state="${state}"><span>${ACCOUNT_STATES[state]}</span><b>${count(state)}</b></li>
-                    `).join('')}
-                </ul>
-                <p class="managed-overview-hint">Select an account to manage access</p>
-            </div>
-        `;
+        this.detail.hidden = this.loading || !this.selected;
+        this.detail.innerHTML = this.selected ? this._accountPanel(this.selected) : '';
     }
 
     _panelSummary(domain) {
@@ -317,7 +299,7 @@ class ManagedRollup {
 
                 <footer class="tenant-panel-foot">
                     <button class="tenant-enter" data-enter>
-                        Switch to ${domain}
+                        Enter ${domain}
                         <span class="material-symbols-outlined">arrow_forward</span>
                     </button>
                 </footer>
@@ -385,8 +367,6 @@ class ManagedRollup {
             this._renderList();
             if (this.selected) {
                 this.detail.querySelector('.tenant-panel-summary').innerHTML = this._panelSummary(this.selected);
-            } else {
-                this._renderDetail();
             }
         });
 
@@ -456,9 +436,13 @@ class ManagedRollup {
 
 class ManagedSummary {
     reset() {
+        this._el('accounts').textContent = '—';
+        this._el('assets').innerHTML = SPINNER;
         this._el('dots').innerHTML = SPINNER;
-        this._el('coverage').innerHTML = SPINNER;
-        this._el('assets').textContent = '—';
+    }
+
+    accounts(count) {
+        this._el('accounts').textContent = fmt(count);
     }
 
     render(accounts) {
@@ -467,12 +451,8 @@ class ManagedSummary {
             { assets: 0, dots: 0 },
         );
 
-        const coverage = totals.assets ? totals.dots / totals.assets * 100 : 0;
-        const label = coverage > 0 && coverage < 10 ? coverage.toFixed(1) : Math.round(coverage);
-
-        this._el('dots').textContent = fmt(totals.dots);
         this._el('assets').textContent = fmt(totals.assets);
-        this._el('coverage').textContent = `${label}%`;
+        this._el('dots').textContent = fmt(totals.dots);
     }
 
     _el(key) {

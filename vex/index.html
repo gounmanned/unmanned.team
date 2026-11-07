@@ -62,7 +62,7 @@
     <section id="signal-section">
       <form class="signal-search" id="signal-search" role="search" autocomplete="off">
         <span class="material-symbols-outlined">search</span>
-        <input type="text" id="signal-search-input" placeholder="Security Information and Event Management" enterkeyhint="search" spellcheck="false">
+        <input type="text" id="signal-search-input" placeholder="Search audit logs by keyword" enterkeyhint="search" spellcheck="false">
         <button type="button" class="view-switch" id="tail-switch" aria-pressed="false" title="Tail logs">
           <span class="material-symbols-outlined">terminal</span>
         </button>
@@ -194,11 +194,10 @@
       <span class="material-symbols-outlined rollup-head-icon">radar</span>
       <div class="rollup-head-text">
         <h2>Sources</h2>
-        <p>Connected integrations VEX collects signals from.</p>
+        <p>Collect event logs and security alerts from third-party sources.</p>
       </div>
+      <div class="src-mailbox" id="source-mailbox"></div>
     </div>
-
-    <div id="source-callout" class="source-callout"></div>
 
     <div class="table-wrap" id="source-table-wrap">
       <div id="source-list"></div>

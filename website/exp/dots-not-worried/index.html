@@ -237,7 +237,7 @@
   }
 
   /* ==================== THIS PAGE’S HERO ==================== */
-  /* 04 · Your Dot isn't worried: threat intel as a dating app. The Dot swipes left on four threats ("boring.")
+  /* 04 · Your Dot isn't worried: threat intel as a dating app. The Dot swipes left on four threats ("boring.", stamped HANDLED)
      and right on Dot Karaoke Night. It's a match. Loops while in view. */
   .hnw{background:#e01280;color:#fff;}
   .hnw .eyebrow{color:#fff;font-weight:500;letter-spacing:0.18em;}
@@ -269,6 +269,7 @@
   .hnw-match small{font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:0.22em;}
   .hnw-match b{font-family:var(--anton);font-weight:400;font-size:40px;line-height:1.02;}
   .hnw-match p{font-size:16px;line-height:1.45;}
+  .hnw-match p strong{display:block;margin-bottom:4px;font-weight:700;text-wrap:balance;}
   /* the replay lives in the app: a black box where a message field would sit. It's scaled with the phone, so the type is
      large in scene pixels and ::before stretches the tap area to about 44px on phones. Off until the match shows. */
   .hnw-again{position:absolute;left:36px;right:16px;bottom:22px;height:60px;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;padding:0 16px;background:#0b0c0d;color:var(--pink);border:0;border-radius:6px;font:600 20px/1 var(--font-sans,Inter),sans-serif;text-align:left;cursor:pointer;}
@@ -389,12 +390,12 @@
                     <i id="hnw-no" style="background:#dc2626"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></i>
                     <i id="hnw-yes" style="background:#029266"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></i>
                   </div>
-                  <p class="hnw-hint" aria-hidden="true">LEFT: BORING · RIGHT: NEEDS ATTENTION</p>
+                  <p class="hnw-hint" aria-hidden="true">LEFT: HANDLED · RIGHT: NEEDS ATTENTION</p>
                   <div class="hnw-match" id="hnw-match">
                     <small aria-hidden="true">IT’S A MATCH</small>
                     <b aria-hidden="true">YOU + DOT</b>
                     <div class="hnw-pair" aria-hidden="true"><svg class="dot" data-dot='{"color":"#1ec6ec","shade":"#17a9cb","mood":"happy","floor":false}'></svg><i>99¢</i></div>
-                    <p aria-hidden="true">You both like keeping your digital lives secure (and things that cost 99¢).</p>
+                    <p aria-hidden="true"><strong>You both swipe left on hackers.</strong> You don’t have to worry. Your Dot never did.</p>
                     <button class="hnw-again" type="button" id="hnw-again" aria-label="Swipe again: replay the animation" disabled>Swipe again<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg></button>
                   </div>
                 </div>
@@ -859,7 +860,7 @@
         el.className = 'hnw-card';
         el.style.zIndex = 20 - k;
         el.innerHTML = '<div class="hnw-pic" style="background:' + c.bg + '">' + PICS[c.type] +
-          '<span class="hnw-stamp" style="left:' + (c.last ? 54 : 20) + 'px;transform:rotate(' + (c.last ? 12 : -14) + 'deg);border-color:' + col + ';color:' + col + '">' + (c.last ? 'NEEDS ATTENTION' : 'BORING') + '</span></div>' +
+          '<span class="hnw-stamp" style="left:' + (c.last ? 54 : 20) + 'px;transform:rotate(' + (c.last ? 12 : -14) + 'deg);border-color:' + col + ';color:' + col + '">' + (c.last ? 'NEEDS ATTENTION' : 'HANDLED') + '</span></div>' +
           '<div class="hnw-info"><small>' + c.label + '</small><b>' + c.title + '</b><p>' + c.bio + '</p><small class="hnw-level">' + c.mlabel + '</small><em style="color:' + (c.last ? '#029266' : '#e5484d') + '">' + c.meter + '</em></div>';
         deck.appendChild(el);
         c.el = el; c.stampEl = el.querySelector('.hnw-stamp');

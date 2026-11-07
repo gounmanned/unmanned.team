@@ -84,25 +84,13 @@
   .setup-chip-dot::after { animation: none !important; }
 }
 
-/* ── overview card ────────────────────── */
+/* ── overview ────────────────────── */
 
 #overview-section { margin-bottom: 24px; }
 
 .overview {
   --critical: var(--risk-high, #dc2626);
-
-  position: relative;
-  isolation: isolate;
-  display: flex;
-  flex-direction: column;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  background: var(--surface);
-  overflow: hidden;
-  transition: border-color 0.2s;
 }
-
-.overview.critical { border-color: var(--critical); }
 
 /* ── overview: trend chart ──────────────────────────────────────── */
 
@@ -111,29 +99,17 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
-  padding: 12px 14px 8px;
-  overflow: hidden;
-  box-sizing: border-box;
 }
 
 .overview.critical .trend-chart { --radar: var(--critical); }
 
 .trend-chart-head {
-  position: relative;
-  z-index: 1;
   display: flex;
   align-items: baseline;
   justify-content: space-between;
 }
 
-.trend-chart-label {
-  font-size: 10.5px;
-  font-weight: 800;
-  letter-spacing: 0.6px;
-  text-transform: uppercase;
-  color: var(--brand);
-}
-
+.trend-chart-label,
 .trend-chart-month {
   font-size: 11.5px;
   font-variant-numeric: tabular-nums;
@@ -180,28 +156,20 @@
 
 #trend-svg .trend-radar { pointer-events: none; }
 
-#trend-svg .trend-ring {
-  fill: none;
-  stroke: var(--radar);
-  stroke-opacity: 0.16;
-  stroke-width: 1;
-}
-
 #trend-svg .trend-wave {
   fill: none;
   stroke: var(--radar);
-  stroke-width: 1.25;
+  stroke-width: 1;
   vector-effect: non-scaling-stroke;
   transform-box: fill-box;
   transform-origin: center;
   opacity: 0;
-  animation: trend-wave 6s cubic-bezier(0.15, 0.55, 0.35, 1) infinite;
+  animation: trend-wave 5s cubic-bezier(0.2, 0.6, 0.35, 1) infinite;
 }
 
 @keyframes trend-wave {
-  0%   { transform: scale(0.02); opacity: 0.85; }
-  60%  { opacity: 0.3; }
-  100% { transform: scale(1);    opacity: 0; }
+  0%   { transform: scale(0.1); opacity: 0.35; }
+  100% { transform: scale(1);   opacity: 0; }
 }
 
 #trend-svg .trend-halo { fill: var(--radar); fill-opacity: 0.1; }
@@ -461,7 +429,6 @@
   top: 0;
   z-index: 1;
   padding: 6px 8px;
-  border-bottom: 1px solid var(--line);
   background: var(--surface);
   font-size: 9.5px;
   font-weight: 600;

@@ -176,7 +176,7 @@ class TenantScreen {
         const W = svg.clientWidth, H = svg.clientHeight;
         if (!W || !H) return;
 
-        const pad = { t: 10, r: 6, b: 18, l: 6 };
+        const pad = { t: 10, r: 0, b: 18, l: 0 };
         const max = Math.max(1, ...counts);
         const step = (W - pad.l - pad.r) / (days - 1);
         const x = i => pad.l + i * step;
@@ -199,17 +199,14 @@ class TenantScreen {
                     </rect>`;
         }).join('');
 
-        // ── radar centered on today ──
+        // ── today marker ──
         const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
         const spin = still ? '' :
             `<animateTransform attributeName="transform" type="rotate"
             from="0 ${lx} ${ly}" to="-360 ${lx} ${ly}" dur="12s" repeatCount="indefinite"/>`;
 
-        const R = Math.min(480, Math.max(220, W * 0.3));
-        const rings = [0.25, 0.5, 0.75, 1]
-            .map(f => `<circle class="trend-ring" cx="${lx}" cy="${ly}" r="${R * f}"/>`).join('');
-        const waves = [0, 1, 2]
-            .map(i => `<circle class="trend-wave" cx="${lx}" cy="${ly}" r="${R}" style="animation-delay:${-i * 1.4}s"/>`).join('');
+        const waves = [0, 1]
+            .map(i => `<circle class="trend-wave" cx="${lx}" cy="${ly}" r="44" style="animation-delay:${-i * 2.5}s"/>`).join('');
 
         svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
         svg.innerHTML = `
@@ -218,21 +215,7 @@ class TenantScreen {
                 <stop offset="0%" style="stop-color:var(--brand);stop-opacity:.18"/>
                 <stop offset="100%" style="stop-color:var(--brand);stop-opacity:0"/>
             </linearGradient>
-            <radialGradient id="trend-radar-fade">
-                <stop offset="0%" stop-color="#fff"/>
-                <stop offset="35%" stop-color="#fff" stop-opacity=".8"/>
-                <stop offset="100%" stop-color="#fff" stop-opacity="0"/>
-            </radialGradient>
-            <mask id="trend-radar-mask" maskUnits="userSpaceOnUse"
-                    x="${lx - R}" y="${ly - R}" width="${R * 2}" height="${R * 2}">
-                <circle cx="${lx}" cy="${ly}" r="${R}" fill="url(#trend-radar-fade)"/>
-            </mask>
             </defs>
-
-            <g class="trend-radar" mask="url(#trend-radar-mask)">
-            ${rings}
-            ${waves}
-            </g>
 
             <line class="trend-baseline" x1="${pad.l}" x2="${lx}" y1="${base}" y2="${base}"/>
             <line class="trend-future" x1="${lx}" x2="${W - pad.r}" y1="${base}" y2="${base}"/>
@@ -242,6 +225,7 @@ class TenantScreen {
             <line class="trend-now" x1="${lx}" x2="${lx}" y1="${ly}" y2="${base}"/>
 
             <g class="trend-radar">
+            ${waves}
             <circle class="trend-halo" cx="${lx}" cy="${ly}" r="16"/>
             <g>
                 <circle class="trend-reticle" cx="${lx}" cy="${ly}" r="9"/>

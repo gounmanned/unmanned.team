@@ -65,7 +65,7 @@ class SourceRollup {
     // --- state ---
 
     _isSystem(id) {
-        return id.endsWith('0');
+        return id === '0';
     }
 
     _userCount(key) {

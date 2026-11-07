@@ -33,7 +33,7 @@ class TenantScreen {
             this.table.clear();
             this.stopTail();
             this.clearSearch();
-            this.renderSpotlight();
+            this.renderThreat();
             this.renderTrend();
         });
     }
@@ -153,7 +153,7 @@ class TenantScreen {
         if (this._trendFrame) return;
         this._trendFrame = requestAnimationFrame(() => {
             this._trendFrame = null;
-            this.renderSpotlight();
+            this.renderThreat();
             this.renderTrend();
         });
     }
@@ -255,19 +255,9 @@ class TenantScreen {
         `;
     }
 
-    renderSpotlight() {
-        const signal = this.signals()
-            .filter(s => s.status.startsWith('O') && s.metadata?.threat)
-            .sort((a, b) => new Date(b.created) - new Date(a.created))[0];
-
-        this._spotlight = signal;
-        document.getElementById('overview').classList.toggle('critical', !!signal);
-        if (!signal) return;
-
-        document.getElementById('spotlight-name').textContent = signal.name;
-        document.getElementById('spotlight-created').textContent = Workspace.date(signal.created);
-        document.getElementById('spotlight-updated').textContent = Workspace.date(signal.updated ?? signal.created);
-        document.getElementById('spotlight-img').src = `static/img/source/${signal.source}.png`;
+    renderThreat() {
+        const active = this.signals().some(s => s.status.startsWith('O') && s.metadata?.threat);
+        document.getElementById('overview').classList.toggle('critical', active);
     }
 
     // ── events ─────────────────────────────────────────────────────
@@ -299,10 +289,6 @@ class TenantScreen {
                 await this.reset();
                 await this.reload();
             });
-        });
-
-        document.getElementById('spotlight').addEventListener('click', () => {
-            if (this._spotlight) this.open(this._spotlight);
         });
 
         document.getElementById('signal-search').addEventListener('submit', (e) => {

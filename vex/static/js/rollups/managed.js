@@ -5,7 +5,13 @@ const ACCOUNT_STATES = {
     clear: 'Protected',
 };
 
-const SPINNER = '<span class="managed-spinner"></span>';
+const ACCOUNT_ICONS = {
+    threat: 'error',
+    open: 'schedule',
+    clear: 'check_circle',
+};
+
+const SPINNER ='<span class="managed-spinner"></span>';
 
 const fmt = n => n.toLocaleString();
 
@@ -126,6 +132,7 @@ class ManagedRollup {
     _head() {
         return `
             <li class="tenant-head">
+                <span></span>
                 <span>Account</span>
                 <span>Signals</span>
                 <span>Threats</span>
@@ -136,12 +143,12 @@ class ManagedRollup {
         `;
     }
 
-    // A faded preview of the table, with a field to create the first workspace beneath it.
     _empty() {
         const { rejected } = this;
 
         const ghost = (name, status) => `
             <li class="tenant tenant--ghost" aria-hidden="true">
+                <span class="tenant-indicator"><i></i></span>
                 <span class="tenant-account">
                     <span class="tenant-mark"></span>
                     <span class="tenant-text"><i style="width:${name}px"></i><i style="width:${status}px"></i></span>
@@ -185,6 +192,7 @@ class ManagedRollup {
 
         return `
             <li class="tenant ${unread ? 'has-unread' : ''}" data-domain="${domain}" data-state="${state}" aria-selected="${domain === this.selected}">
+                ${this._indicator(state)}
                 <span class="tenant-account">
                     ${this._mark(domain)}
                     <span class="tenant-text">
@@ -207,6 +215,7 @@ class ManagedRollup {
     _createRow(name) {
         if (name === this.rejected) return `
             <li class="tenant tenant--create is-taken" data-create="${name}">
+                <span></span>
                 <span class="tenant-account">
                     <span class="tenant-mark"><span class="material-symbols-outlined">block</span></span>
                     <span class="tenant-name">Sorry, <b>${name}</b> isn't available. Try a different name.</span>
@@ -216,6 +225,7 @@ class ManagedRollup {
 
         return `
             <li class="tenant tenant--create" data-create="${name}">
+                <span></span>
                 <span class="tenant-account">
                     <span class="tenant-mark"><span class="material-symbols-outlined">add</span></span>
                     <span class="tenant-name">Create account <b>${name}</b></span>
@@ -233,6 +243,15 @@ class ManagedRollup {
         `;
 
         return `<span class="tenant-mark">${domain.slice(0, 2).toUpperCase()}${logo || ''}</span>`;
+    }
+
+    // Circle icon for the row's state; a spinner while signals are still loading.
+    _indicator(state) {
+        const icon = state === 'scanning'
+            ? SPINNER
+            : `<span class="material-symbols-outlined">${ACCOUNT_ICONS[state]}</span>`;
+
+        return `<span class="tenant-indicator" data-state="${state}" title="${ACCOUNT_STATES[state]}">${icon}</span>`;
     }
 
     _status(state) {

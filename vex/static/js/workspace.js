@@ -113,8 +113,7 @@ class Workspace {
         state.reset();
         document.querySelector('site-header').setAccount(state.account(), `https://www.google.com/s2/favicons?domain=${state.account()}&sz=64`);
 
-        await this.tenant.reset();
-        await this.tenant.reload();
+        await this.tenant.refresh();
     }
 
     static avatar(s) {

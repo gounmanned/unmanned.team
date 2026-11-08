@@ -8,6 +8,7 @@ class TenantScreen {
         this.query = '';
         this.tailTimer = null;
 
+        this.section = document.getElementById('signal-section');
         this.input = document.getElementById('signal-search-input');
         this.tailSwitch = document.getElementById('tail-switch');
 
@@ -28,14 +29,20 @@ class TenantScreen {
     }
 
     async reset() {
-        await SiteSpinner.withLoading(async () => {
-            this.api.reset();
-            this.table.clear();
-            this.stopTail();
-            this.clearSearch();
-            this.renderThreat();
-            this.renderTrend();
-        });
+        this.api.reset();
+        this.table.clear();
+        this.stopTail();
+        this.clearSearch();
+        this.renderThreat();
+        this.renderTrend();
+    }
+
+    // Spinner shows until the first signal arrives, or the reload finishes for an empty account.
+    async refresh() {
+        this.section.classList.add('loading');
+        await this.reset();
+        await this.reload();
+        this.section.classList.remove('loading');
     }
 
     signals() {
@@ -248,6 +255,7 @@ class TenantScreen {
 
     listen() {
         document.addEventListener('signal:account', ({ signal }) => {
+            this.section.classList.remove('loading');
             this.state.track(signal);
             this.table.add(signal);
             this.scheduleTrend();
@@ -269,10 +277,7 @@ class TenantScreen {
             this.state.reset();
             this.month = active ? new Date() : null;
 
-            await SiteSpinner.withLoading(async () => {
-                await this.reset();
-                await this.reload();
-            });
+            await this.refresh();
         });
 
         document.getElementById('signal-search').addEventListener('submit', (e) => {

@@ -1,7 +1,7 @@
 main.container {
   position: fixed;
   top: calc(52px + 20px);
-  bottom: calc(42px + 20px);
+  bottom: 42px;
   left: 0;
   right: 0;
   margin: 10px;
@@ -118,6 +118,10 @@ site-rollup {
 .loading {
   color: transparent;
   position: relative;
+}
+
+.loading::before {
+  content: none;
 }
 
 .loading::after {

@@ -29,51 +29,6 @@ hr {
   opacity: 0.2;
 }
 
-site-rollup {
-  visibility: hidden;
-}
-
-/* ── hud display ──────────────── */
-
-.corner {
-  position: absolute;
-  width: var(--corner-size);
-  height: var(--corner-size);
-  border-color: var(--line);
-  opacity: 0.7;
-}
-.corner.tl { border-top: 1.5px solid; border-left: 1.5px solid; }
-.corner.tr { border-top: 1.5px solid; border-right: 1.5px solid; }
-.corner.bl { border-bottom: 1.5px solid; border-left: 1.5px solid; }
-.corner.br { border-bottom: 1.5px solid; border-right: 1.5px solid; }
-
-@keyframes managed-ring-glow {
-  0%, 100% { stroke: var(--line); stroke-opacity: 0.4; }
-  50%      { stroke: rgba(224,18,128,0.45); stroke-opacity: 0.7; filter: drop-shadow(0 0 4px rgba(224,18,128,0.25)); }
-}
-
-.signal-radar svg {
-  width: 100%;
-  height: 100%;
-}
-
-.signal-radar .radar-ring {
-  fill: none;
-  stroke: var(--line);
-  stroke-width: 1;
-  stroke-opacity: 0.5;
-  animation: managed-ring-glow 7.5s ease-in-out infinite;
-}
-.signal-radar .radar-ring.r2 { animation-delay: -2.5s; }
-.signal-radar .radar-ring.r3 { animation-delay: -5s; }
-
-@media (prefers-reduced-motion: reduce) {
-  .signal-radar .radar-ring {
-    animation: none;
-    opacity: 0.9;
-  }
-}
-
 /* ── rollup headers ──────────────── */
 
 .rollup-head {
@@ -150,20 +105,4 @@ table td img {
   box-shadow: 0 4px 12px rgba(0,0,0,0.06);
   border-radius: 50%;
   height: 30px;
-}
-
-/* ── scrollbars ──────────────── */
-
-*::-webkit-scrollbar {
-  display: none;
-}
-*::-webkit-scrollbar-track {
-  background: transparent;
-}
-*::-webkit-scrollbar-thumb {
-  background: #ccc;
-  border-radius: 1px;
-}
-*::-webkit-scrollbar-thumb:hover {
-  background: #999;
 }

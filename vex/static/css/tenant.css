@@ -1,3 +1,15 @@
+/* ── layout ────────────────────── */
+
+#tenant-screen {
+  position: fixed;
+  inset: calc(52px + 20px) 0 42px;
+  margin: 10px;
+  padding: 1px 20px 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
 /* ── header ────────────────────── */
 
 .setup-chip {
@@ -417,6 +429,8 @@
 #signal-table {
   width: 100%;
   table-layout: fixed;
+  border-spacing: 0 3px;
+  border-collapse: separate;
 }
 
 #signal-table:not(:has(tbody tr)) thead { display: none; }
@@ -441,6 +455,28 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+#signal-table tbody tr {
+  background: var(--surface);
+  transition: background-color 0.15s ease;
+}
+
+#signal-table tbody tr:hover { background: var(--surface-alt); }
+
+#signal-table td {
+  padding: 5px 6px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+#signal-table td img {
+  height: 30px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 0.06);
+}
+
+#signal-table tr:hover td img { border-color: #fff; }
 
 td.threat { white-space: nowrap; }
 
@@ -523,7 +559,7 @@ td.metadata { white-space: nowrap; }
 
 /* elapsed clock */
 
-td.elapsed {
+#signal-table td.elapsed {
   font-size: 12px;
   font-variant-numeric: tabular-nums;
   color: var(--text-faint);

@@ -131,97 +131,94 @@ class SiteHeader extends HTMLElement {
 }
 
 class SiteSpinner extends HTMLElement {
-  constructor() {
-    super();
-    this.attachShadow({ mode: 'open' });
-  }
+    static inline = '<site-spinner inline></site-spinner>';
+    static #pending = 0;
 
-  connectedCallback() {
-    this.shadowRoot.innerHTML = `
-      <style>
-      .spinner-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(255, 255, 255, 0.5);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 9999;
-        display: none;
-      }
-      .spinner {
-        width: 60px;
-        height: 60px;
-        border: 6px solid var(--line);
-        border-top: 6px solid var(--brand);
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-      .spinner.success {
-        border: 6px solid var(--brand);
-        animation: none;
-      }
-      .checkmark {
-        display: none;
-        width: 30px;
-        height: 30px;
-      }
-      .checkmark.show {
-        display: block;
-      }
-      @keyframes spin {
-        to { transform: rotate(360deg); }
-      }
-      </style>
+    constructor() {
+        super();
+        this.attachShadow({ mode: 'open' }).innerHTML = `
+            <style>
+                :host { --size: 56px; --width: 4px; --speed: 0.65s; }
 
-      <div id="spinner" class="spinner-overlay">
-        <div class="spinner">
-          <svg class="checkmark" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="3">
-            <polyline points="20 6 9 17 4 12"></polyline>
-          </svg>
-        </div>
-      </div>
-    `;
-  }
+                :host(:not([inline], [cover])) {
+                    position: fixed; inset: 0; z-index: 9999;
+                    display: none; place-items: center;
+                    background: rgb(255 255 255 / 0.5);
+                }
+                :host([active]) { display: grid; }
 
-  show() {
-    this.shadowRoot.getElementById('spinner').style.display = 'flex';
-  }
+                :host([cover]) {
+                    --size: 20px; --width: 2px;
+                    position: absolute; inset: 0;
+                    display: grid; place-items: center;
+                    pointer-events: none;
+                }
 
-  hide() {
-    const overlay = this.shadowRoot.getElementById('spinner');
-    const spinner = this.shadowRoot.querySelector('.spinner');
-    const checkmark = this.shadowRoot.querySelector('.checkmark');
+                :host([inline]) {
+                    --size: 0.85em; --width: 1.5px;
+                    display: inline-grid;
+                    vertical-align: -0.1em;
+                }
 
-    spinner.classList.add('success');
-    checkmark.classList.add('show');
+                .ring {
+                    box-sizing: border-box;
+                    display: grid; place-items: center;
+                    width: var(--size); height: var(--size);
+                    border: var(--width) solid color-mix(in srgb, var(--brand) 15%, transparent);
+                    border-top-color: var(--brand);
+                    border-radius: 50%;
+                    animation: spin var(--speed) linear infinite;
+                }
 
-    setTimeout(() => {
-      overlay.style.display = 'none';
-      spinner.classList.remove('success');
-      checkmark.classList.remove('show');
-    }, 250);
-  }
+                svg { display: none; width: 50%; color: var(--brand); }
+                :host([done]) .ring { border-color: var(--brand); animation: none; }
+                :host([done]) svg { display: block; }
 
-  static async withLoading(operation, delay = 200) {
-    const spinner = document.querySelector("site-spinner");
-    try {
-      spinner.show();
-      const [result] = await Promise.all([
-        operation(),
-        new Promise(resolve => setTimeout(resolve, delay))
-      ]);
-      return result;
-    } finally {
-      spinner.hide();
+                @keyframes spin { to { transform: rotate(360deg); } }
+                @media (prefers-reduced-motion: reduce) { :host { --speed: 2s; } }
+            </style>
+
+            <div class="ring">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+            </div>
+        `;
     }
-  }
+
+    show() {
+        clearTimeout(this.timer);
+        this.removeAttribute('done');
+        this.setAttribute('active', '');
+    }
+
+    hide(ok) {
+        if (!ok) return this.removeAttribute('active');
+        this.setAttribute('done', '');
+        this.timer = setTimeout(() => this.removeAttribute('active'), 250);
+    }
+
+    static async withLoading(operation, delay = 200) {
+        const spinner = document.querySelector('site-spinner:not([inline], [cover])');
+        let ok = false;
+
+        SiteSpinner.#pending++;
+        spinner.show();
+
+        try {
+            const [result] = await Promise.all([operation(), new Promise(r => setTimeout(r, delay))]);
+            ok = true;
+            return result;
+        } finally {
+            if (--SiteSpinner.#pending === 0) spinner.hide(ok);
+        }
+    }
+
+    static cover(el) {
+        const spinner = document.createElement('site-spinner');
+        spinner.setAttribute('cover', '');
+        return el.appendChild(spinner);
+    }
 }
 
 class SiteOverlay extends HTMLElement {

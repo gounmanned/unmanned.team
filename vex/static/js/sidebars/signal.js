@@ -113,7 +113,7 @@ class SignalSidebar {
                     <span class="tag">AI analyst</span>
                     <time class="timestamp"></time>
                 </div>
-                <div class="body"></div>
+                <div class="body markdown"></div>
             </div>`;
 
         li.querySelector(".tag").hidden = source !== "vex";
@@ -127,9 +127,7 @@ class SignalSidebar {
         timestamp.dateTime = when ?? "";
 
         li.querySelector(".sender").textContent = source;
-        li.querySelector(".body").innerHTML = DOMPurify.sanitize(
-            marked.parse(update.value ?? "", { breaks: true, gfm: true })
-        );
+        li.querySelector(".body").innerHTML = Markdown.parse(update.value ?? "");
 
         document.getElementById("updates").append(li);
         document.getElementById("response").value = "";

@@ -13,6 +13,7 @@
   <script>const v = Date.now();</script>
   <script>
     document.write(`
+      <link rel="stylesheet" href="static/system/markdown.css?v=${v}">
       <link rel="stylesheet" href="static/css/managed.css?v=${v}">
       <link rel="stylesheet" href="static/css/dot.css?v=${v}">
       <link rel="stylesheet" href="static/css/tenant.css?v=${v}">
@@ -269,12 +270,11 @@
   </site-sidebar>
 </body>
 
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script>
 <script src="https://cdn.unmanned.team/js/components.js"></script>
 <script src="https://cdn.unmanned.team/js/cognito.js"></script>
 <script>
   document.write(`
+    <script src="static/system/markdown.js?v=${v}"><\/script>
     <script src="static/js/api.js?v=${v}"><\/script>
     <script src="static/js/workspace.js?v=${v}"><\/script>
     <script src="static/js/table.js?v=${v}"><\/script>

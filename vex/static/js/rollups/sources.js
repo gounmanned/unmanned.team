@@ -39,17 +39,15 @@ class SourceRollup {
 
     async reset() {
         await this.ready;
-        Object.values(this.sources).forEach(s => { s.ids = []; });
-        this.selected = null;
-        this.confirming = null;
-        this.addOpen = null;
+        this._clearIds();
+        this.selected = this.confirming = this.addOpen = null;
         this._renderMailbox();
         this._render();
     }
 
     async reload() {
         await this.ready;
-        Object.values(this.sources).forEach(s => { s.ids = []; });
+        this._clearIds();
         (await this.api.sources.list()).forEach(s => this.add(s));
         this.addOpen ??= this._userCount() === 0;
         this._render();
@@ -63,6 +61,10 @@ class SourceRollup {
     }
 
     // --- state ---
+
+    _clearIds() {
+        Object.values(this.sources).forEach(s => { s.ids = []; });
+    }
 
     _isSystem(id) {
         return id === '0';
@@ -91,6 +93,11 @@ class SourceRollup {
         this.error = null;
         this._render();
         this.list.querySelector('[data-cred]').focus();
+    }
+
+    _close() {
+        this.selected = null;
+        this._render();
     }
 
     _submit() {
@@ -147,8 +154,8 @@ class SourceRollup {
 
     // --- rendering ---
 
-    _logo(key) {
-        return `<img class="src-logo" src="static/img/source/${key}.png" alt="">`;
+    _logo(key, cls = 'src-logo') {
+        return `<img class="${cls}" src="static/img/source/${key}.png" alt="">`;
     }
 
     _renderMailbox() {
@@ -166,29 +173,24 @@ class SourceRollup {
                 ${this._addGroup()}
             </nav>
             <main class="src-main">
-                ${this.selected ? this._connectForm() : this._idle()}
+                ${this.selected ? this._connectForm() : this._empty()}
             </main>
         `;
     }
 
     _connectedRow({ key, id, ref, system }) {
-        const s = this.sources[key];
-        const meta = system ? 'Managed by system' : this._userCount(key) > 1 ? `ID ${id}` : 'Connected';
-
-        let action = '<span class="material-symbols-outlined src-lock">lock</span>';
-        if (!system) {
-            action = this.confirming === ref
+        const meta = system ? 'Managed SOC' : this._userCount(key) > 1 ? `ID ${id}` : 'Connected';
+        const action = system
+            ? '<span class="material-symbols-outlined src-lock">lock</span>'
+            : this.confirming === ref
                 ? `<button class="src-x is-confirming" data-disconnect="${ref}">Disconnect</button>`
                 : `<button class="src-x" data-disconnect="${ref}" title="Disconnect"><span class="material-symbols-outlined">close</span></button>`;
-        }
 
         return `
             <div class="src-row${this.fresh.includes(ref) ? ' is-new' : ''}">
                 ${this._logo(key)}
-                <div class="src-row-text">
-                    <span class="src-name">${s.name}</span>
-                    <span class="src-meta${system ? '' : ' is-live'}">${meta}</span>
-                </div>
+                <span class="src-name">${this.sources[key].name}</span>
+                <span class="src-meta${system ? '' : ' is-live'}">${meta}</span>
                 ${action}
             </div>
         `;
@@ -200,7 +202,7 @@ class SourceRollup {
         return `
             <details class="src-add" ${this.addOpen ? 'open' : ''}>
                 <summary>
-                    <span class="material-symbols-outlined">chevron_right</span>
+                    <span class="material-symbols-outlined src-add-chevron">chevron_right</span>
                     Add a source
                     <span class="src-add-count">${keys.length}</span>
                 </summary>
@@ -214,13 +216,12 @@ class SourceRollup {
         `;
     }
 
-    _idle() {
-        const keys = Object.keys(this.sources).sort((a, b) => this._byName(a, b));
+    _empty() {
         return `
-            <div class="src-cloud">
-                ${keys.map((k, i) => `
-                    <button style="--i: ${i}" data-select="${k}" title="${this.sources[k].name}">${this._logo(k)}</button>
-                `).join('')}
+            <div class="src-empty">
+                <span class="src-empty-icon material-symbols-outlined">radar</span>
+                <span class="src-empty-label">Select a source</span>
+                <span class="src-empty-hint">Pick an integration on the left to connect it.</span>
             </div>
         `;
     }
@@ -233,7 +234,7 @@ class SourceRollup {
         return `
             <button class="src-close" data-close title="Close"><span class="material-symbols-outlined">close</span></button>
             <div class="src-panel">
-                <img class="src-hero" src="static/img/source/${key}.png" alt="">
+                ${this._logo(key, 'src-hero')}
                 <h3>Connect ${name}</h3>
                 <p class="src-sub">Collect ${name} event logs and security alerts.</p>
 
@@ -285,10 +286,7 @@ class SourceRollup {
             const select = ev.target.closest('[data-select]')?.dataset.select;
             if (select) return this._select(select);
             if (ev.target.closest('[data-submit]')) return this._submit();
-            if (ev.target.closest('[data-close]')) {
-                this.selected = null;
-                this._render();
-            }
+            if (ev.target.closest('[data-close]')) this._close();
         });
 
         this.list.addEventListener('input', ev => {
@@ -303,10 +301,7 @@ class SourceRollup {
         });
 
         document.addEventListener('keydown', ev => {
-            if (ev.key === 'Escape' && this.selected && !this.connecting) {
-                this.selected = null;
-                this._render();
-            }
+            if (ev.key === 'Escape' && this.selected && !this.connecting) this._close();
         });
     }
 }

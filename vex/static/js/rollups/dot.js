@@ -1,47 +1,92 @@
 class DotRollup {
     static platforms = ['windows', 'mac'];
 
+    static STATUS = {
+        T0: { tone: 'ok', label: 'Success', icon: 'check' },
+        PENDING: { tone: 'pending', label: 'Pending', icon: 'pending' },
+        FAILED: { tone: 'bad', label: 'Failed', icon: 'close' },
+    };
+
+    static status(s) {
+        return DotRollup.STATUS[s] ?? DotRollup.STATUS.FAILED;
+    }
+
     constructor(state) {
         this.api = state.api;
+        this.screen = document.getElementById('dot-screen');
         this.shelf = document.getElementById('dot-shelf');
         this.list = document.getElementById('dot-list');
         this.wrap = this.list.parentElement;
         this.mid = document.getElementById('dot-mid');
-        this.right = document.getElementById('dot-right');
         this.search = document.getElementById('dot-search-input');
         this.bannerCount = document.getElementById('dot-banner-count');
+        this.terminal = this._append('dot-term');
+        this.toast = this._append('dot-toast');
+
         this.dots = new Map();
         this.packs = new Map();
         this.packOf = new Map();
-        this.selected = null;
-        this.sorted = [];
-        this.selectedKey = null;
+        this.selected = null;       // asset key
+        this.sorted = [];           // its actions, newest first
+        this.selectedKey = null;    // action shown in the terminal
 
         this.search.addEventListener('input', () => this._filter());
-        this.mid.addEventListener('click', (e) => {
-            if (e.target.closest('.dot-mid-invite')) return this._invite();
-            if (e.target.closest('.dot-mid-delete')) return this._deleteAsset();
-            if (e.target.closest('.dot-mid-key')) return this._copyKey();
-            const li = e.target.closest('.dot-action-item');
-            if (!li) return;
-            if (e.target.closest('.dot-action-rerun')) return this._rerun(li.dataset.key);
-            this._selectAction(li.dataset.key);
-        });
+
         this.list.addEventListener('click', (e) => {
             const li = e.target.closest('.dot-item');
             if (li) this._select(li.dataset.key);
         });
+
+        this.mid.addEventListener('click', (e) => {
+            const act = e.target.closest('[data-act]')?.dataset.act;
+            const key = e.target.closest('.dot-action-item')?.dataset.key;
+            if (act === 'invite') return this._invite();
+            if (act === 'key') return this._copyKey();
+            if (act === 'delete') return this._deleteAsset();
+            if (act === 'rerun') return this._rerun(key);
+            if (!key) return;
+            if (key === this.selectedKey) this._closeTerminal();
+            else this._openAction(key);
+        });
+
+        this.terminal.addEventListener('click', (e) => {
+            if (e.target.closest('[data-act="close"]')) this._closeTerminal();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') this._closeTerminal();
+        });
+
         this._initShelf();
         this._listenForDrops();
+        this._empty();
     }
 
-    // --- rerun -------------------------------------------------------------
+    _append(className) {
+        const el = document.createElement('div');
+        el.className = className;
+        this.screen.append(el);
+        return el;
+    }
 
-    async _rerun(key) {
-        const { id, name } = this.sorted.find(a => a.key === key);
-        await SiteSpinner.withLoading(() => this.api.inventory.run(this.selected, { id, name }));
-        this._toast(`${name} queued`);
+    // --- running -----------------------------------------------------------
+
+    async _queue(actions, message) {
+        await SiteSpinner.withLoading(() => Promise.all(
+            actions.map(({ id, name }) => this.api.inventory.run(this.selected, { id, name }))
+        ));
+        this._toast(message);
         await this.refresh();
+    }
+
+    _rerun(key) {
+        const action = this.sorted.find(a => a.key === key);
+        this._queue([action], `${action.name} queued`);
+    }
+
+    _runPack(pack) {
+        const actions = this.packs.get(pack);
+        this._queue(actions, `${pack} queued · ${actions.length} action${actions.length === 1 ? '' : 's'}`);
     }
 
     // --- action packs ------------------------------------------------------
@@ -80,29 +125,16 @@ class DotRollup {
         if (this.sorted.length) this._renderActions(this.dots.get(this.selected), this.sorted);
     }
 
-    static packLogo(name) {
-        return `static/img/packs/${name.toLowerCase()}.png`;
-    }
-
     _renderShelf() {
         this.shelf.innerHTML = [...this.packs].map(([name, actions]) => `
             <li class="dot-pack" draggable="true" data-pack="${name}" title="${name} · ${actions.map(a => a.name).join(', ')}">
                 <span class="dot-pack-logo">
-                    <img src="${DotRollup.packLogo(name)}" alt="">
+                    <img src="static/img/packs/${name.toLowerCase()}.png" alt="">
                     <span class="dot-pack-count">${actions.length}</span>
                 </span>
                 <span class="dot-pack-name">${name}</span>
             </li>
         `).join('');
-    }
-
-    async _runPack(pack) {
-        const actions = this.packs.get(pack);
-        await SiteSpinner.withLoading(() => Promise.all(
-            actions.map(({ id, name }) => this.api.inventory.run(this.selected, { id, name }))
-        ));
-        this._toast(`${pack} queued · ${actions.length} action${actions.length === 1 ? '' : 's'}`);
-        await this.refresh();
     }
 
     // --- dots list ---------------------------------------------------------
@@ -141,8 +173,8 @@ class DotRollup {
     _clearSelection() {
         this.selected = null;
         this.sorted = [];
-        this.selectedKey = null;
-        this._watermark();
+        this._closeTerminal();
+        this._empty();
     }
 
     _renderList() {
@@ -165,7 +197,7 @@ class DotRollup {
                 <details ${open ? 'open' : ''}>
                     <summary class="dot-group-toggle">
                         <span class="dot-group-chevron material-symbols-outlined">chevron_right</span>
-                        <span class="dot-group-label">Missing dot</span>
+                        Missing dot
                         <span class="dot-group-count">${assets.length}</span>
                     </summary>
                     <ul class="dot-group-list">
@@ -183,7 +215,7 @@ class DotRollup {
             : `<span class="dot-item-nodot material-symbols-outlined">radio_button_unchecked</span>`;
         return `
             <li class="dot-item ${runtime ? '' : 'no-dot'}" data-key="${asset.key}">
-                <span class="dot-item-mark">${mark}</span>
+                ${mark}
                 <span class="dot-item-name">${asset.name}</span>
                 <span class="dot-item-seen">${runtime ? this._ago(asset.updated) : 'No dot'}</span>
             </li>
@@ -214,18 +246,17 @@ class DotRollup {
         group.querySelector('.dot-group-count').textContent = shown;
     }
 
-    // --- selection ---------------------------------------------------------
+    // --- selected dot ------------------------------------------------------
 
     _select(key) {
         this.selected = key;
-        for (const li of this.list.querySelectorAll('.dot-item')) li.classList.toggle('selected', li.dataset.key === key);
-
-        this._clearOutput();
+        this.list.querySelectorAll('.dot-item').forEach(li => li.classList.toggle('selected', li.dataset.key === key));
+        this._closeTerminal();
         this._loadActions(this.dots.get(key));
     }
 
     async _loadActions(asset, quiet = false) {
-        if (!quiet) this.mid.innerHTML = '<div class="dot-col-body loading"></div>';
+        if (!quiet) this.mid.innerHTML = '<div class="dot-actions loading"></div>';
         const actions = await this.api.inventory.get(asset.key) ?? [];
         if (this.selected !== asset.key) return;   // they switched dots mid-fetch
         this._renderActions(asset, actions);
@@ -241,20 +272,6 @@ class DotRollup {
         this._toast(`Invitation sent to ${asset.name}`);
     }
 
-    _toast(message) {
-        let toast = document.getElementById('dot-toast');
-        if (!toast) {
-            toast = document.createElement('div');
-            toast.id = 'dot-toast';
-            toast.className = 'dot-toast';
-            document.getElementById('dot-screen').appendChild(toast);
-        }
-        toast.textContent = message;
-        toast.classList.add('dot-toast--show');
-        clearTimeout(this._toastTimer);
-        this._toastTimer = setTimeout(() => toast.classList.remove('dot-toast--show'), 2000);
-    }
-
     async _deleteAsset() {
         await SiteSpinner.withLoading(() => this.api.inventory.delete(this.selected));
         this.dots.delete(this.selected);
@@ -262,84 +279,68 @@ class DotRollup {
         this._renderList();
     }
 
+    _toast(message) {
+        this.toast.textContent = message;
+        this.toast.classList.add('dot-toast--show');
+        clearTimeout(this._toastTimer);
+        this._toastTimer = setTimeout(() => this.toast.classList.remove('dot-toast--show'), 2000);
+    }
+
     _renderActions(asset, actions) {
         this.sorted = [...actions].sort((a, b) => b.created.localeCompare(a.created));
 
-        const list = this.sorted.length ? `
-            <div class="dot-col-body dot-col-body--scroll">
-                <ul class="dot-action-list">
-                    ${this.sorted.map(a => this._actionRow(a)).join('')}
-                </ul>
-            </div>
-        ` : this._placeholder('dot-empty dot-empty--overlay', 'Drop an action pack here');
+        const list = this.sorted.length
+            ? `<ul class="dot-actions">${this.sorted.map(a => this._actionRow(a)).join('')}</ul>`
+            : this._placeholder('drag_pan', 'No actions yet', 'Drag an action pack here to run it.', 'dot-empty--overlay');
 
         this.mid.innerHTML = this._actionsHeader(asset) + list;
 
-        if (this.selectedKey == null) return;
-        if (this.sorted.some(a => a.key === this.selectedKey)) this._selectAction(this.selectedKey);
-        else this._clearOutput();
+        // keep an open terminal in sync after a refresh
+        if (this.selectedKey != null) this._openAction(this.selectedKey);
     }
 
     _actionRow(action) {
-        const { tone, label, icon } = this._statusInfo(action.status);
+        const { tone, label, icon } = DotRollup.status(action.status);
         const pack = this.packOf.get(String(action.id));
-        const badge = pack
-            ? `<span class="dot-action-pack" title="${pack} action pack">${pack}</span>`
-            : '';
         return `
             <li class="dot-action-item dot-action-item--${tone}" data-key="${action.key}">
                 <span class="dot-action-status material-symbols-outlined" title="${label}">${icon}</span>
-                <span class="dot-action-name"><span class="dot-action-label">${action.name}</span><span class="dot-action-id">${action.id}</span>${badge}</span>
+                <span class="dot-action-name">
+                    <span class="dot-action-label">${action.name}</span>
+                    <span class="dot-action-id">${action.id}</span>
+                    ${pack ? `<span class="dot-action-pack">${pack}</span>` : ''}
+                </span>
                 <span class="dot-action-time">${this._clock(action.created)}</span>
-                <button type="button" class="dot-action-rerun" title="Rerun" aria-label="Rerun ${action.name}">
-                    <span class="material-symbols-outlined">replay</span>
-                </button>
+                ${this._iconBtn('rerun', 'replay', 'Rerun')}
             </li>
         `;
     }
 
     _actionsHeader(asset) {
         const total = this.sorted.length;
-        const success = this.sorted.filter(a => a.status === 'T0').length;
-        const rate = Math.round((success / total) * 100);
+        const rate = total && Math.round(this.sorted.filter(a => a.status === 'T0').length / total * 100);
         const { runtime } = asset.metadata;
-
-        const logo = runtime
-            ? `<span class="dot-mid-logo" title="${runtime}"><img src="static/img/runtime/${runtime}.png" alt=""></span>`
-            : `<span class="dot-mid-logo dot-mid-logo--empty"></span>`;
 
         return `
             <div class="dot-mid-header">
-                ${logo}
-                <div class="dot-mid-meta">
-                    <span class="dot-mid-name">${asset.name}</span>
-                    ${this._metadata(asset.metadata)}
-                </div>
+                <span class="dot-mid-logo" title="${runtime ?? ''}">${runtime ? `<img src="static/img/runtime/${runtime}.png" alt="">` : ''}</span>
+                <span class="dot-mid-name">${asset.name}</span>
+                ${this._metadata(asset.metadata)}
                 <div class="dot-mid-stat">
                     <span class="dot-mid-stat-value">${total}</span>
                     ${total ? `<span class="dot-mid-stat-label">${rate}% success</span>` : ''}
                 </div>
                 <span class="dot-mid-divider"></span>
-                <div class="dot-mid-tools">
-                    <button type="button" class="dot-mid-invite" title="Send invite" aria-label="Send invite">
-                        <span class="material-symbols-outlined">mail</span>
-                    </button>
-                    <button type="button" class="dot-mid-key" title="Copy key" aria-label="Copy key">
-                        <span class="material-symbols-outlined">key</span>
-                    </button>
-                    <button type="button" class="dot-mid-delete" title="Delete asset" aria-label="Delete asset">
-                        <span class="material-symbols-outlined">delete</span>
-                    </button>
-                </div>
+                ${this._iconBtn('invite', 'mail', 'Send invite')}
+                ${this._iconBtn('key', 'key', 'Copy key')}
+                ${this._iconBtn('delete', 'delete', 'Delete asset', 'dot-icon-btn--danger')}
             </div>
         `;
     }
 
     _metadata(meta) {
         const entries = Object.entries(meta ?? {});
-        if (!entries.length) {
-            return `<span class="dot-meta-icon empty material-symbols-outlined">data_object</span>`;
-        }
+        if (!entries.length) return `<span class="dot-meta-icon empty material-symbols-outlined">data_object</span>`;
 
         return `
             <span class="dot-meta-hover">
@@ -350,72 +351,88 @@ class DotRollup {
             </span>`;
     }
 
-    _statusInfo(s) {
-        if (s === 'T0') return { tone: 'ok', label: 'Success', icon: 'check' };
-        if (s === 'PENDING') return { tone: 'pending', label: 'Pending', icon: 'pending' };
-        return { tone: 'bad', label: 'Failed', icon: 'close' };
+    _iconBtn(act, icon, title, cls = '') {
+        return `
+            <button type="button" class="dot-icon-btn ${cls}" data-act="${act}" title="${title}">
+                <span class="material-symbols-outlined">${icon}</span>
+            </button>`;
     }
 
-    _selectAction(key) {
+    // --- terminal ----------------------------------------------------------
+
+    _openAction(key) {
         const action = this.sorted.find(a => a.key === key);
-        if (!action) return;
+        if (!action) return this._closeTerminal();
+
         this.selectedKey = key;
-
-        this.mid.querySelectorAll('.dot-action-item').forEach(li =>
-            li.classList.toggle('selected', li.dataset.key === key));
-
-        this._renderOutput(action);
+        this._markAction(key);
+        this._renderTerminal(action);
+        this.screen.classList.add('term-open');
     }
 
-    _renderOutput(action) {
-        const { tone, label } = this._statusInfo(action.status);
+    _closeTerminal() {
+        this.selectedKey = null;
+        this._markAction(null);
+        this.screen.classList.remove('term-open');
+    }
+
+    _markAction(key) {
+        this.mid.querySelectorAll('.dot-action-item').forEach(li => li.classList.toggle('selected', li.dataset.key === key));
+    }
+
+    _renderTerminal(action) {
+        const { tone, label } = DotRollup.status(action.status);
+        const host = this.dots.get(this.selected)?.name ?? this.selected;
         const output = this._outputText(action);
-        const prompt = this.dots.get(this.selected)?.name ?? this.selected;
 
-        const body = tone === 'pending'
-            ? `<p class="dot-terminal-line dot-terminal-running"><span class="dot-terminal-spinner"></span>running…</p>`
-            : `
-                ${output.trim()
-                    ? `<pre class="dot-terminal-output">${Workspace.esc(output)}</pre>`
-                    : `<p class="dot-terminal-line dot-terminal-muted">(no output)</p>`}
-                <p class="dot-terminal-line dot-terminal-exit dot-terminal-exit--${tone}">
-                    <span class="dot-terminal-exit-mark"></span>process exited — ${label}
-                </p>`;
+        const result = tone === 'pending'
+            ? `<p class="dot-term-muted"><span class="dot-term-mark"></span>running…</p>`
+            : `${output.trim()
+                    ? `<pre class="dot-term-output">${Workspace.esc(output)}</pre>`
+                    : `<p class="dot-term-muted">(no output)</p>`}
+               <p class="dot-term-muted"><span class="dot-term-mark"></span>process exited — ${label}</p>`;
 
-        this.right.innerHTML = `
-            <div class="dot-terminal">
-                <div class="dot-terminal-body dot-terminal-body--output">
-                    <p class="dot-terminal-line">
-                        <span class="dot-terminal-prompt">${prompt} ~ $</span>
-                        <span class="dot-terminal-cmd">${action.name}<span class="dot-terminal-cmd-id">${action.id}</span></span>
-                    </p>
-                    ${body}
-                </div>
+        this.terminal.className = `dot-term dot-term--${tone}`;
+        this.terminal.innerHTML = `
+            <header class="dot-term-bar">
+                <span class="material-symbols-outlined dot-term-icon">terminal</span>
+                <span class="dot-term-title">${host}</span>
+                <span class="dot-term-time">${this._clock(action.created)}</span>
+                ${this._iconBtn('close', 'close', 'Close (Esc)')}
+            </header>
+            <div class="dot-term-body">
+                <p><span class="dot-term-prompt">${host} ~ $</span> <b>${action.name}</b> <span class="dot-term-muted">${action.id}</span></p>
+                ${result}
             </div>
         `;
-    }
-
-    _clearOutput() {
-        this.selectedKey = null;
-        this.right.innerHTML = this._placeholder('dot-watermark', 'Select action');
     }
 
     _outputText(action) {
         if (!action.value) return '';
         try {
-            const bytes = Uint8Array.from(action.value, c => c.charCodeAt(0));
-            return new TextDecoder().decode(bytes);
+            return new TextDecoder().decode(Uint8Array.from(action.value, c => c.charCodeAt(0)));
         } catch {
             return '';
         }
     }
 
-    _watermark() {
-        this.mid.innerHTML = this._placeholder('dot-watermark', 'Actions');
-        this.right.innerHTML = this._placeholder('dot-watermark', 'Response');
+    // --- empty states ------------------------------------------------------
+
+    _empty() {
+        this.mid.innerHTML = this._placeholder('adjust', 'Select a dot', 'Pick an asset on the left to see its actions.');
     }
 
-    // --- drop ------------------------------------------------------------
+    _placeholder(icon, label, hint, cls = '') {
+        return `
+            <div class="dot-empty ${cls}">
+                <span class="dot-empty-icon material-symbols-outlined">${icon}</span>
+                <span class="dot-empty-label">${label}</span>
+                <span class="dot-empty-hint">${hint}</span>
+            </div>
+        `;
+    }
+
+    // --- drop --------------------------------------------------------------
 
     _listenForDrops() {
         this.mid.addEventListener('dragover', (e) => {
@@ -459,7 +476,7 @@ class DotRollup {
         return Number(hash % 10n ** 13n);
     }
 
-    // --- time helpers ------------------------------------------------------
+    // --- time --------------------------------------------------------------
 
     _ago(ts) {
         const minutes = Math.round((Date.now() - new Date(ts)) / 60000);
@@ -478,15 +495,5 @@ class DotRollup {
             month: 'short', day: 'numeric',
             hour: '2-digit', minute: '2-digit', second: '2-digit',
         });
-    }
-
-    _placeholder(cls, text) {
-        return `
-            <div class="${cls}">
-                <div class="dot-watermark-line">
-                    <span class="dot-watermark-label">${text}</span>
-                </div>
-            </div>
-        `;
     }
 }

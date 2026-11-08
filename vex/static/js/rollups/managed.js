@@ -107,7 +107,6 @@ class ManagedRollup {
 
     _renderList() {
         const searchBar = this.search.closest('.managed-search');
-        this.list.classList.toggle('loading', this.loading);
 
         if (this.loading) {
             searchBar.hidden = true;
@@ -235,7 +234,6 @@ class ManagedRollup {
         `;
     }
 
-    // Favicon over initials; tiny (placeholder) or missing icons fall back to the initials.
     _mark(domain) {
         const logo = domain.includes('.') && `
             <img src="https://www.google.com/s2/favicons?domain=${domain}&sz=64" alt="" loading="lazy"
@@ -245,7 +243,6 @@ class ManagedRollup {
         return `<span class="tenant-mark">${domain.slice(0, 2).toUpperCase()}${logo || ''}</span>`;
     }
 
-    // Circle icon for the row's state; a spinner while signals are still loading.
     _indicator(state) {
         const icon = state === 'scanning'
             ? SPINNER
@@ -397,7 +394,6 @@ class ManagedRollup {
             this.assets.set(asset.account, counts);
         });
 
-        // "/" focuses search while this screen is open
         document.addEventListener('keydown', (e) => {
             if (e.key !== '/' || e.target.closest('input, textarea') || !this.search.checkVisibility()) return;
             e.preventDefault();

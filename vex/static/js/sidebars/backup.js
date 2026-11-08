@@ -7,9 +7,8 @@ class BackupSidebar {
         this.pathStack = [];
     }
 
-    async reset() {
+    reset() {
         this.pathStack = [];
-        await this.reload();
     }
 
     async reload() {
@@ -17,14 +16,16 @@ class BackupSidebar {
         this.api.file.root = ['backup', ...this.pathStack].join('/') + '/';
         this.breadcrumb();
 
+        const loader = SiteSpinner.cover(this.wrap);
         const files = await this.api.file.list();
+        loader.remove();
+
         files.forEach(name => this.add(name));
         this.wrap.classList.toggle('empty', files.length === 0);
     }
 
     breadcrumb() {
         const bar = document.getElementById('file-breadcrumb');
- 
         bar.innerHTML = ['root', ...this.pathStack].map((part, i, arr) => {
             const last = i === arr.length - 1;
             return last
@@ -58,35 +59,37 @@ class BackupSidebar {
             ${folder ? '<span class="material-symbols-outlined entry-chevron">chevron_right</span>' : ''}
         `;
 
-        item.addEventListener('click', async () => {
-            if (folder) {
-                this.pathStack.push(displayName);
-                this.reload();
-            } else {
-
-                item.classList.add('loading');
-
-                try {
-                    const redirect = await this.api.file.call('GET', `file/${this.api.file.root.replace(/\/$/, '')}?name=${displayName}`);
-                    if (!redirect) return;
-
-                    const response = await fetch(redirect.url, { method: 'GET' });
-                    if (!response.ok) return;
-
-                    const blob = await response.blob();
-                    const a = Object.assign(document.createElement('a'), {
-                        href: URL.createObjectURL(blob),
-                        download: displayName
-                    });
-
-                    a.click();
-                    URL.revokeObjectURL(a.href);
-                } finally {
-                    item.classList.remove('loading');
-                }
-            }
-        });
-
+        item.addEventListener('click', () => folder ? this.open(displayName) : this.download(item, displayName));
         this.list.appendChild(item);
+    }
+
+    open(folder) {
+        this.pathStack.push(folder);
+        this.reload();
+    }
+
+    async download(item, name) {
+        const spinner = document.createElement('site-spinner');
+        spinner.setAttribute('inline', '');
+        item.append(spinner);
+
+        try {
+            const redirect = await this.api.file.call('GET', `file/${this.api.file.root.replace(/\/$/, '')}?name=${name}`);
+            if (!redirect) return;
+
+            const response = await fetch(redirect.url, { method: 'GET' });
+            if (!response.ok) return;
+
+            const blob = await response.blob();
+            const a = Object.assign(document.createElement('a'), {
+                href: URL.createObjectURL(blob),
+                download: name,
+            });
+
+            a.click();
+            URL.revokeObjectURL(a.href);
+        } finally {
+            spinner.remove();
+        }
     }
 }

@@ -113,33 +113,6 @@ site-rollup {
   color: var(--ink-3);
 }
 
-/* ── spinner ──────────────── */
-
-.loading {
-  color: transparent;
-  position: relative;
-}
-
-.loading::before {
-  content: none;
-}
-
-.loading::after {
-  content: '';
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: var(--spinner-size, 20px);
-  height: var(--spinner-size, 20px);
-  margin: calc(var(--spinner-size, 20px) / -2) 0 0 calc(var(--spinner-size, 20px) / -2);
-  border: 2px solid rgba(224,18,128,0.15);
-  border-top: 2px solid var(--brand);
-  border-radius: 50%;
-  animation: spin 0.65s linear infinite;
-}
-
-@keyframes spin { to { transform: rotate(360deg); } }
-
 /* ── table ──────────────── */
 
 table {

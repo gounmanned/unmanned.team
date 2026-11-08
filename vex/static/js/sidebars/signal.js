@@ -183,7 +183,7 @@ class SignalSidebar {
             <img class="avatar" src="${Workspace.avatar("vex")}" alt="">
             <div class="message">
                 <div class="meta"><span class="sender">vex</span><span class="tag">AI analyst</span></div>
-                <div class="body thinking">Thinking…</div>
+                <div class="body thinking">${SiteSpinner.inline} Thinking…</div>
             </div>`;
         document.getElementById("updates").append(thinking);
         thinking.scrollIntoView({ block: "nearest" });

@@ -11,8 +11,7 @@ const ACCOUNT_ICONS = {
     clear: 'check_circle',
 };
 
-const SPINNER ='<span class="managed-spinner"></span>';
-
+const SPINNER = SiteSpinner.inline;
 const fmt = n => n.toLocaleString();
 
 class ManagedRollup {
@@ -277,9 +276,9 @@ class ManagedRollup {
             </header>
 
             <dl class="tenant-panel-stats">
-                <div><dt>Signals</dt><dd>${this.scanning ? '—' : fmt(open)}</dd></div>
-                <div class="${threats ? 'is-threat' : ''}"><dt>Threats</dt><dd>${this.scanning ? '—' : fmt(threats)}</dd></div>
-                <div><dt>Dots</dt><dd>${this.counting ? '—' : fmt(dots)}</dd></div>
+                <div><dt>Signals</dt><dd>${this.scanning ? SPINNER : fmt(open)}</dd></div>
+                <div class="${threats ? 'is-threat' : ''}"><dt>Threats</dt><dd>${this.scanning ? SPINNER : fmt(threats)}</dd></div>
+                <div><dt>Dots</dt><dd>${this.counting ? SPINNER : fmt(dots)}</dd></div>
             </dl>
         `;
     }
@@ -451,7 +450,7 @@ class ManagedRollup {
 
 class ManagedSummary {
     reset() {
-        this._el('accounts').textContent = '—';
+        this._el('accounts').innerHTML = SPINNER;
         this._el('assets').innerHTML = SPINNER;
         this._el('dots').innerHTML = SPINNER;
     }

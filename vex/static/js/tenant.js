@@ -37,12 +37,11 @@ class TenantScreen {
         this.renderTrend();
     }
 
-    // Spinner shows until the first signal arrives, or the reload finishes for an empty account.
     async refresh() {
-        this.section.classList.add('loading');
+        this.loader = SiteSpinner.cover(this.section);
         await this.reset();
         await this.reload();
-        this.section.classList.remove('loading');
+        this.loader.remove();
     }
 
     signals() {
@@ -115,7 +114,7 @@ class TenantScreen {
         this.clearSearch();
         this.tailFrom = new Date(Date.now() - TenantScreen.TAIL_INTERVAL);
         this.tailSwitch.setAttribute('aria-pressed', 'true');
-        this.table.placeholder('Tailing logs · please wait');
+        this.table.placeholder(`${SiteSpinner.inline} Tailing logs`);
 
         this.tailTimer = setInterval(() => this.pollTail(), TenantScreen.TAIL_INTERVAL);
         this.pollTail();
@@ -255,7 +254,7 @@ class TenantScreen {
 
     listen() {
         document.addEventListener('signal:account', ({ signal }) => {
-            this.section.classList.remove('loading');
+            this.loader.remove();
             this.state.track(signal);
             this.table.add(signal);
             this.scheduleTrend();

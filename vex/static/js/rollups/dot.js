@@ -142,9 +142,7 @@ class DotRollup {
     async reload() {
         this._clearSelection();
         this._loadPacks();
-        this.wrap.classList.add('loading');
         await this._load();
-        this.wrap.classList.remove('loading');
     }
 
     reset() {
@@ -155,7 +153,7 @@ class DotRollup {
         this.list.innerHTML = '';
         this.shelf.innerHTML = '';
         this.search.value = '';
-        this.bannerCount.textContent = '—';
+        this.bannerCount.innerHTML = SiteSpinner.inline;
     }
 
     async refresh() {
@@ -256,7 +254,7 @@ class DotRollup {
     }
 
     async _loadActions(asset, quiet = false) {
-        if (!quiet) this.mid.innerHTML = '<div class="dot-actions loading"></div>';
+        if (!quiet) this.mid.innerHTML = '<site-spinner cover></site-spinner>';
         const actions = await this.api.inventory.get(asset.key) ?? [];
         if (this.selected !== asset.key) return;   // they switched dots mid-fetch
         this._renderActions(asset, actions);

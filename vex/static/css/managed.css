@@ -367,14 +367,6 @@
     &[data-state="threat"] { color: var(--threat); font-weight: 500; }
   }
 
-  .managed-spinner {
-    display: inline-block;
-    width: 9px; height: 9px; flex-shrink: 0;
-    border: 1.5px solid var(--line); border-top-color: var(--text-faint);
-    border-radius: 50%;
-    animation: managed-spin 0.7s linear infinite;
-  }
-
   /* ── Account panel ──────────────────────────────────────────────────────── */
 
   .tenant-panel {
@@ -553,5 +545,4 @@
   }
 }
 
-@keyframes managed-spin { to { transform: rotate(360deg); } }
 @keyframes managed-fade { from { opacity: 0; } }

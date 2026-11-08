@@ -178,11 +178,6 @@
 
       a { color: var(--accent); }
     }
-
-    .thinking {
-      color: var(--text-faint);
-      animation: thinking 1.2s ease-in-out infinite;
-    }
   }
 
   /* ── vex's turn: your call ──────────────────────────────────── */
@@ -381,8 +376,4 @@
 
     .send-label { display: inline; }
   }
-}
-
-@keyframes thinking {
-  50% { opacity: 0.3; }
 }

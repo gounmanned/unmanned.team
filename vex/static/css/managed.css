@@ -146,6 +146,8 @@
 
   /* ── Account table ──────────────────────────────────────────────────────── */
 
+  .managed-main { container-type: inline-size; }
+
   .managed-accounts {
     flex: 1; min-height: 0; overflow-y: auto;
     list-style: none; margin: 0; padding: 0 0 24px;
@@ -153,30 +155,40 @@
 
   .tenant,
   .tenant-head {
-    display: grid; align-items: center; gap: 20px;
-    grid-template-columns: 24px minmax(200px, 1fr) 150px 70px 90px 60px 14px;
+    --cols: 28px minmax(200px, 1fr) 100px 120px 84px 14px;
+    display: grid; align-items: center; gap: 24px;
+    grid-template-columns: var(--cols);
     padding: 0 var(--pad);
+  }
+
+  /* Narrow lists drop Dots and Admins; both are one click away in the panel. */
+  @container (max-width: 760px) {
+    .tenant, .tenant-head { --cols: 28px minmax(160px, 1fr) 80px 14px; }
+    .tenant > :nth-child(4), .tenant > :nth-child(5),
+    .tenant-head > :nth-child(4), .tenant-head > :nth-child(5) { display: none; }
   }
 
   .tenant-head {
     position: sticky; top: 0; z-index: 1;
-    height: 36px;
+    height: 34px;
     border-bottom: 1px solid var(--line);
-    background: var(--surface);
-    font-size: 10.5px; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase;
+    background: color-mix(in srgb, var(--surface) 92%, transparent);
+    backdrop-filter: blur(6px);
+    font-size: 10.5px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase;
     color: var(--text-faint);
 
-    span:nth-child(n + 3) { text-align: right; }
+    .tenant-num { font-size: inherit; color: inherit; }
   }
 
   .tenant {
     position: relative;
-    height: 58px;
-    box-shadow: inset 0 -1px 0 color-mix(in srgb, var(--line) 70%, transparent);
+    height: 60px;
+    box-shadow: inset 0 -1px 0 color-mix(in srgb, var(--line) 60%, transparent);
     cursor: pointer;
     user-select: none;
     transition: background 0.1s ease;
 
+    &[data-state="threat"] { background: color-mix(in srgb, var(--threat) 3.5%, transparent); }
     &:hover { background: color-mix(in srgb, var(--surface-alt) 70%, transparent); }
 
     &[aria-selected="true"] {
@@ -190,24 +202,34 @@
     }
 
     &.has-unread .tenant-name,
-    &.has-unread .tenant-num:nth-child(3) { font-weight: 600; }
+    &.has-unread .tenant-signals { font-weight: 600; }
   }
 
+  /* Calm states stay quiet so the ones that need action are the only colour in the column. */
   .tenant-indicator {
     display: grid; place-items: center;
-    width: 24px; height: 24px;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    color: color-mix(in srgb, var(--text-faint) 70%, transparent);
 
     .material-symbols-outlined {
-      font-size: 24px;
-      font-variation-settings: 'FILL' 1;
+      font-size: 18px;
+      font-variation-settings: 'FILL' 0, 'wght' 500;
     }
 
     &[data-state="clear"] { color: var(--protected); }
-    &[data-state="open"] {
-      color: var(--waiting);
-      .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 600; }
+
+    &[data-state="threat"],
+    &[data-state="email"] {
+      --flag: var(--threat);
+      background: color-mix(in srgb, var(--flag) 14%, transparent);
+      color: var(--flag);
+      animation: tenant-flag-pulse 1.6s ease-out infinite;
+
+      .material-symbols-outlined { font-size: 16px; font-variation-settings: 'FILL' 1; }
     }
-    &[data-state="threat"] { color: var(--threat); }
+
+    &[data-state="email"] { --flag: var(--waiting); }
   }
 
   .tenant-account {
@@ -249,12 +271,47 @@
     font-size: 13px; font-variant-numeric: tabular-nums;
     color: var(--text-body);
 
-    em { font-style: normal; color: var(--line); }
-    small { margin-left: -6px; font-size: 11px; color: var(--text-faint); }
+    small { font-size: 11px; color: var(--text-faint); }
   }
 
-  .tenant-unread { font-size: 11px; font-weight: 500; color: var(--brand); }
-  .tenant-threats { font-weight: 600; color: var(--threat); }
+  .tenant em {
+    font-style: normal;
+    color: color-mix(in srgb, var(--text-faint) 45%, transparent);
+  }
+
+  .tenant-unread {
+    padding: 1px 6px; border-radius: 8px;
+    background: color-mix(in srgb, var(--brand) 12%, transparent);
+    font-weight: 600;
+    color: var(--brand) !important;
+  }
+
+  .tenant-coverage {
+    display: flex; flex-direction: column; align-items: flex-end; gap: 5px;
+  }
+
+  .tenant-meter {
+    width: 56px; height: 3px; border-radius: 2px;
+    background: var(--line);
+    overflow: hidden;
+
+    i { display: block; height: 100%; background: var(--text-faint); }
+    &[data-full="true"] i { background: var(--protected); }
+  }
+
+  .tenant-admins {
+    display: flex; align-items: center;
+
+    .admin-initial {
+      width: 20px; height: 20px; font-size: 9.5px;
+      background: var(--surface-alt);
+      color: color-mix(in srgb, var(--text-body) 65%, transparent);
+      box-shadow: 0 0 0 2px var(--surface), inset 0 0 0 1px var(--line);
+      & + .admin-initial { margin-left: -6px; }
+    }
+
+    small { margin-left: 6px; }
+  }
 
   .tenant-chev {
     justify-self: end;
@@ -267,7 +324,7 @@
   }
 
   .tenant--create {
-    grid-template-columns: 24px minmax(0, 1fr) auto;
+    grid-template-columns: 20px minmax(0, 1fr) auto;
 
     .tenant-mark { background: none; .material-symbols-outlined { font-size: 16px; } }
     .tenant-name { color: var(--text-faint); }
@@ -296,7 +353,7 @@
     }
 
     .tenant-text i + i { height: 6px; opacity: 0.6; }
-    .tenant-indicator i { width: 20px; height: 20px; border-radius: 50%; }
+    .tenant-indicator i { width: 18px; height: 18px; border-radius: 50%; }
   }
 
   .managed-empty {
@@ -364,8 +421,12 @@
     white-space: nowrap;
     font-size: 11.5px; color: var(--text-faint);
 
-    &[data-state="threat"] { color: var(--threat); font-weight: 500; }
+    b { font-weight: 600; }
+    i { font-style: normal; opacity: 0.6; }
   }
+
+  .is-threat { color: var(--threat); }
+  .is-email { color: color-mix(in srgb, var(--waiting) 75%, var(--text-body)); }
 
   /* ── Account panel ──────────────────────────────────────────────────────── */
 
@@ -405,22 +466,28 @@
   }
 
   .tenant-panel-stats {
-    display: grid; grid-template-columns: repeat(3, 1fr);
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
     margin: 0 var(--pad);
     padding: 14px 0;
     border-block: 1px solid var(--line);
 
-    > div { display: flex; flex-direction: column; gap: 3px; }
+    > div { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
 
-    dt { font-size: 11px; color: var(--text-faint); }
+    dt {
+      font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--text-faint);
+    }
 
     dd {
       margin: 0;
-      font-size: 20px; font-weight: 600; letter-spacing: -0.01em; font-variant-numeric: tabular-nums;
+      font-size: 20px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.1;
+      font-variant-numeric: tabular-nums;
       color: var(--text-body);
-    }
 
-    .is-threat dd { color: var(--threat); }
+      small { font-size: 12px; font-weight: 500; color: var(--text-faint); }
+      &.is-threat { color: var(--threat); }
+      &.is-email { color: color-mix(in srgb, var(--waiting) 75%, var(--text-body)); }
+    }
   }
 
   .tenant-panel-label {
@@ -472,7 +539,7 @@
     background: var(--line);
     font-size: 10px; font-weight: 600; color: var(--text-faint);
 
-    .is-me & { background: var(--text-body); color: #fff; }
+    .is-me &, &.is-me { background: var(--text-body); color: #fff; box-shadow: 0 0 0 2px var(--surface); }
   }
 
   .admin-email {
@@ -546,3 +613,16 @@
 }
 
 @keyframes managed-fade { from { opacity: 0; } }
+
+@keyframes tenant-flag-pulse {
+  0% {
+    box-shadow:
+      inset 0 0 0 1px color-mix(in srgb, var(--flag) 40%, transparent),
+      0 0 0 0 color-mix(in srgb, var(--flag) 45%, transparent);
+  }
+  70%, 100% {
+    box-shadow:
+      inset 0 0 0 1px color-mix(in srgb, var(--flag) 40%, transparent),
+      0 0 0 7px transparent;
+  }
+}

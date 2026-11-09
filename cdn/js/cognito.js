@@ -13,10 +13,15 @@ class Cognito {
         Cognito.redirect = redirect;
     }
 
-    static login(){
-        const response_type = 'code';
-        const scope = 'email+openid+profile';
-        const hostedUI = `https://${Cognito.domain}/login?client_id=${Cognito.client_id}&response_type=${response_type}&scope=${scope}&redirect_uri=${encodeURIComponent(Cognito.redirect)}`;
+    static async login(){
+        const verifier = `${crypto.randomUUID()}${crypto.randomUUID()}`;
+        const state = crypto.randomUUID();
+        sessionStorage.setItem('verifier', verifier);
+        sessionStorage.setItem('state', state);
+
+        const hash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(verifier));
+        const challenge = new Uint8Array(hash).toBase64({ alphabet: 'base64url', omitPadding: true });
+        const hostedUI = `https://${Cognito.domain}/login?client_id=${Cognito.client_id}&response_type=code&scope=email+openid+profile&redirect_uri=${encodeURIComponent(Cognito.redirect)}&state=${state}&code_challenge=${challenge}&code_challenge_method=S256`;
 
         window.location.replace(hostedUI);
         throw new Error('Redirecting - stop execution');
@@ -24,7 +29,6 @@ class Cognito {
 
     static logout(){
         const redirect = encodeURIComponent("https://unmanned.team");
-
         window.location.href = `https://${Cognito.domain}/logout?client_id=${Cognito.client_id}&logout_uri=${redirect}`;
         throw new Error('Redirecting - stop execution');
     }
@@ -36,6 +40,8 @@ class Cognito {
 
         url.searchParams.delete('code');
         window.history.replaceState({}, document.title, url.pathname);
+
+        if (url.searchParams.get('state') !== sessionStorage.getItem('state')) return null;
         return code;
     }
 
@@ -45,6 +51,7 @@ class Cognito {
         params.append('redirect_uri', Cognito.redirect);
         params.append('grant_type', 'authorization_code');
         params.append('code', code);
+        params.append('code_verifier', sessionStorage.getItem('verifier'));
 
         const response = await fetch(`https://${Cognito.domain}/oauth2/token`, {
             method: 'POST',
@@ -55,10 +62,10 @@ class Cognito {
         });
 
         if (!response.ok) {
-            Cognito.login();
+            await Cognito.login();
         }
 
-        const { id_token } = await response.json();        
+        const { id_token } = await response.json();
         Cognito.session = id_token;
 
         return JSON.parse(atob(id_token.split('.')[1]));
@@ -97,7 +104,7 @@ class Gateway {
 
             const response = await fetch(url, options);
 
-            if (response.status === 401) Cognito.login();
+            if (response.status === 401) await Cognito.login();
             return response.ok ? response.json() : null;
 
         } catch (error) {

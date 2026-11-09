@@ -1,15 +1,20 @@
 const ACCOUNT_STATES = {
     scanning: 'Scanning',
     threat: 'Active threat',
+    email: 'Customer email',
     open: 'Waiting on decision',
     clear: 'Protected',
 };
 
 const ACCOUNT_ICONS = {
-    threat: 'error',
+    threat: 'gpp_maybe',
+    email: 'mail',
     open: 'schedule',
     clear: 'check_circle',
 };
+
+// Accounts in these states need someone to act; their indicator pulses.
+const ACTION_STATES = ['threat', 'email'];
 
 const SPINNER = SiteSpinner.inline;
 const fmt = n => n.toLocaleString();
@@ -80,15 +85,17 @@ class ManagedRollup {
     _stats(domain) {
         const open = Object.values(this.state.signals[domain] ?? {}).filter(s => s.status.startsWith('O'));
         const threats = open.filter(s => s.metadata?.threat).length;
+        const emails = open.filter(s => s.source === 'email').length;
         const { assets = 0, dots = 0 } = this.assets.get(domain) ?? {};
 
         return {
             open: open.length,
             unread: open.filter(s => !s.read).length,
             threats,
+            emails,
             assets,
             dots,
-            state: this.scanning ? 'scanning' : threats ? 'threat' : open.length ? 'open' : 'clear',
+            state: this.scanning ? 'scanning' : threats ? 'threat' : emails ? 'email' : open.length ? 'open' : 'clear',
         };
     }
 
@@ -118,7 +125,7 @@ class ManagedRollup {
 
         const rows = [...stats]
             .filter(([domain]) => domain.includes(query))
-            .sort(([a, x], [b, y]) => y.threats - x.threats || y.open - x.open || a.localeCompare(b))
+            .sort(([a, x], [b, y]) => y.threats - x.threats || y.emails - x.emails || y.open - x.open || a.localeCompare(b))
             .map(([domain, s]) => this._row(domain, s));
 
         if (query && !this.members.has(query)) rows.unshift(this._createRow(query));
@@ -132,10 +139,9 @@ class ManagedRollup {
             <li class="tenant-head">
                 <span></span>
                 <span>Account</span>
-                <span>Signals</span>
-                <span>Threats</span>
-                <span>Dots</span>
-                <span>Admins</span>
+                <span class="tenant-num">Signals</span>
+                <span class="tenant-num">Dots</span>
+                <span class="tenant-num">Admins</span>
                 <span></span>
             </li>
         `;
@@ -151,7 +157,6 @@ class ManagedRollup {
                     <span class="tenant-mark"></span>
                     <span class="tenant-text"><i style="width:${name}px"></i><i style="width:${status}px"></i></span>
                 </span>
-                <span class="tenant-num"><i></i></span>
                 <span class="tenant-num"><i></i></span>
                 <span class="tenant-num"><i></i></span>
                 <span class="tenant-num"><i></i></span>
@@ -181,12 +186,11 @@ class ManagedRollup {
         `;
     }
 
-    _row(domain, { open, unread, threats, assets, dots, state }) {
+    _row(domain, { open, unread, threats, emails, assets, dots, state }) {
         const dash = '<em>—</em>';
 
         const signals = this.scanning ? SPINNER : open ? fmt(open) : dash;
-        const threatCount = this.scanning ? SPINNER : threats ? `<b class="tenant-threats">${threats}</b>` : dash;
-        const dotCount = this.counting ? SPINNER : assets ? `${fmt(dots)}<small>/${fmt(assets)}</small>` : dash;
+        const coverage = this.counting ? SPINNER : assets ? this._coverage(dots, assets) : dash;
 
         return `
             <li class="tenant ${unread ? 'has-unread' : ''}" data-domain="${domain}" data-state="${state}" aria-selected="${domain === this.selected}">
@@ -195,19 +199,43 @@ class ManagedRollup {
                     ${this._mark(domain)}
                     <span class="tenant-text">
                         <span class="tenant-name" title="${domain}">${domain}</span>
-                        ${this._status(state)}
+                        ${this._status(state, threats, emails)}
                     </span>
                 </span>
-                <span class="tenant-num">
-                    ${unread ? `<span class="tenant-unread">${fmt(unread)} unread</span>` : ''}
+                <span class="tenant-num tenant-signals">
+                    ${unread ? `<small class="tenant-unread">${fmt(unread)} new</small>` : ''}
                     ${signals}
                 </span>
-                <span class="tenant-num">${threatCount}</span>
-                <span class="tenant-num">${dotCount}</span>
-                <span class="tenant-num">${this.members.get(domain).length}</span>
+                <span class="tenant-num">${coverage}</span>
+                <span class="tenant-num">${this._adminStack(domain)}</span>
                 <span class="material-symbols-outlined tenant-chev">chevron_right</span>
             </li>
         `;
+    }
+
+    _coverage(dots, assets) {
+        const pct = Math.round(dots / assets * 100);
+        return `
+            <span class="tenant-coverage" title="${fmt(dots)} of ${fmt(assets)} assets running a dot">
+                <span>${fmt(dots)}<small>/${fmt(assets)}</small></span>
+                <span class="tenant-meter" data-full="${pct === 100}"><i style="width:${pct}%"></i></span>
+            </span>
+        `;
+    }
+
+    _admins(domain) {
+        return [...this.members.get(domain)]
+            .sort((a, b) => (b === this.me) - (a === this.me) || a.localeCompare(b));
+    }
+
+    _adminStack(domain) {
+        const admins = this._admins(domain);
+        const shown = admins.slice(0, 3).map(email => `
+            <span class="admin-initial ${email === this.me ? 'is-me' : ''}" title="${email}">${email[0].toUpperCase()}</span>
+        `).join('');
+        const more = admins.length > 3 ? `<small>+${admins.length - 3}</small>` : '';
+
+        return `<span class="tenant-admins">${shown}${more}</span>`;
     }
 
     _createRow(name) {
@@ -242,17 +270,29 @@ class ManagedRollup {
         return `<span class="tenant-mark">${domain.slice(0, 2).toUpperCase()}${logo || ''}</span>`;
     }
 
+    // Rows are re-rendered on every live signal, which would restart the pulse.
+    // A shared negative delay keeps every indicator on the same beat across renders.
     _indicator(state) {
         const icon = state === 'scanning'
             ? SPINNER
             : `<span class="material-symbols-outlined">${ACCOUNT_ICONS[state]}</span>`;
+        const phase = ACTION_STATES.includes(state) ? `style="animation-delay:-${Date.now() % 1600}ms"` : '';
 
-        return `<span class="tenant-indicator" data-state="${state}" title="${ACCOUNT_STATES[state]}">${icon}</span>`;
+        return `<span class="tenant-indicator" data-state="${state}" title="${ACCOUNT_STATES[state]}" ${phase}>${icon}</span>`;
     }
 
-    _status(state) {
+    // Accounts that need action say what kind; everyone else gets their plain state.
+    _status(state, threats, emails) {
+        const plural = (n, noun) => `${fmt(n)} ${noun}${n === 1 ? '' : 's'}`;
+        const parts = [
+            threats && `<b class="is-threat">${plural(threats, 'threat')}</b>`,
+            emails && `<b class="is-email">${plural(emails, 'email')}</b>`,
+        ].filter(Boolean);
+
+        const label = ACTION_STATES.includes(state) ? parts.join('<i>·</i>') : ACCOUNT_STATES[state];
         const icon = state === 'scanning' ? SPINNER : '';
-        return `<span class="tenant-status" data-state="${state}">${icon}${ACCOUNT_STATES[state]}</span>`;
+
+        return `<span class="tenant-status" data-state="${state}">${icon}${label}</span>`;
     }
 
     _renderDetail() {
@@ -261,14 +301,14 @@ class ManagedRollup {
     }
 
     _panelSummary(domain) {
-        const { open, threats, dots, state } = this._stats(domain);
+        const { open, threats, emails, dots, assets, state } = this._stats(domain);
 
         return `
             <header class="tenant-panel-head">
                 ${this._mark(domain)}
                 <div class="tenant-panel-title">
                     <h3 title="${domain}">${domain}</h3>
-                    ${this._status(state)}
+                    ${this._status(state, threats, emails)}
                 </div>
                 <button class="tenant-panel-close" data-close title="Close">
                     <span class="material-symbols-outlined">close</span>
@@ -276,16 +316,16 @@ class ManagedRollup {
             </header>
 
             <dl class="tenant-panel-stats">
+                <div><dt>Threats</dt><dd class="${threats ? 'is-threat' : ''}">${this.scanning ? SPINNER : fmt(threats)}</dd></div>
+                <div><dt>Emails</dt><dd class="${emails ? 'is-email' : ''}">${this.scanning ? SPINNER : fmt(emails)}</dd></div>
                 <div><dt>Signals</dt><dd>${this.scanning ? SPINNER : fmt(open)}</dd></div>
-                <div class="${threats ? 'is-threat' : ''}"><dt>Threats</dt><dd>${this.scanning ? SPINNER : fmt(threats)}</dd></div>
-                <div><dt>Dots</dt><dd>${this.counting ? SPINNER : fmt(dots)}</dd></div>
+                <div><dt>Dots</dt><dd>${this.counting ? SPINNER : `${fmt(dots)}<small>/${fmt(assets)}</small>`}</dd></div>
             </dl>
         `;
     }
 
     _accountPanel(domain) {
-        const admins = [...this.members.get(domain)]
-            .sort((a, b) => (b === this.me) - (a === this.me) || a.localeCompare(b));
+        const admins = this._admins(domain);
 
         return `
             <div class="tenant-panel">

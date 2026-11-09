@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="en" data-theme="light" data-surface="web">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pulse component gallery</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../pulse-tokens.css">
+<link rel="stylesheet" href="../pulse-icons.css">
+<link rel="stylesheet" href="../pulse-components.css">
+<style>
+  /* Gallery layout only. Not part of the design system. */
+  body { margin: 0; background: var(--color-surface-page); color: var(--color-text-primary); font: 400 var(--type-body-md-size)/var(--type-body-md-line-height) var(--font-sans); }
+  .bar { position: sticky; top: 0; z-index: 5; display: flex; flex-wrap: wrap; gap: var(--space-24); align-items: center; padding: var(--space-12) var(--space-32); background: var(--color-surface-page); border-bottom: 1px solid var(--color-border-default); }
+  .bar h1 { margin: 0 var(--space-16) 0 0; font: 600 var(--type-body-lg-size)/var(--type-body-lg-line-height) var(--font-sans); }
+  .bar label { display: inline-flex; align-items: center; gap: var(--space-8); font: 500 var(--type-label-sm-size)/var(--type-label-sm-line-height) var(--font-mono); text-transform: uppercase; letter-spacing: .08em; color: var(--color-text-secondary); }
+  .bar select { font: 400 var(--type-body-sm-size)/var(--type-body-sm-line-height) var(--font-sans); padding: var(--space-4) var(--space-8); border: 1px solid var(--color-border-strong); border-radius: var(--radius-control); background: var(--color-surface-raised); color: var(--color-text-primary); }
+  main { max-width: 1120px; margin: 0 auto; padding: var(--space-32); }
+  section { padding: var(--space-32) 0; border-bottom: 1px solid var(--color-border-default); }
+  h2 { margin: 0 0 var(--space-4); font: 600 var(--type-heading-card-size)/var(--type-heading-card-line-height) var(--font-sans); }
+  .note { margin: 0 0 var(--space-24); color: var(--color-text-secondary); font: 400 var(--type-body-sm-size)/var(--type-body-sm-line-height) var(--font-sans); }
+  .row { display: flex; flex-wrap: wrap; gap: var(--space-16); align-items: center; margin-bottom: var(--space-16); }
+  .row.top { align-items: flex-start; }
+  .cap { width: 96px; flex: none; font: 400 var(--type-mono-label-size)/var(--type-mono-label-line-height) var(--font-mono); color: var(--color-text-tertiary); text-transform: uppercase; }
+  .colhead { display: flex; gap: var(--space-16); margin: 0 0 var(--space-8) 112px; }
+  .colhead span { width: 128px; font: 400 var(--type-mono-label-size)/var(--type-mono-label-line-height) var(--font-mono); color: var(--color-text-tertiary); text-transform: uppercase; }
+  .cell { width: 128px; flex: none; }
+  .stack { display: flex; flex-direction: column; gap: var(--space-16); max-width: 560px; }
+  .hint { font: 400 var(--type-mono-label-size)/var(--type-mono-label-line-height) var(--font-mono); color: var(--color-text-tertiary); }
+</style>
+</head>
+<body>
+<div class="bar">
+  <h1>Pulse component gallery</h1>
+  <label>Theme <select id="theme"><option value="light">light</option><option value="dark">dark</option></select></label>
+  <label>Surface <select id="surface"><option value="web">web</option><option value="app">app</option></select></label>
+  <span class="hint">pulse-tokens.css + pulse-components.css · v0</span>
+</div>
+<main>
+
+<section id="button">
+  <h2>Button</h2>
+  <p class="note">Variants × states at md. Square on the website, a pill in the app. Heights come from control-height tokens (32 / 40 / 48).</p>
+  <div class="colhead"><span>Default</span><span>Hover</span><span>Pressed</span><span>Focus</span><span>Disabled</span><span>Loading</span></div>
+  <div id="btn-matrix"></div>
+  <div class="row"><span class="cap">Sizes</span>
+    <button class="pulse-btn pulse-btn--primary pulse-btn--sm">Small</button>
+    <button class="pulse-btn pulse-btn--primary">Medium</button>
+    <button class="pulse-btn pulse-btn--primary pulse-btn--lg">Large</button>
+  </div>
+  <div class="row"><span class="cap">With icon</span>
+    <button class="pulse-btn pulse-btn--primary"><i class="pulse-icon pulse-icon--arrow-right"></i>Start the clock</button>
+    <button class="pulse-btn pulse-btn--secondary">Export report<i class="pulse-icon pulse-icon--arrow-right"></i></button>
+    <button class="pulse-btn pulse-btn--ghost">Cancel</button>
+  </div>
+  <div class="row"><span class="cap">Icon only</span>
+    <button class="pulse-btn pulse-btn--primary pulse-btn--icon pulse-btn--sm" aria-label="Next"><i class="pulse-icon pulse-icon--arrow-right"></i></button>
+    <button class="pulse-btn pulse-btn--primary pulse-btn--icon" aria-label="Next"><i class="pulse-icon pulse-icon--arrow-right"></i></button>
+    <button class="pulse-btn pulse-btn--primary pulse-btn--icon pulse-btn--lg" aria-label="Next"><i class="pulse-icon pulse-icon--arrow-right"></i></button>
+    <button class="pulse-btn pulse-btn--secondary pulse-btn--icon" aria-label="Close"><i class="pulse-icon pulse-icon--x"></i></button>
+    <button class="pulse-btn pulse-btn--neutral pulse-btn--icon" aria-label="Close"><i class="pulse-icon pulse-icon--x"></i></button>
+  </div>
+</section>
+
+<section id="link">
+  <h2>Link</h2>
+  <p class="note">Standalone links nudge their arrow on hover. Inline links are always underlined.</p>
+  <div class="row"><span class="cap">Standalone</span>
+    <a class="pulse-link pulse-link--sm" href="#link">See how it works <i class="pulse-icon pulse-icon--arrow-right"></i></a>
+    <a class="pulse-link" href="#link">See how it works <i class="pulse-icon pulse-icon--arrow-right"></i></a>
+    <a class="pulse-link pulse-link--lg" href="#link">See how it works <i class="pulse-icon pulse-icon--arrow-right"></i></a>
+    <a class="pulse-link is-hover" href="#link">Hover <i class="pulse-icon pulse-icon--arrow-right"></i></a>
+  </div>
+  <div class="row"><span class="cap">Inline</span><p style="margin:0">VEX investigates every alert and <a class="pulse-link pulse-link--inline" href="#link">tells you what it did</a>, in Slack.</p></div>
+</section>
+
+<section id="badge">
+  <h2>Badge and Chip</h2>
+  <p class="note">Badges are labels and stay square. Chips are toggles and are always pills.</p>
+  <div class="row"><span class="cap">Subtle</span>
+    <span class="pulse-badge">Neutral</span><span class="pulse-badge pulse-badge--accent">Accent</span><span class="pulse-badge pulse-badge--info">Info</span><span class="pulse-badge pulse-badge--success">Success</span><span class="pulse-badge pulse-badge--warning">Warning</span><span class="pulse-badge pulse-badge--danger">Danger</span></div>
+  <div class="row"><span class="cap">Solid</span>
+    <span class="pulse-badge pulse-badge--solid">Neutral</span><span class="pulse-badge pulse-badge--solid pulse-badge--accent">Accent</span><span class="pulse-badge pulse-badge--solid pulse-badge--info">Info</span><span class="pulse-badge pulse-badge--solid pulse-badge--success">Success</span><span class="pulse-badge pulse-badge--solid pulse-badge--warning">Warning</span><span class="pulse-badge pulse-badge--solid pulse-badge--danger">Danger</span></div>
+  <div class="row"><span class="cap">Outline</span>
+    <span class="pulse-badge pulse-badge--outline pulse-badge--nodot">Neutral</span><span class="pulse-badge pulse-badge--outline pulse-badge--nodot pulse-badge--info">Info</span><span class="pulse-badge pulse-badge--outline pulse-badge--nodot pulse-badge--success">Success</span><span class="pulse-badge pulse-badge--outline pulse-badge--nodot pulse-badge--warning">Warning</span><span class="pulse-badge pulse-badge--outline pulse-badge--nodot pulse-badge--danger">Danger</span></div>
+  <div class="row"><span class="cap">Chip</span>
+    <button class="pulse-chip" aria-pressed="false">All</button>
+    <button class="pulse-chip" aria-pressed="true">Identity</button>
+    <button class="pulse-chip is-hover">Hover</button>
+    <button class="pulse-chip is-focus">Focus</button>
+    <button class="pulse-chip" disabled>Disabled</button>
+    <button class="pulse-chip">okta.com <i class="pulse-icon pulse-icon--x pulse-chip__x"></i></button>
+  </div>
+</section>
+
+<section id="selection">
+  <h2>Checkbox, radio, toggle</h2>
+  <p class="note">Native inputs, restyled. Switches and radios stay round on every surface.</p>
+  <div class="row"><span class="cap">Checkbox</span>
+    <label class="pulse-check"><input type="checkbox"> Off</label>
+    <label class="pulse-check"><input type="checkbox" checked> On</label>
+    <label class="pulse-check"><input type="checkbox" id="indet"> Indeterminate</label>
+    <label class="pulse-check"><input type="checkbox" class="is-hover"> Hover</label>
+    <label class="pulse-check"><input type="checkbox" class="is-focus"> Focus</label>
+    <label class="pulse-check"><input type="checkbox" disabled> Disabled</label></div>
+  <div class="row"><span class="cap">Radio</span>
+    <label class="pulse-radio"><input type="radio" name="r1"> Off</label>
+    <label class="pulse-radio"><input type="radio" name="r1" checked> On</label>
+    <label class="pulse-radio"><input type="radio" name="r2" disabled> Disabled</label></div>
+  <div class="row"><span class="cap">Toggle</span>
+    <label class="pulse-toggle"><input type="checkbox" role="switch"> Off</label>
+    <label class="pulse-toggle"><input type="checkbox" role="switch" checked> On</label>
+    <label class="pulse-toggle"><input type="checkbox" role="switch" class="is-focus"> Focus</label>
+    <label class="pulse-toggle"><input type="checkbox" role="switch" disabled> Disabled</label></div>
+</section>
+
+<section id="fields">
+  <h2>Fields</h2>
+  <p class="note">Inputs, selects and textareas use the control radius (2 on the web, 4 in the app). The native select’s open list is drawn by the operating system and can’t be styled; use the Dropdown for a branded list.</p>
+  <div class="row top">
+    <div class="pulse-field stack" style="width:320px"><label class="pulse-field__label" for="f1">Work email</label><input id="f1" class="pulse-input" placeholder="name@company.com"><span class="pulse-field__help">We only use this to send the report.</span></div>
+    <div class="pulse-field pulse-field--error stack" style="width:320px"><label class="pulse-field__label" for="f2">Work email</label><input id="f2" class="pulse-input" value="name@company"><span class="pulse-field__help">Enter a full email address, like name@company.com.</span></div>
+    <div class="pulse-field stack" style="width:320px"><label class="pulse-field__label" for="f3">Provider</label><div class="pulse-select-wrap"><select id="f3" class="pulse-select"><option>Microsoft Entra ID</option><option>Google Workspace</option></select></div></div>
+  </div>
+  <div class="row top">
+    <div class="pulse-field stack" style="width:320px"><label class="pulse-field__label" for="f4">Large</label><input id="f4" class="pulse-input pulse-input--lg" placeholder="Marketing size"></div>
+    <div class="pulse-field stack" style="width:320px"><label class="pulse-field__label" for="f5">Disabled</label><input id="f5" class="pulse-input" value="Locked" disabled></div>
+    <div class="pulse-field stack" style="width:320px"><label class="pulse-field__label" for="f6">Notes</label><textarea id="f6" class="pulse-textarea" placeholder="Tell us about your environment"></textarea></div>
+    <div class="pulse-field stack" style="width:320px"><label class="pulse-field__label" for="f7">Notes (large)</label><textarea id="f7" class="pulse-textarea pulse-textarea--lg" placeholder="Tell us about your environment"></textarea></div>
+  </div>
+  <div class="row top">
+    <div class="pulse-field stack" style="width:320px"><span class="cap">Ghost (inside a surface)</span><div style="display:flex;align-items:center;gap:var(--space-8);padding:var(--space-4) var(--space-12);border:1px solid var(--color-border-default);border-radius:var(--radius-control);background:var(--color-surface-raised)"><i class="pulse-icon pulse-icon--magnifying-glass" aria-hidden="true"></i><input class="pulse-input pulse-input--ghost" style="min-height:var(--control-height-sm)" placeholder="Search signals" aria-label="Search signals"></div></div>
+    <div class="pulse-field stack" style="width:320px"><label class="pulse-field__label" for="f8">Ghost field</label><input id="f8" class="pulse-input pulse-input--ghost" placeholder="Invite by email"></div>
+    <div class="pulse-field stack" style="width:320px"><label class="pulse-field__label" for="f9">Ghost textarea</label><textarea id="f9" class="pulse-textarea pulse-textarea--ghost" placeholder="Add context"></textarea></div>
+  </div>
+</section>
+
+<section id="dropdown">
+  <h2>Dropdown and menu item</h2>
+  <p class="note">The option list that opens from a select. Items use the tag radius so they nest inside the container radius. Selected shows a check and the subtle surface; focus adds the focus ring; disabled is skipped by the keyboard.</p>
+  <div class="row top">
+    <div class="stack" style="width:320px"><span class="cap">Fit</span><ul class="pulse-dropdown" role="listbox" aria-label="Identity provider"><li class="pulse-menu-item" role="option" aria-selected="true"><i class="pulse-icon pulse-icon--users" aria-hidden="true"></i><span class="pulse-menu-item__label">Microsoft Entra ID</span><i class="pulse-icon pulse-icon--check pulse-menu-item__check" aria-hidden="true"></i></li><li class="pulse-menu-item is-focus" role="option" aria-selected="false"><i class="pulse-icon pulse-icon--globe" aria-hidden="true"></i><span class="pulse-menu-item__label">Google Workspace</span><span class="pulse-menu-item__check"></span></li><li class="pulse-menu-item" role="option" aria-selected="false"><i class="pulse-icon pulse-icon--shield" aria-hidden="true"></i><span class="pulse-menu-item__label">Okta</span><span class="pulse-menu-item__check"></span></li><li class="pulse-menu-item" role="option" aria-selected="false" aria-disabled="true"><i class="pulse-icon pulse-icon--laptop" aria-hidden="true"></i><span class="pulse-menu-item__label">JumpCloud (coming soon)</span><span class="pulse-menu-item__check"></span></li></ul></div>
+    <div class="stack" style="width:320px"><span class="cap">Scroll</span><ul class="pulse-dropdown pulse-dropdown--scroll" role="listbox" aria-label="Many options"><li class="pulse-menu-item" role="option" aria-selected="true"><i class="pulse-icon pulse-icon--users" aria-hidden="true"></i><span class="pulse-menu-item__label">Microsoft Entra ID</span><i class="pulse-icon pulse-icon--check pulse-menu-item__check" aria-hidden="true"></i></li><li class="pulse-menu-item" role="option" aria-selected="false"><i class="pulse-icon pulse-icon--globe" aria-hidden="true"></i><span class="pulse-menu-item__label">Google Workspace</span><span class="pulse-menu-item__check"></span></li><li class="pulse-menu-item" role="option" aria-selected="false"><i class="pulse-icon pulse-icon--shield" aria-hidden="true"></i><span class="pulse-menu-item__label">Okta</span><span class="pulse-menu-item__check"></span></li><li class="pulse-menu-item" role="option" aria-selected="false"><i class="pulse-icon pulse-icon--globe" aria-hidden="true"></i><span class="pulse-menu-item__label">Option five</span><span class="pulse-menu-item__check"></span></li><li class="pulse-menu-item" role="option" aria-selected="false"><i class="pulse-icon pulse-icon--globe" aria-hidden="true"></i><span class="pulse-menu-item__label">Option six</span><span class="pulse-menu-item__check"></span></li><li class="pulse-menu-item" role="option" aria-selected="false"><i class="pulse-icon pulse-icon--globe" aria-hidden="true"></i><span class="pulse-menu-item__label">Option seven</span><span class="pulse-menu-item__check"></span></li><li class="pulse-menu-item" role="option" aria-selected="false"><i class="pulse-icon pulse-icon--globe" aria-hidden="true"></i><span class="pulse-menu-item__label">Option eight</span><span class="pulse-menu-item__check"></span></li></ul></div>
+    <div class="stack" style="width:320px"><span class="cap">Open from a select</span><div class="pulse-field"><label class="pulse-field__label">Provider</label><div class="pulse-select-wrap"><select class="pulse-select is-focus"><option>Microsoft Entra ID</option></select></div></div><ul class="pulse-dropdown" role="listbox" aria-label="Provider" style="margin-top:calc(-1 * var(--space-4))"><li class="pulse-menu-item" role="option" aria-selected="true"><i class="pulse-icon pulse-icon--users" aria-hidden="true"></i><span class="pulse-menu-item__label">Microsoft Entra ID</span><i class="pulse-icon pulse-icon--check pulse-menu-item__check" aria-hidden="true"></i></li><li class="pulse-menu-item" role="option" aria-selected="false"><i class="pulse-icon pulse-icon--globe" aria-hidden="true"></i><span class="pulse-menu-item__label">Google Workspace</span><span class="pulse-menu-item__check"></span></li><li class="pulse-menu-item" role="option" aria-selected="false"><i class="pulse-icon pulse-icon--shield" aria-hidden="true"></i><span class="pulse-menu-item__label">Okta</span><span class="pulse-menu-item__check"></span></li></ul></div>
+  </div>
+</section>
+
+<section id="dialog">
+  <h2>Dialog</h2>
+  <p class="note">Standard and destructive. The panel sits on the overlay surface. Destructive dialogs start with focus on Cancel and show the affected resource. The button below opens a real modal.</p>
+  <div class="row top">
+    <div class="stack" style="width:560px;max-width:100%"><span class="cap">Standard</span><div class="pulse-dialog" role="dialog" aria-modal="true" aria-labelledby="d1-t" aria-describedby="d1-b"><div class="pulse-dialog__head"><div class="pulse-dialog__copy"><h3 class="pulse-dialog__title" id="d1-t">Start your 24-hour test?</h3><p class="pulse-dialog__body" id="d1-b">We’ll check DNS, connected apps and mail rules. Your team will receive a report when the test finishes.</p></div><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-dialog__close" aria-label="Close dialog" data-close><i class="pulse-icon pulse-icon--x" aria-hidden="true"></i></button></div><div class="pulse-dialog__actions"><button class="pulse-btn pulse-btn--secondary" data-close>Cancel</button><button class="pulse-btn pulse-btn--primary">Start test</button></div></div></div>
+    <div class="stack" style="width:560px;max-width:100%"><span class="cap">Destructive</span><div class="pulse-dialog" role="dialog" aria-modal="true" aria-labelledby="d2-t" aria-describedby="d2-b"><div class="pulse-dialog__head"><div class="pulse-dialog__copy"><h3 class="pulse-dialog__title" id="d2-t">Delete this test?</h3><p class="pulse-dialog__body" id="d2-b">This removes the report and every finding. You can’t undo it.</p></div><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-dialog__close" aria-label="Close dialog" data-close><i class="pulse-icon pulse-icon--x" aria-hidden="true"></i></button></div><div class="pulse-dialog__resource">Acme workspace · 24-hour test</div><div class="pulse-dialog__actions"><button class="pulse-btn pulse-btn--secondary" data-close>Cancel</button><button class="pulse-btn pulse-btn--destructive">Delete</button></div></div></div>
+  </div>
+  <div class="row top"><span class="cap">On the overlay</span>
+    <div style="position:relative;width:min(100%,720px);padding:var(--space-32) var(--space-16);background:var(--color-surface-overlay);border-radius:var(--radius-container)"><div class="pulse-dialog" role="dialog" aria-modal="true" aria-labelledby="d3-t" aria-describedby="d3-b"><div class="pulse-dialog__head"><div class="pulse-dialog__copy"><h3 class="pulse-dialog__title" id="d3-t">Delete this test?</h3><p class="pulse-dialog__body" id="d3-b">This removes the report and every finding. You can’t undo it.</p></div><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-dialog__close" aria-label="Close dialog" data-close><i class="pulse-icon pulse-icon--x" aria-hidden="true"></i></button></div><div class="pulse-dialog__resource">Acme workspace · 24-hour test</div><div class="pulse-dialog__actions"><button class="pulse-btn pulse-btn--secondary" data-close>Cancel</button><button class="pulse-btn pulse-btn--destructive">Delete</button></div></div></div>
+  </div>
+  <div class="row"><span class="cap">Live modal</span><button class="pulse-btn pulse-btn--primary" id="open-dialog">Open dialog</button></div>
+  <dialog class="pulse-dialog" id="live-dialog" aria-labelledby="ld-t" aria-describedby="ld-b"><div class="pulse-dialog__head"><div class="pulse-dialog__copy"><h3 class="pulse-dialog__title" id="ld-t">Delete this test?</h3><p class="pulse-dialog__body" id="ld-b">This removes the report and every finding. You can’t undo it.</p></div><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-dialog__close" aria-label="Close dialog" data-close><i class="pulse-icon pulse-icon--x" aria-hidden="true"></i></button></div><div class="pulse-dialog__resource">Acme workspace · 24-hour test</div><div class="pulse-dialog__actions"><button class="pulse-btn pulse-btn--secondary" data-close autofocus>Cancel</button><button class="pulse-btn pulse-btn--destructive" data-close>Delete</button></div></dialog>
+</section>
+
+<section id="popover">
+  <h2>Popover</h2>
+  <p class="note">Opens on click, never on hover (that is Tooltip). Placement is the side of the trigger it sits on; the caret points back at the trigger. Start and End line the caret up near a corner. Behavior comes from the browser's popover attribute plus pulse.js.</p>
+  <div class="row top" style="gap:var(--space-48) var(--space-32);padding:var(--space-8) 0 var(--space-24)"><span class="cap">Placement</span><div id="pop-static-sides" style="display:flex;align-items:flex-start;flex-wrap:wrap;gap:var(--space-48) var(--space-32)"></div></div>
+  <div class="row top" style="gap:var(--space-48) var(--space-32);padding:var(--space-8) 0 var(--space-24)"><span class="cap">Align</span><div id="pop-static-align" style="display:flex;align-items:flex-start;flex-wrap:wrap;gap:var(--space-48) var(--space-32)"></div></div>
+  <div class="row top" style="gap:var(--space-48) var(--space-32);padding:var(--space-8) 0 var(--space-24)"><span class="cap">Default content</span><div id="pop-static-content" style="display:flex;align-items:flex-start;flex-wrap:wrap;gap:var(--space-48) var(--space-32)"></div></div>
+  <div class="row"><span class="cap">Info icon</span>
+    <p style="margin:0">Response codes <button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm" popovertarget="pop-info" aria-controls="pop-info" aria-expanded="false" aria-label="About response codes"><i class="pulse-icon pulse-icon--info" aria-hidden="true"></i></button></p>
+    <div id="pop-info" popover class="pulse-popover pulse-popover--bottom pulse-popover--start" role="dialog" aria-labelledby="pop-info-t"><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-popover__close" popovertarget="pop-info" popovertargetaction="hide" aria-label="Close"><i class="pulse-icon pulse-icon--x" aria-hidden="true"></i></button><div class="pulse-popover__content"><h3 class="pulse-popover__title" id="pop-info-t">Response codes</h3><p class="pulse-popover__body">R0 logs only. R1 contains the device, R2 releases it, R3 investigates and R4 recommends a fix.</p><div class="pulse-popover__actions"><button class="pulse-btn pulse-btn--primary pulse-btn--sm" popovertarget="pop-info" popovertargetaction="hide">Got it</button><button class="pulse-btn pulse-btn--secondary pulse-btn--sm">Learn more</button></div></div></div>
+  </div>
+  <div class="row"><span class="cap">Custom content</span>
+    <button class="pulse-btn pulse-btn--secondary" popovertarget="pop-fb" aria-controls="pop-fb" aria-expanded="false">Feedback</button>
+    <div id="pop-fb" popover class="pulse-popover pulse-popover--bottom pulse-popover--start pulse-popover--no-caret" role="dialog" aria-labelledby="pop-fb-t"><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-popover__close" popovertarget="pop-fb" popovertargetaction="hide" aria-label="Close"><i class="pulse-icon pulse-icon--x" aria-hidden="true"></i></button><div class="pulse-popover__content"><h3 class="pulse-popover__title" id="pop-fb-t">Send feedback</h3><div class="pulse-field"><label class="pulse-field__label" for="pop-fb-text">What could be better?</label><textarea class="pulse-textarea" id="pop-fb-text" style="min-height:96px" autofocus></textarea></div><div class="pulse-popover__actions"><button class="pulse-btn pulse-btn--primary pulse-btn--sm" popovertarget="pop-fb" popovertargetaction="hide">Send</button><button class="pulse-btn pulse-btn--secondary pulse-btn--sm" popovertarget="pop-fb" popovertargetaction="hide">Cancel</button></div></div></div>
+  </div>
+</section>
+
+<section id="slider">
+  <h2>Slider</h2>
+  <p class="note">A styled native range input. The fill and the value text follow the thumb; hover and press grow the thumb, focus adds the ring.</p>
+  <div class="row top"><div class="pulse-slider" style="width:280px"><div class="pulse-slider__head"><label class="pulse-slider__label" for="sl1">Default</label><output class="pulse-slider__value" for="sl1">40%</output></div><input id="sl1" class="pulse-slider__input " type="range" min="0" max="100" step="5" value="40" style="--v:40%"></div><div class="pulse-slider" style="width:280px"><div class="pulse-slider__head"><label class="pulse-slider__label" for="sl2">Hover</label><output class="pulse-slider__value" for="sl2">40%</output></div><input id="sl2" class="pulse-slider__input is-hover" type="range" min="0" max="100" step="5" value="40" style="--v:40%"></div><div class="pulse-slider" style="width:280px"><div class="pulse-slider__head"><label class="pulse-slider__label" for="sl3">Pressed</label><output class="pulse-slider__value" for="sl3">40%</output></div><input id="sl3" class="pulse-slider__input is-pressed" type="range" min="0" max="100" step="5" value="40" style="--v:40%"></div><div class="pulse-slider" style="width:280px"><div class="pulse-slider__head"><label class="pulse-slider__label" for="sl4">Focus</label><output class="pulse-slider__value" for="sl4">40%</output></div><input id="sl4" class="pulse-slider__input is-focus" type="range" min="0" max="100" step="5" value="40" style="--v:40%"></div><div class="pulse-slider" style="width:280px"><div class="pulse-slider__head"><label class="pulse-slider__label" for="sl5">Disabled</label><output class="pulse-slider__value" for="sl5">40%</output></div><input id="sl5" class="pulse-slider__input " type="range" min="0" max="100" step="5" value="40" style="--v:40%" disabled></div></div>
+  <div class="row top"><div class="pulse-field stack" style="width:360px"><span class="cap">Estimate your price</span><div class="pulse-slider"><div class="pulse-slider__head"><label class="pulse-slider__label" for="sl6">Employees</label><output class="pulse-slider__value" id="sl6-out" for="sl6">120</output></div><input id="sl6" class="pulse-slider__input" type="range" min="10" max="500" step="10" value="120" style="--v:22.4%"></div><span class="pulse-field__help" id="sl6-price">$480 / month</span></div></div>
+</section>
+
+<section id="nav">
+  <h2>Segmented control and Tabs</h2>
+  <p class="note">The segmented tray uses the track surface; the selected tile is raised with an outline.</p>
+  <div class="row"><span class="cap">Segmented</span>
+    <div class="pulse-segmented"><button class="pulse-segmented__item" aria-pressed="true">Business</button><button class="pulse-segmented__item">Individual</button></div>
+    <div class="pulse-segmented"><button class="pulse-segmented__item">Monthly</button><button class="pulse-segmented__item" aria-pressed="true">Annual</button><button class="pulse-segmented__item">Quarterly</button></div></div>
+  <div class="row top"><span class="cap">Tabs line</span>
+    <div class="pulse-tabs pulse-tabs--line" role="tablist"><button class="pulse-tab" role="tab" aria-selected="true">Overview</button><button class="pulse-tab" role="tab">Findings</button><button class="pulse-tab" role="tab">Activity</button><button class="pulse-tab" role="tab">Settings</button></div></div>
+  <div class="row top"><span class="cap">Tabs bar</span>
+    <div class="pulse-tabs pulse-tabs--bar" style="width:560px" role="tablist"><button class="pulse-tab" role="tab" aria-selected="true">The loop</button><button class="pulse-tab" role="tab">Collect</button><button class="pulse-tab" role="tab">Triage</button><button class="pulse-tab" role="tab">Detect</button><button class="pulse-tab" role="tab">Update</button></div></div>
+  <div class="row top"><span class="cap">Vertical</span>
+    <nav class="pulse-tabs pulse-tabs--vertical"><a class="pulse-tab" href="#nav" aria-current="true">Authentication</a><a class="pulse-tab" href="#nav">Signals</a><a class="pulse-tab" href="#nav">Monitors</a><a class="pulse-tab" href="#nav">Assets</a></nav></div>
+</section>
+
+<section id="feedback">
+  <h2>Alert and Toast</h2>
+  <p class="note">One layout each. Alerts are tinted with a tone border and a neutral button. Toasts are solid and use a text link.</p>
+  <div class="stack" style="max-width:640px">
+    <div class="pulse-alert pulse-alert--success"><i class="pulse-icon pulse-icon--check-circle pulse-icon--fill"></i><div class="pulse-alert__body"><span class="pulse-alert__title">Workspace connected</span><span class="pulse-alert__text">Your 24-hour test is ready to start.</span><button class="pulse-btn pulse-btn--neutral pulse-btn--sm">View workspace</button></div><button class="pulse-dismiss" aria-label="Dismiss"><i class="pulse-icon pulse-icon--x"></i></button></div>
+    <div class="pulse-alert pulse-alert--danger"><i class="pulse-icon pulse-icon--warning-octagon pulse-icon--fill"></i><div class="pulse-alert__body"><span class="pulse-alert__title">Connection failed</span><span class="pulse-alert__text">We couldn’t reach your identity provider. Try again.</span></div><button class="pulse-dismiss" aria-label="Dismiss"><i class="pulse-icon pulse-icon--x"></i></button></div>
+    <div class="pulse-alert pulse-alert--warning"><i class="pulse-icon pulse-icon--warning pulse-icon--fill"></i><div class="pulse-alert__body"><span class="pulse-alert__title">Access expires in 24 hours</span></div></div>
+    <div class="pulse-alert"><i class="pulse-icon pulse-icon--info pulse-icon--fill"></i><div class="pulse-alert__body"><span class="pulse-alert__title">A new report is available</span></div></div>
+    <div class="pulse-toast pulse-toast--neutral"><i class="pulse-icon pulse-icon--info pulse-icon--fill"></i><div class="pulse-toast__body"><span class="pulse-toast__title">Report exported</span><span class="pulse-toast__text">Your 24-hour test is ready to start.</span><a class="pulse-toast__cta">View report</a></div><button class="pulse-dismiss" aria-label="Dismiss"><i class="pulse-icon pulse-icon--x"></i></button></div>
+    <div class="pulse-toast pulse-toast--success"><i class="pulse-icon pulse-icon--check-circle pulse-icon--fill"></i><div class="pulse-toast__body"><span class="pulse-toast__title">Report exported</span></div><button class="pulse-dismiss" aria-label="Dismiss"><i class="pulse-icon pulse-icon--x"></i></button></div>
+    <div class="pulse-toast pulse-toast--danger"><i class="pulse-icon pulse-icon--warning-octagon pulse-icon--fill"></i><div class="pulse-toast__body"><span class="pulse-toast__title">Export failed. Try again.</span></div><button class="pulse-dismiss" aria-label="Dismiss"><i class="pulse-icon pulse-icon--x"></i></button></div>
+    <div class="pulse-toast pulse-toast--warning"><i class="pulse-icon pulse-icon--warning pulse-icon--fill"></i><div class="pulse-toast__body"><span class="pulse-toast__title">Connection expires soon</span></div><button class="pulse-dismiss" aria-label="Dismiss"><i class="pulse-icon pulse-icon--x"></i></button></div>
+    <div class="pulse-toast"><i class="pulse-icon pulse-icon--info pulse-icon--fill"></i><div class="pulse-toast__body"><span class="pulse-toast__title">Test is running in the background</span></div><button class="pulse-dismiss" aria-label="Dismiss"><i class="pulse-icon pulse-icon--x"></i></button></div>
+  </div>
+</section>
+
+<section id="progress">
+  <h2>Progress and Tooltip</h2>
+  <div class="stack" style="max-width:480px">
+    <div class="pulse-progress" style="--p:50%"><div class="pulse-progress__head"><span>Hours 2–20 · Hunting</span><span class="pulse-progress__value">50%</span></div><div class="pulse-progress__track"><div class="pulse-progress__fill"></div></div></div>
+    <div class="pulse-progress pulse-progress--success" style="--p:100%"><div class="pulse-progress__head"><span>Agent connected</span><span class="pulse-progress__value">100%</span></div><div class="pulse-progress__track"><div class="pulse-progress__fill"></div></div></div>
+    <div class="pulse-progress pulse-progress--danger" style="--p:25%"><div class="pulse-progress__head"><span>Export</span><span class="pulse-progress__value">25%</span></div><div class="pulse-progress__track"><div class="pulse-progress__fill"></div></div></div>
+    <div class="pulse-progress pulse-progress--indeterminate"><div class="pulse-progress__head"><span>Connecting workspace</span><span class="pulse-progress__value">Working…</span></div><div class="pulse-progress__track"><div class="pulse-progress__fill"></div></div></div>
+  </div>
+  <div class="row" style="margin-top:var(--space-32)"><span class="cap">Tooltip</span><span class="pulse-tooltip">T1015 — Query Registry</span></div>
+</section>
+
+
+<section id="icons">
+  <h2>Icons</h2>
+  <p class="note">Phosphor, generated into pulse-icons.css from icons.txt. Regular for normal UI, bold at 14px and below, fill for status and selected states, light only for large decorative icons.</p>
+  <div class="row"><span class="cap">By size</span>
+    <span class="row" style="margin:0;gap:var(--space-24)">
+      <span style="display:inline-flex;flex-direction:column;align-items:center;gap:var(--space-8)"><i class="pulse-icon pulse-icon--arrow-right pulse-icon--bold" style="--pulse-icon-size:var(--size-icon-12)"></i><span class="hint">12 bold</span></span>
+      <span style="display:inline-flex;flex-direction:column;align-items:center;gap:var(--space-8)"><i class="pulse-icon pulse-icon--arrow-right pulse-icon--bold" style="--pulse-icon-size:var(--size-icon-14)"></i><span class="hint">14 bold</span></span>
+      <span style="display:inline-flex;flex-direction:column;align-items:center;gap:var(--space-8)"><i class="pulse-icon pulse-icon--arrow-right" style="--pulse-icon-size:var(--size-icon-16)"></i><span class="hint">16 regular</span></span>
+      <span style="display:inline-flex;flex-direction:column;align-items:center;gap:var(--space-8)"><i class="pulse-icon pulse-icon--arrow-right" style="--pulse-icon-size:var(--size-icon-20)"></i><span class="hint">20 regular</span></span>
+      <span style="display:inline-flex;flex-direction:column;align-items:center;gap:var(--space-8)"><i class="pulse-icon pulse-icon--arrow-right pulse-icon--light" style="--pulse-icon-size:var(--size-icon-24)"></i><span class="hint">24 light</span></span>
+      <span style="display:inline-flex;flex-direction:column;align-items:center;gap:var(--space-8)"><i class="pulse-icon pulse-icon--arrow-right pulse-icon--light" style="--pulse-icon-size:var(--size-icon-32)"></i><span class="hint">32 light</span></span>
+    </span></div>
+  <div class="row"><span class="cap">Status</span>
+    <span style="color:var(--color-text-info)"><i class="pulse-icon pulse-icon--info pulse-icon--fill" style="--pulse-icon-size:var(--size-icon-20)"></i></span>
+    <span style="color:var(--color-text-success)"><i class="pulse-icon pulse-icon--check-circle pulse-icon--fill" style="--pulse-icon-size:var(--size-icon-20)"></i></span>
+    <span style="color:var(--color-text-warning)"><i class="pulse-icon pulse-icon--warning pulse-icon--fill" style="--pulse-icon-size:var(--size-icon-20)"></i></span>
+    <span style="color:var(--color-text-danger)"><i class="pulse-icon pulse-icon--warning-octagon pulse-icon--fill" style="--pulse-icon-size:var(--size-icon-20)"></i></span>
+    <span class="hint">fill</span></div>
+  <div id="icon-grid" class="row" style="gap:var(--space-24)"></div>
+</section>
+
+<section id="grid">
+  <h2>Layout grid</h2>
+  <p class="note">Mobile under 768, Tablet 768 to 1279, Desktop 1280 and up. Resize the window: the columns, gutter and margin change at the two breakpoints.</p>
+  <div id="grid-demo" style="width:min(100% - 2 * var(--layout-margin), var(--layout-content-max)); margin-inline:auto; display:grid; grid-template-columns:repeat(var(--layout-columns),1fr); grid-template-rows:64px; grid-auto-rows:0; overflow:hidden; gap:var(--layout-gutter);"></div>
+  <p class="hint" id="grid-readout" style="margin-top:var(--space-16)"></p>
+</section>
+</main>
+<script src="../pulse.js"></script>
+<script>
+  var root = document.documentElement;
+  document.getElementById('theme').addEventListener('change', function (e) { root.setAttribute('data-theme', e.target.value); });
+  document.getElementById('surface').addEventListener('change', function (e) { root.setAttribute('data-surface', e.target.value); });
+  document.getElementById('indet').indeterminate = true;
+  // Button matrix: variants × states
+  var variants = [['primary', 'Primary'], ['secondary', 'Secondary'], ['neutral', 'Neutral'], ['ghost', 'Ghost'], ['ghost-neutral', 'Ghost neutral'], ['destructive', 'Destructive']];
+  var states = [['', ''], [' is-hover', ''], [' is-pressed', ''], [' is-focus', ''], ['', ' disabled'], ['', ' aria-busy="true"']];
+  var html = '';
+  variants.forEach(function (v) {
+    html += '<div class="row"><span class="cap">' + v[1] + '</span>';
+    states.forEach(function (s) {
+      html += '<div class="cell"><button class="pulse-btn pulse-btn--' + v[0] + s[0] + '"' + s[1] + '>Button</button></div>';
+    });
+    html += '</div>';
+  });
+  document.getElementById('btn-matrix').innerHTML = html;
+
+  // Icon grid and layout readout
+  var icons = [['arrow-right',['regular','light','bold']],['caret-down',['regular']],['x',['regular']],['check',['regular','bold']],['minus',['bold']],['info',['regular','fill']],['check-circle',['regular','fill']],['warning',['regular','fill']],['warning-octagon',['regular','fill']],['warning-circle',['regular']],['magnifying-glass',['regular']],['code',['regular']],['question',['fill']],['lock-simple',['fill']],['copy',['regular']],['envelope',['regular']],['globe',['regular']],['laptop',['regular']],['shield',['regular']],['users',['regular']],['gear',['regular']],['bell',['regular']],['funnel',['regular']],['arrow-square-out',['regular']]];
+  var ig = '';
+  icons.forEach(function (i) { i[1].forEach(function (w) { ig += '<span style="display:inline-flex;flex-direction:column;align-items:center;gap:6px;width:104px"><i class="pulse-icon pulse-icon--' + i[0] + (w === 'regular' ? '' : ' pulse-icon--' + w) + '" style="--pulse-icon-size:var(--size-icon-24)"></i><span class="hint" style="text-align:center">' + i[0] + (w === 'regular' ? '' : ' · ' + w) + '</span></span>'; }); });
+  document.getElementById('icon-grid').innerHTML = ig;
+  var gd = ''; for (var c = 0; c < 12; c++) { gd += '<div style="background:var(--color-accent-subtle);box-shadow:inset 0 0 0 1px var(--color-accent-default);border-radius:var(--radius-sm);min-height:0;overflow:hidden"></div>'; }
+  document.getElementById('grid-demo').innerHTML = gd;
+  function readout() {
+    var w = window.innerWidth, s = getComputedStyle(root);
+    var mode = w >= 1280 ? 'Desktop' : (w >= 768 ? 'Tablet' : 'Mobile');
+    var el = document.getElementById('grid-readout');
+    if (el) { el.textContent = w + 'px · ' + mode + ' · ' + s.getPropertyValue('--layout-columns').trim() + ' columns · gutter ' + s.getPropertyValue('--layout-gutter').trim() + ' · margin ' + s.getPropertyValue('--layout-margin').trim(); }
+  }
+  window.addEventListener('resize', readout); readout();
+
+  var ld = document.getElementById('live-dialog');
+  document.getElementById('open-dialog').addEventListener('click', function () { if (ld.showModal) ld.showModal(); });
+  ld.addEventListener('click', function (e) { if (e.target.closest('[data-close]')) ld.close(); });
+
+  var s6 = document.getElementById('sl6');
+  s6.addEventListener('input', function () {
+    var pct = (s6.value - s6.min) / (s6.max - s6.min) * 100;
+    s6.style.setProperty('--v', pct + '%');
+    document.getElementById('sl6-out').textContent = s6.value;
+    document.getElementById('sl6-price').textContent = '$' + (s6.value * 4) + ' / month';
+  });
+  document.querySelectorAll('.pulse-slider__input').forEach(function (r) { if (r.id !== 'sl6') r.addEventListener('input', function () { r.style.setProperty('--v', r.value + '%'); var o = r.parentNode.querySelector('output'); if (o) o.textContent = r.value + '%'; }); });
+
+  // Popover: static placement and alignment examples
+  function popHtml(cls, o) {
+    o = o || {}; var title = o.title !== false, actions = o.actions !== false;
+    return '<div class="pulse-popover ' + cls + '"><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-popover__close" aria-label="Close"><i class="pulse-icon pulse-icon--x" aria-hidden="true"></i></button><div class="pulse-popover__content">' + (title ? '<h3 class="pulse-popover__title">Contain a device</h3>' : '') + '<p class="pulse-popover__body">Containing a device cuts it off from the network until you release it.</p>' + (actions ? '<div class="pulse-popover__actions"><button class="pulse-btn pulse-btn--primary pulse-btn--sm">Got it</button><button class="pulse-btn pulse-btn--secondary pulse-btn--sm">Learn more</button></div>' : '') + '</div></div>';
+  }
+  document.getElementById('pop-static-content').innerHTML = popHtml('pulse-popover--bottom', { actions: false }) + popHtml('pulse-popover--bottom') + popHtml('pulse-popover--bottom', { title: false });
+  document.getElementById('pop-static-sides').innerHTML = ['top', 'bottom', 'left', 'right'].map(function (s) { return popHtml('pulse-popover--' + s); }).join('') + popHtml('pulse-popover--bottom pulse-popover--no-caret');
+  document.getElementById('pop-static-align').innerHTML = ['start', 'center', 'end'].map(function (a) { return popHtml('pulse-popover--bottom pulse-popover--' + a); }).join('');
+</script>
+</body>
+</html>

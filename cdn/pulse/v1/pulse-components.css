@@ -1,0 +1,346 @@
+/* pulse-components.css  (v0, first set)
+   Component styles built only from pulse-tokens.css and pulse-icons.css. Load those first.
+   Every class starts with "pulse-". There are no element rules and no resets.
+   Everything sits in one cascade layer, so a page's own unlayered CSS always wins.
+   Static state classes (.is-hover, .is-pressed, .is-focus) mirror the real states for documentation. */
+
+@layer pulse-components {
+
+/* ---------- Button ---------- */
+.pulse-btn {
+  --b-h: var(--control-height-md); --b-px: var(--space-16);
+  --b-fs: var(--type-label-md-size); --b-lh: var(--type-label-md-line-height);
+  --b-bg: transparent; --b-fg: var(--color-text-primary); --b-bd: transparent;
+  --b-ov: transparent; --pulse-icon-size: var(--size-icon-20);
+  position: relative; display: inline-flex; align-items: center; justify-content: center; gap: var(--space-8);
+  box-sizing: border-box; min-height: var(--b-h); padding: var(--space-4) var(--b-px);
+  border: var(--border-width-1) solid var(--b-bd); border-radius: var(--radius-button);
+  background-color: var(--b-bg); background-image: linear-gradient(var(--b-ov), var(--b-ov));
+  color: var(--b-fg); font: 500 var(--b-fs) / var(--b-lh) var(--font-sans);
+  text-decoration: none; white-space: nowrap; cursor: pointer;
+  transition: background-color .15s ease, border-color .15s ease, box-shadow .15s ease;
+}
+.pulse-btn--sm { --b-h: var(--control-height-sm); --b-px: var(--space-12); --b-fs: var(--type-label-sm-size); --b-lh: var(--type-label-sm-line-height); --pulse-icon-size: var(--size-icon-16); }
+.pulse-btn--lg { --b-h: var(--control-height-lg); --b-px: var(--space-24); --b-fs: var(--type-label-lg-size); --b-lh: var(--type-label-lg-line-height); --pulse-icon-size: var(--size-icon-20); }
+.pulse-btn--primary { --b-bg: var(--color-accent-default); --b-fg: var(--color-text-on-accent); --b-bg-h: var(--color-accent-hover); --b-bg-p: var(--color-accent-pressed); }
+.pulse-btn--destructive { --b-bg: var(--color-status-danger); --b-fg: var(--color-text-on-accent); --b-bg-h: var(--color-status-danger-hover); --b-bg-p: var(--color-status-danger-pressed); }
+.pulse-btn--secondary { --b-bd: var(--color-accent-default); --b-fg: var(--color-text-accent); --b-bd-h: var(--color-accent-hover); --b-bd-p: var(--color-accent-pressed); --b-ov-h: transparent; --b-ov-p: transparent; --b-sh-h: inset 0 0 0 var(--border-width-1) var(--b-bd-h); --b-sh-p: inset 0 0 0 var(--border-width-1) var(--b-bd-p); }
+/* Secondary and neutral: hover and press change the border only, thickened by 1px drawn inside (no tint, no shadow, no layout shift). */
+.pulse-btn--neutral { --b-bd: var(--color-text-secondary); --b-fg: var(--color-text-primary); --b-bd-h: var(--color-accent-hover); --b-bd-p: var(--color-accent-pressed); --b-ov-h: transparent; --b-ov-p: transparent; --b-sh-h: inset 0 0 0 var(--border-width-1) var(--b-bd-h); --b-sh-p: inset 0 0 0 var(--border-width-1) var(--b-bd-p); }
+.pulse-btn--secondary:hover:not(:disabled):not([aria-busy="true"]), .pulse-btn--secondary.is-hover, .pulse-btn--secondary:active:not(:disabled):not([aria-busy="true"]), .pulse-btn--secondary.is-pressed { color: var(--color-text-accent-hover); }
+.pulse-btn--ghost { --b-sh-h: none; --b-sh-p: none; --b-fg: var(--color-text-accent); --b-ov-h: var(--color-interactive-hover); --b-ov-p: var(--color-interactive-pressed); }
+.pulse-btn--ghost-neutral { --b-sh-h: none; --b-sh-p: none; --b-fg: var(--color-text-secondary); --b-ov-h: var(--color-interactive-hover); --b-ov-p: var(--color-interactive-pressed); }
+.pulse-btn--ghost-neutral:hover:not(:disabled), .pulse-btn--ghost-neutral.is-hover { --b-fg: var(--color-text-primary); }
+.pulse-btn--surface { background-color: var(--color-surface-page); }
+.pulse-btn--icon { padding: 0; width: var(--b-h); }
+.pulse-btn:hover:not(:disabled):not([aria-busy="true"]), .pulse-btn.is-hover {
+  background-color: var(--b-bg-h, var(--b-bg)); border-color: var(--b-bd-h, var(--b-bd));
+  --b-ov: var(--b-ov-h, transparent); box-shadow: var(--b-sh-h, var(--shadow-elevation-controls-btn-hover));
+}
+.pulse-btn:active:not(:disabled):not([aria-busy="true"]), .pulse-btn.is-pressed {
+  background-color: var(--b-bg-p, var(--b-bg)); border-color: var(--b-bd-p, var(--b-bd));
+  --b-ov: var(--b-ov-p, transparent); box-shadow: var(--b-sh-p, none);
+}
+.pulse-btn:focus-visible, .pulse-btn.is-focus { outline: 0; box-shadow: var(--shadow-focus-ring); }
+/* Buttons with no fill (secondary, neutral, ghost, ghost neutral) show focus as one 2px ring in the focus color: it replaces the
+   rest border, and no gap is needed because there is no fill for the ring to blend into. Filled buttons keep the gap + ring. */
+.pulse-btn--secondary:focus-visible, .pulse-btn--secondary.is-focus, .pulse-btn--neutral:focus-visible, .pulse-btn--neutral.is-focus,
+.pulse-btn--ghost:focus-visible, .pulse-btn--ghost.is-focus, .pulse-btn--ghost-neutral:focus-visible, .pulse-btn--ghost-neutral.is-focus {
+  border-color: var(--color-border-focus); box-shadow: 0 0 0 var(--border-width-1) var(--color-border-focus); }
+.pulse-btn:disabled, .pulse-btn.is-disabled {
+  background-color: var(--color-surface-disabled); background-image: none; border-color: transparent;
+  color: var(--color-text-disabled); cursor: not-allowed; box-shadow: none;
+}
+.pulse-btn[aria-busy="true"] { cursor: progress; pointer-events: none; }
+.pulse-btn[aria-busy="true"]::before {
+  content: ""; width: var(--pulse-icon-size); height: var(--pulse-icon-size); flex: none; box-sizing: border-box;
+  border: var(--border-width-2) solid currentColor; border-right-color: transparent; border-radius: 50%;
+  animation: pulse-spin .8s linear infinite;
+}
+.pulse-btn--icon[aria-busy="true"] > :not(.pulse-btn__sr) { display: none; }
+@keyframes pulse-spin { to { transform: rotate(360deg); } }
+
+/* ---------- Link ---------- */
+.pulse-link {
+  display: inline-flex; align-items: center; gap: var(--space-8); color: var(--color-text-accent);
+  font: 500 var(--type-label-md-size) / var(--type-label-md-line-height) var(--font-sans); text-decoration: none; cursor: pointer;
+}
+.pulse-link:hover, .pulse-link.is-hover { color: var(--color-text-accent-hover); text-decoration: underline; }
+/* The arrow nudges 4px on hover by moving, not by changing the gap, so the link never changes size. The 4px of room is reserved on the end. */
+.pulse-link:not(.pulse-link--inline) { padding-inline-end: var(--space-4); }
+.pulse-link > .pulse-icon:last-child { transition: transform .15s ease; }
+.pulse-link:not(.pulse-link--inline):hover > .pulse-icon:last-child, .pulse-link:not(.pulse-link--inline).is-hover > .pulse-icon:last-child { transform: translateX(var(--space-4)); }
+.pulse-link:focus-visible, .pulse-link.is-focus { outline: var(--border-width-2) solid var(--color-border-focus); outline-offset: 2px; border-radius: var(--radius-sm); }
+.pulse-link--inline { display: inline; font: inherit; text-decoration: underline; }
+.pulse-link--inline { padding-inline-end: 0; }
+.pulse-link--sm { font-size: var(--type-label-sm-size); line-height: var(--type-label-sm-line-height); }
+.pulse-link--lg { font-size: var(--type-label-lg-size); line-height: var(--type-label-lg-line-height); }
+
+/* ---------- Badge ---------- */
+.pulse-badge {
+  --t: var(--color-text-secondary); --tint: var(--color-status-neutral-subtle); --solid: var(--color-status-neutral); --on: var(--color-text-on-accent); --mark: var(--color-status-neutral);
+  display: inline-flex; align-items: center; gap: var(--space-4); box-sizing: border-box; padding: calc(var(--space-4) - var(--border-width-1)) calc(var(--space-8) - var(--border-width-1));
+  border: var(--border-width-1) solid transparent; border-radius: var(--radius-tag);
+  background: var(--tint); color: var(--t); font: 500 var(--type-label-xs-size) / var(--type-label-xs-line-height) var(--font-sans); white-space: nowrap;
+}
+.pulse-badge::before { content: ""; width: var(--space-8); height: var(--space-8); border-radius: 50%; background: var(--mark); }
+.pulse-badge--nodot::before { display: none; }
+.pulse-badge--accent { --t: var(--color-text-accent); --tint: var(--color-accent-subtle); --solid: var(--color-accent-default); --mark: var(--color-indicator-accent); }
+.pulse-badge--success { --t: var(--color-text-success); --tint: var(--color-status-success-subtle); --solid: var(--color-status-success); --mark: var(--color-indicator-success); }
+.pulse-badge--danger { --t: var(--color-text-danger); --tint: var(--color-status-danger-subtle); --solid: var(--color-status-danger); --mark: var(--color-indicator-danger); }
+.pulse-badge--warning { --t: var(--color-text-warning); --tint: var(--color-status-warning-subtle); --solid: var(--color-status-warning); --on: var(--color-text-on-warning); --mark: var(--color-indicator-warning); }
+.pulse-badge--info { --t: var(--color-text-info); --tint: var(--color-status-info-subtle); --solid: var(--color-status-info); --mark: var(--color-indicator-info); }
+.pulse-badge--solid { background: var(--solid); color: var(--on); }
+.pulse-badge--solid::before { background: var(--on); }
+.pulse-badge--outline { background: transparent; border-color: var(--mark); }
+
+/* ---------- Chip ---------- */
+.pulse-chip {
+  display: inline-flex; align-items: center; gap: var(--space-8); box-sizing: border-box; padding: var(--space-4) var(--space-12);
+  border: var(--border-width-1) solid var(--color-border-mid); border-radius: var(--radius-pill);
+  background-color: var(--color-surface-raised); background-image: linear-gradient(var(--c-ov, transparent), var(--c-ov, transparent));
+  color: var(--color-text-primary); font: 500 var(--type-label-sm-size) / var(--type-label-sm-line-height) var(--font-sans); cursor: pointer; white-space: nowrap;
+}
+.pulse-chip:hover:not(:disabled), .pulse-chip.is-hover { --c-ov: var(--color-interactive-hover); border-color: var(--color-border-strong); }
+.pulse-chip:active:not(:disabled), .pulse-chip.is-pressed { --c-ov: var(--color-interactive-pressed); border-color: var(--color-border-strong); }
+.pulse-chip:focus-visible, .pulse-chip.is-focus { outline: 0; box-shadow: var(--shadow-focus-ring); }
+.pulse-chip[aria-pressed="true"], .pulse-chip.is-selected { background-color: var(--color-accent-subtle); border-color: var(--color-accent-default); color: var(--color-text-accent); }
+.pulse-chip:disabled { background-color: var(--color-surface-disabled); border-color: var(--color-border-subtle); color: var(--color-text-disabled); cursor: not-allowed; }
+.pulse-chip__x { --pulse-icon-size: var(--size-icon-16); }
+
+/* ---------- Checkbox, radio, toggle ---------- */
+.pulse-check, .pulse-radio, .pulse-toggle { display: inline-flex; align-items: center; gap: var(--space-8); color: var(--color-text-primary); font: 400 var(--type-body-md-size) / var(--type-body-md-line-height) var(--font-sans); cursor: pointer; }
+.pulse-check input, .pulse-radio input, .pulse-toggle input { appearance: none; -webkit-appearance: none; margin: 0; flex: none; box-sizing: border-box; cursor: inherit; }
+.pulse-check input, .pulse-radio input {
+  width: var(--size-icon-20); height: var(--size-icon-20); border: var(--border-width-1-5) solid var(--color-border-strong);
+  background-color: var(--color-surface-raised); background-image: linear-gradient(var(--c-ov, transparent), var(--c-ov, transparent));
+}
+.pulse-check input { border-radius: var(--radius-check); }
+.pulse-radio input { border-radius: var(--radius-pill); }
+.pulse-check:hover input, .pulse-radio:hover input, .pulse-check input.is-hover, .pulse-radio input.is-hover { --c-ov: var(--color-interactive-hover); }
+.pulse-check input:active, .pulse-radio input:active, .pulse-check input.is-pressed, .pulse-radio input.is-pressed { --c-ov: var(--color-interactive-pressed); }
+.pulse-check input:focus-visible, .pulse-radio input:focus-visible, .pulse-toggle input:focus-visible, .pulse-check input.is-focus, .pulse-radio input.is-focus, .pulse-toggle input.is-focus { outline: 0; box-shadow: var(--shadow-focus-ring); }
+.pulse-check input:checked, .pulse-check input:indeterminate { background-color: var(--color-accent-default); border-color: var(--color-accent-default); }
+.pulse-check input:checked::after, .pulse-check input:indeterminate::after {
+  content: ""; display: block; width: 100%; height: 100%; background: var(--color-text-on-accent);
+  -webkit-mask: var(--pulse-i-check-bold) center / 14px no-repeat; mask: var(--pulse-i-check-bold) center / 14px no-repeat;
+}
+.pulse-check input:indeterminate::after { -webkit-mask-image: var(--pulse-i-minus-bold); mask-image: var(--pulse-i-minus-bold); }
+.pulse-radio input:checked { border-color: var(--color-accent-default); background-image: radial-gradient(circle, var(--color-accent-default) 0 4px, transparent 5px); }
+.pulse-toggle { font-weight: 500; font-size: var(--type-label-sm-size); line-height: var(--type-label-sm-line-height); }
+/* Track 46 x 24, knob 20, travel 22 (as in Figma) */
+.pulse-toggle input { width: 46px; height: var(--space-24); border-radius: var(--radius-pill); background: var(--color-surface-control-off); position: relative; transition: background-color .15s ease; }
+.pulse-toggle input::before {
+  content: ""; position: absolute; top: 2px; left: 2px; width: var(--space-20); height: var(--space-20); border-radius: 50%;
+  background: var(--color-surface-page); transition: transform .15s ease;
+}
+.pulse-toggle input:checked { background: var(--color-accent-default); }
+.pulse-toggle input:checked::before { transform: translateX(22px); background: var(--color-surface-raised); }
+.pulse-check input:disabled, .pulse-radio input:disabled { background-color: var(--color-surface-disabled); border-color: var(--color-border-default); }
+.pulse-toggle input:disabled { background: var(--color-surface-disabled); }
+.pulse-check:has(input:disabled), .pulse-radio:has(input:disabled), .pulse-toggle:has(input:disabled) { color: var(--color-text-disabled); cursor: not-allowed; }
+
+/* ---------- Fields ---------- */
+.pulse-field { display: flex; flex-direction: column; gap: var(--space-8); font-family: var(--font-sans); }
+.pulse-field__label { font: 500 var(--type-label-sm-size) / var(--type-label-sm-line-height) var(--font-sans); color: var(--color-text-primary); }
+.pulse-input, .pulse-select, .pulse-textarea {
+  width: 100%; box-sizing: border-box; min-height: var(--control-height-md); padding: var(--space-8) var(--space-12);
+  border: var(--border-width-1) solid var(--color-border-strong); border-radius: var(--radius-control);
+  background-color: var(--color-surface-raised); color: var(--color-text-primary); font: 400 var(--type-body-md-size) / var(--type-body-md-line-height) var(--font-sans);
+}
+/* One placeholder color everywhere: the lightest gray that still passes 4.5:1. Disabled fields use the disabled text color. */
+.pulse-input::placeholder, .pulse-textarea::placeholder { color: var(--color-text-placeholder); opacity: 1; }
+.pulse-input:disabled::placeholder, .pulse-textarea:disabled::placeholder { color: var(--color-text-disabled); }
+/* A native select whose first option is an empty prompt reads as a placeholder until a real option is chosen. */
+.pulse-select:has(option[value=""]:checked) { color: var(--color-text-placeholder); }
+.pulse-select option { color: var(--color-text-primary); }
+.pulse-input--lg, .pulse-select--lg { min-height: var(--control-height-lg); font-size: var(--type-body-lg-size); line-height: var(--type-body-lg-line-height); }
+.pulse-textarea { min-height: 120px; padding: var(--space-12); resize: vertical; }
+.pulse-textarea--lg { min-height: 144px; padding: var(--space-16); font-size: var(--type-body-lg-size); line-height: var(--type-body-lg-line-height); }
+.pulse-select { appearance: none; -webkit-appearance: none; padding-right: var(--space-40); }
+.pulse-select-wrap { position: relative; display: block; }
+.pulse-select-wrap::after { content: ""; position: absolute; right: var(--space-12); top: 50%; width: var(--size-icon-16); height: var(--size-icon-16); transform: translateY(-50%); pointer-events: none;
+  background: var(--color-text-secondary); -webkit-mask: var(--pulse-i-caret-down-regular) center / contain no-repeat; mask: var(--pulse-i-caret-down-regular) center / contain no-repeat; }
+.pulse-input:hover, .pulse-select:hover, .pulse-textarea:hover, .is-hover.pulse-input { border-color: var(--color-border-hard); }
+/* Ghost fields: no border, no background, no radius, for fields that sit inside another surface (a search bar, an
+   invite row). Hover tints, focus still shows the ring, error still shows its border. */
+.pulse-input--ghost, .pulse-select--ghost, .pulse-textarea--ghost { border-color: transparent; border-radius: 0; background-color: transparent; }
+.pulse-input--ghost:hover, .pulse-select--ghost:hover, .pulse-textarea--ghost:hover { border-color: transparent; background-color: var(--color-interactive-hover); }
+.pulse-input:focus, .pulse-select:focus, .pulse-textarea:focus, .pulse-input.is-focus, .pulse-select.is-focus, .pulse-textarea.is-focus { outline: 0; border-color: var(--color-border-focus); box-shadow: 0 0 0 var(--border-width-1) var(--color-border-focus); }
+.pulse-field--error .pulse-input, .pulse-field--error .pulse-select, .pulse-field--error .pulse-textarea { border-color: var(--color-indicator-danger); }
+.pulse-input:disabled, .pulse-select:disabled, .pulse-textarea:disabled { background-color: var(--color-surface-disabled); border-color: var(--color-border-default); color: var(--color-text-disabled); cursor: not-allowed; }
+.pulse-field__help { font: 400 var(--type-body-sm-size) / var(--type-body-sm-line-height) var(--font-sans); color: var(--color-text-secondary); }
+.pulse-field--error .pulse-field__help { color: var(--color-text-danger); }
+
+/* ---------- Segmented control ---------- */
+.pulse-segmented { display: inline-flex; gap: var(--space-4); padding: var(--space-4); box-sizing: border-box; border-radius: var(--radius-control); background: var(--color-surface-track); }
+.pulse-segmented__item {
+  appearance: none; border: var(--border-width-1) solid transparent; border-radius: var(--radius-control); background: transparent; color: var(--color-text-secondary);
+  min-height: var(--control-height-sm); padding: var(--space-4) var(--space-16); font: 400 var(--type-label-sm-size) / var(--type-label-sm-line-height) var(--font-sans); cursor: pointer;
+}
+.pulse-segmented__item:hover { color: var(--color-text-primary); }
+.pulse-segmented__item[aria-pressed="true"], .pulse-segmented__item.is-selected {
+  background: var(--color-surface-raised); border-color: var(--color-border-strong); color: var(--color-text-primary); font-weight: 600; box-shadow: var(--shadow-elevation-controls-segment);
+}
+.pulse-segmented__item:focus-visible { outline: 0; box-shadow: var(--shadow-focus-ring); }
+
+/* ---------- Tabs ---------- */
+.pulse-tabs { display: flex; font-family: var(--font-sans); }
+.pulse-tabs--line { border-bottom: var(--border-width-1) solid var(--color-border-default); }
+.pulse-tabs--bar { justify-content: center; box-sizing: border-box; padding-top: var(--space-4); background: var(--color-surface-page); border-top: var(--border-width-1) solid var(--color-border-default); border-bottom: var(--border-width-1) solid var(--color-border-default); box-shadow: var(--shadow-elevation-default-sm); }
+.pulse-tabs--vertical { flex-direction: column; width: 240px; }
+.pulse-tab {
+  appearance: none; background: transparent; border: 0; border-bottom: var(--border-width-2) solid transparent; box-sizing: border-box; padding: var(--space-12) var(--space-16);
+  color: var(--color-text-tertiary); font: 400 var(--type-body-sm-size) / var(--type-body-sm-line-height) var(--font-sans); cursor: pointer; text-align: left; text-decoration: none;
+}
+.pulse-tab:hover, .pulse-tab.is-hover { color: var(--color-text-primary); }
+.pulse-tab[aria-selected="true"], .pulse-tab[aria-current="true"] { color: var(--color-text-primary); font-weight: 500; border-bottom-color: var(--color-accent-default); }
+.pulse-tab:focus-visible { outline: 0; box-shadow: var(--shadow-focus-ring); }
+.pulse-tabs--vertical .pulse-tab { border-bottom: 0; border-left: var(--border-width-1) solid var(--color-border-default); padding: var(--space-12) 0 var(--space-12) var(--space-16); font-weight: 500; color: var(--color-text-secondary); }
+.pulse-tabs--vertical .pulse-tab[aria-selected="true"], .pulse-tabs--vertical .pulse-tab[aria-current="true"] { border-left: var(--border-width-2) solid var(--color-accent-default); padding-left: calc(var(--space-16) - 1px); color: var(--color-text-primary); }
+
+/* ---------- Alert and Toast ---------- */
+.pulse-alert, .pulse-toast {
+  --tone: var(--color-indicator-info); --tint: var(--color-status-info-subtle); --solid: var(--color-status-info); --on: var(--color-text-on-accent);
+  display: flex; align-items: flex-start; gap: var(--space-12); box-sizing: border-box; padding: var(--space-16); border-radius: var(--radius-medium); font-family: var(--font-sans);
+}
+.pulse-alert { padding: calc(var(--space-16) - var(--border-width-1)); background: var(--tint); border: var(--border-width-1) solid var(--tone); color: var(--color-text-primary); }
+.pulse-alert--success, .pulse-toast--success { --tone: var(--color-indicator-success); --tint: var(--color-status-success-subtle); --solid: var(--color-status-success); }
+.pulse-alert--danger, .pulse-toast--danger { --tone: var(--color-indicator-danger); --tint: var(--color-status-danger-subtle); --solid: var(--color-status-danger); }
+.pulse-alert--warning, .pulse-toast--warning { --tone: var(--color-indicator-warning); --tint: var(--color-status-warning-subtle); --solid: var(--color-status-warning); --on: var(--color-text-on-warning); }
+.pulse-alert > .pulse-icon, .pulse-toast > .pulse-icon { --pulse-icon-size: var(--size-icon-20); margin-top: var(--space-0); }
+.pulse-alert > .pulse-icon { color: var(--tone); }
+.pulse-alert__body, .pulse-toast__body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--space-8); align-items: flex-start; }
+.pulse-alert__title, .pulse-toast__title { font: 500 var(--type-label-sm-size) / var(--type-label-sm-line-height) var(--font-sans); }
+.pulse-alert__text, .pulse-toast__text { font: 400 var(--type-body-sm-size) / var(--type-body-sm-line-height) var(--font-sans); color: var(--color-text-secondary); }
+.pulse-toast { background: var(--solid); color: var(--on); box-shadow: var(--shadow-elevation-default-md); }
+.pulse-toast--neutral { --solid: var(--color-surface-contrast); --on: var(--color-text-on-contrast); }
+.pulse-toast__text { color: inherit; }
+.pulse-toast__cta { color: inherit; font: 500 var(--type-label-sm-size) / var(--type-label-sm-line-height) var(--font-sans); text-decoration: underline; cursor: pointer; }
+.pulse-dismiss { appearance: none; border: 0; background: transparent; color: var(--color-text-tertiary); width: var(--control-height-sm); height: var(--control-height-sm); margin: calc(var(--space-4) * -1) calc(var(--space-4) * -1) 0 0; border-radius: var(--radius-control); cursor: pointer; display: grid; place-items: center; }
+.pulse-toast .pulse-dismiss { color: inherit; }
+.pulse-dismiss:hover { background: var(--color-interactive-hover); }
+
+/* ---------- Progress ---------- */
+.pulse-progress { display: flex; flex-direction: column; gap: var(--space-8); font-family: var(--font-sans); }
+.pulse-progress__head { display: flex; justify-content: space-between; font: 500 var(--type-label-sm-size) / var(--type-label-sm-line-height) var(--font-sans); color: var(--color-text-primary); }
+.pulse-progress__value { font: 400 var(--type-mono-label-size) / var(--type-mono-label-line-height) var(--font-mono); color: var(--color-text-secondary); }
+.pulse-progress__track { height: var(--space-8); border-radius: var(--radius-sm); background: var(--color-surface-track); overflow: hidden; }
+.pulse-progress__fill { --fill: var(--color-indicator-accent); height: 100%; width: var(--p, 0%); background: var(--fill); }
+.pulse-progress--success .pulse-progress__fill { --fill: var(--color-indicator-success); }
+.pulse-progress--danger .pulse-progress__fill { --fill: var(--color-indicator-danger); }
+.pulse-progress--indeterminate .pulse-progress__fill { width: 30%; animation: pulse-slide 1.2s linear infinite; }
+@keyframes pulse-slide { from { transform: translateX(-100%); } to { transform: translateX(340%); } }
+
+/* ---------- Dropdown (listbox) and menu item ---------- */
+/* The option list that opens from a select. Width follows the trigger. Items are 40px tall with an 8px inset;
+   the panel uses the medium radius and the item radius is the tag radius. */
+.pulse-dropdown { display: flex; flex-direction: column; gap: 2px; box-sizing: border-box; margin: 0; padding: var(--space-8); list-style: none;
+  border: var(--border-width-1) solid var(--color-border-default); border-radius: var(--radius-medium);
+  background-color: var(--color-surface-raised); box-shadow: var(--shadow-elevation-default-md); font-family: var(--font-sans); }
+.pulse-dropdown--scroll { max-height: 240px; overflow-y: auto; overscroll-behavior: contain; }
+.pulse-dropdown__hint { padding: var(--space-4) var(--space-12) 0; font: 400 var(--type-body-sm-size) / var(--type-body-sm-line-height) var(--font-sans); color: var(--color-text-secondary); }
+.pulse-menu-item { display: flex; align-items: center; gap: var(--space-8); box-sizing: border-box; min-height: var(--control-height-md); padding: var(--space-8) var(--space-12);
+  border: 0; border-radius: var(--radius-tag); background: transparent; color: var(--color-text-primary);
+  font: 400 var(--type-body-sm-size) / var(--type-body-sm-line-height) var(--font-sans); text-align: left; cursor: pointer; }
+.pulse-menu-item__label { flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; }
+.pulse-menu-item__check { flex: none; width: var(--size-icon-16); height: var(--size-icon-16); }
+.pulse-menu-item:hover, .pulse-menu-item.is-hover { background-color: var(--color-interactive-hover); }
+.pulse-menu-item[aria-selected="true"], .pulse-menu-item.is-selected { background-color: var(--color-surface-subtle); }
+.pulse-menu-item:focus-visible, .pulse-menu-item.is-focus { outline: 0; background-color: var(--color-interactive-hover); box-shadow: inset 0 0 0 var(--border-width-2) var(--color-border-focus); }
+.pulse-menu-item[aria-disabled="true"], .pulse-menu-item.is-disabled { color: var(--color-text-disabled); background-color: transparent; cursor: not-allowed; }
+.pulse-menu-item[aria-disabled="true"]:hover { background-color: transparent; }
+
+/* ---------- Dialog ---------- */
+/* The panel works on its own or inside a native <dialog class="pulse-dialog">. Wrap a hand-built modal in
+   .pulse-dialog-backdrop (fixed, centered, overlay surface). Initial focus goes to Cancel for destructive dialogs. */
+.pulse-dialog-backdrop { position: fixed; inset: 0; z-index: 1000; display: flex; align-items: center; justify-content: center; padding: var(--space-16); background-color: var(--color-surface-overlay); }
+.pulse-dialog { display: flex; flex-direction: column; gap: var(--space-24); box-sizing: border-box; width: min(560px, 100%); max-height: calc(100vh - 2 * var(--space-16)); overflow-y: auto; margin: auto;
+  padding: var(--space-card-padding); border: var(--border-width-1) solid var(--color-border-default); border-radius: var(--radius-container);
+  background-color: var(--color-surface-raised); color: var(--color-text-primary); box-shadow: var(--shadow-elevation-default-lg); font-family: var(--font-sans); }
+dialog.pulse-dialog:not([open]) { display: none; }
+dialog.pulse-dialog::backdrop { background-color: var(--color-surface-overlay); }
+.pulse-dialog__head { display: flex; align-items: flex-start; gap: var(--space-16); }
+.pulse-dialog__copy { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: var(--space-12); }
+.pulse-dialog__title { margin: 0; font: 600 var(--type-heading-card-size) / var(--type-heading-card-line-height) var(--font-sans); color: var(--color-text-primary); }
+.pulse-dialog__body { margin: 0; font: 400 var(--type-body-md-size) / var(--type-body-md-line-height) var(--font-sans); color: var(--color-text-secondary); }
+.pulse-dialog__close { flex: none; }
+.pulse-dialog__resource { padding: var(--space-12); border: var(--border-width-1) solid var(--color-border-subtle); border-radius: var(--radius-control); background-color: var(--color-surface-subtle);
+  font: 400 var(--type-body-xs-size) / var(--type-body-sm-line-height) var(--font-sans); color: var(--color-text-secondary); overflow-wrap: anywhere; }
+/* Action groups. Start-aligned by default (forms, cards, panels); --end for dialog and drawer footers (Cancel, then the main action).
+   Under 768px both stack at full width; in an --end group the main action goes on top. */
+.pulse-actions { display: flex; flex-direction: column; gap: var(--space-12); }
+.pulse-actions--end, .pulse-dialog__actions { display: flex; flex-direction: column-reverse; gap: var(--space-12); }
+.pulse-actions > .pulse-btn, .pulse-actions--end > .pulse-btn, .pulse-dialog__actions > .pulse-btn { justify-content: center; }
+@media (min-width: 768px) {
+  .pulse-actions { flex-direction: row; flex-wrap: wrap; justify-content: flex-start; }
+  .pulse-actions--end, .pulse-dialog__actions { flex-direction: row; flex-wrap: wrap; justify-content: flex-end; }
+}
+
+/* ---------- Slider ---------- */
+/* A styled native <input type="range">: arrow keys step, Page Up/Down jump, touch and screen readers work for free.
+   Set the fill with --v (a percent) on the input and keep the value text next to the label. */
+.pulse-slider { display: flex; flex-direction: column; gap: var(--space-8); font-family: var(--font-sans); }
+.pulse-slider__head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-8); }
+.pulse-slider__label { font: 500 var(--type-label-sm-size) / var(--type-label-sm-line-height) var(--font-sans); color: var(--color-text-primary); }
+.pulse-slider__value { font: 400 var(--type-body-xs-size) / var(--type-body-sm-line-height) var(--font-sans); color: var(--color-text-secondary); font-variant-numeric: tabular-nums; }
+.pulse-slider__input { --v: 0%; --t: 16px; --fill: var(--color-indicator-accent); --thumb-bd: var(--color-indicator-accent); --thumb-sh: var(--shadow-elevation-offset-offset-chunk-sm);
+  appearance: none; -webkit-appearance: none; display: block; width: 100%; height: 20px; margin: 0; padding: 0; background: transparent; cursor: pointer; }
+.pulse-slider__input::-webkit-slider-runnable-track { height: 4px; border-radius: var(--radius-pill); background: linear-gradient(to right, var(--fill) 0 var(--v), var(--color-surface-track) var(--v) 100%); }
+.pulse-slider__input::-moz-range-track { height: 4px; border-radius: var(--radius-pill); background: var(--color-surface-track); }
+.pulse-slider__input::-moz-range-progress { height: 4px; border-radius: var(--radius-pill); background: var(--fill); }
+.pulse-slider__input::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; box-sizing: border-box; width: var(--t); height: var(--t); margin-top: calc((4px - var(--t)) / 2);
+  border: var(--border-width-2) solid var(--thumb-bd); border-radius: var(--radius-button); background: var(--color-surface-raised); box-shadow: var(--thumb-sh); transition: width .12s ease, height .12s ease, margin-top .12s ease; }
+.pulse-slider__input::-moz-range-thumb { box-sizing: border-box; width: var(--t); height: var(--t);
+  border: var(--border-width-2) solid var(--thumb-bd); border-radius: var(--radius-button); background: var(--color-surface-raised); box-shadow: var(--thumb-sh); }
+.pulse-slider__input:hover:not(:disabled), .pulse-slider__input.is-hover { --t: 20px; --fill: var(--color-accent-hover); }
+.pulse-slider__input:active:not(:disabled), .pulse-slider__input.is-pressed { --t: 20px; --fill: var(--color-accent-pressed); --thumb-bd: var(--color-accent-pressed); --thumb-sh: none; }
+.pulse-slider__input:focus-visible, .pulse-slider__input.is-focus { outline: 0; --thumb-sh: var(--shadow-focus-ring); }
+.pulse-slider__input:disabled { --fill: var(--color-text-disabled); --thumb-bd: var(--color-border-mid); --thumb-sh: none; cursor: not-allowed; }
+.pulse-slider__input:disabled::-webkit-slider-runnable-track { background: linear-gradient(to right, var(--fill) 0 var(--v), var(--color-surface-disabled) var(--v) 100%); }
+.pulse-slider__input:disabled::-moz-range-track { background: var(--color-surface-disabled); }
+.pulse-slider__input:disabled::-webkit-slider-thumb { background: var(--color-surface-disabled); }
+.pulse-slider__input:disabled::-moz-range-thumb { background: var(--color-surface-disabled); }
+.pulse-slider:has(:disabled) .pulse-slider__label, .pulse-slider:has(:disabled) .pulse-slider__value { color: var(--color-text-disabled); }
+
+/* ---------- Tooltip ---------- */
+.pulse-tooltip { position: relative; display: inline-block; box-sizing: border-box; max-width: 240px; padding: var(--space-8) var(--space-12); border-radius: var(--radius-tag); background: var(--color-surface-contrast); color: var(--color-text-on-contrast); font: 400 var(--type-body-sm-size) / var(--type-body-sm-line-height) var(--font-sans); box-shadow: var(--shadow-elevation-default-md); }
+.pulse-tooltip::after { content: ""; position: absolute; left: 50%; bottom: -4px; width: 8px; height: 8px; background: inherit; transform: translateX(-50%) rotate(45deg); }
+
+/* ---------- Popover ---------- */
+/* A click-opened card next to its trigger (info icon, feedback button). Placement names the side of the trigger it sits on
+   (--top, --right, --bottom, --left); --start / --end line the caret up near that corner instead of the middle. --no-caret
+   drops the pointer. Open it with the browser's popover attribute and a popovertarget button; pulse.js places it beside
+   the trigger and flips it near a screen edge. Without pulse.js (or for a static example) it is just the card.
+   Default content is a headline, a description and optional actions (each can be left out). For a custom treatment (a form, a list)
+   put anything inside __content; that is the slot version in Figma. */
+.pulse-popover { --caret-w: 12px; --caret-s: calc(var(--caret-w) * 0.7071); --along: 50%;
+  position: relative; box-sizing: border-box; width: 320px; max-width: calc(100vw - 2 * var(--space-16)); margin: 0; padding: var(--space-16); overflow: visible;
+  border: var(--border-width-1) solid var(--color-border-default); border-radius: var(--radius-medium);
+  background-color: var(--color-surface-raised); color: var(--color-text-primary); box-shadow: var(--shadow-elevation-default-md); font-family: var(--font-sans); }
+.pulse-popover[popover] { position: fixed; inset: auto; }
+@supports not selector(:popover-open) { .pulse-popover[popover]:not(.is-open) { display: none; } }
+.pulse-popover--start { --along: calc(var(--space-16) + var(--caret-w) / 2 - var(--border-width-1)); }
+.pulse-popover--end { --along: calc(100% - var(--space-16) - var(--caret-w) / 2 + var(--border-width-1)); }
+/* The caret is a rotated square whose centre sits on the card's edge; only its two outer edges draw a border. */
+.pulse-popover--top::before, .pulse-popover--right::before, .pulse-popover--bottom::before, .pulse-popover--left::before {
+  content: ""; position: absolute; box-sizing: border-box; width: var(--caret-s); height: var(--caret-s); border: 0 solid var(--color-border-default);
+  background-color: var(--color-surface-raised); translate: -50% -50%; rotate: 45deg; pointer-events: none; }
+.pulse-popover--bottom::before { top: calc(-1 * var(--border-width-1)); left: var(--along); border-width: var(--border-width-1) 0 0 var(--border-width-1); }
+.pulse-popover--top::before { top: calc(100% + var(--border-width-1)); left: var(--along); border-width: 0 var(--border-width-1) var(--border-width-1) 0; }
+.pulse-popover--right::before { left: calc(-1 * var(--border-width-1)); top: var(--along); border-width: 0 0 var(--border-width-1) var(--border-width-1); }
+.pulse-popover--left::before { left: calc(100% + var(--border-width-1)); top: var(--along); border-width: var(--border-width-1) var(--border-width-1) 0 0; }
+.pulse-popover--no-caret::before { display: none; }
+.pulse-popover__content { display: flex; flex-direction: column; gap: var(--space-8); }
+.pulse-popover__title { margin: 0; padding-inline-end: var(--space-24); font: 600 var(--type-body-md-size) / var(--type-body-md-line-height) var(--font-sans); color: var(--color-text-primary); }
+.pulse-popover__body { margin: 0; padding-inline-end: var(--space-24); font: 400 var(--type-body-sm-size) / var(--type-body-sm-line-height) var(--font-sans); color: var(--color-text-secondary); }
+.pulse-popover__actions { display: flex; flex-wrap: wrap; gap: var(--space-8); padding-top: var(--space-4); }
+.pulse-popover__close { position: absolute; top: calc(var(--space-12) - var(--border-width-1)); inset-inline-end: calc(var(--space-8) - var(--border-width-1)); }
+
+@media (prefers-reduced-motion: reduce) {
+  .pulse-btn, .pulse-toggle input, .pulse-toggle input::before, .pulse-slider__input::-webkit-slider-thumb, .pulse-link > .pulse-icon:last-child { transition: none; }
+  .pulse-btn[aria-busy="true"]::before { animation-duration: 2.4s; }
+  .pulse-progress--indeterminate .pulse-progress__fill { animation: none; width: 100%; opacity: .5; }
+}
+
+}

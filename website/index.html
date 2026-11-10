@@ -413,6 +413,24 @@
   .pr-fine{font-size:12px;line-height:16px;color:var(--gray-faint);text-align:center;}
   @media (max-width:400px){ .drawer--price .drawer-head{padding:16px;} .pr-body{padding:0 16px;} }
   @media (prefers-reduced-motion: reduce){ .drawer--price .drawer-panel,.drawer--price .drawer-scrim{transition:none;} }
+
+  /* ---------- PHONES (Chad, 2026-11-10): one hierarchy for the small screen ----------
+     h1 40 > h2 30 > ledes (hero 17, sections 16) > small copy 15 > labels 14. The big Dot shrinks with the screen so it
+     and its badge keep clear of the edges. */
+  @media (max-width:560px){
+    .meet h2,.vex h2,#team .sec-head h2{font-size:30px;line-height:36px;}
+    .home-lede{font-size:17px;line-height:26px;}
+    .section-intro > p,#team .sec-head p,.vex-copy > p{font-size:16px;line-height:26px;}
+    .dot-link{font-size:16px;line-height:24px;margin-top:12px;}
+    .dot-label{font-size:14px;line-height:20px;}
+    .along{gap:10px;padding:14px 16px;font-size:15px;line-height:22px;}
+    .along img{width:22px;height:22px;margin-top:0;}
+    .big-dot{zoom:min(0.7, calc((100vw - 96px) / 331px));}   /* 230px at most; at 302 it leaves 48px each side */
+    .big-dot .name{font-size:28px;}
+    .badge{max-width:100%;box-sizing:border-box;}
+    .meet,.vex{padding:64px 0;}
+    .meet .wrap{gap:32px;}
+  }
   /* ---------- FOOTER ---------- */
 
   /* ---------- VEX AI SOC MENU ---------- */
@@ -650,7 +668,7 @@
       <div class="pr-body">
         <div class="pr-head">
           <p class="pr-title">Start with a Dot.</p>
-          <p class="pr-sub">When you are ready, connect it to VEX.</p>
+          <p class="pr-sub">Your Dot runs on VEX. Get the full VEX when you’re ready.</p>
         </div>
         <div class="pr-card">
           <div class="pr-top">

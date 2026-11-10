@@ -59,6 +59,7 @@ class Workspace {
                         managed: new ManagedRollup(state),
                         source: new SourceRollup(state),
                         dot: new DotRollup(state),
+                        map: new MapRollup(state),
                     };
 
                     this.sidebars = {

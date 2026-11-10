@@ -1,0 +1,4 @@
+# Dots became the homepage on 2026-11-09. Only /dots/ itself moves; /dots/install/ stays.
+/dots / 301
+/dots/ / 301
+/dots/index.html / 301

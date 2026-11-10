@@ -14,6 +14,7 @@
   <script>
     document.write(`
       <link rel="stylesheet" href="static/system/markdown.css?v=${v}">
+      <link rel="stylesheet" href="static/css/map.css?v=${v}">
       <link rel="stylesheet" href="static/css/managed.css?v=${v}">
       <link rel="stylesheet" href="static/css/dot.css?v=${v}">
       <link rel="stylesheet" href="static/css/tenant.css?v=${v}">
@@ -43,6 +44,10 @@
       <span class="setup-chip-dot"></span>
       <span class="setup-chip-count">0</span>
       <span class="setup-chip-noun">Sources</span>
+    </button>
+    <span class="header-divider"></span>
+    <button class="header-icon-btn" id="open-map-rollup" title="Open map" aria-label="Open map">
+      <span class="material-symbols-outlined">location_on</span>
     </button>
   </site-header>
 
@@ -203,6 +208,35 @@
     </div>
   </site-rollup>
 
+  <site-rollup id="map-screen">
+    <div class="rollup-head">
+      <span class="material-symbols-outlined rollup-head-icon">location_on</span>
+      <div class="rollup-head-text">
+        <h2>Map</h2>
+        <p>Live view of sources and discovered assets.</p>
+      </div>
+      <div class="map-stats" id="map-stats"></div>
+    </div>
+
+    <div class="map-stage" id="map-stage">
+      <div class="map-graph" id="map-graph"></div>
+
+      <div class="map-overlay map-controls" id="map-controls">
+        <button data-act="in" aria-label="Zoom in" title="Zoom in"><span class="material-symbols-outlined">add</span></button>
+        <button data-act="out" aria-label="Zoom out" title="Zoom out"><span class="material-symbols-outlined">remove</span></button>
+        <button data-act="fit" aria-label="Fit" title="Fit to screen"><span class="material-symbols-outlined">fit_screen</span></button>
+      </div>
+
+      <div class="map-overlay map-legend">
+        <span><i class="sw-live"></i>Active</span>
+        <span><i class="sw-idle"></i>Idle</span>
+        <span><i class="sw-none"></i>Missing</span>
+      </div>
+
+      <aside class="map-peek" id="map-peek"></aside>
+    </div>
+  </site-rollup>
+  
   <!--Sidebars-->
 
   <site-sidebar id="signal-sidebar">
@@ -282,6 +316,7 @@
     <script src="static/js/sidebars/signal.js?v=${v}"><\/script>
     <script src="static/js/sidebars/backup.js?v=${v}"><\/script>
     <script src="static/js/rollups/managed.js?v=${v}"><\/script>
+    <script src="static/js/rollups/map.js?v=${v}"><\/script>
     <script src="static/js/rollups/sources.js?v=${v}"><\/script>
     <script src="static/js/rollups/dot.js?v=${v}"><\/script>
   `);

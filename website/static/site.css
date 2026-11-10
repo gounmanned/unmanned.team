@@ -171,6 +171,13 @@
   /* Figma 2675:63257. A 400px popover above the thumb; a bottom sheet on phones and short screens (same query as isSheet() in feedback.js). */
   footer.has-fb > span:first-child,footer.has-fb .flinks{flex:1 1 0;min-width:0;}
   footer.has-fb .flinks{justify-content:flex-end;}
+  /* Layout (Chad, 2026-11-10): copyright over the links on the left, feedback on the right. Under 700px the links stack,
+     one per line; under 480px the feedback drops below them. Overrides the flex rules above. */
+  footer{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"copy fb" "links fb";column-gap:24px;row-gap:8px;align-items:center;}
+  footer{font-size:12px;line-height:16px;letter-spacing:0;text-transform:none;}   /* sentence case, the size of "What do you think?" */
+  footer > span:first-child{grid-area:copy;}
+  footer .flinks,footer.has-fb .flinks{grid-area:links;flex-wrap:wrap;justify-content:flex-start;gap:4px 12px;}
+  footer .fb{grid-area:fb;}
   .fb{display:flex;align-items:center;gap:12px;font-size:12px;font-weight:500;line-height:16px;letter-spacing:0;text-transform:none;}
   .fb-btns{display:flex;gap:4px;}
   .fb-btn{display:flex;align-items:center;justify-content:center;width:32px;height:32px;padding:0;border:0;border-radius:2px;background:none;cursor:pointer;}
@@ -213,6 +220,14 @@
     .drawer-head{padding:20px 16px 16px;}
     .to-top{right:16px;bottom:16px;}
     footer{padding:22px 20px 36px;flex-direction:column;gap:10px;text-align:center;}
+    footer{grid-template-areas:"copy fb" "links links";row-gap:4px;text-align:left;}
+    footer .flinks,footer.has-fb .flinks{flex-direction:column;align-items:flex-start;gap:0;}
+    footer .flinks > span[aria-hidden]{display:none;}
+    footer .flinks a{padding:7px 0;}   /* a 30px row each, easy to tap */
+  }
+  @media (max-width:480px){
+    footer{grid-template-columns:minmax(0,1fr);grid-template-areas:"copy" "links" "fb";}
+    footer .fb{margin-top:12px;}
   }
   @media (max-width:700px),(max-height:520px){
     .fb-btn{width:44px;height:44px;}

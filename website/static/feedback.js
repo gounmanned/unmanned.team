@@ -61,7 +61,7 @@
   const bar = document.createElement('div');
   bar.className = 'fb';
   bar.innerHTML = `<span class="fb-label" role="status">What do you think?</span><span class="fb-btns">${thumb('up', 'I like this page')}${thumb('down', 'I don’t like this page')}</span>`;
-  footer.insertBefore(bar, links);
+  footer.appendChild(bar);   // after the links, so tab order is copyright, links, feedback; site.css places it
   footer.classList.add('has-fb');
 
   const scrim = document.createElement('div');

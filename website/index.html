@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>One Dot. One thing protected. | VEX by Unmanned</title>
-<meta name="description" content="A laptop, an identity, a server or a website. Choose what you want to protect. Each Dot connects to VEX, the AI SOC behind your protection.">
+<meta name="description" content="An identity, an endpoint or a domain. Each Dot protects one thing and reports to VEX, the AI SOC behind your protection.">
 <link rel="apple-touch-icon" href="https://cdn.unmanned.team/img/logo.png">
 <meta property="og:title" content="One Dot. One thing protected." />
-<meta property="og:description" content="A laptop, an identity, a server or a website. Choose what you want to protect. Each Dot connects to VEX, the AI SOC behind your protection." />
+<meta property="og:description" content="An identity, an endpoint or a domain. Each Dot protects one thing and reports to VEX, the AI SOC behind your protection." />
 <meta property="og:url" content="https://unmanned.team/" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Unmanned" />
@@ -277,10 +277,10 @@
   .section-intro{display:flex;flex-direction:column;align-items:center;gap:24px;text-align:center;}
   .section-intro .titles{display:flex;flex-direction:column;align-items:center;gap:16px;}
   .meet h2,.vex h2,#team .sec-head h2{font-size:clamp(34px,4.2vw,48px);line-height:1.1667;font-weight:600;letter-spacing:-0.015em;color:var(--ink);}   /* one size for every section headline (Chad, 2026-11-10) */
-  .section-intro > p{max-width:603px;font-size:18px;line-height:28px;color:var(--body-soft);}
+  .section-intro > p{max-width:700px;font-size:18px;line-height:28px;color:var(--body-soft);}
 
-  /* the big Dot with five callouts; 1012px wide so the Dot sits on the center line */
-  .concepts{position:relative;width:1050px;height:404px;}
+  /* the big Dot with four callouts (Figma 2822:27656, offsets minus 25px: Figma's frame is 1100 wide) */
+  .concepts{position:relative;width:1050px;height:370px;}
   .big-dot{position:absolute;left:359.54px;top:0;width:330.92px;height:336px;}
   .big-dot .ground{position:absolute;left:39.59px;top:321.79px;width:239.56px;height:14.21px;border-radius:50%;background:var(--d-sunken);}
   .big-dot .ball{position:absolute;inset:0 0 auto;height:330.92px;border-radius:50%;background:var(--d-cyan);isolation:isolate;overflow:hidden;}
@@ -291,17 +291,15 @@
   .callout dl{margin:0;font-size:14px;line-height:20px;color:var(--ink);display:flex;flex-direction:column;gap:4px;}
   .callout dt{font-weight:600;}
   .callout dd{margin:0;}
-  .callout--l dl{width:157px;}
+  .callout--l dl{width:200px;}
   .callout--r{align-items:flex-end;}
   .callout--r .eyebrow,.callout--r dl{width:200px;}
-  .c-size{left:129px;top:44px;width:317px;}
-  .c-lives{left:171px;top:212px;width:303px;}
-  .c-hours{left:616px;top:12px;width:293px;}
-  .c-specialty{left:652px;top:131px;width:398px;}
-  .c-reports{left:601px;top:262px;width:303px;}
+  .c-size{left:129px;top:44px;width:284px;}
+  .c-lives{left:129px;top:212px;width:264px;}
+  .c-specialty{left:662px;top:44px;width:299px;}
+  .c-reports{left:674px;top:212px;width:287px;}
   /* the joke footnote under the giant Dot, then the badge */
   .dot-meta{position:absolute;left:50%;top:344px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:24px;}
-  .dot-meta .fine{font-size:10px;line-height:12px;font-weight:300;color:var(--body-soft);white-space:nowrap;}
   .badge{display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border:1px solid var(--d-mute);border-radius:2px;background:var(--surface-gray);white-space:nowrap;}
   .badge::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--d-green);}
   .badge .eyebrow{color:var(--body-soft);}
@@ -494,7 +492,7 @@
             <div class="h1-clip"><h1 id="hero-title">One Dot. One thing protected.</h1></div>
           </div>
           <div class="intro-word" aria-hidden="true">Introducing <span>Dots</span></div>
-          <p class="home-lede">A laptop, an identity, a server or a website. Choose what you want to protect. Each Dot connects to VEX, the AI SOC behind your protection.</p>
+          <p class="home-lede">An identity, an endpoint or a domain. Each Dot protects one thing and reports to VEX, the AI SOC behind your protection.</p>
           <a class="btn hero-cta" href="https://buy.stripe.com/cNi7sDalf8ob8ct5CKfQI01?utm_campaign=home" data-checkout data-drawer="pricing">Buy a Dot</a>
         </div>
 
@@ -510,7 +508,7 @@
             <div class="dot dot--cyan" data-dot="cyan"><svg viewBox="0 0 125 125"><path d="M24.9814 12.5117C14.0194 23.7714 7.26769 39.1506 7.26758 56.1064C7.26758 90.6244 35.2498 118.607 69.7676 118.607C83.8444 118.607 96.8329 113.952 107.281 106.099C95.9276 117.759 80.0603 125.003 62.5 125.003C27.9822 125.003 0 97.0199 0 62.502C9.03362e-05 42.0627 9.81158 23.9152 24.9814 12.5117Z"/></svg></div>
           </div>
           <p class="dot-label">Dot #001</p>
-          <a class="dot-link" href="#meet">Meet a code Dot <img src="static/icon-arrow-down-pink.svg" width="20" height="20" alt=""></a>
+          <a class="dot-link" href="#meet">Meet a Dot <img src="static/icon-arrow-down-pink.svg" width="20" height="20" alt=""></a>
         </div>
       </div>
       <button class="vz-replay" type="button" hidden>Replay</button>
@@ -523,10 +521,10 @@
       <div class="wrap">
         <div class="section-intro">
           <div class="titles">
-            <p class="eyebrow">Meet your code Dot</p>
-            <h2 id="meet-title">The first EDR made for <span class="code"><span>c</span><span>o</span><span>d</span><span>e</span></span>.</h2>
+            <p class="eyebrow">Meet a Dot</p>
+            <h2 id="meet-title">Your Dot. A&nbsp;little offensive.</h2>
           </div>
-          <p>The tiniest member of your security team. A lightweight library that adds runtime security to any codebase, testing it from the inside for the weaknesses an attacker would exploit.</p>
+          <p>You bought security. Shouldn’t you test it? Guided by VEX, a Dot probes for the weaknesses an attacker could exploit, fixes what it can and flags the rest.</p>
         </div>
 
         <div class="concepts">
@@ -541,22 +539,17 @@
           </div>
           <div class="callout callout--l c-lives">
             <p class="eyebrow eyebrow--pink">Where it lives</p><hr>
-            <dl><dt>Your code</dt><dd>Frontend, backend, websites, servers, IT and OT.</dd></dl>
-          </div>
-          <div class="callout callout--r c-hours">
-            <p class="eyebrow eyebrow--pink">Working hours</p><hr>
-            <dl><dt>While your code runs</dt><dd>Stop your code, stop the Dot.</dd></dl>
+            <dl><dt>One thing you choose</dt><dd>An identity, an endpoint or a domain.</dd></dl>
           </div>
           <div class="callout callout--r c-specialty">
             <p class="eyebrow eyebrow--pink">Specialty</p><hr>
-            <dl><dt>Security checks and offensive testing</dt><dd>Continuously examines your code for security issues.</dd></dl>
+            <dl><dt>Security checks and offensive testing</dt><dd>Finds the weaknesses an attacker would use.</dd></dl>
           </div>
           <div class="callout callout--r c-reports">
             <p class="eyebrow eyebrow--pink">Reports to</p><hr>
             <dl><dt>VEX, the AI SOC</dt><dd>Sends findings back for analysis and response.</dd></dl>
           </div>
           <div class="dot-meta">
-            <p class="fine">*Enlarged 5,000% to show properties</p>
             <p class="badge"><span class="eyebrow">Security team Dot · active</span></p>
           </div>
         </div>
@@ -573,7 +566,7 @@
           </ul>
         </div>
 
-        <p class="along"><img src="static/dots-logo.svg" width="26" height="26" alt=""><span><b>Gets along with everyone</b>. Dots can run alongside your existing EDR and antivirus.</span></p>
+        <p class="along"><img src="static/dots-logo.svg" width="26" height="26" alt=""><span><b>Gets along with everyone</b>. Dots run alongside your existing EDR and antivirus, and test them too.</span></p>
       </div>
     </section>
 
@@ -621,7 +614,7 @@
             <p class="eyebrow">Meet VEX</p>
             <h2 id="vex-title">Dots find the issues. VEX makes sense <br>of them.</h2>
           </div>
-          <p>Every Dot reports to VEX, your AI SOC. VEX maps connections between the things you protect, helping identify attack paths, investigate findings and coordinate response.</p>
+          <p>Every Dot reports to VEX, your AI SOC. The more Dots you add, the more VEX sees. It connects what they find, maps the attack paths between them and coordinates the response.</p>
           <a class="btn" href="/how-it-works/">See how VEX works</a>
         </div>
       </div>

@@ -121,10 +121,13 @@ class Table {
             </span>`;
     }
 
+    static utc(v) {
+        return Date.parse(/[zZ]|[+-]\d\d:?\d\d$/.test(v) ? v : `${v}Z`);
+    }
+
     elapsed(signal) {
-        const utc = v => Date.parse(/[zZ]|[+-]\d\d:?\d\d$/.test(v) ? v : `${v}Z`);
-        const end = signal.status === 'OB' ? Date.now() : utc(signal.updated ?? signal.created);
-        const t = Math.max(0, Math.floor((end - utc(signal.created)) / 1000));
+        const end = signal.status === 'OB' ? Date.now() : Table.utc(signal.updated ?? signal.created);
+        const t = Math.max(0, Math.floor((end - Table.utc(signal.created)) / 1000));
 
         return [t / 3600, (t % 3600) / 60, t % 60]
             .map(n => String(Math.floor(n)).padStart(2, '0'))
@@ -149,7 +152,8 @@ class Table {
             <td class="metadata">${this.metadata(signal.metadata)}</td>
             <td class="source">${Workspace.esc(signal.asset)}</td>
             <td class="created">${Workspace.date(signal.created)}</td>
-            <td class="elapsed ${live ? 'live' : ''}">${timed ? this.elapsed(signal) : ''}</td>`;
+            <td class="elapsed ${live ? 'live' : ''}">${timed ? this.elapsed(signal) : ''}</td>
+            <td class="sla">${Table.sla(signal)}</td>`;
 
         if (closed) return this.body.append(row);
 
@@ -190,6 +194,19 @@ class Table {
             const signal = this.signals.get(cell.parentElement.dataset.id);
             if (signal) cell.textContent = this.elapsed(signal);
         });
+
+        this.body.querySelectorAll('tr:not(.closed) .sla-icon.met').forEach(icon => {
+            const signal = this.signals.get(icon.closest('tr').dataset.id);
+            if (signal && Date.now() > Table.utc(signal.due)) icon.parentElement.innerHTML = Table.sla(signal);
+        });
+    }
+
+    static sla(signal) {
+        const end = signal.status.startsWith('C') ? Table.utc(signal.updated) : Date.now();
+        const met = !signal.due || end <= Table.utc(signal.due);
+
+        return `<span class="material-symbols-outlined sla-icon ${met ? 'met' : 'missed'}"
+                    title="${met ? 'Within SLA' : 'SLA breached'}">${met ? 'check' : 'close'}</span>`;
     }
 
     // ── interaction ────────────────────────────────────────────────

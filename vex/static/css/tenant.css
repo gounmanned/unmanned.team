@@ -455,6 +455,33 @@
   background: none;
 }
 
+/* sla */
+
+td.sla { text-align: center; }
+#signal-table thead th:last-child { text-align: center; }
+
+.sla-icon {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  font-size: 18px;
+  line-height: 18px;
+  vertical-align: middle;
+  border-radius: 50%;
+}
+
+.sla-icon.met { color: var(--risk-low, #16a34a); }
+
+.sla-icon.missed {
+  color: var(--risk-high, #dc2626);
+  animation: sla-pulse 1.8s ease-out infinite;
+}
+
+@keyframes sla-pulse {
+  from { box-shadow: 0 0 0 0 color-mix(in srgb, var(--risk-high, #dc2626) 45%, transparent); }
+  to   { box-shadow: 0 0 0 8px transparent; }
+}
+
 /* ── signals: table view ────────────────────────────────────────── */
 
 #signal-table {
@@ -525,7 +552,7 @@ td.created { font-variant-numeric: tabular-nums; }
 
 /* row states */
 
-tr.closed { opacity: 0.38; }
+tr.closed td:not(.sla) { opacity: 0.38; }
 tr.unread { font-weight: 600; }
 
 tr.unread td.name::before {
@@ -824,4 +851,5 @@ td.elapsed.live {
   #trend-svg .trend-today-pulse,
   #trend-svg .trend-wave { animation: none; opacity: 0; }
   .signal-search-results li.tail-new { animation: none; }
+  .sla-icon.missed { animation: none; }
 }

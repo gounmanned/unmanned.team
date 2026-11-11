@@ -146,12 +146,15 @@ class SignalSidebar {
         const asset = document.getElementById("signal-asset");
         if (!asset.reportValidity()) return;
 
+        const due = document.getElementById("signal-due").value;
+
         await SiteSpinner.withLoading(async () => {
             await this.api.signals.create({
                 status: this.signal.status,
                 asset: asset.value.trim(),
                 source: document.getElementById("signal-source").value.trim(),
                 value: document.getElementById("response").value.trim(),
+                ...(due && { due: new Date(due).toISOString() }),
             });
             document.dispatchEvent(new CustomEvent("page:reload"));
             document.querySelector("site-overlay").click();

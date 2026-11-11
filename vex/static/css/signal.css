@@ -329,6 +329,14 @@
 
         &:focus { border-color: var(--accent); }
       }
+
+      input[type="datetime-local"] {
+        &::-webkit-calendar-picker-indicator {
+          opacity: 0.45;
+          cursor: pointer;
+        }
+        &:hover::-webkit-calendar-picker-indicator { opacity: 0.8; }
+      }
     }
 
     .send-btn {

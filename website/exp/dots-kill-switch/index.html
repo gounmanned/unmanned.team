@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>One switch for all your AI? | Dots</title>
+<meta name="description" content="First, find all your AI. If something says it can stop AI, shouldn’t you test it? That’s where your Dot comes in. 99¢ a month.">
+<!-- A campaign experiment (2026-10-28): unlinked, shared by link only. Built by homepage-tools/build_dot_campaigns.py -->
+<meta name="robots" content="noindex">
+<meta property="og:title" content="One switch for all your AI? | Dots" />
+<meta property="og:description" content="First, find all your AI. If something says it can stop AI, shouldn’t you test it? That’s where your Dot comes in. 99¢ a month." />
+<meta property="og:url" content="https://unmanned.team/exp/dots-kill-switch/" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Unmanned" />
+<meta property="og:image" content="https://unmanned.team/exp/dots-kill-switch/static/og.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="Dots by Unmanned: One switch for all your AI?" />
+<meta name="twitter:card" content="summary_large_image" />
+<link rel="icon" type="image/png" href="https://cdn.unmanned.team/img/logo.png">
+<link rel="apple-touch-icon" href="https://cdn.unmanned.team/img/logo.png">
+<link rel="stylesheet" href="https://cdn.unmanned.team/css/global.css">
+<link rel="stylesheet" href="../../static/site.css">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  /* Dots campaign page. Shared pieces first (header, hero frame, stage, the four sections), then this page's hero. */
+  :root{--d-purple:#b811de;--d-green:#029266;--accent-text:#d10176;--d-faint:#faf9f6;--success:#057c56;--line-strong:#8a8a8e;--anton:'Anton',Impact,sans-serif;}
+  h1,h2,h3,h4{text-wrap:balance;} p,li{text-wrap:pretty;}
+  h1,h2,h3,h4,p{margin:0;}
+  img{display:block;}
+  .wrap{width:min(1100px,calc(100% - 2 * var(--gutter)));margin:0 auto;}
+  a:focus-visible,button:focus-visible,summary:focus-visible{outline:1.5px solid var(--pink);outline-offset:4px;}
+  @media (max-width:700px){:root{--gutter:16px;}}
+
+  /* ---------- CLASSIFICATION BAR + HEADER (as /dots/) ---------- */
+  .classbar{
+    position:fixed;top:0;left:0;right:0;z-index:60;background:var(--ink);color:var(--gray-faint);
+    font-size:9.5px;line-height:1.5;letter-spacing:0.16em;text-transform:uppercase;text-align:center;padding:6px 0;
+    transition:transform 0.4s cubic-bezier(0.49,0.025,0.685,1), opacity 0.4s cubic-bezier(0.49,0.025,0.685,1);
+  }
+  html.header-hidden .classbar{transform:translateY(-100%);opacity:0;}
+  @media (max-width:700px){ :root{--classbar-h:24px;} .classbar{font-size:8px;} }
+  .site-header{background:var(--surface);border-bottom:1px solid var(--gray-line);}
+  .dots-brand{display:flex;align-items:center;gap:16px;text-decoration:none;color:var(--ink);}
+  .dots-word{font-size:32px;font-weight:900;line-height:26px;letter-spacing:0.01em;}
+  .dots-brand img{width:26px;height:26px;}
+  @media (max-width:700px){ .site-header .dots-nav{display:flex;} }
+  @media (max-width:560px){ .dots-word{font-size:28px;} .dots-brand{gap:12px;} }
+  @media (max-width:400px){ .dots-brand .brand-tag{display:none;} }
+
+  /* ---------- SHARED BITS ---------- */
+  .eyebrow{font-family:var(--mono);font-size:12px;line-height:16px;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent-text);}
+  .pill{display:inline-flex;align-items:center;justify-content:center;height:52px;padding:0 28px;border-radius:999px;background:var(--pink);color:#fff;font-size:18px;font-weight:600;line-height:28px;text-decoration:none;white-space:nowrap;transition:background-color 0.2s ease;}
+  .pill:hover{background:var(--pink-press);}
+  /* The sections below the hero use the design system's text styles (Figma 2273:23869, 2026-10-29):
+     section heading 48/56, subsection 32/40, body/lg 18/28, body/md 16/24, label 18/28 and 16/24 medium. */
+  .section{padding:96px 0;scroll-margin-top:110px;}
+  .section--subtle{background:var(--d-faint);}
+  .section--gray{background:var(--surface-gray);}
+  .head{display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center;max-width:920px;margin:0 auto 56px;}
+  .head h2,.trust h2,.price-head h2{font-size:clamp(34px,4.2vw,48px);line-height:1.1667;font-weight:800;letter-spacing:-0.015em;color:var(--ink);}
+  .head h3{font-size:clamp(34px * 32 / 48,4.2vw * 32 / 48,32px);line-height:1.25;font-weight:600;letter-spacing:-0.01em;color:var(--ink);margin-top:8px;}
+  .head p:not(.eyebrow){max-width:774px;margin-top:8px;font-size:18px;line-height:28px;color:var(--body-soft);}
+  .head p.kicker{max-width:none;margin:0 0 -4px;font-size:clamp(20px,2.2vw,24px);line-height:1.3;font-weight:600;letter-spacing:-0.01em;color:var(--body-soft);}   /* a lead-in question above the headline */
+  .check{flex-shrink:0;width:20px;height:20px;margin-top:2px;background:var(--success);
+    -webkit-mask:url(../../static/icon-check.svg) center/contain no-repeat;mask:url(../../static/icon-check.svg) center/contain no-repeat;}
+  .check--lg{width:24px;height:24px;margin-top:0;}
+  /* links: label/lg (18/28) and label/md (16/24), accent text, a Phosphor icon */
+  .link{display:inline-flex;align-items:center;gap:8px;font-size:18px;line-height:28px;font-weight:500;color:var(--accent-text);text-decoration:none;cursor:pointer;}
+  .link:hover{text-decoration:underline;text-underline-offset:3px;}
+  .link--md{gap:6px;font-size:16px;line-height:24px;}
+  .link .icon{flex-shrink:0;width:20px;height:20px;background:currentColor;-webkit-mask:var(--icon) center/contain no-repeat;mask:var(--icon) center/contain no-repeat;}
+  .link--md .icon{width:16px;height:16px;}
+  .ask{display:flex;flex-wrap:wrap;align-items:center;gap:4px 24px;font-size:18px;line-height:28px;color:var(--body-soft);}
+
+  /* ---------- SECTION NAV (as How VEX works): sticks under the site header, rises when the header hides ---------- */
+  .hw-nav{position:sticky;top:calc(var(--classbar-h) + var(--header-h, 61px));z-index:40;display:flex;flex-direction:column;align-items:center;gap:8px;padding-top:16px;background:#fff;
+    border-top:1px solid var(--gray-line);border-bottom:1px solid var(--gray-line);box-shadow:0 2px 6px rgba(11,12,13,0.06),0 1px 2px rgba(11,12,13,0.06);transition:top 0.3s cubic-bezier(0.4,0,0.2,1);}
+  html.header-hidden .hw-nav{top:0;}
+  .hw-tabs{display:flex;max-width:100%;overflow-x:auto;scrollbar-width:none;}
+  .hw-tabs::-webkit-scrollbar{display:none;}
+  .hw-tabs a{flex-shrink:0;padding:0 16px 16px;border-bottom:2px solid transparent;font-size:14px;line-height:1.5;color:#8a8a8e;text-decoration:none;white-space:nowrap;transition:color 0.2s ease, border-color 0.2s ease;}
+  .hw-tabs a:hover{color:var(--ink);}
+  .hw-tabs a[aria-current="true"]{border-bottom-color:var(--pink);color:var(--ink);font-weight:600;}
+
+  /* ---------- HERO FRAME ----------
+     Each hero sets its own colors. The art is a .stage: a crop of the concept's 1440x820 scene, scaled to fit. */
+  .hero{position:relative;overflow:hidden;}
+  .hero-grid{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:48px;align-items:center;padding:clamp(48px,7vw,96px) 0;}
+  .hero-copy{position:relative;z-index:2;display:flex;flex-direction:column;align-items:flex-start;gap:24px;}
+  .hero-center{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center;padding-top:clamp(48px,7vw,88px);}
+  .hero h1{font-size:clamp(40px,6vw,70px);line-height:1.04;font-weight:800;letter-spacing:-0.025em;}
+  .hero-lede{max-width:540px;font-size:20px;line-height:30px;}
+  .hero-cta{display:flex;flex-wrap:wrap;align-items:center;gap:12px 28px;margin-top:8px;}
+  .hero-center .hero-cta{justify-content:center;}
+  /* every hero's main button: Buy a Dot for 99¢, to the price card first; the card's own button, Get your Dot, goes to checkout (Chad, 2026-10-30) */
+  .down-link{display:inline-flex;align-items:center;gap:6px;min-height:44px;font-size:16px;font-weight:500;color:inherit;text-decoration:none;}
+  .down-link::after{content:'';width:16px;height:16px;background:currentColor;
+    -webkit-mask:url(../../static/icon-arrow-down.svg) center/contain no-repeat;mask:url(../../static/icon-arrow-down.svg) center/contain no-repeat;}
+  .down-link:hover{text-decoration:underline;text-underline-offset:3px;}
+  /* two lines that trade places in the same spot (no layout shift) */
+  .swap{display:grid;}
+  .swap > *{grid-area:1/1;transition:opacity 0.5s ease;}
+  .swap > :last-child{opacity:0;}
+  .swap.is-b > :first-child{opacity:0;}
+  .swap.is-b > :last-child{opacity:1;}
+  .stage-fit{position:relative;width:100%;aspect-ratio:var(--w) / var(--h);}
+  .stage{position:absolute;left:0;top:0;transform-origin:0 0;}
+  .stage--clip{overflow:hidden;}
+  .world{position:absolute;left:calc(var(--ox) * -1px);top:calc(var(--oy) * -1px);width:1440px;height:820px;}
+  .world > span,.world > div{position:absolute;}
+  .dot{display:block;overflow:visible;}
+  .replay{position:absolute;right:24px;bottom:20px;z-index:6;display:flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;background:transparent;border:1px solid;border-radius:2px;font-family:var(--mono);font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:inherit;cursor:pointer;}
+  .replay svg{width:14px;height:14px;}
+
+  /* ---------- HOW IT WORKS ---------- */
+  .story{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:32px;}
+  .story li{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;}
+  .story svg{width:100%;max-width:248px;height:auto;margin-bottom:16px;}
+  .story b{font-size:18px;line-height:28px;font-weight:600;color:var(--ink);}
+  .story p{font-size:16px;line-height:24px;color:var(--body-soft);max-width:240px;}
+  /* everything your Dot does: always open; each line tagged with what the Dot does about it, colored like the cards' Dots */
+  .does{max-width:640px;margin:64px auto 0;}
+  .does h3{margin-bottom:8px;text-align:center;font-size:18px;line-height:28px;font-weight:600;color:var(--ink);}
+  .does ul{list-style:none;margin:0;padding:0;}
+  .does li{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:16px;padding:16px 0;border-bottom:1px solid var(--gray-line);font-size:16px;line-height:24px;color:var(--ink);text-align:left;}
+  .tag{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;line-height:16px;letter-spacing:0.08em;text-transform:uppercase;white-space:nowrap;color:var(--surface-dark);}
+  .tag::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--tag);}
+  .does-more{display:flex;margin:16px auto 0;padding:0;background:none;border:0;font-family:inherit;}
+  .does-more[aria-expanded="true"] .icon{transform:rotate(180deg);}
+  .does-more[hidden]{display:none;}
+  @media (min-width:701px){ .does-more{display:none;} }
+  .tag--test{--tag:#1ba8ee;} .tag--fix{--tag:var(--d-green);} .tag--ask{--tag:var(--d-purple);} .tag--tell{--tag:#f7b828;} .tag--person{--tag:var(--pink);}
+  .report{max-width:720px;margin:56px auto 0;text-align:center;font-size:18px;line-height:28px;color:var(--body-soft);}
+
+  /* ---------- TRUST ---------- */
+  .trust{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:64px;align-items:center;}
+  .trust-copy{display:flex;flex-direction:column;align-items:flex-start;gap:24px;}
+  .trust-copy .eyebrow,.price-head .eyebrow{margin-bottom:-8px;}
+  .trust-copy > p:not(.eyebrow){font-size:18px;line-height:28px;color:var(--body-soft);}
+  .trust-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;border-top:1px solid var(--gray-line);}
+  .trust-list li{display:flex;gap:16px;padding:20px 0;border-bottom:1px solid var(--gray-line);}
+  .trust-list b{display:block;font-size:16px;line-height:24px;font-weight:600;color:var(--ink);}
+  .trust-list span{font-size:16px;line-height:24px;color:var(--body-soft);}
+
+  /* ---------- PRICE ---------- */
+  .price-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:56px;align-items:center;}
+  .price-card{padding:40px;background:var(--surface);border:1px solid var(--line-strong);border-radius:2px;box-shadow:4px 4px 0 rgba(11,12,13,0.15);display:flex;flex-direction:column;align-items:center;gap:24px;text-align:center;}
+  .price{display:flex;align-items:center;gap:10px;}
+  .price b{font-size:64px;line-height:68px;font-weight:800;letter-spacing:-0.02em;color:var(--ink);}
+  .price span{font-size:16px;line-height:24px;color:var(--body-soft);text-align:left;}
+  .incl{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px;text-align:left;align-self:stretch;}
+  .incl li{display:flex;gap:12px;font-size:16px;line-height:24px;color:var(--body);}
+  .price-card .pill{align-self:stretch;height:48px;font-weight:500;}
+  .fine{font-size:12px;line-height:16px;color:var(--surface-dark);}
+  .price-head{display:flex;flex-direction:column;align-items:flex-start;gap:24px;}
+  .price-head p:not(.eyebrow){font-size:18px;line-height:28px;color:var(--body-soft);}
+
+  /* ---------- FAQ ---------- */
+  .faq{max-width:760px;margin:0 auto;border-top:1px solid var(--gray-line);}
+  .faq details{border-bottom:1px solid var(--gray-line);}
+  .faq summary{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:22px 0;cursor:pointer;list-style:none;font-size:18px;line-height:28px;font-weight:600;color:var(--ink);}
+  .faq summary::-webkit-details-marker{display:none;}
+  .faq summary::after{content:'';flex-shrink:0;width:14px;height:14px;background:linear-gradient(var(--accent-text),var(--accent-text)) center/14px 2px no-repeat,linear-gradient(var(--accent-text),var(--accent-text)) center/2px 14px no-repeat;transition:transform 0.2s ease;}
+  .faq details[open] summary::after{transform:rotate(45deg);}
+  .faq details p{padding:0 32px 24px 0;font-size:16px;line-height:24px;color:var(--body-soft);}
+  .faq a{color:var(--accent-text);}
+  .faq .ext::after{content:'';display:inline-block;width:14px;height:14px;margin-left:4px;vertical-align:-2px;background:currentColor;-webkit-mask:url(../../static/icon-arrow-square-out.svg) center/contain no-repeat;mask:url(../../static/icon-arrow-square-out.svg) center/contain no-repeat;}
+  .faq-ask{justify-content:center;margin-top:56px;text-align:center;}
+
+  /* ---------- BUY BAR (phones) ---------- */
+  .buybar{display:none;}
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width:900px){
+    .hero-grid{grid-template-columns:minmax(0,1fr);gap:32px;}
+    .story{grid-template-columns:repeat(2,minmax(0,1fr));gap:40px 24px;}
+    .trust,.price-row{grid-template-columns:minmax(0,1fr);gap:40px;}
+    /* stacked: eyebrow and headline, then the price card, then the rest of the copy */
+    .price-row{gap:0;}
+    .price-head{display:contents;}
+    .price-head .eyebrow{order:1;margin:0;}
+    .price-head h2{order:2;margin-top:16px;}
+    .price-row .price-card{order:3;margin-top:28px;}
+    .price-head p:not(.eyebrow):not(.ask){order:4;margin-top:28px;}
+    .price-head .ask{order:5;margin-top:12px;}
+  }
+  @media (max-width:700px){
+    .section{padding:64px 0;}
+    .head{margin-bottom:40px;}
+    .head p:not(.eyebrow),.hero-lede,.trust-copy > p:not(.eyebrow),.price-head p:not(.eyebrow),.report{font-size:17px;line-height:26px;}
+    .head p.kicker{font-size:20px;line-height:26px;}
+    /* phones read one way: section heads and copy left-aligned; the cards (tiles) and the price card stay centered */
+    .head{align-items:flex-start;margin-left:0;text-align:left;}
+    .does h3,.report{text-align:left;}
+    .report{margin-left:0;}
+    .does-more{margin-left:0;}
+    .faq-ask{align-items:flex-start;text-align:left;}
+    .report,.faq-ask{margin-top:40px;}
+    .does{margin-top:48px;}
+    /* phones keep two cards per row: smaller drawings and text, about 40% shorter */
+    .story{gap:32px 16px;}
+    .story svg{margin-bottom:10px;}
+    .story b{font-size:16px;line-height:22px;}
+    .story p{font-size:14px;line-height:20px;}
+    .does li{gap:12px;padding:14px 0;}
+    .does.is-short li:nth-child(n+4){display:none;}
+    .ask{font-size:17px;line-height:26px;}
+    /* the FAQ's closing line: smaller than the questions, its link on its own line */
+    .faq-ask{flex-direction:column;gap:4px;font-size:16px;line-height:24px;}
+    .faq-ask .link{font-size:16px;line-height:24px;}
+    .hw-tabs{padding:0 8px;}
+    .price-card{padding:32px 20px;}
+    .price b{font-size:56px;line-height:60px;}
+    .faq summary{padding:18px 0;font-size:16px;line-height:24px;}   /* questions a step under the 17px ledes; they scan faster */
+    .replay{right:16px;bottom:12px;}
+    .hero .down-link{display:none;}   /* phones don't need the nudge to scroll (Chad, 2026-10-29) */
+    .hero .pill{height:44px;padding:0 22px;font-size:16px;}   /* the medium button on phones; 44 keeps a comfortable tap */
+    .buybar{display:block;position:fixed;left:0;right:0;bottom:0;z-index:50;padding:10px var(--gutter) calc(10px + env(safe-area-inset-bottom));
+      background:rgba(255,255,255,0.94);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-top:1px solid var(--gray-line);box-shadow:0 -2px 8px rgba(11,12,13,0.06);
+      transform:translateY(100%);visibility:hidden;transition:transform 0.3s ease,visibility 0s linear 0.3s;}
+    .buybar.is-on{transform:none;visibility:visible;transition:transform 0.3s ease;}
+    .buybar .pill{width:100%;height:44px;font-size:16px;}
+    body{padding-bottom:calc(64px + env(safe-area-inset-bottom));}   /* so the bar never covers the footer */
+  }
+  @media (max-width:480px){
+    /* small phones: the tag goes under its line */
+    .does li{grid-template-columns:auto minmax(0,1fr);row-gap:4px;}
+    .does .tag{grid-column:2;}
+    .hero-cta{align-self:stretch;}   /* the row spans the column, so the button can */
+    .hero-cta .pill{width:100%;}
+    .hero-copy{gap:18px;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .classbar,.site-top .site-header,.pill,.faq summary::after,.swap > *,.hw-nav,.hw-tabs a,.buybar,.buybar.is-on{transition:none;}
+  }
+
+  /* ==================== THIS PAGE’S HERO ==================== */
+  /* 09 · Kill switch (2026-11-11, Chad; earlier versions kept outside the repo). A poke at "one AI kill switch"
+     without naming anyone. One bot hovers in a dark room; our Dot sits beside the AI KILL SWITCH, not noticing. The
+     bot's eyes turn red, the alarm light comes on; the Dot watches, spots the switch (aha), bumps the button on its side.
+     The bot switches off as a skull and crossbones (Chad's mock-up: a wink at their art, our own drawing), drops, and the
+     display reads "1 of 1 AI agents stopped". Lights down with "First, find all your AI.": eyes open in the dark, more
+     and more, some turning red, while the display's total climbs to 1 of 247. The Dot raises an eyebrow. Their red is
+     the only nod: no logo, font, art or product name. Plays once; reduced motion and no JS show the end. */
+  .hks{background:#0d0708;color:#fff;}
+  .hks .eyebrow{color:#ff8a8f;font-weight:500;letter-spacing:0.18em;}
+  .hks h1 .hks-punch{display:block;color:#ff3b46;}   /* the eyes' red */
+  .hks.hero .pill{background:#e0202c;} .hks.hero .pill:hover{background:#c81a26;}   /* a step darker than the eyes so white text passes (4.8:1) */
+  .hks .hero-lede{color:#e4d9da;}
+  .hks .down-link{color:#fff;}
+  .hks .stage-fit{max-width:560px;justify-self:center;pointer-events:none;}   /* decorative; the beam spills over the hero (which clips it) */
+  .hks .stage > *{position:absolute;}
+  .hks .replay{right:0;bottom:2px;z-index:6;padding:0 4px;border:0;background:none;color:#a9a9b2;pointer-events:auto;visibility:hidden;}   /* quiet text beside the Dot */
+  .hks .replay:hover{color:#fff;}
+  .hks .replay.is-on{visibility:visible;}
+  .hks-floor{left:-120px;right:-120px;bottom:0;height:100px;background:linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.07));border-top:1px solid rgba(255,255,255,0.08);
+    -webkit-mask-image:linear-gradient(90deg,transparent,#000 25%,#000 75%,transparent);mask-image:linear-gradient(90deg,transparent,#000 25%,#000 75%,transparent);}
+  /* the alarm light, top right: gray and off until the bot turns */
+  .hks-beam{left:520px;top:14px;width:1800px;height:1800px;margin:-900px 0 0 -900px;border-radius:50%;opacity:0;
+    background:conic-gradient(from 0deg,rgba(255,40,50,0.9) 0deg,rgba(255,40,50,0) 30deg,rgba(255,40,50,0) 180deg,rgba(255,40,50,0.9) 180deg,rgba(255,40,50,0) 210deg,rgba(255,40,50,0) 360deg);}
+  .hks-beacon{left:502px;top:2px;width:36px;height:24px;border-radius:18px 18px 4px 4px;background:var(--lamp,#55555f);box-shadow:0 0 var(--glow,0px) calc(var(--glow,0px) / 4) rgba(255,40,50,0.6);}
+  .hks-beacon::after{content:'';position:absolute;left:-6px;right:-6px;top:22px;height:8px;border-radius:2px;background:#3a3a42;}
+  /* the bot: a head, a visor, two eyes and a propeller. --ex/--ey move the eyes, --er slants them, --blink narrows them */
+  .hks-bot{left:0;top:0;width:50px;height:48px;transform-origin:25px 30px;}
+  .hks-bot span{position:absolute;display:block;}
+  .hks-prop{left:9px;top:0;width:32px;height:4px;border-radius:2px;background:#c9cad3;transform:scaleX(var(--spin,1));}
+  .hks-stem{left:23px;top:3px;width:4px;height:7px;background:#8f909c;}
+  .hks-head{left:0;top:9px;width:50px;height:39px;border-radius:12px;background:#a7a8b3;box-shadow:inset -4px -5px 0 #8a8b97;}
+  .hks-visor{left:7px;top:20px;width:36px;height:15px;border-radius:5px;background:#25262e;overflow:hidden;}
+  .hks-eye{top:4.5px;width:6px;height:6px;background:var(--eye,#fff);transform:translate(var(--ex,0px),var(--ey,0px)) rotate(var(--er,0deg)) scaleY(var(--blink,1));}
+  .hks-eye + .hks-eye{transform:translate(var(--ex,0px),var(--ey,0px)) rotate(calc(var(--er,0deg) * -1)) scaleY(var(--blink,1));}
+  .hks-bot.is-red{--eye:#ff3b46;}
+  .hks-bot.is-red .hks-visor{background:#6e0a14;box-shadow:inset 0 0 6px #ff2a35;}
+  .hks-bot.is-red .hks-eye{box-shadow:0 0 4px #ff3b46;}
+  /* switched off: gray, X eyes and crossbones (Chad's mock-up) */
+  .hks-bones{position:absolute;left:2px;top:50px;width:46px;height:40px;opacity:var(--bones,0);transform:scale(calc(0.6 + 0.4 * var(--bones,0)));transform-origin:50% 0;}
+  .hks-bot.is-off .hks-eye,.hks-bot.is-off .hks-eye + .hks-eye{background:none;box-shadow:none;transform:none;}
+  .hks-bot.is-off .hks-eye::before,.hks-bot.is-off .hks-eye::after{content:'';position:absolute;left:-1px;top:2.2px;width:8px;height:1.6px;border-radius:1px;background:#c4c4c8;transform:rotate(45deg);}
+  .hks-bot.is-off .hks-eye::after{transform:rotate(-45deg);}
+  .hks-bot.is-off .hks-visor{background:#25262e;box-shadow:none;}
+  .hks-bot.is-off .hks-head{background:#7d7e88;box-shadow:inset -4px -5px 0 #696a74;}
+  /* the switch: a box with the big red button on its side, where the Dot can reach it */
+  .hks-ped{left:170px;top:318px;width:150px;height:132px;border-radius:6px 6px 2px 2px;background:linear-gradient(180deg,#34343c,#25252b);box-shadow:inset 0 2px 0 rgba(255,255,255,0.08);}
+  /* the box's two labels, always 11px on screen whatever the scene's scale (--s, set by fitStages); they wrap as needed */
+  .hks-labels{left:170px;top:318px;width:150px;height:132px;box-sizing:border-box;padding:8px;display:flex;flex-direction:column;justify-content:center;gap:8px;}
+  .hks-plate{padding:4px;background:#d8202a;border-radius:2px;font:700 calc(11px / var(--s,1))/1.15 var(--mono);letter-spacing:0.1em;text-transform:uppercase;color:#fff;text-align:center;}
+  .hks-lcd{padding:4px;border-radius:2px;background:#0a0a0c;border:1px solid #444;
+    font:600 calc(11px / var(--s,1))/1.2 var(--mono);color:#ff5a60;text-shadow:0 0 6px rgba(255,60,70,0.7);text-align:center;}
+  .hks-mount{left:318px;top:404px;width:8px;height:44px;border-radius:0 2px 2px 0;background:#18181c;}
+  .hks-btn{left:324px;top:406px;width:26px;height:40px;border-radius:2px 22px 22px 2px;transform-origin:0 50%;background:radial-gradient(circle at 30% 35%,#ff7a80,#e3101e 55%,#9e0610);box-shadow:3px 0 0 #6d040b;}
+  /* lights down: the room dims (--lit on the stage); the display, the eyes and our Dot stay bright */
+  .hks-floor,.hks-ped,.hks-plate,.hks-mount,.hks-btn,.hks-beacon{filter:brightness(var(--lit,1));}
+  .hks-eyes{z-index:3;width:28px;height:10px;opacity:0.85;transform:scale(var(--size,1)) scaleY(var(--blink,1));}
+  .hks-night{position:absolute;inset:0;z-index:0;display:none;pointer-events:none;}   /* its own layer, under the copy and the scene */
+  .hks-night .hks-eyes{position:absolute;}
+  .hks-night .hks-eyes.is-under{visibility:hidden;}   /* would sit behind a line of text, or below the Dot's head (the floor) */
+  .hks-eyes::before,.hks-eyes::after{content:'';position:absolute;top:0;width:8px;height:10px;border-radius:3px;background:var(--c,#f2f2f5);box-shadow:0 0 6px var(--c,#f2f2f5);}
+  .hks-eyes::before{left:0;} .hks-eyes::after{right:0;}
+  .hks-eyes.is-red{--c:#ff3b46;}
+  .hks-flash{left:-200px;top:-200px;width:960px;height:880px;background:#ff2a35;opacity:0;z-index:10;}
+  .hks-me{left:0;top:0;width:88px;height:92px;transform-origin:50% 100%;z-index:4;}
+  .hks-me .dot{display:block;width:100%;height:100%;}
+  /* desktop and landscape tablets: copy left, the room right, the eyes in the room. Stacked (phones, portrait
+     tablets): eyebrow, headline, lede, the eyes, the characters on their floor, then the buttons (Chad). The eyes
+     open all over the hero, under the copy and the scene, never behind text or below the Dot's head (clearText in
+     the script); the scene is cropped to the room's lower part and the alarm light comes down */
+  @media (max-width:700px), (max-width:900px) and (orientation:portrait){
+    .hks .hero-grid{grid-template-columns:minmax(0,1fr);row-gap:20px;}
+    .hks .hero-copy{display:contents;}
+    .hks .hero-copy > *{position:relative;z-index:5;}
+    .hks .eyebrow{grid-row:1;} .hks h1{grid-row:2;} .hks .hero-lede{grid-row:3;} .hks .hero-cta{grid-row:5;margin-top:0;}
+    .hks .stage-fit{grid-row:4;width:100%;max-width:480px;aspect-ratio:560 / 410;container-type:inline-size;}
+    .hks .stage{top:calc(-70 / 560 * 100cqw);}
+    .hks-night{display:block;}
+    .hks .stage .hks-eyes{display:none;}
+    .hks-beacon{top:76px;} .hks-beam{top:88px;}
+  }
+  @media (min-width:701px) and (max-width:900px) and (orientation:landscape){
+    .hks .hero-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:32px;padding:24px 0;}   /* side by side, as on desktop, */
+    .hks .hero-copy{gap:16px;}                                                                       /* tightened so the button fits */
+    .hks h1{font-size:clamp(34px,4.6vw,42px);}
+    .hks .hero-lede{font-size:16px;line-height:24px;}
+    .hks-long{display:none;}
+  }
+  @media (max-width:700px){
+    .hks-ped,.hks-labels{left:156px;top:288px;width:164px;height:162px;}   /* a taller, wider box for the wrapped labels */
+    .hks .hero-grid{padding-top:20px;row-gap:16px;}
+    .hks h1{font-size:clamp(33px,calc((100vw - 32px) / 10),40px);}   /* "First, find all your AI." on one line: a line shorter (Chad) */
+    .hks .replay{padding:0;} .hks .replay svg{display:none;}   /* just the word, so it fits beside the Dot */
+    .hks-long{display:none;}   /* phones: the lede without ", not just the agents you set up" (Chad) */
+    /* the scene's empty top tucks under the lede (the lede only shows once the bot is down), so the button makes the first screen */
+    .hks .stage-fit{margin-top:-60px;}
+    .hks-beacon{top:170px;} .hks-beam{top:182px;}   /* clear of the lede */
+  }
+</style>
+</head>
+<body>
+
+  <div class="classbar">UNMANNED · SIMPLY SECURE</div>
+
+  <div class="site-top">
+    <header class="site-header">
+      <div class="wrap header-inner">
+        <a href="#top" class="dots-brand" aria-label="Dots by Unmanned, back to top">
+          <span class="dots-word">dots</span>
+          <img src="../../dots/static/dots-logo.svg" width="26" height="26" alt="">
+          <span class="brand-tag">By Unmanned</span>
+        </a>
+        <nav class="header-links dots-nav" aria-label="Main">
+          <a class="header-link header-link--cta" href="#price">Buy a Dot <img src="../../static/icon-arrow-right-pink.svg" width="16" height="16" alt=""></a>
+        </nav>
+      </div>
+    </header>
+  </div>
+
+  <!-- One laptop, drawn once and reused by the story pictures (the /dots/ environment illustrations' style) -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <pattern id="lt-grid" patternUnits="userSpaceOnUse" patternTransform="matrix(28.9433 0 0 28.9433 30.8 7.9)" viewBox="0 0 32 32" width="1" height="1">
+        <line opacity="0.3" x1="16.5" y1="0.5" x2="16.5" y2="31.5" stroke="#8A8A8E" stroke-linecap="round" stroke-dasharray="1 5"/>
+        <line opacity="0.3" x1="0.5" y1="15.5" x2="31.5" y2="15.5" stroke="#8A8A8E" stroke-linecap="round" stroke-dasharray="1 5"/>
+      </pattern>
+      <filter id="lt-shadow" x="-10%" y="-10%" width="130%" height="130%"><feDropShadow dx="1.8" dy="1.8" stdDeviation="0" flood-color="#0b0c0d" flood-opacity="0.15"/></filter>
+      <symbol id="laptop" viewBox="0 0 248 147">
+        <rect x="0.09" y="139.38" width="247.83" height="7.24" rx="3.62" fill="#F1F1EE"/>
+        <rect x="25.01" y="1.36" width="197.97" height="133.05" rx="2.26" fill="#C4C4C4" stroke="#6C6C70" stroke-width="2.71"/>
+        <rect x="31.25" y="8.35" width="184.51" height="116.26" rx="3.17" fill="#FAF9F6"/>
+        <rect x="31.25" y="8.35" width="184.51" height="116.26" rx="3.17" fill="url(#lt-grid)"/>
+        <rect x="31.25" y="8.35" width="184.51" height="116.26" rx="3.17" stroke="#8A8A8E" stroke-width="0.9"/>
+        <rect x="0.05" y="135.77" width="247.91" height="7.24" rx="3.62" fill="#8A8A8E"/>
+        <rect x="105.87" y="137.69" width="36.18" height="3.62" rx="1.81" fill="#6C6C70"/>
+      </symbol>
+      <symbol id="window" viewBox="0 0 120 84">
+        <rect x="0.25" y="0.25" width="119.5" height="83.5" rx="3.37" fill="#fff" stroke="#8A8A8E" stroke-width="0.5"/>
+        <circle cx="5" cy="5" r="1.5" fill="#D9D9D9"/>
+        <line x1="0" y1="10" x2="120" y2="10" stroke="#8A8A8E" stroke-width="0.5"/>
+        <line x1="22" y1="24" x2="84" y2="24" stroke="#8A8A8E" stroke-width="1.8"/>
+        <line x1="22" y1="40" x2="96" y2="40" stroke="#8A8A8E" stroke-width="1.8"/>
+        <line x1="22" y1="56" x2="74" y2="56" stroke="#8A8A8E" stroke-width="1.8"/>
+        <line x1="22" y1="72" x2="90" y2="72" stroke="#8A8A8E" stroke-width="1.8"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <main>
+    <!-- ============================== HERO: Kill switch ============================== -->
+    <section class="hero hks" aria-labelledby="hero-title">
+    <div class="hks-night" aria-hidden="true">
+      <i class="hks-eyes" data-at="7.4" data-red="0" data-p="4.86" style="left:7.4%;top:47.0%;--size:1.03"></i>
+      <i class="hks-eyes" data-at="7.52" data-red="0" data-p="4.27" style="left:70.3%;top:82.5%;--size:1.02"></i>
+      <i class="hks-eyes" data-at="7.62" data-red="0" data-p="1.97" style="left:39.5%;top:24.6%;--size:0.98"></i>
+      <i class="hks-eyes is-red" data-at="7.7" data-red="8.31" data-p="4.91" style="left:75.2%;top:72.2%;--size:0.98"></i>
+      <i class="hks-eyes" data-at="7.77" data-red="0" data-p="1.57" style="left:24.1%;top:41.6%;--size:1.03"></i>
+      <i class="hks-eyes" data-at="7.83" data-red="0" data-p="3.90" style="left:35.4%;top:74.6%;--size:0.85"></i>
+      <i class="hks-eyes" data-at="7.89" data-red="0" data-p="5.84" style="left:17.5%;top:91.0%;--size:0.85"></i>
+      <i class="hks-eyes" data-at="7.95" data-red="0" data-p="4.89" style="left:81.4%;top:76.3%;--size:0.71"></i>
+      <i class="hks-eyes" data-at="8.0" data-red="0" data-p="6.12" style="left:41.7%;top:48.9%;--size:0.83"></i>
+      <i class="hks-eyes" data-at="8.05" data-red="0" data-p="1.01" style="left:44.5%;top:17.4%;--size:0.62"></i>
+      <i class="hks-eyes" data-at="8.09" data-red="0" data-p="3.26" style="left:16.0%;top:4.6%;--size:1.07"></i>
+      <i class="hks-eyes" data-at="8.14" data-red="0" data-p="3.40" style="left:78.4%;top:13.2%;--size:0.66"></i>
+      <i class="hks-eyes" data-at="8.18" data-red="0" data-p="4.01" style="left:56.7%;top:60.9%;--size:1.03"></i>
+      <i class="hks-eyes" data-at="8.22" data-red="0" data-p="2.58" style="left:57.0%;top:54.3%;--size:1.1"></i>
+      <i class="hks-eyes is-red" data-at="8.26" data-red="9.0" data-p="2.46" style="left:45.6%;top:12.2%;--size:1.17"></i>
+      <i class="hks-eyes is-red" data-at="8.3" data-red="9.19" data-p="2.23" style="left:38.6%;top:54.3%;--size:1.06"></i>
+      <i class="hks-eyes is-red" data-at="8.34" data-red="8.94" data-p="0.08" style="left:72.0%;top:5.9%;--size:0.63"></i>
+      <i class="hks-eyes" data-at="8.37" data-red="0" data-p="4.39" style="left:20.4%;top:95.3%;--size:0.85"></i>
+      <i class="hks-eyes is-red" data-at="8.41" data-red="8.92" data-p="4.66" style="left:49.9%;top:89.9%;--size:0.81"></i>
+      <i class="hks-eyes" data-at="8.44" data-red="0" data-p="1.37" style="left:56.0%;top:21.4%;--size:1.16"></i>
+      <i class="hks-eyes" data-at="8.47" data-red="0" data-p="1.33" style="left:62.8%;top:13.5%;--size:1.08"></i>
+      <i class="hks-eyes" data-at="8.51" data-red="0" data-p="5.08" style="left:87.3%;top:71.7%;--size:0.68"></i>
+      <i class="hks-eyes" data-at="8.54" data-red="0" data-p="3.53" style="left:3.3%;top:73.8%;--size:0.98"></i>
+      <i class="hks-eyes" data-at="8.57" data-red="0" data-p="2.22" style="left:3.1%;top:21.2%;--size:0.74"></i>
+      <i class="hks-eyes" data-at="8.6" data-red="0" data-p="5.13" style="left:48.7%;top:24.0%;--size:0.98"></i>
+      <i class="hks-eyes is-red" data-at="8.63" data-red="9.3" data-p="0.79" style="left:16.1%;top:28.9%;--size:0.88"></i>
+      <i class="hks-eyes" data-at="8.66" data-red="0" data-p="5.34" style="left:41.3%;top:64.6%;--size:1.1"></i>
+      <i class="hks-eyes" data-at="8.69" data-red="0" data-p="1.59" style="left:33.5%;top:27.9%;--size:0.76"></i>
+      <i class="hks-eyes is-red" data-at="8.72" data-red="9.12" data-p="4.53" style="left:78.7%;top:29.9%;--size:0.86"></i>
+      <i class="hks-eyes is-red" data-at="8.74" data-red="9.29" data-p="3.01" style="left:26.6%;top:70.1%;--size:0.77"></i>
+      <i class="hks-eyes" data-at="8.77" data-red="0" data-p="4.14" style="left:20.8%;top:14.0%;--size:0.86"></i>
+      <i class="hks-eyes" data-at="8.8" data-red="0" data-p="5.37" style="left:43.2%;top:43.6%;--size:0.82"></i>
+      <i class="hks-eyes" data-at="8.82" data-red="0" data-p="5.69" style="left:86.7%;top:37.4%;--size:0.63"></i>
+      <i class="hks-eyes is-red" data-at="8.85" data-red="9.67" data-p="3.98" style="left:14.6%;top:42.9%;--size:1.07"></i>
+      <i class="hks-eyes is-red" data-at="8.87" data-red="9.75" data-p="4.12" style="left:85.8%;top:26.4%;--size:0.61"></i>
+      <i class="hks-eyes is-red" data-at="8.9" data-red="9.37" data-p="1.47" style="left:13.7%;top:20.0%;--size:0.75"></i>
+      <i class="hks-eyes" data-at="8.92" data-red="0" data-p="0.96" style="left:6.0%;top:54.5%;--size:1.07"></i>
+      <i class="hks-eyes" data-at="8.95" data-red="0" data-p="1.05" style="left:25.3%;top:25.3%;--size:1.14"></i>
+      <i class="hks-eyes" data-at="8.97" data-red="0" data-p="4.91" style="left:60.5%;top:95.5%;--size:1.13"></i>
+      <i class="hks-eyes" data-at="9.0" data-red="0" data-p="4.95" style="left:25.4%;top:87.8%;--size:1.0"></i>
+      <i class="hks-eyes is-red" data-at="9.02" data-red="9.77" data-p="3.33" style="left:82.5%;top:95.8%;--size:1.1"></i>
+      <i class="hks-eyes" data-at="9.04" data-red="0" data-p="5.54" style="left:3.6%;top:82.2%;--size:1.05"></i>
+      <i class="hks-eyes is-red" data-at="9.07" data-red="9.59" data-p="0.88" style="left:32.3%;top:95.1%;--size:0.93"></i>
+      <i class="hks-eyes is-red" data-at="9.09" data-red="9.72" data-p="0.91" style="left:65.3%;top:62.2%;--size:0.9"></i>
+      <i class="hks-eyes" data-at="9.11" data-red="0" data-p="3.39" style="left:5.8%;top:41.2%;--size:0.89"></i>
+      <i class="hks-eyes is-red" data-at="9.13" data-red="9.95" data-p="2.94" style="left:12.0%;top:11.3%;--size:1.12"></i>
+      <i class="hks-eyes" data-at="9.16" data-red="0" data-p="5.28" style="left:61.8%;top:4.1%;--size:0.94"></i>
+      <i class="hks-eyes" data-at="9.18" data-red="0" data-p="6.03" style="left:17.7%;top:68.1%;--size:0.82"></i>
+      <i class="hks-eyes" data-at="9.2" data-red="0" data-p="3.99" style="left:75.8%;top:64.1%;--size:0.65"></i>
+      <i class="hks-eyes" data-at="9.22" data-red="0" data-p="4.29" style="left:60.7%;top:88.4%;--size:0.62"></i>
+      <i class="hks-eyes" data-at="9.24" data-red="0" data-p="6.17" style="left:42.3%;top:70.8%;--size:1.16"></i>
+      <i class="hks-eyes" data-at="9.26" data-red="0" data-p="5.64" style="left:36.5%;top:89.4%;--size:0.91"></i>
+      <i class="hks-eyes" data-at="9.28" data-red="0" data-p="3.93" style="left:20.4%;top:36.6%;--size:0.62"></i>
+      <i class="hks-eyes" data-at="9.3" data-red="0" data-p="2.30" style="left:6.1%;top:7.9%;--size:0.8"></i>
+      <i class="hks-eyes" data-at="9.32" data-red="0" data-p="4.84" style="left:89.1%;top:92.6%;--size:0.88"></i>
+      <i class="hks-eyes" data-at="9.34" data-red="0" data-p="2.65" style="left:69.9%;top:91.7%;--size:0.73"></i>
+      <i class="hks-eyes" data-at="9.36" data-red="0" data-p="1.84" style="left:69.4%;top:20.9%;--size:0.93"></i>
+      <i class="hks-eyes" data-at="9.38" data-red="0" data-p="3.16" style="left:71.7%;top:76.1%;--size:1.1"></i>
+      <i class="hks-eyes" data-at="9.4" data-red="0" data-p="6.12" style="left:92.2%;top:11.7%;--size:0.76"></i>
+      <i class="hks-eyes" data-at="9.42" data-red="0" data-p="2.08" style="left:36.1%;top:32.5%;--size:0.99"></i>
+      <i class="hks-eyes is-red" data-at="9.44" data-red="10.13" data-p="3.99" style="left:3.5%;top:87.7%;--size:0.79"></i>
+      <i class="hks-eyes is-red" data-at="9.46" data-red="10.22" data-p="5.56" style="left:34.0%;top:15.5%;--size:1.07"></i>
+      <i class="hks-eyes is-red" data-at="9.48" data-red="10.03" data-p="0.04" style="left:25.3%;top:8.1%;--size:0.93"></i>
+      <i class="hks-eyes" data-at="9.5" data-red="0" data-p="3.82" style="left:70.2%;top:33.1%;--size:0.71"></i>
+      <i class="hks-eyes" data-at="9.52" data-red="0" data-p="5.71" style="left:86.5%;top:19.4%;--size:0.99"></i>
+      <i class="hks-eyes" data-at="9.54" data-red="0" data-p="3.94" style="left:59.2%;top:47.1%;--size:0.97"></i>
+      <i class="hks-eyes" data-at="9.56" data-red="0" data-p="4.28" style="left:6.6%;top:29.9%;--size:1.02"></i>
+      <i class="hks-eyes" data-at="9.57" data-red="0" data-p="2.88" style="left:31.1%;top:21.3%;--size:0.73"></i>
+      <i class="hks-eyes is-red" data-at="9.59" data-red="10.08" data-p="0.23" style="left:26.9%;top:63.0%;--size:1.06"></i>
+      <i class="hks-eyes" data-at="9.61" data-red="0" data-p="4.12" style="left:31.8%;top:36.4%;--size:1.06"></i>
+      <i class="hks-eyes" data-at="9.63" data-red="0" data-p="4.94" style="left:24.0%;top:47.1%;--size:0.82"></i>
+      <i class="hks-eyes is-red" data-at="9.65" data-red="10.2" data-p="2.65" style="left:46.4%;top:7.1%;--size:0.94"></i>
+      <i class="hks-eyes" data-at="9.66" data-red="0" data-p="4.03" style="left:48.5%;top:32.3%;--size:0.79"></i>
+      <i class="hks-eyes is-red" data-at="9.68" data-red="10.36" data-p="0.25" style="left:58.4%;top:43.1%;--size:1.16"></i>
+      <i class="hks-eyes" data-at="9.7" data-red="0" data-p="3.61" style="left:65.7%;top:72.0%;--size:0.67"></i>
+      <i class="hks-eyes" data-at="9.72" data-red="0" data-p="0.09" style="left:74.6%;top:54.1%;--size:1.15"></i>
+      <i class="hks-eyes" data-at="9.73" data-red="0" data-p="5.89" style="left:89.8%;top:49.9%;--size:0.83"></i>
+      <i class="hks-eyes" data-at="9.75" data-red="0" data-p="2.59" style="left:78.7%;top:88.9%;--size:1.19"></i>
+      <i class="hks-eyes" data-at="9.77" data-red="0" data-p="1.33" style="left:45.7%;top:79.8%;--size:0.66"></i>
+      <i class="hks-eyes is-red" data-at="9.78" data-red="10.18" data-p="4.29" style="left:35.1%;top:80.0%;--size:0.69"></i>
+      <i class="hks-eyes" data-at="9.8" data-red="0" data-p="0.55" style="left:35.1%;top:41.6%;--size:0.67"></i>
+      <i class="hks-eyes is-red" data-at="9.82" data-red="10.23" data-p="4.52" style="left:20.8%;top:73.5%;--size:1.12"></i>
+      <i class="hks-eyes" data-at="9.83" data-red="0" data-p="1.18" style="left:57.7%;top:33.1%;--size:0.75"></i>
+      <i class="hks-eyes" data-at="9.85" data-red="0" data-p="4.48" style="left:67.1%;top:27.3%;--size:0.63"></i>
+      <i class="hks-eyes" data-at="9.87" data-red="0" data-p="0.53" style="left:6.0%;top:16.2%;--size:1.11"></i>
+      <i class="hks-eyes" data-at="9.88" data-red="0" data-p="2.89" style="left:83.7%;top:4.9%;--size:0.98"></i>
+      <i class="hks-eyes is-red" data-at="9.9" data-red="10.78" data-p="4.50" style="left:70.3%;top:87.4%;--size:1.16"></i>
+      <i class="hks-eyes is-red" data-at="9.91" data-red="10.64" data-p="5.13" style="left:25.9%;top:58.9%;--size:0.61"></i>
+      <i class="hks-eyes is-red" data-at="9.93" data-red="10.69" data-p="1.04" style="left:77.2%;top:17.2%;--size:0.65"></i>
+      <i class="hks-eyes" data-at="9.95" data-red="0" data-p="0.38" style="left:16.8%;top:86.0%;--size:1.12"></i>
+      <i class="hks-eyes" data-at="9.96" data-red="0" data-p="2.76" style="left:11.0%;top:61.1%;--size:0.82"></i>
+      <i class="hks-eyes is-red" data-at="9.98" data-red="10.78" data-p="2.28" style="left:58.8%;top:66.0%;--size:1.01"></i>
+      <i class="hks-eyes" data-at="9.99" data-red="0" data-p="2.62" style="left:66.9%;top:44.5%;--size:0.99"></i>
+      <i class="hks-eyes" data-at="10.01" data-red="0" data-p="5.93" style="left:54.0%;top:37.4%;--size:0.83"></i>
+      <i class="hks-eyes" data-at="10.02" data-red="0" data-p="1.84" style="left:60.1%;top:80.4%;--size:1.07"></i>
+      <i class="hks-eyes" data-at="10.04" data-red="0" data-p="4.42" style="left:89.2%;top:60.6%;--size:0.64"></i>
+      <i class="hks-eyes" data-at="10.05" data-red="0" data-p="3.80" style="left:13.4%;top:52.4%;--size:1.1"></i>
+      <i class="hks-eyes" data-at="10.07" data-red="0" data-p="3.78" style="left:8.9%;top:35.3%;--size:1.19"></i>
+      <i class="hks-eyes" data-at="10.08" data-red="0" data-p="5.58" style="left:77.0%;top:43.1%;--size:0.79"></i>
+      <i class="hks-eyes" data-at="10.1" data-red="0" data-p="3.78" style="left:31.1%;top:2.2%;--size:0.83"></i>
+    </div>
+      <div class="wrap hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow">AI kill switch</p>
+          <h1 id="hero-title">One switch for all your AI? <span class="hks-punch" id="hks-punch">First, find all your AI.</span></h1>
+          <p class="hero-lede" id="hks-lede">AI is built into applications and third-party systems your business uses<span class="hks-long">, not just the agents you set up</span>. If something says it can stop AI, shouldn’t you test it? That’s where your Dot comes in.</p>
+          <div class="hero-cta">
+            <a class="pill" href="#price">Buy a Dot for 99¢</a>
+            <a class="down-link" href="#how">What’s a Dot?</a>
+          </div>
+        </div>
+        <div class="stage-fit" style="--w:560;--h:480">
+          <div class="stage" data-main data-w="560" data-h="480" style="width:560px;height:480px;--lit:0.3" aria-hidden="true">
+            <div class="hks-beam" id="hks-beam"></div>
+            <div class="hks-floor"></div>
+            <div class="hks-beacon" id="hks-beacon"></div>
+            <div class="hks-ped"></div>
+            <div class="hks-labels"><div class="hks-plate">AI kill switch</div><div class="hks-lcd" id="hks-lcd">1 of 247 AI agents stopped</div></div>
+            <div class="hks-mount"></div>
+            <div class="hks-btn" id="hks-btn" style="transform:translateX(-5px) scaleX(0.7)"></div>
+            <div class="hks-bot is-red is-off" id="hks-bot" style="transform:translate(95px,409px) scale(1.4) rotate(100deg);--bones:1;z-index:4;filter:brightness(0.6)"><span class="hks-prop"></span><span class="hks-stem"></span><span class="hks-head"></span><span class="hks-visor"><span class="hks-eye" style="left:9px"></span><span class="hks-eye" style="left:21px"></span></span><svg class="hks-bones" viewBox="0 0 46 40" fill="#a7a8b3" stroke="#a7a8b3"><line x1="9" y1="7" x2="37" y2="33" stroke-width="6.5" stroke-linecap="round"/><circle cx="10.4" cy="3.3" r="4.4"/><circle cx="5.5" cy="8.6" r="4.4"/><circle cx="40.5" cy="31.4" r="4.4"/><circle cx="35.6" cy="36.7" r="4.4"/><line x1="37" y1="7" x2="9" y2="33" stroke-width="6.5" stroke-linecap="round"/><circle cx="40.5" cy="8.6" r="4.4"/><circle cx="35.6" cy="3.3" r="4.4"/><circle cx="10.4" cy="36.7" r="4.4"/><circle cx="5.5" cy="31.4" r="4.4"/></svg></div>
+            <!-- eyes in the dark -->
+            <i class="hks-eyes is-red" data-at="7.55" data-red="8.23" data-p="2.48" style="left:169px;top:65px;--size:1.17"></i>
+            <i class="hks-eyes is-red" data-at="7.74" data-red="8.24" data-p="5.69" style="left:340px;top:37px;--size:0.71"></i>
+            <i class="hks-eyes is-red" data-at="7.88" data-red="8.73" data-p="6.26" style="left:280px;top:141px;--size:1.02"></i>
+            <i class="hks-eyes is-red" data-at="8.0" data-red="8.5" data-p="0.57" style="left:30px;top:192px;--size:0.98"></i>
+            <i class="hks-eyes is-red" data-at="8.11" data-red="8.63" data-p="1.62" style="left:36px;top:43px;--size:0.87"></i>
+            <i class="hks-eyes" data-at="8.21" data-red="0" data-p="4.71" style="left:65px;top:90px;--size:1.09"></i>
+            <i class="hks-eyes" data-at="8.3" data-red="0" data-p="3.29" style="left:448px;top:114px;--size:0.94"></i>
+            <i class="hks-eyes" data-at="8.38" data-red="0" data-p="0.39" style="left:94px;top:218px;--size:0.91"></i>
+            <i class="hks-eyes" data-at="8.46" data-red="0" data-p="0.79" style="left:334px;top:144px;--size:0.81"></i>
+            <i class="hks-eyes" data-at="8.53" data-red="0" data-p="5.42" style="left:286px;top:33px;--size:1.03"></i>
+            <i class="hks-eyes is-red" data-at="8.6" data-red="9.12" data-p="2.51" style="left:164px;top:219px;--size:0.76"></i>
+            <i class="hks-eyes" data-at="8.67" data-red="0" data-p="5.33" style="left:237px;top:118px;--size:0.97"></i>
+            <i class="hks-eyes is-red" data-at="8.73" data-red="9.15" data-p="4.46" style="left:415px;top:260px;--size:1.38"></i>
+            <i class="hks-eyes" data-at="8.79" data-red="0" data-p="3.69" style="left:381px;top:114px;--size:1.4"></i>
+            <i class="hks-eyes" data-at="8.85" data-red="0" data-p="5.82" style="left:512px;top:53px;--size:0.55"></i>
+            <i class="hks-eyes" data-at="8.91" data-red="0" data-p="6.11" style="left:218px;top:281px;--size:1.33"></i>
+            <i class="hks-eyes is-red" data-at="8.96" data-red="9.44" data-p="3.28" style="left:20px;top:249px;--size:0.79"></i>
+            <i class="hks-eyes" data-at="9.02" data-red="0" data-p="4.53" style="left:399px;top:215px;--size:1.2"></i>
+            <i class="hks-eyes" data-at="9.07" data-red="0" data-p="2.87" style="left:428px;top:319px;--size:1.16"></i>
+            <i class="hks-eyes is-red" data-at="9.12" data-red="9.91" data-p="1.46" style="left:145px;top:159px;--size:1.07"></i>
+            <i class="hks-eyes" data-at="9.17" data-red="0" data-p="1.91" style="left:498px;top:257px;--size:1.42"></i>
+            <i class="hks-eyes is-red" data-at="9.22" data-red="9.94" data-p="4.39" style="left:269px;top:231px;--size:0.67"></i>
+            <i class="hks-eyes is-red" data-at="9.27" data-red="9.93" data-p="3.66" style="left:205px;top:153px;--size:0.66"></i>
+            <i class="hks-eyes is-red" data-at="9.32" data-red="10.02" data-p="0.07" style="left:109px;top:69px;--size:0.92"></i>
+            <i class="hks-eyes" data-at="9.36" data-red="0" data-p="6.02" style="left:53px;top:140px;--size:0.84"></i>
+            <i class="hks-eyes" data-at="9.41" data-red="0" data-p="2.98" style="left:13px;top:322px;--size:1.16"></i>
+            <i class="hks-eyes is-red" data-at="9.45" data-red="10.33" data-p="4.43" style="left:243px;top:183px;--size:0.77"></i>
+            <i class="hks-eyes is-red" data-at="9.49" data-red="10.14" data-p="4.24" style="left:433px;top:68px;--size:0.84"></i>
+            <i class="hks-eyes is-red" data-at="9.54" data-red="10.27" data-p="5.81" style="left:87px;top:286px;--size:0.95"></i>
+            <i class="hks-eyes is-red" data-at="9.58" data-red="10.15" data-p="2.64" style="left:278px;top:288px;--size:0.77"></i>
+            <i class="hks-eyes is-red" data-at="9.62" data-red="10.42" data-p="4.64" style="left:186px;top:21px;--size:1.2"></i>
+            <i class="hks-eyes is-red" data-at="9.66" data-red="10.54" data-p="1.96" style="left:15px;top:110px;--size:1.03"></i>
+            <i class="hks-eyes is-red" data-at="9.7" data-red="10.21" data-p="4.78" style="left:135px;top:258px;--size:1.33"></i>
+            <i class="hks-eyes" data-at="9.74" data-red="0" data-p="3.11" style="left:499px;top:170px;--size:0.83"></i>
+            <i class="hks-eyes is-red" data-at="9.78" data-red="10.39" data-p="4.18" style="left:489px;top:363px;--size:0.73"></i>
+            <i class="hks-eyes is-red" data-at="9.81" data-red="10.41" data-p="1.34" style="left:439px;top:182px;--size:1.45"></i>
+            <i class="hks-eyes is-red" data-at="9.85" data-red="10.28" data-p="0.38" style="left:341px;top:296px;--size:1.48"></i>
+            <i class="hks-eyes" data-at="9.89" data-red="0" data-p="5.55" style="left:472px;top:298px;--size:0.92"></i>
+            <i class="hks-eyes" data-at="9.92" data-red="0" data-p="5.85" style="left:320px;top:191px;--size:1.25"></i>
+            <i class="hks-eyes is-red" data-at="9.96" data-red="10.83" data-p="4.69" style="left:102px;top:124px;--size:0.86"></i>
+            <i class="hks-eyes" data-at="10.0" data-red="0" data-p="2.38" style="left:261px;top:74px;--size:0.58"></i>
+            <i class="hks-eyes" data-at="10.03" data-red="0" data-p="1.06" style="left:131px;top:16px;--size:0.91"></i>
+            <i class="hks-eyes is-red" data-at="10.07" data-red="10.65" data-p="6.00" style="left:382px;top:172px;--size:0.55"></i>
+            <i class="hks-eyes" data-at="10.1" data-red="0" data-p="1.30" style="left:510px;top:104px;--size:0.67"></i>
+            <div class="hks-me" id="hks-me" style="transform:translate(354px,384px)"><svg class="dot" id="hks-dot" data-dot='{"mood":"straight","raise":"left"}'></svg></div>
+            <div class="hks-flash" id="hks-flash"></div>
+          </div>
+          <button class="replay" type="button" id="hks-replay" aria-label="Replay the animation"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>Replay</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section nav: the same piece as How VEX works -->
+    <nav class="hw-nav" aria-label="On this page">
+      <div class="hw-tabs"><a href="#how">Meet your Dot</a><a href="#trust">Who’s behind your Dot</a><a href="#price">Pricing</a><a href="#faq">Questions</a></div>
+    </nav>
+
+    <!-- ============================== MEET YOUR DOT (shared) ==============================
+         Rebuilt 2026-10-30 around the three buying answers (what it fixes, what it asks about, what happens when it
+         can't fix something) plus the controlled test. DRAFT CLAIMS, to confirm with the team: which tests a Dot runs,
+         what it fixes on its own vs. asks about, how it tells you. The version before this is build_dot_campaigns.v1.py. -->
+    <section class="section" id="how" aria-labelledby="how-title">
+      <div class="wrap">
+        <div class="head">
+          <p class="eyebrow">Meet your Dot</p>
+          <p class="kicker">What is a Dot?</p>   <!-- the bridge from the heroes' claims to the real answer -->
+          <h2 id="how-title">Your security stack, tested from the inside.</h2>
+          <p>A Dot is a lightweight program on one endpoint. It runs safe, attacker-style tests against the controls you already pay for, fixes routine gaps on its own and reports to VEX, our AI SOC. No heavyweight agent and no console to watch.</p>
+        </div>
+        <ol class="story">
+          <li>
+            <svg width="248" height="147" viewBox="0 0 248 147" fill="none" aria-hidden="true">
+              <use href="#laptop"/>
+              <!-- your Dot sends a harmless test at the shield; the shield stops it -->
+              <circle cx="58" cy="66" r="11" fill="#1BA8EE" filter="url(#lt-shadow)"/>
+              <line x1="72" y1="66" x2="92" y2="66" stroke="#1BA8EE" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="2 4"/>
+              <rect x="94" y="62" width="8" height="8" transform="rotate(45 98 66)" fill="#E5484D"/>
+              <line x1="104" y1="56" x2="100" y2="52" stroke="#E5484D" stroke-width="1.5" stroke-linecap="round"/>
+              <line x1="104" y1="76" x2="100" y2="80" stroke="#E5484D" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M134 36l24 8v20c0 16-10 26-24 31-14-5-24-15-24-31V44l24-8z" fill="#fff" stroke="#8A8A8E" stroke-width="1.5" stroke-linejoin="round" filter="url(#lt-shadow)"/>
+              <path d="M134 44l16 5.5V64c0 10.5-6.5 17.5-16 21-9.5-3.5-16-10.5-16-21V49.5l16-5.5z" fill="#F1F1EE"/>
+              <circle cx="158" cy="40" r="9" fill="#029266"/>
+              <path d="M154 40.5l3 3 5.5-5.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <b>Validates your controls</b>
+            <p>A safe, controlled test shows whether your EDR and antivirus actually block a threat, not just whether they’re running.</p>
+          </li>
+          <li>
+            <svg width="248" height="147" viewBox="0 0 248 147" fill="none" aria-hidden="true">
+              <use href="#laptop"/>
+              <use href="#window" x="54" y="22" width="120" height="84" filter="url(#lt-shadow)"/>
+              <circle cx="66" cy="46" r="4" fill="#029266"/>
+              <circle cx="66" cy="62" r="4" fill="#029266"/>
+              <circle cx="66" cy="78" r="4" fill="#029266"/>
+              <circle cx="66" cy="94" r="4" fill="#029266"/>
+              <circle cx="190" cy="78" r="11" fill="#029266" filter="url(#lt-shadow)"/>
+              <path d="M185 78.5l3.5 3.5 7-7" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <b>Remediates the routine</b>
+            <p>Missing patches and insecure settings are fixed automatically.</p>
+          </li>
+          <li>
+            <svg width="248" height="147" viewBox="0 0 248 147" fill="none" aria-hidden="true">
+              <use href="#laptop"/>
+              <!-- a small "allow this change?" prompt, waiting on you -->
+              <g filter="url(#lt-shadow)">
+                <rect x="52" y="30" width="114" height="72" rx="3.37" fill="#fff" stroke="#8A8A8E" stroke-width="0.5"/>
+                <line x1="52" y1="40" x2="166" y2="40" stroke="#8A8A8E" stroke-width="0.5"/>
+              </g>
+              <circle cx="57" cy="35" r="1.5" fill="#D9D9D9"/>
+              <line x1="64" y1="54" x2="140" y2="54" stroke="#0B0C0D" stroke-width="1.8"/>
+              <line x1="64" y1="64" x2="124" y2="64" stroke="#8A8A8E" stroke-width="1.8"/>
+              <rect x="64" y="76" width="40" height="14" rx="7" fill="#E01280"/>
+              <rect x="110" y="76.5" width="44" height="13" rx="6.5" fill="#fff" stroke="#8A8A8E"/>
+              <circle cx="192" cy="66" r="11" fill="#B811DE" filter="url(#lt-shadow)"/>
+              <line x1="178" y1="66" x2="168" y2="66" stroke="#B811DE" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="2 4"/>
+            </svg>
+            <b>Approval for the rest</b>
+            <p>Changes that could affect users wait for a person to approve them.</p>
+          </li>
+          <li>
+            <svg width="248" height="147" viewBox="0 0 248 147" fill="none" aria-hidden="true">
+              <use href="#laptop"/>
+              <!-- a plain note for you, and a person to help -->
+              <g filter="url(#lt-shadow)">
+                <rect x="48" y="24" width="104" height="80" rx="3.37" fill="#fff" stroke="#8A8A8E" stroke-width="0.5"/>
+                <line x1="48" y1="34" x2="152" y2="34" stroke="#8A8A8E" stroke-width="0.5"/>
+              </g>
+              <circle cx="53" cy="29" r="1.5" fill="#D9D9D9"/>
+              <circle cx="66" cy="51" r="7" fill="#F7B828" filter="url(#lt-shadow)"/>   <!-- your Dot, writing the note -->
+              <line x1="80" y1="51" x2="132" y2="51" stroke="#0B0C0D" stroke-width="1.8"/>
+              <line x1="62" y1="66" x2="138" y2="66" stroke="#8A8A8E" stroke-width="1.8"/>
+              <line x1="62" y1="78" x2="130" y2="78" stroke="#8A8A8E" stroke-width="1.8"/>
+              <line x1="62" y1="90" x2="112" y2="90" stroke="#8A8A8E" stroke-width="1.8"/>
+              <circle cx="182" cy="74" r="18" fill="#fff" stroke="#8A8A8E" stroke-width="1.5" filter="url(#lt-shadow)"/>
+              <circle cx="182" cy="69" r="5.5" stroke="#0B0C0D" stroke-width="1.6"/>
+              <path d="M172 86c2-5 5.6-7.5 10-7.5s8 2.5 10 7.5" stroke="#0B0C0D" stroke-width="1.6" stroke-linecap="round"/>
+            </svg>
+            <b>Escalates with context</b>
+            <p>What it can’t fix goes to VEX and our security team, findings attached.</p>
+          </li>
+        </ol>
+        <div class="does">
+          <h3>Everything your Dot does</h3>
+          <ul>
+            <li><span class="check check--lg" aria-hidden="true"></span><span>Flags suspicious AI agent behavior</span><span class="tag tag--tell">Alerts</span></li>
+            <li><span class="check check--lg" aria-hidden="true"></span><span>Validates that your EDR and antivirus block a real threat</span><span class="tag tag--test">Validates</span></li>
+            <li><span class="check check--lg" aria-hidden="true"></span><span>Deploys missing security patches</span><span class="tag tag--fix">Remediates</span></li>
+            <li><span class="check check--lg" aria-hidden="true"></span><span>Enforces baseline security settings</span><span class="tag tag--fix">Remediates</span></li>
+            <li><span class="check check--lg" aria-hidden="true"></span><span>Audits browser extensions</span><span class="tag tag--ask">Approval</span></li>
+            <li><span class="check check--lg" aria-hidden="true"></span><span>Keeps an activity record for investigations</span><span class="tag tag--tell">Logs</span></li>
+            <li><span class="check check--lg" aria-hidden="true"></span><span>Escalates to our security team</span><span class="tag tag--person">Escalates</span></li>
+          </ul>
+          <!-- phones show the first three; the rest are a tap away (without JS everything shows and this stays hidden) -->
+          <button class="link link--md does-more" type="button" aria-expanded="false" hidden><span>Show 4 more</span><span class="icon" style="--icon:url(../../static/icon-chevron-down.svg)" aria-hidden="true"></span></button>
+        </div>
+        <p class="report">Every month you get a report your team can act on: what was tested, what was remediated and what needs a decision.</p>
+      </div>
+    </section>
+
+    <!-- ============================== TRUST (shared) ============================== -->
+    <section class="section section--subtle" id="trust" aria-labelledby="trust-title">
+      <div class="wrap trust">
+        <div class="trust-copy">
+          <p class="eyebrow">Who’s behind your Dot</p>
+          <h2 id="trust-title">Made by people who stop attackers for a living.</h2>
+          <p>Dots come from Unmanned, the team behind VEX. Our people come from MITRE, Mandiant, U.S. intelligence agencies and the Department of Defense.</p>
+          <a class="link link--md" href="/team/" target="_blank" rel="noopener">Meet the team<span class="icon" style="--icon:url(../../static/icon-arrow-square-out.svg)" aria-hidden="true"></span><span class="visually-hidden"> (opens in a new tab)</span></a>
+        </div>
+        <ul class="trust-list">
+          <!-- about the team, from the facts on /team/ (2026-10-29) -->
+          <li><span class="check" aria-hidden="true"></span><div><b>We think like attackers</b><span>Our team has found zero-days and built offensive tools, so we know where attackers look first.</span></div></li>
+          <li><span class="check" aria-hidden="true"></span><div><b>Tools the pros use</b><span>Our founder led development of MITRE’s CALDERA, an open-source tool security teams use to test their defenses.</span></div></li>
+          <li><span class="check" aria-hidden="true"></span><div><b>Defending businesses every day</b><span>The same team runs VEX, the AI SOC that looks after our business customers.</span></div></li>
+          <li><span class="check" aria-hidden="true"></span><div><b>Built and supported in the U.S.</b><span>The people who build your Dot are the people who help you.</span></div></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============================== PRICE (shared) ============================== -->
+    <section class="section" id="price" aria-labelledby="price-title">
+      <div class="wrap price-row">
+        <div class="price-card">
+          <div class="price"><b>99¢</b><span>a month<br>per endpoint</span></div>
+          <ul class="incl">
+            <li><span class="check check--lg" aria-hidden="true"></span>Works on Mac and Windows</li>
+            <li><span class="check check--lg" aria-hidden="true"></span>A monthly report your team can act on</li>
+            <li><span class="check check--lg" aria-hidden="true"></span>Support from our U.S.-based security team</li>
+          </ul>
+          <a class="pill" href="https://buy.stripe.com/cNi7sDalf8ob8ct5CKfQI01?utm_campaign=dots-kill-switch" data-checkout>Get your Dot</a>
+          <p class="fine">Secure checkout with Stripe. Billed yearly at $11.88.</p>
+        </div>
+        <div class="price-head">
+          <p class="eyebrow">Simple pricing</p>
+          <h2 id="price-title">Less than a dollar per endpoint.</h2>
+          <p>No surprise fees and no sales call. Start with one machine. As you add Dots, VEX connects what they find, maps the attack paths between them and coordinates the response.</p>
+          <p class="ask">Rolling out to a team? <a class="link" href="mailto:security@vex.unmanned.team"><span class="icon" style="--icon:url(../../static/icon-envelope.svg)" aria-hidden="true"></span>Send us a message</a></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== FAQ (shared) ============================== -->
+    <section class="section section--gray" id="faq" aria-labelledby="faq-title">
+      <div class="wrap">
+        <div class="head">
+          <p class="eyebrow">Questions</p>
+          <h2 id="faq-title">Questions security teams ask.</h2>
+        </div>
+        <div class="faq">
+          <!-- data and report answers: drafts, confirm with David before launch -->
+          <details>
+            <summary>What data does a Dot collect?</summary>
+            <p>Security state: patch levels, security settings and the results of its own tests. It isn’t there to read files or messages, and we never sell data.</p>
+          </details>
+          <details>
+            <summary>Will it conflict with our EDR?</summary>
+            <p>No. Dots run alongside your EDR and antivirus, and test that they’re doing their job.</p>
+          </details>
+          <details>
+            <summary>What’s the performance impact?</summary>
+            <p>Dots are tiny by design and built to stay out of the way. Most users never notice one is there.</p>
+          </details>
+          <details>
+            <summary>How do Dots relate to VEX?</summary>
+            <p>Every Dot reports to VEX, our AI SOC. One Dot protects one thing; VEX connects what all your Dots find, maps the attack paths between them and coordinates the response. <a href="/how-it-works/" target="_blank" rel="noopener">See how VEX works<span class="visually-hidden"> (opens in a new tab)</span></a>.</p>
+          </details>
+          <details>
+            <summary>How do we deploy it?</summary>
+            <p>After sign-up we email install instructions. Dots run on Mac and Windows and take a couple of minutes per machine.</p>
+          </details>
+          <details>
+            <summary>What’s in the monthly report?</summary>
+            <p>What was tested, what was remediated and what needs a decision, per endpoint.</p>
+          </details>
+          <details>
+            <summary>How does pricing work across many machines?</summary>
+            <p>Each endpoint gets its own Dot at 99¢ a month, billed yearly. Planning a larger rollout? Send us a message.</p>
+          </details>
+          <details>
+            <summary>Can we remove it?</summary>
+            <p>Yes, anytime. Remove it like any other app, or send us a message and we’ll walk you through it.</p>
+          </details>
+          <details>
+            <summary>I’m a security researcher. Can we work together?</summary>
+            <p>We’d love to. For more on how Dots work, <a class="ext" href="https://gounmanned.substack.com/" target="_blank" rel="noopener noreferrer">read our research<span class="visually-hidden"> (opens in a new tab)</span></a>. Then <a href="mailto:go@unmanned.team">let us know</a> what you have in mind.</p>
+          </details>
+        </div>
+        <p class="ask faq-ask">More questions? Ask a person. <a class="link" href="mailto:security@vex.unmanned.team"><span class="icon" style="--icon:url(../../static/icon-envelope.svg)" aria-hidden="true"></span>Send us a message</a></p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- phones: a buy bar that slides up once the hero's button has scrolled away, and steps aside at the price card -->
+  <div class="buybar" id="buybar"><a class="pill" href="#price">Buy a Dot for 99¢</a></div>
+
+  <footer>
+    <span>© 2026 Unmanned, Inc.</span>
+    <nav class="flinks" aria-label="Company"><a class="fext" href="/privacy/" target="_blank" rel="noopener">Privacy<span class="visually-hidden"> (opens in a new tab)</span></a><span aria-hidden="true">·</span><a class="fext" href="/terms/" target="_blank" rel="noopener">Terms of service<span class="visually-hidden"> (opens in a new tab)</span></a><span aria-hidden="true">·</span><a class="fext" href="/team/" target="_blank" rel="noopener">About us<span class="visually-hidden"> (opens in a new tab)</span></a><span aria-hidden="true">·</span><a class="fext" href="https://gounmanned.substack.com/" target="_blank" rel="noopener noreferrer">Our research</a></nav>
+  </footer>
+  <script src="../../static/feedback.js" defer></script>
+
+  <script>
+    var PAGE = 'dots-kill-switch';
+    var REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // ---------- Checkout ----------
+    // The button's Stripe Payment Link already carries utm_campaign=<this page> (it works without JS).
+    // Here any utm_source, utm_medium, utm_content and utm_term the visitor arrived with ride along too, plus
+    // client_reference_id (utm_source-utm_medium-utm_campaign, or this page's name), so each Stripe payment shows where it came from.
+    (function(){
+      var q = new URLSearchParams(location.search);
+      var ref = [q.get('utm_source'), q.get('utm_medium'), q.get('utm_campaign') || PAGE].filter(Boolean).join('-').replace(/[^A-Za-z0-9_-]/g, '').slice(0, 200);
+      document.querySelectorAll('[data-checkout]').forEach(function(a){
+        var u = new URL(a.href);
+        ['utm_source', 'utm_medium', 'utm_content', 'utm_term'].forEach(function(k){ if(q.get(k)){ u.searchParams.set(k, q.get(k)); } });
+        u.searchParams.set('client_reference_id', ref);
+        a.href = u.toString();
+      });
+    })();
+
+    // ---------- Header: hides on scroll down (same as the other pages) ----------
+    (function(){
+      var root = document.documentElement, top = document.querySelector('.site-top'), classbar = document.querySelector('.classbar');
+      var lastY = window.scrollY, ticking = false;
+      function update(){
+        ticking = false;
+        var y = window.scrollY, showZone = top.offsetHeight + classbar.offsetHeight;
+        if(y <= showZone){ root.classList.remove('header-hidden'); lastY = y; return; }
+        if(Math.abs(y - lastY) < 6) return;
+        root.classList.toggle('header-hidden', y > lastY);
+        lastY = y;
+      }
+      window.addEventListener('scroll', function(){ if(!ticking){ ticking = true; requestAnimationFrame(update); } }, { passive:true });
+      top.addEventListener('focusin', function(){ root.classList.remove('header-hidden'); });
+    })();
+
+    // ---------- Buy bar (phones): on once the hero's button is scrolled past, off while the price card is on screen ----------
+    (function(){
+      var bar = document.getElementById('buybar'), heroBtn = document.querySelector('.hero .pill'), card = document.querySelector('.price-card');
+      if(!bar || !heroBtn || !card || !window.IntersectionObserver) return;
+      var past = false, atPrice = false;
+      function set(){ bar.classList.toggle('is-on', past && !atPrice); }
+      new IntersectionObserver(function(es){ var e = es[0]; past = !e.isIntersecting && e.boundingClientRect.top < 0; set(); }).observe(heroBtn);
+      new IntersectionObserver(function(es){ atPrice = es[0].isIntersecting; set(); }).observe(card);
+    })();
+
+    // ---------- Everything your Dot does: on phones, the first three and a "Show 4 more" button ----------
+    (function(){
+      var box = document.querySelector('.does'), btn = box && box.querySelector('.does-more');
+      if(!btn) return;
+      var extra = box.querySelectorAll('li').length - 3, label = btn.querySelector('span');
+      box.classList.add('is-short'); btn.hidden = false;
+      btn.addEventListener('click', function(){
+        var open = box.classList.toggle('is-short') === false;
+        btn.setAttribute('aria-expanded', open);
+        label.textContent = open ? 'Show less' : 'Show ' + extra + ' more';
+      });
+    })();
+
+    // ---------- Section nav (as How VEX works): sits under the site header; marks the section you're in ----------
+    (function(){
+      var root = document.documentElement, head = document.querySelector('.site-top');
+      function setHead(){ if(head){ root.style.setProperty('--header-h', head.offsetHeight + 'px'); } }
+      setHead(); window.addEventListener('resize', setHead);
+      var links = [].slice.call(document.querySelectorAll('.hw-tabs a')), strip = document.querySelector('.hw-tabs');
+      var secs = links.map(function(a){ return document.getElementById(a.getAttribute('href').slice(1)); });
+      function mark(){
+        var y = window.innerHeight * 0.35, cur = -1;   // nothing marked while in the hero
+        secs.forEach(function(s, i){ if(s.getBoundingClientRect().top < y){ cur = i; } });
+        links.forEach(function(a, i){
+          var on = i === cur;
+          if(on && a.getAttribute('aria-current') !== 'true'){
+            var l = a.offsetLeft - 16, r = a.offsetLeft + a.offsetWidth + 16;   // keep it in view inside the strip only
+            if(l < strip.scrollLeft){ strip.scrollLeft = l; } else if(r > strip.scrollLeft + strip.clientWidth){ strip.scrollLeft = r - strip.clientWidth; }
+          }
+          if(on){ a.setAttribute('aria-current', 'true'); } else { a.removeAttribute('aria-current'); }
+        });
+      }
+      var t = false;
+      window.addEventListener('scroll', function(){ if(!t){ t = true; requestAnimationFrame(function(){ t = false; mark(); }); } }, { passive:true });
+      mark();
+    })();
+
+    // ---------- Helpers for the hero animations ----------
+    var cl = function(v){ return Math.max(0, Math.min(1, v)); };
+    var lerp = function(a, b, p){ return a + (b - a) * p; };
+    var prog = function(T, a, b){ return cl((T - a) / (b - a)); };
+    var outCubic = function(p){ return 1 - Math.pow(1 - p, 3); };
+    var inOut = function(p){ return p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2; };
+    var $ = function(id){ return document.getElementById(id); };
+
+    // ---------- The Dot ----------
+    // A port of the canvas's Dot: a circle with a darker slice bottom-left, pixel eyes and a pixel mouth.
+    // Drawn in a 100 x 104 box (the last 4 hold the floor shadow). o: color, shade, mood, look, open, pupil, floor, raise.
+    var dotId = 0;
+    function dotMarkup(o, id){
+      var look = o.look || 'center', open = +o.open || 0, mood = o.mood || 'smug';
+      var lx = look.indexOf('left') >= 0 ? -2.6 : look.indexOf('right') >= 0 ? 2.6 : 0;
+      var ly = look.indexOf('up') === 0 ? -5.5 : 0;
+      var W = '#fff', K = '#0b0c0d', P = o.pupil || K, s = '';
+      function f(n){ return Math.round(n * 100) / 100; }
+      // k: how far the brow slants in (a percent of the eye's height); flip for the right eye
+      function r(x, y, w, h, c, k, flip){
+        if(k){
+          var pts = flip ? [x, y + h * k / 100, x + w, y, x + w, y + h, x, y + h] : [x, y, x + w, y + h * k / 100, x + w, y + h, x, y + h];
+          s += '<polygon points="' + pts.map(f).join(' ') + '" fill="' + c + '"/>';
+        } else {
+          s += '<rect x="' + f(x) + '" y="' + f(y) + '" width="' + f(w) + '" height="' + f(h) + '" fill="' + c + '"/>';
+        }
+      }
+      // o.raise ('left' or 'right'): that eye opens taller under a raised brow; the other narrows
+      function eyes(k, py, pw){
+        var rl = o.raise === 'left', rr = o.raise === 'right';
+        r(27.2, rl ? 25.8 : 31.8, 13.6, rl ? 24 : 18, W, rr ? 45 : k, false);
+        r(57.5, rr ? 25.8 : 31.8, 13.6, rr ? 24 : 18, W, rl ? 45 : k, true);
+        if(rl) r(25.4, 17.5, 17.2, 4.5, K, -60, true);   // a pixel brow over the raised eye, tilted up at the outside
+        if(rr) r(55.7, 17.5, 17.2, 4.5, K, -60);
+        var w = pw || 9.1, off = (9.1 - w) / 2;
+        r(29.4 + off + lx, (py || 38.5) + ly, w, w, P);
+        r(59.8 + off + lx, (py || 38.5) + ly, w, w, P);
+      }
+      function openMouth(){
+        var w = 12 + 22 * open, h = 5 + 25 * open, x = 48.3 - w / 2;
+        r(x, 60, w, h, K);
+        if(open > 0.35) r(x + w * 0.2, 60 + h * 0.62, w * 0.6, h * 0.3, '#e5484d');
+      }
+      function smile(){ if(open > 0.02) return openMouth(); r(37, 60.5, 4.5, 4.5, K); r(55.1, 60.5, 4.5, 4.5, K); r(41.5, 65, 13.6, 4.5, K); }
+      function frown(){ if(open > 0.02) return openMouth(); r(41.5, 60.5, 13.6, 4.5, K); r(37, 65, 4.5, 4.5, K); r(55.1, 65, 4.5, 4.5, K); }
+      if(mood === 'smug'){ eyes(13); smile(); }
+      else if(mood === 'happy'){ eyes(0); smile(); }
+      else if(mood === 'angry'){ eyes(36, 40.5); frown(); }
+      else if(mood === 'evil'){ eyes(36, 40.5); r(33, 60.5, 4.5, 4.5, K); r(59.6, 60.5, 4.5, 4.5, K); r(37.5, 65, 22.1, 4.5, K); }
+      else if(mood === 'shocked'){ eyes(0, 40, 6); if(open > 0.02) openMouth(); else r(45, 58, 9, 12, K); }
+      else if(mood === 'flat'){ eyes(13); r(37, 62.5, 22.6, 4.5, K); }   // unimpressed: a straight mouth
+      else if(mood === 'straight'){ eyes(0); r(37, 62.5, 22.6, 4.5, K); }   // a straight face, eyes open
+      else if(mood === 'scrunch'){ eyes(13); r(53, 62.5, 15, 4.5, K); r(68, 67, 4.5, 4.5, K); }   // skeptical: the mouth pushed into one cheek
+      else if(mood === 'chill'){ r(27.2, 42, 13.6, 4.5, K); r(57.5, 42, 13.6, 4.5, K); smile(); }
+      else if(mood === 'shades'){
+        r(22, 33.5, 56, 4.5, K); r(24.5, 33.5, 20, 14, K); r(54.5, 33.5, 20, 14, K);
+        r(27.5, 36.5, 4, 4, W); r(57.5, 36.5, 4, 4, W); smile();
+      }
+      var floor = o.floor === false ? '' : '<ellipse cx="51.5" cy="98" rx="48.5" ry="4.5" fill="rgba(0,0,0,0.09)"/>';
+      return floor + '<clipPath id="' + id + '"><circle cx="50" cy="50" r="50"/></clipPath>' +
+        '<g clip-path="url(#' + id + ')"><circle cx="50" cy="50" r="50" fill="' + (o.shade || '#4499c7') + '"/>' +
+        '<circle cx="52.6" cy="42.7" r="50" fill="' + (o.color || '#5bc0eb') + '"/><g class="dot-face">' + s + '</g></g>';   // the face in its own group, so it can turn
+    }
+    // Turns <svg class="dot" data-dot='{...}'> into a Dot; returns set(changes), which redraws only when something changed
+    function makeDot(svg, base){
+      var o = Object.assign({}, base || JSON.parse(svg.getAttribute('data-dot') || '{}')), key = '', id = 'dotc' + (dotId++);
+      svg.setAttribute('viewBox', '0 0 100 104');
+      svg.setAttribute('aria-hidden', 'true');
+      function set(ch){
+        if(ch) Object.assign(o, ch);
+        var k = JSON.stringify(o);
+        if(k !== key){ key = k; svg.innerHTML = dotMarkup(o, id); }
+      }
+      set();
+      return set;
+    }
+    var dots = {};
+    document.querySelectorAll('svg.dot').forEach(function(svg){ var set = makeDot(svg); if(svg.id) dots[svg.id] = set; });
+
+    // ---------- Stages: scale each scene to its column ----------
+    function fitStages(){
+      document.querySelectorAll('.stage').forEach(function(st){
+        var s = st.parentNode.clientWidth / +st.getAttribute('data-w');
+        st.style.transform = 'scale(' + s + ')';
+        var hero = st.closest('.hero');
+        if(hero && st.hasAttribute('data-main')) hero.style.setProperty('--s', s);
+      });
+    }
+    fitStages();
+    if(window.ResizeObserver){ new ResizeObserver(fitStages).observe(document.body); } else { window.addEventListener('resize', fitStages); }
+
+    // ---------- Scenes: play once when seen (or loop), Replay restarts, reduced motion shows the end ----------
+    function scene(opts){
+      var raf = 0, t0 = null, started = false, visible = false;
+      function tick(now){
+        if(t0 === null) t0 = now;
+        var T = (now - t0) / 1000;
+        if(opts.loop) T = T % opts.loop; else T = Math.min(T, opts.end);
+        opts.frame(T);
+        if((opts.loop && visible) || T < opts.end) raf = requestAnimationFrame(tick);
+      }
+      function play(){ cancelAnimationFrame(raf); t0 = null; raf = requestAnimationFrame(tick); }
+      if(REDUCED){ opts.frame(opts.end); }
+      else {
+        opts.frame(0);
+        new IntersectionObserver(function(es){
+          visible = es[0].isIntersecting;
+          if(visible && (!started || opts.loop)){ started = true; play(); }
+        }, { threshold:0.3 }).observe(opts.root);
+      }
+      if(opts.replay) opts.replay.addEventListener('click', function(){ if(REDUCED) opts.frame(opts.end); else play(); });
+    }
+
+    // ==================== THIS PAGE’S HERO ====================
+    (function(){
+      var hero = document.querySelector('.hks'), stage = hero.querySelector('.stage');
+      var beam = $('hks-beam'), beacon = $('hks-beacon'), btn = $('hks-btn'), lcd = $('hks-lcd'), flash = $('hks-flash');
+      var bot = $('hks-bot'), me = $('hks-me'), punch = $('hks-punch'), lede = $('hks-lede'), replay = $('hks-replay');
+      var eyes = [].slice.call(hero.querySelectorAll('.hks-eyes')).map(function(el){
+        return { el:el, at:+el.dataset.at, red:+el.dataset.red, p:+el.dataset.p,
+                 dim:0.55 + 0.45 * (parseFloat(el.style.getPropertyValue('--size')) - 0.55) };   // the far ones are dimmer
+      });
+      // the story: one bot hovers, its eyes turn red (TURN), a second later the alarm (ALARM), the Dot bumps the switch
+      // (BUMP), the bot drops (FALL), the alarm goes off; lights down (DARK) with the punchline, eyes open, more and more
+      var TURN = 1.6, ALARM = 1.85, BUMP = 4.7, FALL = 4.9, DROP = 5.7, DARK = 7.1, END = 11.6;
+      var S = 1.4;   // the bot's size
+      var cl = function(v){ return Math.max(0, Math.min(1, v)); };
+      var lerp = function(a, b, p){ return a + (b - a) * p; };
+      var prog = function(T, a, b){ return cl((T - a) / (b - a)); };
+      var inCubic = function(p){ return p * p * p; };
+      var outCubic = function(p){ return 1 - Math.pow(1 - p, 3); };
+      function fly(t){ return { x: 210 + 110 * Math.sin(0.9 * t + 0.4), y: 165 + 45 * Math.sin(1.4 * t + 1.1), vx: 99 * Math.cos(0.9 * t + 0.4) }; }
+
+      function frame(T){
+        // the alarm light: gray and off, on and sweeping from a second after the bot turns, off once it drops
+        var on = prog(T, ALARM, ALARM + 0.15) * (1 - prog(T, FALL + 0.7, FALL + 1.0));
+        var blink = on * (0.65 + 0.35 * Math.sin(T * 14));
+        beacon.style.setProperty('--lamp', on > 0.05 ? 'radial-gradient(circle at 50% 70%,#ff6b70,#d0101c 70%)' : '#55555f');
+        beacon.style.setProperty('--glow', (26 * blink).toFixed(1) + 'px');
+        beam.style.opacity = (0.24 * on).toFixed(3);
+        beam.style.transform = 'rotate(' + (T * 150).toFixed(1) + 'deg)';
+        var k = 1 - 0.6 * prog(T, DARK, DARK + 0.8);   // the hero darkens a little with the lights
+        hero.style.backgroundColor = 'rgb(' + Math.round(lerp(13, 32, blink) * k) + ',' + Math.round(7 * k) + ',' + Math.round(8 * k) + ')';
+
+        // the bot: hovers about; turns red, stops and stares at us; drops when the switch is hit
+        var p, tilt = 0, ex = 0, ey = 1, er = 0, nar = 1, spin = Math.sin(T * 38);
+        var hold = fly(TURN);
+        if(T < TURN){ p = fly(T); tilt = Math.max(-10, Math.min(10, p.vx * 0.08)); ex = Math.max(-4, Math.min(4, p.vx / 18)); p.y += Math.sin(T * 6) * 2; }
+        else if(T < FALL){
+          p = { x: hold.x + Math.sin(T * 31) * 1.2 * prog(T, ALARM, ALARM + 0.3), y: hold.y + Math.sin(T * 6) * 2 };
+          er = 18 * prog(T, TURN + 0.3, TURN + 0.6); nar = 1 - 0.45 * prog(T, TURN + 0.3, TURN + 0.6);
+          if(T > BUMP - 0.6 && T < BUMP) ex = 4;                           // it sees the Dot going for the button
+        } else {
+          // switched off: it hangs there a moment as Chad's skull and crossbones, then drops and stays where it lands
+          var q = prog(T, DROP, DROP + 0.55), bounce = prog(T, DROP + 0.55, DROP + 0.8);
+          p = { x: lerp(hold.x, 120, q), y: lerp(hold.y, 433, inCubic(q)) - Math.sin(Math.PI * bounce) * 8 };
+          tilt = 100 * outCubic(q); spin = 1; ey = 0;   // the propeller stops
+        }
+        bot.classList.toggle('is-red', T >= TURN);
+        bot.classList.toggle('is-off', T >= FALL + 0.1);
+        bot.style.setProperty('--bones', outCubic(prog(T, FALL + 0.15, FALL + 0.45)).toFixed(2));
+        bot.style.zIndex = T >= FALL ? '4' : '';   // in front of the eyes
+        bot.style.filter = 'brightness(' + (1 - 0.4 * prog(T, DARK, DARK + 0.8)).toFixed(2) + ')';   // stays faintly in view in the dark
+        bot.style.setProperty('--spin', spin.toFixed(2));
+        bot.style.setProperty('--ex', ex.toFixed(1) + 'px'); bot.style.setProperty('--ey', ey.toFixed(1) + 'px');
+        bot.style.setProperty('--er', er.toFixed(1) + 'deg'); bot.style.setProperty('--blink', nar.toFixed(2));
+        bot.style.transform = 'translate(' + (p.x - 25).toFixed(1) + 'px,' + (p.y - 24).toFixed(1) + 'px) scale(' + S + ') rotate(' + tilt.toFixed(1) + 'deg)';
+
+        // our Dot sits beside the switch the whole time: watches, bumps the button, looks pleased, then not so much
+        var bump = prog(T, BUMP - 0.25, BUMP + 0.2), lean = Math.sin(Math.PI * bump);
+        var wind = prog(T, BUMP - 0.55, BUMP - 0.25), back = Math.sin(Math.PI * wind);
+        var aha = prog(T, 3.9, 4.2), hopUp = Math.sin(Math.PI * aha) * 12;   // aha: a little hop when it spots the switch
+        me.style.transform = 'translate(' + (354 + 10 * back - 18 * lean).toFixed(1) + 'px,' + (384 - hopUp).toFixed(1) + 'px) rotate(' + (6 * back - 10 * lean).toFixed(1) + 'deg)';
+        // it doesn't notice the bot until the alarm; it stares, spots the switch (aha, no problem), bumps it, looks pleased
+        var look = T < 0.9 ? 'right' : T < 2.1 ? 'center' : T < 3.5 ? 'up left' : T < 3.9 ? 'left' : T < 4.4 ? 'up left' : T < 4.7 ? 'left' :
+                   T < DROP + 0.3 ? 'up left' : T < DROP + 0.8 ? 'left' : T < 8.1 ? 'center' :   // waits for the eyes, then looks around
+                   T < 8.8 ? 'up left' : T < 9.5 ? 'up right' : T < 10.0 ? 'up left' : 'center';
+        var mood = T >= 2.1 && T < 2.6 ? 'shocked' : T >= 3.9 && T < DARK + 0.3 ? 'smug' : 'straight';
+        dots['hks-dot']({ mood:mood, look:look, raise: T >= 10.4 ? 'left' : null });
+        var pressed = prog(T, BUMP - 0.08, BUMP);
+        btn.style.transform = 'translateX(' + (-5 * pressed).toFixed(1) + 'px) scaleX(' + (1 - 0.3 * pressed).toFixed(3) + ')';
+        var hit = prog(T, BUMP, BUMP + 0.3), shake = hit > 0 && hit < 1 ? Math.sin(Math.PI * hit) : 0;
+        stage.style.translate = (Math.sin(T * 90) * 4 * shake).toFixed(1) + 'px ' + (Math.cos(T * 70) * 2 * shake).toFixed(1) + 'px';
+        flash.style.opacity = (0.25 * shake).toFixed(3);
+        // the stopped count stays at 1 while the total climbs with the eyes, faster and faster, to more than you can see
+        var found = 1 + Math.round(246 * Math.pow(prog(T, DARK + 0.4, END - 0.6), 2));
+        lcd.textContent = T < BUMP ? '0 AI agents stopped' : T < FALL + 0.3 ? 'Stopping all AI…' : '1 of ' + found + ' AI agents stopped';
+
+        // lights down, and the eyes open: a few, then more and more; each blinks now and then, some turn red
+        stage.style.setProperty('--lit', (1 - 0.7 * prog(T, DARK, DARK + 0.8)).toFixed(3));
+        eyes.forEach(function(e){
+          var o = prog(T, e.at, e.at + 0.25), b = 1;
+          if(T < e.at + 0.25) b = o;                                       // they open
+          else { var c = (T * 0.55 + e.p) % 3; if(c < 0.16) b = 0.12; }    // and blink now and then
+          e.el.style.opacity = (o * e.dim).toFixed(2);
+          e.el.style.setProperty('--blink', b.toFixed(2));
+          e.el.classList.toggle('is-red', !!e.red && T >= e.red);
+        });
+
+        var pl = outCubic(prog(T, DARK + 0.3, DARK + 0.8));
+        punch.style.opacity = pl.toFixed(3);
+        punch.style.transform = 'translateY(' + lerp(10, 0, pl).toFixed(1) + 'px)';
+        lede.style.opacity = prog(T, 10.3, 10.9).toFixed(3);
+        replay.classList.toggle('is-on', T >= END);
+      }
+      // on stacked layouts the eyes are all over the hero: hide the ones behind a line of text (line by line, so the gaps
+      // beside short lines still get eyes) or below the Dot's head (the floor)
+      var night = [].slice.call(hero.querySelectorAll('.hks-night .hks-eyes'));
+      function clearText(){
+        var boxes = [];
+        hero.querySelectorAll('.eyebrow, h1, .hero-lede, .hero-cta .pill, .hero-cta .down-link, .replay').forEach(function(el){
+          var r = document.createRange(); r.selectNodeContents(el);
+          [].forEach.call(r.getClientRects(), function(b){ if(b.width) boxes.push(b); });
+        });
+        var floor = me.getBoundingClientRect().top + 6;   // the Dot's head: no eyes below it
+        night.forEach(function(e){
+          var a = e.getBoundingClientRect(), pad = 6;
+          e.classList.toggle('is-under', a.bottom > floor || boxes.some(function(b){
+            return a.right > b.left - pad && a.left < b.right + pad && a.bottom > b.top - pad && a.top < b.bottom + pad;
+          }));
+        });
+      }
+      clearText();
+      if(window.ResizeObserver) new ResizeObserver(clearText).observe(hero);
+      if(document.fonts) document.fonts.ready.then(clearText);
+      scene({ root:hero, end:END, frame:frame, replay:replay });
+    })();
+  </script>
+</body>
+</html>

@@ -272,18 +272,19 @@
   /* ── New signal ─────────────────────────────────────────────── */
 
   &.is-new {
-    .signal-banner,
-    .send-btn { background: #111; }
-    .send-btn:hover { background: #2a2a2a; }
+    .signal-banner { background: #111; }
+
     .thread,
-    .delete-btn,
-    .send-btn .material-symbols-outlined { display: none; }
+    .delete-btn { display: none; }
 
     .composer {
       flex: 1;
       min-height: 0;
-      grid-template-rows: 1fr auto auto;
-      grid-template-areas: "input" "fields" "send";
+      grid-template-columns: 1fr auto;
+      grid-template-rows: 1fr auto;
+      grid-template-areas:
+        "input  input"
+        "fields send";
       padding: 0;
       border-top: none;
     }
@@ -292,14 +293,14 @@
       height: auto;
       padding: 18px;
       font-size: 14px;
+      border-bottom: 1px solid var(--line);
     }
 
     .fields {
       grid-area: fields;
       display: flex;
       gap: 8px;
-      padding: 12px 18px 0;
-      border-top: 1px solid var(--line);
+      padding: 12px 8px 18px 18px;
     }
 
     .field {
@@ -408,15 +409,12 @@
 
     .send-btn {
       grid-area: send;
-      justify-self: stretch;
-      width: auto;
-      height: 40px;
-      margin: 12px 18px 18px;
-      border-radius: 8px;
-      font-size: 13.5px;
-      font-weight: 600;
-    }
+      width: 30px;
+      height: 30px;
+      margin: 0 18px 18px 0;
+      background: #111;
 
-    .send-label { display: inline; }
+      &:hover { background: #2a2a2a; }
+    }
   }
 }

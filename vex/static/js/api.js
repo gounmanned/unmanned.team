@@ -20,9 +20,8 @@ class SignalApi extends Gateway {
         return await this.call("DELETE", `signal/${id}`);
     }
 
-    async create(signal, params) {
-        const query = params ? `?${new URLSearchParams(params)}` : "";
-        return await this.call("POST", `signal${query}`, signal);
+    async create(signal) {
+        return await this.call("POST", "signal", signal);
     }
 
     async update(id, blob) {

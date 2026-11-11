@@ -339,6 +339,70 @@
       }
     }
 
+    .field-check { flex: 0 0 auto; }
+
+    .field-check .check-chip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      height: 30px;
+      padding: 0 12px 0 10px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--surface);
+      box-sizing: border-box;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: normal;
+      text-transform: none;
+      white-space: nowrap;
+      color: var(--text-faint);
+      cursor: pointer;
+      user-select: none;
+      transition: border-color 0.15s, background-color 0.15s, color 0.15s;
+
+      &:hover { border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); }
+
+      &:has(:checked) {
+        border-color: var(--accent);
+        background: color-mix(in srgb, var(--accent) 8%, var(--surface));
+        color: var(--accent);
+      }
+
+      &:has(:focus-visible) {
+        outline: 2px solid color-mix(in srgb, var(--accent) 35%, transparent);
+        outline-offset: 1px;
+      }
+
+      input {
+        appearance: none;
+        display: grid;
+        place-items: center;
+        width: 14px;
+        height: 14px;
+        margin: 0;
+        padding: 0;
+        border: 1.5px solid currentColor;
+        border-radius: 4px;
+        background: none;
+        cursor: pointer;
+
+        &:checked {
+          border-color: var(--accent);
+          background: var(--accent);
+        }
+
+        &:checked::after {
+          content: "";
+          width: 3px;
+          height: 7px;
+          border: solid #fff;
+          border-width: 0 2px 2px 0;
+          transform: translateY(-1px) rotate(45deg);
+        }
+      }
+    }
+
     .send-btn {
       grid-area: send;
       justify-self: stretch;

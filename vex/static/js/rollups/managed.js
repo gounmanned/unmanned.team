@@ -1,20 +1,20 @@
 const ACCOUNT_STATES = {
     scanning: 'Scanning',
     threat: 'Active threat',
-    email: 'Customer email',
+    overdue: 'Past SLA',
     open: 'Waiting on decision',
     clear: 'Protected',
 };
 
 const ACCOUNT_ICONS = {
     threat: 'gpp_maybe',
-    email: 'mail',
+    overdue: 'timer_off',
     open: 'schedule',
     clear: 'check_circle',
 };
 
 // Accounts in these states need someone to act; their indicator pulses.
-const ACTION_STATES = ['threat', 'email'];
+const ACTION_STATES = ['threat', 'overdue'];
 
 const SPINNER = SiteSpinner.inline;
 const fmt = n => n.toLocaleString();
@@ -85,17 +85,17 @@ class ManagedRollup {
     _stats(domain) {
         const open = Object.values(this.state.signals[domain] ?? {}).filter(s => s.status.startsWith('O'));
         const threats = open.filter(s => s.metadata?.threat).length;
-        const emails = open.filter(s => s.source === 'email').length;
+        const overdue = open.filter(s => s.due && Date.now() > Table.utc(s.due)).length;
         const { assets = 0, dots = 0 } = this.assets.get(domain) ?? {};
 
         return {
             open: open.length,
             unread: open.filter(s => !s.read).length,
             threats,
-            emails,
+            overdue,
             assets,
             dots,
-            state: this.scanning ? 'scanning' : threats ? 'threat' : emails ? 'email' : open.length ? 'open' : 'clear',
+            state: this.scanning ? 'scanning' : threats ? 'threat' : overdue ? 'overdue' : open.length ? 'open' : 'clear',
         };
     }
 
@@ -125,7 +125,7 @@ class ManagedRollup {
 
         const rows = [...stats]
             .filter(([domain]) => domain.includes(query))
-            .sort(([a, x], [b, y]) => y.threats - x.threats || y.emails - x.emails || y.open - x.open || a.localeCompare(b))
+            .sort(([a, x], [b, y]) => y.threats - x.threats || y.overdue - x.overdue || y.open - x.open || a.localeCompare(b))
             .map(([domain, s]) => this._row(domain, s));
 
         if (query && !this.members.has(query)) rows.unshift(this._createRow(query));
@@ -186,7 +186,7 @@ class ManagedRollup {
         `;
     }
 
-    _row(domain, { open, unread, threats, emails, assets, dots, state }) {
+    _row(domain, { open, unread, threats, overdue, assets, dots, state }) {
         const dash = '<em>—</em>';
 
         const signals = this.scanning ? SPINNER : open ? fmt(open) : dash;
@@ -199,7 +199,7 @@ class ManagedRollup {
                     ${this._mark(domain)}
                     <span class="tenant-text">
                         <span class="tenant-name" title="${domain}">${domain}</span>
-                        ${this._status(state, threats, emails)}
+                        ${this._status(state, threats, overdue)}
                     </span>
                 </span>
                 <span class="tenant-num tenant-signals">
@@ -282,11 +282,11 @@ class ManagedRollup {
     }
 
     // Accounts that need action say what kind; everyone else gets their plain state.
-    _status(state, threats, emails) {
+    _status(state, threats, overdue) {
         const plural = (n, noun) => `${fmt(n)} ${noun}${n === 1 ? '' : 's'}`;
         const parts = [
             threats && `<b class="is-threat">${plural(threats, 'threat')}</b>`,
-            emails && `<b class="is-email">${plural(emails, 'email')}</b>`,
+            overdue && `<b class="is-overdue">${fmt(overdue)} past SLA</b>`,
         ].filter(Boolean);
 
         const label = ACTION_STATES.includes(state) ? parts.join('<i>·</i>') : ACCOUNT_STATES[state];
@@ -301,14 +301,14 @@ class ManagedRollup {
     }
 
     _panelSummary(domain) {
-        const { open, threats, emails, dots, assets, state } = this._stats(domain);
+        const { open, threats, overdue, dots, assets, state } = this._stats(domain);
 
         return `
             <header class="tenant-panel-head">
                 ${this._mark(domain)}
                 <div class="tenant-panel-title">
                     <h3 title="${domain}">${domain}</h3>
-                    ${this._status(state, threats, emails)}
+                    ${this._status(state, threats, overdue)}
                 </div>
                 <button class="tenant-panel-close" data-close title="Close">
                     <span class="material-symbols-outlined">close</span>
@@ -317,7 +317,7 @@ class ManagedRollup {
 
             <dl class="tenant-panel-stats">
                 <div><dt>Threats</dt><dd class="${threats ? 'is-threat' : ''}">${this.scanning ? SPINNER : fmt(threats)}</dd></div>
-                <div><dt>Emails</dt><dd class="${emails ? 'is-email' : ''}">${this.scanning ? SPINNER : fmt(emails)}</dd></div>
+                <div><dt>Past SLA</dt><dd class="${overdue ? 'is-overdue' : ''}">${this.scanning ? SPINNER : fmt(overdue)}</dd></div>
                 <div><dt>Signals</dt><dd>${this.scanning ? SPINNER : fmt(open)}</dd></div>
                 <div><dt>Dots</dt><dd>${this.counting ? SPINNER : `${fmt(dots)}<small>/${fmt(assets)}</small>`}</dd></div>
             </dl>

@@ -152,6 +152,7 @@ class Table {
             <td class="metadata">${this.metadata(signal.metadata)}</td>
             <td class="source">${Workspace.esc(signal.asset)}</td>
             <td class="created">${Workspace.date(signal.created)}</td>
+            <td class="due">${Workspace.date(signal.due)}</td>
             <td class="elapsed ${live ? 'live' : ''}">${timed ? this.elapsed(signal) : ''}</td>
             <td class="sla">${Table.sla(signal)}</td>`;
 

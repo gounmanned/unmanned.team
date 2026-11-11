@@ -1,8 +1,8 @@
 #managed-screen {
   --rollup-height: 100%;
   --threat: var(--risk-high, #dc2626);
-  --waiting: var(--risk-medium, #f59e0b);
   --protected: var(--risk-low, #16a34a);
+  --overdue: #9333ea;
   --pad: 32px;
 
   /* ── Header ─────────────────────────────────────────────────────────────── */
@@ -220,7 +220,7 @@
     &[data-state="clear"] { color: var(--protected); }
 
     &[data-state="threat"],
-    &[data-state="email"] {
+    &[data-state="overdue"] {
       --flag: var(--threat);
       background: color-mix(in srgb, var(--flag) 14%, transparent);
       color: var(--flag);
@@ -229,7 +229,7 @@
       .material-symbols-outlined { font-size: 16px; font-variation-settings: 'FILL' 1; }
     }
 
-    &[data-state="email"] { --flag: var(--waiting); }
+    &[data-state="overdue"] { --flag: var(--overdue); }
   }
 
   .tenant-account {
@@ -426,7 +426,7 @@
   }
 
   .is-threat { color: var(--threat); }
-  .is-email { color: color-mix(in srgb, var(--waiting) 75%, var(--text-body)); }
+  .is-overdue { color: var(--overdue); }
 
   /* ── Account panel ──────────────────────────────────────────────────────── */
 
@@ -486,7 +486,7 @@
 
       small { font-size: 12px; font-weight: 500; color: var(--text-faint); }
       &.is-threat { color: var(--threat); }
-      &.is-email { color: color-mix(in srgb, var(--waiting) 75%, var(--text-body)); }
+      &.is-overdue { color: var(--overdue); }
     }
   }
 

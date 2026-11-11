@@ -130,6 +130,8 @@ class Workspace {
     }
 
     static date(iso, time = false) {
+        if (!iso) return '';
+
         const d = new Date(iso);
         return time
             ? d.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })

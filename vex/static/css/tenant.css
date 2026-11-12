@@ -666,19 +666,19 @@ td.elapsed.live {
   cursor: pointer;
 }
 
-.links a.cta {
-  margin-left: 8px;
-  padding: 6px 12px 6px 9px;
-  background: #111;
-  color: #fff;
-}
-
 .links .links-start {
   position: absolute;
   left: 14px;
   display: flex;
   align-items: center;
   gap: 10px;
+}
+
+.links a.cta {
+  margin-left: 8px;
+  padding: 6px 12px 6px 9px;
+  background: #111;
+  color: #fff;
 }
 
 .links .count {

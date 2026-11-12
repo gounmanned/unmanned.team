@@ -57,7 +57,7 @@
   }
 
   /* ---------- Markup ---------- */
-  const thumb = (vote, label) => `<button type="button" class="fb-btn" data-vote="${vote}" aria-label="${label}" aria-haspopup="dialog" aria-pressed="${state.vote === vote}"><img src="${STATIC}icon-thumbs-${vote}.svg" width="16" height="16" alt=""></button>`;
+  const thumb = (vote, label) => `<button type="button" class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm fb-btn" data-vote="${vote}" aria-label="${label}" aria-haspopup="dialog" aria-pressed="${state.vote === vote}"><img src="${STATIC}icon-thumbs-${vote}.svg" width="16" height="16" alt=""></button>`;
   const bar = document.createElement('div');
   bar.className = 'fb';
   bar.innerHTML = `<span class="fb-label" role="status">What do you think?</span><span class="fb-btns">${thumb('up', 'I like this page')}${thumb('down', 'I don’t like this page')}</span>`;
@@ -67,23 +67,22 @@
   const scrim = document.createElement('div');
   scrim.className = 'fb-scrim';
   const panel = document.createElement('form');
-  panel.className = 'fb-panel';
+  panel.className = 'pulse-popover pulse-popover--top fb-panel';
   panel.tabIndex = -1;
   panel.noValidate = true;
   panel.setAttribute('role', 'dialog');
   panel.setAttribute('aria-labelledby', 'fb-title');
   panel.innerHTML = `
-    <div class="fb-head"><div class="fb-grab"></div><p class="fb-title" id="fb-title"></p></div>
-    <button type="button" class="fb-close" aria-label="Close"><img src="${STATIC}icon-close.svg" width="16" height="16" alt=""></button>
+    <div class="fb-head"><div class="fb-grab"></div><p class="pulse-popover__title fb-title" id="fb-title"></p></div>
+    <button type="button" class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-popover__close fb-close" aria-label="Close"><i class="pulse-icon pulse-icon--x"></i></button>
     <div class="fb-body">
       <div class="fb-chips" role="group" aria-labelledby="fb-title"></div>
       <div class="fb-field">
-        <textarea class="fb-text" maxlength="${MAX}" placeholder="Share some details..." aria-label="Share some details"></textarea>
+        <textarea class="pulse-textarea fb-text" maxlength="${MAX}" placeholder="Share some details..." aria-label="Share some details"></textarea>
         <span class="fb-count">0 / ${MAX}</span>
       </div>
     </div>
-    <div class="fb-actions"><button type="submit" class="fb-submit">Submit</button></div>
-    <span class="fb-caret" aria-hidden="true"></span>`;
+    <div class="pulse-popover__actions fb-actions"><button type="submit" class="pulse-btn pulse-btn--primary pulse-btn--sm fb-submit">Submit</button></div>`;
   document.body.append(scrim, panel);
 
   const $ = (s, root) => (root || panel).querySelector(s);
@@ -97,7 +96,7 @@
   /* ---------- Popup ---------- */
   function fill() {
     $('.fb-title').textContent = TITLES[state.vote];
-    $('.fb-chips').innerHTML = COPY[state.vote].map((c) => `<button type="button" class="fb-chip" aria-pressed="false">${c}</button>`).join('');
+    $('.fb-chips').innerHTML = COPY[state.vote].map((c) => `<button type="button" class="pulse-chip fb-chip" aria-pressed="false">${c}</button>`).join('');
   }
   function resizeText() {
     text.style.height = 'auto';

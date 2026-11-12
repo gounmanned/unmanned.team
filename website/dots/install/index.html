@@ -117,7 +117,7 @@
 
   /* copy button and its tooltip come from site.css; the button sits at the box's right edge, so the tooltip lines up on the right */
   .command .tooltip{left:auto;right:-6px;transform:translateY(-4px);}
-  .command .tooltip::before{left:auto;right:8px;margin-left:0;}
+  .command .tooltip::after{left:auto;right:12px;transform:rotate(45deg);}
   .command .copy-btn:hover .tooltip,.command .copy-btn:focus-visible .tooltip,.command .copy-btn.is-copied .tooltip{transform:translateY(0);}
 
   @media (max-width:560px){
@@ -197,9 +197,9 @@
               <p>Copy and paste this in Terminal then press Return.</p>
               <div class="command">
                 <code id="mac-command">curl -fsSL https://us.unmanned.team/install/setup.sh | sudo bash</code>
-                <button class="copy-btn" type="button" data-copy="mac-command" aria-label="Copy the Terminal command to clipboard">
-                  <img src="static/icon-copy.svg" width="20" height="20" alt="">
-                  <span class="tooltip" aria-hidden="true">Copy to clipboard</span>
+                <button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn" type="button" data-copy="mac-command" aria-label="Copy the Terminal command to clipboard">
+                  <i class="pulse-icon pulse-icon--copy"></i>
+                  <span class="pulse-tooltip tooltip" aria-hidden="true">Copy to clipboard</span>
                 </button>
               </div>
               <a class="pulse-link pulse-link--sm script-link" href="https://gounmanned.substack.com/p/meet-your-dot-a-little-army-of-friendly" target="_blank" rel="noopener noreferrer">How Dots work <i class="pulse-icon pulse-icon--arrow-square-out"></i><span class="visually-hidden"> (opens in a new tab)</span></a>
@@ -251,9 +251,9 @@
               <p>Copy and paste this in Terminal then press Enter.</p>
               <div class="command">
                 <code id="windows-command">powershell -NoProfile -ExecutionPolicy Bypass -Command "iex (New-Object Net.WebClient).DownloadString('https://us.unmanned.team/install/setup.ps1')"</code>
-                <button class="copy-btn" type="button" data-copy="windows-command" aria-label="Copy the Terminal command to clipboard">
-                  <img src="static/icon-copy.svg" width="20" height="20" alt="">
-                  <span class="tooltip" aria-hidden="true">Copy to clipboard</span>
+                <button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn" type="button" data-copy="windows-command" aria-label="Copy the Terminal command to clipboard">
+                  <i class="pulse-icon pulse-icon--copy"></i>
+                  <span class="pulse-tooltip tooltip" aria-hidden="true">Copy to clipboard</span>
                 </button>
               </div>
               <a class="pulse-link pulse-link--sm script-link" href="https://gounmanned.substack.com/p/meet-your-dot-a-little-army-of-friendly" target="_blank" rel="noopener noreferrer">How Dots work <i class="pulse-icon pulse-icon--arrow-square-out"></i><span class="visually-hidden"> (opens in a new tab)</span></a>

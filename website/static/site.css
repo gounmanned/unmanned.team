@@ -143,14 +143,12 @@
 
   /* ---------- DOCS PAGES: JUMP MENU, CODE PANELS, COPY, BACK TO TOP (API, detections) ---------- */
   .lede{font-size:16px;line-height:1.75;color:var(--color-neutral-700);max-width:680px;}
-  .copy-btn{position:relative;flex-shrink:0;display:flex;padding:2px;border:none;background:none;cursor:pointer;border-radius:4px;}
-  .copy-btn:hover{background:rgba(11,12,13,0.06);}
-  .copy-btn img{width:20px;height:20px;display:block;}
-  .tooltip{position:absolute;top:calc(100% + 12px);left:50%;transform:translateX(-50%) translateY(-4px);padding:8px 12px;border-radius:4px;background:var(--color-neutral-500);color:var(--color-text-on-contrast);font-family:var(--font-sans);font-size:13px;line-height:normal;white-space:nowrap;filter:drop-shadow(0 6px 4px rgba(0,0,0,0.16));opacity:0;visibility:hidden;pointer-events:none;transition:opacity 0.15s ease, transform 0.15s ease, visibility 0s linear 0.15s;z-index:5;}
-  .tooltip::before{content:'';position:absolute;bottom:100%;left:50%;margin-left:-8px;border:8px solid transparent;border-top:0;border-bottom-color:var(--color-neutral-500);}
+  /* copy tooltip = pulse-tooltip; until Pulse has placement (Chad, 2026-11-11): under the button, caret on top */
+  .tooltip{position:absolute;top:calc(100% + 10px);left:50%;transform:translateX(-50%) translateY(-4px);white-space:nowrap;opacity:0;visibility:hidden;pointer-events:none;transition:opacity 0.15s ease, transform 0.15s ease, visibility 0s linear 0.15s;z-index:5;}
+  .tooltip::after{bottom:auto;top:-4px;}
   .copy-btn:hover .tooltip,.copy-btn:focus-visible .tooltip,.copy-btn.is-copied .tooltip{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0);transition:opacity 0.15s ease, transform 0.15s ease, visibility 0s;}
   .code-head .tooltip{left:auto;right:-6px;transform:translateY(-4px);}
-  .code-head .tooltip::before{left:auto;right:8px;margin-left:0;}
+  .code-head .tooltip::after{left:auto;right:12px;transform:rotate(45deg);}
   .code-head .copy-btn:hover .tooltip,.code-head .copy-btn:focus-visible .tooltip,.code-head .copy-btn.is-copied .tooltip{transform:translateY(0);}
   .jump{position:sticky;top:calc(var(--classbar-h) + var(--top-h, 61px) - 40px);align-self:start;padding-top:64px;transition:top 0.3s cubic-bezier(0.4,0,0.2,1);}
   .jump-label{font-size:11px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-text-tertiary);margin-bottom:16px;}

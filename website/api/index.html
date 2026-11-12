@@ -228,7 +228,7 @@
       <div class="base-url">
         <span class="base-url-label">Base URL</span>
         <code id="base-url">https://4ycv63am8b.execute-api.us-east-2.amazonaws.com</code>
-        <button class="copy-btn" type="button" aria-label="Copy base URL to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button>
+        <button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn" type="button" aria-label="Copy base URL to clipboard"><i class="pulse-icon pulse-icon--copy"></i><span class="pulse-tooltip tooltip" aria-hidden="true">copy to clipboard</span></button>
       </div>
     </div>
   </section>
@@ -282,14 +282,14 @@
           </tbody>
         </table>
         <div class="code-panel">
-          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy request to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
+          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn" type="button" aria-label="Copy request to clipboard"><i class="pulse-icon pulse-icon--copy"></i><span class="pulse-tooltip tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code><span class="t-fn">curl</span> https://cognito-idp.us-east-2.amazonaws.com/ \
   -H <span class="t-str">"Content-Type: application/x-amz-json-1.1"</span> \
   -H <span class="t-str">"X-Amz-Target: AWSCognitoIdentityProviderService.InitiateAuth"</span> \
   -d <span class="t-str">'{"AuthFlow": "USER_PASSWORD_AUTH", "ClientId": "2314edi18c3o3t8sroh2u2hucf", "AuthParameters": {"USERNAME": "you@yourcompany.com", "PASSWORD": "your-password"}}'</span></code></pre>
         </div>
         <div class="code-panel">
-          <div class="code-head"><span class="code-file">response</span><span class="code-lang">JSON</span><button class="copy-btn" type="button" aria-label="Copy response to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
+          <div class="code-head"><span class="code-file">response</span><span class="code-lang">JSON</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn" type="button" aria-label="Copy response to clipboard"><i class="pulse-icon pulse-icon--copy"></i><span class="pulse-tooltip tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code>{
    <span class="t-key">"AuthenticationResult"</span> : {
       <span class="t-key">"IdToken"</span> : <span class="t-str">"eyJraWQiOi..."</span>,
@@ -309,7 +309,7 @@
         </div>
         <p class="endpoint-desc">Every other request in this reference carries that token as a bearer header. Scoped to one workspace: no per-request signing, no separate keys per endpoint.</p>
         <div class="code-panel">
-          <div class="code-head"><span class="code-file">save-token.sh</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy save-token.sh to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
+          <div class="code-head"><span class="code-file">save-token.sh</span><span class="code-lang">Shell</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn" type="button" aria-label="Copy save-token.sh to clipboard"><i class="pulse-icon pulse-icon--copy"></i><span class="pulse-tooltip tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code><span class="t-fn">export</span> VEX_TOKEN=$(<span class="t-fn">curl</span> https://cognito-idp.us-east-2.amazonaws.com/ \
   -H <span class="t-str">"Content-Type: application/x-amz-json-1.1"</span> \
   -H <span class="t-str">"X-Amz-Target: AWSCognitoIdentityProviderService.InitiateAuth"</span> \
@@ -318,7 +318,7 @@
         </div>
         <p class="note">Every curl example in this reference assumes <code>$VEX_TOKEN</code> is already set this way. Run it once per session and the rest just work.</p>
         <div class="code-panel">
-          <div class="code-head"><span class="code-file">auth-header.sh</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy auth-header.sh to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
+          <div class="code-head"><span class="code-file">auth-header.sh</span><span class="code-lang">Shell</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn" type="button" aria-label="Copy auth-header.sh to clipboard"><i class="pulse-icon pulse-icon--copy"></i><span class="pulse-tooltip tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code><span class="t-fn">curl</span> https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/source \
   -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span></code></pre>
         </div>
@@ -342,7 +342,7 @@
           </tbody>
         </table>
         <div class="code-panel">
-          <div class="code-head"><span class="code-file">delegate.sh</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy delegate.sh to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
+          <div class="code-head"><span class="code-file">delegate.sh</span><span class="code-lang">Shell</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn" type="button" aria-label="Copy delegate.sh to clipboard"><i class="pulse-icon pulse-icon--copy"></i><span class="pulse-tooltip tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code><span class="t-cmnt"># Lists the sources in example.com instead of your own account</span>
 <span class="t-fn">curl</span> https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/source \
   -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span> \
@@ -378,7 +378,7 @@
           <p>If you manage several accounts, this is the one call worth knowing about: it returns every open signal across all of them in a single response, so you don’t have to loop over each account with the <code>account</code> header just to check for open work.</p>
         </div>
         <div class="code-panel">
-          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy request to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
+          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn" type="button" aria-label="Copy request to clipboard"><i class="pulse-icon pulse-icon--copy"></i><span class="pulse-tooltip tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code><span class="t-fn">curl</span> https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/managed/signal \
   -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span></code></pre>
         </div>
@@ -391,7 +391,7 @@
         </div>
         <p class="endpoint-desc">Every identity across every account you manage, in one call.</p>
         <div class="code-panel">
-          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy request to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
+          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn" type="button" aria-label="Copy request to clipboard"><i class="pulse-icon pulse-icon--copy"></i><span class="pulse-tooltip tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code><span class="t-fn">curl</span> https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/managed/asset \
   -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span></code></pre>
         </div>
@@ -431,12 +431,12 @@
           </tbody>
         </table>
         <div class="code-panel">
-          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy request to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
+          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn" type="button" aria-label="Copy request to clipboard"><i class="pulse-icon pulse-icon--copy"></i><span class="pulse-tooltip tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code><span class="t-fn">curl</span> <span class="t-str">"https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/signal?date=2026-08-27"</span> \
   -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span></code></pre>
         </div>
         <div class="code-panel">
-          <div class="code-head"><span class="code-file">response</span><span class="code-lang">JSON</span><button class="copy-btn" type="button" aria-label="Copy response to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
+          <div class="code-head"><span class="code-file">response</span><span class="code-lang">JSON</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn" type="button" aria-label="Copy response to clipboard"><i class="pulse-icon pulse-icon--copy"></i><span class="pulse-tooltip tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code>[
   {
     <span class="t-key">"id"</span>: <span class="t-num">482910736244</span>,
@@ -481,12 +481,12 @@
         </div>
         <p class="endpoint-desc">The full detail on one signal.</p>
         <div class="code-panel">
-          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy request to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
+          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn" type="button" aria-label="Copy request to clipboard"><i class="pulse-icon pulse-icon--copy"></i><span class="pulse-tooltip tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code><span class="t-fn">curl</span> https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/signal/719203845561 \
   -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span></code></pre>
         </div>
         <div class="code-panel">
-          <div class="code-head"><span class="code-file">response</span><span class="code-lang">JSON</span><button class="copy-btn" type="button" aria-label="Copy response to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
+          <div class="code-head"><span class="code-file">response</span><span class="code-lang">JSON</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn" type="button" aria-label="Copy response to clipboard"><i class="pulse-icon pulse-icon--copy"></i><span class="pulse-tooltip tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code>{
   <span class="t-key">"id"</span>: <span class="t-num">719203845561</span>,
   <span class="t-key">"source"</span>: <span class="t-str">"microsoft"</span>,
@@ -521,7 +521,7 @@
           </tbody>
         </table>
         <div class="code-panel">
-          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy request to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
+          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn" type="button" aria-label="Copy request to clipboard"><i class="pulse-icon pulse-icon--copy"></i><span class="pulse-tooltip tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code><span class="t-fn">curl</span> -X POST https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/signal \
   -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span> \
   -H <span class="t-str">"Content-Type: application/json"</span> \
@@ -555,12 +555,12 @@
         </div>
         <p class="endpoint-desc">Lists every source currently connected to your account. This is the “yes, it’s still working” button.</p>
         <div class="code-panel">
-          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy request to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
+          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn" type="button" aria-label="Copy request to clipboard"><i class="pulse-icon pulse-icon--copy"></i><span class="pulse-tooltip tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code><span class="t-fn">curl</span> https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/source \
   -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span></code></pre>
         </div>
         <div class="code-panel">
-          <div class="code-head"><span class="code-file">response</span><span class="code-lang">JSON</span><button class="copy-btn" type="button" aria-label="Copy response to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
+          <div class="code-head"><span class="code-file">response</span><span class="code-lang">JSON</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn" type="button" aria-label="Copy response to clipboard"><i class="pulse-icon pulse-icon--copy"></i><span class="pulse-tooltip tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code>[
   <span class="t-str">"/acmecorp.com/google/0"</span>,
   <span class="t-str">"/acmecorp.com/slack/0"</span>
@@ -582,7 +582,7 @@
         </table>
         <p class="note">Body shape depends on the provider. The two most common patterns:</p>
         <div class="code-panel">
-          <div class="code-head"><span class="code-file">connect-source.sh</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy connect-source.sh to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
+          <div class="code-head"><span class="code-file">connect-source.sh</span><span class="code-lang">Shell</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn" type="button" aria-label="Copy connect-source.sh to clipboard"><i class="pulse-icon pulse-icon--copy"></i><span class="pulse-tooltip tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code><span class="t-cmnt"># Google Workspace: service account JSON key</span>
 <span class="t-fn">curl</span> -X POST https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/source/google \
   -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span> \
@@ -621,7 +621,7 @@
           </tbody>
         </table>
         <div class="code-panel">
-          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy request to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
+          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn" type="button" aria-label="Copy request to clipboard"><i class="pulse-icon pulse-icon--copy"></i><span class="pulse-tooltip tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code><span class="t-fn">curl</span> -X DELETE https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/source/google/0 \
   -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span></code></pre>
         </div>
@@ -641,12 +641,12 @@
         </div>
         <p class="endpoint-desc">Every identity VEX currently knows about, across every connected source. No filtering needed: this is the full list.</p>
         <div class="code-panel">
-          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy request to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
+          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn" type="button" aria-label="Copy request to clipboard"><i class="pulse-icon pulse-icon--copy"></i><span class="pulse-tooltip tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code><span class="t-fn">curl</span> https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/asset \
   -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span></code></pre>
         </div>
         <div class="code-panel">
-          <div class="code-head"><span class="code-file">response</span><span class="code-lang">JSON</span><button class="copy-btn" type="button" aria-label="Copy response to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
+          <div class="code-head"><span class="code-file">response</span><span class="code-lang">JSON</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn" type="button" aria-label="Copy response to clipboard"><i class="pulse-icon pulse-icon--copy"></i><span class="pulse-tooltip tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code>[
   {
     <span class="t-key">"account"</span>: <span class="t-str">"acmecorp.com"</span>,
@@ -691,12 +691,12 @@
         </div>
         <p class="endpoint-desc">Every open notification about your VEX setup: broken auth, a stalled source, anything worth fixing before it becomes a blind spot.</p>
         <div class="code-panel">
-          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy request to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
+          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn" type="button" aria-label="Copy request to clipboard"><i class="pulse-icon pulse-icon--copy"></i><span class="pulse-tooltip tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code><span class="t-fn">curl</span> https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/notification \
   -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span></code></pre>
         </div>
         <div class="code-panel">
-          <div class="code-head"><span class="code-file">response</span><span class="code-lang">JSON</span><button class="copy-btn" type="button" aria-label="Copy response to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
+          <div class="code-head"><span class="code-file">response</span><span class="code-lang">JSON</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn" type="button" aria-label="Copy response to clipboard"><i class="pulse-icon pulse-icon--copy"></i><span class="pulse-tooltip tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code>[
   {
     <span class="t-key">"account"</span>: <span class="t-str">"acmecorp.com"</span>,
@@ -731,12 +731,12 @@
           </tbody>
         </table>
         <div class="code-panel">
-          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy request to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
+          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn" type="button" aria-label="Copy request to clipboard"><i class="pulse-icon pulse-icon--copy"></i><span class="pulse-tooltip tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code><span class="t-fn">curl</span> https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/file/signal/ \
   -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span></code></pre>
         </div>
         <div class="code-panel">
-          <div class="code-head"><span class="code-file">response</span><span class="code-lang">JSON</span><button class="copy-btn" type="button" aria-label="Copy response to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
+          <div class="code-head"><span class="code-file">response</span><span class="code-lang">JSON</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn" type="button" aria-label="Copy response to clipboard"><i class="pulse-icon pulse-icon--copy"></i><span class="pulse-tooltip tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code>[
   <span class="t-str">"signal/4827193650228"</span>,
   <span class="t-str">"signal/9013758204461"</span>,
@@ -759,12 +759,12 @@
           </tbody>
         </table>
         <div class="code-panel">
-          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy request to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
+          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn" type="button" aria-label="Copy request to clipboard"><i class="pulse-icon pulse-icon--copy"></i><span class="pulse-tooltip tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code><span class="t-fn">curl</span> <span class="t-str">"https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/file/signal?name=4827193650228"</span> \
   -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span></code></pre>
         </div>
         <div class="code-panel">
-          <div class="code-head"><span class="code-file">response</span><span class="code-lang">JSON</span><button class="copy-btn" type="button" aria-label="Copy response to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
+          <div class="code-head"><span class="code-file">response</span><span class="code-lang">JSON</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn" type="button" aria-label="Copy response to clipboard"><i class="pulse-icon pulse-icon--copy"></i><span class="pulse-tooltip tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code>{
   <span class="t-key">"url"</span>: <span class="t-str">"https://vex-file-system.s3.us-east-2.amazonaws.com/acmecorp.com/signal/4827193650228?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Checksum-Mode=ENABLED&X-Amz-Credential=..."</span>
 }</code></pre>
@@ -794,7 +794,7 @@
           </tbody>
         </table>
         <div class="code-panel">
-          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy request to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
+          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn" type="button" aria-label="Copy request to clipboard"><i class="pulse-icon pulse-icon--copy"></i><span class="pulse-tooltip tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code><span class="t-fn">curl</span> <span class="t-str">"https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/audit?q=dmarc"</span> \
   -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span>
 
@@ -803,7 +803,7 @@
   -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span></code></pre>
         </div>
         <div class="code-panel">
-          <div class="code-head"><span class="code-file">response</span><span class="code-lang">JSON</span><button class="copy-btn" type="button" aria-label="Copy response to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
+          <div class="code-head"><span class="code-file">response</span><span class="code-lang">JSON</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn" type="button" aria-label="Copy response to clipboard"><i class="pulse-icon pulse-icon--copy"></i><span class="pulse-tooltip tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code>[
   {
     <span class="t-key">"message"</span>: <span class="t-str">"dmarc |  | spoof attempt on acmecorp.com from 203.0.113.10 x1 — dkim:pass spf:fail disposition:none"</span>,

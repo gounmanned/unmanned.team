@@ -120,7 +120,7 @@
   .install-step-body p, .install-step-body li, .install-key { color: var(--color-neutral-700); }
   .step-copy { display: flex; flex-direction: column; gap: 12px; }
   .step-copy p, .step-copy li { font-size: 16px; line-height: 1.75; }
-  .pulse-btn { width: 240px; }   /* the download button keeps its set width */
+  a.pulse-btn { width: 240px; }   /* the download button keeps its set width */
   .step-copy ul { margin: 0; padding-left: 24px; list-style: disc; }  /* overrides global.css */
   .step-note { font-size: 13.5px; line-height: 1.6; }
 
@@ -139,28 +139,14 @@
   .command { display: flex; align-items: flex-start; gap: 36px; width: 100%; padding: 16px 16px 18px; background: var(--color-surface-subtle); border: 1px solid var(--color-border-default); border-radius: 4px; }
   .command code { flex: 1; min-width: 0; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12.5px; line-height: 1.7; color: var(--color-text-primary); overflow-wrap: anywhere; }
   .command .tooltip { left: auto; right: -6px; transform: translateY(-4px); }   /* keep the tooltip inside the box */
-  .command .tooltip::before { left: auto; right: 8px; margin-left: 0; }
+  .command .tooltip::after { left: auto; right: 12px; transform: rotate(45deg); }
   .install-key-error a { color: var(--color-text-accent); }
 
-  .copy-btn { position: relative; display: flex; padding: 2px; border: none; border-radius: 4px; background: none; cursor: pointer; }
-  .copy-btn:hover:not(:disabled) { background: var(--color-surface-sunken); }
-  .copy-btn:disabled { cursor: default; opacity: 0.4; }
-  .copy-btn img { display: block; }
 
   /* Tooltip under the copy button: shows on hover / keyboard focus, and says "Copied" after a click */
-  .tooltip {
-    position: absolute; top: calc(100% + 12px); left: 50%; z-index: 5;
-    padding: 8px 12px; border-radius: 4px; background: var(--color-neutral-500); color: var(--color-text-on-contrast);
-    font-family: var(--font-sans); font-size: 13px; line-height: normal; white-space: nowrap;
-    filter: drop-shadow(0 6px 4px rgba(0, 0, 0, 0.16));
-    opacity: 0; visibility: hidden; pointer-events: none;
-    transform: translate(-50%, -4px);
-    transition: opacity 0.15s, transform 0.15s, visibility 0s 0.15s;
-  }
-  .tooltip::before {
-    content: ''; position: absolute; bottom: 100%; left: 50%; margin-left: -8px;
-    border: 8px solid transparent; border-top: 0; border-bottom-color: var(--color-neutral-500);
-  }
+  /* copy tooltip = pulse-tooltip; this keeps it under the button (caret on top) and shows it on hover, focus and copy */
+  .tooltip { position:absolute; top:calc(100% + 10px); left:50%; transform:translateX(-50%) translateY(-4px); white-space:nowrap; opacity:0; visibility:hidden; pointer-events:none; transition:opacity 0.15s ease, transform 0.15s ease, visibility 0s linear 0.15s; z-index:5; }
+  .tooltip::after { bottom: auto; top: -4px; }
   .copy-btn:hover:not(:disabled) .tooltip, .copy-btn:focus-visible .tooltip, .copy-btn.is-copied .tooltip {
     opacity: 1; visibility: visible; transform: translate(-50%, 0); transition-delay: 0s;
   }
@@ -183,7 +169,7 @@
   }
   @media (max-width: 560px) {
     .brand-tag { display: none; }
-    .pulse-btn { width: 100%; }
+    a.pulse-btn { width: 100%; }
     .command { gap: 16px; }
   }
   @media (prefers-reduced-motion: reduce) {
@@ -252,9 +238,9 @@
           </div>
           <div class="command">
             <code id="mac-command">Loading your install command…</code>
-            <button class="copy-btn" type="button" data-copy="mac-command" aria-label="Copy the Terminal command to clipboard" disabled>
-              <img src="static/icon-copy.svg" width="20" height="20" alt="">
-              <span class="tooltip" aria-hidden="true">Copy to clipboard</span>
+            <button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn" type="button" data-copy="mac-command" aria-label="Copy the Terminal command to clipboard" disabled>
+              <i class="pulse-icon pulse-icon--copy"></i>
+              <span class="pulse-tooltip tooltip" aria-hidden="true">Copy to clipboard</span>
             </button>
           </div>
           <p class="install-key-error" hidden>We couldn’t load your install key. Email <a href="mailto:security@vex.unmanned.team">security@vex.unmanned.team</a> and we’ll send it to you.</p>
@@ -302,9 +288,9 @@
             <strong>When prompted, enter install key:</strong>
             <span class="install-key-value">
               <code id="install-key">Loading…</code>
-              <button class="copy-btn" type="button" data-copy="install-key" aria-label="Copy install key to clipboard" disabled>
-                <img src="static/icon-copy.svg" width="20" height="20" alt="">
-                <span class="tooltip" aria-hidden="true">Copy to clipboard</span>
+              <button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn" type="button" data-copy="install-key" aria-label="Copy install key to clipboard" disabled>
+                <i class="pulse-icon pulse-icon--copy"></i>
+                <span class="pulse-tooltip tooltip" aria-hidden="true">Copy to clipboard</span>
               </button>
             </span>
           </div>

@@ -25,12 +25,7 @@
 <link rel="stylesheet" href="../static/site.css">
 <!-- Lato is Slack's own font: used only inside the Slack mockups so they look like real Slack -->
 <style>
-  :root{
-    --aubergine:#481249;
-    --band:#49144a;
-    --band-soft:#6a3e6b;
-  }
-  h1,h2,h3,h4,p{margin:0;}
+    h1,h2,h3,h4,p{margin:0;}
   img{display:block;}
   .wrap{width:min(1100px,calc(100% - 2 * var(--gutter)));margin:0 auto;}
   .col{width:min(900px,calc(100% - 2 * var(--gutter)));margin:0 auto;} /* the design's 900px content column */
@@ -69,17 +64,17 @@
   .hero .col{position:relative;display:flex;flex-direction:column;align-items:center;gap:28px;}
   .hero-mark{display:flex;flex-direction:column;align-items:center;gap:16px;}
   .hero-mark img{width:64px;height:64px;}
-  .hero h1{max-width:660px;font-weight:600;font-size:clamp(40px,6vw,70px);line-height:1.03;letter-spacing:-0.03em;color:var(--aubergine);}
+  .hero h1{max-width:660px;font-weight:600;font-size:clamp(40px,6vw,70px);line-height:1.03;letter-spacing:-0.03em;color:var(--slack-aubergine);}
   .ctas{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:12px 28px;}   /* the button's height, so the two line up */
   .hero-note{width:100%;max-width:660px;font-size:14px;line-height:22px;color:var(--color-text-tertiary);} /* a set width: Safari measured it too narrow and wrapped it */
   .hero-note strong{font-weight:600;color:var(--color-text-primary);}
 
   /* ---------- SLACK MOCKUPS: shared pieces ----------
      Everything inside .slack is drawn to look like Slack: Lato, Slack's colors and spacing. */
-  .avatar-letter{display:flex;align-items:center;justify-content:center;flex-shrink:0;width:36px;height:36px;border-radius:8px;background:#e8e8ec;font-weight:700;font-size:14px;color:#52525c;}
+  .avatar-letter{display:flex;align-items:center;justify-content:center;flex-shrink:0;width:36px;height:36px;border-radius:8px;background:var(--slack-avatar-bg);font-weight:700;font-size:14px;color:var(--slack-avatar);}
   .attach-text{font-size:13px;line-height:18px;}
-  .cmd{display:inline-block;padding:2px 8px;border-radius:2px;background:#f1f1ee;border:1px solid var(--color-border-default);font-family:var(--font-mono);font-size:0.93em;line-height:1.4;color:var(--color-text-accent);white-space:nowrap;}
-  .mention{display:inline-block;padding:2px 8px;border-radius:2px;background:#eaf5fa;font-family:var(--font-mono);font-size:0.93em;line-height:1.4;color:#4c7db4;white-space:nowrap;}
+  .cmd{display:inline-block;padding:2px 8px;border-radius:2px;background:var(--color-surface-sunken);border:1px solid var(--color-border-default);font-family:var(--font-mono);font-size:0.93em;line-height:1.4;color:var(--color-text-accent);white-space:nowrap;}
+  .mention{display:inline-block;padding:2px 8px;border-radius:2px;background:var(--slack-mention-bg);font-family:var(--font-mono);font-size:0.93em;line-height:1.4;color:var(--slack-mention);white-space:nowrap;}
 
   /* ---------- THE SLACK WINDOW (hero) ----------
      It sits half on the white hero, half on the purple band below: the band starts behind its middle. */
@@ -87,8 +82,8 @@
   .stage .col{width:min(900px,calc(100% - 96px));} /* at least 48px each side so the window breathes; phones get the normal gutter (below) */
   .win-wrap{container-type:inline-size;} /* the window's parts respond to its own width (cqw = 1% of it) */
   .win{
-    display:flex;flex-direction:column;border:1px solid #ad98ae;border-radius:10px;
-    background:linear-gradient(to bottom,#4a154b,#3a073b);
+    display:flex;flex-direction:column;border:1px solid var(--slack-sidebar-edge);border-radius:10px;
+    background:linear-gradient(to bottom,var(--slack-purple),var(--slack-purple-deep));
     filter:drop-shadow(0 8px 10px rgba(11,12,13,0.12)) drop-shadow(0 2px 2px rgba(11,12,13,0.06));
   }
   .win-bar{display:flex;align-items:center;gap:24px;padding:5px 7px;}
@@ -103,7 +98,7 @@
 
   .side{flex-shrink:0;width:clamp(116px, 27cqw, 220px);min-width:0;display:flex;flex-direction:column;gap:10px;padding:12px 8px;border-radius:8px 0 0 8px;background:rgba(255,255,255,0.09);font-size:15px;color:rgba(255,255,255,0.85);}
   .side-head{display:flex;align-items:center;gap:15px;height:28px;padding:0 3px 0 8px;}
-  .side-head p{flex:1;font-weight:900;font-size:18px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .side-head p{flex:1;font-weight:900;font-size:18px;color:var(--color-text-on-contrast);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .side-head img{width:20px;height:20px;}
   .side-find{display:flex;align-items:center;gap:6px;height:28px;padding:0 8px;white-space:nowrap;overflow:hidden;border-radius:6px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.35);font-size:14px;color:rgba(255,255,255,0.8);}
   .side-find img{width:14px;height:14px;}
@@ -113,12 +108,12 @@
   .lbl{min-width:0;overflow:hidden;text-overflow:ellipsis;} /* labels end in “…” when the sidebar narrows */
   .side-row img{width:16px;height:16px;}
   .side-row--dim{color:rgba(255,255,255,0.45);}
-  .side-row--on{background:#f9edff;color:#3f0e40;}
+  .side-row--on{background:var(--slack-active-bg);color:var(--slack-active-text);}
   .side-plus{display:flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:4px;background:rgba(255,255,255,0.15);}
   .side-plus img{width:12px;height:12px;}
   .side-rule{height:1px;margin:0 4px;background:rgba(255,255,255,0.15);}
 
-  .chan{flex:1;min-width:0;display:flex;flex-direction:column;background:#fff;border-radius:0 8px 8px 0;overflow:hidden;}
+  .chan{flex:1;min-width:0;display:flex;flex-direction:column;background:var(--color-surface-page);border-radius:0 8px 8px 0;overflow:hidden;}
   .chan-head{display:flex;align-items:center;gap:12px;height:51px;padding:0 16px 0 22px;}
   .chan-head img{width:20px;height:20px;}
   .chan-name{flex:1;font-weight:900;font-size:18px;}
@@ -126,39 +121,39 @@
   .chan-actions span{display:flex;align-items:center;gap:4px;}
   .chan-actions .user{width:18px;height:18px;}
   .chan-actions .caret{width:12px;height:12px;}
-  .tabs{display:flex;align-items:flex-end;gap:4px;height:36px;padding:0 16px;border-bottom:1px solid #ddd;}
+  .tabs{display:flex;align-items:flex-end;gap:4px;height:36px;padding:0 16px;border-bottom:1px solid var(--slack-line);}
   .tab{display:flex;align-items:center;gap:5px;height:34px;padding:0 8px;font-weight:700;font-size:13px;}
   .tab img{width:15px;height:15px;}
-  .tab--on{box-shadow:inset 0 -2px 0 #83388a;}
+  .tab--on{box-shadow:inset 0 -2px 0 var(--slack-tab-on);}
   .tab-add{padding:0 8px 10px;}
   .tab-add img{width:16px;height:16px;}
-  .thread-bar{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-bottom:1px solid #e3e3e8;}
+  .thread-bar{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-bottom:1px solid var(--slack-line-soft);}
   .thread-bar div{display:flex;align-items:center;gap:16px;}
   .thread-bar img{width:20px;height:20px;}
   .thread-bar .sparkle{width:18px;height:18px;}
   .thread-bar b{font-size:15px;}
-  .thread-bar small{font-size:12px;color:var(--s-time);}
+  .thread-bar small{font-size:12px;color:var(--slack-time);}
   .thread{display:flex;flex-direction:column;padding:2px 0;}
   .thread .msg{gap:10px;padding:10px 18px;}
   .thread .msg-name{font-size:14px;}
-  .thread .msg-time{color:var(--s-time);}
+  .thread .msg-time{color:var(--slack-time);}
   .thread-text{font-size:14px;line-height:1.75;}
-  .connected{display:inline-flex;align-items:center;gap:10px;padding:16px;border:1px solid #8a8a8e;border-radius:8px;font-weight:700;font-size:16px;}
+  .connected{display:inline-flex;align-items:center;gap:10px;padding:16px;border:1px solid var(--color-border-strong);border-radius:8px;font-weight:700;font-size:16px;}
   .connected img{width:24px;height:24px;}
   .composer{padding:8px 18px 16px;}
-  .composer-box{border:1px solid #e2e2e2;border-radius:8px;overflow:hidden;}
-  .composer-tools{padding-top:4px;background:#f8f8f8;overflow:hidden;}
+  .composer-box{border:1px solid var(--slack-border);border-radius:8px;overflow:hidden;}
+  .composer-tools{padding-top:4px;background:var(--slack-surface);overflow:hidden;}
   .composer-tools img{width:350px;height:34.5px;max-width:none;} /* Slack's formatting toolbar (image from the design), in its light idle state */
   .composer-in{display:flex;flex-direction:column;gap:12px;padding:8px 16px;}
-  .composer-text{font-size:14px;line-height:1.45;color:#8a8a8e;} /* empty box: Slack's placeholder */
+  .composer-text{font-size:14px;line-height:1.45;color:var(--color-neutral-400);} /* empty box: Slack's placeholder */
   .composer-row{display:flex;align-items:center;justify-content:space-between;}
   .composer-row div{display:flex;align-items:center;gap:8px;}
   .composer-row img{width:20px;height:20px;}
-  .composer-row .plus{display:flex;padding:4px;border-radius:100px;background:#f2f2f2;}
+  .composer-row .plus{display:flex;padding:4px;border-radius:100px;background:var(--slack-surface-alt);}
   .composer-row .send{width:52px;height:24px;}
 
   /* ---------- EVERY ALERT ARRIVES ALREADY SORTED (purple band) ---------- */
-  .band{background:var(--band);color:#fff;}
+  .band{background:var(--slack-band);color:var(--color-text-on-contrast);}
   .sorted{margin-top:-300px;padding:360px 0 40px;} /* starts behind the middle of the Slack window */
   .sorted .col{display:flex;flex-direction:column;gap:40px;}
   .band-head{display:flex;flex-direction:column;gap:20px;}
@@ -168,27 +163,27 @@
   .type{display:flex;flex-direction:column;gap:8px;}
   .type-key{display:flex;align-items:center;gap:8px;font-weight:700;font-size:20px;line-height:32px;}
   .type-dot{width:8px;height:8px;border-radius:50%;background:var(--key);} /* each category's color matches its card */
-  .card{flex:1;display:flex;flex-direction:column;gap:12px;padding:16px;border-radius:12px;background:#fff;}
+  .card{flex:1;display:flex;flex-direction:column;gap:12px;padding:16px;border-radius:12px;background:var(--color-surface-page);}
   .card .msg-body{gap:12px;}
   .card .avatar{width:32px;height:32px;}
-  .card .avatar-letter{width:32px;height:32px;background:var(--color-accent-default);color:#fff;}
+  .card .avatar-letter{width:32px;height:32px;background:var(--color-accent-default);color:var(--color-text-on-contrast);}
   .card .reply .msg-name{font-size:14px;}
   .card .reply .msg-body{gap:8px;}
   .type-caption{padding-top:8px;font-size:14px;line-height:20px;color:rgba(255,255,255,0.68);}
 
   /* ---------- CLOSE TICKETS QUICKLY ---------- */
-  .band--soft{background:var(--band-soft);padding:32px 0;}
+  .band--soft{background:var(--slack-band-soft);padding:32px 0;}
   .close-grid{display:grid;grid-template-columns:minmax(0,1fr) 284px minmax(0,1fr);gap:24px;align-items:center;}
   .close-copy{display:flex;flex-direction:column;gap:12px;opacity:0.9;}
   .close-copy h3{font-weight:700;font-size:20px;line-height:32px;}
   .close-copy p{font-size:14px;line-height:24px;}
   .close-copy .cmd{font-size:12px;padding:0 8px;}
   /* same sizes as the Prevent / Detect / Respond cards */
-  .mini{display:flex;flex-direction:column;gap:12px;padding:16px;border-radius:12px;background:#fff;box-shadow:0 2px 6px rgba(11,12,13,0.06),0 1px 2px rgba(11,12,13,0.06);}
+  .mini{display:flex;flex-direction:column;gap:12px;padding:16px;border-radius:12px;background:var(--color-surface-page);box-shadow:0 2px 6px rgba(11,12,13,0.06),0 1px 2px rgba(11,12,13,0.06);}
   .mini .avatar{width:32px;height:32px;}
   .mini .msg-body{gap:8px;}
-  .replies{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:var(--s-time);}
-  .replies::after{content:'';flex:1;height:1px;background:#e3e3e8;}
+  .replies{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:var(--slack-time);}
+  .replies::after{content:'';flex:1;height:1px;background:var(--slack-line-soft);}
   .checks{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:16px;}
   .checks li[hidden]{display:none;}
   .checks li{display:flex;align-items:center;gap:6px;font-size:14px;line-height:20px;opacity:0.9;}
@@ -202,7 +197,7 @@
   .setup-head p{max-width:620px;font-size:16.5px;line-height:1.7;color:var(--color-text-secondary);}
   .steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;}
   .step{display:flex;flex-direction:column;gap:24px;}
-  .visual{display:flex;flex-direction:column;justify-content:center;gap:12px;min-height:276px;padding:16px;background:#fff;border:1px solid var(--color-border-default);border-radius:2px;}
+  .visual{display:flex;flex-direction:column;justify-content:center;gap:12px;min-height:276px;padding:16px;background:var(--color-surface-page);border:1px solid var(--color-border-default);border-radius:2px;}
   .step-text{display:flex;flex-direction:column;gap:8px;align-items:flex-start;}
   .step-num{font-family:var(--font-mono);font-size:12px;line-height:16px;letter-spacing:0.08em;color:var(--color-text-accent);}
   .step-text h3{font-weight:600;font-size:20px;line-height:1.5;letter-spacing:-0.01em;}
@@ -231,7 +226,7 @@
   .install-error a:hover{color:var(--color-text-primary);}
 
   /* step 1: Slack's install dialog */
-  .dialog{display:flex;flex-direction:column;gap:14px;padding:16px;border:1px solid var(--color-border-mid);border-radius:8px;background:#fff;box-shadow:0 2px 6px rgba(11,12,13,0.06),0 1px 2px rgba(11,12,13,0.06);}
+  .dialog{display:flex;flex-direction:column;gap:14px;padding:16px;border:1px solid var(--color-border-mid);border-radius:8px;background:var(--color-surface-page);box-shadow:0 2px 6px rgba(11,12,13,0.06),0 1px 2px rgba(11,12,13,0.06);}
   .dialog-head{display:flex;gap:10px;align-items:flex-start;font-weight:700;font-size:14px;line-height:20px;}
   .dialog-head img{width:32px;height:32px;flex-shrink:0;}
   .field{display:flex;flex-direction:column;gap:4px;}
@@ -245,12 +240,12 @@
   .visual-label{font-weight:700;font-size:12px;line-height:16px;color:var(--color-text-tertiary);}
   /* side by side with a 24px gap while both fit; each drops to its own full-width row when they don't */
   .guides{display:flex;flex-wrap:wrap;gap:12px 24px;}
-  .guide{flex:1 1 0;min-width:max-content;white-space:nowrap;display:flex;align-items:center;justify-content:center;gap:8px;height:32px;padding:0 12px;border:1px solid #8a8a8e;border-radius:2px;background:#fff;font-weight:500;font-size:14px;line-height:20px;color:var(--color-text-accent);text-decoration:none;box-shadow:4px 4px 0 rgba(11,12,13,0.15);transition:border-color 0.2s ease;}
+  .guide{flex:1 1 0;min-width:max-content;white-space:nowrap;display:flex;align-items:center;justify-content:center;gap:8px;height:32px;padding:0 12px;border:1px solid var(--color-border-strong);border-radius:2px;background:var(--color-surface-page);font-weight:500;font-size:14px;line-height:20px;color:var(--color-text-accent);text-decoration:none;box-shadow:4px 4px 0 rgba(11,12,13,0.15);transition:border-color 0.2s ease;}
   .guide:hover{border-color:var(--color-neutral-900);}
   .guide img{width:16px;height:16px;}
   /* step 3: Slack's command suggestion */
-  .suggest{padding:8px 0;border:1px solid var(--color-border-mid);border-radius:8px;background:#f8f8f8;filter:drop-shadow(0 2px 3px rgba(11,12,13,0.06)) drop-shadow(0 1px 1px rgba(11,12,13,0.06));}
-  .suggest-row{display:flex;gap:10px;align-items:flex-start;padding:10px;background:#ebebeb;font-size:12px;}
+  .suggest{padding:8px 0;border:1px solid var(--color-border-mid);border-radius:8px;background:var(--slack-surface);filter:drop-shadow(0 2px 3px rgba(11,12,13,0.06)) drop-shadow(0 1px 1px rgba(11,12,13,0.06));}
+  .suggest-row{display:flex;gap:10px;align-items:flex-start;padding:10px;background:var(--slack-hover);font-size:12px;}
   .suggest-row img{width:24px;height:24px;flex-shrink:0;}
   .suggest-row b{display:block;}
   .suggest-row span{line-height:1.45;}
@@ -261,11 +256,11 @@
   .disconnect p{margin-top:-8px;font-size:14px;line-height:20px;color:var(--color-neutral-700);}
 
   /* ---------- FINAL CTA ---------- */
-  .final{display:flex;flex-direction:column;align-items:center;gap:24px;padding:48px 0;background:var(--color-surface-contrast);color:#fff;text-align:center;}
+  .final{display:flex;flex-direction:column;align-items:center;gap:24px;padding:48px 0;background:var(--color-surface-contrast);color:var(--color-text-on-contrast);text-align:center;}
   .final-tiles{display:flex;align-items:center;gap:16px;}
   .final-tiles .vex{width:48px;height:48px;}
   .final-tiles .plus{width:18px;height:18px;}
-  .slack-tile{display:flex;align-items:center;justify-content:center;width:48px;height:48px;border-radius:12px;background:#fff;}
+  .slack-tile{display:flex;align-items:center;justify-content:center;width:48px;height:48px;border-radius:12px;background:var(--color-surface-page);}
   .slack-tile img{width:25.5px;height:25.5px;}
   .final-copy{display:flex;flex-direction:column;gap:4px;padding:0 var(--gutter);}
   .final h2{font-weight:600;font-size:clamp(34px * 32 / 52, 4.2vw * 32 / 52, 32px);line-height:1.25;letter-spacing:-0.01em;}
@@ -335,7 +330,7 @@
   @media (min-width:481px) and (max-width:600px){.stage .col{width:calc(100% - 48px);}}
   @media (max-width:600px){
     .side,.composer{display:none;}
-    .win{border:8px solid #4a154b;border-top-width:3px;background:#4a154b;}
+    .win{border:8px solid var(--slack-purple);border-top-width:3px;background:var(--slack-purple);}
     .win-bar{padding:0 0 8px;}
     .win-main{padding:0;}
     .chan{border-radius:6px;}
@@ -378,12 +373,12 @@
   .story{display:none;}
   @media (min-width:1100px){
     .stage,.sorted,.band--soft{display:none;}
-    .story{display:block;position:relative;color:#fff;background:var(--band);}
+    .story{display:block;position:relative;color:var(--color-text-on-contrast);background:var(--slack-band);}
     .story-track{--sticky-h:100vh;height:calc(var(--sticky-h) + 450vh);} /* 0.5 screen glide + 5 steps x 0.8 */
     @supports (height:100svh){ .story-track{--sticky-h:100svh;} } /* fits under iPad Safari's toolbar */
     /* top:0, full screen: while it's pinned the script keeps the header hidden, so the window always has the whole screen */
     .story-sticky{--t:0;--white:325px;position:sticky;top:0;height:var(--sticky-h);
-      background:linear-gradient(to bottom,var(--color-surface-page) 0,var(--color-surface-page) calc((1 - var(--t)) * var(--white)),var(--band) calc((1 - var(--t)) * var(--white)));}
+      background:linear-gradient(to bottom,var(--color-surface-page) 0,var(--color-surface-page) calc((1 - var(--t)) * var(--white)),var(--slack-band) calc((1 - var(--t)) * var(--white)));}
     .story-grid{position:relative;width:min(1180px,calc(100% - 96px));height:100%;margin:0 auto;display:flex;align-items:center;}
     /* the steps come in over the second half of the glide, once the window has made room */
     .story-steps{--s:clamp(0, (var(--t) - 0.4) / 0.6, 1);width:300px;display:flex;flex-direction:column;gap:20px;opacity:var(--s);transform:translateX(calc((1 - var(--s)) * -32px));}
@@ -394,7 +389,7 @@
     .steps-list{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;}
     .story-step{
       display:flex;flex-direction:column;gap:4px;width:100%;padding:14px 0 14px 18px;border:0;border-left:2px solid rgba(255,255,255,0.18);
-      background:none;color:#fff;text-align:left;font:inherit;cursor:pointer;opacity:0.5;transition:opacity 0.25s ease, border-color 0.25s ease;
+      background:none;color:var(--color-text-on-contrast);text-align:left;font:inherit;cursor:pointer;opacity:0.5;transition:opacity 0.25s ease, border-color 0.25s ease;
     }
     .story-step:hover{opacity:0.8;}
     .story-step[aria-current="step"]{opacity:1;border-left-color:var(--key);}
@@ -412,7 +407,7 @@
     .scene .attach-title{font-size:15px;}
     .scene .attach-text{font-size:14px;line-height:20px;}
     .scene .tag{font-size:11px;}
-    .scene .avatar-letter--c{background:var(--color-accent-default);color:#fff;}
+    .scene .avatar-letter--c{background:var(--color-accent-default);color:var(--color-text-on-contrast);}
     .scene .replies{padding:2px 18px;font-size:12px;}
     /* short screens (smaller laptops): tighter steps, and the intro line goes so all five fit beside the window */
     @media (max-height:820px){
@@ -424,7 +419,7 @@
     /* "Get set up now": under the window while the story is pinned (placed by the script); fades in with the steps */
     .story-skip{
       --s:clamp(0, (var(--t) - 0.4) / 0.6, 1);position:absolute;z-index:1;display:inline-flex;align-items:center;gap:6px;
-      font-weight:600;font-size:14px;line-height:1.5;color:#fff;text-decoration:none;border-bottom:1px solid var(--color-accent-default);
+      font-weight:600;font-size:14px;line-height:1.5;color:var(--color-text-on-contrast);text-decoration:none;border-bottom:1px solid var(--color-accent-default);
       opacity:var(--s);pointer-events:none;transform:translateX(-50%);
     }
     .story-grid.is-open .story-skip{pointer-events:auto;}
@@ -524,10 +519,10 @@
             <p class="story-lede">Each message says what happened, what VEX already did and whether a person needs to step in.</p>
             <ol class="steps-list">
               <li><button class="story-step" type="button" data-step="0" style="--key:var(--color-accent-default)"><span class="story-key"><span class="story-dot"></span>Set up VEX in Slack</span><span class="story-cap">Add VEX, run <span class="cmd">/connect</span> and VEX starts watching Microsoft 365 or Google Workspace.</span></button></li>
-              <li><button class="story-step" type="button" data-step="1" style="--key:var(--s-blue)"><span class="story-key"><span class="story-dot"></span>Prevent</span><span class="story-cap">VEX finds weak spots and tells you how to close them.</span></button></li>
-              <li><button class="story-step" type="button" data-step="2" style="--key:var(--s-green)"><span class="story-key"><span class="story-dot"></span>Detect</span><span class="story-cap">VEX catches threats and fixes what it can on its own.</span></button></li>
-              <li><button class="story-step" type="button" data-step="3" style="--key:var(--s-red)"><span class="story-key"><span class="story-dot"></span>Respond</span><span class="story-cap">When human judgment matters, VEX brings in an expert.</span></button></li>
-              <li><button class="story-step" type="button" data-step="4" style="--key:#fff"><span class="story-key"><img class="story-check" src="static/check.svg" width="16" height="16" alt="">Close tickets</span><span class="story-cap">One click to ignore, mark it fixed or ask VEX to assess.</span></button></li>
+              <li><button class="story-step" type="button" data-step="1" style="--key:var(--slack-blue)"><span class="story-key"><span class="story-dot"></span>Prevent</span><span class="story-cap">VEX finds weak spots and tells you how to close them.</span></button></li>
+              <li><button class="story-step" type="button" data-step="2" style="--key:var(--slack-green)"><span class="story-key"><span class="story-dot"></span>Detect</span><span class="story-cap">VEX catches threats and fixes what it can on its own.</span></button></li>
+              <li><button class="story-step" type="button" data-step="3" style="--key:var(--slack-red)"><span class="story-key"><span class="story-dot"></span>Respond</span><span class="story-cap">When human judgment matters, VEX brings in an expert.</span></button></li>
+              <li><button class="story-step" type="button" data-step="4" style="--key:var(--color-neutral-0)"><span class="story-key"><img class="story-check" src="static/check.svg" width="16" height="16" alt="">Close tickets</span><span class="story-cap">One click to ignore, mark it fixed or ask VEX to assess.</span></button></li>
             </ol>
           </div>
           <a class="story-skip" href="#get-started">Get set up now <img src="../static/icon-arrow-down.svg" width="16" height="16" alt=""></a>
@@ -620,7 +615,7 @@
                   <img class="avatar" src="static/vex-avatar-36.svg" width="36" height="36" alt="">
                   <div class="msg-body">
                     <div class="msg-meta"><span class="msg-name">VEX</span><span class="app-tag">APP</span><span class="msg-time">9:14 AM</span></div>
-                    <div class="attach" style="--bar:var(--s-blue)"><div class="attach-body">
+                    <div class="attach" style="--bar:var(--slack-blue)"><div class="attach-body">
                       <span class="tag tag--blue">RECOMMENDATION</span>
                       <p class="attach-title">Turn on MFA for 2 admin accounts</p>
                       <p class="attach-text">These admins can sign in with just a password:<br>jsmith@yourcompany.com,<br>hjohnson@yourcompany.com</p>
@@ -635,7 +630,7 @@
                   <img class="avatar" src="static/vex-avatar-36.svg" width="36" height="36" alt="">
                   <div class="msg-body">
                     <div class="msg-meta"><span class="msg-name">VEX</span><span class="app-tag">APP</span><span class="msg-time">11:02 AM</span></div>
-                    <div class="attach" style="--bar:var(--s-green)"><div class="attach-body">
+                    <div class="attach" style="--bar:var(--slack-green)"><div class="attach-body">
                       <span class="tag tag--green">AUTO-RESOLVED</span>
                       <p class="attach-title">Email spoofing blocked</p>
                       <p class="attach-text">Anyone could send email pretending to be you. VEX published a DMARC record and confirmed it’s live on 3 public DNS servers.</p>
@@ -649,7 +644,7 @@
                   <img class="avatar" src="static/vex-avatar-36.svg" width="36" height="36" alt="">
                   <div class="msg-body">
                     <div class="msg-meta"><span class="msg-name">VEX</span><span class="app-tag">APP</span><span class="msg-time">2:47 PM</span></div>
-                    <div class="attach" style="--bar:var(--s-red)"><div class="attach-body">
+                    <div class="attach" style="--bar:var(--slack-red)"><div class="attach-body">
                       <span class="tag tag--red">EXPERT ON IT</span>
                       <p class="attach-title">Investigating 2 accounts</p>
                       <p class="attach-text">A VEX security analyst is looking into sign-ins from a known-bad IP. Next update in this thread within 30 minutes.</p>
@@ -669,7 +664,7 @@
                   <img class="avatar" src="static/vex-avatar-36.svg" width="36" height="36" alt="">
                   <div class="msg-body">
                     <div class="msg-meta"><span class="msg-name">VEX</span><span class="app-tag">APP</span><span class="msg-time">9:34 AM</span></div>
-                    <div class="attach" style="--bar:var(--s-yellow)"><div class="attach-body">
+                    <div class="attach" style="--bar:var(--slack-yellow)"><div class="attach-body">
                       <p class="attach-title">Suspicious sign-in for j.alvarez</p>
                       <p class="attach-text">New location and device on a Microsoft 365 account.</p>
                     </div></div>
@@ -836,13 +831,13 @@
       <div class="types">
 
         <div class="type">
-          <h3 class="type-key"><span class="type-dot" style="--key:var(--s-blue)"></span>Prevent</h3>
+          <h3 class="type-key"><span class="type-dot" style="--key:var(--slack-blue)"></span>Prevent</h3>
           <div class="card slack">
             <div class="msg">
               <img class="avatar" src="static/vex-avatar-32.svg" width="32" height="32" alt="">
               <div class="msg-body">
                 <div class="msg-meta"><span class="msg-name">VEX</span><span class="app-tag">APP</span><span class="msg-time">9:14 AM</span></div>
-                <div class="attach" style="--bar:var(--s-blue)">
+                <div class="attach" style="--bar:var(--slack-blue)">
                   <div class="attach-body">
                     <span class="tag tag--blue">RECOMMENDATION</span>
                     <p class="attach-title">Turn on MFA for 2 admin accounts</p>
@@ -858,13 +853,13 @@
         </div>
 
         <div class="type">
-          <h3 class="type-key"><span class="type-dot" style="--key:var(--s-green)"></span>Detect</h3>
+          <h3 class="type-key"><span class="type-dot" style="--key:var(--slack-green)"></span>Detect</h3>
           <div class="card slack">
             <div class="msg">
               <img class="avatar" src="static/vex-avatar-32.svg" width="32" height="32" alt="">
               <div class="msg-body">
                 <div class="msg-meta"><span class="msg-name">VEX</span><span class="app-tag">APP</span><span class="msg-time">11:02 AM</span></div>
-                <div class="attach" style="--bar:var(--s-green)">
+                <div class="attach" style="--bar:var(--slack-green)">
                   <div class="attach-body">
                     <span class="tag tag--green">AUTO-RESOLVED</span>
                     <p class="attach-title">Email spoofing blocked</p>
@@ -879,13 +874,13 @@
         </div>
 
         <div class="type">
-          <h3 class="type-key"><span class="type-dot" style="--key:var(--s-red)"></span>Respond</h3>
+          <h3 class="type-key"><span class="type-dot" style="--key:var(--slack-red)"></span>Respond</h3>
           <div class="card slack">
             <div class="msg">
               <img class="avatar" src="static/vex-avatar-32.svg" width="32" height="32" alt="">
               <div class="msg-body">
                 <div class="msg-meta"><span class="msg-name">VEX</span><span class="app-tag">APP</span><span class="msg-time">2:47 PM</span></div>
-                <div class="attach" style="--bar:var(--s-red)">
+                <div class="attach" style="--bar:var(--slack-red)">
                   <div class="attach-body">
                     <span class="tag tag--red">EXPERT ON IT</span>
                     <p class="attach-title">Investigating 2 accounts</p>
@@ -923,7 +918,7 @@
           <img class="avatar" src="static/vex-avatar-32.svg" width="32" height="32" alt="">
           <div class="msg-body">
             <div class="msg-meta"><span class="msg-name">VEX</span><span class="app-tag">APP</span><span class="msg-time">9:34 AM</span></div>
-            <div class="attach" style="--bar:var(--s-yellow)">
+            <div class="attach" style="--bar:var(--slack-yellow)">
               <div class="attach-body">
                 <p class="attach-title">Suspicious sign-in for j.alvarez</p>
                 <p class="attach-text">New location and device on a Microsoft 365 account.</p>

@@ -51,7 +51,7 @@
   a { color: inherit; }
   b { font-weight: 600; }
   strong { font-weight: 700; }
-  ::selection { background: var(--color-accent-default); color: #fff; }
+  ::selection { background: var(--color-accent-default); color: var(--color-text-on-contrast); }
   a:focus-visible, button:focus-visible { outline: 1.5px solid var(--color-accent-default); outline-offset: 4px; }
   .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
@@ -60,7 +60,7 @@
      The script toggles html.header-hidden. */
   .classbar {
     position: fixed; top: 0; left: 0; right: 0; z-index: 60;
-    padding: 6px 0; background: var(--color-surface-contrast); color: #c4c4c4;
+    padding: 6px 0; background: var(--color-surface-contrast); color: var(--color-neutral-300);
     font-size: 9.5px; line-height: 1.5; letter-spacing: 0.16em; text-transform: uppercase; text-align: center;
     transition: transform 0.4s cubic-bezier(0.49, 0.025, 0.685, 1), opacity 0.4s cubic-bezier(0.49, 0.025, 0.685, 1);
   }
@@ -94,7 +94,7 @@
   .hero-sub { margin-top: 24px; font-size: 14px; line-height: 1.55; color: var(--color-neutral-700); }
   .btn {
     display: inline-flex; justify-content: center; width: 240px; padding: 15px 30px;
-    background: var(--color-accent-default); color: #fff; font-weight: 600; font-size: 15px; line-height: 1.5;
+    background: var(--color-accent-default); color: var(--color-text-on-contrast); font-weight: 600; font-size: 15px; line-height: 1.5;
     text-decoration: none; white-space: nowrap; transition: opacity 0.2s ease;
   }
   .btn:hover { opacity: 0.8; }
@@ -141,7 +141,7 @@
   .terminal-look p { font-size: 16px; line-height: 1.75; }
   .terminal-look img { display: block; border-radius: 8px; }
   /* the install command, with this person's key filled in by the script */
-  .command { display: flex; align-items: flex-start; gap: 36px; width: 100%; padding: 16px 16px 18px; background: #f7f7f7; border: 1px solid var(--color-border-default); border-radius: 4px; }
+  .command { display: flex; align-items: flex-start; gap: 36px; width: 100%; padding: 16px 16px 18px; background: var(--color-surface-subtle); border: 1px solid var(--color-border-default); border-radius: 4px; }
   .command code { flex: 1; min-width: 0; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12.5px; line-height: 1.7; color: var(--color-text-primary); overflow-wrap: anywhere; }
   .command .tooltip { left: auto; right: -6px; transform: translateY(-4px); }   /* keep the tooltip inside the box */
   .command .tooltip::before { left: auto; right: 8px; margin-left: 0; }
@@ -155,7 +155,7 @@
   /* Tooltip under the copy button: shows on hover / keyboard focus, and says "Copied" after a click */
   .tooltip {
     position: absolute; top: calc(100% + 12px); left: 50%; z-index: 5;
-    padding: 8px 12px; border-radius: 4px; background: var(--color-neutral-500); color: #fff;
+    padding: 8px 12px; border-radius: 4px; background: var(--color-neutral-500); color: var(--color-text-on-contrast);
     font-family: var(--font-sans); font-size: 13px; line-height: normal; white-space: nowrap;
     filter: drop-shadow(0 6px 4px rgba(0, 0, 0, 0.16));
     opacity: 0; visibility: hidden; pointer-events: none;

@@ -28,7 +28,7 @@
 <style>
   /* Dots install page. Figma: Unmanned Website - SOT, frames 2199:2365 (Mac) and 2202:3601 (Windows).
      The steps follow /install/ (VEX's install page); the header is the Dots page's. */
-  :root{--d-faint:#faf9f6;--d-sunken:#f1f1ee;--d-mute:#8a8a8e;--accent-text:#d10176;}
+  :root{--d-faint:var(--color-surface-band);--d-sunken:var(--color-neutral-100);--d-mute:var(--color-neutral-400);--accent-text:var(--color-pink-600);}
   h1,h2,h3,h4,p{margin:0;}
   p,li{text-wrap:pretty;}
   img{display:block;}
@@ -66,8 +66,8 @@
   .hero::before{
     content:'';position:absolute;inset:0;z-index:0;pointer-events:none;
     background:
-      radial-gradient(circle at 40px 40px,var(--d-sunken) 39.5px,transparent 40px),
-      radial-gradient(circle at 124px 124px,var(--d-sunken) 39.5px,transparent 40px),
+      radial-gradient(circle at 40px 40px,var(--color-surface-sunken) 39.5px,transparent 40px),
+      radial-gradient(circle at 124px 124px,var(--color-surface-sunken) 39.5px,transparent 40px),
       radial-gradient(circle at 124px 40px,var(--color-surface-subtle) 39.5px,transparent 40px),
       radial-gradient(circle at 40px 124px,var(--color-neutral-50) 39.5px,transparent 40px);
     background-size:168px 168px;background-position:calc(50% - 42px) 0;
@@ -84,13 +84,13 @@
   .instructions .wrap{max-width:700px;display:flex;flex-direction:column;gap:32px;}
   .os-head{display:flex;flex-direction:column;align-items:center;gap:24px;text-align:center;}
   .os-picker{display:flex;flex-direction:column;align-items:center;gap:8px;font-size:12px;line-height:16px;}
-  .os-toggle{display:inline-flex;gap:4px;padding:4px;background:var(--d-sunken);border-radius:4px;}
+  .os-toggle{display:inline-flex;gap:4px;padding:4px;background:var(--color-surface-sunken);border-radius:4px;}
   .os-toggle button{
     height:40px;padding:0 16px;border:1px solid transparent;border-radius:2px;background:none;cursor:pointer;
     font:inherit;font-size:16px;line-height:24px;color:var(--color-text-tertiary);
   }
   .os-toggle button:hover{color:var(--color-text-primary);}
-  .os-toggle [aria-pressed="true"]{background:var(--color-surface-page);border-color:var(--d-mute);color:var(--color-text-primary);font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,0.3);}
+  .os-toggle [aria-pressed="true"]{background:var(--color-surface-page);border-color:var(--color-border-strong);color:var(--color-text-primary);font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,0.3);}
   .os-head h2{font-size:clamp(26px,4vw,32px);line-height:1.25;font-weight:600;letter-spacing:-0.01em;}
   .needs{font-size:14px;line-height:20px;}
 
@@ -100,7 +100,7 @@
   .step-num{
     flex-shrink:0;display:flex;align-items:center;justify-content:center;
     width:20px;height:20px;margin-top:5px;border:1.5px solid var(--color-accent-default);border-radius:50%;
-    font-weight:600;font-size:13px;line-height:1;color:var(--accent-text);
+    font-weight:600;font-size:13px;line-height:1;color:var(--color-text-accent);
   }
   .step-num::before{content:counter(step);}
   .step-body{flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:16px;}

@@ -23,14 +23,10 @@
   @font-face{font-family:'Lato';font-style:normal;font-weight:700;font-display:swap;src:url(../static/fonts/lato-700.woff2) format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
   @font-face{font-family:'Lato';font-style:normal;font-weight:900;font-display:swap;src:url(../static/fonts/lato-900.woff2) format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
   body{font-family:var(--font-sans);font-size:var(--type-body-md-size);line-height:1.5;}
-  :root{
-    --faint:#6c6c70; --rule:#dedee3;
-    --page:#f4f4f4; --card:#ffffff; --green:#029266;
-  }
-  *{box-sizing:border-box;}
+    *{box-sizing:border-box;}
   html,body{margin:0;}
   body{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;
-    padding:48px 16px;background:var(--page);color:var(--color-text-secondary);font:16px/24px Inter,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
+    padding:48px 16px;background:var(--color-surface-subtle);color:var(--color-text-secondary);font:16px/24px Inter,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
     -webkit-font-smoothing:antialiased;}
   h1{text-wrap:balance;} p{text-wrap:pretty;}
 
@@ -38,9 +34,9 @@
   .mark{display:flex;align-items:center;gap:12px;margin:0 0 24px;color:var(--color-text-primary);text-decoration:none;}
   .mark-dot{width:12px;height:12px;border-radius:50%;background:var(--color-accent-default);margin-right:-7px;}
   .mark-name{font-size:22px;line-height:24px;font-weight:800;letter-spacing:0.02em;}
-  .mark-by{font-size:10px;line-height:15px;letter-spacing:0.18em;text-transform:uppercase;color:var(--faint);}
+  .mark-by{font-size:10px;line-height:15px;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-text-tertiary);}
 
-  .card{width:100%;max-width:480px;background:var(--card);border:1px solid var(--color-border-mid);border-top:4px solid var(--color-accent-default);border-radius:2px;
+  .card{width:100%;max-width:480px;background:var(--color-surface-page);border:1px solid var(--color-border-mid);border-top:4px solid var(--color-accent-default);border-radius:2px;
     padding:40px;}
   .icon{display:block;width:48px;height:48px;margin:0 0 24px;}
   h1{margin:0;font-size:clamp(28px,6vw,34px);line-height:1.2;font-weight:600;letter-spacing:-0.01em;color:var(--color-text-primary);}
@@ -49,11 +45,11 @@
   .link svg{width:16px;height:16px;transition:transform 0.2s ease;}
   .link:hover svg{transform:translateX(3px);}
   .link:focus-visible{outline:3px solid var(--color-neutral-900);outline-offset:3px;}
-  .help{margin:32px 0 0;padding:24px 0 0;border-top:1px solid var(--rule);font-size:14px;line-height:20px;color:var(--faint);}
+  .help{margin:32px 0 0;padding:24px 0 0;border-top:1px solid var(--color-border-default);font-size:14px;line-height:20px;color:var(--color-text-tertiary);}
   .help a{color:var(--color-text-accent);font-weight:600;text-decoration:none;overflow-wrap:anywhere;}
   .help a:hover{text-decoration:underline;}
   .help a:focus-visible{outline:3px solid var(--color-neutral-900);outline-offset:2px;}
-  .foot{margin:24px 0 0;font-size:12px;line-height:16px;color:var(--faint);}
+  .foot{margin:24px 0 0;font-size:12px;line-height:16px;color:var(--color-text-tertiary);}
 
   @media (max-width:480px){
     body{justify-content:flex-start;padding-top:32px;}
@@ -69,7 +65,7 @@
 
   <main class="card" data-state="accepted">
     <!-- Phosphor check-circle, drawn inline (this page can't use the site's icon files) -->
-    <svg class="icon" viewBox="0 0 256 256" aria-hidden="true"><circle cx="128" cy="128" r="96" fill="none" stroke="#029266" stroke-width="16"/><polyline points="88 136 112 160 168 104" fill="none" stroke="#029266" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <svg class="icon" viewBox="0 0 256 256" aria-hidden="true"><circle cx="128" cy="128" r="96" fill="none" stroke="var(--color-green-500)" stroke-width="16"/><polyline points="88 136 112 160 168 104" fill="none" stroke="var(--color-green-500)" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/></svg>
     <h1>You’re all set.</h1>
     <p class="lede">Your invitation has been accepted. VEX will take it from here.</p>
     <a class="link" href="https://unmanned.team/how-it-works/">See how VEX works <svg viewBox="0 0 256 256" aria-hidden="true"><line x1="40" y1="128" x2="216" y2="128" stroke="currentColor" stroke-width="20" stroke-linecap="round"/><polyline points="144 56 216 128 144 200" fill="none" stroke="currentColor" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/></svg></a>

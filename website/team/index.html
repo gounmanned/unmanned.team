@@ -80,7 +80,7 @@
   /* ---------- TEAM ---------- */
 
   /* ---------- TEAM PAGE (Figma 1963:145905) ---------- */
-  :root{--pink-on-dark:#f5008a;}   /* pink for small text on black (5:1); the usual --pink is just under 4.5:1 there */
+     /* pink for small text on black (5:1); the usual --pink is just under 4.5:1 there */
   .tm-wrap{width:min(1100px, calc(100% - 2 * var(--gutter)));margin:0 auto;}
   .tm-role{font-family:var(--font-mono);font-size:12px;line-height:16px;letter-spacing:0.08em;text-transform:uppercase;}
   .tm-photo{position:relative;overflow:hidden;aspect-ratio:1;background:var(--color-surface-subtle);}
@@ -94,7 +94,7 @@
   .tm-lede{max-width:680px;font-size:20px;line-height:32px;color:var(--color-neutral-700);}
 
   /* founder, on black */
-  .tm-founder{background:#000;color:#fff;overflow:hidden;}
+  .tm-founder{background:var(--color-surface-contrast);color:var(--color-text-on-contrast);overflow:hidden;}
   .tm-founder .tm-wrap{padding:64px 0 40px;}
   /* David's photo always takes one column of the team grid below, so the photos match in size and line up at every
      width (4 columns on desktop, 2 on tablets and large phones, 1 on phones) */
@@ -103,11 +103,11 @@
   .tm-founder-glow{position:absolute;left:-155px;top:-149px;width:456px;height:531px;pointer-events:none;max-width:none;}
   .tm-founder .tm-photo{position:relative;border:1px solid var(--color-neutral-500);}
   .tm-founder-copy{position:relative;display:flex;flex-direction:column;gap:16px;}
-  .tm-founder-copy .tm-role{color:var(--pink-on-dark);}
+  .tm-founder-copy .tm-role{color:var(--gap-pink-on-dark);}
   .tm-founder-copy h2{margin-top:4px;font-weight:700;font-size:20px;line-height:32px;}
   .tm-bio{font-size:16px;line-height:24px;}
-  .tm-book{display:block;font-size:14px;line-height:20px;color:#fff;text-decoration:none;}   /* flows as text, so it wraps cleanly on phones */
-  .tm-book span{color:var(--pink-on-dark);}
+  .tm-book{display:block;font-size:14px;line-height:20px;color:var(--color-text-on-contrast);text-decoration:none;}   /* flows as text, so it wraps cleanly on phones */
+  .tm-book span{color:var(--gap-pink-on-dark);}
   .tm-book:hover span{text-decoration:underline;text-underline-offset:3px;}
   .tm-book img{display:inline-block;width:16px;height:16px;margin-left:4px;vertical-align:-3px;}
 

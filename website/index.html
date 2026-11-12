@@ -153,19 +153,18 @@
   #team .team{gap:24px;}}
   /* Homepage since 2026-11-09: the /dots page (Figma 2091:29811), restyled to the unmanned.team look in Chad's frame 2763:82092.
      Dot colors are the Dots palette. Header, nav, footer, class bar, buttons and the closing band come from the shared build. */
-  :root{--d-green:#029266;--d-cyan:#1ec6ec;--d-purple:#b811de;--d-yellow:#f7b828;--d-faint:#faf9f6;--d-sunken:#f1f1ee;--d-mute:#8a8a8e;--accent-text:#d10176;}
-  h1,h2,h3,h4,p{margin:0;}
+    h1,h2,h3,h4,p{margin:0;}
   img{display:block;}
   /* ---------- SHARED BITS ---------- */
   .eyebrow{font-family:var(--font-mono);font-size:12px;line-height:16px;letter-spacing:0.08em;text-transform:uppercase;color:var(--color-text-tertiary);}
-  .eyebrow--pink{color:var(--accent-text);}
+  .eyebrow--pink{color:var(--color-text-accent);}
   .eyebrow--dot{display:flex;align-items:center;gap:11px;}   /* the pink dot: hero and closing band only, as on How it works */
   .eyebrow--on-dark{color:var(--color-neutral-300);}
 
   /* ---------- HERO ---------- */
   /* Figma's backdrop: 80px dots of --d-faint on an 84px grid, starting at the hero's top-left corner */
   .home-hero{position:relative;overflow:hidden;padding:clamp(64px,13.9vw,200px) 0;background-color:var(--color-surface-page);
-    background-image:var(--hero-grid,radial-gradient(circle at 40px 40px,var(--d-faint) 39.5px,transparent 40px));background-size:var(--hero-grid-size,84px 84px);background-position:0 0;}
+    background-image:var(--hero-grid,radial-gradient(circle at 40px 40px,var(--color-surface-band) 39.5px,transparent 40px));background-size:var(--hero-grid-size,84px 84px);background-position:0 0;}
   .hero-grid{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:48px;align-items:center;}
   .hero-copy{position:relative;display:flex;flex-direction:column;gap:24px;align-items:flex-start;}
   .hero-head{display:flex;flex-direction:column;gap:16px;}
@@ -176,10 +175,10 @@
   .home-hero h1,.intro-word{font-size:clamp(40px,min(6vw,12.2cqi),64px);line-height:1.0625;font-weight:600;letter-spacing:-0.02em;color:var(--color-text-primary);}
   .home-hero h1{max-width:509px;}
   /* "code" in the four Dot colors; cyan and yellow deepened so every letter is at least 3:1 on white (large text) */
-  .code span:nth-child(1){color:#01a1c6;}
-  .code span:nth-child(2){color:var(--d-green);}
-  .code span:nth-child(3){color:var(--d-purple);}
-  .code span:nth-child(4){color:#be8400;}
+  .code span:nth-child(1){color:var(--illo-dot-cyan-text);}
+  .code span:nth-child(2){color:var(--illo-dot-green);}
+  .code span:nth-child(3){color:var(--illo-dot-purple);}
+  .code span:nth-child(4){color:var(--illo-dot-yellow-text);}
   .home-lede{font-size:18px;line-height:28px;color:var(--color-text-secondary);max-width:526px;}
 
   /* the dots: --x/--y/--s in Figma units (526 x 217 box), scaled by --u when the column is narrower */
@@ -189,13 +188,13 @@
     border-radius:50%;background:var(--c);isolation:isolate;opacity:var(--o,1);}
   .dot svg{position:absolute;inset:0;width:100%;height:100%;mix-blend-mode:var(--blend);opacity:calc(var(--shade) * var(--lit,1));}
   .dot svg path{fill:var(--fill);}
-  .dot--yellow{--x:395;--y:65.5;--s:125;--c:var(--d-yellow);--fill:var(--d-yellow);--blend:exclusion;--shade:0.3;}
-  .dot--green{--x:49;--y:65.5;--s:125;--c:var(--d-green);--fill:var(--d-green);--blend:exclusion;--shade:0.3;}
-  .dot--purple{--x:302;--y:65.5;--s:125;--c:var(--d-purple);--fill:var(--d-purple);--blend:difference;--shade:0.15;}
-  .dot--cyan{--x:165.25;--y:0;--s:215;--c:var(--d-cyan);--fill:var(--d-cyan);--blend:difference;--shade:0.15;}
+  .dot--yellow{--x:395;--y:65.5;--s:125;--c:var(--illo-dot-yellow);--fill:var(--illo-dot-yellow);--blend:exclusion;--shade:0.3;}
+  .dot--green{--x:49;--y:65.5;--s:125;--c:var(--illo-dot-green);--fill:var(--illo-dot-green);--blend:exclusion;--shade:0.3;}
+  .dot--purple{--x:302;--y:65.5;--s:125;--c:var(--illo-dot-purple);--fill:var(--illo-dot-purple);--blend:difference;--shade:0.15;}
+  .dot--cyan{--x:165.25;--y:0;--s:215;--c:var(--illo-dot-cyan);--fill:var(--illo-dot-cyan);--blend:difference;--shade:0.15;}
   .dot-shadow{position:absolute;left:calc(145.75 * var(--u));top:calc(203 * var(--u));width:calc(215 * var(--u));height:calc(14 * var(--u));border-radius:50%;background:var(--color-neutral-300);}
   .dot-label{font-family:var(--font-mono);font-size:16px;line-height:21px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--color-text-primary);}
-  .dot-link{display:inline-flex;align-items:center;gap:8px;height:26px;margin-top:16px;padding:1px 2px;border-radius:2px;font-size:18px;font-weight:500;line-height:28px;color:var(--accent-text);text-decoration:none;}
+  .dot-link{display:inline-flex;align-items:center;gap:8px;height:26px;margin-top:16px;padding:1px 2px;border-radius:2px;font-size:18px;font-weight:500;line-height:28px;color:var(--color-text-accent);text-decoration:none;}
   .dot-link img{width:20px;height:20px;transition:transform 0.2s ease;}
   .dot-link:hover{text-decoration:underline;}
   .dot-link:hover img{transform:translateY(3px);}
@@ -205,7 +204,7 @@
   html.intro .wall{display:block;position:absolute;inset:0;z-index:0;}
   .wall span{position:absolute;width:80px;height:80px;border-radius:50%;}
   html.intro .home-hero{background-image:none;background-color:rgb(209,1,118);}
-  html.intro .home-hero.wall-done{background-image:var(--hero-grid,radial-gradient(circle at 40px 40px,var(--d-faint) 39.5px,transparent 40px));}
+  html.intro .home-hero.wall-done{background-image:var(--hero-grid,radial-gradient(circle at 40px 40px,var(--color-surface-band) 39.5px,transparent 40px));}
   html.intro .dot{--o:0;}
   html.intro .dot-shadow{opacity:0;}
   html.intro .ring{display:block;position:absolute;border:2px solid var(--color-accent-default);border-radius:50%;opacity:0;pointer-events:none;z-index:3;}
@@ -215,7 +214,7 @@
   /* "Introducing Dots" arrives at headline size, holds, then fades out quickly; the eyebrow pops in with the headline */
   html.intro .intro-word{display:block;position:absolute;left:0;white-space:nowrap;opacity:0;transform:translateX(-48px);
     transition:transform 0.65s cubic-bezier(0.65,0,0.25,1), opacity 0.3s ease;}
-  .intro-word span{color:var(--accent-text);}
+  .intro-word span{color:var(--color-text-accent);}
   html.intro .intro-word[data-s="in"]{opacity:1;transform:none;}
   html.intro .intro-word[data-s="gone"]{opacity:0;transform:none;transition:opacity 0.18s ease;}
   html.intro .home-hero .eyebrow{opacity:0;transition:opacity 0.12s ease;}
@@ -227,14 +226,14 @@
 
   /* the monitor and the code window the Dot dives into (from the One Dot story) */
   .mon{--ox:150px;--oy:198px;width:300px;height:240px;display:flex;flex-direction:column;align-items:center;}
-  .mon-screen{width:300px;height:200px;box-sizing:border-box;border:14px solid var(--color-neutral-900);border-bottom-width:22px;border-radius:6px;background:#fff;display:flex;flex-direction:column;gap:14px;padding:26px 24px;}
+  .mon-screen{width:300px;height:200px;box-sizing:border-box;border:14px solid var(--color-neutral-900);border-bottom-width:22px;border-radius:6px;background:var(--illo-white);display:flex;flex-direction:column;gap:14px;padding:26px 24px;}
   .mon-screen span,.code-win i{display:block;height:14px;background:var(--color-neutral-200);}
   .mon-neck{width:30px;height:26px;background:var(--color-surface-contrast);}
   .mon-foot{width:150px;height:14px;background:var(--color-surface-contrast);border-radius:2px;}
-  .code-win{--ox:160px;--oy:168px;width:320px;height:210px;box-sizing:border-box;border:14px solid var(--color-neutral-900);border-top-width:36px;border-radius:6px;background:#fff;
+  .code-win{--ox:160px;--oy:168px;width:320px;height:210px;box-sizing:border-box;border:14px solid var(--color-neutral-900);border-top-width:36px;border-radius:6px;background:var(--illo-white);
     display:flex;flex-direction:column;gap:12px;padding:18px 20px;font-family:var(--font-mono);font-weight:700;font-size:24px;line-height:1;}
   .code-win b{position:absolute;left:0;top:-24px;display:flex;gap:7px;}
-  .code-win b u{width:11px;height:11px;border-radius:50%;background:#fff;}
+  .code-win b u{width:11px;height:11px;border-radius:50%;background:var(--illo-white);}
   .code-win p{display:flex;align-items:center;gap:12px;}
   .code-win i{height:12px;}
   .code-win .k{color:var(--color-accent-default);}
@@ -284,8 +283,8 @@
   /* the big Dot with four callouts (Figma 2822:27656, offsets minus 25px: Figma's frame is 1100 wide) */
   .concepts{position:relative;width:1050px;height:370px;}
   .big-dot{position:absolute;left:359.54px;top:0;width:330.92px;height:336px;}
-  .big-dot .ground{position:absolute;left:39.59px;top:321.79px;width:239.56px;height:14.21px;border-radius:50%;background:var(--d-sunken);}
-  .big-dot .ball{position:absolute;inset:0 0 auto;height:330.92px;border-radius:50%;background:var(--d-cyan);isolation:isolate;overflow:hidden;}
+  .big-dot .ground{position:absolute;left:39.59px;top:321.79px;width:239.56px;height:14.21px;border-radius:50%;background:var(--illo-gray-faint);}
+  .big-dot .ball{position:absolute;inset:0 0 auto;height:330.92px;border-radius:50%;background:var(--illo-dot-cyan);isolation:isolate;overflow:hidden;}
   .big-dot .ball svg{position:absolute;left:0;top:33.13px;width:284.04px;height:297.8px;opacity:0.15;mix-blend-mode:difference;}
   .big-dot .name{position:absolute;inset:0 0 auto;height:330.92px;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:32px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--color-text-primary);opacity:0.5;}
   .callout{position:absolute;display:flex;flex-direction:column;gap:9px;} /* 12px above the line, 8px under it */
@@ -302,8 +301,8 @@
   .c-reports{left:674px;top:212px;width:287px;}
   /* the joke footnote under the giant Dot, then the badge */
   .dot-meta{position:absolute;left:50%;top:344px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:24px;}
-  .badge{display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border:1px solid var(--d-mute);border-radius:2px;background:var(--color-surface-subtle);white-space:nowrap;}
-  .badge::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--d-green);}
+  .badge{display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border:1px solid var(--color-border-strong);border-radius:2px;background:var(--color-surface-subtle);white-space:nowrap;}
+  .badge::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--illo-dot-green);}
   .badge .eyebrow{color:var(--color-text-secondary);}
   /* four places a Dot can live, each with its own job */
   .envs{width:100%;display:flex;flex-direction:column;align-items:center;gap:16px;padding:32px 0;}
@@ -343,22 +342,22 @@
   .flow-scatter{display:block;width:185px;height:152px;}
   .flow-scatter circle{transition:opacity 0.6s ease;}
   .flow-arrow{display:flex;flex-direction:column;align-items:center;gap:4px;}
-  .flow-arrow .eyebrow{color:var(--d-mute);}
+  .flow-arrow .eyebrow{color:var(--color-neutral-400);}
   .flow-arrow img{width:40px;height:40px;}
-  .vex-card{position:relative;z-index:3;width:210px;border:1px solid var(--d-mute);background:var(--color-surface-page);filter:drop-shadow(4px 4px 0 rgba(11,12,13,0.15));}
+  .vex-card{position:relative;z-index:3;width:210px;border:1px solid var(--color-border-strong);background:var(--color-surface-page);filter:drop-shadow(4px 4px 0 rgba(11,12,13,0.15));}
   .vex-card-in{display:flex;flex-direction:column;gap:16px;padding:16px;border-radius:2px;
     background:radial-gradient(circle at 2px 2px,rgba(150,152,165,0.05) 2px,transparent 2.5px) 0 0/8px 8px;}
   .vex-card .mark{display:flex;align-items:center;gap:4px;font-size:32px;font-weight:800;line-height:42px;letter-spacing:-0.005em;}
   .vex-card .mark::before{content:"";width:16px;height:16px;border-radius:50%;background:var(--color-accent-default);}
   .vex-card hr{margin:0 0 -1px;border:0;border-top:1px solid var(--color-border-mid);}
   .vex-grid{display:block;width:176px;height:140px;}
-  .vex-card ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;font-size:14px;line-height:20px;color:#000;}
+  .vex-card ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;font-size:14px;line-height:20px;color:var(--color-text-primary);}
   .vex-card li{display:flex;align-items:center;gap:8px;transition:color 0.3s ease;}
   .vex-card li::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--color-accent-default);transition:box-shadow 0.3s ease;}
 
   /* the card at work: a finding flies in, the grid computes, one phase lights up (script below) */
   .flyer{position:absolute;left:0;top:0;border-radius:50%;opacity:0;pointer-events:none;z-index:1;} /* under the card, so it slips in behind its edge */
-  .vex-card li.is-active{color:var(--accent-text);font-weight:600;}
+  .vex-card li.is-active{color:var(--color-text-accent);font-weight:600;}
   .vex-card li.is-active::before{box-shadow:0 0 0 4px rgba(224,18,128,0.18);animation:phaseBlink 0.6s steps(1) 1;}
   @keyframes phaseBlink{ 0%,50%{opacity:0.25;} 25%,75%,100%{opacity:1;} }
   .vex-copy{width:500px;max-width:100%;display:flex;flex-direction:column;gap:24px;align-items:flex-start;}
@@ -393,22 +392,22 @@
     display:flex;flex-direction:column;gap:56px;padding-bottom:40px;background:var(--color-surface-contrast);border-left:1px solid var(--color-neutral-600);box-shadow:-8px 0 6px rgba(11,12,13,0.15);
     transform:translateX(100%);transition:transform 0.35s cubic-bezier(0.4,0,0.2,1);}
   .drawer--price .drawer-head{align-items:center;padding:24px;border-bottom-color:var(--color-neutral-500);}
-  .drawer--price .drawer-head h2{font-size:20px;line-height:32px;font-weight:600;color:#fff;}
+  .drawer--price .drawer-head h2{font-size:20px;line-height:32px;font-weight:600;color:var(--color-text-on-contrast);}
   .drawer--price .drawer-close{width:32px;height:32px;margin:0;}
   .drawer--price .drawer-close:hover{background:rgba(255,255,255,0.1);}
-  .drawer--price .drawer-close:focus-visible{outline:2px solid #fff;outline-offset:2px;}
+  .drawer--price .drawer-close:focus-visible{outline:2px solid var(--color-neutral-0);outline-offset:2px;}
   .drawer--price .drawer-close img{filter:invert(1);}
-  .pr-body{display:flex;flex-direction:column;gap:40px;padding:0 24px;color:#fff;}
+  .pr-body{display:flex;flex-direction:column;gap:40px;padding:0 24px;color:var(--color-text-on-contrast);}
   .pr-title{font-size:32px;line-height:40px;font-weight:600;letter-spacing:-0.01em;}
   .pr-sub{font-size:20px;line-height:32px;text-wrap:balance;}
-  .pr-card{display:flex;flex-direction:column;gap:24px;padding:32px 24px;background:#424247;border:1px solid var(--d-mute);border-radius:2px;box-shadow:4px 4px 0 #2a2a2e;}
+  .pr-card{display:flex;flex-direction:column;gap:24px;padding:32px 24px;background:var(--color-neutral-650);border:1px solid var(--color-border-strong);border-radius:2px;box-shadow:4px 4px 0 var(--color-neutral-700);}
   .pr-top{display:flex;flex-direction:column;gap:16px;}
   .pr-price{display:flex;align-items:center;gap:16px;}
   .pr-price b{font-size:48px;line-height:56px;font-weight:600;letter-spacing:-0.02em;}
   .pr-price span{font-size:16px;line-height:24px;}
   .pr-list{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px;font-size:14px;line-height:20px;}
   .pr-list li{display:flex;gap:12px;}
-  .pr-list li::before{content:"";flex-shrink:0;width:20px;height:20px;background:#3ecf8e;-webkit-mask:url(static/icon-check.svg) center/contain no-repeat;mask:url(static/icon-check.svg) center/contain no-repeat;}
+  .pr-list li::before{content:"";flex-shrink:0;width:20px;height:20px;background:var(--gap-check-on-dark);-webkit-mask:url(static/icon-check.svg) center/contain no-repeat;mask:url(static/icon-check.svg) center/contain no-repeat;}
   .pr-buy{width:100%;box-sizing:border-box;}
   .pr-fine{font-size:12px;line-height:16px;color:var(--color-neutral-300);text-align:center;}
   @media (max-width:400px){ .drawer--price .drawer-head{padding:16px;} .pr-body{padding:0 16px;} }
@@ -532,7 +531,7 @@
         <div class="concepts">
           <div class="big-dot" aria-hidden="true">
             <span class="ground"></span>
-            <div class="ball"><svg viewBox="0 0 280 294"><path d="M65.1328 0C36.5541 29.3636 18.9522 69.464 18.9521 113.676C18.9521 203.698 91.9292 276.675 181.951 276.675C218.675 276.675 252.561 264.528 279.814 244.036C250.203 274.46 208.808 293.358 162.999 293.358C72.9771 293.358 0 220.381 0 130.359C4.88234e-06 77.0624 25.5805 29.7409 65.1328 0Z" fill="#1EC6EC"/></svg></div>
+            <div class="ball"><svg viewBox="0 0 280 294"><path d="M65.1328 0C36.5541 29.3636 18.9522 69.464 18.9521 113.676C18.9521 203.698 91.9292 276.675 181.951 276.675C218.675 276.675 252.561 264.528 279.814 244.036C250.203 274.46 208.808 293.358 162.999 293.358C72.9771 293.358 0 220.381 0 130.359C4.88234e-06 77.0624 25.5805 29.7409 65.1328 0Z" fill="var(--illo-dot-cyan)"/></svg></div>
             <span class="name">Dot #001</span>
           </div>
           <div class="callout callout--l c-size">
@@ -581,18 +580,18 @@
           <div class="flow-dots">
             <div class="who"><span class="eyebrow eyebrow--pink">Dots</span><span>Test from the inside</span></div>
             <svg class="flow-scatter" width="185" height="152" viewBox="0 0 185 152" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="60" cy="44" r="16" fill="#F7B828"/>
-              <circle cx="169" cy="76" r="12" fill="#F7B828"/>
-              <circle cx="102" cy="116" r="8" fill="#F7B828"/>
-              <circle cx="97" cy="12" r="12" fill="#029266"/>
-              <circle cx="129" cy="76" r="16" fill="#029266"/>
-              <circle cx="12" cy="60" r="12" fill="#B811DE"/>
-              <circle cx="45" cy="96" r="8" fill="#029266"/>
-              <circle cx="45" cy="12" r="12" fill="#1BA8EE"/>
-              <circle cx="49" cy="136" r="16" fill="#B811DE"/>
-              <circle cx="177" cy="112" r="8" fill="#B811DE"/>
-              <circle cx="161" cy="34" r="16" fill="#1BA8EE"/>
-              <circle cx="85" cy="68" r="8" fill="#1BA8EE"/>
+              <circle cx="60" cy="44" r="16" fill="var(--illo-dot-yellow)"/>
+              <circle cx="169" cy="76" r="12" fill="var(--illo-dot-yellow)"/>
+              <circle cx="102" cy="116" r="8" fill="var(--illo-dot-yellow)"/>
+              <circle cx="97" cy="12" r="12" fill="var(--illo-dot-green)"/>
+              <circle cx="129" cy="76" r="16" fill="var(--illo-dot-green)"/>
+              <circle cx="12" cy="60" r="12" fill="var(--illo-dot-purple)"/>
+              <circle cx="45" cy="96" r="8" fill="var(--illo-dot-green)"/>
+              <circle cx="45" cy="12" r="12" fill="var(--illo-dot-blue)"/>
+              <circle cx="49" cy="136" r="16" fill="var(--illo-dot-purple)"/>
+              <circle cx="177" cy="112" r="8" fill="var(--illo-dot-purple)"/>
+              <circle cx="161" cy="34" r="16" fill="var(--illo-dot-blue)"/>
+              <circle cx="85" cy="68" r="8" fill="var(--illo-dot-blue)"/>
             </svg>
           </div>
           <div class="flow-arrow"><span class="eyebrow">Findings</span><img src="static/icon-arrow-right-gray.svg" width="40" height="40" alt=""></div>
@@ -601,10 +600,10 @@
               <span class="mark">VEX</span>
               <hr>
               <svg class="vex-grid" width="176" height="140" viewBox="0 0 176 140" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="16" cy="16" r="16" fill="#F1F1EE"/><circle cx="52" cy="16" r="16" fill="#D10176"/><circle cx="88" cy="16" r="16" fill="#F1F1EE"/><circle cx="124" cy="16" r="16" fill="#F1F1EE"/><circle cx="160" cy="16" r="16" fill="#F1F1EE"/>
-                <circle cx="16" cy="52" r="16" fill="#F1F1EE"/><circle cx="52" cy="52" r="16" fill="#D10176"/><circle cx="88" cy="52" r="16" fill="#D10176"/><circle cx="124" cy="52" r="16" fill="#D10176"/><circle cx="160" cy="52" r="16" fill="#F1F1EE"/>
-                <circle cx="16" cy="88" r="16" fill="#F1F1EE"/><circle cx="52" cy="88" r="16" fill="#F1F1EE"/><circle cx="88" cy="88" r="16" fill="#F1F1EE"/><circle cx="124" cy="88" r="16" fill="#D10176"/><circle cx="160" cy="88" r="16" fill="#F1F1EE"/>
-                <circle cx="16" cy="124" r="16" fill="#D10176"/><circle cx="52" cy="124" r="16" fill="#F1F1EE"/><circle cx="88" cy="124" r="16" fill="#D10176"/><circle cx="124" cy="124" r="16" fill="#D10176"/><circle cx="160" cy="124" r="16" fill="#D10176"/>
+                <circle cx="16" cy="16" r="16" fill="var(--illo-gray-faint)"/><circle cx="52" cy="16" r="16" fill="var(--illo-pink)"/><circle cx="88" cy="16" r="16" fill="var(--illo-gray-faint)"/><circle cx="124" cy="16" r="16" fill="var(--illo-gray-faint)"/><circle cx="160" cy="16" r="16" fill="var(--illo-gray-faint)"/>
+                <circle cx="16" cy="52" r="16" fill="var(--illo-gray-faint)"/><circle cx="52" cy="52" r="16" fill="var(--illo-pink)"/><circle cx="88" cy="52" r="16" fill="var(--illo-pink)"/><circle cx="124" cy="52" r="16" fill="var(--illo-pink)"/><circle cx="160" cy="52" r="16" fill="var(--illo-gray-faint)"/>
+                <circle cx="16" cy="88" r="16" fill="var(--illo-gray-faint)"/><circle cx="52" cy="88" r="16" fill="var(--illo-gray-faint)"/><circle cx="88" cy="88" r="16" fill="var(--illo-gray-faint)"/><circle cx="124" cy="88" r="16" fill="var(--illo-pink)"/><circle cx="160" cy="88" r="16" fill="var(--illo-gray-faint)"/>
+                <circle cx="16" cy="124" r="16" fill="var(--illo-pink)"/><circle cx="52" cy="124" r="16" fill="var(--illo-gray-faint)"/><circle cx="88" cy="124" r="16" fill="var(--illo-pink)"/><circle cx="124" cy="124" r="16" fill="var(--illo-pink)"/><circle cx="160" cy="124" r="16" fill="var(--illo-pink)"/>
               </svg>
               <hr>
               <ul><li>Prevent</li><li>Detect</li><li>Respond</li></ul>
@@ -985,7 +984,7 @@
       var cells = [].slice.call(flow.querySelectorAll('.vex-grid circle'));
       var phases = [].slice.call(flow.querySelectorAll('.vex-card li'));
       var REST = cells.map(function(c){ return c.getAttribute('fill'); });
-      var ON = '#D10176', OFF = '#F1F1EE', COLS = 5, ROWS = 4, TICK = 110;
+      var ON = 'var(--illo-pink)', OFF = 'var(--illo-gray-faint)', COLS = 5, ROWS = 4, TICK = 110;
       var FLY = 900, EDGE = 260, POP = 180, HOLD = 2400, REST_MS = 3000;
       var flyer = document.createElement('span');
       flyer.className = 'flyer';

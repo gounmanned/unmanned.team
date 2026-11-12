@@ -26,11 +26,7 @@
 <link rel="stylesheet" href="../static/site.css">
 <style>
   :root{
-    --mark:#ffe59a;
-    --toggle-off:#8a8a8e;
-    --pink-hover:#d10176;
-    --surface-warm:#faf9f6;
-    --lift:2px 2px 0 rgba(11,12,13,0.15);
+                    --lift:2px 2px 0 rgba(11,12,13,0.15);
   }
   h1,h2,h3,h4,p{margin:0;}
   [hidden]{display:none !important;}
@@ -69,10 +65,10 @@
   .intro-row{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px 24px;width:100%;}
   .intro-row .lede{max-width:600px;font-size:14px;line-height:20px;color:var(--color-text-primary);}
   /* DS Button, Secondary / sm */
-  .btn-secondary{display:inline-flex;align-items:center;gap:8px;height:32px;padding:0 12px;flex-shrink:0;background:#fff;border:1px solid var(--color-accent-default);border-radius:2px;
-    box-shadow:var(--lift);font:500 14px/20px var(--font-sans);color:var(--pink-hover);cursor:pointer;transition:transform 0.1s ease, box-shadow 0.1s ease;}
+  .btn-secondary{display:inline-flex;align-items:center;gap:8px;height:32px;padding:0 12px;flex-shrink:0;background:var(--color-surface-page);border:1px solid var(--color-accent-default);border-radius:2px;
+    box-shadow:var(--lift);font:500 14px/20px var(--font-sans);color:var(--color-text-accent);cursor:pointer;transition:transform 0.1s ease, box-shadow 0.1s ease;}
   .btn-secondary img{width:16px;height:16px;}
-  .btn-secondary:hover{border-color:var(--pink-hover);}
+  .btn-secondary:hover{border-color:var(--color-pink-600);}
   .btn-secondary:active{transform:translate(2px,2px);box-shadow:none;}
   .btn-secondary:focus{outline:none;}
   .btn-secondary:focus-visible{box-shadow:var(--lift), 0 0 0 3px rgba(224,18,128,0.35);}
@@ -96,15 +92,15 @@
   /* "Show details" toggle (the Unmanned DS Toggle): shows or hides every row's vendor ID at once */
   .details-toggle{display:inline-flex;align-items:center;gap:12px;flex-shrink:0;padding:0;border:0;background:none;cursor:pointer;
     font:400 16px/24px var(--font-sans);color:var(--color-text-primary);white-space:nowrap;}
-  .details-toggle .track{--t:var(--toggle-off);position:relative;flex-shrink:0;width:36px;height:20px;border-radius:2px;background:var(--t);
+  .details-toggle .track{--t:var(--color-neutral-400);position:relative;flex-shrink:0;width:36px;height:20px;border-radius:2px;background:var(--t);
     transition:background-color 0.12s ease-out, box-shadow 0.12s ease-out;}
-  .details-toggle .knob{position:absolute;top:2px;left:2px;width:16px;height:16px;background:#fff;transition:left 0.12s ease-out, width 0.12s ease-out;}
+  .details-toggle .knob{position:absolute;top:2px;left:2px;width:16px;height:16px;background:var(--color-surface-page);transition:left 0.12s ease-out, width 0.12s ease-out;}
   .details-toggle .knob::before{content:'';position:absolute;inset:0;background:var(--t);
     -webkit-mask:url(../static/icon-x-small.svg) center/14px 14px no-repeat;mask:url(../static/icon-x-small.svg) center/14px 14px no-repeat;}
   .details-toggle[aria-checked="true"] .track{--t:var(--color-accent-default);}
   .details-toggle[aria-checked="true"] .knob{left:18px;}
   .details-toggle[aria-checked="true"] .knob::before{-webkit-mask-image:url(../static/icon-check.svg);mask-image:url(../static/icon-check.svg);}
-  .details-toggle[aria-checked="true"]:hover .track{--t:var(--pink-hover);}
+  .details-toggle[aria-checked="true"]:hover .track{--t:var(--color-pink-600);}
   .details-toggle:active .knob{width:20px;}   /* pressed: the knob squishes */
   .details-toggle[aria-checked="true"]:active .knob{left:14px;}
   .details-toggle[aria-checked="true"]:active .track{--t:var(--color-accent-hover);}
@@ -112,8 +108,8 @@
   .details-toggle:focus-visible .track{box-shadow:0 0 0 3px rgba(224,18,128,0.35);}
   .field .mag{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:20px;height:20px;pointer-events:none;}
   #q{
-    width:100%;height:40px;padding:0 44px 0 40px;font:400 16px var(--font-sans);color:var(--color-text-primary);background:#fff;
-    border:1px solid var(--toggle-off);border-radius:2px;outline:none;-webkit-appearance:none;appearance:none;
+    width:100%;height:40px;padding:0 44px 0 40px;font:400 16px var(--font-sans);color:var(--color-text-primary);background:var(--color-surface-page);
+    border:1px solid var(--color-border-strong);border-radius:2px;outline:none;-webkit-appearance:none;appearance:none;
     transition:border-color 0.15s, box-shadow 0.15s;
   }
   /* the browser's own clear button is hidden: it doubled up with ours */
@@ -172,7 +168,7 @@
   .row .id{grid-column:1;grid-row:3;margin-top:8px;font:500 11px/1.5 var(--font-mono);color:var(--color-text-tertiary);overflow-wrap:anywhere;}
   .catalog:not(.show-details) .row:not(.id-hit) .id{display:none;}   /* a search that matched the ID shows it anyway */
   .row .desc{grid-column:1 / -1;grid-row:2;margin-top:2px;font-size:13px;line-height:1.5;color:var(--color-neutral-700);}
-  mark{background:var(--mark);color:inherit;padding:0 1px;border-radius:1px;}
+  mark{background:var(--gap-highlight);color:inherit;padding:0 1px;border-radius:1px;}
   .more{
     margin-top:12px;font:600 13px var(--font-sans);background:var(--color-surface-page);border:1px solid var(--color-border-default);color:var(--color-text-primary);
     padding:8px 14px;border-radius:2px;cursor:pointer;
@@ -182,7 +178,7 @@
   .catalog.is-searching .more{display:none;}
 
   /* how VEX responds: the legend for the code on every row */
-  .responses{box-sizing:border-box;width:100%;padding:16px;background:var(--surface-warm);border:1px solid var(--toggle-off);border-radius:2px;box-shadow:var(--lift);text-align:left;}
+  .responses{box-sizing:border-box;width:100%;padding:16px;background:var(--color-surface-band);border:1px solid var(--color-border-strong);border-radius:2px;box-shadow:var(--lift);text-align:left;}
   .resp-top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px 16px;}
   .resp-top p{flex:1 1 220px;font-size:14px;line-height:20px;color:var(--color-text-primary);}
   .resp-toggle{padding:1px 2px;border:0;background:none;cursor:pointer;font:500 12px/16px var(--font-sans);color:var(--color-text-tertiary);transition:color 0.15s ease;text-transform:lowercase;white-space:nowrap;} /* a utility, so gray like the side menu, not pink */
@@ -192,8 +188,8 @@
   .resp-list{list-style:none;margin:12px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:12px 32px;}
   .resp-list li{display:flex;align-items:center;gap:8px;}
   /* DS Badge, Mono / Outline: the legend's codes and the code on every row */
-  .resp-list code,.row .resp{box-sizing:border-box;display:inline-flex;align-items:center;height:24px;padding:4px 8px;border:1px solid var(--toggle-off);border-radius:2px;
-    background:#fff;font:400 12px/16px var(--font-mono);letter-spacing:0.08em;color:var(--color-text-secondary);white-space:nowrap;}
+  .resp-list code,.row .resp{box-sizing:border-box;display:inline-flex;align-items:center;height:24px;padding:4px 8px;border:1px solid var(--color-border-strong);border-radius:2px;
+    background:var(--color-surface-page);font:400 12px/16px var(--font-mono);letter-spacing:0.08em;color:var(--color-text-secondary);white-space:nowrap;}
   .resp-list b{font-weight:600;font-size:12px;line-height:16px;color:var(--color-text-primary);}
   .resp-list span{display:none;}
   /* open: one code per line, with what it does */
@@ -229,7 +225,7 @@
   @media (max-width:900px){ .responses.is-open .resp-list{grid-template-columns:repeat(2,minmax(0,1fr));} }
   /* phones: no hover to hint it's tappable, so the legend toggle becomes a bordered button (beside the sentence when it fits, else below it) */
   @media (max-width:700px){
-    .resp-toggle{display:inline-flex;align-items:center;height:36px;padding:0 12px;border:1px solid var(--toggle-off);border-radius:2px;background:#fff;
+    .resp-toggle{display:inline-flex;align-items:center;height:36px;padding:0 12px;border:1px solid var(--color-border-strong);border-radius:2px;background:var(--color-surface-page);
       font-size:14px;line-height:20px;color:var(--color-text-primary);text-transform:none;}
   }
   @media (max-width:520px){ .responses.is-open .resp-list{grid-template-columns:minmax(0,1fr);} .responses{padding:14px 16px;} .resp-list{gap:12px 22px;} }

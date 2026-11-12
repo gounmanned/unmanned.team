@@ -12,7 +12,6 @@ class Table {
         recs: s => s.metadata?.threat == null,
     };
 
-    static LOG_LIMIT = 1000;
     static CLOCK = new Intl.DateTimeFormat(undefined, {
         month: 'short', day: '2-digit',
         hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23',
@@ -94,16 +93,6 @@ class Table {
         this.wrap.classList.add('logs');
         this.logs.innerHTML = logs.map(log => `<li>${this.logLine(log, highlight(log.message))}</li>`).join('');
         this.wrap.scrollTop = 0;
-    }
-
-    prependLogs(logs) {
-        if (!logs.length) return;
-
-        this.logs.querySelector('.search-empty')?.remove();
-        this.logs.insertAdjacentHTML('afterbegin',
-            logs.map(log => `<li class="tail-new">${this.logLine(log)}</li>`).join(''));
-
-        while (this.logs.children.length > Table.LOG_LIMIT) this.logs.lastElementChild.remove();
     }
 
     placeholder(text) {

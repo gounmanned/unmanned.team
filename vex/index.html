@@ -56,12 +56,15 @@
       <div class="overview" id="overview">
         <div class="trend-chart">
           <div class="trend-chart-head">
-            <nav class="signal-scope" id="signal-scope" aria-label="Signals">
+            <nav class="tabs" id="signal-scope" aria-label="Signals">
               <button type="button" data-scope="all" aria-pressed="true">All <span class="scope-count">0</span></button>
               <button type="button" data-scope="threats" aria-pressed="false">Threats <span class="scope-count">0</span></button>
               <button type="button" data-scope="recs" aria-pressed="false">Recommendations <span class="scope-count">0</span></button>
             </nav>
-            <span class="trend-chart-month" id="trend-month"></span>
+            <nav class="tabs" id="trend-period" aria-label="Period">
+              <button type="button" data-period="month" aria-pressed="true"></button>
+              <button type="button" data-period="year" aria-pressed="false"></button>
+            </nav>
           </div>
           <svg id="trend-svg" preserveAspectRatio="none"></svg>
         </div>
@@ -72,9 +75,6 @@
       <form class="signal-search" id="signal-search" role="search" autocomplete="off">
         <span class="material-symbols-outlined">search</span>
         <input type="text" id="signal-search-input" placeholder="Search audit logs by keyword" enterkeyhint="search" spellcheck="false">
-        <button type="button" class="view-switch" id="tail-switch" aria-pressed="false" title="Tail logs">
-          <span class="material-symbols-outlined">terminal</span>
-        </button>
         <button type="button" class="view-switch" id="view-switch" aria-pressed="false" title="Board">
           <span class="material-symbols-outlined">view_kanban</span>
         </button>
@@ -117,13 +117,7 @@
     </section>
 
     <footer class="links">
-      <div class="view-toggle">
-        <button class="toggle-btn active" id="toggle">
-          <span class="knob"></span>
-          <span class="label" id="toggle-label">This month</span>
-        </button>
-        <span class="count" id="signal-count"></span>
-      </div>
+      <span class="count" id="signal-count"></span>
 
       <a id="open-backup-sidebar">Backups</a>
       <a id="open-signal-sidebar" class="cta">+ Add Signal</a>

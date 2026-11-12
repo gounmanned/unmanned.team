@@ -152,20 +152,14 @@
   justify-content: space-between;
 }
 
-.trend-chart-month {
-  font-size: 11.5px;
-  font-variant-numeric: tabular-nums;
-  color: var(--text-faint);
-}
+/* tabs — scope (left) and period (right) above the chart */
 
-/* scope tabs — whose queue is on screen */
-
-.signal-scope {
+.tabs {
   display: flex;
   gap: 20px;
 }
 
-.signal-scope button {
+.tabs button {
   all: unset;
   padding-bottom: 4px;
   border-bottom: 1.5px solid transparent;
@@ -176,7 +170,7 @@
   transition: color 0.15s, border-color 0.15s;
 }
 
-.signal-scope .scope-count {
+.tabs .scope-count {
   margin-left: 3px;
   font-size: 11px;
   font-weight: 500;
@@ -184,14 +178,18 @@
   color: var(--text-faint);
 }
 
-.signal-scope button:hover { color: var(--text-body); }
-.signal-scope button:focus-visible { outline: 2px solid var(--brand); outline-offset: 3px; border-radius: 2px; }
+.tabs button:hover { color: var(--text-body); }
+.tabs button:focus-visible { outline: 2px solid var(--brand); outline-offset: 3px; border-radius: 2px; }
 
-.signal-scope button[aria-pressed="true"] {
+.tabs button[aria-pressed="true"] {
   border-bottom-color: var(--brand);
   font-weight: 600;
   color: var(--text-body);
 }
+
+/* period stays quiet — the underline belongs to the queue */
+#trend-period { gap: 12px; }
+#trend-period button[aria-pressed="true"] { border-bottom-color: transparent; }
 
 #trend-svg {
   display: block;
@@ -224,8 +222,7 @@
   stroke-linecap: round;
 }
 
-#trend-svg .trend-axis text,
-#trend-svg .trend-max {
+#trend-svg .trend-axis text {
   font-size: 9.5px;
   font-variant-numeric: tabular-nums;
   fill: var(--text-faint);
@@ -313,7 +310,7 @@
   color: var(--text-body);
 }
 
-/* SIEM view — search results or the live tail */
+/* SIEM view — audit log search results */
 
 #signal-table-wrap.logs > table { display: none; }
 
@@ -410,17 +407,6 @@
 
 .signal-search-results li.search-empty::after { display: none; }
 
-/* freshly tailed lines flash in */
-
-.signal-search-results li.tail-new {
-  animation: tail-flash 2.4s ease-out;
-}
-
-@keyframes tail-flash {
-  from { background: color-mix(in srgb, var(--brand) 14%, var(--surface)); }
-  to   { background: var(--row-bg); }
-}
-
 /* ── signals: shared ────────────────────────────────────────────── */
 
 #signal-section {
@@ -436,7 +422,7 @@
   overflow-y: auto;
 }
 
-/* view switches (tail · table ↔ board) */
+/* view switch (table ↔ board) */
 
 .signal-search .view-switch {
   all: unset;
@@ -812,71 +798,12 @@ td.elapsed.live {
 }
 
 .links .count {
+  position: absolute;
+  left: 14px;
   font-size: 12px;
   font-weight: 500;
   color: var(--text-faint);
   white-space: nowrap;
-}
-
-/* month/year toggle */
-
-.links .view-toggle {
-  position: absolute;
-  left: 14px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.links .toggle-btn {
-  all: unset;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 12.5px;
-  font-weight: 500;
-  color: var(--text-body);
-  cursor: pointer;
-}
-
-.links .toggle-btn:focus-visible {
-  outline: 2px solid var(--brand);
-  outline-offset: 3px;
-  border-radius: 4px;
-}
-
-.links .knob {
-  position: relative;
-  flex-shrink: 0;
-  width: 32px;
-  height: 18px;
-  border: 1px solid var(--line);
-  border-radius: 9px;
-  background: var(--line);
-  box-sizing: border-box;
-  transition: background 0.2s, border-color 0.2s;
-}
-
-.links .knob::after {
-  content: '';
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: #adb5bd;
-  transition: transform 0.2s ease, background 0.2s;
-}
-
-.links .toggle-btn.active .knob {
-  border-color: color-mix(in srgb, var(--brand) 40%, transparent);
-  background: color-mix(in srgb, var(--brand) 25%, transparent);
-}
-
-.links .toggle-btn.active .knob::after {
-  transform: translateX(14px);
-  background: var(--brand);
 }
 
 /* ── reduced motion ─────────────────────────────────────────────── */
@@ -884,6 +811,5 @@ td.elapsed.live {
 @media (prefers-reduced-motion: reduce) {
   #trend-svg .trend-today-pulse,
   #trend-svg .trend-wave { animation: none; opacity: 0; }
-  .signal-search-results li.tail-new { animation: none; }
   .sla-icon.missed { animation: none; }
 }

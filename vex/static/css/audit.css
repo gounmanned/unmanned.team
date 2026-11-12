@@ -1,0 +1,173 @@
+#audit-screen {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  color: var(--text-body);
+
+  /* ── BANNER — mirrors .dot-banner ───────────────────────────── */
+
+  .audit-banner {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--line);
+    background: color-mix(in srgb, var(--text-faint) 4%, var(--surface));
+  }
+
+  .audit-banner-icon {
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--brand);
+    box-shadow: 3px 3px 0 rgb(11 12 13 / 0.15);
+    font-size: 18px;
+    color: #fff;
+  }
+
+  .audit-banner-copy { min-width: 0; margin-right: auto; }
+  .audit-banner-title { margin: 0; font-size: 15px; font-weight: 800; line-height: 1.2; letter-spacing: -0.015em; }
+
+  .audit-banner-text {
+    margin: 2px 0 0;
+    font-size: 11.5px;
+    line-height: 1.45;
+    color: var(--text-faint);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .audit-banner-stat {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+    padding-left: 20px;
+  }
+
+  .audit-banner-stat-value { font-size: 22px; font-weight: 800; line-height: 1; letter-spacing: -0.015em; font-variant-numeric: tabular-nums; }
+  .audit-banner-stat-label { font-size: 11px; color: var(--text-faint); }
+
+  /* ── SEARCH — mirrors .dot-search ───────────────────────────── */
+
+  .audit-search {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 44px;
+    margin: 0;
+    padding: 0 24px;
+    border-bottom: 1px solid var(--line);
+    background: var(--surface);
+    transition: box-shadow 0.15s;
+
+    &:focus-within { box-shadow: inset 0 -2px 0 var(--brand); }
+    .material-symbols-outlined { font-size: 18px; color: var(--text-faint); }
+
+    input {
+      flex: 1;
+      min-width: 0;
+      border: none;
+      outline: none;
+      background: transparent;
+      font: inherit;
+      font-size: 13px;
+      color: var(--text-body);
+
+      &::placeholder { color: var(--text-faint); }
+    }
+  }
+
+  /* ── RESULTS ────────────────────────────────────────────────── */
+
+  .audit-results {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    margin: 0;
+    padding: 6px 8px;
+    list-style: none;
+    contain: inline-size;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 12px;
+    line-height: 1.55;
+
+    li {
+      --row-bg: var(--surface);
+      position: relative;
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 16px;
+      padding: 7px 16px;
+      border-bottom: 1px solid var(--line);
+      cursor: pointer;
+
+      &:hover {
+        --row-bg: color-mix(in srgb, var(--brand) 4%, var(--surface));
+        background: var(--row-bg);
+      }
+
+      &::after {
+        content: 'more';
+        position: absolute;
+        top: 7px;
+        right: 16px;
+        padding-left: 24px;
+        background: linear-gradient(to right, transparent, var(--row-bg) 20px);
+        font: 700 10px/1.55 system-ui, sans-serif;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--brand);
+        opacity: 0;
+      }
+
+      &:hover::after { opacity: 1; }
+
+      &.expanded { padding-right: 60px; }
+      &.expanded span { white-space: pre-wrap; word-break: break-all; }
+      &.expanded::after { content: 'less'; opacity: 1; background: none; }
+    }
+
+    time {
+      font-variant-numeric: tabular-nums;
+      color: var(--text-faint);
+      white-space: nowrap;
+    }
+
+    span {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    mark {
+      padding: 0 1px;
+      border-radius: 2px;
+      background: color-mix(in srgb, var(--brand) 22%, transparent);
+      color: inherit;
+    }
+
+    li.audit-empty {
+      display: block;
+      padding: 64px 16px;
+      border: 0;
+      font-family: system-ui, sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-align: center;
+      text-transform: uppercase;
+      color: var(--text-faint);
+      cursor: default;
+
+      &::after { display: none; }
+    }
+  }
+}

@@ -20,6 +20,7 @@
       <link rel="stylesheet" href="static/css/tenant.css?v=${v}">
       <link rel="stylesheet" href="static/css/sources.css?v=${v}">
       <link rel="stylesheet" href="static/css/backups.css?v=${v}">
+      <link rel="stylesheet" href="static/css/audit.css?v=${v}">
       <link rel="stylesheet" href="static/css/signal.css?v=${v}">
     `);
   </script>
@@ -55,26 +56,28 @@
     <section id="overview-section">
       <div class="overview" id="overview">
         <div class="trend-chart">
-          <div class="trend-chart-head">
-            <span class="trend-chart-label">Signals collected daily</span>
-            <span class="trend-chart-month" id="trend-month"></span>
-          </div>
           <svg id="trend-svg" preserveAspectRatio="none"></svg>
         </div>
       </div>
     </section>
 
     <section id="signal-section">
-      <form class="signal-search" id="signal-search" role="search" autocomplete="off">
-        <span class="material-symbols-outlined">search</span>
-        <input type="text" id="signal-search-input" placeholder="Search audit logs by keyword" enterkeyhint="search" spellcheck="false">
-        <button type="button" class="view-switch" id="tail-switch" aria-pressed="false" title="Tail logs">
-          <span class="material-symbols-outlined">terminal</span>
-        </button>
-        <button type="button" class="view-switch" id="view-switch" aria-pressed="false" title="Board">
-          <span class="material-symbols-outlined">view_kanban</span>
-        </button>
-      </form>
+      <div class="signal-bar">
+        <nav class="tabs" id="signal-scope" aria-label="Signals">
+          <button type="button" data-scope="all" aria-pressed="true">All <span class="scope-count">0</span></button>
+          <button type="button" data-scope="threats" aria-pressed="false">SOC <span class="scope-count">0</span></button>
+          <button type="button" data-scope="recs" aria-pressed="false">Recommendations <span class="scope-count">0</span></button>
+        </nav>
+        <div class="signal-bar-end">
+          <nav class="tabs" id="trend-period" aria-label="Period">
+            <button type="button" data-period="month" aria-pressed="true"></button>
+            <button type="button" data-period="year" aria-pressed="false"></button>
+          </nav>
+          <button type="button" class="view-switch" id="view-switch" aria-pressed="false" title="Board">
+            <span class="material-symbols-outlined">view_kanban</span>
+          </button>
+        </div>
+      </div>
 
       <div class="table-wrap" id="signal-table-wrap">
         <table id="signal-table">
@@ -108,17 +111,15 @@
         </table>
 
         <div class="signal-board" id="signal-board"></div>
-        <ul class="signal-search-results" id="signal-search-results"></ul>
       </div>
     </section>
 
     <footer class="links">
-      <div class="view-toggle">
-        <button class="toggle-btn active" id="toggle">
-          <span class="knob"></span>
-          <span class="label" id="toggle-label">This month</span>
+      <div class="links-start">
+        <button type="button" class="audit-live" id="open-audit-rollup" title="Audit log" aria-label="Audit log">
+          <i></i><i></i><i></i><i></i>
         </button>
-        <span class="count" id="signal-count">0 signals</span>
+        <span class="count" id="signal-count"></span>
       </div>
 
       <a id="open-backup-sidebar">Backups</a>
@@ -210,6 +211,27 @@
     <div class="table-wrap" id="source-table-wrap">
       <div id="source-list"></div>
     </div>
+  </site-rollup>
+
+  <site-rollup id="audit-screen">
+    <div class="audit-banner">
+      <span class="material-symbols-outlined audit-banner-icon">manage_search</span>
+      <div class="audit-banner-copy">
+        <h2 class="audit-banner-title">Audit log</h2>
+        <p class="audit-banner-text">Search every event collected from your sources and dots.</p>
+      </div>
+      <div class="audit-banner-stat">
+        <span class="audit-banner-stat-value" id="audit-count">—</span>
+        <span class="audit-banner-stat-label">events found</span>
+      </div>
+    </div>
+
+    <form class="audit-search" id="audit-search" role="search" autocomplete="off">
+      <span class="material-symbols-outlined">search</span>
+      <input type="text" id="audit-search-input" placeholder="Search by keyword" enterkeyhint="search" spellcheck="false">
+    </form>
+
+    <ul class="audit-results" id="audit-results"></ul>
   </site-rollup>
 
   <site-rollup id="map-screen">
@@ -334,6 +356,7 @@
     <script src="static/js/rollups/map.js?v=${v}"><\/script>
     <script src="static/js/rollups/sources.js?v=${v}"><\/script>
     <script src="static/js/rollups/dot.js?v=${v}"><\/script>
+    <script src="static/js/rollups/audit.js?v=${v}"><\/script>
   `);
 </script>
 

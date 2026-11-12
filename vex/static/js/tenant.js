@@ -1,21 +1,23 @@
 class TenantScreen {
-    static TAIL_INTERVAL = 30000;
-
     constructor(state) {
         this.state = state;
         this.api = state.api;
         this.month = new Date();
-        this.query = '';
-        this.tailTimer = null;
+        this.scope = 'all';
 
         this.section = document.getElementById('signal-section');
-        this.input = document.getElementById('signal-search-input');
-        this.tailSwitch = document.getElementById('tail-switch');
+        this.period = document.getElementById('trend-period');
+
+        const now = new Date();
+        this.period.children[0].textContent = now.toLocaleString(undefined, { month: 'long' });
+        this.period.children[1].textContent = now.getFullYear();
 
         this.table = new Table('signal-table', {
             open: signal => this.open(signal),
             move: (signal, status) => this.move(signal, status),
         });
+
+        this.audit = new AuditRollup(this.api);
 
         this.listen();
         new ResizeObserver(() => this.renderTrend()).observe(document.getElementById('trend-svg'));
@@ -31,8 +33,7 @@ class TenantScreen {
     async reset() {
         this.api.reset();
         this.table.clear();
-        this.stopTail();
-        this.clearSearch();
+        this.audit.clear();
         this.renderThreat();
         this.renderTrend();
     }
@@ -48,23 +49,26 @@ class TenantScreen {
         return Object.values(this.state.signals?.[this.state.account()] ?? {});
     }
 
-    count() {
-        const el = document.getElementById('signal-count');
-        el.hidden = !!this.query;
-        if (this.query) return;
+    scoped(scope = this.scope) {
+        return this.signals().filter(Table.SCOPES[scope]);
+    }
 
-        const all = this.signals();
-        const open = all.filter(s => s.status.startsWith('O')).length;
+    count() {
+        document.querySelectorAll('#signal-scope [data-scope]').forEach(tab => {
+            tab.querySelector('.scope-count').textContent = this.scoped(tab.dataset.scope).length.toLocaleString();
+        });
+
+        const all = this.scoped();
         const closed = all.filter(s => s.status.startsWith('C'));
         const auto = closed.filter(s => s.status === 'CV').length;
         const pct = closed.length ? Math.round((auto / closed.length) * 100) : 0;
 
         const responded = closed.filter(s => s.metadata?.threat);
         const mttr = responded.length
-            ? Math.round(responded.reduce((sum, s) => sum + (new Date(s.updated) - new Date(s.created)), 0) / responded.length / 60000)
-            : 0;
+            ? `${Math.round(responded.reduce((sum, s) => sum + (new Date(s.updated) - new Date(s.created)), 0) / responded.length / 60000).toLocaleString()}m`
+            : '—';
 
-        el.textContent = `${all.length.toLocaleString()} signals · ${open.toLocaleString()} open · ${mttr.toLocaleString()}m MTTR · ${pct}% autoclosed`;
+        document.getElementById('signal-count').textContent = `${mttr} MTTR · ${pct}% autoclosed`;
     }
 
     async open(signal) {
@@ -78,60 +82,6 @@ class TenantScreen {
     async move(signal, status) {
         this.state.track(await this.api.signals.patch(signal.id, { status }));
         document.dispatchEvent(new CustomEvent('page:reload'));
-    }
-
-    // ── search ─────────────────────────────────────────────────────
-
-    async search(q) {
-        this.query = q.trim();
-        if (!this.query) return this.clearSearch();
-
-        this.stopTail();
-        const query = this.query;
-
-        let logs = [];
-        await SiteSpinner.withLoading(async () => {
-            logs = await this.api.audit.search(query) ?? [];
-        });
-
-        if (query === this.query) this.table.showLogs(logs, query);
-    }
-
-    clearSearch() {
-        this.query = '';
-        this.input.value = '';
-        this.table.hideLogs();
-        this.count();
-    }
-
-    // ── tail ───────────────────────────────────────────────────────
-
-    toggleTail() {
-        this.tailTimer ? this.stopTail() : this.startTail();
-    }
-
-    startTail() {
-        this.clearSearch();
-        this.tailFrom = new Date(Date.now() - TenantScreen.TAIL_INTERVAL);
-        this.tailSwitch.setAttribute('aria-pressed', 'true');
-        this.table.placeholder(`${SiteSpinner.inline} Tailing logs`);
-
-        this.tailTimer = setInterval(() => this.pollTail(), TenantScreen.TAIL_INTERVAL);
-        this.pollTail();
-    }
-
-    stopTail() {
-        clearInterval(this.tailTimer);
-        this.tailTimer = null;
-        this.tailSwitch.setAttribute('aria-pressed', 'false');
-        this.table.hideLogs();
-    }
-
-    async pollTail() {
-        const start = this.tailFrom;
-        const end = this.tailFrom = new Date();
-        const logs = await this.api.audit.get(start.toISOString(), end.toISOString()) ?? [];
-        if (this.tailTimer) this.table.prependLogs(logs);
     }
 
     // ── setup ──────────────────────────────────────────────────────
@@ -165,18 +115,17 @@ class TenantScreen {
     }
 
     renderTrend() {
+        // month view: one point per day · year view: one point per month
         const now = new Date();
-        const year = now.getFullYear(), month = now.getMonth(), today = now.getDate();
-        const days = new Date(year, month + 1, 0).getDate();
+        const yearly = !this.month;
+        const size = yearly ? 12 : new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+        const bucket = d => yearly ? d.getMonth() : d.getDate() - 1;
+        const date = i => yearly ? new Date(now.getFullYear(), i) : new Date(now.getFullYear(), now.getMonth(), i + 1);
 
-        const counts = new Array(days).fill(0);
-        this.signals().forEach(s => {
-            const d = new Date(s.created);
-            if (d.getFullYear() === year && d.getMonth() === month) counts[d.getDate() - 1]++;
-        });
-
-        document.getElementById('trend-month').textContent =
-            now.toLocaleString(undefined, { month: 'long', year: 'numeric' });
+        const counts = new Array(size).fill(0);
+        this.scoped().map(s => new Date(s.created))
+            .filter(d => d.getFullYear() === now.getFullYear() && (yearly || d.getMonth() === now.getMonth()))
+            .forEach(d => counts[bucket(d)]++);
 
         const svg = document.getElementById('trend-svg');
         const W = svg.clientWidth, H = svg.clientHeight;
@@ -184,26 +133,26 @@ class TenantScreen {
 
         const pad = { t: 10, r: 0, b: 18, l: 0 };
         const max = Math.max(1, ...counts);
-        const step = (W - pad.l - pad.r) / (days - 1);
+        const step = (W - pad.l - pad.r) / (size - 1);
         const x = i => pad.l + i * step;
         const y = v => pad.t + (1 - v / max) * (H - pad.t - pad.b);
         const base = y(0);
-        const pts = counts.slice(0, today).map((v, i) => [x(i), y(v)]);
+        const pts = counts.slice(0, bucket(now) + 1).map((v, i) => [x(i), y(v)]);
         const line = pts.map(([px, py], i) => `${i ? 'L' : 'M'}${px.toFixed(1)},${py.toFixed(1)}`).join(' ');
         const [lx, ly] = pts.at(-1);
         const area = `${line} L${lx.toFixed(1)},${base} L${pts[0][0].toFixed(1)},${base} Z`;
 
-        const ticks = [1, 8, 15, 22, days].map(d => {
-            const anchor = d === 1 ? 'start' : d === days ? 'end' : 'middle';
-            return `<text x="${x(d - 1)}" y="${H - 4}" text-anchor="${anchor}">${d}</text>`;
+        const ticks = [0, 0.25, 0.5, 0.75, 1].map(f => {
+            const i = Math.round(f * (size - 1));
+            const anchor = f === 0 ? 'start' : f === 1 ? 'end' : 'middle';
+            const text = yearly ? date(i).toLocaleDateString(undefined, { month: 'short' }) : i + 1;
+            return `<text x="${x(i)}" y="${H - 4}" text-anchor="${anchor}">${text}</text>`;
         }).join('');
 
-        const hits = counts.map((v, i) => {
-            const label = new Date(year, month, i + 1).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
-            return `<rect x="${x(i) - step / 2}" y="0" width="${step}" height="${H}" fill="transparent">
-                    <title>${label}: ${v} signal${v === 1 ? '' : 's'}</title>
-                    </rect>`;
-        }).join('');
+        const hits = counts.map((v, i) => `
+            <rect x="${x(i) - step / 2}" y="0" width="${step}" height="${H}" fill="transparent">
+                <title>${date(i).toLocaleDateString(undefined, yearly ? { month: 'long' } : { month: 'short', day: 'numeric' })}: ${v} signal${v === 1 ? '' : 's'}</title>
+            </rect>`).join('');
 
         // ── today marker ──
         const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -225,7 +174,6 @@ class TenantScreen {
 
             <line class="trend-baseline" x1="${pad.l}" x2="${lx}" y1="${base}" y2="${base}"/>
             <line class="trend-future" x1="${lx}" x2="${W - pad.r}" y1="${base}" y2="${base}"/>
-            <text class="trend-max" x="${W - pad.r}" y="${pad.t - 2}" text-anchor="end">peak ${max}</text>
             <path d="${area}" fill="url(#trend-fill)"/>
             <path class="trend-line" d="${line}"/>
             <line class="trend-now" x1="${lx}" x2="${lx}" y1="${ly}" y2="${base}"/>
@@ -261,35 +209,30 @@ class TenantScreen {
             this.count();
         });
 
-        this.tailSwitch.addEventListener('click', () => this.toggleTail());
-
         document.getElementById('view-switch').addEventListener('click', (e) => {
-            this.stopTail();
-            this.clearSearch();
             e.currentTarget.querySelector('span').textContent = this.table.toggleBoard() ? 'table_rows' : 'view_kanban';
         });
 
-        document.getElementById('toggle').addEventListener('click', async (e) => {
-            const active = e.currentTarget.classList.toggle('active');
-            document.getElementById('toggle-label').textContent = active ? 'This month' : 'This year';
+        this.period.addEventListener('click', async (e) => {
+            const tab = e.target.closest('[data-period]');
+            if (!tab || tab.getAttribute('aria-pressed') === 'true') return;
 
+            this.period.querySelectorAll('[data-period]').forEach(b => b.setAttribute('aria-pressed', b === tab));
             this.state.reset();
-            this.month = active ? new Date() : null;
+            this.month = tab.dataset.period === 'month' ? new Date() : null;
 
             await this.refresh();
         });
 
-        document.getElementById('signal-search').addEventListener('submit', (e) => {
-            e.preventDefault();
-            this.search(this.input.value);
-        });
+        document.getElementById('signal-scope').addEventListener('click', (e) => {
+            const tab = e.target.closest('[data-scope]');
+            if (!tab || tab.dataset.scope === this.scope) return;
 
-        this.input.addEventListener('input', () => {
-            if (!this.input.value.trim() && this.query) this.clearSearch();
-        });
-
-        this.input.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') this.tailTimer ? this.stopTail() : this.clearSearch();
+            this.scope = tab.dataset.scope;
+            e.currentTarget.querySelectorAll('[data-scope]').forEach(b => b.setAttribute('aria-pressed', b === tab));
+            this.table.filter(this.scope);
+            this.renderTrend();
+            this.count();
         });
     }
 }

@@ -6,6 +6,12 @@ class Table {
         CV: 'Autoclosed by VEX',
     };
 
+    static SCOPES = {
+        all: () => true,
+        threats: s => s.metadata?.threat != null,
+        recs: s => s.metadata?.threat == null,
+    };
+
     static LOG_LIMIT = 1000;
     static CLOCK = new Intl.DateTimeFormat(undefined, {
         month: 'short', day: '2-digit',
@@ -20,6 +26,7 @@ class Table {
         this.open = open;
         this.move = move;
         this.signals = new Map();
+        this.scope = 'all';
 
         this.clear();
         this.listen();
@@ -32,13 +39,18 @@ class Table {
 
     clear() {
         this.signals.clear();
+        this.render();
+    }
+
+    render() {
         this.body.innerHTML = '';
         this.board.innerHTML = Object.entries(Table.COLUMNS).map(([status, label]) => `
             <section class="board-col" data-status="${status}">
                 <header><span>${label}</span><span class="board-col-count">0</span></header>
                 <ol class="board-cards"></ol>
             </section>`).join('');
-        this.wrap.classList.add('empty');
+        this.wrap.classList.toggle('empty', !this.signals.size);
+        this.signals.forEach(signal => this.show(signal));
     }
 
     toggleBoard() {
@@ -46,9 +58,25 @@ class Table {
         return this.wrap.classList.toggle('board');
     }
 
+    filter(scope) {
+        this.scope = scope;
+        this.render();
+        this.wrap.scrollTop = 0;
+
+        if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            this.wrap.animate([{ opacity: 0, transform: 'translateY(4px)' }, { opacity: 1, transform: 'none' }],
+                { duration: 220, easing: 'ease-out' });
+        }
+    }
+
     add(signal) {
         this.signals.set(String(signal.id), signal);
         this.wrap.classList.remove('empty');
+        this.show(signal);
+    }
+
+    show(signal) {
+        if (!Table.SCOPES[this.scope](signal)) return;
         this.renderRow(signal);
         this.renderCard(signal);
     }

@@ -56,7 +56,11 @@
       <div class="overview" id="overview">
         <div class="trend-chart">
           <div class="trend-chart-head">
-            <span class="trend-chart-label">Signals collected daily</span>
+            <nav class="signal-scope" id="signal-scope" aria-label="Signals">
+              <button type="button" data-scope="all" aria-pressed="true">All <span class="scope-count">0</span></button>
+              <button type="button" data-scope="threats" aria-pressed="false">Threats <span class="scope-count">0</span></button>
+              <button type="button" data-scope="recs" aria-pressed="false">Recommendations <span class="scope-count">0</span></button>
+            </nav>
             <span class="trend-chart-month" id="trend-month"></span>
           </div>
           <svg id="trend-svg" preserveAspectRatio="none"></svg>
@@ -118,7 +122,7 @@
           <span class="knob"></span>
           <span class="label" id="toggle-label">This month</span>
         </button>
-        <span class="count" id="signal-count">0 signals</span>
+        <span class="count" id="signal-count"></span>
       </div>
 
       <a id="open-backup-sidebar">Backups</a>

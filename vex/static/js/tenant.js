@@ -6,6 +6,7 @@ class TenantScreen {
         this.api = state.api;
         this.month = new Date();
         this.query = '';
+        this.scope = 'all';
         this.tailTimer = null;
 
         this.section = document.getElementById('signal-section');
@@ -48,23 +49,30 @@ class TenantScreen {
         return Object.values(this.state.signals?.[this.state.account()] ?? {});
     }
 
+    scoped(scope = this.scope) {
+        return this.signals().filter(Table.SCOPES[scope]);
+    }
+
     count() {
+        document.querySelectorAll('#signal-scope [data-scope]').forEach(tab => {
+            tab.querySelector('.scope-count').textContent = this.scoped(tab.dataset.scope).length.toLocaleString();
+        });
+
         const el = document.getElementById('signal-count');
         el.hidden = !!this.query;
         if (this.query) return;
 
-        const all = this.signals();
-        const open = all.filter(s => s.status.startsWith('O')).length;
+        const all = this.scoped();
         const closed = all.filter(s => s.status.startsWith('C'));
         const auto = closed.filter(s => s.status === 'CV').length;
         const pct = closed.length ? Math.round((auto / closed.length) * 100) : 0;
 
         const responded = closed.filter(s => s.metadata?.threat);
         const mttr = responded.length
-            ? Math.round(responded.reduce((sum, s) => sum + (new Date(s.updated) - new Date(s.created)), 0) / responded.length / 60000)
-            : 0;
+            ? `${Math.round(responded.reduce((sum, s) => sum + (new Date(s.updated) - new Date(s.created)), 0) / responded.length / 60000).toLocaleString()}m`
+            : '—';
 
-        el.textContent = `${all.length.toLocaleString()} signals · ${open.toLocaleString()} open · ${mttr.toLocaleString()}m MTTR · ${pct}% autoclosed`;
+        el.textContent = `${mttr} MTTR · ${pct}% autoclosed`;
     }
 
     async open(signal) {
@@ -170,7 +178,7 @@ class TenantScreen {
         const days = new Date(year, month + 1, 0).getDate();
 
         const counts = new Array(days).fill(0);
-        this.signals().forEach(s => {
+        this.scoped().forEach(s => {
             const d = new Date(s.created);
             if (d.getFullYear() === year && d.getMonth() === month) counts[d.getDate() - 1]++;
         });
@@ -277,6 +285,17 @@ class TenantScreen {
             this.month = active ? new Date() : null;
 
             await this.refresh();
+        });
+
+        document.getElementById('signal-scope').addEventListener('click', (e) => {
+            const tab = e.target.closest('[data-scope]');
+            if (!tab || tab.dataset.scope === this.scope) return;
+
+            this.scope = tab.dataset.scope;
+            e.currentTarget.querySelectorAll('[data-scope]').forEach(b => b.setAttribute('aria-pressed', b === tab));
+            this.table.filter(this.scope);
+            this.renderTrend();
+            this.count();
         });
 
         document.getElementById('signal-search').addEventListener('submit', (e) => {

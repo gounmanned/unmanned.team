@@ -152,11 +152,45 @@
   justify-content: space-between;
 }
 
-.trend-chart-label,
 .trend-chart-month {
   font-size: 11.5px;
   font-variant-numeric: tabular-nums;
   color: var(--text-faint);
+}
+
+/* scope tabs — whose queue is on screen */
+
+.signal-scope {
+  display: flex;
+  gap: 20px;
+}
+
+.signal-scope button {
+  all: unset;
+  padding-bottom: 4px;
+  border-bottom: 1.5px solid transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-faint);
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.signal-scope .scope-count {
+  margin-left: 3px;
+  font-size: 11px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-faint);
+}
+
+.signal-scope button:hover { color: var(--text-body); }
+.signal-scope button:focus-visible { outline: 2px solid var(--brand); outline-offset: 3px; border-radius: 2px; }
+
+.signal-scope button[aria-pressed="true"] {
+  border-bottom-color: var(--brand);
+  font-weight: 600;
+  color: var(--text-body);
 }
 
 #trend-svg {

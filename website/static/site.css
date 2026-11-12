@@ -30,9 +30,9 @@
   body{margin:0;padding-top:var(--classbar-h);font-family:var(--font-sans);font-size:var(--type-body-md-size);line-height:1.5;background:var(--color-surface-page);color:var(--color-text-primary);-webkit-font-smoothing:antialiased;}
   h1,h2,h3,h4{text-wrap:balance;}
   p,li{text-wrap:pretty;}
-  a{color:inherit;}
+  a:where(:not([class*="pulse-"])){color:inherit;}
   ::selection{background:var(--color-accent-default);color:var(--color-text-on-contrast);}
-  a:focus-visible,button:focus-visible{outline:1.5px solid var(--color-accent-default);outline-offset:4px;}
+  a:where(:not([class*="pulse-"])):focus-visible,button:where(:not([class*="pulse-"])):focus-visible{outline:1.5px solid var(--color-accent-default);outline-offset:4px;}
   .visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
 
   /* ---------- STATUS DOT ---------- */
@@ -101,8 +101,6 @@
   .close-box .eyebrow-label{color:var(--color-neutral-300);}
 
   /* ---------- BUTTONS AND TEXT LINKS ---------- */
-  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:600;font-size:15px;line-height:1.5;padding:15px 30px;border-radius:2px;text-decoration:none;background:var(--color-accent-default);color:var(--color-text-on-contrast);border:none;cursor:pointer;white-space:nowrap;transition:opacity 0.2s ease;}
-  .btn:hover{opacity:0.8;}
   .text-link{display:inline-flex;align-items:center;gap:6px;font-weight:500;font-size:15px;line-height:1.5;color:var(--color-text-accent);text-decoration:none;}
   .text-link img{width:16px;height:16px;transition:transform 0.2s ease;}
   .ctas > .text-link{min-height:52px;}

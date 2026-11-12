@@ -65,13 +65,7 @@
   .intro-row{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px 24px;width:100%;}
   .intro-row .lede{max-width:600px;font-size:14px;line-height:20px;color:var(--color-text-primary);}
   /* DS Button, Secondary / sm */
-  .btn-secondary{display:inline-flex;align-items:center;gap:8px;height:32px;padding:0 12px;flex-shrink:0;background:var(--color-surface-page);border:1px solid var(--color-accent-default);border-radius:2px;
-    box-shadow:var(--lift);font:500 14px/20px var(--font-sans);color:var(--color-text-accent);cursor:pointer;transition:transform 0.1s ease, box-shadow 0.1s ease;}
-  .btn-secondary img{width:16px;height:16px;}
-  .btn-secondary:hover{border-color:var(--color-pink-600);}
-  .btn-secondary:active{transform:translate(2px,2px);box-shadow:none;}
-  .btn-secondary:focus{outline:none;}
-  .btn-secondary:focus-visible{box-shadow:var(--lift), 0 0 0 3px rgba(224,18,128,0.35);}
+  .custom-btn img{width:16px;height:16px;}
 
   /* the search sits at the top of the content column, beside the jump menu, so it reads as part of the catalog */
   .cat-main{min-width:0;padding-top:64px;}
@@ -246,7 +240,7 @@
   @media (prefers-reduced-motion: reduce){
     html{scroll-behavior:auto;}
     .status-dot{animation:none;}
-    .btn-secondary,.drawer,.drawer-scrim,.drawer-panel,.details-toggle .track,.details-toggle .knob,.resp-toggle::after,.topstack,.site-top .site-header,.jump,.jump-toggle img,#q,.search-bar,.group-head,.to-top,.to-top.is-shown{transition:none;}
+    .drawer,.drawer-scrim,.drawer-panel,.details-toggle .track,.details-toggle .knob,.resp-toggle::after,.topstack,.site-top .site-header,.jump,.jump-toggle img,#q,.search-bar,.group-head,.to-top,.to-top.is-shown{transition:none;}
   }
 
   /* ---------- SITE NAV (as on the other pages) ---------- */   /* header links (4.8:1 on white) */
@@ -309,7 +303,7 @@
       <h1>What VEX detects.</h1>
       <div class="intro-row">
         <p class="lede">Every alert type VEX can raise, by vendor, in the vendor’s own words, and what VEX does when it sees one. Vendors rename and retire alerts over time, so a newly changed name may take a little while to appear here.</p>
-        <button class="btn-secondary" type="button" data-drawer="custom-drawer" aria-haspopup="dialog">Write your own custom detections <img src="../static/icon-arrow-right-pink.svg" width="16" height="16" alt=""></button>
+        <button class="pulse-btn pulse-btn--secondary pulse-btn--surface pulse-btn--sm custom-btn" type="button" data-drawer="custom-drawer" aria-haspopup="dialog">Write your own custom detections <img src="../static/icon-arrow-right-pink.svg" width="16" height="16" alt=""></button>
       </div>
       <section class="responses" aria-label="Response codes">
         <div class="resp-top">

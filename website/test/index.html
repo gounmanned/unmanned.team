@@ -46,9 +46,9 @@
   h1,h2,h3,h4{text-wrap:balance;}
   p,li{text-wrap:pretty;}
   .mono{letter-spacing:0.04em;}
-  a{color:inherit;}
+  a:where(:not([class*="pulse-"])){color:inherit;}
   ::selection{background:var(--color-accent-default);color:var(--color-text-on-contrast);}
-  a:focus-visible,button:focus-visible{outline:1.5px solid var(--color-accent-default);outline-offset:4px;}
+  a:where(:not([class*="pulse-"])):focus-visible,button:where(:not([class*="pulse-"])):focus-visible{outline:1.5px solid var(--color-accent-default);outline-offset:4px;}
   .wrap{width:min(1100px,calc(100% - 48px));margin:0 auto;}
 
   /* ---------- STATUS DOT ---------- */
@@ -119,11 +119,6 @@
   .section-head .lede{margin-top:4px;}
   @media (max-width:820px){.section{padding-top:44px;padding-bottom:72px;}}
 
-  .btn{
-    display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:600;font-size:15px;line-height:1.5;
-    padding:15px 30px;text-decoration:none;background:var(--color-accent-default);color:var(--color-text-on-contrast);border:none;cursor:pointer;white-space:nowrap;transition:opacity 0.2s ease;
-  }
-  .btn:hover{opacity:0.8;}
 
   /* ---------- HERO ---------- */
   .hero{position:relative;overflow:hidden;background:var(--color-surface-page);}
@@ -351,7 +346,7 @@
         <div class="eyebrow-label hero-eyebrow"><span class="status-dot"></span>24-hour security test</div>
         <h1>Are you safe from <br>an adversarial AI?</h1>
         <p class="lede hero-lede">Attackers don’t open with something sophisticated. They walk the perimeter and test every door. They do it quietly, at scale, before you know they’re there. VEX runs that same sweep on you first.</p>
-        <a class="btn hero-cta" href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener">Schedule test</a>
+        <a class="pulse-btn pulse-btn--primary pulse-btn--lg hero-cta" href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener">Schedule test</a>
         <div class="clock" aria-hidden="true">
           <div class="clock-cap"></div>
           <div class="clock-face">
@@ -530,7 +525,7 @@
       <div class="eyebrow-label"><span class="status-dot"></span>Get started</div>
       <h2 class="contact-statement">Know if you’re exposed.<br>In 24 hours.</h2>
       <p class="contact-sub">One call to scope. One day to run.</p>
-      <a class="btn" href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener">Schedule test</a>
+      <a class="pulse-btn pulse-btn--primary pulse-btn--lg" href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener">Schedule test</a>
     </div>
   </section>
 

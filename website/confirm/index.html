@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light" data-surface="web">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,41 +9,47 @@
      One state for now: the invitation is accepted. Built to grow: later states (verified, expired, already verified)
      can sit here as sibling blocks, picked by ?state= in the URL, with "accepted" kept as the default.
      Self-contained (no site stylesheets); same look as the emails: pink top rule, white card, VEX mark. -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<link rel="preload" href="../static/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="https://cdn.unmanned.team/pulse/v1/pulse-tokens.css">
+<link rel="stylesheet" href="https://cdn.unmanned.team/pulse/v1/pulse-icons.css">
+<link rel="stylesheet" href="https://cdn.unmanned.team/pulse/v1/pulse-components.css">
+<script src="https://cdn.unmanned.team/pulse/v1/pulse.js" defer></script>
 <style>
-  :root{
-    --ink:#0b0c0d; --body:#4b4c52; --faint:#6c6c70; --line:#c4c4c4; --rule:#dedee3;
-    --page:#f4f4f4; --card:#ffffff; --pink:#e01280; --pink-text:#d1107a; --green:#029266;
-  }
-  *{box-sizing:border-box;}
+  /* ---------- FONTS (self-hosted, Latin) ---------- */
+  @font-face{font-family:'Inter';font-style:normal;font-weight:100 900;font-display:swap;src:url(../static/fonts/inter-latin.woff2) format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
+  @font-face{font-family:'JetBrains Mono';font-style:normal;font-weight:100 800;font-display:swap;src:url(../static/fonts/jetbrains-mono-latin.woff2) format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
+  @font-face{font-family:'Lato';font-style:normal;font-weight:400;font-display:swap;src:url(../static/fonts/lato-400.woff2) format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
+  @font-face{font-family:'Lato';font-style:italic;font-weight:400;font-display:swap;src:url(../static/fonts/lato-400-italic.woff2) format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
+  @font-face{font-family:'Lato';font-style:normal;font-weight:700;font-display:swap;src:url(../static/fonts/lato-700.woff2) format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
+  @font-face{font-family:'Lato';font-style:normal;font-weight:900;font-display:swap;src:url(../static/fonts/lato-900.woff2) format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
+  body{font-family:var(--font-sans);font-size:var(--type-body-md-size);line-height:1.5;}
+    *{box-sizing:border-box;}
   html,body{margin:0;}
   body{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;
-    padding:48px 16px;background:var(--page);color:var(--body);font:16px/24px Inter,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
+    padding:48px 16px;background:var(--color-surface-subtle);color:var(--color-text-secondary);font:16px/24px Inter,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
     -webkit-font-smoothing:antialiased;}
   h1{text-wrap:balance;} p{text-wrap:pretty;}
 
   /* the VEX mark, as the emails sign off */
-  .mark{display:flex;align-items:center;gap:12px;margin:0 0 24px;color:var(--ink);text-decoration:none;}
-  .mark-dot{width:12px;height:12px;border-radius:50%;background:var(--pink);margin-right:-7px;}
+  .mark{display:flex;align-items:center;gap:12px;margin:0 0 24px;color:var(--color-text-primary);text-decoration:none;}
+  .mark-dot{width:12px;height:12px;border-radius:50%;background:var(--color-accent-default);margin-right:-7px;}
   .mark-name{font-size:22px;line-height:24px;font-weight:800;letter-spacing:0.02em;}
-  .mark-by{font-size:10px;line-height:15px;letter-spacing:0.18em;text-transform:uppercase;color:var(--faint);}
+  .mark-by{font-size:10px;line-height:15px;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-text-tertiary);}
 
-  .card{width:100%;max-width:480px;background:var(--card);border:1px solid var(--line);border-top:4px solid var(--pink);border-radius:2px;
+  .card{width:100%;max-width:480px;background:var(--color-surface-page);border:1px solid var(--color-border-mid);border-top:4px solid var(--color-accent-default);border-radius:2px;
     padding:40px;}
   .icon{display:block;width:48px;height:48px;margin:0 0 24px;}
-  h1{margin:0;font-size:clamp(28px,6vw,34px);line-height:1.2;font-weight:600;letter-spacing:-0.01em;color:var(--ink);}
+  h1{margin:0;font-size:clamp(28px,6vw,34px);line-height:1.2;font-weight:600;letter-spacing:-0.01em;color:var(--color-text-primary);}
   .lede{margin:16px 0 0;}
-  .link{display:inline-flex;align-items:center;gap:6px;margin:24px 0 0;font-weight:600;color:var(--pink-text);text-decoration:none;}
+  .link{display:inline-flex;align-items:center;gap:6px;margin:24px 0 0;font-weight:600;color:var(--color-text-accent);text-decoration:none;}
   .link svg{width:16px;height:16px;transition:transform 0.2s ease;}
   .link:hover svg{transform:translateX(3px);}
-  .link:focus-visible{outline:3px solid var(--ink);outline-offset:3px;}
-  .help{margin:32px 0 0;padding:24px 0 0;border-top:1px solid var(--rule);font-size:14px;line-height:20px;color:var(--faint);}
-  .help a{color:var(--pink-text);font-weight:600;text-decoration:none;overflow-wrap:anywhere;}
+  .link:focus-visible{outline:3px solid var(--color-neutral-900);outline-offset:3px;}
+  .help{margin:32px 0 0;padding:24px 0 0;border-top:1px solid var(--color-border-default);font-size:14px;line-height:20px;color:var(--color-text-tertiary);}
+  .help a{color:var(--color-text-accent);font-weight:600;text-decoration:none;overflow-wrap:anywhere;}
   .help a:hover{text-decoration:underline;}
-  .help a:focus-visible{outline:3px solid var(--ink);outline-offset:2px;}
-  .foot{margin:24px 0 0;font-size:12px;line-height:16px;color:var(--faint);}
+  .help a:focus-visible{outline:3px solid var(--color-neutral-900);outline-offset:2px;}
+  .foot{margin:24px 0 0;font-size:12px;line-height:16px;color:var(--color-text-tertiary);}
 
   @media (max-width:480px){
     body{justify-content:flex-start;padding-top:32px;}
@@ -59,7 +65,7 @@
 
   <main class="card" data-state="accepted">
     <!-- Phosphor check-circle, drawn inline (this page can't use the site's icon files) -->
-    <svg class="icon" viewBox="0 0 256 256" aria-hidden="true"><circle cx="128" cy="128" r="96" fill="none" stroke="#029266" stroke-width="16"/><polyline points="88 136 112 160 168 104" fill="none" stroke="#029266" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <svg class="icon" viewBox="0 0 256 256" aria-hidden="true"><circle cx="128" cy="128" r="96" fill="none" stroke="var(--color-green-500)" stroke-width="16"/><polyline points="88 136 112 160 168 104" fill="none" stroke="var(--color-green-500)" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/></svg>
     <h1>You’re all set.</h1>
     <p class="lede">Your invitation has been accepted. VEX will take it from here.</p>
     <a class="link" href="https://unmanned.team/how-it-works/">See how VEX works <svg viewBox="0 0 256 256" aria-hidden="true"><line x1="40" y1="128" x2="216" y2="128" stroke="currentColor" stroke-width="20" stroke-linecap="round"/><polyline points="144 56 216 128 144 200" fill="none" stroke="currentColor" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/></svg></a>

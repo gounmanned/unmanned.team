@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light" data-surface="web">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,119 +17,94 @@
 <meta property="og:image:alt" content="VEX: Don’t get hacked" />
 <meta name="twitter:card" content="summary_large_image" />
 <link rel="icon" type="image/png" href="https://cdn.unmanned.team/img/logo.png">
-<link rel="stylesheet" href="https://cdn.unmanned.team/css/global.css">
-<link rel="stylesheet" href="../static/site.css">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;800&family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+<!-- shared:head --><link rel="preload" href="../static/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="https://cdn.unmanned.team/pulse/v1/pulse-tokens.css">
+<link rel="stylesheet" href="https://cdn.unmanned.team/pulse/v1/pulse-icons.css">
+<link rel="stylesheet" href="https://cdn.unmanned.team/pulse/v1/pulse-components.css">
+<script src="https://cdn.unmanned.team/pulse/v1/pulse.js" defer></script>
+<link rel="stylesheet" href="../static/site.css"><!-- /shared:head -->
 <style>
+  /* shared:basecss */ /* Base, class bar and header rules the main pages keep in their own <style> (API, detections and Dots install style these
+     their own way, so they are not in site.css). */
   h1,h2,h3,h4,p{margin:0;}
   img{display:block;}
   .wrap{width:min(1100px,calc(100% - 2 * var(--gutter)));margin:0 auto;} /* the design's 900px content column */
   @media (max-width:700px){:root{--gutter:16px;}}
 
-  /* ---------- STATUS DOT ---------- */
-
   /* ---------- CLASSIFICATION BAR ---------- */
   .classbar{
-    position:fixed;top:0;left:0;right:0;z-index:60;background:var(--ink);color:var(--gray-faint);
+    position:fixed;top:0;left:0;right:0;z-index:60;background:var(--color-surface-contrast);color:var(--color-neutral-300);
     font-size:9.5px;line-height:1.5;letter-spacing:0.16em;text-transform:uppercase;text-align:center;padding:6px 0;
   }
 
   /* ---------- STICKY HEADER (same as the homepage and VEX MDR) ---------- */
-  .site-header{background:var(--surface);border-bottom:1px solid var(--gray-line);}
+  .site-header{background:var(--color-surface-page);border-bottom:1px solid var(--color-border-default);}
   .site-top .site-header{box-shadow:0 4px 8px -4px rgba(11,12,13,0.1);}
-  .brand{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:800;line-height:1.5;letter-spacing:0.01em;text-decoration:none;color:var(--ink);}
+  .brand{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:800;line-height:1.5;letter-spacing:0.01em;text-decoration:none;color:var(--color-text-primary);}
 
   /* ---------- HIDE ON SCROLL ---------- */
   .classbar{transition:transform 0.4s cubic-bezier(0.49,0.025,0.685,1), opacity 0.4s cubic-bezier(0.49,0.025,0.685,1);}
   html.header-hidden .classbar{transform:translateY(-100%);opacity:0;}
 
-  /* ---------- NAV MENU (phones) ---------- */
-
   @media (max-width:700px){
     :root{--classbar-h:24px;}
     .classbar{font-size:8px;}
   }
-
-  /* ---------- BUTTONS (as on the published pages) ---------- */
+  /* /shared:basecss */
 
   /* ---------- SLACK MOCKUPS: shared pieces ----------
      Everything inside .slack is drawn to look like Slack: Lato, Slack's colors and spacing. */
 
-  /* ---------- HERO ---------- */
-  .text-link:hover img{transform:translateX(3px);}
-
-  /* ---------- SECTION SHELL ---------- */
-
-  /* ---------- PREVENT / DETECT / RESPOND ROW ---------- */
-
-  /* ---------- WHAT YOU GET ---------- */
-
-  /* ---------- TWO PATHS ---------- */
-
-  /* ---------- PRODUCT MOCKUPS: shared frame ---------- */
-
-  /* ---------- SMALLER SCREENS ---------- */
-
-  /* ---------- A DIFFERENT KIND OF PREVENTION ---------- */
-
-  /* ---------- SLACK BAND ---------- */
-
-  /* ---------- TEAM ---------- */
-
   /* ---------- TEAM PAGE (Figma 1963:145905) ---------- */
-  :root{--pink-on-dark:#f5008a;}   /* pink for small text on black (5:1); the usual --pink is just under 4.5:1 there */
   .tm-wrap{width:min(1100px, calc(100% - 2 * var(--gutter)));margin:0 auto;}
-  .tm-role{font-family:var(--mono);font-size:12px;line-height:16px;letter-spacing:0.08em;text-transform:uppercase;}
-  .tm-photo{position:relative;overflow:hidden;aspect-ratio:1;background:var(--surface-gray);}
+  .tm-role{font-family:var(--font-mono);font-size:12px;line-height:16px;letter-spacing:0.08em;text-transform:uppercase;}
+  .tm-photo{position:relative;overflow:hidden;aspect-ratio:1;background:var(--color-surface-subtle);}
   .tm-photo img{position:absolute;max-width:none;display:block;}
 
   /* hero */
-  .tm-hero{position:relative;overflow:hidden;background:var(--surface);}
+  .tm-hero{position:relative;overflow:hidden;background:var(--color-surface-page);}
   .tm-hero-glow{position:absolute;top:-204px;left:50%;width:1802px;height:432px;margin-left:-901px;pointer-events:none;max-width:none;}
   .tm-hero .tm-wrap{position:relative;display:flex;flex-direction:column;align-items:center;gap:24px;padding:128px 0;text-align:center;}
-  .tm-hero h1{font-weight:600;font-size:clamp(34px, 4.2vw, 48px);line-height:1.17;letter-spacing:-0.015em;color:var(--ink);}
-  .tm-lede{max-width:680px;font-size:20px;line-height:32px;color:var(--body);}
+  .tm-hero h1{font-weight:600;font-size:clamp(34px, 4.2vw, 48px);line-height:1.17;letter-spacing:-0.015em;color:var(--color-text-primary);}
+  .tm-lede{max-width:680px;font-size:20px;line-height:32px;color:var(--color-neutral-700);}
 
-  /* founder, on black */
-  .tm-founder{background:#000;color:#fff;overflow:hidden;}
+  /* founder, on black: a dark-theme section (data-theme="dark"), so Pulse tokens give the on-dark colors */
+  .tm-founder{background:var(--color-surface-page);color:var(--color-text-primary);overflow:hidden;}
   .tm-founder .tm-wrap{padding:64px 0 40px;}
   /* David's photo always takes one column of the team grid below, so the photos match in size and line up at every
      width (4 columns on desktop, 2 on tablets and large phones, 1 on phones) */
   .tm-founder-row{position:relative;display:grid;grid-template-columns:repeat(4, minmax(0,1fr));gap:32px;align-items:start;}
   .tm-founder-copy{grid-column:2 / -1;max-width:649px;}
   .tm-founder-glow{position:absolute;left:-155px;top:-149px;width:456px;height:531px;pointer-events:none;max-width:none;}
-  .tm-founder .tm-photo{position:relative;border:1px solid var(--surface-dark);}
+  .tm-founder .tm-photo{position:relative;border:1px solid var(--color-neutral-500);}
   .tm-founder-copy{position:relative;display:flex;flex-direction:column;gap:16px;}
-  .tm-founder-copy .tm-role{color:var(--pink-on-dark);}
+  .tm-founder-copy .tm-role{color:var(--color-text-accent);}
   .tm-founder-copy h2{margin-top:4px;font-weight:700;font-size:20px;line-height:32px;}
   .tm-bio{font-size:16px;line-height:24px;}
-  .tm-book{display:block;font-size:14px;line-height:20px;color:#fff;text-decoration:none;}   /* flows as text, so it wraps cleanly on phones */
-  .tm-book span{color:var(--pink-on-dark);}
+  .tm-book{display:block;font-size:14px;line-height:20px;color:var(--color-text-primary);text-decoration:none;}   /* flows as text, so it wraps cleanly on phones */
+  .tm-book span{color:var(--color-text-accent);}
   .tm-book:hover span{text-decoration:underline;text-underline-offset:3px;}
   .tm-book img{display:inline-block;width:16px;height:16px;margin-left:4px;vertical-align:-3px;}
 
   /* the team */
-  .tm-team{background:var(--surface-gray);}
+  .tm-team{background:var(--color-surface-subtle);}
   .tm-team .tm-wrap{display:flex;flex-direction:column;gap:24px;padding:40px 0 64px;}
-  .tm-team h2,.tm-backers h2{font-weight:600;font-size:clamp(34px * 32 / 52, 4.2vw * 32 / 52, 32px);line-height:1.25;letter-spacing:-0.01em;color:var(--ink);}
+  .tm-team h2,.tm-backers h2{font-weight:600;font-size:clamp(34px * 32 / 52, 4.2vw * 32 / 52, 32px);line-height:1.25;letter-spacing:-0.01em;color:var(--color-text-primary);}
   .tm-grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4, minmax(0,1fr));gap:32px;}
-  .tm-person{display:flex;flex-direction:column;gap:16px;color:var(--body);}
-  .tm-person .tm-photo{border:1px solid var(--gray-faint);border-radius:2px;}
-  .tm-name{display:flex;flex-direction:column;gap:4px;padding-bottom:16px;border-bottom:0.5px solid var(--pink-text);}
+  .tm-person{display:flex;flex-direction:column;gap:16px;color:var(--color-neutral-700);}
+  .tm-person .tm-photo{border:1px solid var(--color-border-mid);border-radius:2px;}
+  .tm-name{display:flex;flex-direction:column;gap:4px;padding-bottom:16px;border-bottom:0.5px solid var(--color-pink-600);}
   .tm-name h3{font-weight:500;font-size:18px;line-height:28px;}
   .tm-person .tm-bio{font-size:14px;line-height:20px;}
 
   /* advisor and backer: white band, the team's card with the photo (or logo) beside the copy, two across.
      Under 900px they fall into the team's compact card below. */
-  .tm-backers{background:var(--surface);}
+  .tm-backers{background:var(--color-surface-page);}
   .tm-backers .tm-wrap{display:flex;flex-direction:column;gap:24px;padding:64px 0;}
-  .tm-logo{display:grid;place-items:center;aspect-ratio:1;background:var(--surface);border:1px solid var(--gray-faint);border-radius:2px;}
+  .tm-logo{display:grid;place-items:center;aspect-ratio:1;background:var(--color-surface-page);border:1px solid var(--color-border-mid);border-radius:2px;}
   .tm-logo img{width:58.75%;height:auto;}
   /* "Visit TheGP": the site's text link, opening a new tab; the external icon takes the link's pink */
   .tm-visit{grid-column:1 / -1;justify-self:start;}
-  .tm-visit::after{content:'';width:16px;height:16px;background:currentColor;-webkit-mask:url(../static/icon-arrow-square-out.svg) center/contain no-repeat;mask:url(../static/icon-arrow-square-out.svg) center/contain no-repeat;}
-  .tm-visit:hover{text-decoration:underline;text-underline-offset:3px;}
   @media (min-width:901px){
     .tm-backers .tm-grid{grid-template-columns:repeat(2, minmax(0,1fr));}
     .tm-backers .tm-person{display:grid;grid-template-columns:160px minmax(0,1fr);column-gap:24px;row-gap:16px;align-content:start;}
@@ -145,7 +120,7 @@
     .tm-person,.tm-founder-row{display:grid;grid-template-columns:140px minmax(0,1fr);column-gap:20px;row-gap:16px;align-items:end;align-content:start;}   /* rows stay at the top when a card is stretched to its neighbour's height */
     .tm-person .tm-photo,.tm-founder .tm-photo{grid-column:1;width:auto;}
     .tm-person .tm-name{grid-column:2;padding-bottom:0;border-bottom:0;}
-    .tm-person .tm-bio{grid-column:1 / -1;padding-top:16px;border-top:0.5px solid var(--pink-text);}
+    .tm-person .tm-bio{grid-column:1 / -1;padding-top:16px;border-top:0.5px solid var(--color-pink-600);}
     .tm-founder-copy{display:contents;}
     .tm-founder-copy > div{grid-column:2;}
     .tm-founder-copy .tm-bio,.tm-book{grid-column:1 / -1;max-width:649px;}
@@ -164,19 +139,16 @@
     .tm-person,.tm-founder-row{grid-template-columns:112px minmax(0,1fr);column-gap:16px;}   /* the narrowest phones: room for the name */
   }
 
-  /* ---------- FOOTER ---------- */
-
-  /* ---------- VEX AI SOC MENU ---------- */
 </style>
 </head>
 <body>
 
-  <div class="classbar">UNMANNED · SIMPLY SECURE</div>
+  <!-- shared:classbar --><div class="classbar">UNMANNED · SIMPLY SECURE</div><!-- /shared:classbar -->
 
   <!-- ============================================================
        HEADER (sticky)
        ============================================================ -->
-  <div class="site-top">
+  <!-- shared:header --><div class="site-top">
     <header class="site-header">
       <div class="wrap header-inner">
         <div class="header-left">
@@ -211,7 +183,7 @@
         <li><a href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener"><span class="nav-link">Schedule a chat</span></a></li>
       </ul>
     </nav>
-  </div>
+  </div><!-- /shared:header -->
 
   <main>
 
@@ -225,7 +197,7 @@
     </div>
   </section>
 
-  <section class="tm-founder" aria-labelledby="founder-name">
+  <section class="tm-founder" data-theme="dark" aria-labelledby="founder-name">
     <div class="tm-wrap">
       <div class="tm-founder-row">
         <img class="tm-founder-glow" src="static/founder-glow.svg" width="456" height="531" alt="" aria-hidden="true">
@@ -280,7 +252,7 @@
           <div class="tm-logo"><img src="static/thegp.png" width="94" height="48" alt="TheGP logo" loading="lazy"></div>
           <div class="tm-name"><p class="tm-role">Partner &amp; investor</p><h3>The General Partnership (TheGP)</h3></div>
           <p class="tm-bio">Unmanned is backed by TheGP, a firm that pairs investment with hands-on company-building support. Its team brings experience across engineering, hiring and bringing products to market.</p>
-          <a class="text-link tm-visit" href="https://www.thegp.com/" target="_blank" rel="noopener" aria-label="Visit TheGP (opens in a new tab)">Visit TheGP</a>
+          <a class="pulse-link tm-visit" href="https://www.thegp.com/" target="_blank" rel="noopener" aria-label="Visit TheGP (opens in a new tab)">Visit TheGP <i class="pulse-icon pulse-icon--arrow-square-out"></i></a>
         </li>
       </ul>
     </div>
@@ -290,93 +262,18 @@
     <div class="wrap">
       <div class="close-box">
         <div class="eyebrow-label"><span class="status-dot"></span>Get started with VEX</div>
-        <div class="close-row"><p>Ready to start using VEX?</p><a class="btn" href="/slack">Get VEX for Slack</a></div>
+        <div class="close-row"><p>Ready to start using VEX?</p><a class="pulse-btn pulse-btn--primary pulse-btn--lg" href="/slack">Get VEX for Slack</a></div>
       </div>
     </div>
   </section>
 
   </main>
 
-  <footer>
+  <!-- shared:footer --><footer>
     <span>© 2026 Unmanned, Inc.</span>
     <nav class="flinks" aria-label="Company"><a href="/privacy/">Privacy</a><span aria-hidden="true">·</span><a href="/terms/">Terms of service</a><span aria-hidden="true">·</span><a href="/team/" aria-current="page">About us</a><span aria-hidden="true">·</span><a class="fext" href="https://gounmanned.substack.com/" target="_blank" rel="noopener noreferrer">Our research</a></nav>
-  </footer>
-  <script src="../static/feedback.js" defer></script>
-
-  <script>
-    (function(){
-      // hide-on-scroll header (same as the other pages)
-      var root = document.documentElement;
-      var top = document.querySelector('.site-top');
-      var classbar = document.querySelector('.classbar');
-      if(!top){ return; }
-      var lastY = window.scrollY;
-      var ticking = false;
-      function update(){
-        ticking = false;
-        var y = window.scrollY;
-        var showZone = top.offsetHeight + (classbar ? classbar.offsetHeight : 0);
-        if(root.classList.contains('nav-open') || root.hasAttribute('data-auto-scroll') || root.hasAttribute('data-story-pinned')){ lastY = y; return; } // menu open, a click-scroll, or the story pinned
-        if(y <= showZone){ root.classList.remove('header-hidden'); lastY = y; return; }
-        if(Math.abs(y - lastY) < 6){ return; }
-        root.classList.toggle('header-hidden', y > lastY);
-        lastY = y;
-      }
-      window.addEventListener('scroll', function(){
-        if(!ticking){ ticking = true; requestAnimationFrame(update); }
-      }, { passive:true });
-      top.addEventListener('focusin', function(){ root.classList.remove('header-hidden'); });
-    })();
-
-    (function(){
-      // phone menu (same as the other pages)
-      var openBtn = document.querySelector('.menu-btn[aria-controls="site-nav"]');
-      var panel = document.getElementById('site-nav');
-      if(!openBtn || !panel){ return; }
-      var closeBtn = panel.querySelector('.menu-close');
-      function openNav(){
-        panel.classList.add('is-open');
-        document.documentElement.classList.add('nav-open');
-        openBtn.setAttribute('aria-expanded','true');
-        closeBtn.focus({ preventScroll:true });
-      }
-      function closeNav(returnFocus){
-        panel.classList.remove('is-open');
-        document.documentElement.classList.remove('nav-open');
-        openBtn.setAttribute('aria-expanded','false');
-        if(returnFocus){ openBtn.focus({ preventScroll:true }); }
-      }
-      openBtn.addEventListener('click', openNav);
-      closeBtn.addEventListener('click', function(){ closeNav(true); });
-      document.addEventListener('keydown', function(e){
-        if(e.key === 'Escape' && panel.classList.contains('is-open')){ closeNav(true); }
-      });
-      panel.addEventListener('click', function(e){
-        if(e.target.closest('a')){ closeNav(false); }
-      });
-      var wide = window.matchMedia('(min-width:701px)');
-      function onWide(){ if(wide.matches && panel.classList.contains('is-open')){ closeNav(false); } }
-      if(wide.addEventListener){ wide.addEventListener('change', onWide); } else { wide.addListener(onWide); }
-    })();
-  
-    (function(){
-      // VEX AI SOC menu: opens on click; closes on a click outside, Escape, leaving it with Tab, or the header hiding
-      var drop = document.querySelector('.nav-drop'); if(!drop){ return; }
-      var btn = drop.querySelector('.nav-drop-btn'), menu = drop.querySelector('.nav-drop-menu');
-      function set(open, focusBtn){
-        btn.setAttribute('aria-expanded', String(open)); menu.hidden = !open;
-        if(!open && focusBtn){ btn.focus({ preventScroll:true }); }
-      }
-      btn.addEventListener('click', function(){ set(menu.hidden); });
-      document.addEventListener('click', function(e){ if(!menu.hidden && !drop.contains(e.target)){ set(false); } });
-      document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && !menu.hidden){ set(false, true); } });
-      drop.addEventListener('focusout', function(e){ if(!menu.hidden && e.relatedTarget && !drop.contains(e.relatedTarget)){ set(false); } });
-      window.addEventListener('scroll', function(){ if(!menu.hidden && document.documentElement.classList.contains('header-hidden')){ set(false); } }, { passive:true });
-      // closed again when you come back: close on following a link, and when the browser restores the page from its
-      // back/forward cache (which keeps the menu as it was)
-      menu.addEventListener('click', function(e){ if(e.target.closest('a')){ set(false); } });
-      window.addEventListener('pageshow', function(e){ if(e.persisted){ set(false); } });
-    })();
-</script>
+  </footer><!-- /shared:footer -->
+  <!-- shared:scripts --><script src="../static/site.js" defer></script>
+  <script src="../static/feedback.js" defer></script><!-- /shared:scripts -->
 </body>
 </html>

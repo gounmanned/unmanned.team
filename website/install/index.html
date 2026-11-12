@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light" data-surface="web">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,36 +19,34 @@
 <link rel="icon" type="image/png" href="https://cdn.unmanned.team/img/logo.png">
 <link rel="apple-touch-icon" href="https://cdn.unmanned.team/img/logo.png">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400&display=swap">
-<link rel="stylesheet" href="https://cdn.unmanned.team/css/global.css">
 
+<!-- shared:head --><link rel="preload" href="../static/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="https://cdn.unmanned.team/pulse/v1/pulse-tokens.css">
+<link rel="stylesheet" href="https://cdn.unmanned.team/pulse/v1/pulse-icons.css">
+<link rel="stylesheet" href="https://cdn.unmanned.team/pulse/v1/pulse-components.css">
+<script src="https://cdn.unmanned.team/pulse/v1/pulse.js" defer></script>
+<link rel="stylesheet" href="../static/site.css"><!-- /shared:head -->
 <style>
+  body{font-family:var(--font-sans);font-size:var(--type-body-md-size);line-height:1.5;}
   /* --surface, --surface-alt and --font-sans come from global.css */
   :root {
-    --ink: #0b0c0d;
-    --pink: #e01280;
-    --pink-text: #d1107a;   /* pink for text on light backgrounds (passes 4.5:1) */
-    --gray-line: #dcdcd8;
-    --surface-dark: #6c6c70;
-    --body: #2b2b2b;
-    --classbar-h: 26px;
+              /* pink for text on light backgrounds (passes 4.5:1) */
+                --classbar-h: 26px;
   }
 
   /* ---------- BASE ---------- */
   *, *::before, *::after { box-sizing: border-box; }
-  body { margin: 0; padding-top: var(--classbar-h); background: var(--surface); color: var(--ink); -webkit-font-smoothing: antialiased; }
+  body { margin: 0; padding-top: var(--classbar-h); background: var(--color-surface-page); color: var(--color-text-primary); -webkit-font-smoothing: antialiased; }
   h1, h2, h3, p { margin: 0; }
   /* line breaks: headlines get even line lengths, body text avoids a single word alone on its last line
      (browsers that don't support these just wrap as before) */
   h1, h2, h3, h4 { text-wrap: balance; }
   p, li { text-wrap: pretty; }
-  a { color: inherit; }
+  a:where(:not([class*="pulse-"])) { color:inherit; }
   b { font-weight: 600; }
   strong { font-weight: 700; }
-  ::selection { background: var(--pink); color: #fff; }
-  a:focus-visible, button:focus-visible { outline: 1.5px solid var(--pink); outline-offset: 4px; }
+  ::selection { background: var(--color-accent-default); color: var(--color-text-on-contrast); }
+  a:where(:not([class*="pulse-"])):focus-visible, button:where(:not([class*="pulse-"])):focus-visible { outline: 1.5px solid var(--color-accent-default); outline-offset: 4px; }
   .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
   /* ---------- CLASSIFICATION BAR + HEADER ----------
@@ -56,24 +54,24 @@
      The script toggles html.header-hidden. */
   .classbar {
     position: fixed; top: 0; left: 0; right: 0; z-index: 60;
-    padding: 6px 0; background: var(--ink); color: #c4c4c4;
+    padding: 6px 0; background: var(--color-surface-contrast); color: var(--color-neutral-300);
     font-size: 9.5px; line-height: 1.5; letter-spacing: 0.16em; text-transform: uppercase; text-align: center;
     transition: transform 0.4s cubic-bezier(0.49, 0.025, 0.685, 1), opacity 0.4s cubic-bezier(0.49, 0.025, 0.685, 1);
   }
   .site-header {
     position: sticky; top: var(--classbar-h); z-index: 50;
-    background: var(--surface); border-bottom: 1px solid var(--gray-line);
+    background: var(--color-surface-page); border-bottom: 1px solid var(--color-border-default);
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
   html.header-hidden .classbar { transform: translateY(-100%); opacity: 0; }
   html.header-hidden .site-header { transform: translateY(calc(-100% - var(--classbar-h))); }
 
-  .header-inner { width: min(1100px, calc(100% - 48px)); margin: 0 auto; display: flex; align-items: center; gap: 16px; padding: 18px 0; }
+  .header-inner { width: min(1100px, calc(100% - 48px)); margin: 0 auto; display: flex; align-items: center; justify-content: flex-start; gap: 16px; padding: 18px 0; }
   .brand { display: flex; align-items: center; gap: 8px; font-size: 16px; font-weight: 800; line-height: 1.5; letter-spacing: 0.01em; }
-  .brand-tag { font-size: 11px; line-height: 1.5; letter-spacing: 0.18em; text-transform: uppercase; white-space: nowrap; color: var(--surface-dark); }
+  .brand-tag { font-size: 11px; line-height: 1.5; letter-spacing: 0.18em; text-transform: uppercase; white-space: nowrap; color: var(--color-text-tertiary); }
 
   /* status dot: ripples twice, then rests */
-  .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--pink); animation: pulse 2.2s 2; }
+  .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--color-accent-default); animation: pulse 2.2s 2; }
   @keyframes pulse {
     0%   { box-shadow: 0 0 0 0 rgba(224, 18, 128, 0.45); }
     70%, 100% { box-shadow: 0 0 0 8px rgba(224, 18, 128, 0); }
@@ -87,41 +85,36 @@
   .install section { position: relative; display: flex; flex-direction: column; align-items: center; gap: 32px; padding: 64px 24px; text-align: center; }
 
   .hero h1 { font-weight: 600; font-size: clamp(34px, 6vw, 48px); line-height: 1.1; letter-spacing: -0.02em; }
-  .hero-sub { margin-top: 24px; font-size: 14px; line-height: 1.55; color: var(--body); }
-  .btn {
-    display: inline-flex; justify-content: center; width: 240px; padding: 15px 30px;
-    background: var(--pink); color: #fff; font-weight: 600; font-size: 15px; line-height: 1.5;
-    text-decoration: none; white-space: nowrap; transition: opacity 0.2s ease;
-  }
-  .btn:hover { opacity: 0.8; }
-  .lede { max-width: 680px; font-size: 16px; line-height: 1.75; color: var(--body); }
+  .hero-sub { margin-top: 24px; font-size: 14px; line-height: 1.55; color: var(--color-neutral-700); }
+  .lede { max-width: 680px; font-size: 16px; line-height: 1.75; color: var(--color-neutral-700); }
 
   /* ---------- INSTRUCTIONS ---------- */
   .install .instructions { gap: 24px; padding-top: 0; }
   .instructions h2 { font-weight: 500; font-size: clamp(24px, 4vw, 30px); line-height: 1.5; letter-spacing: -0.01em; }
 
   .os-picker { display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: 14px; line-height: 1.55; }
-  .os-toggle { display: inline-flex; gap: 2px; padding: 4px; background: var(--surface-alt); border-radius: 8px; }
+  .os-toggle { display: inline-flex; gap: 2px; padding: 4px; background: var(--color-surface-sunken); border-radius: 8px; }
   .os-toggle button {
     padding: 4px 16px; border: none; border-radius: 6px; background: none; cursor: pointer;
-    font: inherit; font-weight: 500; font-size: 17px; line-height: 1.5; color: var(--surface-dark);
+    font: inherit; font-weight: 500; font-size: 17px; line-height: 1.5; color: var(--color-text-tertiary);
   }
-  .os-toggle [aria-pressed="true"] { background: var(--surface); color: var(--ink); box-shadow: 0 1px 1px rgba(23, 23, 28, 0.1); }
+  .os-toggle [aria-pressed="true"] { background: var(--color-surface-page); color: var(--color-text-primary); box-shadow: 0 1px 1px rgba(23, 23, 28, 0.1); }
 
   .install-steps { width: 100%; max-width: 680px; margin: 0; padding: 0; list-style: none; counter-reset: step; text-align: left; }
-  .install-step { display: flex; align-items: flex-start; gap: 16px; padding: 20px 0; border-top: 1px solid var(--gray-line); counter-increment: step; }
+  .install-step { display: flex; align-items: flex-start; gap: 16px; padding: 20px 0; border-top: 1px solid var(--color-border-default); counter-increment: step; }
   .install-step[hidden] { display: none; }  /* display:flex would otherwise override [hidden] */
   .step-num {
     flex-shrink: 0; display: flex; align-items: center; justify-content: center;
-    width: 20px; height: 20px; margin-top: 5px; border: 1.5px solid var(--pink); border-radius: 50%;
-    font-weight: 600; font-size: 13px; line-height: 1; color: var(--pink-text);
+    width: 20px; height: 20px; margin-top: 5px; border: 1.5px solid var(--color-accent-default); border-radius: 50%;
+    font-weight: 600; font-size: 13px; line-height: 1; color: var(--color-text-accent);
   }
   .step-num::before { content: counter(step); }
   .install-step-body { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 16px; }
   .install-step h3 { font-weight: 600; font-size: 20px; line-height: 1.5; letter-spacing: -0.01em; }
-  .install-step-body p, .install-step-body li, .install-key { color: var(--body); }
+  .install-step-body p, .install-step-body li, .install-key { color: var(--color-neutral-700); }
   .step-copy { display: flex; flex-direction: column; gap: 12px; }
   .step-copy p, .step-copy li { font-size: 16px; line-height: 1.75; }
+  a.pulse-btn { width: 240px; }   /* the download button keeps its set width */
   .step-copy ul { margin: 0; padding-left: 24px; list-style: disc; }  /* overrides global.css */
   .step-note { font-size: 13.5px; line-height: 1.6; }
 
@@ -137,54 +130,29 @@
   .terminal-look p { font-size: 16px; line-height: 1.75; }
   .terminal-look img { display: block; border-radius: 8px; }
   /* the install command, with this person's key filled in by the script */
-  .command { display: flex; align-items: flex-start; gap: 36px; width: 100%; padding: 16px 16px 18px; background: #f7f7f7; border: 1px solid var(--gray-line); border-radius: 4px; }
-  .command code { flex: 1; min-width: 0; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12.5px; line-height: 1.7; color: var(--ink); overflow-wrap: anywhere; }
+  .command { display: flex; align-items: flex-start; gap: 36px; width: 100%; padding: 16px 16px 18px; background: var(--color-surface-subtle); border: 1px solid var(--color-border-default); border-radius: 4px; }
+  .command code { flex: 1; min-width: 0; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12.5px; line-height: 1.7; color: var(--color-text-primary); overflow-wrap: anywhere; }
   .command .tooltip { left: auto; right: -6px; transform: translateY(-4px); }   /* keep the tooltip inside the box */
-  .command .tooltip::before { left: auto; right: 8px; margin-left: 0; }
-  .install-key-error a { color: var(--pink-text); }
+  .command .tooltip::after { left: auto; right: 12px; transform: rotate(45deg); }
+  .install-key-error a { color: var(--color-text-accent); }
 
-  .copy-btn { position: relative; display: flex; padding: 2px; border: none; border-radius: 4px; background: none; cursor: pointer; }
-  .copy-btn:hover:not(:disabled) { background: var(--surface-alt); }
-  .copy-btn:disabled { cursor: default; opacity: 0.4; }
-  .copy-btn img { display: block; }
 
   /* Tooltip under the copy button: shows on hover / keyboard focus, and says "Copied" after a click */
-  .tooltip {
-    position: absolute; top: calc(100% + 12px); left: 50%; z-index: 5;
-    padding: 8px 12px; border-radius: 4px; background: var(--surface-dark); color: #fff;
-    font-family: var(--font-sans); font-size: 13px; line-height: normal; white-space: nowrap;
-    filter: drop-shadow(0 6px 4px rgba(0, 0, 0, 0.16));
-    opacity: 0; visibility: hidden; pointer-events: none;
-    transform: translate(-50%, -4px);
-    transition: opacity 0.15s, transform 0.15s, visibility 0s 0.15s;
-  }
-  .tooltip::before {
-    content: ''; position: absolute; bottom: 100%; left: 50%; margin-left: -8px;
-    border: 8px solid transparent; border-top: 0; border-bottom-color: var(--surface-dark);
-  }
+  /* copy tooltip = pulse-tooltip; this keeps it under the button (caret on top) and shows it on hover, focus and copy */
+  .tooltip { position:absolute; top:calc(100% + 10px); left:50%; transform:translateX(-50%) translateY(-4px); white-space:nowrap; opacity:0; visibility:hidden; pointer-events:none; transition:opacity 0.15s ease, transform 0.15s ease, visibility 0s linear 0.15s; z-index:5; }
+  .tooltip::after { bottom: auto; top: -4px; }
   .copy-btn:hover:not(:disabled) .tooltip, .copy-btn:focus-visible .tooltip, .copy-btn.is-copied .tooltip {
     opacity: 1; visibility: visible; transform: translate(-50%, 0); transition-delay: 0s;
   }
   .command .copy-btn:hover:not(:disabled) .tooltip, .command .copy-btn:focus-visible .tooltip, .command .copy-btn.is-copied .tooltip { transform: translateY(0); }
 
-  /* ---------- FOOTER ---------- */
-  footer {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 28px 56px 40px; border-top: 1px solid var(--gray-line);
-    font-size: 10.5px; line-height: 1.5; letter-spacing: 0.08em; text-transform: uppercase; color: var(--surface-dark);
-  }
-  footer a { text-decoration: none; }
-  footer a:hover, .fmark { color: var(--ink); }
-  .fmark { font-weight: 500; }
-
   /* ---------- RESPONSIVE ---------- */
   @media (max-width: 700px) {
     .classbar { font-size: 8px; }
-    footer { flex-direction: column; gap: 10px; padding: 22px 20px 36px; }
   }
   @media (max-width: 560px) {
     .brand-tag { display: none; }
-    .btn { width: 100%; }
+    a.pulse-btn { width: 100%; }
     .command { gap: 16px; }
   }
   @media (prefers-reduced-motion: reduce) {
@@ -195,7 +163,7 @@
 </head>
 <body>
 
-<div class="classbar">Unmanned · Simply secure</div>
+<!-- shared:classbar --><div class="classbar">UNMANNED · SIMPLY SECURE</div><!-- /shared:classbar -->
 
 <header class="site-header">
   <div class="header-inner">
@@ -253,9 +221,9 @@
           </div>
           <div class="command">
             <code id="mac-command">Loading your install command…</code>
-            <button class="copy-btn" type="button" data-copy="mac-command" aria-label="Copy the Terminal command to clipboard" disabled>
-              <img src="static/icon-copy.svg" width="20" height="20" alt="">
-              <span class="tooltip" aria-hidden="true">Copy to clipboard</span>
+            <button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn" type="button" data-copy="mac-command" aria-label="Copy the Terminal command to clipboard" disabled>
+              <i class="pulse-icon pulse-icon--copy"></i>
+              <span class="pulse-tooltip tooltip" aria-hidden="true">Copy to clipboard</span>
             </button>
           </div>
           <p class="install-key-error" hidden>We couldn’t load your install key. Email <a href="mailto:security@vex.unmanned.team">security@vex.unmanned.team</a> and we’ll send it to you.</p>
@@ -284,7 +252,7 @@
         <span class="step-num" aria-hidden="true"></span>
         <div class="install-step-body">
           <h3>Download the installer</h3>
-          <a class="btn" href="https://downloads.level.io/level.msi">Download for Windows</a>
+          <a class="pulse-btn pulse-btn--primary pulse-btn--lg" href="https://downloads.level.io/level.msi">Download for Windows</a>
           <div class="step-copy">
             <p>It saves a small file to your Downloads folder.</p>
           </div>
@@ -303,9 +271,9 @@
             <strong>When prompted, enter install key:</strong>
             <span class="install-key-value">
               <code id="install-key">Loading…</code>
-              <button class="copy-btn" type="button" data-copy="install-key" aria-label="Copy install key to clipboard" disabled>
-                <img src="static/icon-copy.svg" width="20" height="20" alt="">
-                <span class="tooltip" aria-hidden="true">Copy to clipboard</span>
+              <button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn" type="button" data-copy="install-key" aria-label="Copy install key to clipboard" disabled>
+                <i class="pulse-icon pulse-icon--copy"></i>
+                <span class="pulse-tooltip tooltip" aria-hidden="true">Copy to clipboard</span>
               </button>
             </span>
           </div>
@@ -327,10 +295,10 @@
   </section>
 </main>
 
-<footer>
-  <span class="fmark">Unmanned</span>
-  <a href="https://gounmanned.substack.com/" target="_blank" rel="noopener noreferrer">OUR RESEARCH</a>
-</footer>
+<!-- shared:footer --><footer>
+    <span>© 2026 Unmanned, Inc.</span>
+    <nav class="flinks" aria-label="Company"><a href="/privacy/">Privacy</a><span aria-hidden="true">·</span><a href="/terms/">Terms of service</a><span aria-hidden="true">·</span><a href="/team/">About us</a><span aria-hidden="true">·</span><a class="fext" href="https://gounmanned.substack.com/" target="_blank" rel="noopener noreferrer">Our research</a></nav>
+  </footer><!-- /shared:footer -->
 
 <script>
   const $ = (sel) => document.querySelector(sel);

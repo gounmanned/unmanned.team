@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="no-js">
+<html lang="en" data-theme="light" data-surface="web" class="no-js">
 <head>
 <meta charset="UTF-8">
 <script>document.documentElement.classList.replace('no-js','js');</script>
@@ -18,27 +18,27 @@
 <meta property="og:image:height" content="630" />
 <meta property="og:image:alt" content="VEX: Don’t get hacked" />
 <meta name="twitter:card" content="summary_large_image" />
-<link rel="stylesheet" href="https://cdn.unmanned.team/css/global.css">
-<link rel="stylesheet" href="../static/site.css">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;800&display=swap" rel="stylesheet">
+<!-- shared:head --><link rel="preload" href="../static/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="https://cdn.unmanned.team/pulse/v1/pulse-tokens.css">
+<link rel="stylesheet" href="https://cdn.unmanned.team/pulse/v1/pulse-icons.css">
+<link rel="stylesheet" href="https://cdn.unmanned.team/pulse/v1/pulse-components.css">
+<script src="https://cdn.unmanned.team/pulse/v1/pulse.js" defer></script>
+<link rel="stylesheet" href="../static/site.css"><!-- /shared:head -->
 <style>
   h1,h2,h3,p{margin:0;}
   .wrap{width:min(1100px,calc(100% - 48px));margin:0 auto;}
-  code{font-family:var(--mono);font-size:0.92em;color:var(--ink);}
-
-  /* ---------- STATUS DOT ---------- */
+  code{font-family:var(--font-mono);font-size:0.92em;color:var(--color-text-primary);}
 
   /* ---------- CLASSIFICATION BAR ---------- */
   .classbar{
-    position:fixed;top:0;left:0;right:0;z-index:60;background:var(--ink);color:var(--gray-faint);
+    position:fixed;top:0;left:0;right:0;z-index:60;background:var(--color-surface-contrast);color:var(--color-neutral-300);
     font-size:9.5px;line-height:1.5;letter-spacing:0.16em;text-transform:uppercase;text-align:center;padding:6px 0;
   }
 
   /* ---------- STICKY HEADER ----------
      Same header as the other pages. On this page the logo isn't a link and there are no nav links (for now). */
-  .site-header{background:var(--surface);border-bottom:1px solid var(--gray-line);box-shadow:0 4px 8px -4px rgba(11,12,13,0.1);}
-  .brand{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:800;line-height:1.5;letter-spacing:0.01em;color:var(--ink);}
+  .site-header{background:var(--color-surface-page);border-bottom:1px solid var(--color-border-default);box-shadow:0 4px 8px -4px rgba(11,12,13,0.1);}
+  .brand{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:800;line-height:1.5;letter-spacing:0.01em;color:var(--color-text-primary);}
 
   /* ---------- HIDE ON SCROLL ----------
      Scrolling down slides the class bar and header up out of view; scrolling up brings them back.
@@ -58,9 +58,9 @@
   .hero h1{font-weight:600;font-size:clamp(40px,6vw,70px);line-height:0.99;letter-spacing:-0.03em;}
   .base-url{
     display:flex;align-items:center;gap:12px;padding:12px 12px 12px 16px;max-width:100%;
-    background:var(--surface-alt);border:1px solid var(--gray-line);border-radius:4px;
+    background:var(--color-surface-sunken);border:1px solid var(--color-border-default);border-radius:4px;
   }
-  .base-url-label{font-size:11px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;color:var(--surface-dark);white-space:nowrap;}
+  .base-url-label{font-size:11px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-text-tertiary);white-space:nowrap;}
   .base-url code{font-weight:500;font-size:14px;line-height:1.5;overflow-wrap:anywhere;}
   @media (max-width:700px){
     .hero{padding:48px 0;}
@@ -74,43 +74,40 @@
      and says "Copied" for a moment after a click. */
 
   /* ---------- BODY: JUMP MENU + CONTENT ---------- */
-  .api-body{border-top:1px solid var(--gray-line);}
+  .api-body{border-top:1px solid var(--color-border-default);}
   .api-layout{display:grid;grid-template-columns:240px minmax(0,804px);justify-content:space-between;padding-bottom:96px;}
   .jump-list{list-style:none;margin:0;padding:0;}
-  .jump-link{
-    display:block;padding:10px 0 12px 16px;border-left:1px solid var(--gray-line);
-    font-weight:500;font-size:14px;line-height:1.5;color:var(--body);text-decoration:none;transition:color 0.2s ease;
-  } /* the section you're reading */
+  .jump-link{display:block;transition:color 0.2s ease;} /* the section you're reading */
 
   /* ---------- SECTIONS ---------- */
   .api-section{display:flex;flex-direction:column;gap:56px;padding:64px 0 40px;scroll-margin-top:calc(var(--classbar-h) + var(--top-h, 61px) - 40px);}
-  .api-section + .api-section{border-top:1px solid var(--gray-line);}
+  .api-section + .api-section{border-top:1px solid var(--color-border-default);}
   .section-head{display:flex;flex-direction:column;gap:16px;}
   .section-head h2{font-weight:500;font-size:clamp(34px,4.2vw,52px);line-height:1.14;letter-spacing:-0.01em;}
 
   .endpoint{display:flex;flex-direction:column;gap:20px;}
   .endpoint-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
-  .method{padding:4px 8px;border-radius:2px;font-family:var(--mono);font-weight:700;font-size:11px;line-height:1.5;letter-spacing:0.04em;color:#fff;}
-  .method--get{background:var(--go-text);}
-  .method--post{background:var(--pink);}
-  .method--delete{background:var(--sev-1);}
-  .endpoint-path{font-family:var(--mono);font-weight:500;font-size:20px;line-height:1.4;overflow-wrap:anywhere;}
+  .method{padding:4px 8px;border-radius:2px;font-family:var(--font-mono);font-weight:700;font-size:11px;line-height:1.5;letter-spacing:0.04em;color:var(--color-text-on-contrast);}
+  .method--get{background:var(--color-status-success);}
+  .method--post{background:var(--color-accent-default);}
+  .method--delete{background:var(--color-status-danger);}
+  .endpoint-path{font-family:var(--font-mono);font-weight:500;font-size:20px;line-height:1.4;overflow-wrap:anywhere;}
   .endpoint-title{font-weight:600;font-size:20px;line-height:1.5;letter-spacing:-0.01em;}
-  .endpoint-status{margin-left:auto;font-family:var(--mono);font-weight:500;font-size:12px;color:var(--surface-dark);white-space:nowrap;}
-  .endpoint-desc{font-size:14.5px;line-height:1.75;color:var(--body);}
-  .note{font-size:13.5px;line-height:1.5;color:var(--surface-dark);}
-  .note code{color:var(--body);}
+  .endpoint-status{margin-left:auto;font-family:var(--font-mono);font-weight:500;font-size:12px;color:var(--color-text-tertiary);white-space:nowrap;}
+  .endpoint-desc{font-size:14.5px;line-height:1.75;color:var(--color-neutral-700);}
+  .note{font-size:13.5px;line-height:1.5;color:var(--color-text-tertiary);}
+  .note code{color:var(--color-neutral-700);}
 
   /* callout card */
-  .callout{display:flex;flex-direction:column;gap:12px;padding:20px 24px;background:var(--white);border:1px solid var(--gray-line);border-radius:4px;}
-  .callout p{font-size:14.5px;line-height:1.75;color:var(--body);}
+  .callout{display:flex;flex-direction:column;gap:12px;padding:20px 24px;background:var(--color-neutral-25);border:1px solid var(--color-border-default);border-radius:4px;}
+  .callout p{font-size:14.5px;line-height:1.75;color:var(--color-neutral-700);}
 
   /* tables */
   table{width:100%;border-collapse:collapse;}
-  th{padding:0 16px 8px 0;text-align:left;font-weight:400;font-size:11px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;color:var(--surface-dark);}
-  td{padding:12px 16px 12px 0;border-top:1px solid var(--gray-line);vertical-align:top;font-size:13px;line-height:1.5;color:var(--body);}
+  th{padding:0 16px 8px 0;text-align:left;font-weight:400;font-size:11px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-text-tertiary);}
+  td{padding:12px 16px 12px 0;border-top:1px solid var(--color-border-default);vertical-align:top;font-size:13px;line-height:1.5;color:var(--color-neutral-700);}
   th:last-child,td:last-child{padding-right:0;}
-  td:first-child{font-family:var(--mono);font-weight:500;color:var(--ink);}
+  td:first-child{font-family:var(--font-mono);font-weight:500;color:var(--color-text-primary);}
   .param-table th:nth-child(1){width:150px;}
   .param-table th:nth-child(2){width:156px;}
   .param-table th:nth-child(3){width:146px;}
@@ -120,8 +117,8 @@
   .value-table--wide th:first-child,.value-table--wide th:nth-child(2):not(:last-child){width:auto;} /* the Managed comparison: words, not codes */
   .value-table--wide td:first-child{font-family:inherit;font-weight:600;}
   .req,.opt{font-weight:600;font-size:12px;}
-  .req{color:var(--pink-text);}
-  .opt{color:var(--surface-dark);}
+  .req{color:var(--color-text-accent);}
+  .opt{color:var(--color-text-tertiary);}
 
   /* ---------- JUMP MENU + TABLES ON SMALLER SCREENS ---------- */
   @media (max-width:900px){
@@ -130,11 +127,9 @@
     .jump-current{font-weight:600;font-size:14px;line-height:1.5;}
     .jump-list{
       display:none;position:absolute;top:100%;left:0;right:0;max-height:calc(100vh - 160px);overflow-y:auto;overscroll-behavior:contain;
-      padding:8px 24px 16px;background:var(--surface);border-bottom:1px solid var(--gray-line);box-shadow:0 12px 24px -12px rgba(11,12,13,0.18);
+      padding:8px 24px 16px;background:var(--color-surface-page);border-bottom:1px solid var(--color-border-default);box-shadow:0 12px 24px -12px rgba(11,12,13,0.18);
     }
     .jump.is-open .jump-list{display:block;}
-    .jump-link{padding:12px 0 12px 16px;}
-    .jump-link.is-active{padding-left:15px;}
     .api-section{scroll-margin-top:calc(var(--classbar-h) + var(--top-h, 61px) + 64px);}
     /* 4) the page behind the open menu doesn't scroll */
     html.jump-open{overflow:hidden;} /* lock html only: locking body too would break the sticky bar */
@@ -147,17 +142,15 @@
     .endpoint-path,.endpoint-title{flex-basis:100%;}
     /* parameter tables become a stacked list: name + Required/Optional, then "in · type", then the description */
     .param-table thead{display:none;}
-    .param-table tr{display:grid;grid-template-columns:auto auto 1fr;column-gap:6px;padding:12px 0;border-top:1px solid var(--gray-line);}
+    .param-table tr{display:grid;grid-template-columns:auto auto 1fr;column-gap:6px;padding:12px 0;border-top:1px solid var(--color-border-default);}
     .param-table td{border:0;padding:0;}
     .param-table td:nth-child(1){grid-column:1 / 3;}
     .param-table td:nth-child(4){grid-column:3;grid-row:1;justify-self:end;}
-    .param-table td:nth-child(2),.param-table td:nth-child(3){grid-row:2;font-size:12px;color:var(--surface-dark);}
+    .param-table td:nth-child(2),.param-table td:nth-child(3){grid-row:2;font-size:12px;color:var(--color-text-tertiary);}
     .param-table td:nth-child(3)::before{content:'· ';}
     .param-table td:nth-child(5){grid-column:1 / -1;padding-top:4px;}
     .callout{padding:16px;}
   }
-
-  /* ---------- FOOTER ---------- */
 
   /* ---------- BACK TO TOP ----------
      Floats in the bottom corner when you scroll back up after reading down the page; hides again when you scroll down. */
@@ -172,23 +165,23 @@
   a.brand{text-decoration:none;}
   @media (prefers-reduced-motion: reduce){ .nav-panel,.nav-panel.is-open,.header-link,.header-link--cta img{transition:none;} }
 
-  /* ---------- VEX AI SOC MENU ---------- */
 </style>
 </head>
 <body>
 
-  <div class="classbar">UNMANNED · SIMPLY SECURE</div>
+  <!-- shared:classbar --><div class="classbar">UNMANNED · SIMPLY SECURE</div><!-- /shared:classbar -->
 
   <!-- ============================================================
        HEADER (sticky)
        ============================================================ -->
-  <div class="site-top">
+  <!-- shared:header --><div class="site-top">
     <header class="site-header">
       <div class="wrap header-inner">
         <div class="header-left">
           <a href="/" class="brand"><span class="status-dot"></span>VEX</a>
           <span class="brand-tag">Don’t get hacked</span>
-        </div>        <nav class="header-links" aria-label="Main">
+        </div>
+        <nav class="header-links" aria-label="Main">
           <div class="nav-drop"><button class="header-link nav-drop-btn is-current" type="button" aria-expanded="false" aria-controls="soc-menu">VEX AI SOC<span class="nav-caret" aria-hidden="true"></span></button><div class="nav-drop-menu" id="soc-menu" hidden><a href="/how-it-works/"><b>How VEX works</b><span>Good prevention starts with great detection.</span></a><a href="/detections/"><b>What VEX detects</b><span>Every alert type VEX can raise.</span></a><a href="/api/" aria-current="page"><b>VEX API</b><span>The actual API.</span></a></div></div>
           <a class="header-link header-link--slack" href="/slack"><img src="../static/slack-logo.svg" width="24" height="24" alt="">VEX for Slack</a>
           <a class="header-link header-link--cta" href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener">Schedule a chat <img src="../static/icon-arrow-right-pink.svg" width="16" height="16" alt=""></a>
@@ -197,6 +190,7 @@
       </div>
     </header>
   </div>
+
   <!-- ============================================================
        NAV MENU (phones)
        ============================================================ -->
@@ -215,7 +209,7 @@
         <li><a href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener"><span class="nav-link">Schedule a chat</span></a></li>
       </ul>
     </nav>
-  </div>
+  </div><!-- /shared:header -->
 
   <main>
 
@@ -231,7 +225,7 @@
       <div class="base-url">
         <span class="base-url-label">Base URL</span>
         <code id="base-url">https://4ycv63am8b.execute-api.us-east-2.amazonaws.com</code>
-        <button class="copy-btn" type="button" aria-label="Copy base URL to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button>
+        <button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn" type="button" aria-label="Copy base URL to clipboard"><i class="pulse-icon pulse-icon--copy"></i><span class="pulse-tooltip tooltip" aria-hidden="true">copy to clipboard</span></button>
       </div>
     </div>
   </section>
@@ -250,15 +244,15 @@
           <span class="jump-toggle-text"><span class="jump-toggle-label">On this page</span><span class="jump-current">Authentication</span></span>
           <img src="../static/icon-chevron-down.svg" width="20" height="20" alt="">
         </button>
-        <ul class="jump-list" id="jump-list">
-          <li><a class="jump-link" href="#auth">Authentication</a></li>
-          <li><a class="jump-link" href="#managed">Managed</a></li>
-          <li><a class="jump-link" href="#signals">Signals</a></li>
-          <li><a class="jump-link" href="#sources">Sources</a></li>
-          <li><a class="jump-link" href="#identities">Identities</a></li>
-          <li><a class="jump-link" href="#notifications">Notifications</a></li>
-          <li><a class="jump-link" href="#files">Files</a></li>
-          <li><a class="jump-link" href="#audit">Audit</a></li>
+        <ul class="jump-list pulse-tabs pulse-tabs--vertical" id="jump-list">
+          <li><a class="jump-link pulse-tab" href="#auth">Authentication</a></li>
+          <li><a class="jump-link pulse-tab" href="#managed">Managed</a></li>
+          <li><a class="jump-link pulse-tab" href="#signals">Signals</a></li>
+          <li><a class="jump-link pulse-tab" href="#sources">Sources</a></li>
+          <li><a class="jump-link pulse-tab" href="#identities">Identities</a></li>
+          <li><a class="jump-link pulse-tab" href="#notifications">Notifications</a></li>
+          <li><a class="jump-link pulse-tab" href="#files">Files</a></li>
+          <li><a class="jump-link pulse-tab" href="#audit">Audit</a></li>
         </ul>
       </nav>
 
@@ -285,14 +279,14 @@
           </tbody>
         </table>
         <div class="code-panel">
-          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy request to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
+          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn" type="button" aria-label="Copy request to clipboard"><i class="pulse-icon pulse-icon--copy"></i><span class="pulse-tooltip tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code><span class="t-fn">curl</span> https://cognito-idp.us-east-2.amazonaws.com/ \
   -H <span class="t-str">"Content-Type: application/x-amz-json-1.1"</span> \
   -H <span class="t-str">"X-Amz-Target: AWSCognitoIdentityProviderService.InitiateAuth"</span> \
   -d <span class="t-str">'{"AuthFlow": "USER_PASSWORD_AUTH", "ClientId": "2314edi18c3o3t8sroh2u2hucf", "AuthParameters": {"USERNAME": "you@yourcompany.com", "PASSWORD": "your-password"}}'</span></code></pre>
         </div>
         <div class="code-panel">
-          <div class="code-head"><span class="code-file">response</span><span class="code-lang">JSON</span><button class="copy-btn" type="button" aria-label="Copy response to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
+          <div class="code-head"><span class="code-file">response</span><span class="code-lang">JSON</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn" type="button" aria-label="Copy response to clipboard"><i class="pulse-icon pulse-icon--copy"></i><span class="pulse-tooltip tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code>{
    <span class="t-key">"AuthenticationResult"</span> : {
       <span class="t-key">"IdToken"</span> : <span class="t-str">"eyJraWQiOi..."</span>,
@@ -312,7 +306,7 @@
         </div>
         <p class="endpoint-desc">Every other request in this reference carries that token as a bearer header. Scoped to one workspace: no per-request signing, no separate keys per endpoint.</p>
         <div class="code-panel">
-          <div class="code-head"><span class="code-file">save-token.sh</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy save-token.sh to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
+          <div class="code-head"><span class="code-file">save-token.sh</span><span class="code-lang">Shell</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn" type="button" aria-label="Copy save-token.sh to clipboard"><i class="pulse-icon pulse-icon--copy"></i><span class="pulse-tooltip tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code><span class="t-fn">export</span> VEX_TOKEN=$(<span class="t-fn">curl</span> https://cognito-idp.us-east-2.amazonaws.com/ \
   -H <span class="t-str">"Content-Type: application/x-amz-json-1.1"</span> \
   -H <span class="t-str">"X-Amz-Target: AWSCognitoIdentityProviderService.InitiateAuth"</span> \
@@ -321,7 +315,7 @@
         </div>
         <p class="note">Every curl example in this reference assumes <code>$VEX_TOKEN</code> is already set this way. Run it once per session and the rest just work.</p>
         <div class="code-panel">
-          <div class="code-head"><span class="code-file">auth-header.sh</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy auth-header.sh to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
+          <div class="code-head"><span class="code-file">auth-header.sh</span><span class="code-lang">Shell</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn" type="button" aria-label="Copy auth-header.sh to clipboard"><i class="pulse-icon pulse-icon--copy"></i><span class="pulse-tooltip tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code><span class="t-fn">curl</span> https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/source \
   -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span></code></pre>
         </div>
@@ -345,7 +339,7 @@
           </tbody>
         </table>
         <div class="code-panel">
-          <div class="code-head"><span class="code-file">delegate.sh</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy delegate.sh to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
+          <div class="code-head"><span class="code-file">delegate.sh</span><span class="code-lang">Shell</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn" type="button" aria-label="Copy delegate.sh to clipboard"><i class="pulse-icon pulse-icon--copy"></i><span class="pulse-tooltip tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code><span class="t-cmnt"># Lists the sources in example.com instead of your own account</span>
 <span class="t-fn">curl</span> https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/source \
   -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span> \
@@ -381,7 +375,7 @@
           <p>If you manage several accounts, this is the one call worth knowing about: it returns every open signal across all of them in a single response, so you don’t have to loop over each account with the <code>account</code> header just to check for open work.</p>
         </div>
         <div class="code-panel">
-          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy request to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
+          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn" type="button" aria-label="Copy request to clipboard"><i class="pulse-icon pulse-icon--copy"></i><span class="pulse-tooltip tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code><span class="t-fn">curl</span> https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/managed/signal \
   -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span></code></pre>
         </div>
@@ -394,7 +388,7 @@
         </div>
         <p class="endpoint-desc">Every identity across every account you manage, in one call.</p>
         <div class="code-panel">
-          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy request to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
+          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn" type="button" aria-label="Copy request to clipboard"><i class="pulse-icon pulse-icon--copy"></i><span class="pulse-tooltip tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code><span class="t-fn">curl</span> https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/managed/asset \
   -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span></code></pre>
         </div>
@@ -434,12 +428,12 @@
           </tbody>
         </table>
         <div class="code-panel">
-          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy request to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
+          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn" type="button" aria-label="Copy request to clipboard"><i class="pulse-icon pulse-icon--copy"></i><span class="pulse-tooltip tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code><span class="t-fn">curl</span> <span class="t-str">"https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/signal?date=2026-08-27"</span> \
   -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span></code></pre>
         </div>
         <div class="code-panel">
-          <div class="code-head"><span class="code-file">response</span><span class="code-lang">JSON</span><button class="copy-btn" type="button" aria-label="Copy response to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
+          <div class="code-head"><span class="code-file">response</span><span class="code-lang">JSON</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn" type="button" aria-label="Copy response to clipboard"><i class="pulse-icon pulse-icon--copy"></i><span class="pulse-tooltip tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code>[
   {
     <span class="t-key">"id"</span>: <span class="t-num">482910736244</span>,
@@ -484,12 +478,12 @@
         </div>
         <p class="endpoint-desc">The full detail on one signal.</p>
         <div class="code-panel">
-          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy request to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
+          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn" type="button" aria-label="Copy request to clipboard"><i class="pulse-icon pulse-icon--copy"></i><span class="pulse-tooltip tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code><span class="t-fn">curl</span> https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/signal/719203845561 \
   -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span></code></pre>
         </div>
         <div class="code-panel">
-          <div class="code-head"><span class="code-file">response</span><span class="code-lang">JSON</span><button class="copy-btn" type="button" aria-label="Copy response to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
+          <div class="code-head"><span class="code-file">response</span><span class="code-lang">JSON</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn" type="button" aria-label="Copy response to clipboard"><i class="pulse-icon pulse-icon--copy"></i><span class="pulse-tooltip tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code>{
   <span class="t-key">"id"</span>: <span class="t-num">719203845561</span>,
   <span class="t-key">"source"</span>: <span class="t-str">"microsoft"</span>,
@@ -524,7 +518,7 @@
           </tbody>
         </table>
         <div class="code-panel">
-          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy request to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
+          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn" type="button" aria-label="Copy request to clipboard"><i class="pulse-icon pulse-icon--copy"></i><span class="pulse-tooltip tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code><span class="t-fn">curl</span> -X POST https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/signal \
   -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span> \
   -H <span class="t-str">"Content-Type: application/json"</span> \
@@ -558,12 +552,12 @@
         </div>
         <p class="endpoint-desc">Lists every source currently connected to your account. This is the “yes, it’s still working” button.</p>
         <div class="code-panel">
-          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy request to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
+          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn" type="button" aria-label="Copy request to clipboard"><i class="pulse-icon pulse-icon--copy"></i><span class="pulse-tooltip tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code><span class="t-fn">curl</span> https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/source \
   -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span></code></pre>
         </div>
         <div class="code-panel">
-          <div class="code-head"><span class="code-file">response</span><span class="code-lang">JSON</span><button class="copy-btn" type="button" aria-label="Copy response to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
+          <div class="code-head"><span class="code-file">response</span><span class="code-lang">JSON</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn" type="button" aria-label="Copy response to clipboard"><i class="pulse-icon pulse-icon--copy"></i><span class="pulse-tooltip tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code>[
   <span class="t-str">"/acmecorp.com/google/0"</span>,
   <span class="t-str">"/acmecorp.com/slack/0"</span>
@@ -585,7 +579,7 @@
         </table>
         <p class="note">Body shape depends on the provider. The two most common patterns:</p>
         <div class="code-panel">
-          <div class="code-head"><span class="code-file">connect-source.sh</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy connect-source.sh to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
+          <div class="code-head"><span class="code-file">connect-source.sh</span><span class="code-lang">Shell</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn" type="button" aria-label="Copy connect-source.sh to clipboard"><i class="pulse-icon pulse-icon--copy"></i><span class="pulse-tooltip tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code><span class="t-cmnt"># Google Workspace: service account JSON key</span>
 <span class="t-fn">curl</span> -X POST https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/source/google \
   -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span> \
@@ -624,7 +618,7 @@
           </tbody>
         </table>
         <div class="code-panel">
-          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy request to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
+          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn" type="button" aria-label="Copy request to clipboard"><i class="pulse-icon pulse-icon--copy"></i><span class="pulse-tooltip tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code><span class="t-fn">curl</span> -X DELETE https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/source/google/0 \
   -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span></code></pre>
         </div>
@@ -644,12 +638,12 @@
         </div>
         <p class="endpoint-desc">Every identity VEX currently knows about, across every connected source. No filtering needed: this is the full list.</p>
         <div class="code-panel">
-          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy request to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
+          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn" type="button" aria-label="Copy request to clipboard"><i class="pulse-icon pulse-icon--copy"></i><span class="pulse-tooltip tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code><span class="t-fn">curl</span> https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/asset \
   -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span></code></pre>
         </div>
         <div class="code-panel">
-          <div class="code-head"><span class="code-file">response</span><span class="code-lang">JSON</span><button class="copy-btn" type="button" aria-label="Copy response to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
+          <div class="code-head"><span class="code-file">response</span><span class="code-lang">JSON</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn" type="button" aria-label="Copy response to clipboard"><i class="pulse-icon pulse-icon--copy"></i><span class="pulse-tooltip tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code>[
   {
     <span class="t-key">"account"</span>: <span class="t-str">"acmecorp.com"</span>,
@@ -694,12 +688,12 @@
         </div>
         <p class="endpoint-desc">Every open notification about your VEX setup: broken auth, a stalled source, anything worth fixing before it becomes a blind spot.</p>
         <div class="code-panel">
-          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy request to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
+          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn" type="button" aria-label="Copy request to clipboard"><i class="pulse-icon pulse-icon--copy"></i><span class="pulse-tooltip tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code><span class="t-fn">curl</span> https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/notification \
   -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span></code></pre>
         </div>
         <div class="code-panel">
-          <div class="code-head"><span class="code-file">response</span><span class="code-lang">JSON</span><button class="copy-btn" type="button" aria-label="Copy response to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
+          <div class="code-head"><span class="code-file">response</span><span class="code-lang">JSON</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn" type="button" aria-label="Copy response to clipboard"><i class="pulse-icon pulse-icon--copy"></i><span class="pulse-tooltip tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code>[
   {
     <span class="t-key">"account"</span>: <span class="t-str">"acmecorp.com"</span>,
@@ -734,12 +728,12 @@
           </tbody>
         </table>
         <div class="code-panel">
-          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy request to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
+          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn" type="button" aria-label="Copy request to clipboard"><i class="pulse-icon pulse-icon--copy"></i><span class="pulse-tooltip tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code><span class="t-fn">curl</span> https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/file/signal/ \
   -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span></code></pre>
         </div>
         <div class="code-panel">
-          <div class="code-head"><span class="code-file">response</span><span class="code-lang">JSON</span><button class="copy-btn" type="button" aria-label="Copy response to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
+          <div class="code-head"><span class="code-file">response</span><span class="code-lang">JSON</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn" type="button" aria-label="Copy response to clipboard"><i class="pulse-icon pulse-icon--copy"></i><span class="pulse-tooltip tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code>[
   <span class="t-str">"signal/4827193650228"</span>,
   <span class="t-str">"signal/9013758204461"</span>,
@@ -762,12 +756,12 @@
           </tbody>
         </table>
         <div class="code-panel">
-          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy request to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
+          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn" type="button" aria-label="Copy request to clipboard"><i class="pulse-icon pulse-icon--copy"></i><span class="pulse-tooltip tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code><span class="t-fn">curl</span> <span class="t-str">"https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/file/signal?name=4827193650228"</span> \
   -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span></code></pre>
         </div>
         <div class="code-panel">
-          <div class="code-head"><span class="code-file">response</span><span class="code-lang">JSON</span><button class="copy-btn" type="button" aria-label="Copy response to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
+          <div class="code-head"><span class="code-file">response</span><span class="code-lang">JSON</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn" type="button" aria-label="Copy response to clipboard"><i class="pulse-icon pulse-icon--copy"></i><span class="pulse-tooltip tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code>{
   <span class="t-key">"url"</span>: <span class="t-str">"https://vex-file-system.s3.us-east-2.amazonaws.com/acmecorp.com/signal/4827193650228?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Checksum-Mode=ENABLED&X-Amz-Credential=..."</span>
 }</code></pre>
@@ -797,7 +791,7 @@
           </tbody>
         </table>
         <div class="code-panel">
-          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="copy-btn" type="button" aria-label="Copy request to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
+          <div class="code-head"><span class="code-file">request</span><span class="code-lang">Shell</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn" type="button" aria-label="Copy request to clipboard"><i class="pulse-icon pulse-icon--copy"></i><span class="pulse-tooltip tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code><span class="t-fn">curl</span> <span class="t-str">"https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/audit?q=dmarc"</span> \
   -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span>
 
@@ -806,7 +800,7 @@
   -H <span class="t-str">"Authorization: Bearer $VEX_TOKEN"</span></code></pre>
         </div>
         <div class="code-panel">
-          <div class="code-head"><span class="code-file">response</span><span class="code-lang">JSON</span><button class="copy-btn" type="button" aria-label="Copy response to clipboard"><img src="../static/icon-copy.svg" width="20" height="20" alt=""><span class="tooltip" aria-hidden="true">copy to clipboard</span></button></div>
+          <div class="code-head"><span class="code-file">response</span><span class="code-lang">JSON</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn" type="button" aria-label="Copy response to clipboard"><i class="pulse-icon pulse-icon--copy"></i><span class="pulse-tooltip tooltip" aria-hidden="true">copy to clipboard</span></button></div>
           <pre><code>[
   {
     <span class="t-key">"message"</span>: <span class="t-str">"dmarc |  | spoof attempt on acmecorp.com from 203.0.113.10 x1 — dkim:pass spf:fail disposition:none"</span>,
@@ -830,41 +824,16 @@
 
   <button class="to-top" id="to-top" type="button"><span class="to-top-icon" aria-hidden="true"></span>Top</button>
 
-  <footer>
+  <!-- shared:footer --><footer>
     <span>© 2026 Unmanned, Inc.</span>
     <nav class="flinks" aria-label="Company"><a href="/privacy/">Privacy</a><span aria-hidden="true">·</span><a href="/terms/">Terms of service</a><span aria-hidden="true">·</span><a href="/team/">About us</a><span aria-hidden="true">·</span><a class="fext" href="https://gounmanned.substack.com/" target="_blank" rel="noopener noreferrer">Our research</a></nav>
-  </footer>
-  <script src="../static/feedback.js" defer></script>
+  </footer><!-- /shared:footer -->
+  <!-- shared:scripts --><script src="../static/site.js" defer></script>
+  <script src="../static/feedback.js" defer></script><!-- /shared:scripts -->
 
   <span class="visually-hidden" id="copy-status" role="status"></span>
 
   <script>
-    (function(){
-      // hide-on-scroll header: see HIDE ON SCROLL in the styles
-      var root = document.documentElement;
-      var top = document.querySelector('.site-top');
-      var classbar = document.querySelector('.classbar');
-      if(!top){ return; }
-      function measure(){ root.style.setProperty('--top-h', top.offsetHeight + 'px'); } // header height, used by the sticky jump menu
-      measure();
-      window.addEventListener('resize', measure);
-      var lastY = window.scrollY;
-      var ticking = false;
-      function update(){
-        ticking = false;
-        var y = window.scrollY;
-        var showZone = top.offsetHeight + (classbar ? classbar.offsetHeight : 0); // always show near the top
-        if(root.classList.contains('jump-open')){ lastY = y; return; }
-        if(y <= showZone){ root.classList.remove('header-hidden'); lastY = y; return; }
-        if(Math.abs(y - lastY) < 6){ return; } // ignore tiny scroll jitters
-        root.classList.toggle('header-hidden', y > lastY);
-        lastY = y;
-      }
-      window.addEventListener('scroll', function(){
-        if(!ticking){ ticking = true; requestAnimationFrame(update); }
-      }, { passive:true });
-      top.addEventListener('focusin', function(){ root.classList.remove('header-hidden'); });
-    })();
 
     (function(){
       // jump menu: highlights the section you're reading, scrolls to a section when clicked,
@@ -881,7 +850,7 @@
       function setActive(i){
         links.forEach(function(a, j){
           a.classList.toggle('is-active', j === i);
-          if(j === i){ a.setAttribute('aria-current', 'location'); } else { a.removeAttribute('aria-current'); }
+          if(j === i){ a.setAttribute('aria-current', 'true'); } else { a.removeAttribute('aria-current'); }
         });
         current.textContent = links[i].textContent;
       }
@@ -991,55 +960,7 @@
 
   
 
-    (function(){
-      // phone menu (same as the other pages)
-      var openBtn = document.querySelector('.menu-btn[aria-controls="site-nav"]');
-      var panel = document.getElementById('site-nav');
-      if(!openBtn || !panel){ return; }
-      var closeBtn = panel.querySelector('.menu-close');
-      function openNav(){
-        panel.classList.add('is-open');
-        document.documentElement.classList.add('nav-open');
-        openBtn.setAttribute('aria-expanded','true');
-        closeBtn.focus({ preventScroll:true });
-      }
-      function closeNav(returnFocus){
-        panel.classList.remove('is-open');
-        document.documentElement.classList.remove('nav-open');
-        openBtn.setAttribute('aria-expanded','false');
-        if(returnFocus){ openBtn.focus({ preventScroll:true }); }
-      }
-      openBtn.addEventListener('click', openNav);
-      closeBtn.addEventListener('click', function(){ closeNav(true); });
-      document.addEventListener('keydown', function(e){
-        if(e.key === 'Escape' && panel.classList.contains('is-open')){ closeNav(true); }
-      });
-      panel.addEventListener('click', function(e){
-        if(e.target.closest('a')){ closeNav(false); }
-      });
-      var wide = window.matchMedia('(min-width:701px)');
-      function onWide(){ if(wide.matches && panel.classList.contains('is-open')){ closeNav(false); } }
-      if(wide.addEventListener){ wide.addEventListener('change', onWide); } else { wide.addListener(onWide); }
-    })();
 
-    (function(){
-      // VEX AI SOC menu: opens on click; closes on a click outside, Escape, leaving it with Tab, or the header hiding
-      var drop = document.querySelector('.nav-drop'); if(!drop){ return; }
-      var btn = drop.querySelector('.nav-drop-btn'), menu = drop.querySelector('.nav-drop-menu');
-      function set(open, focusBtn){
-        btn.setAttribute('aria-expanded', String(open)); menu.hidden = !open;
-        if(!open && focusBtn){ btn.focus({ preventScroll:true }); }
-      }
-      btn.addEventListener('click', function(){ set(menu.hidden); });
-      document.addEventListener('click', function(e){ if(!menu.hidden && !drop.contains(e.target)){ set(false); } });
-      document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && !menu.hidden){ set(false, true); } });
-      drop.addEventListener('focusout', function(e){ if(!menu.hidden && e.relatedTarget && !drop.contains(e.relatedTarget)){ set(false); } });
-      window.addEventListener('scroll', function(){ if(!menu.hidden && document.documentElement.classList.contains('header-hidden')){ set(false); } }, { passive:true });
-      // closed again when you come back: close on following a link, and when the browser restores the page from its
-      // back/forward cache (which keeps the menu as it was)
-      menu.addEventListener('click', function(e){ if(e.target.closest('a')){ set(false); } });
-      window.addEventListener('pageshow', function(e){ if(e.persisted){ set(false); } });
-    })();
 </script>
 </body>
 </html>

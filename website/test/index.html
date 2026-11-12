@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="no-js">
+<html lang="en" data-theme="light" data-surface="web" class="no-js">
 <head>
 <meta charset="UTF-8">
 <script>document.documentElement.classList.replace('no-js','js');</script>
@@ -18,44 +18,36 @@
 <meta property="og:image:height" content="630" />
 <meta property="og:image:alt" content="VEX: Don’t get hacked" />
 <meta name="twitter:card" content="summary_large_image" />
-<link rel="stylesheet" href="https://cdn.unmanned.team/css/global.css">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet">
+<!-- shared:head --><link rel="preload" href="../static/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="https://cdn.unmanned.team/pulse/v1/pulse-tokens.css">
+<link rel="stylesheet" href="https://cdn.unmanned.team/pulse/v1/pulse-icons.css">
+<link rel="stylesheet" href="https://cdn.unmanned.team/pulse/v1/pulse-components.css">
+<script src="https://cdn.unmanned.team/pulse/v1/pulse.js" defer></script>
+<link rel="stylesheet" href="../static/site.css"><!-- /shared:head -->
 <style>
+  body{font-family:var(--font-sans);font-size:var(--type-body-md-size);line-height:1.5;}
   :root{
-    --ink:#0b0c0d;
-    --white:#fcfcfa;
-    --pink:#e01280;
-    --pink-text:#d1107a;     /* pink for TEXT on light backgrounds (passes 4.5:1) */
-    --gray-line:#dcdcd8;
-    --gray-faint:#c4c4c4;
-    --surface-dark:#6c6c70;
-    --surface-gray:#f7f7f7;
-    --body:#2b2b2b;
-    --body-soft:#4b4c52;
-    --db-ink:#f3f3f0;
-    --db-mid:#8a8a8e;
-    --db-body:#c7c7ca;
-    --classbar-h:26px;
-    --mono:'JetBrains Mono',ui-monospace,monospace;
-  }
+                    /* pink for TEXT on light backgrounds (passes 4.5:1) */
+                            --db-ink:var(--color-neutral-100);
+            --classbar-h:26px;
+      }
   *{box-sizing:border-box;}
   html{overflow-x:hidden;scroll-behavior:smooth;scrollbar-gutter:stable;}
-  body{margin:0;padding-top:var(--classbar-h);background:var(--surface);color:var(--ink);-webkit-font-smoothing:antialiased;}
+  body{margin:0;padding-top:var(--classbar-h);background:var(--color-surface-page);color:var(--color-text-primary);-webkit-font-smoothing:antialiased;}
   h1,h2,h3,h4,p{margin:0;}
   /* line breaks: headlines get even line lengths, body text avoids a single word alone on its last line
      (browsers that don't support these just wrap as before) */
   h1,h2,h3,h4{text-wrap:balance;}
   p,li{text-wrap:pretty;}
   .mono{letter-spacing:0.04em;}
-  a{color:inherit;}
-  ::selection{background:var(--pink);color:#fff;}
-  a:focus-visible,button:focus-visible{outline:1.5px solid var(--pink);outline-offset:4px;}
+  a:where(:not([class*="pulse-"])){color:inherit;}
+  ::selection{background:var(--color-accent-default);color:var(--color-text-on-contrast);}
+  a:where(:not([class*="pulse-"])):focus-visible,button:where(:not([class*="pulse-"])):focus-visible{outline:1.5px solid var(--color-accent-default);outline-offset:4px;}
   .wrap{width:min(1100px,calc(100% - 48px));margin:0 auto;}
 
   /* ---------- STATUS DOT ---------- */
   .status-dot{
-    width:8px;height:8px;border-radius:50%;background:var(--pink);
+    width:8px;height:8px;border-radius:50%;background:var(--color-accent-default);
     box-shadow:0 0 0 0 rgba(224,18,128,0.5);animation:pulse 2.2s infinite;flex-shrink:0;display:inline-block;
   }
   @keyframes pulse{
@@ -63,24 +55,24 @@
     70%{box-shadow:0 0 0 8px rgba(224,18,128,0);}
     100%{box-shadow:0 0 0 0 rgba(224,18,128,0);}
   }
-  .eyebrow-label{font-size:11px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;color:var(--surface-dark);display:flex;align-items:center;gap:11px;}
-  .dark-frame .eyebrow-label{color:var(--db-mid);}
+  .eyebrow-label{font-size:11px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-text-tertiary);display:flex;align-items:center;gap:11px;}
+  .dark-frame .eyebrow-label{color:var(--color-neutral-400);}
 
   /* ---------- CLASSIFICATION BAR ---------- */
   .classbar{
-    position:fixed;top:0;left:0;right:0;z-index:60;background:var(--ink);color:var(--gray-faint);
+    position:fixed;top:0;left:0;right:0;z-index:60;background:var(--color-surface-contrast);color:var(--color-neutral-300);
     font-size:9.5px;line-height:1.5;letter-spacing:0.16em;text-transform:uppercase;text-align:center;padding:6px 0;
   }
 
   /* ---------- STICKY HEADER ----------
      Same header as the other pages. This page stands alone (nothing links to it yet), so the logo isn't a link and there are no nav links. */
   .site-top{position:sticky;top:var(--classbar-h);z-index:50;}
-  .site-header{background:var(--surface);border-bottom:1px solid var(--gray-line);box-shadow:0 4px 8px -4px rgba(11,12,13,0.1);}
+  .site-header{background:var(--color-surface-page);border-bottom:1px solid var(--color-border-default);box-shadow:0 4px 8px -4px rgba(11,12,13,0.1);}
   .header-inner{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:18px 0;}
   .header-left{display:flex;align-items:center;gap:16px;min-width:0;}
-  .brand{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:800;line-height:1.5;letter-spacing:0.01em;text-decoration:none;color:var(--ink);}
+  .brand{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:800;line-height:1.5;letter-spacing:0.01em;text-decoration:none;color:var(--color-text-primary);}
   .brand .status-dot{animation-iteration-count:2;} /* header logo dot ripples twice, then rests */
-  .brand-tag{font-size:11px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;color:var(--surface-dark);white-space:nowrap;}
+  .brand-tag{font-size:11px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-text-tertiary);white-space:nowrap;}
 
   /* ---------- HIDE ON SCROLL ----------
      Scrolling down slides the class bar and header up out of view; scrolling up brings them back.
@@ -99,14 +91,14 @@
 
   /* ---------- DIVIDER ---------- */
   .divider{
-    position:relative;border-top:1px solid var(--gray-line);display:flex;justify-content:space-between;gap:16px;
-    padding:14px 56px;font-size:10px;line-height:1.5;color:var(--surface-dark);
+    position:relative;border-top:1px solid var(--color-border-default);display:flex;justify-content:space-between;gap:16px;
+    padding:14px 56px;font-size:10px;line-height:1.5;color:var(--color-text-tertiary);
   }
   @media (max-width:700px){.divider{padding:14px 20px;}}
 
   /* ---------- SECTION SHELLS ---------- */
-  .band{position:relative;background:var(--surface);}
-  .band--gray{background:var(--surface-gray);}
+  .band{position:relative;background:var(--color-surface-page);}
+  .band--gray{background:var(--color-surface-subtle);}
   /* 900px column with a 24px left gutter, matching the design grid (content starts at x=294 on a 1440 screen) */
   .section{position:relative;max-width:900px;margin:0 auto;padding:52px 0 96px 24px;}
   .section--even{padding-right:24px;} /* how it works: 24px gutter on both sides */
@@ -116,19 +108,14 @@
   /* 30px sub-heads (phase titles, "What you get") stay 30/52 of the section headline at every width,
      so they shrink together and the size difference between them holds */
   .sub-head{font-weight:500;font-size:clamp(34px * 30 / 52, 4.2vw * 30 / 52, 30px);line-height:1.14;letter-spacing:-0.01em;}
-  .lede{font-size:16px;line-height:1.75;color:var(--body);max-width:680px;}
+  .lede{font-size:16px;line-height:1.75;color:var(--color-neutral-700);max-width:680px;}
   .lede b{font-weight:700;}
   .section-head .lede{margin-top:4px;}
   @media (max-width:820px){.section{padding-top:44px;padding-bottom:72px;}}
 
-  .btn{
-    display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:600;font-size:15px;line-height:1.5;
-    padding:15px 30px;text-decoration:none;background:var(--pink);color:#fff;border:none;cursor:pointer;white-space:nowrap;transition:opacity 0.2s ease;
-  }
-  .btn:hover{opacity:0.8;}
 
   /* ---------- HERO ---------- */
-  .hero{position:relative;overflow:hidden;background:var(--surface);}
+  .hero{position:relative;overflow:hidden;background:var(--color-surface-page);}
   .hero .section{padding-top:120px;padding-bottom:128px;}
   .hero-backdrop{position:absolute;top:0;left:50%;margin-left:-1468px;pointer-events:none;}
   /* copy on the left, clock on the right, down to 650px wide. On wide screens the clock reaches up to 80px
@@ -164,8 +151,8 @@
      (one turn a minute, so each of the 12 ticks is 5 seconds). */
   .clock{container-type:inline-size;width:330px;--u:calc(100cqw / 330);display:flex;flex-direction:column;align-items:center;}
   .clock-cap{display:flex;flex-direction:column;align-items:center;width:calc(48 * var(--u));}
-  .clock-cap::before{content:'';width:100%;height:calc(9 * var(--u));border-radius:calc(8 * var(--u));background:var(--surface-dark);}
-  .clock-cap::after{content:'';width:calc(8 * var(--u));height:calc(4 * var(--u));background:#87878c;}
+  .clock-cap::before{content:'';width:100%;height:calc(9 * var(--u));border-radius:calc(8 * var(--u));background:var(--color-neutral-500);}
+  .clock-cap::after{content:'';width:calc(8 * var(--u));height:calc(4 * var(--u));background:var(--color-neutral-400);}
   .clock-face{position:relative;width:100%;margin-top:calc(2 * var(--u));aspect-ratio:330 / 312;}
   .clock-face > *{position:absolute;}
   .clock-face img{display:block;max-width:none;}
@@ -173,14 +160,14 @@
   .clock-face .ring-pink{left:calc(11 * var(--u));top:calc(1.49 * var(--u));width:calc(307.71 * var(--u));height:calc(307.71 * var(--u));}
   .clock-face .ring-gray{left:calc(17.16 * var(--u));top:calc(7.8 * var(--u));width:calc(295.71 * var(--u));height:calc(295.71 * var(--u));}
   .clock-face .ticks{left:calc(11 * var(--u));top:calc(2.71 * var(--u));width:calc(307.65 * var(--u));height:calc(306.65 * var(--u));}
-  .clock-num{width:calc(21 * var(--u));font-family:var(--mono);font-size:calc(17.143 * var(--u));line-height:normal;text-align:center;color:var(--surface-dark);}
+  .clock-num{width:calc(21 * var(--u));font-family:var(--font-mono);font-size:calc(17.143 * var(--u));line-height:normal;text-align:center;color:var(--color-text-tertiary);}
   .clock-num--00{left:calc(151.8 * var(--u));top:calc(27.9 * var(--u));}
   .clock-num--03{left:calc(270 * var(--u));top:calc(142.1 * var(--u));}
   .clock-num--06{left:calc(151.8 * var(--u));top:calc(264.4 * var(--u));}
   .clock-num--09{left:calc(33.5 * var(--u));top:calc(142.1 * var(--u));}
-  .clock-text{left:calc(165 * var(--u));top:calc(107.5 * var(--u));transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:calc(9 * var(--u));font-family:var(--mono);line-height:1.5;white-space:nowrap;}
-  .clock-readout{font-weight:500;font-size:calc(32 * var(--u));letter-spacing:0.02em;color:var(--body);}
-  .clock-label{font-size:calc(20 * var(--u));letter-spacing:0.02em;color:var(--pink-text);}
+  .clock-text{left:calc(165 * var(--u));top:calc(107.5 * var(--u));transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:calc(9 * var(--u));font-family:var(--font-mono);line-height:1.5;white-space:nowrap;}
+  .clock-readout{font-weight:500;font-size:calc(32 * var(--u));letter-spacing:0.02em;color:var(--color-neutral-700);}
+  .clock-label{font-size:calc(20 * var(--u));letter-spacing:0.02em;color:var(--color-text-accent);}
   /* the hand pivots on the dial's center; it's short on purpose so it never crosses the readout */
   .clock-hand{left:calc(165 * var(--u));top:calc(155.65 * var(--u));width:0;height:0;transition:transform 0.2s cubic-bezier(0.4,0,0.2,1);}
   .clock-hand img{position:absolute;}
@@ -192,10 +179,10 @@
   .door-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;}
   .door-card{display:flex;flex-direction:column;filter:drop-shadow(-4px 4px 1px rgba(224,18,128,0.1));}
   .door-card .card-tab{display:block;width:100%;height:5px;}
-  .door-card-body{display:flex;flex-direction:column;gap:8px;flex:1;padding:24px 24px 28px;background:var(--surface);border:1px solid var(--db-mid);border-radius:2px;}
-  .door-kind{font-size:11px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;color:var(--pink-text);}
+  .door-card-body{display:flex;flex-direction:column;gap:8px;flex:1;padding:24px 24px 28px;background:var(--color-surface-page);border:1px solid var(--color-border-strong);border-radius:2px;}
+  .door-kind{font-size:11px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-text-accent);}
   .door-card h3{font-weight:600;font-size:20px;line-height:1.5;letter-spacing:-0.01em;}
-  .door-desc{font-size:14.5px;line-height:1.75;color:var(--body-soft);}
+  .door-desc{font-size:14.5px;line-height:1.75;color:var(--color-text-secondary);}
   /* one column: the cards join into a single panel, with the top edge only on the first,
      shared borders between them, and one shadow around the whole stack */
   @media (max-width:760px){
@@ -213,42 +200,42 @@
      so the 20 machine hours read against the 4 human ones. Each phase shares its rows with the other
      (subgrid), so the scales, titles and steps line up across the line even when one side wraps more. */
   .how{display:flex;flex-direction:column;gap:32px;}
-  .how .lede{color:var(--body-soft);max-width:721px;}
+  .how .lede{color:var(--color-text-secondary);max-width:721px;}
   .process{position:relative;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:auto auto auto auto;gap:24px 48px;}
   .process::before{ /* the handoff line, 2px dashes with 5px gaps */
     content:'';position:absolute;top:14px;bottom:0;left:50%;width:1px;
-    background:repeating-linear-gradient(to bottom,var(--gray-faint) 0 2px,transparent 2px 7px);
+    background:repeating-linear-gradient(to bottom,var(--color-neutral-300) 0 2px,transparent 2px 7px);
   }
   .handoff{grid-column:1 / -1;grid-row:1;position:relative;justify-self:center;}
   .handoff span{
-    display:block;position:relative;padding:4px 8px;background:var(--white);border:1px solid var(--gray-faint);
-    font-size:11px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;color:var(--surface-dark);
+    display:block;position:relative;padding:4px 8px;background:var(--color-neutral-25);border:1px solid var(--color-border-mid);
+    font-size:11px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-text-tertiary);
   }
   .phase{display:grid;grid-row:2 / span 3;grid-template-rows:subgrid;grid-template-columns:minmax(0,1fr);row-gap:24px;min-width:0;} /* rows: scale, intro, steps */
   .phase--ai{grid-column:1;}
   .phase--human{grid-column:2;}
-  .phase-scale{display:flex;flex-direction:column;gap:8px;font-family:var(--mono);text-transform:uppercase;color:var(--surface-dark);}
-  .phase--human .phase-scale{color:var(--pink-text);}
+  .phase-scale{display:flex;flex-direction:column;gap:8px;font-family:var(--font-mono);text-transform:uppercase;color:var(--color-text-tertiary);}
+  .phase--human .phase-scale{color:var(--color-text-accent);}
   .phase-name{font-weight:500;font-size:12.5px;line-height:1.5;letter-spacing:0.1em;}
   .phase-scale b{font-weight:700;}
   .hours{display:flex;gap:4px;height:40px;}
-  .hours span{flex:1;background:var(--surface-dark);}
-  .hours .is-now{background:var(--pink);} /* hour 1: the clock starts */
-  .phase--human .hours span{background:var(--pink);opacity:0.7;}
+  .hours span{flex:1;background:var(--color-neutral-500);}
+  .hours .is-now{background:var(--color-accent-default);} /* hour 1: the clock starts */
+  .phase--human .hours span{background:var(--color-accent-default);opacity:0.7;}
   .phase--human .hours .is-fix{opacity:1;}
   .hour-notes{display:flex;justify-content:space-between;font-size:11px;line-height:1.5;letter-spacing:0.18em;}
   .phase--human .hour-notes{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;}
   .phase--human .hour-notes span:last-child{grid-column:4;}
   .phase-intro{display:flex;flex-direction:column;gap:4px;}
-  .phase--human .phase-intro h3{color:var(--pink-text);}
-  .phase-intro p{font-size:20px;line-height:1.5;color:var(--surface-dark);}
-  .phase-steps{display:grid;grid-template-columns:1fr 1fr;align-content:start;gap:32px;padding-top:31px;border-top:1px solid var(--gray-line);}
+  .phase--human .phase-intro h3{color:var(--color-text-accent);}
+  .phase-intro p{font-size:20px;line-height:1.5;color:var(--color-text-tertiary);}
+  .phase-steps{display:grid;grid-template-columns:1fr 1fr;align-content:start;gap:32px;padding-top:31px;border-top:1px solid var(--color-border-default);}
   .step{display:flex;flex-direction:column;gap:8px;}
-  .step-hours{font-size:11px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;color:var(--surface-dark);}
-  .phase--human .step-hours{color:var(--pink-text);}
+  .step-hours{font-size:11px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-text-tertiary);}
+  .phase--human .step-hours{color:var(--color-text-accent);}
   .step h4{font-weight:600;font-size:20px;line-height:1.5;letter-spacing:-0.01em;}
-  .step--fix h4{color:var(--pink-text);}
-  .step-desc{font-size:14px;line-height:1.6;color:var(--surface-dark);}
+  .step--fix h4{color:var(--color-text-accent);}
+  .step-desc{font-size:14px;line-height:1.6;color:var(--color-text-tertiary);}
   .step-desc b{font-weight:700;}
   /* phones: tighter columns, shorter hour bars, and each phase's two steps stack */
   @media (max-width:700px){
@@ -271,7 +258,7 @@
     align-content:center;gap:12px 24px;
   }
   .get-title{grid-area:title;align-self:end;}
-  .get-desc{grid-area:desc;font-size:16px;line-height:1.75;color:var(--body);}
+  .get-desc{grid-area:desc;font-size:16px;line-height:1.75;color:var(--color-neutral-700);}
   /* the report: a page outline with the VEX logo and three checked lines, sliding out of a slot.
      The slot is a soft shadow across the bottom of the page, clipped so only its top edge shows */
   .report{grid-area:report;justify-self:center;position:relative;width:245px;height:149px;}
@@ -279,7 +266,7 @@
   .report-lines{position:absolute;left:34.5px;top:22px;width:127px;display:flex;flex-direction:column;gap:10px;}
   .report-line{display:flex;align-items:center;gap:7px;}
   .report-line img{display:block;flex-shrink:0;}
-  .report-line::after{content:'';flex:1;height:5px;border-radius:2px;background:#d9d9d9;}
+  .report-line::after{content:'';flex:1;height:5px;border-radius:2px;background:var(--color-neutral-200);}
   .report-slot{position:absolute;left:-26.5px;top:112px;width:298px;height:23px;overflow:hidden;}
   .report-slot::after{content:'';position:absolute;left:15.45px;top:23px;width:267.1px;height:14px;box-shadow:0 -2px 8px 3px rgba(0,0,0,0.15);}
   @media (max-width:700px){
@@ -287,23 +274,13 @@
   }
 
   /* ---------- CONTACT ---------- */
-  .dark-frame{background:var(--ink);color:var(--db-ink);}
+  .dark-frame{background:var(--color-surface-contrast);color:var(--color-neutral-100);}
   .contact-section{position:relative;overflow:hidden;padding:96px 24px;text-align:center;}
   .contact-section .body-wrap{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:36px;}
   .radar-echo{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:1;opacity:0.1;pointer-events:none;}
-  .contact-statement{font-weight:600;font-size:clamp(34px,6vw,58px);line-height:1.06;letter-spacing:-0.03em;color:var(--db-ink);}
-  .contact-sub{font-size:16px;line-height:1.75;color:var(--db-body);}
+  .contact-statement{font-weight:600;font-size:clamp(34px,6vw,58px);line-height:1.06;letter-spacing:-0.03em;color:var(--color-neutral-100);}
+  .contact-sub{font-size:16px;line-height:1.75;color:var(--color-neutral-300);}
   @media (max-width:700px){.contact-section{padding:72px 20px;}}
-
-  /* ---------- FOOTER ---------- */
-  footer{
-    border-top:1px solid var(--gray-line);padding:28px 56px 40px;display:flex;justify-content:space-between;align-items:center;
-    font-size:10.5px;line-height:1.5;color:var(--surface-dark);text-transform:uppercase;letter-spacing:0.08em;
-  }
-  footer a{text-decoration:none;}
-  footer a:hover{color:var(--ink);}
-  footer .fmark{color:var(--ink);font-weight:500;}
-  @media (max-width:700px){footer{padding:22px 20px 36px;flex-direction:column;gap:10px;text-align:center;}}
 
   /* ---------- SCROLL REVEAL ----------
      .reveal        fades up one element as it scrolls into view
@@ -325,7 +302,7 @@
 </head>
 <body>
 
-  <div class="classbar">UNMANNED · SIMPLY SECURE</div>
+  <!-- shared:classbar --><div class="classbar">UNMANNED · SIMPLY SECURE</div><!-- /shared:classbar -->
 
   <!-- ============================================================
        HEADER (sticky)
@@ -353,7 +330,7 @@
         <div class="eyebrow-label hero-eyebrow"><span class="status-dot"></span>24-hour security test</div>
         <h1>Are you safe from <br>an adversarial AI?</h1>
         <p class="lede hero-lede">Attackers don’t open with something sophisticated. They walk the perimeter and test every door. They do it quietly, at scale, before you know they’re there. VEX runs that same sweep on you first.</p>
-        <a class="btn hero-cta" href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener">Schedule test</a>
+        <a class="pulse-btn pulse-btn--primary pulse-btn--lg hero-cta" href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener">Schedule test</a>
         <div class="clock" aria-hidden="true">
           <div class="clock-cap"></div>
           <div class="clock-face">
@@ -532,17 +509,16 @@
       <div class="eyebrow-label"><span class="status-dot"></span>Get started</div>
       <h2 class="contact-statement">Know if you’re exposed.<br>In 24 hours.</h2>
       <p class="contact-sub">One call to scope. One day to run.</p>
-      <a class="btn" href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener">Schedule test</a>
+      <a class="pulse-btn pulse-btn--primary pulse-btn--lg" href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener">Schedule test</a>
     </div>
   </section>
 
   </main>
 
-  <footer>
-    <span class="fmark">UNMANNED</span>
-    <span>© 2026 UNMANNED, INC.</span>
-    <a href="https://gounmanned.substack.com/" target="_blank" rel="noopener noreferrer">OUR RESEARCH</a>
-  </footer>
+  <!-- shared:footer --><footer>
+    <span>© 2026 Unmanned, Inc.</span>
+    <nav class="flinks" aria-label="Company"><a href="/privacy/">Privacy</a><span aria-hidden="true">·</span><a href="/terms/">Terms of service</a><span aria-hidden="true">·</span><a href="/team/">About us</a><span aria-hidden="true">·</span><a class="fext" href="https://gounmanned.substack.com/" target="_blank" rel="noopener noreferrer">Our research</a></nav>
+  </footer><!-- /shared:footer -->
 
   <script>
     (function(){

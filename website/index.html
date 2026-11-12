@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light" data-surface="web">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,10 +17,12 @@
 <meta property="og:image:alt" content="Dots by Unmanned" />
 <meta name="twitter:card" content="summary_large_image" />
 <link rel="icon" type="image/png" href="https://cdn.unmanned.team/img/logo.png">
-<link rel="stylesheet" href="https://cdn.unmanned.team/css/global.css">
-<link rel="stylesheet" href="static/site.css">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;800&family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+<!-- shared:head --><link rel="preload" href="static/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="https://cdn.unmanned.team/pulse/v1/pulse-tokens.css">
+<link rel="stylesheet" href="https://cdn.unmanned.team/pulse/v1/pulse-icons.css">
+<link rel="stylesheet" href="https://cdn.unmanned.team/pulse/v1/pulse-components.css">
+<script src="https://cdn.unmanned.team/pulse/v1/pulse.js" defer></script>
+<link rel="stylesheet" href="static/site.css"><!-- /shared:head -->
 <script>
   // the hero intro plays once per visit (Chad, 2026-11-09): coming back to the homepage in the same tab shows the finished
   // hero with Replay. Never with reduced motion; without JS (or with storage blocked) it behaves as before.
@@ -56,58 +58,46 @@
   })();
 </script>
 <style>
+  /* shared:basecss */ /* Base, class bar and header rules the main pages keep in their own <style> (API, detections and Dots install style these
+     their own way, so they are not in site.css). */
   h1,h2,h3,h4,p{margin:0;}
   img{display:block;}
   .wrap{width:min(1100px,calc(100% - 2 * var(--gutter)));margin:0 auto;} /* the design's 900px content column */
   @media (max-width:700px){:root{--gutter:16px;}}
 
-  /* ---------- STATUS DOT ---------- */
-
   /* ---------- CLASSIFICATION BAR ---------- */
   .classbar{
-    position:fixed;top:0;left:0;right:0;z-index:60;background:var(--ink);color:var(--gray-faint);
+    position:fixed;top:0;left:0;right:0;z-index:60;background:var(--color-surface-contrast);color:var(--color-neutral-300);
     font-size:9.5px;line-height:1.5;letter-spacing:0.16em;text-transform:uppercase;text-align:center;padding:6px 0;
   }
 
   /* ---------- STICKY HEADER (same as the homepage and VEX MDR) ---------- */
-  .site-header{background:var(--surface);border-bottom:1px solid var(--gray-line);}
+  .site-header{background:var(--color-surface-page);border-bottom:1px solid var(--color-border-default);}
   .site-top .site-header{box-shadow:0 4px 8px -4px rgba(11,12,13,0.1);}
-  .brand{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:800;line-height:1.5;letter-spacing:0.01em;text-decoration:none;color:var(--ink);}
+  .brand{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:800;line-height:1.5;letter-spacing:0.01em;text-decoration:none;color:var(--color-text-primary);}
 
   /* ---------- HIDE ON SCROLL ---------- */
   .classbar{transition:transform 0.4s cubic-bezier(0.49,0.025,0.685,1), opacity 0.4s cubic-bezier(0.49,0.025,0.685,1);}
   html.header-hidden .classbar{transform:translateY(-100%);opacity:0;}
 
-  /* ---------- NAV MENU (phones) ---------- */
-
   @media (max-width:700px){
     :root{--classbar-h:24px;}
     .classbar{font-size:8px;}
   }
-
-  /* ---------- BUTTONS (as on the published pages) ---------- */
+  /* /shared:basecss */
 
   /* ---------- SLACK MOCKUPS: shared pieces ----------
      Everything inside .slack is drawn to look like Slack: Lato, Slack's colors and spacing. */
-
-  /* ---------- HERO ---------- */
-  .text-link:hover img{transform:translateX(3px);}
 
   /* ---------- SECTION SHELL ---------- */
   .section{padding:96px 0;}
   .sec-head{display:flex;flex-direction:column;gap:16px;max-width:760px;}
   .sec-head h2{font-weight:600;font-size:clamp(34px,4.2vw,52px);line-height:1.12;letter-spacing:-0.02em;}
-  .sec-head p{font-size:17px;line-height:1.7;color:var(--body);}
+  .sec-head p{font-size:17px;line-height:1.7;color:var(--color-neutral-700);}
   .sec-head--center{margin:0 auto;align-items:center;text-align:center;}
 
-  /* ---------- PREVENT / DETECT / RESPOND ROW ---------- */
-
-  /* ---------- WHAT YOU GET ---------- */
-
-  /* ---------- TWO PATHS ---------- */
-
   /* ---------- PRODUCT MOCKUPS: shared frame ---------- */
-  .person-role{font-family:var(--mono);font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--surface-dark);}
+  .person-role{font-family:var(--font-mono);font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--color-text-tertiary);}
   .person-name{margin-top:4px;font-weight:700;font-size:20px;}
 
   /* ---------- SMALLER SCREENS ---------- */
@@ -119,12 +109,12 @@
 
   /* ---------- TEAM (the old homepage's, from build_home.py and build_home3.py) ---------- */
   .team{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin-top:48px;}
-  .member{display:flex;flex-direction:column;gap:12px;padding:0 24px;border-left:1px solid var(--gray-line);}
+  .member{display:flex;flex-direction:column;gap:12px;padding:0 24px;border-left:1px solid var(--color-border-default);}
   .member:first-child{border-left:0;padding-left:0;}
   .member-top{display:flex;align-items:center;gap:14px;}
   .member img{width:96px;height:96px;object-fit:cover;filter:grayscale(1);border-radius:2px;}
   .member .person-name{font-size:17px;}
-  .member-past{font-size:13px;color:var(--body-soft);}
+  .member-past{font-size:13px;color:var(--color-text-secondary);}
   .team-link{display:flex;justify-content:center;margin-top:40px;}
   @media (max-width:900px){
   .team{grid-template-columns:minmax(0,1fr);gap:28px;}
@@ -135,9 +125,9 @@
   #team .team{width:max-content;max-width:100%;grid-template-columns:repeat(2,minmax(0,1fr));gap:33px 48px;}
   #team .member:first-child{grid-column:1 / -1;justify-self:center;width:calc(50% - 24px);}
   #team .member:last-child{position:relative;}
-  #team .member:last-child::before{content:'';position:absolute;top:0;bottom:0;left:-24px;width:1px;background:var(--gray-line);}
+  #team .member:last-child::before{content:'';position:absolute;top:0;bottom:0;left:-24px;width:1px;background:var(--color-neutral-200);}
   #team .member:nth-child(2){position:relative;}
-  #team .member:nth-child(2)::after{content:'';position:absolute;top:-17px;left:0;width:calc(200% + 48px);height:1px;background:var(--gray-line);}}
+  #team .member:nth-child(2)::after{content:'';position:absolute;top:-17px;left:0;width:calc(200% + 48px);height:1px;background:var(--color-neutral-200);}}
   @media (max-width:560px){
   #team .team{grid-template-columns:minmax(0,1fr);gap:28px;}
   #team .member:first-child{grid-column:auto;width:auto;justify-self:stretch;}
@@ -151,19 +141,18 @@
   #team .team{gap:24px;}}
   /* Homepage since 2026-11-09: the /dots page (Figma 2091:29811), restyled to the unmanned.team look in Chad's frame 2763:82092.
      Dot colors are the Dots palette. Header, nav, footer, class bar, buttons and the closing band come from the shared build. */
-  :root{--d-green:#029266;--d-cyan:#1ec6ec;--d-purple:#b811de;--d-yellow:#f7b828;--d-faint:#faf9f6;--d-sunken:#f1f1ee;--d-mute:#8a8a8e;--accent-text:#d10176;}
-  h1,h2,h3,h4,p{margin:0;}
+    h1,h2,h3,h4,p{margin:0;}
   img{display:block;}
   /* ---------- SHARED BITS ---------- */
-  .eyebrow{font-family:var(--mono);font-size:12px;line-height:16px;letter-spacing:0.08em;text-transform:uppercase;color:var(--surface-dark);}
-  .eyebrow--pink{color:var(--accent-text);}
+  .eyebrow{font-family:var(--font-mono);font-size:12px;line-height:16px;letter-spacing:0.08em;text-transform:uppercase;color:var(--color-text-tertiary);}
+  .eyebrow--pink{color:var(--color-text-accent);}
   .eyebrow--dot{display:flex;align-items:center;gap:11px;}   /* the pink dot: hero and closing band only, as on How it works */
-  .eyebrow--on-dark{color:var(--gray-faint);}
+  .eyebrow--on-dark{color:var(--color-neutral-300);}
 
   /* ---------- HERO ---------- */
   /* Figma's backdrop: 80px dots of --d-faint on an 84px grid, starting at the hero's top-left corner */
-  .home-hero{position:relative;overflow:hidden;padding:clamp(64px,13.9vw,200px) 0;background-color:var(--surface);
-    background-image:var(--hero-grid,radial-gradient(circle at 40px 40px,var(--d-faint) 39.5px,transparent 40px));background-size:var(--hero-grid-size,84px 84px);background-position:0 0;}
+  .home-hero{position:relative;overflow:hidden;padding:clamp(64px,13.9vw,200px) 0;background-color:var(--color-surface-page);
+    background-image:var(--hero-grid,radial-gradient(circle at 40px 40px,var(--color-surface-band) 39.5px,transparent 40px));background-size:var(--hero-grid-size,84px 84px);background-position:0 0;}
   .hero-grid{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:48px;align-items:center;}
   .hero-copy{position:relative;display:flex;flex-direction:column;gap:24px;align-items:flex-start;}
   .hero-head{display:flex;flex-direction:column;gap:16px;}
@@ -171,14 +160,14 @@
   .h1-clip{overflow:hidden;padding-bottom:14px;margin-bottom:-14px;}
   /* 6vw as before, capped by the copy column so "One Dot. One / thing protected." stays two lines, as in Figma */
   .hero-copy{container-type:inline-size;}
-  .home-hero h1,.intro-word{font-size:clamp(40px,min(6vw,12.2cqi),64px);line-height:1.0625;font-weight:600;letter-spacing:-0.02em;color:var(--ink);}
+  .home-hero h1,.intro-word{font-size:clamp(40px,min(6vw,12.2cqi),64px);line-height:1.0625;font-weight:600;letter-spacing:-0.02em;color:var(--color-text-primary);}
   .home-hero h1{max-width:509px;}
   /* "code" in the four Dot colors; cyan and yellow deepened so every letter is at least 3:1 on white (large text) */
-  .code span:nth-child(1){color:#01a1c6;}
-  .code span:nth-child(2){color:var(--d-green);}
-  .code span:nth-child(3){color:var(--d-purple);}
-  .code span:nth-child(4){color:#be8400;}
-  .home-lede{font-size:18px;line-height:28px;color:var(--body-soft);max-width:526px;}
+  .code span:nth-child(1){color:var(--illo-dot-cyan-text);}
+  .code span:nth-child(2){color:var(--illo-dot-green);}
+  .code span:nth-child(3){color:var(--illo-dot-purple);}
+  .code span:nth-child(4){color:var(--illo-dot-yellow-text);}
+  .home-lede{font-size:18px;line-height:28px;color:var(--color-text-secondary);max-width:526px;}
 
   /* the dots: --x/--y/--s in Figma units (526 x 217 box), scaled by --u when the column is narrower */
   .stage-col{container-type:inline-size;width:100%;max-width:526px;justify-self:center;display:flex;flex-direction:column;align-items:center;gap:8px;}
@@ -187,15 +176,14 @@
     border-radius:50%;background:var(--c);isolation:isolate;opacity:var(--o,1);}
   .dot svg{position:absolute;inset:0;width:100%;height:100%;mix-blend-mode:var(--blend);opacity:calc(var(--shade) * var(--lit,1));}
   .dot svg path{fill:var(--fill);}
-  .dot--yellow{--x:395;--y:65.5;--s:125;--c:var(--d-yellow);--fill:var(--d-yellow);--blend:exclusion;--shade:0.3;}
-  .dot--green{--x:49;--y:65.5;--s:125;--c:var(--d-green);--fill:var(--d-green);--blend:exclusion;--shade:0.3;}
-  .dot--purple{--x:302;--y:65.5;--s:125;--c:var(--d-purple);--fill:var(--d-purple);--blend:difference;--shade:0.15;}
-  .dot--cyan{--x:165.25;--y:0;--s:215;--c:var(--d-cyan);--fill:var(--d-cyan);--blend:difference;--shade:0.15;}
-  .dot-shadow{position:absolute;left:calc(145.75 * var(--u));top:calc(203 * var(--u));width:calc(215 * var(--u));height:calc(14 * var(--u));border-radius:50%;background:var(--gray-faint);}
-  .dot-label{font-family:var(--mono);font-size:16px;line-height:21px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink);}
-  .dot-link{display:inline-flex;align-items:center;gap:8px;height:26px;margin-top:16px;padding:1px 2px;border-radius:2px;font-size:18px;font-weight:500;line-height:28px;color:var(--accent-text);text-decoration:none;}
+  .dot--yellow{--x:395;--y:65.5;--s:125;--c:var(--illo-dot-yellow);--fill:var(--illo-dot-yellow);--blend:exclusion;--shade:0.3;}
+  .dot--green{--x:49;--y:65.5;--s:125;--c:var(--illo-dot-green);--fill:var(--illo-dot-green);--blend:exclusion;--shade:0.3;}
+  .dot--purple{--x:302;--y:65.5;--s:125;--c:var(--illo-dot-purple);--fill:var(--illo-dot-purple);--blend:difference;--shade:0.15;}
+  .dot--cyan{--x:165.25;--y:0;--s:215;--c:var(--illo-dot-cyan);--fill:var(--illo-dot-cyan);--blend:difference;--shade:0.15;}
+  .dot-shadow{position:absolute;left:calc(145.75 * var(--u));top:calc(203 * var(--u));width:calc(215 * var(--u));height:calc(14 * var(--u));border-radius:50%;background:var(--color-neutral-300);}
+  .dot-label{font-family:var(--font-mono);font-size:16px;line-height:21px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--color-text-primary);}
+  .dot-link{margin-top:16px;}
   .dot-link img{width:20px;height:20px;transition:transform 0.2s ease;}
-  .dot-link:hover{text-decoration:underline;}
   .dot-link:hover img{transform:translateY(3px);}
 
   /* intro-only pieces: hidden unless the intro is running */
@@ -203,17 +191,17 @@
   html.intro .wall{display:block;position:absolute;inset:0;z-index:0;}
   .wall span{position:absolute;width:80px;height:80px;border-radius:50%;}
   html.intro .home-hero{background-image:none;background-color:rgb(209,1,118);}
-  html.intro .home-hero.wall-done{background-image:var(--hero-grid,radial-gradient(circle at 40px 40px,var(--d-faint) 39.5px,transparent 40px));}
+  html.intro .home-hero.wall-done{background-image:var(--hero-grid,radial-gradient(circle at 40px 40px,var(--color-surface-band) 39.5px,transparent 40px));}
   html.intro .dot{--o:0;}
   html.intro .dot-shadow{opacity:0;}
-  html.intro .ring{display:block;position:absolute;border:2px solid var(--pink);border-radius:50%;opacity:0;pointer-events:none;z-index:3;}
+  html.intro .ring{display:block;position:absolute;border:2px solid var(--color-accent-default);border-radius:50%;opacity:0;pointer-events:none;z-index:3;}
   html.intro .screen{display:block;position:absolute;width:0;height:0;z-index:1;}
   .screen > div{position:absolute;transform-origin:var(--ox) var(--oy);left:calc(-1 * var(--ox));top:calc(-1 * var(--oy));opacity:0;}
 
   /* "Introducing Dots" arrives at headline size, holds, then fades out quickly; the eyebrow pops in with the headline */
   html.intro .intro-word{display:block;position:absolute;left:0;white-space:nowrap;opacity:0;transform:translateX(-48px);
     transition:transform 0.65s cubic-bezier(0.65,0,0.25,1), opacity 0.3s ease;}
-  .intro-word span{color:var(--accent-text);}
+  .intro-word span{color:var(--color-text-accent);}
   html.intro .intro-word[data-s="in"]{opacity:1;transform:none;}
   html.intro .intro-word[data-s="gone"]{opacity:0;transform:none;transition:opacity 0.18s ease;}
   html.intro .home-hero .eyebrow{opacity:0;transition:opacity 0.12s ease;}
@@ -225,26 +213,26 @@
 
   /* the monitor and the code window the Dot dives into (from the One Dot story) */
   .mon{--ox:150px;--oy:198px;width:300px;height:240px;display:flex;flex-direction:column;align-items:center;}
-  .mon-screen{width:300px;height:200px;box-sizing:border-box;border:14px solid var(--ink);border-bottom-width:22px;border-radius:6px;background:#fff;display:flex;flex-direction:column;gap:14px;padding:26px 24px;}
-  .mon-screen span,.code-win i{display:block;height:14px;background:var(--gray-line);}
-  .mon-neck{width:30px;height:26px;background:var(--ink);}
-  .mon-foot{width:150px;height:14px;background:var(--ink);border-radius:2px;}
-  .code-win{--ox:160px;--oy:168px;width:320px;height:210px;box-sizing:border-box;border:14px solid var(--ink);border-top-width:36px;border-radius:6px;background:#fff;
-    display:flex;flex-direction:column;gap:12px;padding:18px 20px;font-family:var(--mono);font-weight:700;font-size:24px;line-height:1;}
+  .mon-screen{width:300px;height:200px;box-sizing:border-box;border:14px solid var(--color-neutral-900);border-bottom-width:22px;border-radius:6px;background:var(--illo-white);display:flex;flex-direction:column;gap:14px;padding:26px 24px;}
+  .mon-screen span,.code-win i{display:block;height:14px;background:var(--color-neutral-200);}
+  .mon-neck{width:30px;height:26px;background:var(--color-surface-contrast);}
+  .mon-foot{width:150px;height:14px;background:var(--color-surface-contrast);border-radius:2px;}
+  .code-win{--ox:160px;--oy:168px;width:320px;height:210px;box-sizing:border-box;border:14px solid var(--color-neutral-900);border-top-width:36px;border-radius:6px;background:var(--illo-white);
+    display:flex;flex-direction:column;gap:12px;padding:18px 20px;font-family:var(--font-mono);font-weight:700;font-size:24px;line-height:1;}
   .code-win b{position:absolute;left:0;top:-24px;display:flex;gap:7px;}
-  .code-win b u{width:11px;height:11px;border-radius:50%;background:#fff;}
+  .code-win b u{width:11px;height:11px;border-radius:50%;background:var(--illo-white);}
   .code-win p{display:flex;align-items:center;gap:12px;}
   .code-win i{height:12px;}
-  .code-win .k{color:var(--pink);}
-  .is-filled .mon-screen,.code-win.is-filled{background:var(--fill-c,var(--pink));}
+  .code-win .k{color:var(--color-accent-default);}
+  .is-filled .mon-screen,.code-win.is-filled{background:var(--fill-c,var(--color-accent-default));}
   .is-filled .mon-screen span,.code-win.is-filled p{opacity:0;}
 
   /* a quiet Replay once the intro has finished (same as How it works); its space never moves anything */
   .vz-replay{position:absolute;right:var(--gutter);bottom:20px;z-index:2;display:inline-flex;align-items:center;gap:6px;padding:4px 2px;border:0;background:none;
-    font:500 13px/18px var(--font-sans);color:var(--surface-dark);cursor:pointer;}
+    font:500 13px/18px var(--font-sans);color:var(--color-text-tertiary);cursor:pointer;}
   .vz-replay::before{content:'';width:14px;height:14px;background:currentColor;-webkit-mask:url(static/icon-arrow-counter-clockwise.svg) center/contain no-repeat;mask:url(static/icon-arrow-counter-clockwise.svg) center/contain no-repeat;}
-  .vz-replay:hover{color:var(--ink);}
-  .vz-replay:focus-visible{outline:2px solid var(--pink);outline-offset:2px;border-radius:2px;}
+  .vz-replay:hover{color:var(--color-text-primary);}
+  .vz-replay:focus-visible{outline:2px solid var(--color-accent-default);outline-offset:2px;border-radius:2px;}
   .vz-replay[hidden]{display:none;}
 
   /* one faint glint that sweeps down through the backdrop dots as the intro finishes, pointing on down the page */
@@ -270,25 +258,25 @@
   }
 
   /* ---------- MEET YOUR DOT ---------- */
-  .meet{position:relative;padding:80px 0;background:var(--surface);}
+  .meet{position:relative;padding:80px 0;background:var(--color-surface-page);}
   .meet::before{content:"";position:absolute;left:0;right:0;top:0;height:104px;pointer-events:none;
     background:radial-gradient(1149px 104px at 50% 0,rgba(203,203,212,0.8),rgba(255,255,255,0));}
   .meet .wrap{position:relative;display:flex;flex-direction:column;align-items:center;gap:40px;}
   .section-intro{display:flex;flex-direction:column;align-items:center;gap:24px;text-align:center;}
   .section-intro .titles{display:flex;flex-direction:column;align-items:center;gap:16px;}
-  .meet h2,.vex h2,#team .sec-head h2{font-size:clamp(34px,4.2vw,48px);line-height:1.1667;font-weight:600;letter-spacing:-0.015em;color:var(--ink);}   /* one size for every section headline (Chad, 2026-11-10) */
-  .section-intro > p{max-width:700px;font-size:18px;line-height:28px;color:var(--body-soft);}
+  .meet h2,.vex h2,#team .sec-head h2{font-size:clamp(34px,4.2vw,48px);line-height:1.1667;font-weight:600;letter-spacing:-0.015em;color:var(--color-text-primary);}   /* one size for every section headline (Chad, 2026-11-10) */
+  .section-intro > p{max-width:700px;font-size:18px;line-height:28px;color:var(--color-text-secondary);}
 
   /* the big Dot with four callouts (Figma 2822:27656, offsets minus 25px: Figma's frame is 1100 wide) */
   .concepts{position:relative;width:1050px;height:370px;}
   .big-dot{position:absolute;left:359.54px;top:0;width:330.92px;height:336px;}
-  .big-dot .ground{position:absolute;left:39.59px;top:321.79px;width:239.56px;height:14.21px;border-radius:50%;background:var(--d-sunken);}
-  .big-dot .ball{position:absolute;inset:0 0 auto;height:330.92px;border-radius:50%;background:var(--d-cyan);isolation:isolate;overflow:hidden;}
+  .big-dot .ground{position:absolute;left:39.59px;top:321.79px;width:239.56px;height:14.21px;border-radius:50%;background:var(--illo-gray-faint);}
+  .big-dot .ball{position:absolute;inset:0 0 auto;height:330.92px;border-radius:50%;background:var(--illo-dot-cyan);isolation:isolate;overflow:hidden;}
   .big-dot .ball svg{position:absolute;left:0;top:33.13px;width:284.04px;height:297.8px;opacity:0.15;mix-blend-mode:difference;}
-  .big-dot .name{position:absolute;inset:0 0 auto;height:330.92px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:32px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink);opacity:0.5;}
+  .big-dot .name{position:absolute;inset:0 0 auto;height:330.92px;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:32px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--color-text-primary);opacity:0.5;}
   .callout{position:absolute;display:flex;flex-direction:column;gap:9px;} /* 12px above the line, 8px under it */
-  .callout hr{width:100%;height:0;margin:3px 0 -1px;border:0;border-top:1px solid var(--gray-faint);} /* Figma's lines take no height */
-  .callout dl{margin:0;font-size:14px;line-height:20px;color:var(--ink);display:flex;flex-direction:column;gap:4px;}
+  .callout hr{width:100%;height:0;margin:3px 0 -1px;border:0;border-top:1px solid var(--color-border-mid);} /* Figma's lines take no height */
+  .callout dl{margin:0;font-size:14px;line-height:20px;color:var(--color-text-primary);display:flex;flex-direction:column;gap:4px;}
   .callout dt{font-weight:600;}
   .callout dd{margin:0;}
   .callout--l dl{width:200px;}
@@ -300,20 +288,20 @@
   .c-reports{left:674px;top:212px;width:287px;}
   /* the joke footnote under the giant Dot, then the badge */
   .dot-meta{position:absolute;left:50%;top:344px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:24px;}
-  .badge{display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border:1px solid var(--d-mute);border-radius:2px;background:var(--surface-gray);white-space:nowrap;}
-  .badge::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--d-green);}
-  .badge .eyebrow{color:var(--body-soft);}
+  .badge{display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border:1px solid var(--color-border-strong);border-radius:2px;background:var(--color-surface-subtle);white-space:nowrap;}
+  .badge::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--illo-dot-green);}
+  .badge .eyebrow{color:var(--color-text-secondary);}
   /* four places a Dot can live, each with its own job */
   .envs{width:100%;display:flex;flex-direction:column;align-items:center;gap:16px;padding:32px 0;}
-  .envs-title{font-size:16px;line-height:24px;font-weight:600;color:var(--ink);text-align:center;}
+  .envs-title{font-size:16px;line-height:24px;font-weight:600;color:var(--color-text-primary);text-align:center;}
   .envs-row{width:100%;margin:0;padding:0;list-style:none;display:flex;justify-content:space-between;gap:36px;}
   .envs-row li{width:248px;display:flex;flex-direction:column;align-items:center;text-align:center;}
   .envs-row li[hidden]{display:none;}
   .envs-row img{width:100%;height:auto;margin-bottom:16px;}
-  .envs-row b{margin-top:4px;font-size:14px;line-height:20px;font-weight:600;color:var(--ink);}
+  .envs-row b{margin-top:4px;font-size:14px;line-height:20px;font-weight:600;color:var(--color-text-primary);}
   @media (max-width:1099px){ .envs-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px;} .envs-row li{width:auto;} }
   @media (max-width:768px){ .envs-row{grid-template-columns:repeat(2,minmax(0,1fr));gap:32px 16px;} }
-  .along{display:flex;align-items:center;gap:12px;padding:16px 64px;border:1px solid var(--gray-faint);border-radius:2px;font-size:18px;line-height:28px;color:var(--ink);}
+  .along{display:flex;align-items:center;gap:12px;padding:16px 64px;border:1px solid var(--color-border-mid);border-radius:2px;font-size:18px;line-height:28px;color:var(--color-text-primary);}
   .along img{flex-shrink:0;width:26px;height:26px;}
   .along b{font-weight:600;}
 
@@ -333,7 +321,7 @@
   @media (max-width:560px){ .concepts{grid-template-columns:minmax(0,1fr);} }
 
   /* ---------- MEET VEX ---------- */
-  .vex{padding:80px 0;background:var(--surface-gray);}
+  .vex{padding:80px 0;background:var(--color-surface-subtle);}
   .vex .wrap{display:flex;align-items:center;gap:80px;}
   .flow{position:relative;display:flex;align-items:center;gap:16px;flex-shrink:0;}
   .flow-dots{width:185px;display:flex;flex-direction:column;align-items:center;gap:32px;}
@@ -341,27 +329,27 @@
   .flow-scatter{display:block;width:185px;height:152px;}
   .flow-scatter circle{transition:opacity 0.6s ease;}
   .flow-arrow{display:flex;flex-direction:column;align-items:center;gap:4px;}
-  .flow-arrow .eyebrow{color:var(--d-mute);}
+  .flow-arrow .eyebrow{color:var(--color-neutral-400);}
   .flow-arrow img{width:40px;height:40px;}
-  .vex-card{position:relative;z-index:3;width:210px;border:1px solid var(--d-mute);background:var(--surface);filter:drop-shadow(4px 4px 0 rgba(11,12,13,0.15));}
+  .vex-card{position:relative;z-index:3;width:210px;border:1px solid var(--color-border-strong);background:var(--color-surface-page);filter:drop-shadow(4px 4px 0 rgba(11,12,13,0.15));}
   .vex-card-in{display:flex;flex-direction:column;gap:16px;padding:16px;border-radius:2px;
     background:radial-gradient(circle at 2px 2px,rgba(150,152,165,0.05) 2px,transparent 2.5px) 0 0/8px 8px;}
   .vex-card .mark{display:flex;align-items:center;gap:4px;font-size:32px;font-weight:800;line-height:42px;letter-spacing:-0.005em;}
-  .vex-card .mark::before{content:"";width:16px;height:16px;border-radius:50%;background:var(--pink);}
-  .vex-card hr{margin:0 0 -1px;border:0;border-top:1px solid var(--gray-faint);}
+  .vex-card .mark::before{content:"";width:16px;height:16px;border-radius:50%;background:var(--color-accent-default);}
+  .vex-card hr{margin:0 0 -1px;border:0;border-top:1px solid var(--color-border-mid);}
   .vex-grid{display:block;width:176px;height:140px;}
-  .vex-card ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;font-size:14px;line-height:20px;color:#000;}
+  .vex-card ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;font-size:14px;line-height:20px;color:var(--color-text-primary);}
   .vex-card li{display:flex;align-items:center;gap:8px;transition:color 0.3s ease;}
-  .vex-card li::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--pink);transition:box-shadow 0.3s ease;}
+  .vex-card li::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--color-accent-default);transition:box-shadow 0.3s ease;}
 
   /* the card at work: a finding flies in, the grid computes, one phase lights up (script below) */
   .flyer{position:absolute;left:0;top:0;border-radius:50%;opacity:0;pointer-events:none;z-index:1;} /* under the card, so it slips in behind its edge */
-  .vex-card li.is-active{color:var(--accent-text);font-weight:600;}
+  .vex-card li.is-active{color:var(--color-text-accent);font-weight:600;}
   .vex-card li.is-active::before{box-shadow:0 0 0 4px rgba(224,18,128,0.18);animation:phaseBlink 0.6s steps(1) 1;}
   @keyframes phaseBlink{ 0%,50%{opacity:0.25;} 25%,75%,100%{opacity:1;} }
   .vex-copy{width:500px;max-width:100%;display:flex;flex-direction:column;gap:24px;align-items:flex-start;}
   .vex-copy .titles{display:flex;flex-direction:column;gap:16px;}
-  .vex-copy > p{font-size:16px;line-height:24px;font-weight:300;color:var(--body-soft);}
+  .vex-copy > p{font-size:16px;line-height:24px;font-weight:300;color:var(--color-text-secondary);}
 
   @media (max-width:1099px){ .vex .wrap{gap:48px;} }
   @media (max-width:1023px){
@@ -383,32 +371,31 @@
   /* ---------- CLOSING BAND (the shared dark band, with Figma's sizes) ---------- */
   .close-row{gap:16px 24px;}
   .close-row p{font-size:clamp(34px * 32 / 52, 4.2vw * 32 / 52, 32px);line-height:1.25;}
-  .btn--sm{padding:8px 16px;}
 
   /* ---------- PRICING DRAWER (dark, 400px from the right: about 4 of the site's 12 columns plus padding; Figma 2763:83309) ---------- */
   .drawer--price .drawer-scrim{background:rgba(11,12,13,0.5);}
   .drawer--price .drawer-panel{position:absolute;top:0;right:0;bottom:0;width:min(400px,100%);box-sizing:border-box;overflow-y:auto;overscroll-behavior:contain;
-    display:flex;flex-direction:column;gap:56px;padding-bottom:40px;background:var(--ink);border-left:1px solid var(--body-soft);box-shadow:-8px 0 6px rgba(11,12,13,0.15);
+    display:flex;flex-direction:column;gap:56px;padding-bottom:40px;background:var(--color-surface-page);border-left:1px solid var(--color-neutral-600);box-shadow:-8px 0 6px rgba(11,12,13,0.15);
     transform:translateX(100%);transition:transform 0.35s cubic-bezier(0.4,0,0.2,1);}
-  .drawer--price .drawer-head{align-items:center;padding:24px;border-bottom-color:var(--surface-dark);}
-  .drawer--price .drawer-head h2{font-size:20px;line-height:32px;font-weight:600;color:#fff;}
+  .drawer--price .drawer-head{align-items:center;padding:24px;border-bottom-color:var(--color-neutral-500);}
+  .drawer--price .drawer-head h2{font-size:20px;line-height:32px;font-weight:600;color:var(--color-text-primary);}
   .drawer--price .drawer-close{width:32px;height:32px;margin:0;}
   .drawer--price .drawer-close:hover{background:rgba(255,255,255,0.1);}
-  .drawer--price .drawer-close:focus-visible{outline:2px solid #fff;outline-offset:2px;}
+  .drawer--price .drawer-close:focus-visible{outline:2px solid var(--color-neutral-0);outline-offset:2px;}
   .drawer--price .drawer-close img{filter:invert(1);}
-  .pr-body{display:flex;flex-direction:column;gap:40px;padding:0 24px;color:#fff;}
+  .pr-body{display:flex;flex-direction:column;gap:40px;padding:0 24px;color:var(--color-text-primary);}
   .pr-title{font-size:32px;line-height:40px;font-weight:600;letter-spacing:-0.01em;}
   .pr-sub{font-size:20px;line-height:32px;text-wrap:balance;}
-  .pr-card{display:flex;flex-direction:column;gap:24px;padding:32px 24px;background:#424247;border:1px solid var(--d-mute);border-radius:2px;box-shadow:4px 4px 0 #2a2a2e;}
+  .pr-card{display:flex;flex-direction:column;gap:24px;padding:32px 24px;background:var(--color-neutral-650);border:1px solid var(--color-border-strong);border-radius:2px;box-shadow:4px 4px 0 var(--color-neutral-700);}
   .pr-top{display:flex;flex-direction:column;gap:16px;}
   .pr-price{display:flex;align-items:center;gap:16px;}
   .pr-price b{font-size:48px;line-height:56px;font-weight:600;letter-spacing:-0.02em;}
   .pr-price span{font-size:16px;line-height:24px;}
   .pr-list{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px;font-size:14px;line-height:20px;}
   .pr-list li{display:flex;gap:12px;}
-  .pr-list li::before{content:"";flex-shrink:0;width:20px;height:20px;background:#3ecf8e;-webkit-mask:url(static/icon-check.svg) center/contain no-repeat;mask:url(static/icon-check.svg) center/contain no-repeat;}
+  .pr-list li::before{content:"";flex-shrink:0;width:20px;height:20px;background:var(--color-text-success);-webkit-mask:url(static/icon-check.svg) center/contain no-repeat;mask:url(static/icon-check.svg) center/contain no-repeat;}
   .pr-buy{width:100%;box-sizing:border-box;}
-  .pr-fine{font-size:12px;line-height:16px;color:var(--gray-faint);text-align:center;}
+  .pr-fine{font-size:12px;line-height:16px;color:var(--color-neutral-300);text-align:center;}
   @media (max-width:400px){ .drawer--price .drawer-head{padding:16px;} .pr-body{padding:0 16px;} }
   @media (prefers-reduced-motion: reduce){ .drawer--price .drawer-panel,.drawer--price .drawer-scrim{transition:none;} }
 
@@ -429,19 +416,16 @@
     .meet,.vex{padding:64px 0;}
     .meet .wrap{gap:32px;}
   }
-  /* ---------- FOOTER ---------- */
-
-  /* ---------- VEX AI SOC MENU ---------- */
 </style>
 </head>
 <body>
 
-  <div class="classbar">UNMANNED · SIMPLY SECURE</div>
+  <!-- shared:classbar --><div class="classbar">UNMANNED · SIMPLY SECURE</div><!-- /shared:classbar -->
 
   <!-- ============================================================
        HEADER (sticky)
        ============================================================ -->
-  <div class="site-top">
+  <!-- shared:header --><div class="site-top">
     <header class="site-header">
       <div class="wrap header-inner">
         <div class="header-left">
@@ -476,7 +460,7 @@
         <li><a href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener"><span class="nav-link">Schedule a chat</span></a></li>
       </ul>
     </nav>
-  </div>
+  </div><!-- /shared:header -->
 
   <main>
 
@@ -493,7 +477,7 @@
           </div>
           <div class="intro-word" aria-hidden="true">Introducing <span>Dots</span></div>
           <p class="home-lede">An identity, an endpoint or a domain. Each Dot protects one thing and reports to VEX, the AI SOC behind your protection.</p>
-          <a class="btn hero-cta" href="https://buy.stripe.com/cNi7sDalf8ob8ct5CKfQI01?utm_campaign=home" data-checkout data-drawer="pricing">Buy a Dot</a>
+          <a class="pulse-btn pulse-btn--primary pulse-btn--lg hero-cta" href="https://buy.stripe.com/cNi7sDalf8ob8ct5CKfQI01?utm_campaign=home" data-checkout data-drawer="pricing">Buy a Dot</a>
         </div>
 
         <div class="stage-col">
@@ -508,7 +492,7 @@
             <div class="dot dot--cyan" data-dot="cyan"><svg viewBox="0 0 125 125"><path d="M24.9814 12.5117C14.0194 23.7714 7.26769 39.1506 7.26758 56.1064C7.26758 90.6244 35.2498 118.607 69.7676 118.607C83.8444 118.607 96.8329 113.952 107.281 106.099C95.9276 117.759 80.0603 125.003 62.5 125.003C27.9822 125.003 0 97.0199 0 62.502C9.03362e-05 42.0627 9.81158 23.9152 24.9814 12.5117Z"/></svg></div>
           </div>
           <p class="dot-label">Dot #001</p>
-          <a class="dot-link" href="#meet">Meet a Dot <img src="static/icon-arrow-down-pink.svg" width="20" height="20" alt=""></a>
+          <a class="pulse-link pulse-link--lg dot-link" href="#meet">Meet a Dot <img src="static/icon-arrow-down-pink.svg" width="20" height="20" alt=""></a>
         </div>
       </div>
       <button class="vz-replay" type="button" hidden>Replay</button>
@@ -530,7 +514,7 @@
         <div class="concepts">
           <div class="big-dot" aria-hidden="true">
             <span class="ground"></span>
-            <div class="ball"><svg viewBox="0 0 280 294"><path d="M65.1328 0C36.5541 29.3636 18.9522 69.464 18.9521 113.676C18.9521 203.698 91.9292 276.675 181.951 276.675C218.675 276.675 252.561 264.528 279.814 244.036C250.203 274.46 208.808 293.358 162.999 293.358C72.9771 293.358 0 220.381 0 130.359C4.88234e-06 77.0624 25.5805 29.7409 65.1328 0Z" fill="#1EC6EC"/></svg></div>
+            <div class="ball"><svg viewBox="0 0 280 294"><path d="M65.1328 0C36.5541 29.3636 18.9522 69.464 18.9521 113.676C18.9521 203.698 91.9292 276.675 181.951 276.675C218.675 276.675 252.561 264.528 279.814 244.036C250.203 274.46 208.808 293.358 162.999 293.358C72.9771 293.358 0 220.381 0 130.359C4.88234e-06 77.0624 25.5805 29.7409 65.1328 0Z" fill="var(--illo-dot-cyan)"/></svg></div>
             <span class="name">Dot #001</span>
           </div>
           <div class="callout callout--l c-size">
@@ -579,18 +563,18 @@
           <div class="flow-dots">
             <div class="who"><span class="eyebrow eyebrow--pink">Dots</span><span>Test from the inside</span></div>
             <svg class="flow-scatter" width="185" height="152" viewBox="0 0 185 152" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="60" cy="44" r="16" fill="#F7B828"/>
-              <circle cx="169" cy="76" r="12" fill="#F7B828"/>
-              <circle cx="102" cy="116" r="8" fill="#F7B828"/>
-              <circle cx="97" cy="12" r="12" fill="#029266"/>
-              <circle cx="129" cy="76" r="16" fill="#029266"/>
-              <circle cx="12" cy="60" r="12" fill="#B811DE"/>
-              <circle cx="45" cy="96" r="8" fill="#029266"/>
-              <circle cx="45" cy="12" r="12" fill="#1BA8EE"/>
-              <circle cx="49" cy="136" r="16" fill="#B811DE"/>
-              <circle cx="177" cy="112" r="8" fill="#B811DE"/>
-              <circle cx="161" cy="34" r="16" fill="#1BA8EE"/>
-              <circle cx="85" cy="68" r="8" fill="#1BA8EE"/>
+              <circle cx="60" cy="44" r="16" fill="var(--illo-dot-yellow)"/>
+              <circle cx="169" cy="76" r="12" fill="var(--illo-dot-yellow)"/>
+              <circle cx="102" cy="116" r="8" fill="var(--illo-dot-yellow)"/>
+              <circle cx="97" cy="12" r="12" fill="var(--illo-dot-green)"/>
+              <circle cx="129" cy="76" r="16" fill="var(--illo-dot-green)"/>
+              <circle cx="12" cy="60" r="12" fill="var(--illo-dot-purple)"/>
+              <circle cx="45" cy="96" r="8" fill="var(--illo-dot-green)"/>
+              <circle cx="45" cy="12" r="12" fill="var(--illo-dot-blue)"/>
+              <circle cx="49" cy="136" r="16" fill="var(--illo-dot-purple)"/>
+              <circle cx="177" cy="112" r="8" fill="var(--illo-dot-purple)"/>
+              <circle cx="161" cy="34" r="16" fill="var(--illo-dot-blue)"/>
+              <circle cx="85" cy="68" r="8" fill="var(--illo-dot-blue)"/>
             </svg>
           </div>
           <div class="flow-arrow"><span class="eyebrow">Findings</span><img src="static/icon-arrow-right-gray.svg" width="40" height="40" alt=""></div>
@@ -599,10 +583,10 @@
               <span class="mark">VEX</span>
               <hr>
               <svg class="vex-grid" width="176" height="140" viewBox="0 0 176 140" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="16" cy="16" r="16" fill="#F1F1EE"/><circle cx="52" cy="16" r="16" fill="#D10176"/><circle cx="88" cy="16" r="16" fill="#F1F1EE"/><circle cx="124" cy="16" r="16" fill="#F1F1EE"/><circle cx="160" cy="16" r="16" fill="#F1F1EE"/>
-                <circle cx="16" cy="52" r="16" fill="#F1F1EE"/><circle cx="52" cy="52" r="16" fill="#D10176"/><circle cx="88" cy="52" r="16" fill="#D10176"/><circle cx="124" cy="52" r="16" fill="#D10176"/><circle cx="160" cy="52" r="16" fill="#F1F1EE"/>
-                <circle cx="16" cy="88" r="16" fill="#F1F1EE"/><circle cx="52" cy="88" r="16" fill="#F1F1EE"/><circle cx="88" cy="88" r="16" fill="#F1F1EE"/><circle cx="124" cy="88" r="16" fill="#D10176"/><circle cx="160" cy="88" r="16" fill="#F1F1EE"/>
-                <circle cx="16" cy="124" r="16" fill="#D10176"/><circle cx="52" cy="124" r="16" fill="#F1F1EE"/><circle cx="88" cy="124" r="16" fill="#D10176"/><circle cx="124" cy="124" r="16" fill="#D10176"/><circle cx="160" cy="124" r="16" fill="#D10176"/>
+                <circle cx="16" cy="16" r="16" fill="var(--illo-gray-faint)"/><circle cx="52" cy="16" r="16" fill="var(--illo-pink)"/><circle cx="88" cy="16" r="16" fill="var(--illo-gray-faint)"/><circle cx="124" cy="16" r="16" fill="var(--illo-gray-faint)"/><circle cx="160" cy="16" r="16" fill="var(--illo-gray-faint)"/>
+                <circle cx="16" cy="52" r="16" fill="var(--illo-gray-faint)"/><circle cx="52" cy="52" r="16" fill="var(--illo-pink)"/><circle cx="88" cy="52" r="16" fill="var(--illo-pink)"/><circle cx="124" cy="52" r="16" fill="var(--illo-pink)"/><circle cx="160" cy="52" r="16" fill="var(--illo-gray-faint)"/>
+                <circle cx="16" cy="88" r="16" fill="var(--illo-gray-faint)"/><circle cx="52" cy="88" r="16" fill="var(--illo-gray-faint)"/><circle cx="88" cy="88" r="16" fill="var(--illo-gray-faint)"/><circle cx="124" cy="88" r="16" fill="var(--illo-pink)"/><circle cx="160" cy="88" r="16" fill="var(--illo-gray-faint)"/>
+                <circle cx="16" cy="124" r="16" fill="var(--illo-pink)"/><circle cx="52" cy="124" r="16" fill="var(--illo-gray-faint)"/><circle cx="88" cy="124" r="16" fill="var(--illo-pink)"/><circle cx="124" cy="124" r="16" fill="var(--illo-pink)"/><circle cx="160" cy="124" r="16" fill="var(--illo-pink)"/>
               </svg>
               <hr>
               <ul><li>Prevent</li><li>Detect</li><li>Respond</li></ul>
@@ -615,7 +599,7 @@
             <h2 id="vex-title">Dots find the issues. VEX makes sense <br>of them.</h2>
           </div>
           <p>Every Dot reports to VEX, your AI SOC. The more Dots you add, the more VEX sees. It connects what they find, maps the attack paths between them and coordinates the response.</p>
-          <a class="btn" href="/how-it-works/">See how VEX works</a>
+          <a class="pulse-btn pulse-btn--primary pulse-btn--lg" href="/how-it-works/">See how VEX works</a>
         </div>
       </div>
     </section>
@@ -632,7 +616,7 @@
         <div class="member"><div class="member-top"><img src="static/team-john-jackman.jpg" width="96" height="96" alt=""><div><p class="person-role">Head of security</p><p class="person-name">John Jackman</p></div></div><p class="member-past">REDLattice · DoD</p></div>
         <div class="member"><div class="member-top"><img src="static/team-phil-urquhart.jpg" width="96" height="96" alt=""><div><p class="person-role">Head engineer</p><p class="person-name">Phil Urquhart</p></div></div><p class="member-past">Mandiant · DoD</p></div>
       </div>
-      <div class="team-link"><a class="text-link" href="/team/">Meet the full team <img src="static/icon-arrow-right-pink.svg" width="16" height="16" alt=""></a></div>
+      <div class="team-link"><a class="pulse-link" href="/team/">Meet the full team <i class="pulse-icon pulse-icon--arrow-right"></i></a></div>
     </div>
   </section>
 
@@ -643,7 +627,7 @@
       <div class="wrap">
         <div class="close-box">
           <p class="eyebrow eyebrow--dot eyebrow--on-dark"><span class="status-dot"></span>Get started</p>
-          <div class="close-row"><p id="close-title">Ready to connect the Dots?</p><a class="btn btn--sm" href="https://buy.stripe.com/cNi7sDalf8ob8ct5CKfQI01?utm_campaign=home" data-checkout data-drawer="pricing">Buy a Dot</a></div>
+          <div class="close-row"><p id="close-title">Ready to connect the Dots?</p><a class="pulse-btn pulse-btn--primary" href="https://buy.stripe.com/cNi7sDalf8ob8ct5CKfQI01?utm_campaign=home" data-checkout data-drawer="pricing">Buy a Dot</a></div>
         </div>
       </div>
     </section>
@@ -653,7 +637,7 @@
   <!-- PRICING DRAWER (Figma 2763:83309): every Buy a Dot opens it; without JS those buttons go straight to checkout -->
   <div class="drawer drawer--price" id="pricing" role="dialog" aria-modal="true" aria-labelledby="pricing-title" aria-hidden="true">
     <div class="drawer-scrim" data-close></div>
-    <div class="drawer-panel">
+    <div class="drawer-panel" data-theme="dark">
       <div class="drawer-head">
         <h2 id="pricing-title">Simple pricing</h2>
         <button class="drawer-close" type="button" data-close aria-label="Close"><img src="static/icon-close.svg" width="20" height="20" alt=""></button>
@@ -672,74 +656,22 @@
               <li>Help from real people on our US‑based team</li>
             </ul>
           </div>
-          <a class="btn pr-buy" href="https://buy.stripe.com/cNi7sDalf8ob8ct5CKfQI01?utm_campaign=home" data-checkout>Get your Dot</a>
+          <a class="pulse-btn pulse-btn--primary pulse-btn--lg pr-buy" href="https://buy.stripe.com/cNi7sDalf8ob8ct5CKfQI01?utm_campaign=home" data-checkout>Get your Dot</a>
           <p class="pr-fine">Secure checkout with Stripe. Billed yearly at $11.88.</p>
         </div>
       </div>
     </div>
   </div>
 
-  <footer>
+  <!-- shared:footer --><footer>
     <span>© 2026 Unmanned, Inc.</span>
     <nav class="flinks" aria-label="Company"><a href="/privacy/">Privacy</a><span aria-hidden="true">·</span><a href="/terms/">Terms of service</a><span aria-hidden="true">·</span><a href="/team/">About us</a><span aria-hidden="true">·</span><a class="fext" href="https://gounmanned.substack.com/" target="_blank" rel="noopener noreferrer">Our research</a></nav>
-  </footer>
-  <script src="static/feedback.js" defer></script>
+  </footer><!-- /shared:footer -->
+  <!-- shared:scripts --><script src="static/site.js" defer></script>
+  <script src="static/feedback.js" defer></script><!-- /shared:scripts -->
 
   <script>
-    (function(){
-      // hide-on-scroll header (same as the other pages)
-      var root = document.documentElement;
-      var top = document.querySelector('.site-top');
-      var classbar = document.querySelector('.classbar');
-      if(!top){ return; }
-      var lastY = window.scrollY;
-      var ticking = false;
-      function update(){
-        ticking = false;
-        var y = window.scrollY;
-        var showZone = top.offsetHeight + (classbar ? classbar.offsetHeight : 0);
-        if(root.classList.contains('nav-open') || root.hasAttribute('data-auto-scroll') || root.hasAttribute('data-story-pinned')){ lastY = y; return; } // menu open, a click-scroll, or the story pinned
-        if(y <= showZone){ root.classList.remove('header-hidden'); lastY = y; return; }
-        if(Math.abs(y - lastY) < 6){ return; }
-        root.classList.toggle('header-hidden', y > lastY);
-        lastY = y;
-      }
-      window.addEventListener('scroll', function(){
-        if(!ticking){ ticking = true; requestAnimationFrame(update); }
-      }, { passive:true });
-      top.addEventListener('focusin', function(){ root.classList.remove('header-hidden'); });
-    })();
 
-    (function(){
-      // phone menu (same as the other pages)
-      var openBtn = document.querySelector('.menu-btn[aria-controls="site-nav"]');
-      var panel = document.getElementById('site-nav');
-      if(!openBtn || !panel){ return; }
-      var closeBtn = panel.querySelector('.menu-close');
-      function openNav(){
-        panel.classList.add('is-open');
-        document.documentElement.classList.add('nav-open');
-        openBtn.setAttribute('aria-expanded','true');
-        closeBtn.focus({ preventScroll:true });
-      }
-      function closeNav(returnFocus){
-        panel.classList.remove('is-open');
-        document.documentElement.classList.remove('nav-open');
-        openBtn.setAttribute('aria-expanded','false');
-        if(returnFocus){ openBtn.focus({ preventScroll:true }); }
-      }
-      openBtn.addEventListener('click', openNav);
-      closeBtn.addEventListener('click', function(){ closeNav(true); });
-      document.addEventListener('keydown', function(e){
-        if(e.key === 'Escape' && panel.classList.contains('is-open')){ closeNav(true); }
-      });
-      panel.addEventListener('click', function(e){
-        if(e.target.closest('a')){ closeNav(false); }
-      });
-      var wide = window.matchMedia('(min-width:701px)');
-      function onWide(){ if(wide.matches && panel.classList.contains('is-open')){ closeNav(false); } }
-      if(wide.addEventListener){ wide.addEventListener('change', onWide); } else { wide.addListener(onWide); }
-    })();
     (function(){
       // Hero intro, adapted from the One Dot story (dots/Story.dc.html): the panel wall sweeps and closes in on one
       // Dot, the wall fades to Figma's pale grid, the copy arrives, the Dot dives into a monitor and a code window,
@@ -983,7 +915,7 @@
       var cells = [].slice.call(flow.querySelectorAll('.vex-grid circle'));
       var phases = [].slice.call(flow.querySelectorAll('.vex-card li'));
       var REST = cells.map(function(c){ return c.getAttribute('fill'); });
-      var ON = '#D10176', OFF = '#F1F1EE', COLS = 5, ROWS = 4, TICK = 110;
+      var ON = 'var(--illo-pink)', OFF = 'var(--illo-gray-faint)', COLS = 5, ROWS = 4, TICK = 110;
       var FLY = 900, EDGE = 260, POP = 180, HOLD = 2400, REST_MS = 3000;
       var flyer = document.createElement('span');
       flyer.className = 'flyer';
@@ -1113,24 +1045,6 @@
       });
     })();
   
-    (function(){
-      // VEX AI SOC menu: opens on click; closes on a click outside, Escape, leaving it with Tab, or the header hiding
-      var drop = document.querySelector('.nav-drop'); if(!drop){ return; }
-      var btn = drop.querySelector('.nav-drop-btn'), menu = drop.querySelector('.nav-drop-menu');
-      function set(open, focusBtn){
-        btn.setAttribute('aria-expanded', String(open)); menu.hidden = !open;
-        if(!open && focusBtn){ btn.focus({ preventScroll:true }); }
-      }
-      btn.addEventListener('click', function(){ set(menu.hidden); });
-      document.addEventListener('click', function(e){ if(!menu.hidden && !drop.contains(e.target)){ set(false); } });
-      document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && !menu.hidden){ set(false, true); } });
-      drop.addEventListener('focusout', function(e){ if(!menu.hidden && e.relatedTarget && !drop.contains(e.relatedTarget)){ set(false); } });
-      window.addEventListener('scroll', function(){ if(!menu.hidden && document.documentElement.classList.contains('header-hidden')){ set(false); } }, { passive:true });
-      // closed again when you come back: close on following a link, and when the browser restores the page from its
-      // back/forward cache (which keeps the menu as it was)
-      menu.addEventListener('click', function(e){ if(e.target.closest('a')){ set(false); } });
-      window.addEventListener('pageshow', function(e){ if(e.persisted){ set(false); } });
-    })();
 </script>
 </body>
 </html>

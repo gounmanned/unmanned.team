@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light" data-surface="web">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dots achieve world peace | Dots</title>
 <meta name="description" content="Dots protect your digital world. A tiny defender for your computer, 99¢ a month.">
-<!-- A campaign experiment (2026-10-28): unlinked, shared by link only. Built by homepage-tools/build_dot_campaigns.py -->
+<!-- A campaign experiment (2026-10-28): unlinked, shared by link only. Built by site-build/pages/build_dot_campaigns.py -->
 <meta name="robots" content="noindex">
 <meta property="og:title" content="Dots achieve world peace | Dots" />
 <meta property="og:description" content="Dots protect your digital world. A tiny defender for your computer, 99¢ a month." />
@@ -19,10 +19,12 @@
 <meta name="twitter:card" content="summary_large_image" />
 <link rel="icon" type="image/png" href="https://cdn.unmanned.team/img/logo.png">
 <link rel="apple-touch-icon" href="https://cdn.unmanned.team/img/logo.png">
-<link rel="stylesheet" href="https://cdn.unmanned.team/css/global.css">
-<link rel="stylesheet" href="../../static/site.css">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<!-- shared:head --><link rel="preload" href="../../static/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="https://cdn.unmanned.team/pulse/v1/pulse-tokens.css">
+<link rel="stylesheet" href="https://cdn.unmanned.team/pulse/v1/pulse-icons.css">
+<link rel="stylesheet" href="https://cdn.unmanned.team/pulse/v1/pulse-components.css">
+<script src="https://cdn.unmanned.team/pulse/v1/pulse.js" defer></script>
+<link rel="stylesheet" href="../../static/site.css"><!-- /shared:head -->
 <style>
   /* Dots campaign page. Shared pieces first (header, hero frame, stage, the four sections), then this page's hero. */
   :root{--d-purple:#b811de;--d-green:#029266;--accent-text:#d10176;--d-faint:#faf9f6;--success:#057c56;--line-strong:#8a8a8e;--anton:'Anton',Impact,sans-serif;}
@@ -30,19 +32,19 @@
   h1,h2,h3,h4,p{margin:0;}
   img{display:block;}
   .wrap{width:min(1100px,calc(100% - 2 * var(--gutter)));margin:0 auto;}
-  a:focus-visible,button:focus-visible,summary:focus-visible{outline:1.5px solid var(--pink);outline-offset:4px;}
+  a:focus-visible,button:focus-visible,summary:focus-visible{outline:1.5px solid var(--color-accent-default);outline-offset:4px;}
   @media (max-width:700px){:root{--gutter:16px;}}
 
   /* ---------- CLASSIFICATION BAR + HEADER (as /dots/) ---------- */
   .classbar{
-    position:fixed;top:0;left:0;right:0;z-index:60;background:var(--ink);color:var(--gray-faint);
+    position:fixed;top:0;left:0;right:0;z-index:60;background:var(--color-surface-contrast);color:var(--color-neutral-300);
     font-size:9.5px;line-height:1.5;letter-spacing:0.16em;text-transform:uppercase;text-align:center;padding:6px 0;
     transition:transform 0.4s cubic-bezier(0.49,0.025,0.685,1), opacity 0.4s cubic-bezier(0.49,0.025,0.685,1);
   }
   html.header-hidden .classbar{transform:translateY(-100%);opacity:0;}
   @media (max-width:700px){ :root{--classbar-h:24px;} .classbar{font-size:8px;} }
-  .site-header{background:var(--surface);border-bottom:1px solid var(--gray-line);}
-  .dots-brand{display:flex;align-items:center;gap:16px;text-decoration:none;color:var(--ink);}
+  .site-header{background:var(--color-surface-page);border-bottom:1px solid var(--color-border-default);}
+  .dots-brand{display:flex;align-items:center;gap:16px;text-decoration:none;color:var(--color-text-primary);}
   .dots-word{font-size:32px;font-weight:900;line-height:26px;letter-spacing:0.01em;}
   .dots-brand img{width:26px;height:26px;}
   @media (max-width:700px){ .site-header .dots-nav{display:flex;} }
@@ -50,19 +52,19 @@
   @media (max-width:400px){ .dots-brand .brand-tag{display:none;} }
 
   /* ---------- SHARED BITS ---------- */
-  .eyebrow{font-family:var(--mono);font-size:12px;line-height:16px;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent-text);}
-  .pill{display:inline-flex;align-items:center;justify-content:center;height:52px;padding:0 28px;border-radius:999px;background:var(--pink);color:#fff;font-size:18px;font-weight:600;line-height:28px;text-decoration:none;white-space:nowrap;transition:background-color 0.2s ease;}
-  .pill:hover{background:var(--pink-press);}
+  .eyebrow{font-family:var(--font-mono);font-size:12px;line-height:16px;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent-text);}
+  .pill{display:inline-flex;align-items:center;justify-content:center;height:52px;padding:0 28px;border-radius:999px;background:var(--color-accent-default);color:#fff;font-size:18px;font-weight:600;line-height:28px;text-decoration:none;white-space:nowrap;transition:background-color 0.2s ease;}
+  .pill:hover{background:var(--color-accent-hover);}
   /* The sections below the hero use the design system's text styles (Figma 2273:23869, 2026-10-29):
      section heading 48/56, subsection 32/40, body/lg 18/28, body/md 16/24, label 18/28 and 16/24 medium. */
   .section{padding:96px 0;scroll-margin-top:110px;}
   .section--subtle{background:var(--d-faint);}
-  .section--gray{background:var(--surface-gray);}
+  .section--gray{background:var(--color-surface-subtle);}
   .head{display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center;max-width:920px;margin:0 auto 56px;}
-  .head h2,.trust h2,.price-head h2{font-size:clamp(34px,4.2vw,48px);line-height:1.1667;font-weight:800;letter-spacing:-0.015em;color:var(--ink);}
-  .head h3{font-size:clamp(34px * 32 / 48,4.2vw * 32 / 48,32px);line-height:1.25;font-weight:600;letter-spacing:-0.01em;color:var(--ink);margin-top:8px;}
-  .head p:not(.eyebrow){max-width:774px;margin-top:8px;font-size:18px;line-height:28px;color:var(--body-soft);}
-  .head p.kicker{max-width:none;margin:0 0 -4px;font-size:clamp(20px,2.2vw,24px);line-height:1.3;font-weight:600;letter-spacing:-0.01em;color:var(--body-soft);}   /* a lead-in question above the headline */
+  .head h2,.trust h2,.price-head h2{font-size:clamp(34px,4.2vw,48px);line-height:1.1667;font-weight:800;letter-spacing:-0.015em;color:var(--color-text-primary);}
+  .head h3{font-size:clamp(34px * 32 / 48,4.2vw * 32 / 48,32px);line-height:1.25;font-weight:600;letter-spacing:-0.01em;color:var(--color-text-primary);margin-top:8px;}
+  .head p:not(.eyebrow){max-width:774px;margin-top:8px;font-size:18px;line-height:28px;color:var(--color-text-secondary);}
+  .head p.kicker{max-width:none;margin:0 0 -4px;font-size:clamp(20px,2.2vw,24px);line-height:1.3;font-weight:600;letter-spacing:-0.01em;color:var(--color-text-secondary);}   /* a lead-in question above the headline */
   .check{flex-shrink:0;width:20px;height:20px;margin-top:2px;background:var(--success);
     -webkit-mask:url(../../static/icon-check.svg) center/contain no-repeat;mask:url(../../static/icon-check.svg) center/contain no-repeat;}
   .check--lg{width:24px;height:24px;margin-top:0;}
@@ -72,17 +74,17 @@
   .link--md{gap:6px;font-size:16px;line-height:24px;}
   .link .icon{flex-shrink:0;width:20px;height:20px;background:currentColor;-webkit-mask:var(--icon) center/contain no-repeat;mask:var(--icon) center/contain no-repeat;}
   .link--md .icon{width:16px;height:16px;}
-  .ask{display:flex;flex-wrap:wrap;align-items:center;gap:4px 24px;font-size:18px;line-height:28px;color:var(--body-soft);}
+  .ask{display:flex;flex-wrap:wrap;align-items:center;gap:4px 24px;font-size:18px;line-height:28px;color:var(--color-text-secondary);}
 
   /* ---------- SECTION NAV (as How VEX works): sticks under the site header, rises when the header hides ---------- */
   .hw-nav{position:sticky;top:calc(var(--classbar-h) + var(--header-h, 61px));z-index:40;display:flex;flex-direction:column;align-items:center;gap:8px;padding-top:16px;background:#fff;
-    border-top:1px solid var(--gray-line);border-bottom:1px solid var(--gray-line);box-shadow:0 2px 6px rgba(11,12,13,0.06),0 1px 2px rgba(11,12,13,0.06);transition:top 0.3s cubic-bezier(0.4,0,0.2,1);}
+    border-top:1px solid var(--color-border-default);border-bottom:1px solid var(--color-border-default);box-shadow:0 2px 6px rgba(11,12,13,0.06),0 1px 2px rgba(11,12,13,0.06);transition:top 0.3s cubic-bezier(0.4,0,0.2,1);}
   html.header-hidden .hw-nav{top:0;}
   .hw-tabs{display:flex;max-width:100%;overflow-x:auto;scrollbar-width:none;}
   .hw-tabs::-webkit-scrollbar{display:none;}
   .hw-tabs a{flex-shrink:0;padding:0 16px 16px;border-bottom:2px solid transparent;font-size:14px;line-height:1.5;color:#8a8a8e;text-decoration:none;white-space:nowrap;transition:color 0.2s ease, border-color 0.2s ease;}
-  .hw-tabs a:hover{color:var(--ink);}
-  .hw-tabs a[aria-current="true"]{border-bottom-color:var(--pink);color:var(--ink);font-weight:600;}
+  .hw-tabs a:hover{color:var(--color-text-primary);}
+  .hw-tabs a[aria-current="true"]{border-bottom-color:var(--color-accent-default);color:var(--color-text-primary);font-weight:600;}
 
   /* ---------- HERO FRAME ----------
      Each hero sets its own colors. The art is a .stage: a crop of the concept's 1440x820 scene, scaled to fit. */
@@ -111,60 +113,60 @@
   .world{position:absolute;left:calc(var(--ox) * -1px);top:calc(var(--oy) * -1px);width:1440px;height:820px;}
   .world > span,.world > div{position:absolute;}
   .dot{display:block;overflow:visible;}
-  .replay{position:absolute;right:24px;bottom:20px;z-index:6;display:flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;background:transparent;border:1px solid;border-radius:2px;font-family:var(--mono);font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:inherit;cursor:pointer;}
+  .replay{position:absolute;right:24px;bottom:20px;z-index:6;display:flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;background:transparent;border:1px solid;border-radius:2px;font-family:var(--font-mono);font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:inherit;cursor:pointer;}
   .replay svg{width:14px;height:14px;}
 
   /* ---------- HOW IT WORKS ---------- */
   .story{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:32px;}
   .story li{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;}
   .story svg{width:100%;max-width:248px;height:auto;margin-bottom:16px;}
-  .story b{font-size:18px;line-height:28px;font-weight:600;color:var(--ink);}
-  .story p{font-size:16px;line-height:24px;color:var(--body-soft);max-width:240px;}
+  .story b{font-size:18px;line-height:28px;font-weight:600;color:var(--color-text-primary);}
+  .story p{font-size:16px;line-height:24px;color:var(--color-text-secondary);max-width:240px;}
   /* everything your Dot does: always open; each line tagged with what the Dot does about it, colored like the cards' Dots */
   .does{max-width:640px;margin:64px auto 0;}
-  .does h3{margin-bottom:8px;text-align:center;font-size:18px;line-height:28px;font-weight:600;color:var(--ink);}
+  .does h3{margin-bottom:8px;text-align:center;font-size:18px;line-height:28px;font-weight:600;color:var(--color-text-primary);}
   .does ul{list-style:none;margin:0;padding:0;}
-  .does li{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:16px;padding:16px 0;border-bottom:1px solid var(--gray-line);font-size:16px;line-height:24px;color:var(--ink);text-align:left;}
-  .tag{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;line-height:16px;letter-spacing:0.08em;text-transform:uppercase;white-space:nowrap;color:var(--surface-dark);}
+  .does li{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:16px;padding:16px 0;border-bottom:1px solid var(--color-border-default);font-size:16px;line-height:24px;color:var(--color-text-primary);text-align:left;}
+  .tag{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:11px;line-height:16px;letter-spacing:0.08em;text-transform:uppercase;white-space:nowrap;color:var(--color-text-tertiary);}
   .tag::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--tag);}
   .does-more{display:flex;margin:16px auto 0;padding:0;background:none;border:0;font-family:inherit;}
   .does-more[aria-expanded="true"] .icon{transform:rotate(180deg);}
   .does-more[hidden]{display:none;}
   @media (min-width:701px){ .does-more{display:none;} }
-  .tag--test{--tag:#1ba8ee;} .tag--fix{--tag:var(--d-green);} .tag--ask{--tag:var(--d-purple);} .tag--tell{--tag:#f7b828;} .tag--person{--tag:var(--pink);}
-  .report{max-width:720px;margin:56px auto 0;text-align:center;font-size:18px;line-height:28px;color:var(--body-soft);}
+  .tag--test{--tag:#1ba8ee;} .tag--fix{--tag:var(--d-green);} .tag--ask{--tag:var(--d-purple);} .tag--tell{--tag:#f7b828;} .tag--person{--tag:var(--color-accent-default);}
+  .report{max-width:720px;margin:56px auto 0;text-align:center;font-size:18px;line-height:28px;color:var(--color-text-secondary);}
 
   /* ---------- TRUST ---------- */
   .trust{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:64px;align-items:center;}
   .trust-copy{display:flex;flex-direction:column;align-items:flex-start;gap:24px;}
   .trust-copy .eyebrow,.price-head .eyebrow{margin-bottom:-8px;}
-  .trust-copy > p:not(.eyebrow){font-size:18px;line-height:28px;color:var(--body-soft);}
-  .trust-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;border-top:1px solid var(--gray-line);}
-  .trust-list li{display:flex;gap:16px;padding:20px 0;border-bottom:1px solid var(--gray-line);}
-  .trust-list b{display:block;font-size:16px;line-height:24px;font-weight:600;color:var(--ink);}
-  .trust-list span{font-size:16px;line-height:24px;color:var(--body-soft);}
+  .trust-copy > p:not(.eyebrow){font-size:18px;line-height:28px;color:var(--color-text-secondary);}
+  .trust-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;border-top:1px solid var(--color-border-default);}
+  .trust-list li{display:flex;gap:16px;padding:20px 0;border-bottom:1px solid var(--color-border-default);}
+  .trust-list b{display:block;font-size:16px;line-height:24px;font-weight:600;color:var(--color-text-primary);}
+  .trust-list span{font-size:16px;line-height:24px;color:var(--color-text-secondary);}
 
   /* ---------- PRICE ---------- */
   .price-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:56px;align-items:center;}
-  .price-card{padding:40px;background:var(--surface);border:1px solid var(--line-strong);border-radius:2px;box-shadow:4px 4px 0 rgba(11,12,13,0.15);display:flex;flex-direction:column;align-items:center;gap:24px;text-align:center;}
+  .price-card{padding:40px;background:var(--color-surface-page);border:1px solid var(--line-strong);border-radius:2px;box-shadow:4px 4px 0 rgba(11,12,13,0.15);display:flex;flex-direction:column;align-items:center;gap:24px;text-align:center;}
   .price{display:flex;align-items:center;gap:10px;}
-  .price b{font-size:64px;line-height:68px;font-weight:800;letter-spacing:-0.02em;color:var(--ink);}
-  .price span{font-size:16px;line-height:24px;color:var(--body-soft);text-align:left;}
+  .price b{font-size:64px;line-height:68px;font-weight:800;letter-spacing:-0.02em;color:var(--color-text-primary);}
+  .price span{font-size:16px;line-height:24px;color:var(--color-text-secondary);text-align:left;}
   .incl{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px;text-align:left;align-self:stretch;}
-  .incl li{display:flex;gap:12px;font-size:16px;line-height:24px;color:var(--body);}
+  .incl li{display:flex;gap:12px;font-size:16px;line-height:24px;color:var(--color-neutral-700);}
   .price-card .pill{align-self:stretch;height:48px;font-weight:500;}
-  .fine{font-size:12px;line-height:16px;color:var(--surface-dark);}
+  .fine{font-size:12px;line-height:16px;color:var(--color-text-tertiary);}
   .price-head{display:flex;flex-direction:column;align-items:flex-start;gap:24px;}
-  .price-head p:not(.eyebrow){font-size:18px;line-height:28px;color:var(--body-soft);}
+  .price-head p:not(.eyebrow){font-size:18px;line-height:28px;color:var(--color-text-secondary);}
 
   /* ---------- FAQ ---------- */
-  .faq{max-width:760px;margin:0 auto;border-top:1px solid var(--gray-line);}
-  .faq details{border-bottom:1px solid var(--gray-line);}
-  .faq summary{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:22px 0;cursor:pointer;list-style:none;font-size:18px;line-height:28px;font-weight:600;color:var(--ink);}
+  .faq{max-width:760px;margin:0 auto;border-top:1px solid var(--color-border-default);}
+  .faq details{border-bottom:1px solid var(--color-border-default);}
+  .faq summary{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:22px 0;cursor:pointer;list-style:none;font-size:18px;line-height:28px;font-weight:600;color:var(--color-text-primary);}
   .faq summary::-webkit-details-marker{display:none;}
   .faq summary::after{content:'';flex-shrink:0;width:14px;height:14px;background:linear-gradient(var(--accent-text),var(--accent-text)) center/14px 2px no-repeat,linear-gradient(var(--accent-text),var(--accent-text)) center/2px 14px no-repeat;transition:transform 0.2s ease;}
   .faq details[open] summary::after{transform:rotate(45deg);}
-  .faq details p{padding:0 32px 24px 0;font-size:16px;line-height:24px;color:var(--body-soft);}
+  .faq details p{padding:0 32px 24px 0;font-size:16px;line-height:24px;color:var(--color-text-secondary);}
   .faq a{color:var(--accent-text);}
   .faq .ext::after{content:'';display:inline-block;width:14px;height:14px;margin-left:4px;vertical-align:-2px;background:currentColor;-webkit-mask:url(../../static/icon-arrow-square-out.svg) center/contain no-repeat;mask:url(../../static/icon-arrow-square-out.svg) center/contain no-repeat;}
   .faq-ask{justify-content:center;margin-top:56px;text-align:center;}
@@ -218,7 +220,7 @@
     .hero .down-link{display:none;}   /* phones don't need the nudge to scroll (Chad, 2026-10-29) */
     .hero .pill{height:44px;padding:0 22px;font-size:16px;}   /* the medium button on phones; 44 keeps a comfortable tap */
     .buybar{display:block;position:fixed;left:0;right:0;bottom:0;z-index:50;padding:10px var(--gutter) calc(10px + env(safe-area-inset-bottom));
-      background:rgba(255,255,255,0.94);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-top:1px solid var(--gray-line);box-shadow:0 -2px 8px rgba(11,12,13,0.06);
+      background:rgba(255,255,255,0.94);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-top:1px solid var(--color-border-default);box-shadow:0 -2px 8px rgba(11,12,13,0.06);
       transform:translateY(100%);visibility:hidden;transition:transform 0.3s ease,visibility 0s linear 0.3s;}
     .buybar.is-on{transform:none;visibility:visible;transition:transform 0.3s ease;}
     .buybar .pill{width:100%;height:44px;font-size:16px;}
@@ -243,7 +245,7 @@
   .hwp .eyebrow{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:0.18em;color:#c4232c;}
   .hwp .eyebrow::before{content:'';width:8px;height:8px;border-radius:50%;background:#e5484d;animation:livePulse 1.2s infinite;}
   @keyframes livePulse{0%,100%{opacity:1}50%{opacity:.3}}
-  .hwp h1 span{color:var(--pink);}
+  .hwp h1 span{color:var(--color-accent-default);}
   .hwp .swap{max-width:900px;}
   .hwp .swap p{font-size:21px;line-height:1.5;color:#4b4c52;}
   .hwp .swap p:last-child{color:#0b0c0d;font-weight:500;}
@@ -252,7 +254,7 @@
   @keyframes hotPulse{0%{opacity:.5}100%{opacity:1}}
   .hwp-roller{top:468px;width:96px;height:100px;transform-origin:48px 48px;}
   .hwp-roller .dot{width:96px;height:100px;}
-  .hwp-foot{padding:8px 0 88px;text-align:center;font-family:var(--mono);font-size:12px;line-height:1.6;letter-spacing:0.06em;color:#5b5b62;opacity:0;transition:opacity 0.6s;}
+  .hwp-foot{padding:8px 0 88px;text-align:center;font-family:var(--font-mono);font-size:12px;line-height:1.6;letter-spacing:0.06em;color:#5b5b62;opacity:0;transition:opacity 0.6s;}
   .hwp-foot span{color:#c4006c;}
   .hwp-foot.is-on{opacity:1;}
   .hwp .replay{border-color:transparent;color:#4b4c52;}   /* no box, as on 99 problems */
@@ -273,9 +275,9 @@
 </head>
 <body>
 
-  <div class="classbar">UNMANNED · SIMPLY SECURE</div>
+  <!-- shared:classbar --><div class="classbar">UNMANNED · SIMPLY SECURE</div><!-- /shared:classbar -->
 
-  <div class="site-top">
+  <!-- shared:header --><div class="site-top">
     <header class="site-header">
       <div class="wrap header-inner">
         <a href="#top" class="dots-brand" aria-label="Dots by Unmanned, back to top">
@@ -288,7 +290,7 @@
         </nav>
       </div>
     </header>
-  </div>
+  </div><!-- /shared:header -->
 
   <!-- One laptop, drawn once and reused by the story pictures (the /dots/ environment illustrations' style) -->
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -548,11 +550,11 @@
   <!-- phones: a buy bar that slides up once the hero's button has scrolled away, and steps aside at the price card -->
   <div class="buybar" id="buybar"><a class="pill" href="#price">Buy a Dot for 99¢</a></div>
 
-  <footer>
+  <!-- shared:footer --><footer>
     <span>© 2026 Unmanned, Inc.</span>
     <nav class="flinks" aria-label="Company"><a class="fext" href="/privacy/" target="_blank" rel="noopener">Privacy<span class="visually-hidden"> (opens in a new tab)</span></a><span aria-hidden="true">·</span><a class="fext" href="/terms/" target="_blank" rel="noopener">Terms of service<span class="visually-hidden"> (opens in a new tab)</span></a><span aria-hidden="true">·</span><a class="fext" href="/team/" target="_blank" rel="noopener">About us<span class="visually-hidden"> (opens in a new tab)</span></a><span aria-hidden="true">·</span><a class="fext" href="https://gounmanned.substack.com/" target="_blank" rel="noopener noreferrer">Our research</a></nav>
-  </footer>
-  <script src="../../static/feedback.js" defer></script>
+  </footer><!-- /shared:footer -->
+  <!-- shared:scripts --><script src="../../static/feedback.js" defer></script><!-- /shared:scripts -->
 
   <script>
     var PAGE = 'dots-world-peace';

@@ -18,12 +18,12 @@
 <meta property="og:image:height" content="630" />
 <meta property="og:image:alt" content="VEX: Don’t get hacked" />
 <meta name="twitter:card" content="summary_large_image" />
-<link rel="preload" href="../static/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+<!-- shared:head --><link rel="preload" href="../static/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="https://cdn.unmanned.team/pulse/v1/pulse-tokens.css">
 <link rel="stylesheet" href="https://cdn.unmanned.team/pulse/v1/pulse-icons.css">
 <link rel="stylesheet" href="https://cdn.unmanned.team/pulse/v1/pulse-components.css">
 <script src="https://cdn.unmanned.team/pulse/v1/pulse.js" defer></script>
-<link rel="stylesheet" href="../static/site.css">
+<link rel="stylesheet" href="../static/site.css"><!-- /shared:head -->
 <style>
   :root{
                     --lift:2px 2px 0 rgba(11,12,13,0.15);
@@ -250,16 +250,17 @@
 <body>
 
   <div class="topstack" id="topstack">
-    <div class="classbar">UNMANNED · SIMPLY SECURE</div>
+    <!-- shared:classbar --><div class="classbar">UNMANNED · SIMPLY SECURE</div><!-- /shared:classbar -->
   </div>
 
-  <div class="site-top">
+  <!-- shared:header --><div class="site-top">
     <header class="site-header">
       <div class="wrap header-inner">
         <div class="header-left">
           <a href="/" class="brand"><span class="status-dot"></span>VEX</a>
           <span class="brand-tag">Don’t get hacked</span>
-        </div>        <nav class="header-links" aria-label="Main">
+        </div>
+        <nav class="header-links" aria-label="Main">
           <div class="nav-drop"><button class="header-link nav-drop-btn is-current" type="button" aria-expanded="false" aria-controls="soc-menu">VEX AI SOC<span class="nav-caret" aria-hidden="true"></span></button><div class="nav-drop-menu" id="soc-menu" hidden><a href="/how-it-works/"><b>How VEX works</b><span>Good prevention starts with great detection.</span></a><a href="/detections/" aria-current="page"><b>What VEX detects</b><span>Every alert type VEX can raise.</span></a><a href="/api/"><b>VEX API</b><span>The actual API.</span></a></div></div>
           <a class="header-link header-link--slack" href="/slack"><img src="../static/slack-logo.svg" width="24" height="24" alt="">VEX for Slack</a>
           <a class="header-link header-link--cta" href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener">Schedule a chat <img src="../static/icon-arrow-right-pink.svg" width="16" height="16" alt=""></a>
@@ -268,6 +269,7 @@
       </div>
     </header>
   </div>
+
   <!-- ============================================================
        NAV MENU (phones)
        ============================================================ -->
@@ -286,7 +288,7 @@
         <li><a href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener"><span class="nav-link">Schedule a chat</span></a></li>
       </ul>
     </nav>
-  </div>
+  </div><!-- /shared:header -->
 
   <main>
 
@@ -434,39 +436,14 @@ end = (datetime.<span class="t-fn">now</span>(timezone.utc) - <span class="t-fn"
 
   <button class="to-top" id="to-top" type="button"><span class="to-top-icon" aria-hidden="true"></span>Top</button>
 
-  <footer>
+  <!-- shared:footer --><footer>
     <span>© 2026 Unmanned, Inc.</span>
     <nav class="flinks" aria-label="Company"><a href="/privacy/">Privacy</a><span aria-hidden="true">·</span><a href="/terms/">Terms of service</a><span aria-hidden="true">·</span><a href="/team/">About us</a><span aria-hidden="true">·</span><a class="fext" href="https://gounmanned.substack.com/" target="_blank" rel="noopener noreferrer">Our research</a></nav>
-  </footer>
-  <script src="../static/feedback.js" defer></script>
+  </footer><!-- /shared:footer -->
+  <!-- shared:scripts --><script src="../static/site.js" defer></script>
+  <script src="../static/feedback.js" defer></script><!-- /shared:scripts -->
 
   <script>
-    (function(){
-      // hide-on-scroll header (same as the API page)
-      var root = document.documentElement;
-      var top = document.querySelector('.site-top');
-      var classbar = document.getElementById('topstack');
-      if(!top){ return; }
-      function measure(){ root.style.setProperty('--top-h', top.offsetHeight + 'px'); }
-      measure();
-      window.addEventListener('resize', measure);
-      var lastY = window.scrollY;
-      var ticking = false;
-      function update(){
-        ticking = false;
-        var y = window.scrollY;
-        var showZone = top.offsetHeight + (classbar ? classbar.offsetHeight : 0);
-        if(root.classList.contains('jump-open') || root.hasAttribute('data-relayout')){ lastY = y; return; } // menu open, or the page just changed height under you
-        if(y <= showZone){ root.classList.remove('header-hidden'); lastY = y; return; }
-        if(Math.abs(y - lastY) < 6){ return; }
-        root.classList.toggle('header-hidden', y > lastY);
-        lastY = y;
-      }
-      window.addEventListener('scroll', function(){
-        if(!ticking){ ticking = true; requestAnimationFrame(update); }
-      }, { passive:true });
-      top.addEventListener('focusin', function(){ root.classList.remove('header-hidden'); });
-    })();
 
     (function(){
       // ---------- the catalog ----------
@@ -858,55 +835,7 @@ end = (datetime.<span class="t-fn">now</span>(timezone.utc) - <span class="t-fn"
     })();
   
 
-    (function(){
-      // phone menu (same as the other pages)
-      var openBtn = document.querySelector('.menu-btn[aria-controls="site-nav"]');
-      var panel = document.getElementById('site-nav');
-      if(!openBtn || !panel){ return; }
-      var closeBtn = panel.querySelector('.menu-close');
-      function openNav(){
-        panel.classList.add('is-open');
-        document.documentElement.classList.add('nav-open');
-        openBtn.setAttribute('aria-expanded','true');
-        closeBtn.focus({ preventScroll:true });
-      }
-      function closeNav(returnFocus){
-        panel.classList.remove('is-open');
-        document.documentElement.classList.remove('nav-open');
-        openBtn.setAttribute('aria-expanded','false');
-        if(returnFocus){ openBtn.focus({ preventScroll:true }); }
-      }
-      openBtn.addEventListener('click', openNav);
-      closeBtn.addEventListener('click', function(){ closeNav(true); });
-      document.addEventListener('keydown', function(e){
-        if(e.key === 'Escape' && panel.classList.contains('is-open')){ closeNav(true); }
-      });
-      panel.addEventListener('click', function(e){
-        if(e.target.closest('a')){ closeNav(false); }
-      });
-      var wide = window.matchMedia('(min-width:701px)');
-      function onWide(){ if(wide.matches && panel.classList.contains('is-open')){ closeNav(false); } }
-      if(wide.addEventListener){ wide.addEventListener('change', onWide); } else { wide.addListener(onWide); }
-    })();
 
-    (function(){
-      // VEX AI SOC menu: opens on click; closes on a click outside, Escape, leaving it with Tab, or the header hiding
-      var drop = document.querySelector('.nav-drop'); if(!drop){ return; }
-      var btn = drop.querySelector('.nav-drop-btn'), menu = drop.querySelector('.nav-drop-menu');
-      function set(open, focusBtn){
-        btn.setAttribute('aria-expanded', String(open)); menu.hidden = !open;
-        if(!open && focusBtn){ btn.focus({ preventScroll:true }); }
-      }
-      btn.addEventListener('click', function(){ set(menu.hidden); });
-      document.addEventListener('click', function(e){ if(!menu.hidden && !drop.contains(e.target)){ set(false); } });
-      document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && !menu.hidden){ set(false, true); } });
-      drop.addEventListener('focusout', function(e){ if(!menu.hidden && e.relatedTarget && !drop.contains(e.relatedTarget)){ set(false); } });
-      window.addEventListener('scroll', function(){ if(!menu.hidden && document.documentElement.classList.contains('header-hidden')){ set(false); } }, { passive:true });
-      // closed again when you come back: close on following a link, and when the browser restores the page from its
-      // back/forward cache (which keeps the menu as it was)
-      menu.addEventListener('click', function(e){ if(e.target.closest('a')){ set(false); } });
-      window.addEventListener('pageshow', function(e){ if(e.persisted){ set(false); } });
-    })();
 </script>
 </body>
 </html>

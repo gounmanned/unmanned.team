@@ -17,12 +17,12 @@
 <meta property="og:image:alt" content="VEX: Don’t get hacked" />
 <meta name="twitter:card" content="summary_large_image" />
 <link rel="icon" type="image/png" href="https://cdn.unmanned.team/img/logo.png">
-<link rel="preload" href="../static/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+<!-- shared:head --><link rel="preload" href="../static/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="https://cdn.unmanned.team/pulse/v1/pulse-tokens.css">
 <link rel="stylesheet" href="https://cdn.unmanned.team/pulse/v1/pulse-icons.css">
 <link rel="stylesheet" href="https://cdn.unmanned.team/pulse/v1/pulse-components.css">
 <script src="https://cdn.unmanned.team/pulse/v1/pulse.js" defer></script>
-<link rel="stylesheet" href="../static/site.css">
+<link rel="stylesheet" href="../static/site.css"><!-- /shared:head -->
 <style>
   h1,h2,h3,h4,p{margin:0;}
   img{display:block;}
@@ -650,12 +650,12 @@
 </head>
 <body>
 
-  <div class="classbar">UNMANNED · SIMPLY SECURE</div>
+  <!-- shared:classbar --><div class="classbar">UNMANNED · SIMPLY SECURE</div><!-- /shared:classbar -->
 
   <!-- ============================================================
        HEADER (sticky)
        ============================================================ -->
-  <div class="site-top">
+  <!-- shared:header --><div class="site-top">
     <header class="site-header">
       <div class="wrap header-inner">
         <div class="header-left">
@@ -690,7 +690,7 @@
         <li><a href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener"><span class="nav-link">Schedule a chat</span></a></li>
       </ul>
     </nav>
-  </div>
+  </div><!-- /shared:header -->
 
   <main>
 
@@ -1243,67 +1243,15 @@
 
   </main>
 
-  <footer>
+  <!-- shared:footer --><footer>
     <span>© 2026 Unmanned, Inc.</span>
     <nav class="flinks" aria-label="Company"><a href="/privacy/">Privacy</a><span aria-hidden="true">·</span><a href="/terms/">Terms of service</a><span aria-hidden="true">·</span><a href="/team/">About us</a><span aria-hidden="true">·</span><a class="fext" href="https://gounmanned.substack.com/" target="_blank" rel="noopener noreferrer">Our research</a></nav>
-  </footer>
-  <script src="../static/feedback.js" defer></script>
+  </footer><!-- /shared:footer -->
+  <!-- shared:scripts --><script src="../static/site.js" defer></script>
+  <script src="../static/feedback.js" defer></script><!-- /shared:scripts -->
 
   <script>
-    (function(){
-      // hide-on-scroll header (same as the other pages)
-      var root = document.documentElement;
-      var top = document.querySelector('.site-top');
-      var classbar = document.querySelector('.classbar');
-      if(!top){ return; }
-      var lastY = window.scrollY;
-      var ticking = false;
-      function update(){
-        ticking = false;
-        var y = window.scrollY;
-        var showZone = top.offsetHeight + (classbar ? classbar.offsetHeight : 0);
-        if(root.classList.contains('nav-open') || root.hasAttribute('data-auto-scroll') || root.hasAttribute('data-story-pinned')){ lastY = y; return; } // menu open, a click-scroll, or the story pinned
-        if(y <= showZone){ root.classList.remove('header-hidden'); lastY = y; return; }
-        if(Math.abs(y - lastY) < 6){ return; }
-        root.classList.toggle('header-hidden', y > lastY);
-        lastY = y;
-      }
-      window.addEventListener('scroll', function(){
-        if(!ticking){ ticking = true; requestAnimationFrame(update); }
-      }, { passive:true });
-      top.addEventListener('focusin', function(){ root.classList.remove('header-hidden'); });
-    })();
 
-    (function(){
-      // phone menu (same as the other pages)
-      var openBtn = document.querySelector('.menu-btn[aria-controls="site-nav"]');
-      var panel = document.getElementById('site-nav');
-      if(!openBtn || !panel){ return; }
-      var closeBtn = panel.querySelector('.menu-close');
-      function openNav(){
-        panel.classList.add('is-open');
-        document.documentElement.classList.add('nav-open');
-        openBtn.setAttribute('aria-expanded','true');
-        closeBtn.focus({ preventScroll:true });
-      }
-      function closeNav(returnFocus){
-        panel.classList.remove('is-open');
-        document.documentElement.classList.remove('nav-open');
-        openBtn.setAttribute('aria-expanded','false');
-        if(returnFocus){ openBtn.focus({ preventScroll:true }); }
-      }
-      openBtn.addEventListener('click', openNav);
-      closeBtn.addEventListener('click', function(){ closeNav(true); });
-      document.addEventListener('keydown', function(e){
-        if(e.key === 'Escape' && panel.classList.contains('is-open')){ closeNav(true); }
-      });
-      panel.addEventListener('click', function(e){
-        if(e.target.closest('a')){ closeNav(false); }
-      });
-      var wide = window.matchMedia('(min-width:701px)');
-      function onWide(){ if(wide.matches && panel.classList.contains('is-open')){ closeNav(false); } }
-      if(wide.addEventListener){ wide.addEventListener('change', onWide); } else { wide.addListener(onWide); }
-    })();
 
     // FINISH ONCE: run(ctx) plays an animation the first time its element is in view. Leave before it ends and it is
     // reset and starts over when you come back; once it has finished it stays, and its Replay button appears.
@@ -1470,24 +1418,6 @@
       }, reset, fig.querySelector('.vz-replay'));
     })();
   
-    (function(){
-      // VEX AI SOC menu: opens on click; closes on a click outside, Escape, leaving it with Tab, or the header hiding
-      var drop = document.querySelector('.nav-drop'); if(!drop){ return; }
-      var btn = drop.querySelector('.nav-drop-btn'), menu = drop.querySelector('.nav-drop-menu');
-      function set(open, focusBtn){
-        btn.setAttribute('aria-expanded', String(open)); menu.hidden = !open;
-        if(!open && focusBtn){ btn.focus({ preventScroll:true }); }
-      }
-      btn.addEventListener('click', function(){ set(menu.hidden); });
-      document.addEventListener('click', function(e){ if(!menu.hidden && !drop.contains(e.target)){ set(false); } });
-      document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && !menu.hidden){ set(false, true); } });
-      drop.addEventListener('focusout', function(e){ if(!menu.hidden && e.relatedTarget && !drop.contains(e.relatedTarget)){ set(false); } });
-      window.addEventListener('scroll', function(){ if(!menu.hidden && document.documentElement.classList.contains('header-hidden')){ set(false); } }, { passive:true });
-      // closed again when you come back: close on following a link, and when the browser restores the page from its
-      // back/forward cache (which keeps the menu as it was)
-      menu.addEventListener('click', function(e){ if(e.target.closest('a')){ set(false); } });
-      window.addEventListener('pageshow', function(e){ if(e.persisted){ set(false); } });
-    })();
 </script>
 </body>
 </html>

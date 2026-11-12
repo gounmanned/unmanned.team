@@ -13,12 +13,12 @@
 <script src="https://cdn.unmanned.team/pulse/v1/pulse.js" defer></script>
 <link rel="stylesheet" href="../static/site.css"><!-- /shared:head -->
 <style>
+  /* shared:basecss */ /* Base, class bar and header rules the main pages keep in their own <style> (API, detections and Dots install style these
+     their own way, so they are not in site.css). */
   h1,h2,h3,h4,p{margin:0;}
   img{display:block;}
   .wrap{width:min(1100px,calc(100% - 2 * var(--gutter)));margin:0 auto;} /* the design's 900px content column */
   @media (max-width:700px){:root{--gutter:16px;}}
-
-  /* ---------- STATUS DOT ---------- */
 
   /* ---------- CLASSIFICATION BAR ---------- */
   .classbar{
@@ -35,45 +35,18 @@
   .classbar{transition:transform 0.4s cubic-bezier(0.49,0.025,0.685,1), opacity 0.4s cubic-bezier(0.49,0.025,0.685,1);}
   html.header-hidden .classbar{transform:translateY(-100%);opacity:0;}
 
-  /* ---------- NAV MENU (phones) ---------- */
-
   @media (max-width:700px){
     :root{--classbar-h:24px;}
     .classbar{font-size:8px;}
   }
-
-  /* ---------- BUTTONS (as on the published pages) ---------- */
+  /* /shared:basecss */
 
   /* ---------- SLACK MOCKUPS: shared pieces ----------
      Everything inside .slack is drawn to look like Slack: Lato, Slack's colors and spacing. */
 
-  /* ---------- HERO ---------- */
-
-  /* ---------- SECTION SHELL ---------- */
-
-  /* ---------- PREVENT / DETECT / RESPOND ROW ---------- */
-
-  /* ---------- WHAT YOU GET ---------- */
-
-  /* ---------- TWO PATHS ---------- */
-
-  /* ---------- PRODUCT MOCKUPS: shared frame ---------- */
-
-  /* ---------- SMALLER SCREENS ---------- */
-
-  /* ---------- A DIFFERENT KIND OF PREVENTION ---------- */
-
-  /* ---------- SLACK BAND ---------- */
-
-  /* ---------- TEAM ---------- */
-
   /* ---------- TEAM PAGE (Figma 1963:145905) ---------- */
     @media (max-width:360px){   /* the narrowest phones: room for the name */
   }
-
-  /* ---------- FOOTER ---------- */
-
-  /* ---------- VEX AI SOC MENU ---------- */
 
   /* ---------- LEGAL DOCUMENT (their text, our type) ---------- */
   h1,h2,h3,h4{text-wrap:balance;} p,li{text-wrap:pretty;}

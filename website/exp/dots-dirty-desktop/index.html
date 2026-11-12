@@ -260,9 +260,9 @@
 
   /* the monitor: a bezel, the screen, a stand; the screen lights the room a little */
   .ddd-glow{left:-40px;top:-40px;width:640px;height:440px;border-radius:50%;background:radial-gradient(closest-side,rgba(150,180,235,0.16),rgba(150,180,235,0));}
-  .ddd-bezel{left:16px;top:10px;width:528px;height:340px;border-radius:14px;background:#1c1d24;box-shadow:inset 0 0 0 1px rgba(255,255,255,0.06),0 18px 40px rgba(0,0,0,0.5);}
-  .ddd-neck{left:262px;top:350px;width:36px;height:36px;background:linear-gradient(90deg,#24252d,#33343d,#24252d);}
-  .ddd-base{left:206px;top:384px;width:148px;height:10px;border-radius:5px 5px 2px 2px;background:#2c2d35;}
+  .ddd-bezel{left:16px;top:10px;width:528px;height:340px;border-radius:14px;background:#3a3c46;box-shadow:inset 0 0 0 1px rgba(255,255,255,0.14),inset 0 1px 0 rgba(255,255,255,0.12),0 18px 40px rgba(0,0,0,0.5);}   /* light enough to read against the room (Chad) */
+  .ddd-neck{left:262px;top:350px;width:36px;height:36px;background:linear-gradient(90deg,#2e3039,#454752,#2e3039);}
+  .ddd-base{left:206px;top:384px;width:148px;height:10px;border-radius:5px 5px 2px 2px;background:#3a3c46;}
   .ddd-screen{left:26px;top:20px;width:508px;height:320px;border-radius:6px;overflow:hidden;background:linear-gradient(160deg,#e4ebf5,#c7d4e7);}
   .ddd-screen > *{position:absolute;}
 
@@ -327,11 +327,10 @@
     .ddd .stage-fit{grid-row:4;width:100%;max-width:520px;}
   }
 
-  /* ---------- the opening: the kill switch's last frame (its room, box, fallen bot and eyes), then the screen switches on ----------
+  /* ---------- the opening: the kill switch's last frame (its room, fallen bot and eyes), then the screen switches on ----------
      Copied from dots-kill-switch so it looks the same; hidden at rest (the page's resting state is the end frame) */
   .ddd-ks{left:0;top:0;width:560px;height:480px;opacity:0;filter:brightness(0.3);}
   .ddd-ks > *{position:absolute;}
-  .ddd-ks .hks-labels,.ddd-ks .hks-lcd{filter:brightness(3.3);}   /* the display stayed lit in the dark */
   .ddd-eyes{left:0;top:0;width:560px;height:480px;z-index:3;pointer-events:none;}
   .ddd-eyes .hks-eyes{position:absolute;opacity:0;}
   .hks-bot{left:0;top:0;width:50px;height:48px;transform-origin:25px 30px;}
@@ -348,13 +347,6 @@
   .hks-bot.is-off .hks-eye::after{transform:rotate(-45deg);}
   .hks-bot.is-off .hks-visor{background:#25262e;box-shadow:none;}
   .hks-bot.is-off .hks-head{background:#7d7e88;box-shadow:inset -4px -5px 0 #696a74;}
-  .hks-ped{left:170px;top:318px;width:150px;height:132px;border-radius:6px 6px 2px 2px;background:linear-gradient(180deg,#34343c,#25252b);box-shadow:inset 0 2px 0 rgba(255,255,255,0.08);}
-  .hks-labels{left:170px;top:318px;width:150px;height:132px;box-sizing:border-box;padding:8px;display:flex;flex-direction:column;justify-content:center;gap:8px;}
-  .hks-plate{padding:4px;background:#d8202a;border-radius:2px;font:700 calc(11px / var(--s,1))/1.15 var(--font-mono);letter-spacing:0.1em;text-transform:uppercase;color:#fff;text-align:center;}
-  .hks-lcd{padding:4px;border-radius:2px;background:#0a0a0c;border:1px solid #444;
-    font:600 calc(11px / var(--s,1))/1.2 var(--font-mono);color:#ff5a60;text-shadow:0 0 6px rgba(255,60,70,0.7);text-align:center;}
-  .hks-mount{left:318px;top:404px;width:8px;height:44px;border-radius:0 2px 2px 0;background:#18181c;}
-  .hks-btn{left:324px;top:406px;width:26px;height:40px;border-radius:2px 22px 22px 2px;transform-origin:0 50%;background:radial-gradient(circle at 30% 35%,#ff7a80,#e3101e 55%,#9e0610);box-shadow:3px 0 0 #6d040b;}
   .hks-eyes{z-index:3;width:28px;height:10px;opacity:0.85;transform:scale(var(--size,1)) scaleY(var(--blink,1));}
   .hks-eyes::before,.hks-eyes::after{content:'';position:absolute;top:0;width:8px;height:10px;border-radius:3px;background:var(--c,#f2f2f5);box-shadow:0 0 6px var(--c,#f2f2f5);}
   .hks-eyes::before{left:0;} .hks-eyes::after{right:0;}
@@ -488,10 +480,6 @@
             <div class="ddd-glow" id="ddd-glow"></div>
             <!-- the opening: the kill switch’s last frame -->
             <div class="ddd-ks" id="ddd-ks">
-              <div class="hks-ped"></div>
-              <div class="hks-labels"><div class="hks-plate">AI kill switch</div><div class="hks-lcd" >1 of 247 AI agents stopped</div></div>
-              <div class="hks-mount"></div>
-              <div class="hks-btn" style="transform:translateX(-5px) scaleX(0.7)"></div>
               <div class="hks-bot is-red is-off" style="transform:translate(95px,409px) scale(1.4) rotate(100deg);--bones:1;z-index:4;filter:brightness(0.6)"><span class="hks-prop"></span><span class="hks-stem"></span><span class="hks-head"></span><span class="hks-visor"><span class="hks-eye" style="left:9px"></span><span class="hks-eye" style="left:21px"></span></span><svg class="hks-bones" viewBox="0 0 46 40" fill="#a7a8b3" stroke="#a7a8b3"><line x1="9" y1="7" x2="37" y2="33" stroke-width="6.5" stroke-linecap="round"/><circle cx="10.4" cy="3.3" r="4.4"/><circle cx="5.5" cy="8.6" r="4.4"/><circle cx="40.5" cy="31.4" r="4.4"/><circle cx="35.6" cy="36.7" r="4.4"/><line x1="37" y1="7" x2="9" y2="33" stroke-width="6.5" stroke-linecap="round"/><circle cx="40.5" cy="8.6" r="4.4"/><circle cx="35.6" cy="3.3" r="4.4"/><circle cx="10.4" cy="36.7" r="4.4"/><circle cx="5.5" cy="31.4" r="4.4"/></svg></div>
             </div>
             <div class="ddd-floor"></div>

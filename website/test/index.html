@@ -18,19 +18,13 @@
 <meta property="og:image:height" content="630" />
 <meta property="og:image:alt" content="VEX: Don’t get hacked" />
 <meta name="twitter:card" content="summary_large_image" />
-<link rel="preload" href="../static/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+<!-- shared:head --><link rel="preload" href="../static/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="https://cdn.unmanned.team/pulse/v1/pulse-tokens.css">
 <link rel="stylesheet" href="https://cdn.unmanned.team/pulse/v1/pulse-icons.css">
 <link rel="stylesheet" href="https://cdn.unmanned.team/pulse/v1/pulse-components.css">
 <script src="https://cdn.unmanned.team/pulse/v1/pulse.js" defer></script>
+<link rel="stylesheet" href="../static/site.css"><!-- /shared:head -->
 <style>
-  /* ---------- FONTS (self-hosted, Latin) ---------- */
-  @font-face{font-family:'Inter';font-style:normal;font-weight:100 900;font-display:swap;src:url(../static/fonts/inter-latin.woff2) format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
-  @font-face{font-family:'JetBrains Mono';font-style:normal;font-weight:100 800;font-display:swap;src:url(../static/fonts/jetbrains-mono-latin.woff2) format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
-  @font-face{font-family:'Lato';font-style:normal;font-weight:400;font-display:swap;src:url(../static/fonts/lato-400.woff2) format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
-  @font-face{font-family:'Lato';font-style:italic;font-weight:400;font-display:swap;src:url(../static/fonts/lato-400-italic.woff2) format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
-  @font-face{font-family:'Lato';font-style:normal;font-weight:700;font-display:swap;src:url(../static/fonts/lato-700.woff2) format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
-  @font-face{font-family:'Lato';font-style:normal;font-weight:900;font-display:swap;src:url(../static/fonts/lato-900.woff2) format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
   body{font-family:var(--font-sans);font-size:var(--type-body-md-size);line-height:1.5;}
   :root{
                     /* pink for TEXT on light backgrounds (passes 4.5:1) */
@@ -288,16 +282,6 @@
   .contact-sub{font-size:16px;line-height:1.75;color:var(--color-neutral-300);}
   @media (max-width:700px){.contact-section{padding:72px 20px;}}
 
-  /* ---------- FOOTER ---------- */
-  footer{
-    border-top:1px solid var(--color-border-default);padding:28px 56px 40px;display:flex;justify-content:space-between;align-items:center;
-    font-size:10.5px;line-height:1.5;color:var(--color-text-tertiary);text-transform:uppercase;letter-spacing:0.08em;
-  }
-  footer a{text-decoration:none;}
-  footer a:hover{color:var(--color-text-primary);}
-  footer .fmark{color:var(--color-text-primary);font-weight:500;}
-  @media (max-width:700px){footer{padding:22px 20px 36px;flex-direction:column;gap:10px;text-align:center;}}
-
   /* ---------- SCROLL REVEAL ----------
      .reveal        fades up one element as it scrolls into view
      .reveal-group  fades up each child on its own (cards, phases, rows);
@@ -531,11 +515,10 @@
 
   </main>
 
-  <footer>
-    <span class="fmark">UNMANNED</span>
-    <span>© 2026 UNMANNED, INC.</span>
-    <a href="https://gounmanned.substack.com/" target="_blank" rel="noopener noreferrer">OUR RESEARCH</a>
-  </footer>
+  <!-- shared:footer --><footer>
+    <span>© 2026 Unmanned, Inc.</span>
+    <nav class="flinks" aria-label="Company"><a href="/privacy/">Privacy</a><span aria-hidden="true">·</span><a href="/terms/">Terms of service</a><span aria-hidden="true">·</span><a href="/team/">About us</a><span aria-hidden="true">·</span><a class="fext" href="https://gounmanned.substack.com/" target="_blank" rel="noopener noreferrer">Our research</a></nav>
+  </footer><!-- /shared:footer -->
 
   <script>
     (function(){

@@ -3,11 +3,9 @@ class TenantScreen {
         this.state = state;
         this.api = state.api;
         this.month = new Date();
-        this.query = '';
         this.scope = 'all';
 
         this.section = document.getElementById('signal-section');
-        this.input = document.getElementById('signal-search-input');
         this.period = document.getElementById('trend-period');
 
         const now = new Date();
@@ -18,6 +16,8 @@ class TenantScreen {
             open: signal => this.open(signal),
             move: (signal, status) => this.move(signal, status),
         });
+
+        this.audit = new AuditRollup(this.api);
 
         this.listen();
         new ResizeObserver(() => this.renderTrend()).observe(document.getElementById('trend-svg'));
@@ -33,7 +33,7 @@ class TenantScreen {
     async reset() {
         this.api.reset();
         this.table.clear();
-        this.clearSearch();
+        this.audit.clear();
         this.renderThreat();
         this.renderTrend();
     }
@@ -58,10 +58,6 @@ class TenantScreen {
             tab.querySelector('.scope-count').textContent = this.scoped(tab.dataset.scope).length.toLocaleString();
         });
 
-        const el = document.getElementById('signal-count');
-        el.hidden = !!this.query;
-        if (this.query) return;
-
         const all = this.scoped();
         const closed = all.filter(s => s.status.startsWith('C'));
         const auto = closed.filter(s => s.status === 'CV').length;
@@ -72,7 +68,7 @@ class TenantScreen {
             ? `${Math.round(responded.reduce((sum, s) => sum + (new Date(s.updated) - new Date(s.created)), 0) / responded.length / 60000).toLocaleString()}m`
             : '—';
 
-        el.textContent = `${mttr} MTTR · ${pct}% autoclosed`;
+        document.getElementById('signal-count').textContent = `${mttr} MTTR · ${pct}% autoclosed`;
     }
 
     async open(signal) {
@@ -86,29 +82,6 @@ class TenantScreen {
     async move(signal, status) {
         this.state.track(await this.api.signals.patch(signal.id, { status }));
         document.dispatchEvent(new CustomEvent('page:reload'));
-    }
-
-    // ── search ─────────────────────────────────────────────────────
-
-    async search(q) {
-        this.query = q.trim();
-        if (!this.query) return this.clearSearch();
-
-        const query = this.query;
-
-        let logs = [];
-        await SiteSpinner.withLoading(async () => {
-            logs = await this.api.audit.search(query) ?? [];
-        });
-
-        if (query === this.query) this.table.showLogs(logs, query);
-    }
-
-    clearSearch() {
-        this.query = '';
-        this.input.value = '';
-        this.table.hideLogs();
-        this.count();
     }
 
     // ── setup ──────────────────────────────────────────────────────
@@ -237,7 +210,6 @@ class TenantScreen {
         });
 
         document.getElementById('view-switch').addEventListener('click', (e) => {
-            this.clearSearch();
             e.currentTarget.querySelector('span').textContent = this.table.toggleBoard() ? 'table_rows' : 'view_kanban';
         });
 
@@ -261,19 +233,6 @@ class TenantScreen {
             this.table.filter(this.scope);
             this.renderTrend();
             this.count();
-        });
-
-        document.getElementById('signal-search').addEventListener('submit', (e) => {
-            e.preventDefault();
-            this.search(this.input.value);
-        });
-
-        this.input.addEventListener('input', () => {
-            if (!this.input.value.trim() && this.query) this.clearSearch();
-        });
-
-        this.input.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') this.clearSearch();
         });
     }
 }

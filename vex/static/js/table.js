@@ -12,16 +12,10 @@ class Table {
         recs: s => s.metadata?.threat == null,
     };
 
-    static CLOCK = new Intl.DateTimeFormat(undefined, {
-        month: 'short', day: '2-digit',
-        hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23',
-    });
-
     constructor(id, { open, move }) {
         this.body = document.querySelector(`#${id} tbody`);
         this.wrap = this.body.closest('.table-wrap');
         this.board = this.wrap.querySelector('.signal-board');
-        this.logs = this.wrap.querySelector('.signal-search-results');
         this.open = open;
         this.move = move;
         this.signals = new Map();
@@ -53,7 +47,6 @@ class Table {
     }
 
     toggleBoard() {
-        this.hideLogs();
         return this.wrap.classList.toggle('board');
     }
 
@@ -78,36 +71,6 @@ class Table {
         if (!Table.SCOPES[this.scope](signal)) return;
         this.renderRow(signal);
         this.renderCard(signal);
-    }
-
-    // ── logs ───────────────────────────────────────────────────────
-
-    showLogs(logs, query) {
-        const pattern = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-        const highlight = text => text.split(pattern)
-            .map((part, i) => i % 2 ? `<mark>${Workspace.esc(part)}</mark>` : Workspace.esc(part))
-            .join('');
-
-        if (!logs.length) return this.placeholder(`No logs match "${Workspace.esc(query)}"`);
-
-        this.wrap.classList.add('logs');
-        this.logs.innerHTML = logs.map(log => `<li>${this.logLine(log, highlight(log.message))}</li>`).join('');
-        this.wrap.scrollTop = 0;
-    }
-
-    placeholder(text) {
-        this.wrap.classList.add('logs');
-        this.logs.innerHTML = `<li class="search-empty">${text}</li>`;
-    }
-
-    hideLogs() {
-        this.wrap.classList.remove('logs');
-        this.logs.innerHTML = '';
-    }
-
-    logLine(log, message = Workspace.esc(log.message)) {
-        const time = Table.CLOCK.format(new Date(log.timestamp));
-        return `<time datetime="${log.timestamp}">${time}</time><span>${message}</span>`;
     }
 
     // ── signals ────────────────────────────────────────────────────
@@ -247,11 +210,6 @@ class Table {
             if (!el) return;
             e.stopPropagation();
             this.open(this.signals.get(el.dataset.id));
-        });
-
-        this.logs.addEventListener('click', (e) => {
-            if (getSelection().toString()) return;
-            e.target.closest('li:not(.search-empty)')?.classList.toggle('expanded');
         });
 
         this.board.addEventListener('dragstart', (e) => {

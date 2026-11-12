@@ -60,6 +60,7 @@ class Workspace {
                         source: new SourceRollup(state),
                         dot: new DotRollup(state),
                         map: new MapRollup(state),
+                        audit: new AuditRollup(state),
                     };
 
                     this.sidebars = {

@@ -19,12 +19,12 @@
 <meta name="twitter:card" content="summary_large_image" />
 <link rel="icon" type="image/png" href="https://cdn.unmanned.team/img/logo.png">
 <link rel="apple-touch-icon" href="https://cdn.unmanned.team/img/logo.png">
-<link rel="preload" href="../../static/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+<!-- shared:head --><link rel="preload" href="../../static/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="https://cdn.unmanned.team/pulse/v1/pulse-tokens.css">
 <link rel="stylesheet" href="https://cdn.unmanned.team/pulse/v1/pulse-icons.css">
 <link rel="stylesheet" href="https://cdn.unmanned.team/pulse/v1/pulse-components.css">
 <script src="https://cdn.unmanned.team/pulse/v1/pulse.js" defer></script>
-<link rel="stylesheet" href="../../static/site.css">
+<link rel="stylesheet" href="../../static/site.css"><!-- /shared:head -->
 <style>
   /* Dots campaign page. Shared pieces first (header, hero frame, stage, the four sections), then this page's hero. */
   :root{--d-purple:#b811de;--d-green:#029266;--accent-text:#d10176;--d-faint:#faf9f6;--success:#057c56;--line-strong:#8a8a8e;--anton:'Anton',Impact,sans-serif;}
@@ -340,9 +340,9 @@
 </head>
 <body>
 
-  <div class="classbar">UNMANNED · SIMPLY SECURE</div>
+  <!-- shared:classbar --><div class="classbar">UNMANNED · SIMPLY SECURE</div><!-- /shared:classbar -->
 
-  <div class="site-top">
+  <!-- shared:header --><div class="site-top">
     <header class="site-header">
       <div class="wrap header-inner">
         <a href="#top" class="dots-brand" aria-label="Dots by Unmanned, back to top">
@@ -355,7 +355,7 @@
         </nav>
       </div>
     </header>
-  </div>
+  </div><!-- /shared:header -->
 
   <!-- One laptop, drawn once and reused by the story pictures (the /dots/ environment illustrations' style) -->
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -768,11 +768,11 @@
   <!-- phones: a buy bar that slides up once the hero's button has scrolled away, and steps aside at the price card -->
   <div class="buybar" id="buybar"><a class="pill" href="#price">Buy a Dot for 99¢</a></div>
 
-  <footer>
+  <!-- shared:footer --><footer>
     <span>© 2026 Unmanned, Inc.</span>
     <nav class="flinks" aria-label="Company"><a class="fext" href="/privacy/" target="_blank" rel="noopener">Privacy<span class="visually-hidden"> (opens in a new tab)</span></a><span aria-hidden="true">·</span><a class="fext" href="/terms/" target="_blank" rel="noopener">Terms of service<span class="visually-hidden"> (opens in a new tab)</span></a><span aria-hidden="true">·</span><a class="fext" href="/team/" target="_blank" rel="noopener">About us<span class="visually-hidden"> (opens in a new tab)</span></a><span aria-hidden="true">·</span><a class="fext" href="https://gounmanned.substack.com/" target="_blank" rel="noopener noreferrer">Our research</a></nav>
-  </footer>
-  <script src="../../static/feedback.js" defer></script>
+  </footer><!-- /shared:footer -->
+  <!-- shared:scripts --><script src="../../static/feedback.js" defer></script><!-- /shared:scripts -->
 
   <script>
     var PAGE = 'dots-kill-switch';

@@ -101,9 +101,7 @@
   .close-box .eyebrow-label{color:var(--color-neutral-300);}
 
   /* ---------- BUTTONS AND TEXT LINKS ---------- */
-  .text-link{display:inline-flex;align-items:center;gap:6px;font-weight:500;font-size:15px;line-height:1.5;color:var(--color-text-accent);text-decoration:none;}
-  .text-link img{width:16px;height:16px;transition:transform 0.2s ease;}
-  .ctas > .text-link{min-height:52px;}
+  .ctas > .pulse-link{min-height:48px;}
 
   /* ---------- SLACK MESSAGE MOCK-UP ---------- */
   .slack{font-family:var(--slack);color:var(--slack-ink);text-align:left;}

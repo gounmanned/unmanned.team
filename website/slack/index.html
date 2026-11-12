@@ -56,7 +56,7 @@
   }
 
   /* ---------- BUTTONS (as on the published pages) ---------- */
-  .text-link:hover img{transform:translateY(2px);}
+  .pulse-link:hover img{transform:translateY(2px);}
 
   /* ---------- HERO ---------- */
   .hero{position:relative;overflow:hidden;padding:70px 0 32px;text-align:center;}
@@ -361,7 +361,7 @@
   @media (max-width:420px){
     .ctas{flex-direction:column;align-self:stretch;}
     .ctas .pulse-btn{width:100%;}
-    .ctas > .text-link{align-self:center;min-height:44px;}
+    .ctas > .pulse-link{align-self:center;min-height:44px;}
   }
 
   /* ---------- STORY (desktop only) ----------
@@ -432,7 +432,7 @@
 
   @media (prefers-reduced-motion: reduce){
     html{scroll-behavior:auto;}
-    .story-step,.scene,.scene.is-on,.js-story .intro-msg,.story-skip img,.text-link img{transition:none;}
+    .story-step,.scene,.scene.is-on,.js-story .intro-msg,.story-skip img,.pulse-link img{transition:none;}
     .status-dot{animation:none;}
     .classbar,.site-top .site-header,.nav-panel,.header-link--cta img,.pulse-btn,.guide{transition:none;}
   }
@@ -499,7 +499,7 @@
       <h1>Security, handled. Right in Slack.</h1>
       <div class="ctas">
         <a class="pulse-btn pulse-btn--primary pulse-btn--lg" href="https://slack.com/oauth/v2/authorize?client_id=11574043500291.12158197069719&amp;scope=users:read,app_mentions:read,channels:history,chat:write,commands,incoming-webhook,users:read.email&amp;user_scope=">Add to Slack</a>
-        <a class="text-link" href="#how">See VEX in Slack <img src="../static/icon-arrow-down.svg" width="16" height="16" alt=""></a>
+        <a class="pulse-link" href="#how">See VEX in Slack <img src="../static/icon-arrow-down.svg" width="16" height="16" alt=""></a>
       </div>
       <p class="hero-note"><strong>Free to use.</strong> No sign-up, no payment. Install it and it just works.<br>For security and IT teams who already live in Slack</p>
     </div>

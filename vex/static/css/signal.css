@@ -280,8 +280,8 @@
     .composer {
       flex: 1;
       min-height: 0;
-      grid-template-columns: 1fr auto;
-      grid-template-rows: 1fr auto;
+      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-rows: minmax(0, 1fr) auto;
       grid-template-areas:
         "input  input"
         "fields send";
@@ -299,12 +299,14 @@
     .fields {
       grid-area: fields;
       display: flex;
-      gap: 8px;
+      flex-wrap: wrap;
+      gap: 10px 8px;
+      min-width: 0;
       padding: 12px 8px 18px 18px;
     }
 
     .field {
-      flex: 1;
+      flex: 1 1 120px;
       min-width: 0;
       display: flex;
       flex-direction: column;
@@ -319,6 +321,8 @@
       }
 
       input {
+        width: 100%;
+        min-width: 0;
         height: 30px;
         padding: 5px 10px;
         border: 1px solid var(--line);
@@ -335,6 +339,8 @@
       }
 
       input[type="datetime-local"] {
+        padding-right: 6px;
+
         &::-webkit-calendar-picker-indicator {
           opacity: 0.45;
           cursor: pointer;
@@ -342,6 +348,8 @@
         &:hover::-webkit-calendar-picker-indicator { opacity: 0.8; }
       }
     }
+
+    .field:has(input[type="datetime-local"]) { flex-basis: 190px; }
 
     .field-check { flex: 0 0 auto; }
 
@@ -409,6 +417,7 @@
 
     .send-btn {
       grid-area: send;
+      flex-shrink: 0;
       width: 30px;
       height: 30px;
       margin: 0 18px 18px 0;

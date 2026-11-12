@@ -56,7 +56,6 @@
      Everything inside .slack is drawn to look like Slack: Lato, Slack's colors and spacing. */
 
   /* ---------- TEAM PAGE (Figma 1963:145905) ---------- */
-     /* pink for small text on black (5:1); the usual --pink is just under 4.5:1 there */
   .tm-wrap{width:min(1100px, calc(100% - 2 * var(--gutter)));margin:0 auto;}
   .tm-role{font-family:var(--font-mono);font-size:12px;line-height:16px;letter-spacing:0.08em;text-transform:uppercase;}
   .tm-photo{position:relative;overflow:hidden;aspect-ratio:1;background:var(--color-surface-subtle);}
@@ -69,8 +68,8 @@
   .tm-hero h1{font-weight:600;font-size:clamp(34px, 4.2vw, 48px);line-height:1.17;letter-spacing:-0.015em;color:var(--color-text-primary);}
   .tm-lede{max-width:680px;font-size:20px;line-height:32px;color:var(--color-neutral-700);}
 
-  /* founder, on black */
-  .tm-founder{background:var(--color-surface-contrast);color:var(--color-text-on-contrast);overflow:hidden;}
+  /* founder, on black: a dark-theme section (data-theme="dark"), so Pulse tokens give the on-dark colors */
+  .tm-founder{background:var(--color-surface-page);color:var(--color-text-primary);overflow:hidden;}
   .tm-founder .tm-wrap{padding:64px 0 40px;}
   /* David's photo always takes one column of the team grid below, so the photos match in size and line up at every
      width (4 columns on desktop, 2 on tablets and large phones, 1 on phones) */
@@ -79,11 +78,11 @@
   .tm-founder-glow{position:absolute;left:-155px;top:-149px;width:456px;height:531px;pointer-events:none;max-width:none;}
   .tm-founder .tm-photo{position:relative;border:1px solid var(--color-neutral-500);}
   .tm-founder-copy{position:relative;display:flex;flex-direction:column;gap:16px;}
-  .tm-founder-copy .tm-role{color:var(--gap-pink-on-dark);}
+  .tm-founder-copy .tm-role{color:var(--color-text-accent);}
   .tm-founder-copy h2{margin-top:4px;font-weight:700;font-size:20px;line-height:32px;}
   .tm-bio{font-size:16px;line-height:24px;}
-  .tm-book{display:block;font-size:14px;line-height:20px;color:var(--color-text-on-contrast);text-decoration:none;}   /* flows as text, so it wraps cleanly on phones */
-  .tm-book span{color:var(--gap-pink-on-dark);}
+  .tm-book{display:block;font-size:14px;line-height:20px;color:var(--color-text-primary);text-decoration:none;}   /* flows as text, so it wraps cleanly on phones */
+  .tm-book span{color:var(--color-text-accent);}
   .tm-book:hover span{text-decoration:underline;text-underline-offset:3px;}
   .tm-book img{display:inline-block;width:16px;height:16px;margin-left:4px;vertical-align:-3px;}
 
@@ -198,7 +197,7 @@
     </div>
   </section>
 
-  <section class="tm-founder" aria-labelledby="founder-name">
+  <section class="tm-founder" data-theme="dark" aria-labelledby="founder-name">
     <div class="tm-wrap">
       <div class="tm-founder-row">
         <img class="tm-founder-glow" src="static/founder-glow.svg" width="456" height="531" alt="" aria-hidden="true">

@@ -21,8 +21,6 @@
   :root{--slack-ink:#1d1c1d;--slack-gray:#616061;--slack-time:#868686;--slack-btn:#007a5a;--slack-green:#2eb67d;--slack-yellow:#ecb22e;--slack-red:#e01e5a;--slack-blue:#36c5f0;--slack-aubergine:#481249;--slack-band:#49144a;--slack-band-soft:#6a3e6b;--slack-purple:#4a154b;--slack-purple-deep:#3a073b;--slack-sidebar-edge:#ad98ae;--slack-active-bg:#f9edff;--slack-active-text:#3f0e40;--slack-tab-on:#83388a;--slack-mention-bg:#eaf5fa;--slack-mention:#4c7db4;--slack-avatar-bg:#e8e8ec;--slack-avatar:#52525c;--slack-line:#dddddd;--slack-line-soft:#e3e3e8;--slack-border:#e2e2e2;--slack-surface:#f8f8f8;--slack-surface-alt:#f2f2f2;--slack-hover:#ebebeb;--slack-chan:#e8e8e8;--slack-window-close:#ff5f57;--slack-window-minimize:#febc2e;--slack-window-zoom:#28c840;}
   /* Code: syntax colors in the code panels */
   :root{--code-function:#2f5f96;--code-keyword:var(--color-text-accent);--code-string:var(--color-text-success);--code-number:#8a5a00;--code-key:#7a3fc4;--code-comment:var(--color-text-tertiary);}
-  /* Gaps: interface colors with no close Pulse color; decide, then replace */
-  :root{--gap-pink-on-dark:#f5008a;--gap-check-on-dark:#3ecf8e;--gap-highlight:#ffe59a;}
 
   /* ---------- BASE ---------- */
   *{box-sizing:border-box;}

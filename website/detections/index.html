@@ -132,13 +132,10 @@
   .jump-list,.jump-sub{list-style:none;margin:0;padding:0;}
   /* desktop: a menu taller than the screen scrolls on its own; at its end (or when it fits) the page scrolls on */
   .jump-scroll{max-height:calc(100vh - 160px);overflow-y:auto;}
-  .jump-link{
-    display:flex;justify-content:space-between;gap:12px;padding:10px 0 12px 16px;border-left:1px solid var(--color-border-default);
-    font-weight:500;font-size:14px;line-height:1.5;color:var(--color-neutral-700);text-decoration:none;transition:color 0.2s ease;
-  }
+  .jump-link{display:flex;justify-content:space-between;gap:12px;transition:color 0.2s ease;}
   .jump-sub .jump-link{padding:5px 0 6px 28px;font-weight:400;font-size:13px;color:var(--color-text-tertiary);}
   .jump-link .c{font:500 11px/1.9 var(--font-mono);color:var(--color-text-tertiary);font-variant-numeric:tabular-nums;}
-  .jump-sub .jump-link.is-active{padding-left:27px;font-weight:500;}
+  .jump-sub .jump-link[aria-current="true"]{padding-left:27px;font-weight:500;}
 
   .bucket{display:flex;flex-direction:column;gap:40px;padding:64px 0 24px;scroll-margin-top:calc(var(--classbar-h) + var(--top-h, 61px) - 40px);}
   .bucket + .bucket{border-top:1px solid var(--color-border-default);}
@@ -328,7 +325,7 @@
           <span class="jump-toggle-text"><span class="jump-toggle-label">On this page</span><span class="jump-current">Microsoft 365</span></span>
           <img src="../static/icon-chevron-down.svg" width="20" height="20" alt="">
         </button>
-        <div class="jump-scroll" id="jump-scroll"><ul class="jump-list" id="jump-list"></ul></div>
+        <div class="jump-scroll" id="jump-scroll"><ul class="jump-list pulse-tabs pulse-tabs--vertical" id="jump-list"></ul></div>
       </nav>
 
       <div class="cat-main">
@@ -582,13 +579,13 @@ end = (datetime.<span class="t-fn">now</span>(timezone.utc) - <span class="t-fn"
         m.order.forEach(function(v){
           var vm = m.vendors[v], vlabel = vendorLabel(v), total = 0, many = vm.order.length > 1;
           vm.order.forEach(function(k){ vm.sources[k].order.forEach(function(g){ total += vm.sources[k].groups[g].length; }); });
-          nav += '<li><a class="jump-link" href="#' + v + '" data-bucket="' + v + '"><span>' + esc(vlabel) + '</span><span class="c">' + fmt(total) + '</span></a><ul class="jump-sub">';
+          nav += '<li><a class="jump-link pulse-tab" href="#' + v + '" data-bucket="' + v + '"><span>' + esc(vlabel) + '</span><span class="c">' + fmt(total) + '</span></a><ul class="jump-sub">';
           html += '<section class="bucket" id="' + v + '" data-bucket="' + v + '"><div class="bucket-head"><h2>' + esc(vlabel) + '</h2></div>';
           vm.order.forEach(function(k){
             var s = vm.sources[k], label = data.sources[k].label, id = v + '-' + slug(label), n = 0;
             s.order.forEach(function(g){ n += s.groups[g].length; });
             // the product list in the menu only where a vendor has several (Microsoft 365)
-            if(many){ nav += '<li><a class="jump-link" href="#' + id + '" data-source="' + id + '"><span>' + esc(label) + '</span><span class="c">' + fmt(n) + '</span></a></li>'; }
+            if(many){ nav += '<li><a class="jump-link pulse-tab" href="#' + id + '" data-source="' + id + '"><span>' + esc(label) + '</span><span class="c">' + fmt(n) + '</span></a></li>'; }
             html += '<div class="source" id="' + id + '">' + (label !== vlabel ? '<div class="source-head"><h3>' + esc(label) + '</h3><span class="count" data-count>' + fmt(n) + '</span></div>' : '<span hidden data-count></span>');
             s.order.forEach(function(g){
               var rows = s.groups[g], fold = rows.length > SHOW + 4;
@@ -758,7 +755,7 @@ end = (datetime.<span class="t-fn">now</span>(timezone.utc) - <span class="t-fn"
       function setActive(i){
         links.forEach(function(a, j){
           a.classList.toggle('is-active', j === i);
-          if(j === i){ a.setAttribute('aria-current', 'location'); } else { a.removeAttribute('aria-current'); }
+          if(j === i){ a.setAttribute('aria-current', 'true'); } else { a.removeAttribute('aria-current'); }
         });
         if(links[i]){ current.textContent = links[i].querySelector('span').textContent; }
         // desktop: keep the highlighted link in view when the menu is taller than the screen

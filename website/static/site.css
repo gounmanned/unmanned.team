@@ -157,8 +157,10 @@
   .jump{position:sticky;top:calc(var(--classbar-h) + var(--top-h, 61px) - 40px);align-self:start;padding-top:64px;transition:top 0.3s cubic-bezier(0.4,0,0.2,1);}
   .jump-label{font-size:11px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-text-tertiary);margin-bottom:16px;}
   .jump-toggle{display:none;}
-  .jump-link:hover{color:var(--color-text-accent);}
-  .jump-link.is-active{border-left:2px solid var(--color-accent-default);padding-left:15px;font-weight:600;color:var(--color-text-primary);}
+  /* jump menu = Pulse vertical tabs; until Pulse has them (Chad, 2026-11-11): pink hover, 600 for the current item */
+  .jump .pulse-tabs--vertical{width:auto;}
+  .jump .pulse-tab:not([aria-current="true"]):hover{color:var(--color-text-accent);}
+  .jump .pulse-tab[aria-current="true"]{font-weight:600;}
   .code-panel{border:1px solid var(--color-border-default);border-radius:4px;background:var(--color-surface-subtle);}
   .code-head{display:flex;align-items:center;gap:10px;padding:8px 10px 8px 16px;background:var(--color-surface-sunken);border-bottom:1px solid var(--color-border-default);border-radius:4px 4px 0 0;}
   .code-file{font-family:var(--font-mono);font-weight:500;font-size:12px;color:var(--color-text-primary);}

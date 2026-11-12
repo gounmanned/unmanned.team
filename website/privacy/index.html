@@ -1,15 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light" data-surface="web">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Unmanned Privacy Policy</title>
 <link rel="apple-touch-icon" href="https://cdn.unmanned.team/img/logo.png">
 <link rel="icon" type="image/png" href="https://cdn.unmanned.team/img/logo.png">
-<link rel="stylesheet" href="https://cdn.unmanned.team/css/global.css">
+<link rel="preload" href="../static/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="https://cdn.unmanned.team/pulse/v1/pulse-tokens.css">
+<link rel="stylesheet" href="https://cdn.unmanned.team/pulse/v1/pulse-icons.css">
+<link rel="stylesheet" href="https://cdn.unmanned.team/pulse/v1/pulse-components.css">
+<script src="https://cdn.unmanned.team/pulse/v1/pulse.js" defer></script>
 <link rel="stylesheet" href="../static/site.css">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;800&family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
   h1,h2,h3,h4,p{margin:0;}
   img{display:block;}
@@ -20,14 +22,14 @@
 
   /* ---------- CLASSIFICATION BAR ---------- */
   .classbar{
-    position:fixed;top:0;left:0;right:0;z-index:60;background:var(--ink);color:var(--gray-faint);
+    position:fixed;top:0;left:0;right:0;z-index:60;background:var(--color-surface-contrast);color:var(--color-neutral-300);
     font-size:9.5px;line-height:1.5;letter-spacing:0.16em;text-transform:uppercase;text-align:center;padding:6px 0;
   }
 
   /* ---------- STICKY HEADER (same as the homepage and VEX MDR) ---------- */
-  .site-header{background:var(--surface);border-bottom:1px solid var(--gray-line);}
+  .site-header{background:var(--color-surface-page);border-bottom:1px solid var(--color-border-default);}
   .site-top .site-header{box-shadow:0 4px 8px -4px rgba(11,12,13,0.1);}
-  .brand{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:800;line-height:1.5;letter-spacing:0.01em;text-decoration:none;color:var(--ink);}
+  .brand{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:800;line-height:1.5;letter-spacing:0.01em;text-decoration:none;color:var(--color-text-primary);}
 
   /* ---------- HIDE ON SCROLL ---------- */
   .classbar{transition:transform 0.4s cubic-bezier(0.49,0.025,0.685,1), opacity 0.4s cubic-bezier(0.49,0.025,0.685,1);}
@@ -77,30 +79,30 @@
   /* ---------- LEGAL DOCUMENT (their text, our type) ---------- */
   h1,h2,h3,h4{text-wrap:balance;} p,li{text-wrap:pretty;}
   .legal{padding:72px 0 112px;}
-  .legal-doc{max-width:720px;color:var(--body);font-size:16px;line-height:1.7;overflow-wrap:break-word;}
-  .legal-doc h1{margin:0 0 16px;font-size:clamp(34px,4.2vw,48px);line-height:1.1667;font-weight:600;letter-spacing:-0.02em;color:var(--ink);}
-  .legal-doc h1 + p{margin-bottom:8px;font-size:14px;color:var(--surface-dark);}
-  .legal-doc h2{margin:56px 0 16px;font-size:clamp(22px,2.4vw,27px);line-height:1.25;font-weight:600;letter-spacing:-0.01em;color:var(--ink);}
-  .legal-doc h3{margin:32px 0 8px;font-size:18px;line-height:1.4;font-weight:600;color:var(--ink);}
+  .legal-doc{max-width:720px;color:var(--color-neutral-700);font-size:16px;line-height:1.7;overflow-wrap:break-word;}
+  .legal-doc h1{margin:0 0 16px;font-size:clamp(34px,4.2vw,48px);line-height:1.1667;font-weight:600;letter-spacing:-0.02em;color:var(--color-text-primary);}
+  .legal-doc h1 + p{margin-bottom:8px;font-size:14px;color:var(--color-text-tertiary);}
+  .legal-doc h2{margin:56px 0 16px;font-size:clamp(22px,2.4vw,27px);line-height:1.25;font-weight:600;letter-spacing:-0.01em;color:var(--color-text-primary);}
+  .legal-doc h3{margin:32px 0 8px;font-size:18px;line-height:1.4;font-weight:600;color:var(--color-text-primary);}
   .legal-doc p{margin:0 0 16px;}
   .legal-doc ul,.legal-doc ol{margin:0 0 16px;padding-left:24px;}
   .legal-doc li{margin-bottom:8px;}
-  .legal-doc li::marker{color:var(--surface-dark);}
-  .legal-doc strong,.legal-doc b{font-weight:600;color:var(--ink);}
-  .legal-doc a{color:var(--pink-text);text-decoration:underline;text-underline-offset:3px;}
-  .legal-doc a:hover{color:var(--pink-press);}
+  .legal-doc li::marker{color:var(--color-text-tertiary);}
+  .legal-doc strong,.legal-doc b{font-weight:600;color:var(--color-text-primary);}
+  .legal-doc a{color:var(--color-text-accent);text-decoration:underline;text-underline-offset:3px;}
+  .legal-doc a:hover{color:var(--color-text-accent-hover);}
   .legal-doc table{width:100%;margin:8px 0 24px;border-collapse:collapse;font-size:15px;line-height:1.55;}
-  .legal-doc th,.legal-doc td{padding:12px 16px 12px 0;border-bottom:1px solid var(--gray-line);text-align:left;vertical-align:top;overflow-wrap:normal;}
-  .legal-doc th{font-weight:600;color:var(--ink);}
-  .legal-doc th:not(:has(+ td)){border-bottom-color:var(--ink);}   /* column headings */
+  .legal-doc th,.legal-doc td{padding:12px 16px 12px 0;border-bottom:1px solid var(--color-border-default);text-align:left;vertical-align:top;overflow-wrap:normal;}
+  .legal-doc th{font-weight:600;color:var(--color-text-primary);}
+  .legal-doc th:not(:has(+ td)){border-bottom-color:var(--color-neutral-900);}   /* column headings */
   .legal-doc th:has(+ td){width:28%;}                               /* row labels (the DPA's annexes) */
-  .legal-doc hr{margin:40px 0;border:0;border-top:1px solid var(--gray-line);}
+  .legal-doc hr{margin:40px 0;border:0;border-top:1px solid var(--color-border-default);}
   @media (max-width:700px){
     .legal{padding:48px 0 80px;}
     .legal-doc{font-size:15px;}
     .legal-doc h2{margin-top:44px;}
     .legal-doc table{display:block;overflow-x:auto;font-size:14px;}   /* wide tables scroll inside themselves */
-    .legal-doc tr:has(> th + td){display:block;padding:12px 0;border-bottom:1px solid var(--gray-line);}   /* label rows stack: label over text */
+    .legal-doc tr:has(> th + td){display:block;padding:12px 0;border-bottom:1px solid var(--color-border-default);}   /* label rows stack: label over text */
     .legal-doc tr:has(> th + td) > *{display:block;width:auto;padding:0;border:0;}
     .legal-doc tr:has(> th + td) > th{margin-bottom:4px;}
   }

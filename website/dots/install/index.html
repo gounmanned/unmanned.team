@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light" data-surface="web">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,10 +19,12 @@
 <meta name="twitter:card" content="summary_large_image" />
 <link rel="icon" type="image/png" href="https://cdn.unmanned.team/img/logo.png">
 <link rel="apple-touch-icon" href="https://cdn.unmanned.team/img/logo.png">
-<link rel="stylesheet" href="https://cdn.unmanned.team/css/global.css">
+<link rel="preload" href="../../static/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="https://cdn.unmanned.team/pulse/v1/pulse-tokens.css">
+<link rel="stylesheet" href="https://cdn.unmanned.team/pulse/v1/pulse-icons.css">
+<link rel="stylesheet" href="https://cdn.unmanned.team/pulse/v1/pulse-components.css">
+<script src="https://cdn.unmanned.team/pulse/v1/pulse.js" defer></script>
 <link rel="stylesheet" href="../../static/site.css">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800;900&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
 <style>
   /* Dots install page. Figma: Unmanned Website - SOT, frames 2199:2365 (Mac) and 2202:3601 (Windows).
      The steps follow /install/ (VEX's install page); the header is the Dots page's. */
@@ -33,12 +35,12 @@
   b{font-weight:600;}
   .wrap{width:min(1100px,calc(100% - 2 * var(--gutter)));margin:0 auto;}
   .visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
-  a:focus-visible,button:focus-visible{outline:1.5px solid var(--pink);outline-offset:4px;}
+  a:focus-visible,button:focus-visible{outline:1.5px solid var(--color-accent-default);outline-offset:4px;}
   @media (max-width:700px){:root{--gutter:16px;}}
 
   /* ---------- CLASSIFICATION BAR ---------- */
   .classbar{
-    position:fixed;top:0;left:0;right:0;z-index:60;background:var(--ink);color:var(--gray-faint);
+    position:fixed;top:0;left:0;right:0;z-index:60;background:var(--color-surface-contrast);color:var(--color-neutral-300);
     font-size:9.5px;line-height:1.5;letter-spacing:0.16em;text-transform:uppercase;text-align:center;padding:6px 0;
     transition:transform 0.4s cubic-bezier(0.49,0.025,0.685,1), opacity 0.4s cubic-bezier(0.49,0.025,0.685,1);
   }
@@ -49,8 +51,8 @@
   }
 
   /* ---------- HEADER: the Dots mark, as on /dots/ ---------- */
-  .site-header{background:var(--surface);border-bottom:1px solid var(--gray-line);}
-  .dots-brand{display:flex;align-items:center;gap:16px;text-decoration:none;color:var(--ink);}
+  .site-header{background:var(--color-surface-page);border-bottom:1px solid var(--color-border-default);}
+  .dots-brand{display:flex;align-items:center;gap:16px;text-decoration:none;color:var(--color-text-primary);}
   .dots-word{font-size:32px;font-weight:900;line-height:26px;letter-spacing:0.01em;}
   .dots-brand img{width:26px;height:26px;}
   /* no phone menu: the one link (VEX AI SOC) stays visible at every width */
@@ -66,8 +68,8 @@
     background:
       radial-gradient(circle at 40px 40px,var(--d-sunken) 39.5px,transparent 40px),
       radial-gradient(circle at 124px 124px,var(--d-sunken) 39.5px,transparent 40px),
-      radial-gradient(circle at 124px 40px,var(--surface-gray) 39.5px,transparent 40px),
-      radial-gradient(circle at 40px 124px,var(--surface-gray) 39.5px,transparent 40px);
+      radial-gradient(circle at 124px 40px,var(--color-surface-subtle) 39.5px,transparent 40px),
+      radial-gradient(circle at 40px 124px,var(--color-neutral-50) 39.5px,transparent 40px);
     background-size:168px 168px;background-position:calc(50% - 42px) 0;
     -webkit-mask-image:radial-gradient(901px 303px at 50% 99px,rgba(0,0,0,0.88),transparent);
     mask-image:radial-gradient(901px 303px at 50% 99px,rgba(0,0,0,0.88),transparent);
@@ -75,7 +77,7 @@
   .hero .wrap{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;}
   .hero-art{width:248px;max-width:100%;height:auto;}
   .hero h1{margin-top:32px;font-size:clamp(34px,6vw,48px);line-height:1.1667;font-weight:600;letter-spacing:-0.015em;}
-  .hero .lede{margin-top:32px;max-width:680px;font-size:16px;line-height:28px;color:var(--body);}
+  .hero .lede{margin-top:32px;max-width:680px;font-size:16px;line-height:28px;color:var(--color-neutral-700);}
 
   /* ---------- INSTRUCTIONS ---------- */
   .instructions{padding:48px 0 64px;}
@@ -85,27 +87,27 @@
   .os-toggle{display:inline-flex;gap:4px;padding:4px;background:var(--d-sunken);border-radius:4px;}
   .os-toggle button{
     height:40px;padding:0 16px;border:1px solid transparent;border-radius:2px;background:none;cursor:pointer;
-    font:inherit;font-size:16px;line-height:24px;color:var(--surface-dark);
+    font:inherit;font-size:16px;line-height:24px;color:var(--color-text-tertiary);
   }
-  .os-toggle button:hover{color:var(--ink);}
-  .os-toggle [aria-pressed="true"]{background:var(--surface);border-color:var(--d-mute);color:var(--ink);font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,0.3);}
+  .os-toggle button:hover{color:var(--color-text-primary);}
+  .os-toggle [aria-pressed="true"]{background:var(--color-surface-page);border-color:var(--d-mute);color:var(--color-text-primary);font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,0.3);}
   .os-head h2{font-size:clamp(26px,4vw,32px);line-height:1.25;font-weight:600;letter-spacing:-0.01em;}
   .needs{font-size:14px;line-height:20px;}
 
   .install-steps{margin:0;padding:0;list-style:none;counter-reset:step;text-align:left;}
-  .install-step{display:flex;align-items:flex-start;gap:16px;padding:20px 0;border-top:1px solid var(--gray-line);counter-increment:step;}
+  .install-step{display:flex;align-items:flex-start;gap:16px;padding:20px 0;border-top:1px solid var(--color-border-default);counter-increment:step;}
   .install-step[hidden],[data-os][hidden]{display:none;}   /* display:flex would otherwise override [hidden] */
   .step-num{
     flex-shrink:0;display:flex;align-items:center;justify-content:center;
-    width:20px;height:20px;margin-top:5px;border:1.5px solid var(--pink);border-radius:50%;
+    width:20px;height:20px;margin-top:5px;border:1.5px solid var(--color-accent-default);border-radius:50%;
     font-weight:600;font-size:13px;line-height:1;color:var(--accent-text);
   }
   .step-num::before{content:counter(step);}
   .step-body{flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:16px;}
   .step-body h3{font-size:20px;line-height:30px;font-weight:600;letter-spacing:-0.01em;}
-  .step-body p{font-size:16px;line-height:28px;color:var(--body-soft);}
+  .step-body p{font-size:16px;line-height:28px;color:var(--color-text-secondary);}
   .step-body .step-note{font-size:14px;line-height:20px;}
-  .step-note b{color:var(--ink);}
+  .step-note b{color:var(--color-text-primary);}
   .terminal-look{display:flex;align-items:center;gap:16px;}
   /* step 2: the blog post on how Dots work, in a new tab */
   .script-link{font-size:14px;line-height:20px;}
@@ -113,8 +115,8 @@
   .script-link:hover{text-decoration:underline;text-underline-offset:3px;}
 
   /* the command to copy, and the output to look for (same box, no copy button) */
-  .command{display:flex;align-items:flex-start;gap:36px;width:100%;padding:16px 16px 18px;background:var(--surface-gray);border:1px solid var(--gray-line);border-radius:2px;}
-  .command code,.command pre{flex:1;min-width:0;margin:0;font-family:var(--mono);font-size:12.5px;line-height:21px;color:var(--ink);overflow-wrap:anywhere;white-space:pre-wrap;}
+  .command{display:flex;align-items:flex-start;gap:36px;width:100%;padding:16px 16px 18px;background:var(--color-surface-subtle);border:1px solid var(--color-border-default);border-radius:2px;}
+  .command code,.command pre{flex:1;min-width:0;margin:0;font-family:var(--font-mono);font-size:12.5px;line-height:21px;color:var(--color-text-primary);overflow-wrap:anywhere;white-space:pre-wrap;}
 
   /* copy button and its tooltip come from site.css; the button sits at the box's right edge, so the tooltip lines up on the right */
   .command .tooltip{left:auto;right:-6px;transform:translateY(-4px);}

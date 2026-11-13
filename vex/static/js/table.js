@@ -40,13 +40,13 @@ class Table {
 
     // ── render ─────────────────────────────────────────────────────
 
-    render({ threats, recs, closed, handled }) {
+    render({ threats, recs, closed, resolved }) {
         this.signals = new Map([...threats, ...recs, ...closed].map(s => [String(s.id), s]));
 
         this.keepFocus(this.queue, () => {
             this.queue.innerHTML = threats.length
                 ? threats.toSorted(Table.urgency).map(s => this.threatItem(s)).join('')
-                : this.empty(handled);
+                : this.empty(resolved);
         });
 
         this.keepFocus(this.recs, () => {
@@ -74,12 +74,12 @@ class Table {
         if (id) list.querySelector(`li[data-id="${CSS.escape(id)}"]`)?.focus({ preventScroll: true });
     }
 
-    empty(handled) {
+    empty(resolved) {
         return `
             <li class="queue-empty">
                 <span class="material-symbols-outlined">verified_user</span>
                 <h3>Nothing needs you</h3>
-                <p>VEX has handled ${handled.toLocaleString()} signal${handled === 1 ? '' : 's'} this period.</p>
+                <p>${resolved.toLocaleString()} signal${resolved === 1 ? '' : 's'} resolved this period.</p>
             </li>`;
     }
 

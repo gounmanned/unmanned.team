@@ -89,7 +89,7 @@ class TenantScreen {
             const recs = open.filter(Table.SCOPES.recs);
             const shown = this.outcome === 'all' ? closed : closed.filter(s => s.status === this.outcome);
 
-            this.table.render({ threats, recs, closed: shown, handled: closed.length });
+            this.table.render({ threats, recs, closed: shown, resolved: closed.length });
             this.renderLanes(threats, recs);
             this.renderKpis(closed);
             this.renderOutcomes(closed);
@@ -110,7 +110,7 @@ class TenantScreen {
 
         document.getElementById('queue-count').textContent = threats.length.toLocaleString();
         document.getElementById('recs-count').textContent = recs.length.toLocaleString();
-        document.getElementById('queue-summary').innerHTML = summary || 'SOC signals that need a human decision land here.';
+        document.getElementById('queue-summary').innerHTML = summary || 'Signals that need a human decision land here.';
     }
 
     renderKpis(closed) {
@@ -126,7 +126,7 @@ class TenantScreen {
             ['Within SLA', pct(withDue.filter(s => Table.ended(s) <= Workspace.time(s.due)).length, withDue.length)],
         ];
 
-        document.getElementById('handled-count').textContent = closed.length.toLocaleString();
+        document.getElementById('resolved-count').textContent = closed.length.toLocaleString();
         document.getElementById('kpis').innerHTML = kpis
             .filter(([, value]) => value != null)
             .map(([label, value]) => `<div><dt>${label}</dt><dd>${value}</dd></div>`)
@@ -257,7 +257,6 @@ class TenantScreen {
             await this.refresh();
         });
 
-        // shade the pinned chart once the lanes start sliding under it
         const work = document.getElementById('signal-section');
         work.addEventListener('scroll', () => {
             this.screen.classList.toggle('scrolled', work.scrollTop > 0);

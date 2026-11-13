@@ -357,24 +357,24 @@
   color: var(--text-body);
 }
 
-/* ── handled: collapsed lane at the bottom ──────────────────────── */
+/* ── resolved: collapsed lane at the bottom ──────────────────────── */
 
-.handled > summary {
+.resolved > summary {
   list-style: none;
   cursor: pointer;
 }
 
-.handled > summary::-webkit-details-marker { display: none; }
+.resolved > summary::-webkit-details-marker { display: none; }
 
-.handled-chevron {
+.resolved-chevron {
   align-self: center;
   margin-bottom: 12px;
   color: var(--text-faint);
   transition: transform 0.15s, color 0.15s;
 }
 
-.handled > summary:hover .handled-chevron { color: var(--brand); }
-.handled[open] .handled-chevron { transform: rotate(180deg); }
+.resolved > summary:hover .resolved-chevron { color: var(--brand); }
+.resolved[open] .resolved-chevron { transform: rotate(180deg); }
 
 .outcomes {
   display: flex;

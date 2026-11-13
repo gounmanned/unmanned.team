@@ -53,65 +53,50 @@
   </site-header>
 
   <main class="container" id="tenant-screen">
-    <section id="overview-section">
-      <div class="overview" id="overview">
-        <div class="trend-chart">
-          <svg id="trend-svg" preserveAspectRatio="none"></svg>
+    <section class="pulse" id="overview">
+      <header class="pulse-head">
+        <div class="pulse-title">
+          <span class="pulse-label">SOC signals</span>
+          <dl class="pulse-stats" id="kpis"></dl>
         </div>
+        <nav class="segmented" id="trend-period" aria-label="Period">
+          <button type="button" data-period="month" aria-pressed="true"></button>
+          <button type="button" data-period="year" aria-pressed="false"></button>
+        </nav>
+      </header>
+      <div class="trend-chart">
+        <svg id="trend-svg" preserveAspectRatio="none"></svg>
       </div>
     </section>
 
-    <section id="signal-section">
-      <div class="signal-bar">
-        <nav class="tabs" id="signal-scope" aria-label="Signals">
-          <button type="button" data-scope="all" aria-pressed="true">All <span class="scope-count">0</span></button>
-          <button type="button" data-scope="threats" aria-pressed="false">SOC <span class="scope-count">0</span></button>
-          <button type="button" data-scope="recs" aria-pressed="false">Recommendations <span class="scope-count">0</span></button>
-        </nav>
-        <div class="signal-bar-end">
-          <nav class="tabs" id="trend-period" aria-label="Period">
-            <button type="button" data-period="month" aria-pressed="true"></button>
-            <button type="button" data-period="year" aria-pressed="false"></button>
-          </nav>
-          <button type="button" class="view-switch" id="view-switch" aria-pressed="false" title="Board">
-            <span class="material-symbols-outlined">view_kanban</span>
-          </button>
+    <section class="work" id="signal-section">
+      <header class="lane-head">
+        <div class="lane-title">
+          <h1>Waiting on you <span class="lane-count" id="queue-count">0</span></h1>
+          <p id="queue-summary"></p>
         </div>
-      </div>
+      </header>
+      <ol class="queue" id="queue-list"></ol>
 
-      <div class="table-wrap" id="signal-table-wrap">
-        <table id="signal-table">
-          <colgroup>
-            <col style="width: 4%">    <!-- icon -->
-            <col style="width: 7%">    <!-- threat -->
-            <col style="width: 25%">   <!-- name -->
-            <col style="width: 14%">   <!-- id -->
-            <col style="width: 5%">    <!-- metadata -->
-            <col style="width: 20%">   <!-- asset -->
-            <col style="width: 7%">    <!-- created -->
-            <col style="width: 7%">    <!-- due -->
-            <col style="width: 7%">    <!-- mttr -->
-            <col style="width: 4%">    <!-- sla -->
-          </colgroup>
-          <thead>
-            <tr>
-              <th></th>
-              <th>Threat</th>
-              <th>Name</th>
-              <th>ID</th>
-              <th>Metadata</th>
-              <th>Asset</th>
-              <th>Created</th>
-              <th>Due</th>
-              <th>MTTR</th>
-              <th>SLA</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
+      <header class="lane-head lane-head-quiet">
+        <div class="lane-title">
+          <h2>Recommendations <span class="lane-count" id="recs-count">0</span></h2>
+          <p>Optional hardening VEX suggests. Act on these when you have time.</p>
+        </div>
+      </header>
+      <ol class="queue recs" id="recs-list"></ol>
 
-        <div class="signal-board" id="signal-board"></div>
-      </div>
+      <details class="handled">
+        <summary class="lane-head lane-head-quiet">
+          <div class="lane-title">
+            <h2>Handled <span class="lane-count" id="handled-count">0</span></h2>
+            <p>Everything closed this period, by VEX or by you.</p>
+          </div>
+          <span class="material-symbols-outlined handled-chevron">expand_more</span>
+        </summary>
+        <nav class="outcomes" id="outcomes" aria-label="Outcome"></nav>
+        <ol class="history" id="history"></ol>
+      </details>
     </section>
 
     <footer class="links">
@@ -119,7 +104,6 @@
         <button type="button" class="audit-live" id="open-audit-rollup" title="Audit log" aria-label="Audit log">
           <i></i><i></i><i></i><i></i>
         </button>
-        <span class="count" id="signal-count"></span>
       </div>
 
       <a id="open-backup-sidebar">Backups</a>

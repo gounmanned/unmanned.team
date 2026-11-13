@@ -12,219 +12,204 @@ class Table {
         recs: s => s.metadata?.threat == null,
     };
 
-    constructor(id, { open, move }) {
-        this.body = document.querySelector(`#${id} tbody`);
-        this.wrap = this.body.closest('.table-wrap');
-        this.board = this.wrap.querySelector('.signal-board');
+    static OUTCOME_ICONS = { CV: 'bolt', CH: 'person', CR: 'shield' };
+    static HISTORY_LIMIT = 200;
+
+    static due = s => s.due ? Workspace.time(s.due) : Infinity;
+    static ended = s => Workspace.time(s.updated ?? s.created);
+
+    // most overdue / soonest due first, then highest threat, then oldest
+    static urgency = (a, b) =>
+        Table.due(a) - Table.due(b) ||
+        (b.metadata?.threat ?? 0) - (a.metadata?.threat ?? 0) ||
+        Workspace.time(a.created) - Workspace.time(b.created);
+
+    static recency = (a, b) => Table.ended(b) - Table.ended(a);
+
+    constructor({ queue, recs, history, open, move }) {
+        this.queue = queue;
+        this.recs = recs;
+        this.history = history;
         this.open = open;
         this.move = move;
         this.signals = new Map();
-        this.scope = 'all';
 
-        this.clear();
         this.listen();
         setInterval(() => this.tick(), 1000);
     }
 
-    get size() {
-        return this.signals.size;
+    // ── render ─────────────────────────────────────────────────────
+
+    render({ threats, recs, closed, handled }) {
+        this.signals = new Map([...threats, ...recs, ...closed].map(s => [String(s.id), s]));
+
+        this.keepFocus(this.queue, () => {
+            this.queue.innerHTML = threats.length
+                ? threats.toSorted(Table.urgency).map(s => this.threatItem(s)).join('')
+                : this.empty(handled);
+        });
+
+        this.keepFocus(this.recs, () => {
+            this.recs.innerHTML = recs.length
+                ? recs.toSorted(Table.recency).map(s => this.recItem(s)).join('')
+                : `<li class="queue-none">No open recommendations.</li>`;
+        });
+
+        const sorted = closed.toSorted(Table.recency);
+        const shown = sorted.slice(0, Table.HISTORY_LIMIT);
+        const more = sorted.length > shown.length
+            ? `<li class="history-more">Showing ${shown.length} of ${sorted.length.toLocaleString()}</li>`
+            : '';
+
+        this.keepFocus(this.history, () => {
+            this.history.innerHTML = shown.length
+                ? shown.map(s => this.historyItem(s)).join('') + more
+                : `<li class="history-more">Nothing closed in this period.</li>`;
+        });
     }
 
-    clear() {
-        this.signals.clear();
-        this.render();
+    keepFocus(list, draw) {
+        const id = list.contains(document.activeElement) && document.activeElement.closest('li[data-id]')?.dataset.id;
+        draw();
+        if (id) list.querySelector(`li[data-id="${CSS.escape(id)}"]`)?.focus({ preventScroll: true });
     }
 
-    render() {
-        this.body.innerHTML = '';
-        this.board.innerHTML = Object.entries(Table.COLUMNS).map(([status, label]) => `
-            <section class="board-col" data-status="${status}">
-                <header><span>${label}</span><span class="board-col-count">0</span></header>
-                <ol class="board-cards"></ol>
-            </section>`).join('');
-        this.wrap.classList.toggle('empty', !this.signals.size);
-        this.signals.forEach(signal => this.show(signal));
+    empty(handled) {
+        return `
+            <li class="queue-empty">
+                <span class="material-symbols-outlined">verified_user</span>
+                <h3>Nothing needs you</h3>
+                <p>VEX has handled ${handled.toLocaleString()} signal${handled === 1 ? '' : 's'} this period.</p>
+            </li>`;
     }
 
-    toggleBoard() {
-        return this.wrap.classList.toggle('board');
+    threatItem(signal) {
+        const esc = Workspace.esc;
+
+        return `
+            <li class="q-item${signal.read ? '' : ' unread'}" data-id="${esc(signal.id)}" tabindex="0">
+                <img class="q-avatar" src="${esc(Workspace.avatar(signal.source))}" alt="">
+                <div class="q-main">
+                    <div class="q-name" title="${esc(signal.name)}">${esc(signal.name)}</div>
+                    ${this.sub(signal)}
+                </div>
+                ${this.threat(signal.metadata?.threat)}
+                ${this.countdown(signal)}
+                ${this.actions()}
+            </li>`;
     }
 
-    filter(scope) {
-        this.scope = scope;
-        this.render();
-        this.wrap.scrollTop = 0;
+    recItem(signal) {
+        const esc = Workspace.esc;
 
-        if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
-            this.wrap.animate([{ opacity: 0, transform: 'translateY(4px)' }, { opacity: 1, transform: 'none' }],
-                { duration: 220, easing: 'ease-out' });
-        }
+        return `
+            <li class="q-item rec${signal.read ? '' : ' unread'}" data-id="${esc(signal.id)}" tabindex="0">
+                <img class="q-avatar" src="${esc(Workspace.avatar(signal.source))}" alt="">
+                <div class="q-main">
+                    <div class="q-name" title="${esc(signal.name)}">${esc(signal.name)}</div>
+                    ${this.sub(signal)}
+                </div>
+                ${this.actions()}
+            </li>`;
     }
 
-    add(signal) {
-        this.signals.set(String(signal.id), signal);
-        this.wrap.classList.remove('empty');
-        this.show(signal);
+    historyItem(signal) {
+        const esc = Workspace.esc;
+        const missed = signal.due && Table.ended(signal) > Workspace.time(signal.due);
+        const took = Table.span(Table.ended(signal) - Workspace.time(signal.created));
+        const kind = signal.metadata?.threat != null ? 'SOC' : 'Rec';
+
+        return `
+            <li class="h-item" data-id="${esc(signal.id)}" tabindex="0">
+                <span class="h-outcome material-symbols-outlined" data-status="${esc(signal.status)}"
+                      title="${Table.COLUMNS[signal.status] ?? ''}">${Table.OUTCOME_ICONS[signal.status] ?? 'done'}</span>
+                <div class="h-main">
+                    <div class="h-name" title="${esc(signal.name)}">${esc(signal.name)}</div>
+                    <div class="h-sub">${kind} · ${esc(signal.asset)} · took ${took}${missed ? ' · <em>SLA missed</em>' : ''}</div>
+                </div>
+                <time>${Workspace.date(signal.updated ?? signal.created)}</time>
+            </li>`;
     }
 
-    show(signal) {
-        if (!Table.SCOPES[this.scope](signal)) return;
-        this.renderRow(signal);
-        this.renderCard(signal);
+    sub(signal) {
+        const esc = Workspace.esc;
+
+        return `
+            <div class="q-sub">
+                <span>${esc(signal.asset)}</span>
+                <span>${esc(signal.source)}</span>
+                <span title="${Workspace.date(signal.created, true)}">${Table.ago(signal.created)}</span>
+            </div>`;
     }
 
-    // ── signals ────────────────────────────────────────────────────
+    static ago(v) {
+        const ms = Date.now() - Workspace.time(v);
+        return ms < 60000 ? 'just now' : `${Table.span(ms)} ago`;
+    }
 
-    find(selector, id) {
-        return this.wrap.querySelector(`${selector}[data-id="${CSS.escape(String(id))}"]`);
+    actions() {
+        return `
+            <div class="q-actions">
+                <button type="button" data-move="CR" title="Accept risk"><span class="material-symbols-outlined">shield</span></button>
+                <button type="button" data-move="CH" title="Close"><span class="material-symbols-outlined">check</span></button>
+            </div>`;
     }
 
     threat(threat) {
         const risk = Workspace.risk(threat);
         return risk
             ? `<span class="threat-chip" data-risk="${risk.level}" title="${risk.label}">${risk.pct}%</span>`
-            : `<span class="threat-chip empty">—</span>`;
+            : `<span class="threat-chip empty"></span>`;
     }
 
-    metadata(meta) {
-        const entries = Object.entries(meta ?? {});
-        if (!entries.length) {
-            return `<span class="material-symbols-outlined metadata-icon empty">data_object</span>`;
-        }
+    countdown(signal) {
+        if (!signal.due) return `<span class="q-due none">No SLA</span>`;
 
-        return `
-            <span class="metadata-hover">
-                <span class="material-symbols-outlined metadata-icon">data_object</span>
-                <dl class="metadata-tooltip">
-                    ${entries.map(([k, v]) => `<dt>${Workspace.esc(k)}</dt><dd>${Workspace.esc(v)}</dd>`).join('')}
-                </dl>
-            </span>`;
+        const left = Workspace.time(signal.due) - Date.now();
+        const state = left < 0 ? 'overdue' : left < 3600000 ? 'soon' : '';
+        const label = left < 0 ? `${Table.span(-left)} over SLA` : `due in ${Table.span(left)}`;
+
+        return `<span class="q-due ${state}" data-due title="Due ${Workspace.date(signal.due, true)}">${label}</span>`;
     }
 
-    static utc(v) {
-        return Date.parse(/[zZ]|[+-]\d\d:?\d\d$/.test(v) ? v : `${v}Z`);
-    }
-
-    elapsed(signal) {
-        const end = signal.status === 'OB' ? Date.now() : Table.utc(signal.updated ?? signal.created);
-        const t = Math.max(0, Math.floor((end - Table.utc(signal.created)) / 1000));
-
-        return [t / 3600, (t % 3600) / 60, t % 60]
-            .map(n => String(Math.floor(n)).padStart(2, '0'))
-            .join(':');
-    }
-
-    renderRow(signal) {
-        const row = this.find('tr', signal.id) ?? document.createElement('tr');
-        const closed = signal.status.startsWith('C');
-        const unread = !signal.read && !closed;
-        const timed = signal.metadata?.threat != null;
-        const live = timed && signal.status === 'OB';
-
-        Object.assign(row.dataset, { id: signal.id, status: signal.status, updated: signal.updated });
-        row.classList.toggle('unread', unread);
-        row.classList.toggle('closed', closed);
-        row.innerHTML = `
-            <td><img src="${Workspace.avatar(signal.source)}"/></td>
-            <td class="threat">${this.threat(signal.metadata?.threat)}</td>
-            <td class="name" title="${Workspace.esc(signal.name)}">${Workspace.esc(signal.name.substring(0, 99))}</td>
-            <td class="id">#${signal.id}</td>
-            <td class="metadata">${this.metadata(signal.metadata)}</td>
-            <td class="source">${Workspace.esc(signal.asset)}</td>
-            <td class="created">${Workspace.date(signal.created)}</td>
-            <td class="due">${Workspace.date(signal.due)}</td>
-            <td class="elapsed ${live ? 'live' : ''}">${timed ? this.elapsed(signal) : ''}</td>
-            <td class="sla">${Table.sla(signal)}</td>`;
-
-        if (closed) return this.body.append(row);
-
-        const anchor = [...this.body.children].find(r => {
-            if (r === row || r.classList.contains('closed')) return false;
-            const rUnread = r.classList.contains('unread');
-            return unread !== rUnread ? unread : new Date(r.dataset.updated) < new Date(signal.updated);
-        });
-
-        this.body.insertBefore(row, anchor ?? this.body.querySelector('tr.closed'));
-    }
-
-    renderCard(signal) {
-        const card = this.find('.board-card', signal.id)
-            ?? Object.assign(document.createElement('li'), { className: 'board-card', draggable: true });
-
-        card.dataset.id = signal.id;
-        card.innerHTML = `
-            <div class="board-card-top">
-                <img src="${Workspace.avatar(signal.source)}">${this.threat(signal.metadata?.threat)}
-            </div>
-            <div class="board-card-name" title="${Workspace.esc(signal.name)}">${Workspace.esc(signal.name)}</div>
-            <div class="board-card-meta">
-                <span>${Workspace.esc(signal.asset)}</span>
-                <span>${Workspace.date(signal.created)}</span>
-            </div>`;
-
-        const list = this.board.querySelector(`[data-status="${signal.status}"] .board-cards`);
-        list ? list.prepend(card) : card.remove();
-
-        this.board.querySelectorAll('.board-col').forEach(col => {
-            col.querySelector('.board-col-count').textContent = col.querySelector('.board-cards').children.length;
-        });
+    static span(ms) {
+        const m = Math.max(0, Math.round(ms / 60000));
+        if (m < 60) return `${m}m`;
+        if (m < 1440) return `${Math.floor(m / 60)}h ${m % 60}m`;
+        return `${Math.floor(m / 1440)}d ${Math.floor((m % 1440) / 60)}h`;
     }
 
     tick() {
-        this.body.querySelectorAll('td.elapsed.live').forEach(cell => {
-            const signal = this.signals.get(cell.parentElement.dataset.id);
-            if (signal) cell.textContent = this.elapsed(signal);
+        this.queue.querySelectorAll('.q-due[data-due]').forEach(el => {
+            el.outerHTML = this.countdown(this.signals.get(el.closest('li').dataset.id));
         });
-
-        this.body.querySelectorAll('tr:not(.closed) .sla-icon.met').forEach(icon => {
-            const signal = this.signals.get(icon.closest('tr').dataset.id);
-            if (signal && Date.now() > Table.utc(signal.due)) icon.parentElement.innerHTML = Table.sla(signal);
-        });
-    }
-
-    static sla(signal) {
-        const end = signal.status.startsWith('C') ? Table.utc(signal.updated) : Date.now();
-        const met = !signal.due || end <= Table.utc(signal.due);
-
-        return `<span class="material-symbols-outlined sla-icon ${met ? 'met' : 'missed'}"
-                    title="${met ? 'Within SLA' : 'SLA breached'}">${met ? 'check' : 'close'}</span>`;
     }
 
     // ── interaction ────────────────────────────────────────────────
 
-    async drop(signal, status) {
-        if (!signal || signal.status === status) return;
-        this.renderCard({ ...signal, status });
-
-        try {
-            await this.move(signal, status);
-        } catch (err) {
-            console.error('status update failed', err);
-            this.renderCard(signal);
-        }
-    }
-
     listen() {
-        this.wrap.addEventListener('click', (e) => {
-            const el = e.target.closest('tr[data-id], .board-card');
-            if (!el) return;
-            e.stopPropagation();
-            this.open(this.signals.get(el.dataset.id));
-        });
+        for (const list of [this.queue, this.recs, this.history]) {
+            list.addEventListener('click', (e) => {
+                const li = e.target.closest('li[data-id]');
+                if (!li) return;
+                e.stopPropagation();
 
-        this.board.addEventListener('dragstart', (e) => {
-            e.dataTransfer.setData('text/plain', e.target.closest('.board-card').dataset.id);
-        });
+                const signal = this.signals.get(li.dataset.id);
+                const action = e.target.closest('[data-move]');
+                action ? this.move(signal, action.dataset.move) : this.open(signal);
+            });
 
-        this.board.addEventListener('dragover', (e) => {
-            if (e.target.closest('.board-col')) e.preventDefault();
-        });
+            list.addEventListener('keydown', (e) => {
+                const li = e.target.closest('li[data-id]');
+                if (!li) return;
 
-        this.board.addEventListener('drop', (e) => {
-            const col = e.target.closest('.board-col');
-            if (!col) return;
-            e.preventDefault();
-            this.drop(this.signals.get(e.dataTransfer.getData('text/plain')), col.dataset.status);
-        });
+                const step = { ArrowDown: 1, j: 1, ArrowUp: -1, k: -1 }[e.key];
+                if (step) {
+                    e.preventDefault();
+                    (step > 0 ? li.nextElementSibling : li.previousElementSibling)?.focus();
+                }
+                if (e.key === 'Enter' && e.target === li) this.open(this.signals.get(li.dataset.id));
+            });
+        }
     }
 }

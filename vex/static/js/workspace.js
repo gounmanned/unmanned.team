@@ -130,10 +130,14 @@ class Workspace {
         return `static/img/source/${s}.png`;
     }
 
+    static time(v) {
+        return Date.parse(/[zZ]|[+-]\d\d:?\d\d$/.test(v) ? v : `${v}Z`);
+    }
+
     static date(iso, time = false) {
         if (!iso) return '';
 
-        const d = new Date(iso);
+        const d = new Date(Workspace.time(iso));
         return time
             ? d.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })
             : d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });

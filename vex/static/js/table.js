@@ -87,7 +87,7 @@ class Table {
         const esc = Workspace.esc;
 
         return `
-            <li class="q-item${signal.read ? '' : ' unread'}" data-id="${esc(signal.id)}" tabindex="0">
+            <li class="q-item" data-id="${esc(signal.id)}" tabindex="0">
                 <img class="q-avatar" src="${esc(Workspace.avatar(signal.source))}" alt="">
                 <div class="q-main">
                     <div class="q-name" title="${esc(signal.name)}">${esc(signal.name)}</div>
@@ -103,7 +103,7 @@ class Table {
         const esc = Workspace.esc;
 
         return `
-            <li class="q-item rec${signal.read ? '' : ' unread'}" data-id="${esc(signal.id)}" tabindex="0">
+            <li class="q-item rec" data-id="${esc(signal.id)}" tabindex="0">
                 <img class="q-avatar" src="${esc(Workspace.avatar(signal.source))}" alt="">
                 <div class="q-main">
                     <div class="q-name" title="${esc(signal.name)}">${esc(signal.name)}</div>

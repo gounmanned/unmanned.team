@@ -72,7 +72,6 @@ class ManagedRollup {
         return {
             soc: soc.length,
             recs: open.length - soc.length,
-            unread: soc.filter(s => !s.read).length,
             overdue: soc.filter(s => Table.due(s) < now).length,
             next: Math.min(...soc.map(Table.due)),
             peak: soc.length ? Math.max(...soc.map(s => Number(s.metadata.threat))) : null,
@@ -162,7 +161,7 @@ class ManagedRollup {
         const overdue = needs.reduce((n, [, s]) => n + s.overdue, 0);
 
         const summary = this.scanning
-            ? `${SPINNER} Checking every account for active threats`
+            ? `${SPINNER} Checking every account for active security threats.`
             : needs.length
                 ? [
                     `${plural(soc, 'signal')} across ${plural(needs.length, 'account')}`,
@@ -217,7 +216,6 @@ class ManagedRollup {
                     <span class="acct-name">${esc(domain)}</span>
                     <span class="acct-status">${status}</span>
                 </div>
-                <span>${s.unread ? `<span class="acct-new">${fmt(s.unread)} new</span>` : ''}</span>
                 <span>${risk ? `<span class="threat-chip" data-risk="${risk.level}" title="Highest threat · ${risk.label}">${risk.pct}%</span>` : ''}</span>
                 ${this._chip(s)}
                 ${this._countdown(s.next)}

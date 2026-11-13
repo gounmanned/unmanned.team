@@ -148,7 +148,7 @@
 
   .acct {
     display: grid; align-items: center; gap: 14px;
-    grid-template-columns: 30px minmax(0, 1fr) auto auto auto 150px 132px;
+    grid-template-columns: 30px minmax(0, 1fr) auto auto 150px 132px;
     padding: 8px 12px;
     border: 1px solid var(--line); border-radius: 8px;
     background: var(--surface);
@@ -223,13 +223,6 @@
 
     b { font-weight: 600; }
     i { font-style: normal; opacity: 0.6; }
-  }
-
-  .acct-new {
-    padding: 1px 7px; border-radius: 8px;
-    background: color-mix(in srgb, var(--brand) 12%, transparent);
-    font-size: 11px; font-weight: 600;
-    color: var(--brand);
   }
 
   .acct-due {

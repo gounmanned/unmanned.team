@@ -137,19 +137,6 @@
   color: var(--text-body);
 }
 
-.q-item.unread .q-name { font-weight: 600; }
-
-.q-item.unread .q-name::before {
-  content: '';
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  margin-right: 8px;
-  border-radius: 50%;
-  background: var(--brand);
-  vertical-align: middle;
-}
-
 .q-sub {
   flex: 0 10 auto;
   display: flex;
@@ -221,7 +208,6 @@
 }
 
 .q-item.rec:hover { background: var(--surface-alt); }
-.q-item.rec.unread .q-name::before { background: var(--text-faint); }
 
 /* empty states */
 

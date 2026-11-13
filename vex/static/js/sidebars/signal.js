@@ -147,7 +147,6 @@ class SignalSidebar {
         if (!asset.reportValidity()) return;
 
         const due = document.getElementById("signal-due").value;
-        const service = document.getElementById("signal-service").checked;
 
         await SiteSpinner.withLoading(async () => {
             await this.api.signals.create({
@@ -156,7 +155,6 @@ class SignalSidebar {
                 source: document.getElementById("signal-source").value.trim(),
                 value: document.getElementById("response").value.trim(),
                 ...(due && { due: new Date(due).toISOString() }),
-                ...(service && { metadata: { service: "billable" } }),
             });
             document.dispatchEvent(new CustomEvent("page:reload"));
             document.querySelector("site-overlay").click();

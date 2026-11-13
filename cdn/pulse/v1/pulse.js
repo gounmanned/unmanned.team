@@ -7,7 +7,18 @@
    The browser's Popover API opens and closes it (click the trigger, Esc, click outside, focus returns to the trigger).
    This file places it next to the trigger, points the caret at the trigger, flips it to the other side when there is no
    room, and keeps aria-expanded in step. Browsers without the Popover API get a small fallback that does the same.
-   Content inside a shadow root: call Pulse.popover.attach(shadowRoot) once for that root. */
+   Content inside a shadow root: call Pulse.popover.attach(shadowRoot) once for that root.
+
+   Tooltip
+     <button class="pulse-btn … pulse-tooltip-host" aria-label="Copy"><i class="pulse-icon pulse-icon--copy"></i>
+       <span class="pulse-tooltip pulse-tooltip--bottom" aria-hidden="true">Copy to clipboard</span></button>
+   CSS shows it on hover and keyboard focus. This file only adds Esc: it hides the tooltip until the pointer or focus leaves.
+
+   Drawer (and any native <dialog>)
+     <button data-pulse-open="prices">…</button>
+     <dialog id="prices" class="pulse-drawer" aria-labelledby="prices-t">… <button data-pulse-close aria-label="Close">…</button> …</dialog>
+   data-pulse-open opens the dialog with that id as a modal (or beside the page, still usable, when the dialog has data-modal="false").
+   data-pulse-close inside it closes it; so does a click on the dimmed page. Esc and returning focus are the browser's. */
 (function () {
   'use strict';
   if (typeof document === 'undefined') return;
@@ -106,8 +117,29 @@
     return null;
   }
 
+  function dialogClick(e) {
+    var t = e.target; if (!t || !t.closest) return;
+    var opener = t.closest('[data-pulse-open]');
+    if (opener) {
+      var rn = opener.getRootNode(), dlg = rn.getElementById ? rn.getElementById(opener.getAttribute('data-pulse-open')) : null;
+      if (!dlg || !dlg.showModal || dlg.open) return;
+      dlg._pulseOpener = opener;
+      if (dlg.getAttribute('data-modal') === 'false') dlg.show(); else dlg.showModal();
+      return;
+    }
+    var dlgIn = t.closest('dialog');
+    if (!dlgIn) return;
+    var isBackdrop = t === dlgIn && dlgIn.matches(':modal') && dlgIn.classList.contains('pulse-drawer');
+    if (t.closest('[data-pulse-close]') || isBackdrop) {
+      dlgIn.close();
+      // show() (not modal) doesn't hand focus back by itself
+      if (dlgIn._pulseOpener && dlgIn.getAttribute('data-modal') === 'false' && dlgIn._pulseOpener.focus) dlgIn._pulseOpener.focus();
+    }
+  }
+
   function attach(root) {
     root.addEventListener('click', rememberTrigger, true);
+    root.addEventListener('click', dialogClick);
     if (native) {
       // Hidden until placed. Opacity, not visibility, so autofocus inside the popover still works.
       root.addEventListener('beforetoggle', function (e) { if (isPop(e.target) && e.newState === 'open') e.target.style.opacity = '0'; }, true);
@@ -115,6 +147,28 @@
     }
   }
   attach(document);
+
+  // Tooltip: Esc hides the ones showing; each comes back after the pointer and focus have left its host.
+  function tipHosts(root) { return root.querySelectorAll ? root.querySelectorAll('.pulse-tooltip-host:hover, .pulse-tooltip-host:focus-within') : []; }
+  function dismissTip(host) {
+    if (host.classList.contains('is-dismissed')) return;
+    host.classList.add('is-dismissed');
+    var check = function () {
+      setTimeout(function () {
+        if (host.matches(':hover') || host.matches(':focus-within')) return;
+        host.classList.remove('is-dismissed');
+        host.removeEventListener('mouseleave', check); host.removeEventListener('focusout', check);
+      }, 0);
+    };
+    host.addEventListener('mouseleave', check); host.addEventListener('focusout', check);
+  }
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    var seen = [];
+    (e.composedPath ? e.composedPath() : []).forEach(function (n) { if (n && n.host && seen.indexOf(n) < 0) seen.push(n); });  // shadow roots on the way up
+    seen.push(document);
+    seen.forEach(function (root) { [].forEach.call(tipHosts(root), dismissTip); });
+  });
 
   // Fallback for browsers without the Popover API: same markup, opened with a class.
   if (!native) {
@@ -143,4 +197,5 @@
 
   window.Pulse = window.Pulse || {};
   window.Pulse.popover = { attach: attach, place: place };
+  window.Pulse.attach = attach;  // same call under a general name: popovers, drawers and dialogs inside a shadow root
 })();

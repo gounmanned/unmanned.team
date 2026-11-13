@@ -73,6 +73,18 @@
     <a class="pulse-link pulse-link--lg" href="#link">See how it works <i class="pulse-icon pulse-icon--arrow-right"></i></a>
     <a class="pulse-link is-hover" href="#link">Hover <i class="pulse-icon pulse-icon--arrow-right"></i></a>
   </div>
+  <div class="row"><span class="cap">Down</span>
+    <a class="pulse-link pulse-link--down" href="#link">See VEX in Slack <i class="pulse-icon pulse-icon--arrow-down"></i></a>
+    <a class="pulse-link pulse-link--down is-hover" href="#link">Hover <i class="pulse-icon pulse-icon--arrow-down"></i></a>
+    <span class="hint">for a link that jumps down the same page</span>
+  </div>
+  <div class="row"><span class="cap">Quiet</span>
+    <a class="pulse-link pulse-link--quiet" href="#link">What VEX detects</a>
+    <a class="pulse-link pulse-link--quiet is-hover" href="#link">Hover</a>
+    <a class="pulse-link pulse-link--quiet" href="#link" aria-current="page">Current page</a>
+    <button class="pulse-link pulse-link--quiet" type="button" aria-expanded="false">Opens a menu <i class="pulse-icon pulse-icon--caret-down"></i></button>
+    <button class="pulse-link pulse-link--quiet" type="button" aria-expanded="true">Menu open <i class="pulse-icon pulse-icon--caret-down"></i></button>
+    <span class="hint">for navigation; current is any aria-current value; the regular pink link stays the one action</span></div>
   <div class="row"><span class="cap">Inline</span><p style="margin:0">VEX investigates every alert and <a class="pulse-link pulse-link--inline" href="#link">tells you what it did</a>, in Slack.</p></div>
 </section>
 
@@ -144,6 +156,7 @@
     <div class="stack" style="width:320px"><span class="cap">Fit</span><ul class="pulse-dropdown" role="listbox" aria-label="Identity provider"><li class="pulse-menu-item" role="option" aria-selected="true"><i class="pulse-icon pulse-icon--users" aria-hidden="true"></i><span class="pulse-menu-item__label">Microsoft Entra ID</span><i class="pulse-icon pulse-icon--check pulse-menu-item__check" aria-hidden="true"></i></li><li class="pulse-menu-item is-focus" role="option" aria-selected="false"><i class="pulse-icon pulse-icon--globe" aria-hidden="true"></i><span class="pulse-menu-item__label">Google Workspace</span><span class="pulse-menu-item__check"></span></li><li class="pulse-menu-item" role="option" aria-selected="false"><i class="pulse-icon pulse-icon--shield" aria-hidden="true"></i><span class="pulse-menu-item__label">Okta</span><span class="pulse-menu-item__check"></span></li><li class="pulse-menu-item" role="option" aria-selected="false" aria-disabled="true"><i class="pulse-icon pulse-icon--laptop" aria-hidden="true"></i><span class="pulse-menu-item__label">JumpCloud (coming soon)</span><span class="pulse-menu-item__check"></span></li></ul></div>
     <div class="stack" style="width:320px"><span class="cap">Scroll</span><ul class="pulse-dropdown pulse-dropdown--scroll" role="listbox" aria-label="Many options"><li class="pulse-menu-item" role="option" aria-selected="true"><i class="pulse-icon pulse-icon--users" aria-hidden="true"></i><span class="pulse-menu-item__label">Microsoft Entra ID</span><i class="pulse-icon pulse-icon--check pulse-menu-item__check" aria-hidden="true"></i></li><li class="pulse-menu-item" role="option" aria-selected="false"><i class="pulse-icon pulse-icon--globe" aria-hidden="true"></i><span class="pulse-menu-item__label">Google Workspace</span><span class="pulse-menu-item__check"></span></li><li class="pulse-menu-item" role="option" aria-selected="false"><i class="pulse-icon pulse-icon--shield" aria-hidden="true"></i><span class="pulse-menu-item__label">Okta</span><span class="pulse-menu-item__check"></span></li><li class="pulse-menu-item" role="option" aria-selected="false"><i class="pulse-icon pulse-icon--globe" aria-hidden="true"></i><span class="pulse-menu-item__label">Option five</span><span class="pulse-menu-item__check"></span></li><li class="pulse-menu-item" role="option" aria-selected="false"><i class="pulse-icon pulse-icon--globe" aria-hidden="true"></i><span class="pulse-menu-item__label">Option six</span><span class="pulse-menu-item__check"></span></li><li class="pulse-menu-item" role="option" aria-selected="false"><i class="pulse-icon pulse-icon--globe" aria-hidden="true"></i><span class="pulse-menu-item__label">Option seven</span><span class="pulse-menu-item__check"></span></li><li class="pulse-menu-item" role="option" aria-selected="false"><i class="pulse-icon pulse-icon--globe" aria-hidden="true"></i><span class="pulse-menu-item__label">Option eight</span><span class="pulse-menu-item__check"></span></li></ul></div>
     <div class="stack" style="width:320px"><span class="cap">Open from a select</span><div class="pulse-field"><label class="pulse-field__label">Provider</label><div class="pulse-select-wrap"><select class="pulse-select is-focus"><option>Microsoft Entra ID</option></select></div></div><ul class="pulse-dropdown" role="listbox" aria-label="Provider" style="margin-top:calc(-1 * var(--space-4))"><li class="pulse-menu-item" role="option" aria-selected="true"><i class="pulse-icon pulse-icon--users" aria-hidden="true"></i><span class="pulse-menu-item__label">Microsoft Entra ID</span><i class="pulse-icon pulse-icon--check pulse-menu-item__check" aria-hidden="true"></i></li><li class="pulse-menu-item" role="option" aria-selected="false"><i class="pulse-icon pulse-icon--globe" aria-hidden="true"></i><span class="pulse-menu-item__label">Google Workspace</span><span class="pulse-menu-item__check"></span></li><li class="pulse-menu-item" role="option" aria-selected="false"><i class="pulse-icon pulse-icon--shield" aria-hidden="true"></i><span class="pulse-menu-item__label">Okta</span><span class="pulse-menu-item__check"></span></li></ul></div>
+    <div class="stack" style="width:320px"><span class="cap">Nav menu</span><nav class="pulse-dropdown pulse-dropdown--nav" aria-label="VEX AI SOC"><span class="pulse-dropdown__label">VEX AI SOC</span><a class="pulse-menu-item" href="#dropdown" aria-current="page"><span class="pulse-menu-item__label">Meet VEX</span><span class="pulse-menu-item__desc">Good prevention starts with great detection.</span></a><a class="pulse-menu-item is-hover" href="#dropdown"><span class="pulse-menu-item__label">What VEX detects (hover)</span><span class="pulse-menu-item__desc">Every alert type it can raise.</span></a><a class="pulse-menu-item" href="#dropdown"><span class="pulse-menu-item__label">The API</span><span class="pulse-menu-item__desc">Security engineer? This is for you.</span></a></nav><span class="hint">links, not options: opened by a button with aria-expanded; the group label is optional</span></div>
   </div>
 </section>
 
@@ -159,6 +172,23 @@
   </div>
   <div class="row"><span class="cap">Live modal</span><button class="pulse-btn pulse-btn--primary" id="open-dialog">Open dialog</button></div>
   <dialog class="pulse-dialog" id="live-dialog" aria-labelledby="ld-t" aria-describedby="ld-b"><div class="pulse-dialog__head"><div class="pulse-dialog__copy"><h3 class="pulse-dialog__title" id="ld-t">Delete this test?</h3><p class="pulse-dialog__body" id="ld-b">This removes the report and every finding. You can’t undo it.</p></div><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-dialog__close" aria-label="Close dialog" data-close><i class="pulse-icon pulse-icon--x" aria-hidden="true"></i></button></div><div class="pulse-dialog__resource">Acme workspace · 24-hour test</div><div class="pulse-dialog__actions"><button class="pulse-btn pulse-btn--secondary" data-close autofocus>Cancel</button><button class="pulse-btn pulse-btn--destructive" data-close>Delete</button></div></dialog>
+</section>
+
+<section id="drawer">
+  <h2>Drawer</h2>
+  <p class="note">A panel that slides in from the side and runs the full height of the window, with square corners. Two widths, 400 and 640; both go full width on a narrower screen. Head, a body that scrolls, and an optional pinned footer. Built on the native dialog; pulse.js wires the open and close buttons.</p>
+  <div class="row top"><span class="cap">Panel</span>
+    <div style="height:360px;width:400px;max-width:100%;display:flex"><div class="pulse-drawer" role="dialog" aria-labelledby="dw0-t" style="height:100%"><div class="pulse-drawer__head"><h3 class="pulse-drawer__title" id="dw0-t">Buy a Dot</h3><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-drawer__close" type="button" aria-label="Close" data-pulse-close><i class="pulse-icon pulse-icon--x" aria-hidden="true"></i></button></div><div class="pulse-drawer__body"><p style="margin:0 0 var(--space-16)">The body is a slot: put anything here. It scrolls when the content is taller than the window, and the head and footer stay put.</p><p style="margin:0">A drawer keeps people on the page while they look at detail, pick a plan or fill in a short form.</p></div><div class="pulse-drawer__foot"><div class="pulse-actions--end"><button class="pulse-btn pulse-btn--secondary" type="button" data-pulse-close>Cancel</button><button class="pulse-btn pulse-btn--primary" type="button" data-pulse-close>Continue</button></div></div></div></div></div>
+  <div class="row"><span class="cap">Live</span>
+    <button class="pulse-btn pulse-btn--primary" type="button" data-pulse-open="dw1">Open, 400</button>
+    <button class="pulse-btn pulse-btn--secondary" type="button" data-pulse-open="dw2">Open, 640</button>
+    <button class="pulse-btn pulse-btn--secondary" type="button" data-pulse-open="dw3">Open, dark</button>
+    <button class="pulse-btn pulse-btn--secondary" type="button" data-pulse-open="dw4">Open, page stays usable</button>
+    <span class="hint">Esc, the close button or a click on the dimmed page closes it</span></div>
+  <dialog class="pulse-drawer" id="dw1" aria-labelledby="dw1-t"><div class="pulse-drawer__head"><h3 class="pulse-drawer__title" id="dw1-t">Buy a Dot</h3><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-drawer__close" type="button" aria-label="Close" data-pulse-close><i class="pulse-icon pulse-icon--x" aria-hidden="true"></i></button></div><div class="pulse-drawer__body"><p style="margin:0 0 var(--space-16)">The body is a slot: put anything here. It scrolls when the content is taller than the window, and the head and footer stay put.</p><p style="margin:0">A drawer keeps people on the page while they look at detail, pick a plan or fill in a short form.</p></div><div class="pulse-drawer__foot"><div class="pulse-actions--end"><button class="pulse-btn pulse-btn--secondary" type="button" data-pulse-close>Cancel</button><button class="pulse-btn pulse-btn--primary" type="button" data-pulse-close>Continue</button></div></div></dialog>
+  <dialog class="pulse-drawer pulse-drawer--lg" id="dw2" aria-labelledby="dw2-t"><div class="pulse-drawer__head"><h3 class="pulse-drawer__title" id="dw2-t">How Collect works</h3><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-drawer__close" type="button" aria-label="Close" data-pulse-close><i class="pulse-icon pulse-icon--x" aria-hidden="true"></i></button></div><div class="pulse-drawer__body"><p style="margin:0 0 var(--space-16)">The body is a slot: put anything here. It scrolls when the content is taller than the window, and the head and footer stay put.</p><p style="margin:0">A drawer keeps people on the page while they look at detail, pick a plan or fill in a short form.</p></div><div class="pulse-drawer__foot"><div class="pulse-actions--end"><button class="pulse-btn pulse-btn--secondary" type="button" data-pulse-close>Cancel</button><button class="pulse-btn pulse-btn--primary" type="button" data-pulse-close>Continue</button></div></div></dialog>
+  <dialog class="pulse-drawer" id="dw3" data-theme="dark" aria-labelledby="dw3-t"><div class="pulse-drawer__head"><h3 class="pulse-drawer__title" id="dw3-t">Buy a Dot</h3><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-drawer__close" type="button" aria-label="Close" data-pulse-close><i class="pulse-icon pulse-icon--x" aria-hidden="true"></i></button></div><div class="pulse-drawer__body"><p style="margin:0 0 var(--space-16)">The body is a slot: put anything here. It scrolls when the content is taller than the window, and the head and footer stay put.</p><p style="margin:0">A drawer keeps people on the page while they look at detail, pick a plan or fill in a short form.</p></div><div class="pulse-drawer__foot"><div class="pulse-actions--end"><button class="pulse-btn pulse-btn--secondary" type="button" data-pulse-close>Cancel</button><button class="pulse-btn pulse-btn--primary" type="button" data-pulse-close>Continue</button></div></div></dialog>
+  <dialog class="pulse-drawer" id="dw4" data-modal="false" aria-labelledby="dw4-t"><div class="pulse-drawer__head"><h3 class="pulse-drawer__title" id="dw4-t">Details</h3><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-drawer__close" type="button" aria-label="Close" data-pulse-close><i class="pulse-icon pulse-icon--x" aria-hidden="true"></i></button></div><div class="pulse-drawer__body"><p style="margin:0 0 var(--space-16)">The body is a slot: put anything here. It scrolls when the content is taller than the window, and the head and footer stay put.</p><p style="margin:0">A drawer keeps people on the page while they look at detail, pick a plan or fill in a short form.</p></div><div class="pulse-drawer__foot"><div class="pulse-actions--end"><button class="pulse-btn pulse-btn--secondary" type="button" data-pulse-close>Close</button></div></div></dialog>
 </section>
 
 <section id="popover">
@@ -195,7 +225,17 @@
   <div class="row top"><span class="cap">Tabs bar</span>
     <div class="pulse-tabs pulse-tabs--bar" style="width:560px" role="tablist"><button class="pulse-tab" role="tab" aria-selected="true">The loop</button><button class="pulse-tab" role="tab">Collect</button><button class="pulse-tab" role="tab">Triage</button><button class="pulse-tab" role="tab">Detect</button><button class="pulse-tab" role="tab">Update</button></div></div>
   <div class="row top"><span class="cap">Vertical</span>
-    <nav class="pulse-tabs pulse-tabs--vertical"><a class="pulse-tab" href="#nav" aria-current="true">Authentication</a><a class="pulse-tab" href="#nav">Signals</a><a class="pulse-tab" href="#nav">Monitors</a><a class="pulse-tab" href="#nav">Assets</a></nav></div>
+    <nav class="pulse-tabs pulse-tabs--vertical" style="width:240px"><a class="pulse-tab" href="#nav" aria-current="location">Authentication</a><a class="pulse-tab is-hover" href="#nav">Signals (hover)</a><a class="pulse-tab" href="#nav">Monitors</a><a class="pulse-tab" href="#nav">Assets</a></nav>
+    <span class="hint">takes its container’s width; the current link is any aria-current value (here “location”)</span></div>
+  <div class="row top"><span class="cap">Vertical, full</span>
+    <div style="width:240px"><p class="pulse-tabs__label" id="jump-l">On this page</p>
+      <ul class="pulse-tabs pulse-tabs--vertical" aria-labelledby="jump-l">
+        <li><a class="pulse-tab" href="#nav">Microsoft 365 <span class="pulse-tab__count">412</span></a>
+          <ul class="pulse-tabs__sub"><li><a class="pulse-tab" href="#nav">Defender for Office <span class="pulse-tab__count">96</span></a></li><li><a class="pulse-tab" href="#nav" aria-current="location">Entra ID Protection <span class="pulse-tab__count">58</span></a></li><li><a class="pulse-tab is-hover" href="#nav">Purview (hover) <span class="pulse-tab__count">31</span></a></li></ul></li>
+        <li><a class="pulse-tab" href="#nav">Google Workspace <span class="pulse-tab__count">187</span></a></li>
+        <li><a class="pulse-tab" href="#nav">AWS <span class="pulse-tab__count">1,204</span></a></li>
+      </ul></div>
+    <span class="hint">optional parts: a label above, sub-items, a count at the end of an item</span></div>
 </section>
 
 <section id="feedback">
@@ -222,9 +262,49 @@
     <div class="pulse-progress pulse-progress--danger" style="--p:25%"><div class="pulse-progress__head"><span>Export</span><span class="pulse-progress__value">25%</span></div><div class="pulse-progress__track"><div class="pulse-progress__fill"></div></div></div>
     <div class="pulse-progress pulse-progress--indeterminate"><div class="pulse-progress__head"><span>Connecting workspace</span><span class="pulse-progress__value">Working…</span></div><div class="pulse-progress__track"><div class="pulse-progress__fill"></div></div></div>
   </div>
-  <div class="row" style="margin-top:var(--space-32)"><span class="cap">Tooltip</span><span class="pulse-tooltip">T1015 — Query Registry</span></div>
+  <div class="row" style="margin-top:var(--space-32)"><span class="cap">Tooltip</span><span class="pulse-tooltip">T1015 — Query Registry</span><span class="pulse-tooltip pulse-tooltip--bottom">Below</span><span class="pulse-tooltip pulse-tooltip--bottom pulse-tooltip--start">Below, start</span><span class="pulse-tooltip pulse-tooltip--end">Above, end</span><span class="pulse-tooltip pulse-tooltip--left">Left</span><span class="pulse-tooltip pulse-tooltip--right">Right</span></div>
+  <div class="row" style="margin-top:var(--space-16)"><span class="cap">On a control</span>
+    <button class="pulse-btn pulse-btn--neutral pulse-btn--icon pulse-btn--sm pulse-tooltip-host" type="button" aria-label="Copy"><i class="pulse-icon pulse-icon--copy"></i><span class="pulse-tooltip" aria-hidden="true">Above</span></button>
+    <button class="pulse-btn pulse-btn--neutral pulse-btn--icon pulse-btn--sm pulse-tooltip-host" type="button" aria-label="Copy"><i class="pulse-icon pulse-icon--copy"></i><span class="pulse-tooltip pulse-tooltip--bottom" aria-hidden="true">Copy to clipboard</span></button>
+    <button class="pulse-btn pulse-btn--neutral pulse-btn--icon pulse-btn--sm pulse-tooltip-host" type="button" aria-label="Copy"><i class="pulse-icon pulse-icon--copy"></i><span class="pulse-tooltip pulse-tooltip--bottom pulse-tooltip--start" aria-hidden="true">Below, lined up with the start</span></button>
+    <button class="pulse-btn pulse-btn--neutral pulse-btn--icon pulse-btn--sm pulse-tooltip-host" type="button" aria-label="Copy"><i class="pulse-icon pulse-icon--copy"></i><span class="pulse-tooltip pulse-tooltip--bottom pulse-tooltip--end" aria-hidden="true">Below, lined up with the end</span></button>
+    <button class="pulse-btn pulse-btn--neutral pulse-btn--icon pulse-btn--sm pulse-tooltip-host" type="button" aria-label="Copy"><i class="pulse-icon pulse-icon--copy"></i><span class="pulse-tooltip pulse-tooltip--right" aria-hidden="true">Right</span></button>
+    <button class="pulse-btn pulse-btn--neutral pulse-btn--icon pulse-btn--sm pulse-tooltip-host" type="button" aria-label="Copied"><i class="pulse-icon pulse-icon--check"></i><span class="pulse-tooltip is-open" aria-hidden="true">Copied</span></button>
+    <span class="hint">hover or Tab to each; Esc hides it; the last one is held open with is-open</span></div>
 </section>
 
+
+<section id="type">
+  <h2>Fluid type and highlight</h2>
+  <p class="note">Display, the three headings and the lede scale smoothly with the window: the Mobile size at 375px wide, the Desktop size at 1280px. Resize the window to see the sizes change. Everything smaller is a fixed size.</p>
+  <div class="stack" style="gap:var(--space-16);min-width:0">
+    <div data-fluid="display" style="font:600 var(--type-display-size)/var(--type-display-line-height) var(--font-sans)">Display <span class="hint"></span></div>
+    <div data-fluid="heading-section" style="font:600 var(--type-heading-section-size)/var(--type-heading-section-line-height) var(--font-sans)">Section heading <span class="hint"></span></div>
+    <div data-fluid="heading-subsection" style="font:600 var(--type-heading-subsection-size)/var(--type-heading-subsection-line-height) var(--font-sans)">Subsection heading <span class="hint"></span></div>
+    <div data-fluid="heading-card" style="font:600 var(--type-heading-card-size)/var(--type-heading-card-line-height) var(--font-sans)">Card heading <span class="hint"></span></div>
+    <div data-fluid="body-lede" style="font:400 var(--type-body-lede-size)/var(--type-body-lede-line-height) var(--font-sans);color:var(--color-text-secondary)">Lede: one sentence under a headline <span class="hint"></span></div>
+  </div>
+  <div class="row"><span class="cap">Highlight</span><p style="margin:0">Search results mark the <mark style="background:var(--color-surface-highlight);color:inherit;padding:0 1px;border-radius:1px">matching words</mark> with <code>--color-surface-highlight</code>.</p></div>
+</section>
+
+<section id="themes">
+  <h2>Dark sections and code colors</h2>
+  <p class="note">A dark section on a light page: put data-theme="dark" on the section and give it the page surface. Everything inside picks up the dark colors; nothing else changes. The same works for a dark drawer or dialog, and data-theme="light" does the reverse on a dark page.</p>
+  <div data-theme="dark" style="background:var(--color-surface-page);color:var(--color-text-primary);padding:var(--space-32);display:flex;flex-direction:column;gap:var(--space-16);align-items:flex-start">
+    <span style="font:600 var(--type-heading-card-size)/var(--type-heading-card-line-height) var(--font-sans)">The founder band, the pricing drawer</span>
+    <span style="color:var(--color-text-secondary)">Secondary text, borders and buttons all follow the section.</span>
+    <div class="pulse-actions"><button class="pulse-btn pulse-btn--primary">Buy a Dot</button><button class="pulse-btn pulse-btn--secondary">Secondary</button><a class="pulse-link" href="#themes">See how it works <i class="pulse-icon pulse-icon--arrow-right"></i></a></div>
+  </div>
+  <p class="note" style="margin-top:var(--space-32)">Code colors: six tokens for code samples (--color-code-function, -keyword, -string, -number, -key, -comment), light and dark.</p>
+  <div class="row top">
+    <pre style="margin:0;padding:var(--space-16);flex:1 1 320px;border:var(--border-width-1) solid var(--color-border-default);background:var(--color-surface-subtle);font:400 var(--type-mono-code-size)/var(--type-mono-code-line-height) var(--font-mono);color:var(--color-text-primary);overflow-x:auto"><span style="color:var(--color-code-comment);font-style:italic"># list open signals</span>
+<span style="color:var(--color-code-function)">curl</span> <span style="color:var(--color-code-keyword)">-H</span> <span style="color:var(--color-code-string)">"Authorization: Bearer $TOKEN"</span> https://api.example/signals
+{ <span style="color:var(--color-code-key)">"count"</span>: <span style="color:var(--color-code-number)">12</span>, <span style="color:var(--color-code-key)">"status"</span>: <span style="color:var(--color-code-string)">"open"</span> }</pre>
+    <pre data-theme="dark" style="margin:0;padding:var(--space-16);flex:1 1 320px;border:var(--border-width-1) solid var(--color-border-default);background:var(--color-surface-page);font:400 var(--type-mono-code-size)/var(--type-mono-code-line-height) var(--font-mono);color:var(--color-text-primary);overflow-x:auto"><span style="color:var(--color-code-comment);font-style:italic"># list open signals</span>
+<span style="color:var(--color-code-function)">curl</span> <span style="color:var(--color-code-keyword)">-H</span> <span style="color:var(--color-code-string)">"Authorization: Bearer $TOKEN"</span> https://api.example/signals
+{ <span style="color:var(--color-code-key)">"count"</span>: <span style="color:var(--color-code-number)">12</span>, <span style="color:var(--color-code-key)">"status"</span>: <span style="color:var(--color-code-string)">"open"</span> }</pre>
+  </div>
+</section>
 
 <section id="icons">
   <h2>Icons</h2>
@@ -274,10 +354,12 @@
   document.getElementById('btn-matrix').innerHTML = html;
 
   // Icon grid and layout readout
-  var icons = [['arrow-right',['regular','light','bold']],['caret-down',['regular']],['x',['regular']],['check',['regular','bold']],['minus',['bold']],['info',['regular','fill']],['check-circle',['regular','fill']],['warning',['regular','fill']],['warning-octagon',['regular','fill']],['warning-circle',['regular']],['magnifying-glass',['regular']],['code',['regular']],['question',['fill']],['lock-simple',['fill']],['copy',['regular']],['envelope',['regular']],['globe',['regular']],['laptop',['regular']],['shield',['regular']],['users',['regular']],['gear',['regular']],['bell',['regular']],['funnel',['regular']],['arrow-square-out',['regular']]];
+  var icons = [['arrow-right',['regular','light','bold']],['arrow-down',['regular','light','bold']],['caret-down',['regular']],['x',['regular']],['check',['regular','bold']],['minus',['bold']],['info',['regular','fill']],['check-circle',['regular','fill']],['warning',['regular','fill']],['warning-octagon',['regular','fill']],['warning-circle',['regular']],['magnifying-glass',['regular']],['code',['regular']],['question',['fill']],['lock-simple',['fill']],['copy',['regular']],['envelope',['regular']],['globe',['regular']],['laptop',['regular']],['shield',['regular']],['users',['regular']],['gear',['regular']],['bell',['regular']],['funnel',['regular']],['arrow-square-out',['regular']],['thumbs-up',['regular','fill']],['thumbs-down',['regular','fill']]];
   var ig = '';
   icons.forEach(function (i) { i[1].forEach(function (w) { ig += '<span style="display:inline-flex;flex-direction:column;align-items:center;gap:6px;width:104px"><i class="pulse-icon pulse-icon--' + i[0] + (w === 'regular' ? '' : ' pulse-icon--' + w) + '" style="--pulse-icon-size:var(--size-icon-24)"></i><span class="hint" style="text-align:center">' + i[0] + (w === 'regular' ? '' : ' · ' + w) + '</span></span>'; }); });
   document.getElementById('icon-grid').innerHTML = ig;
+  function fluidSizes() { [].forEach.call(document.querySelectorAll('[data-fluid]'), function (el) { var c = getComputedStyle(el); el.querySelector('.hint').textContent = (Math.round(parseFloat(c.fontSize) * 10) / 10) + ' / ' + (Math.round(parseFloat(c.lineHeight) * 10) / 10) + 'px'; }); }
+  fluidSizes(); window.addEventListener('resize', fluidSizes);
   var gd = ''; for (var c = 0; c < 12; c++) { gd += '<div style="background:var(--color-accent-subtle);box-shadow:inset 0 0 0 1px var(--color-accent-default);border-radius:var(--radius-sm);min-height:0;overflow:hidden"></div>'; }
   document.getElementById('grid-demo').innerHTML = gd;
   function readout() {

@@ -52,29 +52,33 @@
   /* ---------- HEADER NAV AND VEX AI SOC MENU ---------- */
   .menu-btn{flex-shrink:0;width:32px;height:32px;padding:0;border:none;background:none;cursor:pointer;display:flex;}
   .menu-btn img{width:32px;height:32px;display:block;}
-  .header-links{display:flex;align-items:center;gap:32px;}
-  .header-link{display:inline-flex;align-items:center;gap:4px;font-weight:600;font-size:15px;line-height:1.5;color:var(--color-text-tertiary);text-decoration:none;transition:color 0.2s ease;}
-  .header-link:hover{color:var(--color-text-primary);}
-  .header-link[aria-current="page"]{color:var(--color-text-primary);}
-  .header-link--slack{gap:8px;}
-  .header-link--slack img{width:24px;height:24px;}
-  .header-link--cta{border-bottom:1px solid var(--color-accent-default);}
+  .header-links{position:relative;display:flex;align-items:center;gap:32px;}
+  .header-link{display:inline-flex;align-items:center;gap:4px;font-weight:500;font-size:15px;line-height:1.5;color:var(--color-text-tertiary);text-decoration:none;transition:color 0.2s ease;}
+  .header-link:hover{color:var(--color-text-accent);}
+  /* Current (until Pulse has a current state): ink, 600. Hover is pink text, so the two never match. */
+  .header-link[aria-current="page"],.nav-drop-btn.is-current{color:var(--color-text-primary);font-weight:600;}
+  .header-link[aria-current="page"]:hover,.nav-drop-btn.is-current:hover{color:var(--color-text-accent);}
+  /* The one action in the header: the regular pink link (underline on hover only). */
+  .header-link--cta,.header-link--cta:hover{color:var(--color-text-accent);}
+  .header-link--cta:hover{text-decoration:underline;text-underline-offset:4px;}
   .header-link--cta img{width:16px;height:16px;transition:transform 0.2s ease;}
   .header-link--cta:hover img{transform:translateX(3px);}
-  .nav-drop{position:relative;}
+  /* The menu lines up with the end of the header links (Schedule a chat), so it never runs off the screen. */
+  .nav-drop{position:static;}
   .nav-drop-btn{padding:0;border:0;background:none;font-family:inherit;cursor:pointer;gap:6px;}
   .nav-caret{width:14px;height:14px;background:currentColor;-webkit-mask:url(icon-chevron-down.svg) center/contain no-repeat;mask:url(icon-chevron-down.svg) center/contain no-repeat;transition:transform 0.2s ease;}
-  .nav-drop-btn[aria-expanded="true"],.nav-drop-btn.is-current{color:var(--color-text-primary);}
-  .nav-drop-menu a[aria-current="page"] b{color:var(--color-text-accent);}
+  .nav-drop-btn[aria-expanded="true"]{color:var(--color-text-primary);}
+  .nav-drop-menu a[aria-current="page"] b{font-weight:600;}
   .nav-drop-btn[aria-expanded="true"] .nav-caret{transform:rotate(180deg);}
   .nav-drop-btn:focus-visible{outline:2px solid var(--color-accent-default);outline-offset:4px;border-radius:2px;}
-  .nav-drop-menu{position:absolute;top:calc(100% + 14px);left:-16px;z-index:5;width:300px;padding:8px;display:flex;flex-direction:column;background:var(--color-surface-page);border:1px solid var(--color-border-default);border-radius:2px;box-shadow:0 12px 32px -12px rgba(11,12,13,0.25);}
+  .nav-drop-menu{position:absolute;top:calc(100% + 14px);right:-16px;z-index:5;width:320px;padding:8px;display:flex;flex-direction:column;background:var(--color-surface-page);border:1px solid var(--color-border-default);border-radius:2px;box-shadow:0 12px 32px -12px rgba(11,12,13,0.25);}
   .nav-drop-menu[hidden]{display:none;}
   .nav-drop-menu a{display:flex;flex-direction:column;gap:2px;padding:10px 12px;border-radius:2px;text-decoration:none;}
   .nav-drop-menu a:hover,.nav-drop-menu a:focus-visible{background:var(--color-surface-sunken);outline:none;}
-  .nav-drop-menu b{font-weight:600;font-size:15px;line-height:1.4;color:var(--color-text-primary);}
+  .nav-drop-menu b{font-weight:500;font-size:15px;line-height:1.4;color:var(--color-text-secondary);}
+  .nav-drop-menu a[aria-current="page"] b{color:var(--color-text-primary);}
   .nav-drop-menu a:hover b{color:var(--color-text-accent);}
-  .nav-drop-menu span{font-size:13px;line-height:1.45;color:var(--color-text-tertiary);}
+  .nav-drop-menu > * > span{font-size:13px;line-height:1.45;color:var(--color-text-tertiary);}
 
   /* ---------- PHONE MENU ---------- */
   .nav-panel{position:fixed;top:var(--classbar-h);left:0;right:0;bottom:0;z-index:55;background:var(--color-surface-page);overflow-y:auto;overscroll-behavior:contain;transform:translateY(-100%);visibility:hidden;transition:transform 0.3s cubic-bezier(0.4,0,0.2,1), visibility 0s linear 0.3s;}
@@ -83,10 +87,10 @@
   .nav-list{list-style:none;margin:0;padding:32px 0;display:flex;flex-direction:column;gap:13px;}
   .nav-list li{padding-bottom:13px;border-bottom:1px solid var(--color-surface-sunken);}
   .nav-list a{display:flex;flex-direction:column;gap:4px;text-decoration:none;}
-  .nav-link{font-size:24px;line-height:1.5;letter-spacing:0.02em;color:var(--color-text-primary);}
+  .nav-link{font-size:24px;line-height:1.5;letter-spacing:0.02em;color:var(--color-text-secondary);}
   .nav-sub{font-size:13.5px;line-height:1.5;color:var(--color-text-tertiary);}
   .nav-list a:hover .nav-link{color:var(--color-text-accent);}
-  .nav-list a[aria-current="page"] .nav-link{color:var(--color-text-accent);}
+  .nav-list a[aria-current="page"] .nav-link{font-weight:600;color:var(--color-text-primary);}
   .nav-group-label{display:block;margin-bottom:8px;font-family:var(--font-mono);font-weight:500;font-size:14px;letter-spacing:0.12em;text-transform:uppercase;color:var(--color-text-tertiary);}
   .nav-sublist{list-style:none;margin:0;padding:0 0 0 12px;display:flex;flex-direction:column;gap:16px;}
   .nav-list .nav-sublist li{padding:0;border:0;}

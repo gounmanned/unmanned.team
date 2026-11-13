@@ -1,8 +1,8 @@
 #managed-screen {
   --rollup-height: 100%;
   --threat: var(--risk-high, #dc2626);
+  --overdue: var(--threat);
   --protected: var(--risk-low, #16a34a);
-  --overdue: #9333ea;
   --pad: 32px;
 
   /* ── Header ─────────────────────────────────────────────────────────────── */
@@ -11,7 +11,7 @@
     position: relative;
     flex-shrink: 0;
     display: flex; align-items: center; gap: 20px;
-    height: 88px; padding: 0 var(--pad);
+    height: 72px; padding: 0 var(--pad);
     border-bottom: 1px solid var(--line);
     background:
       radial-gradient(120% 220% at 0% 0%, color-mix(in srgb, var(--brand) 9%, transparent), transparent 55%),
@@ -57,32 +57,15 @@
     }
   }
 
-  .managed-stats {
-    display: flex; align-items: center;
+  .managed-totals {
     margin: 0 0 0 auto;
+    white-space: nowrap;
+    font-size: 12px; font-variant-numeric: tabular-nums;
+    color: var(--text-faint);
 
-    > div {
-      display: flex; flex-direction: column; align-items: center; gap: 2px;
-      min-width: 72px; padding: 0 28px;
+    i { margin: 0 8px; font-style: normal; opacity: 0.6; }
 
-      & + div { box-shadow: inset 1px 0 0 var(--line); }
-      &:last-child { padding-right: 0; }
-    }
-
-    dd {
-      order: -1;
-      margin: 0;
-      font-size: 24px; font-weight: 700; line-height: 1.1; letter-spacing: -0.02em;
-      font-variant-numeric: tabular-nums;
-      color: var(--text-body);
-    }
-
-    dt {
-      font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
-      white-space: nowrap; color: var(--text-faint);
-    }
-
-    @media (max-width: 1100px) { display: none; }
+    @media (max-width: 900px) { display: none; }
   }
 
   /* ── Layout ─────────────────────────────────────────────────────────────── */
@@ -144,98 +127,227 @@
     font: inherit; font-size: 10px; color: var(--text-faint);
   }
 
-  /* ── Account table ──────────────────────────────────────────────────────── */
+  /* ── Lanes ──────────────────────────────────────────────────────────────── */
 
-  .managed-main { container-type: inline-size; }
-
-  .managed-accounts {
+  .managed-lanes {
     flex: 1; min-height: 0; overflow-y: auto;
-    list-style: none; margin: 0; padding: 0 0 24px;
+    padding: 24px var(--pad) 32px;
+
+    .lane-head:first-child { margin-top: 0; }
   }
 
-  .tenant,
-  .tenant-head {
-    --cols: 28px minmax(200px, 1fr) 100px 120px 84px 14px;
-    display: grid; align-items: center; gap: 24px;
-    grid-template-columns: var(--cols);
-    padding: 0 var(--pad);
+  .acct-list {
+    display: flex; flex-direction: column; gap: 6px;
+    margin: 0; padding: 0;
+    list-style: none;
+
+    & + .acct-list { margin-top: 18px; }
   }
 
-  /* Narrow lists drop Dots and Admins; both are one click away in the panel. */
-  @container (max-width: 760px) {
-    .tenant, .tenant-head { --cols: 28px minmax(160px, 1fr) 80px 14px; }
-    .tenant > :nth-child(4), .tenant > :nth-child(5),
-    .tenant-head > :nth-child(4), .tenant-head > :nth-child(5) { display: none; }
-  }
+  /* ── Account rows ───────────────────────────────────────────────────────── */
 
-  .tenant-head {
-    position: sticky; top: 0; z-index: 1;
-    height: 34px;
-    border-bottom: 1px solid var(--line);
-    background: color-mix(in srgb, var(--surface) 92%, transparent);
-    backdrop-filter: blur(6px);
-    font-size: 10.5px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase;
-    color: var(--text-faint);
-
-    .tenant-num { font-size: inherit; color: inherit; }
-  }
-
-  .tenant {
-    position: relative;
-    height: 60px;
-    box-shadow: inset 0 -1px 0 color-mix(in srgb, var(--line) 60%, transparent);
+  .acct {
+    display: grid; align-items: center; gap: 14px;
+    grid-template-columns: 30px minmax(0, 1fr) auto auto auto 150px 132px;
+    padding: 8px 12px;
+    border: 1px solid var(--line); border-radius: 8px;
+    background: var(--surface);
+    outline: none;
     cursor: pointer;
     user-select: none;
-    transition: background 0.1s ease;
+    transition: background 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease;
 
-    &[data-state="threat"] { background: color-mix(in srgb, var(--threat) 3.5%, transparent); }
-    &:hover { background: color-mix(in srgb, var(--surface-alt) 70%, transparent); }
+    &:hover { background: var(--surface-alt); }
 
-    &[aria-selected="true"] {
-      background: var(--surface-alt);
-
-      &::after {
-        content: '';
-        position: absolute; inset: 0 auto 0 0;
-        width: 2px; background: var(--text-body);
-      }
+    &:focus-visible {
+      border-color: var(--brand);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand) 18%, transparent);
     }
 
-    &.has-unread .tenant-name,
-    &.has-unread .tenant-signals { font-weight: 600; }
+    &[aria-selected="true"] { box-shadow: inset 2px 0 0 var(--text-body); }
   }
 
-  /* Calm states stay quiet so the ones that need action are the only colour in the column. */
-  .tenant-indicator {
-    display: grid; place-items: center;
-    width: 28px; height: 28px;
-    border-radius: 50%;
-    color: color-mix(in srgb, var(--text-faint) 70%, transparent);
+  .acct-needs .acct:first-child {
+    padding: 14px;
+    border-color: color-mix(in srgb, var(--overdue) 35%, var(--line));
+    box-shadow: 0 6px 20px rgb(0 0 0 / 0.05);
 
-    .material-symbols-outlined {
-      font-size: 18px;
-      font-variation-settings: 'FILL' 0, 'wght' 500;
-    }
-
-    &[data-state="clear"] { color: var(--protected); }
-
-    &[data-state="threat"],
-    &[data-state="overdue"] {
-      --flag: var(--threat);
-      background: color-mix(in srgb, var(--flag) 14%, transparent);
-      color: var(--flag);
-      animation: tenant-flag-pulse 1.6s ease-out infinite;
-
-      .material-symbols-outlined { font-size: 16px; font-variation-settings: 'FILL' 1; }
-    }
-
-    &[data-state="overdue"] { --flag: var(--overdue); }
+    .acct-name { font-size: 15px; }
   }
 
-  .tenant-account {
-    display: flex; align-items: center; gap: 12px;
+  .acct-calm { gap: 0; }
+
+  .acct.calm {
+    position: relative;
+    grid-template-columns: 30px minmax(0, 1fr) auto auto 132px;
+    padding-block: 9px;
+    border-color: transparent;
+    background: none;
+
+    &:hover { background: var(--surface-alt); }
+    .acct-name { font-weight: 500; }
+
+    & + .acct.calm::before {
+      content: '';
+      position: absolute; top: -1px; left: 56px; right: 12px;
+      height: 1px;
+      background: color-mix(in srgb, var(--line) 55%, transparent);
+    }
+
+    &:hover::before,
+    &:hover + .acct.calm::before { opacity: 0; }
+  }
+
+  .acct-recs {
+    white-space: nowrap;
+    font-size: 12px; color: var(--text-faint);
+  }
+
+  .acct-main {
+    display: flex; align-items: baseline; gap: 12px;
     min-width: 0;
   }
+
+  .acct-name {
+    flex: 0 1 auto; min-width: 0;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    font-size: 13.5px; font-weight: 600;
+    color: var(--text-body);
+  }
+
+  .acct-status {
+    flex: 0 10 auto; min-width: 0;
+    display: inline-flex; align-items: center; gap: 6px;
+    overflow: hidden; white-space: nowrap;
+    font-size: 12px; color: var(--text-faint);
+
+    b { font-weight: 600; }
+    i { font-style: normal; opacity: 0.6; }
+  }
+
+  .acct-new {
+    padding: 1px 7px; border-radius: 8px;
+    background: color-mix(in srgb, var(--brand) 12%, transparent);
+    font-size: 11px; font-weight: 600;
+    color: var(--brand);
+  }
+
+  .acct-due {
+    text-align: right; white-space: nowrap;
+    font-size: 12.5px; font-weight: 600; font-variant-numeric: tabular-nums;
+    color: var(--text-body);
+
+    &.soon { color: var(--risk-medium, #ea580c); }
+    &.overdue { color: var(--overdue); }
+    &.none { font-weight: 500; color: var(--text-faint); }
+  }
+
+  .acct-chip {
+    display: inline-flex; align-items: center;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .acct-chip-assets {
+    min-width: 92px;
+    text-align: right;
+    font-size: 11.5px; color: var(--text-faint);
+
+    b {
+      margin-right: 2px;
+      font-size: 15px; font-weight: 700; letter-spacing: -0.01em;
+      color: var(--text-body);
+    }
+  }
+
+  .acct-chip-cov {
+    position: relative;
+    display: grid; grid-template-columns: 7px 40px; align-items: center; gap: 6px;
+    margin-left: 12px; padding-left: 12px;
+    text-align: right;
+    font-size: 12px; font-weight: 600;
+    color: var(--text-body);
+
+    &::before {
+      content: '';
+      position: absolute; left: 0; top: 50%;
+      width: 1px; height: 14px;
+      transform: translateY(-50%);
+      background: var(--line);
+    }
+
+    i { width: 7px; height: 7px; border-radius: 50%; background: var(--brand); }
+
+    &[data-level="none"] {
+      font-weight: 500; color: var(--text-faint);
+      i { background: none; box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--text-faint) 60%, transparent); }
+    }
+
+    &[data-level="full"] {
+      color: var(--protected);
+      i { background: var(--protected); }
+    }
+  }
+
+  .acct-actions {
+    display: flex; align-items: center; justify-content: flex-end; gap: 6px;
+    opacity: 0;
+    transition: opacity 0.12s ease;
+
+    .acct:hover &, .acct:focus-within &, .acct:focus-visible & { opacity: 1; }
+    @media (hover: none) { opacity: 1; }
+  }
+
+  .acct-manage {
+    all: unset;
+    display: grid; place-items: center;
+    width: 28px; height: 28px; border-radius: 6px;
+    color: var(--text-faint);
+    cursor: pointer;
+
+    .material-symbols-outlined { font-size: 18px; }
+    &:hover { background: var(--line); color: var(--text-body); }
+    &:focus-visible { outline: 2px solid var(--brand); outline-offset: 1px; }
+  }
+
+  .acct-enter {
+    display: inline-flex; align-items: center; gap: 4px;
+    height: 28px; padding: 0 8px 0 12px; border-radius: 6px;
+    background: var(--text-body);
+    font-size: 12px; font-weight: 500; color: #fff;
+
+    .material-symbols-outlined { font-size: 15px; transition: transform 0.12s ease; }
+    .acct:hover & .material-symbols-outlined { transform: translateX(2px); }
+  }
+
+  .acct-create {
+    grid-template-columns: 30px minmax(0, 1fr) auto;
+    border-style: dashed;
+
+    .tenant-mark { background: none; .material-symbols-outlined { font-size: 16px; } }
+    .acct-name { font-weight: 400; color: var(--text-faint); }
+    .acct-name b { font-weight: 600; color: var(--text-body); }
+
+    &.is-taken {
+      cursor: default;
+      &:hover { background: var(--surface); }
+      .tenant-mark, .acct-name { color: var(--overdue); }
+    }
+  }
+
+  .acct-clear {
+    display: grid; justify-items: center; gap: 6px;
+    padding: 48px 0;
+    border: 1px dashed var(--line); border-radius: 10px;
+    text-align: center;
+    color: var(--text-faint);
+
+    .material-symbols-outlined { font-size: 40px; color: var(--protected); }
+    h3 { margin: 4px 0 0; font-size: 18px; color: var(--text-body); }
+    p { margin: 0; font-size: 13px; }
+  }
+
+  .is-overdue { color: var(--overdue); }
 
   .tenant-mark {
     position: relative; flex-shrink: 0;
@@ -256,104 +368,24 @@
     }
   }
 
-  .tenant-text {
-    display: flex; flex-direction: column; gap: 3px;
-    min-width: 0;
-  }
-
-  .tenant-name {
-    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-    font-size: 13px; font-weight: 500; color: var(--text-body);
-  }
-
-  .tenant-num {
-    display: flex; align-items: center; justify-content: flex-end; gap: 8px;
-    font-size: 13px; font-variant-numeric: tabular-nums;
-    color: var(--text-body);
-
-    small { font-size: 11px; color: var(--text-faint); }
-  }
-
-  .tenant em {
-    font-style: normal;
-    color: color-mix(in srgb, var(--text-faint) 45%, transparent);
-  }
-
-  .tenant-unread {
-    padding: 1px 6px; border-radius: 8px;
-    background: color-mix(in srgb, var(--brand) 12%, transparent);
-    font-weight: 600;
-    color: var(--brand) !important;
-  }
-
-  .tenant-coverage {
-    display: flex; flex-direction: column; align-items: flex-end; gap: 5px;
-  }
-
-  .tenant-meter {
-    width: 56px; height: 3px; border-radius: 2px;
-    background: var(--line);
-    overflow: hidden;
-
-    i { display: block; height: 100%; background: var(--text-faint); }
-    &[data-full="true"] i { background: var(--protected); }
-  }
-
-  .tenant-admins {
-    display: flex; align-items: center;
-
-    .admin-initial {
-      width: 20px; height: 20px; font-size: 9.5px;
-      background: var(--surface-alt);
-      color: color-mix(in srgb, var(--text-body) 65%, transparent);
-      box-shadow: 0 0 0 2px var(--surface), inset 0 0 0 1px var(--line);
-      & + .admin-initial { margin-left: -6px; }
-    }
-
-    small { margin-left: 6px; }
-  }
-
-  .tenant-chev {
-    justify-self: end;
-    font-size: 16px; color: var(--text-faint);
-    opacity: 0;
-    transition: opacity 0.1s ease, transform 0.1s ease;
-
-    .tenant:hover &,
-    .tenant[aria-selected="true"] & { opacity: 1; transform: translateX(2px); }
-  }
-
-  .tenant--create {
-    grid-template-columns: 20px minmax(0, 1fr) auto;
-
-    .tenant-mark { background: none; .material-symbols-outlined { font-size: 16px; } }
-    .tenant-name { color: var(--text-faint); }
-    .tenant-name b { font-weight: 600; color: var(--text-body); }
-
-    &.is-taken {
-      cursor: default;
-      &:hover { background: none; }
-      .tenant-mark, .tenant-name { color: var(--threat); }
-    }
-  }
-
   /* ── Empty state (no accounts yet) ──────────────────────────────────────── */
 
-  .tenant--ghost {
+  .acct-ghost {
+    grid-template-columns: 30px minmax(0, 1fr);
+    border-color: transparent;
     cursor: default;
     pointer-events: none;
 
-    &:nth-child(3) { opacity: 0.6; }
-    &:nth-child(4) { opacity: 0.3; }
+    &:nth-child(2) { opacity: 0.6; }
+    &:nth-child(3) { opacity: 0.3; }
 
     i {
       display: block;
-      width: 28px; height: 7px; border-radius: 4px;
+      height: 7px; border-radius: 4px;
       background: color-mix(in srgb, var(--line) 80%, transparent);
     }
 
-    .tenant-text i + i { height: 6px; opacity: 0.6; }
-    .tenant-indicator i { width: 18px; height: 18px; border-radius: 50%; }
+    i + i { height: 6px; opacity: 0.6; }
   }
 
   .managed-empty {
@@ -414,20 +446,6 @@
     .is-rejected + & { color: var(--threat); }
   }
 
-  /* ── Status ─────────────────────────────────────────────────────────────── */
-
-  .tenant-status {
-    display: inline-flex; align-items: center; gap: 6px;
-    white-space: nowrap;
-    font-size: 11.5px; color: var(--text-faint);
-
-    b { font-weight: 600; }
-    i { font-style: normal; opacity: 0.6; }
-  }
-
-  .is-threat { color: var(--threat); }
-  .is-overdue { color: var(--overdue); }
-
   /* ── Account panel ──────────────────────────────────────────────────────── */
 
   .tenant-panel {
@@ -438,14 +456,15 @@
 
   .tenant-panel-head {
     display: flex; align-items: center; gap: 12px;
-    padding: 20px 14px 20px var(--pad);
+    padding: 20px 14px 16px var(--pad);
+    border-bottom: 1px solid var(--line);
 
-    .tenant-mark { width: 40px; height: 40px; border-radius: 9px; font-size: 12px; }
+    .tenant-mark { width: 36px; height: 36px; border-radius: 8px; font-size: 11px; }
   }
 
   .tenant-panel-title {
     flex: 1; min-width: 0;
-    display: flex; flex-direction: column; gap: 4px;
+    display: flex; flex-direction: column; gap: 2px;
 
     h3 {
       margin: 0;
@@ -454,74 +473,27 @@
     }
   }
 
+  .tenant-panel-kicker {
+    font-size: 10.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--text-faint);
+  }
+
   .tenant-panel-close {
     all: unset;
-    align-self: flex-start;
     display: grid; place-items: center;
-    width: 24px; height: 24px; border-radius: 4px;
+    width: 28px; height: 28px; border-radius: 6px;
     color: var(--text-faint); cursor: pointer;
 
-    .material-symbols-outlined { font-size: 16px; }
+    .material-symbols-outlined { font-size: 18px; }
     &:hover { background: var(--line); color: var(--text-body); }
-  }
-
-  .tenant-panel-stats {
-    display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
-    margin: 0 var(--pad);
-    padding: 14px 0;
-    border-block: 1px solid var(--line);
-
-    > div { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
-
-    dt {
-      font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase;
-      color: var(--text-faint);
-    }
-
-    dd {
-      margin: 0;
-      font-size: 20px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.1;
-      font-variant-numeric: tabular-nums;
-      color: var(--text-body);
-
-      small { font-size: 12px; font-weight: 500; color: var(--text-faint); }
-      &.is-threat { color: var(--threat); }
-      &.is-overdue { color: var(--overdue); }
-    }
-  }
-
-  .tenant-panel-label {
-    padding: 20px var(--pad) 6px;
-    font-size: 11px; color: var(--text-faint);
-
-    span { margin-left: 4px; font-weight: 500; color: var(--text-body); }
-  }
-
-  .tenant-panel-foot {
-    margin-top: auto;
-    padding: 16px var(--pad) 20px;
-  }
-
-  .tenant-enter {
-    display: flex; align-items: center; justify-content: center; gap: 6px;
-    width: 100%; height: 38px;
-    border: none; border-radius: 7px;
-    background: var(--text-body);
-    font: inherit; font-size: 12.5px; font-weight: 500; color: #fff;
-    cursor: pointer;
-    transition: opacity 0.12s ease;
-
-    .material-symbols-outlined { font-size: 15px; transition: transform 0.12s ease; }
-
-    &:hover { opacity: 0.88; }
-    &:hover .material-symbols-outlined { transform: translateX(2px); }
+    &:focus-visible { outline: 2px solid var(--brand); outline-offset: 1px; }
   }
 
   /* ── Admins ─────────────────────────────────────────────────────────────── */
 
   .admin-list {
     min-height: 0; overflow-y: auto;
-    list-style: none; margin: 0; padding: 0 12px;
+    list-style: none; margin: 0; padding: 10px 12px;
   }
 
   .admin {
@@ -582,27 +554,39 @@
   }
 
   .admin-invite {
-    display: flex; align-items: center;
-    margin: 8px var(--pad) 16px;
-    border-bottom: 1px solid var(--line);
-    transition: border-color 0.12s ease;
+    display: flex; align-items: center; gap: 8px;
+    margin: 4px var(--pad) 24px;
+    padding: 0 4px 0 10px;
+    border: 1px solid var(--line); border-radius: 8px;
+    background: var(--surface);
+    color: var(--text-faint);
+    transition: border-color 0.12s ease, box-shadow 0.12s ease;
+
+    > .material-symbols-outlined { font-size: 17px; }
 
     input {
-      flex: 1; min-width: 0; height: 34px; padding: 0;
+      flex: 1; min-width: 0; height: 36px; padding: 0;
       border: none; background: none; outline: none;
       font: inherit; font-size: 12.5px; color: var(--text-body);
       &::placeholder { color: var(--text-faint); }
     }
 
     button {
-      padding: 0 4px;
-      border: none; background: none;
-      font: inherit; font-size: 12px; font-weight: 600; color: var(--text-faint);
+      height: 28px; padding: 0 12px;
+      border: none; border-radius: 6px;
+      background: var(--text-body);
+      font: inherit; font-size: 12px; font-weight: 500; color: #fff;
       cursor: pointer;
+      opacity: 0.25;
+      transition: opacity 0.12s ease;
     }
 
-    &:focus-within { border-color: var(--text-body); }
-    &:focus-within button { color: var(--text-body); }
+    &:focus-within {
+      border-color: var(--text-body);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--text-body) 8%, transparent);
+    }
+
+    &:has(input:valid) button { opacity: 1; }
   }
 
   /* ── Motion ─────────────────────────────────────────────────────────────── */
@@ -613,16 +597,3 @@
 }
 
 @keyframes managed-fade { from { opacity: 0; } }
-
-@keyframes tenant-flag-pulse {
-  0% {
-    box-shadow:
-      inset 0 0 0 1px color-mix(in srgb, var(--flag) 40%, transparent),
-      0 0 0 0 color-mix(in srgb, var(--flag) 45%, transparent);
-  }
-  70%, 100% {
-    box-shadow:
-      inset 0 0 0 1px color-mix(in srgb, var(--flag) 40%, transparent),
-      0 0 0 7px transparent;
-  }
-}

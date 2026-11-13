@@ -127,11 +127,7 @@
         <p id="managed-user"></p>
       </div>
 
-      <dl class="managed-stats">
-        <div><dt>Accounts</dt><dd id="managed-stat-accounts">—</dd></div>
-        <div><dt>Dots</dt><dd id="managed-stat-dots">—</dd></div>
-        <div><dt>Assets</dt><dd id="managed-stat-assets">—</dd></div>
-      </dl>
+      <p class="managed-totals" id="managed-totals"></p>
     </header>
 
     <div class="managed-body">
@@ -141,10 +137,10 @@
           <input id="managed-search" type="text" placeholder="Find or create an account" spellcheck="false" autocomplete="off">
           <kbd>/</kbd>
         </label>
-        <ul class="managed-accounts" id="managed-accounts"></ul>
+        <div class="managed-lanes" id="managed-accounts"></div>
       </div>
 
-      <aside class="managed-detail" id="managed-detail"></aside>
+      <aside class="managed-detail" id="managed-detail" hidden></aside>
     </div>
   </site-rollup>
 

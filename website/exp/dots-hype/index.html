@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" data-surface="web">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clear the air with something real | Dots</title>
+<meta name="description" content="Overwhelmed by cyber hype and hyper swarms? Clear the air with something real. Your Dot protects one thing and tells you plainly what’s going on. 99¢ a month.">
+<!-- A campaign experiment (2026-10-28): unlinked, shared by link only. Built by site-build/pages/build_dot_campaigns.py -->
+<meta name="robots" content="noindex">
+<meta property="og:title" content="Clear the air with something real | Dots" />
+<meta property="og:description" content="Overwhelmed by cyber hype and hyper swarms? Clear the air with something real. Your Dot protects one thing and tells you plainly what’s going on. 99¢ a month." />
+<meta property="og:url" content="https://unmanned.team/exp/dots-hype/" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Unmanned" />
+<meta property="og:image" content="https://unmanned.team/exp/dots-hype/static/og.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="Dots by Unmanned: Clear the air with something real" />
+<meta name="twitter:card" content="summary_large_image" />
+<link rel="icon" type="image/png" href="https://cdn.unmanned.team/img/logo.png">
+<link rel="apple-touch-icon" href="https://cdn.unmanned.team/img/logo.png">
+<!-- shared:head --><link rel="preload" href="../../static/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="https://cdn.unmanned.team/pulse/v1/pulse-tokens.css">
+<link rel="stylesheet" href="https://cdn.unmanned.team/pulse/v1/pulse-icons.css">
+<link rel="stylesheet" href="https://cdn.unmanned.team/pulse/v1/pulse-components.css">
+<script src="https://cdn.unmanned.team/pulse/v1/pulse.js" defer></script>
+<link rel="stylesheet" href="../../static/site.css"><!-- /shared:head -->
+<style>
+  /* Dots campaign page. Shared pieces first (header, hero frame, stage, the four sections), then this page's hero. */
+  :root{--d-purple:#b811de;--d-green:#029266;--accent-text:#d10176;--d-faint:#faf9f6;--success:#057c56;--line-strong:#8a8a8e;--anton:'Anton',Impact,sans-serif;}
+  h1,h2,h3,h4{text-wrap:balance;} p,li{text-wrap:pretty;}
+  h1,h2,h3,h4,p{margin:0;}
+  img{display:block;}
+  .wrap{width:min(1100px,calc(100% - 2 * var(--gutter)));margin:0 auto;}
+  a:focus-visible,button:focus-visible,summary:focus-visible{outline:1.5px solid var(--color-accent-default);outline-offset:4px;}
+  @media (max-width:700px){:root{--gutter:16px;}}
+
+  /* ---------- CLASSIFICATION BAR + HEADER (as /dots/) ---------- */
+  .classbar{
+    position:fixed;top:0;left:0;right:0;z-index:60;background:var(--color-surface-contrast);color:var(--color-neutral-300);
+    font-size:9.5px;line-height:1.5;letter-spacing:0.16em;text-transform:uppercase;text-align:center;padding:6px 0;
+    transition:transform 0.4s cubic-bezier(0.49,0.025,0.685,1), opacity 0.4s cubic-bezier(0.49,0.025,0.685,1);
+  }
+  html.header-hidden .classbar{transform:translateY(-100%);opacity:0;}
+  @media (max-width:700px){ :root{--classbar-h:24px;} .classbar{font-size:8px;} }
+  .site-header{background:var(--color-surface-page);border-bottom:1px solid var(--color-border-default);}
+  .dots-brand{display:flex;align-items:center;gap:16px;text-decoration:none;color:var(--color-text-primary);}
+  .dots-word{font-size:32px;font-weight:900;line-height:26px;letter-spacing:0.01em;}
+  .dots-brand img{width:26px;height:26px;}
+  @media (max-width:700px){ .site-header .dots-nav{display:flex;} }
+  @media (max-width:560px){ .dots-word{font-size:28px;} .dots-brand{gap:12px;} }
+  @media (max-width:400px){ .dots-brand .brand-tag{display:none;} }
+
+  /* ---------- SHARED BITS ---------- */
+  .eyebrow{font-family:var(--font-mono);font-size:12px;line-height:16px;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent-text);}
+  .pill{display:inline-flex;align-items:center;justify-content:center;height:52px;padding:0 28px;border-radius:999px;background:var(--color-accent-default);color:#fff;font-size:18px;font-weight:600;line-height:28px;text-decoration:none;white-space:nowrap;transition:background-color 0.2s ease;}
+  .pill:hover{background:var(--color-accent-hover);}
+  /* The sections below the hero use the design system's text styles (Figma 2273:23869, 2026-10-29):
+     section heading 48/56, subsection 32/40, body/lg 18/28, body/md 16/24, label 18/28 and 16/24 medium. */
+  .section{padding:96px 0;scroll-margin-top:110px;}
+  .section--subtle{background:var(--d-faint);}
+  .section--gray{background:var(--color-surface-subtle);}
+  .head{display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center;max-width:920px;margin:0 auto 56px;}
+  .head h2,.trust h2,.price-head h2{font-size:clamp(34px,4.2vw,48px);line-height:1.1667;font-weight:800;letter-spacing:-0.015em;color:var(--color-text-primary);}
+  .head h3{font-size:clamp(34px * 32 / 48,4.2vw * 32 / 48,32px);line-height:1.25;font-weight:600;letter-spacing:-0.01em;color:var(--color-text-primary);margin-top:8px;}
+  .head p:not(.eyebrow){max-width:774px;margin-top:8px;font-size:18px;line-height:28px;color:var(--color-text-secondary);}
+  .head p.kicker{max-width:none;margin:0 0 -4px;font-size:clamp(20px,2.2vw,24px);line-height:1.3;font-weight:600;letter-spacing:-0.01em;color:var(--color-text-secondary);}   /* a lead-in question above the headline */
+  .check{flex-shrink:0;width:20px;height:20px;margin-top:2px;background:var(--success);
+    -webkit-mask:url(../../static/icon-check.svg) center/contain no-repeat;mask:url(../../static/icon-check.svg) center/contain no-repeat;}
+  .check--lg{width:24px;height:24px;margin-top:0;}
+  /* links: label/lg (18/28) and label/md (16/24), accent text, a Phosphor icon */
+  .link{display:inline-flex;align-items:center;gap:8px;font-size:18px;line-height:28px;font-weight:500;color:var(--accent-text);text-decoration:none;cursor:pointer;}
+  .link:hover{text-decoration:underline;text-underline-offset:3px;}
+  .link--md{gap:6px;font-size:16px;line-height:24px;}
+  .link .icon{flex-shrink:0;width:20px;height:20px;background:currentColor;-webkit-mask:var(--icon) center/contain no-repeat;mask:var(--icon) center/contain no-repeat;}
+  .link--md .icon{width:16px;height:16px;}
+  .ask{display:flex;flex-wrap:wrap;align-items:center;gap:4px 24px;font-size:18px;line-height:28px;color:var(--color-text-secondary);}
+
+  /* ---------- SECTION NAV (as How VEX works): sticks under the site header, rises when the header hides ---------- */
+  .hw-nav{position:sticky;top:calc(var(--classbar-h) + var(--header-h, 61px));z-index:40;display:flex;flex-direction:column;align-items:center;gap:8px;padding-top:16px;background:#fff;
+    border-top:1px solid var(--color-border-default);border-bottom:1px solid var(--color-border-default);box-shadow:0 2px 6px rgba(11,12,13,0.06),0 1px 2px rgba(11,12,13,0.06);transition:top 0.3s cubic-bezier(0.4,0,0.2,1);}
+  html.header-hidden .hw-nav{top:0;}
+  .hw-tabs{display:flex;max-width:100%;overflow-x:auto;scrollbar-width:none;}
+  .hw-tabs::-webkit-scrollbar{display:none;}
+  .hw-tabs a{flex-shrink:0;padding:0 16px 16px;border-bottom:2px solid transparent;font-size:14px;line-height:1.5;color:#8a8a8e;text-decoration:none;white-space:nowrap;transition:color 0.2s ease, border-color 0.2s ease;}
+  .hw-tabs a:hover{color:var(--color-text-primary);}
+  .hw-tabs a[aria-current="true"]{border-bottom-color:var(--color-accent-default);color:var(--color-text-primary);font-weight:600;}
+
+  /* ---------- HERO FRAME ----------
+     Each hero sets its own colors. The art is a .stage: a crop of the concept's 1440x820 scene, scaled to fit. */
+  .hero{position:relative;overflow:hidden;}
+  .hero-grid{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:48px;align-items:center;padding:clamp(48px,7vw,96px) 0;}
+  .hero-copy{position:relative;z-index:2;display:flex;flex-direction:column;align-items:flex-start;gap:24px;}
+  .hero-center{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center;padding-top:clamp(48px,7vw,88px);}
+  .hero h1{font-size:clamp(40px,6vw,70px);line-height:1.04;font-weight:800;letter-spacing:-0.025em;}
+  .hero-lede{max-width:540px;font-size:20px;line-height:30px;}
+  .hero-cta{display:flex;flex-wrap:wrap;align-items:center;gap:12px 28px;margin-top:8px;}
+  .hero-center .hero-cta{justify-content:center;}
+  /* every hero's main button: Buy a Dot for 99¢, to the price card first; the card's own button, Get your Dot, goes to checkout (Chad, 2026-10-30) */
+  .down-link{display:inline-flex;align-items:center;gap:6px;min-height:44px;font-size:16px;font-weight:500;color:inherit;text-decoration:none;}
+  .down-link::after{content:'';width:16px;height:16px;background:currentColor;
+    -webkit-mask:url(../../static/icon-arrow-down.svg) center/contain no-repeat;mask:url(../../static/icon-arrow-down.svg) center/contain no-repeat;}
+  .down-link:hover{text-decoration:underline;text-underline-offset:3px;}
+  /* two lines that trade places in the same spot (no layout shift) */
+  .swap{display:grid;}
+  .swap > *{grid-area:1/1;transition:opacity 0.5s ease;}
+  .swap > :last-child{opacity:0;}
+  .swap.is-b > :first-child{opacity:0;}
+  .swap.is-b > :last-child{opacity:1;}
+  .stage-fit{position:relative;width:100%;aspect-ratio:var(--w) / var(--h);}
+  .stage{position:absolute;left:0;top:0;transform-origin:0 0;}
+  .stage--clip{overflow:hidden;}
+  .world{position:absolute;left:calc(var(--ox) * -1px);top:calc(var(--oy) * -1px);width:1440px;height:820px;}
+  .world > span,.world > div{position:absolute;}
+  .dot{display:block;overflow:visible;}
+  .replay{position:absolute;right:24px;bottom:20px;z-index:6;display:flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;background:transparent;border:1px solid;border-radius:2px;font-family:var(--font-mono);font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:inherit;cursor:pointer;}
+  .replay svg{width:14px;height:14px;}
+
+  /* ---------- HOW IT WORKS ---------- */
+  .story{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:32px;}
+  .story li{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;}
+  .story svg{width:100%;max-width:248px;height:auto;margin-bottom:16px;}
+  .story b{font-size:18px;line-height:28px;font-weight:600;color:var(--color-text-primary);}
+  .story p{font-size:16px;line-height:24px;color:var(--color-text-secondary);max-width:240px;}
+  /* everything your Dot does: always open; each line tagged with what the Dot does about it, colored like the cards' Dots */
+  .does{max-width:640px;margin:64px auto 0;}
+  .does h3{margin-bottom:8px;text-align:center;font-size:18px;line-height:28px;font-weight:600;color:var(--color-text-primary);}
+  .does ul{list-style:none;margin:0;padding:0;}
+  .does li{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:16px;padding:16px 0;border-bottom:1px solid var(--color-border-default);font-size:16px;line-height:24px;color:var(--color-text-primary);text-align:left;}
+  .tag{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:11px;line-height:16px;letter-spacing:0.08em;text-transform:uppercase;white-space:nowrap;color:var(--color-text-tertiary);}
+  .tag::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--tag);}
+  .does-more{display:flex;margin:16px auto 0;padding:0;background:none;border:0;font-family:inherit;}
+  .does-more[aria-expanded="true"] .icon{transform:rotate(180deg);}
+  .does-more[hidden]{display:none;}
+  @media (min-width:701px){ .does-more{display:none;} }
+  .tag--test{--tag:#1ba8ee;} .tag--fix{--tag:var(--d-green);} .tag--ask{--tag:var(--d-purple);} .tag--tell{--tag:#f7b828;} .tag--person{--tag:var(--color-accent-default);}
+  .report{max-width:720px;margin:56px auto 0;text-align:center;font-size:18px;line-height:28px;color:var(--color-text-secondary);}
+
+  /* ---------- TRUST ---------- */
+  .trust{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:64px;align-items:center;}
+  .trust-copy{display:flex;flex-direction:column;align-items:flex-start;gap:24px;}
+  .trust-copy .eyebrow,.price-head .eyebrow{margin-bottom:-8px;}
+  .trust-copy > p:not(.eyebrow){font-size:18px;line-height:28px;color:var(--color-text-secondary);}
+  .trust-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;border-top:1px solid var(--color-border-default);}
+  .trust-list li{display:flex;gap:16px;padding:20px 0;border-bottom:1px solid var(--color-border-default);}
+  .trust-list b{display:block;font-size:16px;line-height:24px;font-weight:600;color:var(--color-text-primary);}
+  .trust-list span{font-size:16px;line-height:24px;color:var(--color-text-secondary);}
+
+  /* ---------- PRICE ---------- */
+  .price-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:56px;align-items:center;}
+  .price-card{padding:40px;background:var(--color-surface-page);border:1px solid var(--line-strong);border-radius:2px;box-shadow:4px 4px 0 rgba(11,12,13,0.15);display:flex;flex-direction:column;align-items:center;gap:24px;text-align:center;}
+  .price{display:flex;align-items:center;gap:10px;}
+  .price b{font-size:64px;line-height:68px;font-weight:800;letter-spacing:-0.02em;color:var(--color-text-primary);}
+  .price span{font-size:16px;line-height:24px;color:var(--color-text-secondary);text-align:left;}
+  .incl{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px;text-align:left;align-self:stretch;}
+  .incl li{display:flex;gap:12px;font-size:16px;line-height:24px;color:var(--color-neutral-700);}
+  .price-card .pill{align-self:stretch;height:48px;font-weight:500;}
+  .fine{font-size:12px;line-height:16px;color:var(--color-text-tertiary);}
+  .price-head{display:flex;flex-direction:column;align-items:flex-start;gap:24px;}
+  .price-head p:not(.eyebrow){font-size:18px;line-height:28px;color:var(--color-text-secondary);}
+
+  /* ---------- FAQ ---------- */
+  .faq{max-width:760px;margin:0 auto;border-top:1px solid var(--color-border-default);}
+  .faq details{border-bottom:1px solid var(--color-border-default);}
+  .faq summary{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:22px 0;cursor:pointer;list-style:none;font-size:18px;line-height:28px;font-weight:600;color:var(--color-text-primary);}
+  .faq summary::-webkit-details-marker{display:none;}
+  .faq summary::after{content:'';flex-shrink:0;width:14px;height:14px;background:linear-gradient(var(--accent-text),var(--accent-text)) center/14px 2px no-repeat,linear-gradient(var(--accent-text),var(--accent-text)) center/2px 14px no-repeat;transition:transform 0.2s ease;}
+  .faq details[open] summary::after{transform:rotate(45deg);}
+  .faq details p{padding:0 32px 24px 0;font-size:16px;line-height:24px;color:var(--color-text-secondary);}
+  .faq a{color:var(--accent-text);}
+  .faq .ext::after{content:'';display:inline-block;width:14px;height:14px;margin-left:4px;vertical-align:-2px;background:currentColor;-webkit-mask:url(../../static/icon-arrow-square-out.svg) center/contain no-repeat;mask:url(../../static/icon-arrow-square-out.svg) center/contain no-repeat;}
+  .faq-ask{justify-content:center;margin-top:56px;text-align:center;}
+
+  /* ---------- BUY BAR (phones) ---------- */
+  .buybar{display:none;}
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width:900px){
+    .hero-grid{grid-template-columns:minmax(0,1fr);gap:32px;}
+    .story{grid-template-columns:repeat(2,minmax(0,1fr));gap:40px 24px;}
+    .trust,.price-row{grid-template-columns:minmax(0,1fr);gap:40px;}
+    /* stacked: eyebrow and headline, then the price card, then the rest of the copy */
+    .price-row{gap:0;}
+    .price-head{display:contents;}
+    .price-head .eyebrow{order:1;margin:0;}
+    .price-head h2{order:2;margin-top:16px;}
+    .price-row .price-card{order:3;margin-top:28px;}
+    .price-head p:not(.eyebrow):not(.ask){order:4;margin-top:28px;}
+    .price-head .ask{order:5;margin-top:12px;}
+  }
+  @media (max-width:700px){
+    .section{padding:64px 0;}
+    .head{margin-bottom:40px;}
+    .head p:not(.eyebrow),.hero-lede,.trust-copy > p:not(.eyebrow),.price-head p:not(.eyebrow),.report{font-size:17px;line-height:26px;}
+    .head p.kicker{font-size:20px;line-height:26px;}
+    /* phones read one way: section heads and copy left-aligned; the cards (tiles) and the price card stay centered */
+    .head{align-items:flex-start;margin-left:0;text-align:left;}
+    .does h3,.report{text-align:left;}
+    .report{margin-left:0;}
+    .does-more{margin-left:0;}
+    .faq-ask{align-items:flex-start;text-align:left;}
+    .report,.faq-ask{margin-top:40px;}
+    .does{margin-top:48px;}
+    /* phones keep two cards per row: smaller drawings and text, about 40% shorter */
+    .story{gap:32px 16px;}
+    .story svg{margin-bottom:10px;}
+    .story b{font-size:16px;line-height:22px;}
+    .story p{font-size:14px;line-height:20px;}
+    .does li{gap:12px;padding:14px 0;}
+    .does.is-short li:nth-child(n+4){display:none;}
+    .ask{font-size:17px;line-height:26px;}
+    /* the FAQ's closing line: smaller than the questions, its link on its own line */
+    .faq-ask{flex-direction:column;gap:4px;font-size:16px;line-height:24px;}
+    .faq-ask .link{font-size:16px;line-height:24px;}
+    .hw-tabs{padding:0 8px;}
+    .price-card{padding:32px 20px;}
+    .price b{font-size:56px;line-height:60px;}
+    .faq summary{padding:18px 0;font-size:16px;line-height:24px;}   /* questions a step under the 17px ledes; they scan faster */
+    .replay{right:16px;bottom:12px;}
+    .hero .down-link{display:none;}   /* phones don't need the nudge to scroll (Chad, 2026-10-29) */
+    .hero .pill{height:44px;padding:0 22px;font-size:16px;}   /* the medium button on phones; 44 keeps a comfortable tap */
+    .buybar{display:block;position:fixed;left:0;right:0;bottom:0;z-index:50;padding:10px var(--gutter) calc(10px + env(safe-area-inset-bottom));
+      background:rgba(255,255,255,0.94);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-top:1px solid var(--color-border-default);box-shadow:0 -2px 8px rgba(11,12,13,0.06);
+      transform:translateY(100%);visibility:hidden;transition:transform 0.3s ease,visibility 0s linear 0.3s;}
+    .buybar.is-on{transform:none;visibility:visible;transition:transform 0.3s ease;}
+    .buybar .pill{width:100%;height:44px;font-size:16px;}
+    body{padding-bottom:calc(64px + env(safe-area-inset-bottom));}   /* so the bar never covers the footer */
+  }
+  @media (max-width:480px){
+    /* small phones: the tag goes under its line */
+    .does li{grid-template-columns:auto minmax(0,1fr);row-gap:4px;}
+    .does .tag{grid-column:2;}
+    .hero-cta{align-self:stretch;}   /* the row spans the column, so the button can */
+    .hero-cta .pill{width:100%;}
+    .hero-copy{gap:18px;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .classbar,.site-top .site-header,.pill,.faq summary::after,.swap > *,.hw-nav,.hw-tabs a,.buybar,.buybar.is-on{transition:none;}
+  }
+
+  /* ==================== THIS PAGE’S HERO ==================== */
+  /* 11 · Hype (2026-11-13, Chad and David). The industry's claims pile up around the Dot in one loud poster font (Anton),
+     each arriving in pink, blue or warm gray and settling to ink, until the screen is a wall of black type. A rest; the Dot
+     squeezes its eyes shut, breathes in and lets go: two ripples in the Dots' colors roll through the grid, the first one
+     breaking every claim it touches into square pixels. White space, the Dot smiles, the copy comes in. After it, grid dots
+     near the pointer light up and fade (fine pointers only). Their words (bent), never a name, logo or look.
+     Research: site-worklists/claims-campaign.md. The two-look draft (ad shapes, headline switch) is in hype-versions/.
+     Plays once; reduced motion and no JS show the end frame. */
+  .hyp{position:relative;background:#fff;color:var(--color-text-primary);}
+  .hyp-fx,.hyp-wall{position:absolute;inset:0;pointer-events:none;}
+  .hyp-fx{z-index:0;width:100%;height:100%;}
+  .hyp-wall{z-index:1;overflow:hidden;}
+  .hyp-center{position:relative;z-index:2;min-height:calc(100svh - var(--classbar-h) - var(--header-h, 61px));justify-content:center;padding:clamp(40px,6vw,72px) 0;gap:24px;}
+  .hyp-me{width:120px;height:125px;transform-origin:50% 90%;}
+  .hyp-me .dot{display:block;width:100%;height:100%;}
+  .hyp-copy{display:flex;flex-direction:column;align-items:center;gap:16px;}
+  .hyp .eyebrow{color:var(--color-text-tertiary);}
+  .hyp.hero h1{max-width:900px;font-size:clamp(38px,5.2vw,64px);line-height:1.06;}
+  @media (min-width:1000px){ .hyp.hero h1{max-width:1100px;} }   /* one line on desktop */
+  .hyp .hero-lede{max-width:620px;color:var(--color-text-secondary);}
+  .hyp .hero-cta{margin-top:8px;}
+  .hyp-copy > *{transition:none;}
+  .hyp .replay{border:0;color:var(--color-text-tertiary);visibility:hidden;}
+  .hyp .replay:hover{color:var(--color-text-primary);}
+  .hyp .replay.is-on{visibility:visible;}
+
+  /* the claims, in their own words (bent): Anton (approved for campaign heroes), colored by the script */
+  .hyp-c{position:absolute;left:0;top:0;white-space:nowrap;font-family:var(--anton);font-weight:400;text-transform:uppercase;letter-spacing:0.005em;line-height:0.92;
+    transform-origin:50% 50%;opacity:0;font-size:calc(var(--f,20px) * var(--k,1));}
+
+  @media (max-width:700px){
+    .hyp-center{padding-bottom:80px;}   /* room under the button for Replay */
+    .hyp .replay{right:50%;bottom:16px;transform:translateX(50%);}
+    .hyp-me{width:96px;height:100px;}
+    .hyp.hero h1{font-size:clamp(34px,9.4vw,44px);}
+  }
+</style>
+</head>
+<body>
+
+  <!-- shared:classbar --><div class="classbar">UNMANNED · SIMPLY SECURE</div><!-- /shared:classbar -->
+
+  <!-- shared:header --><div class="site-top">
+    <header class="site-header">
+      <div class="wrap header-inner">
+        <a href="#top" class="dots-brand" aria-label="Dots by Unmanned, back to top">
+          <span class="dots-word">dots</span>
+          <img src="../../dots/static/dots-logo.svg" width="26" height="26" alt="">
+          <span class="brand-tag">By Unmanned</span>
+        </a>
+        <nav class="header-links dots-nav" aria-label="Main">
+          <a class="header-link header-link--cta" href="#price">Buy a Dot <img src="../../static/icon-arrow-right-pink.svg" width="16" height="16" alt=""></a>
+        </nav>
+      </div>
+    </header>
+  </div><!-- /shared:header -->
+
+  <!-- One laptop, drawn once and reused by the story pictures (the /dots/ environment illustrations' style) -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <pattern id="lt-grid" patternUnits="userSpaceOnUse" patternTransform="matrix(28.9433 0 0 28.9433 30.8 7.9)" viewBox="0 0 32 32" width="1" height="1">
+        <line opacity="0.3" x1="16.5" y1="0.5" x2="16.5" y2="31.5" stroke="#8A8A8E" stroke-linecap="round" stroke-dasharray="1 5"/>
+        <line opacity="0.3" x1="0.5" y1="15.5" x2="31.5" y2="15.5" stroke="#8A8A8E" stroke-linecap="round" stroke-dasharray="1 5"/>
+      </pattern>
+      <filter id="lt-shadow" x="-10%" y="-10%" width="130%" height="130%"><feDropShadow dx="1.8" dy="1.8" stdDeviation="0" flood-color="#0b0c0d" flood-opacity="0.15"/></filter>
+      <symbol id="laptop" viewBox="0 0 248 147">
+        <rect x="0.09" y="139.38" width="247.83" height="7.24" rx="3.62" fill="#F1F1EE"/>
+        <rect x="25.01" y="1.36" width="197.97" height="133.05" rx="2.26" fill="#C4C4C4" stroke="#6C6C70" stroke-width="2.71"/>
+        <rect x="31.25" y="8.35" width="184.51" height="116.26" rx="3.17" fill="#FAF9F6"/>
+        <rect x="31.25" y="8.35" width="184.51" height="116.26" rx="3.17" fill="url(#lt-grid)"/>
+        <rect x="31.25" y="8.35" width="184.51" height="116.26" rx="3.17" stroke="#8A8A8E" stroke-width="0.9"/>
+        <rect x="0.05" y="135.77" width="247.91" height="7.24" rx="3.62" fill="#8A8A8E"/>
+        <rect x="105.87" y="137.69" width="36.18" height="3.62" rx="1.81" fill="#6C6C70"/>
+      </symbol>
+      <symbol id="window" viewBox="0 0 120 84">
+        <rect x="0.25" y="0.25" width="119.5" height="83.5" rx="3.37" fill="#fff" stroke="#8A8A8E" stroke-width="0.5"/>
+        <circle cx="5" cy="5" r="1.5" fill="#D9D9D9"/>
+        <line x1="0" y1="10" x2="120" y2="10" stroke="#8A8A8E" stroke-width="0.5"/>
+        <line x1="22" y1="24" x2="84" y2="24" stroke="#8A8A8E" stroke-width="1.8"/>
+        <line x1="22" y1="40" x2="96" y2="40" stroke="#8A8A8E" stroke-width="1.8"/>
+        <line x1="22" y1="56" x2="74" y2="56" stroke="#8A8A8E" stroke-width="1.8"/>
+        <line x1="22" y1="72" x2="90" y2="72" stroke="#8A8A8E" stroke-width="1.8"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <main>
+    <!-- ============================== HERO: Hype ============================== -->
+    <section class="hero hyp" id="hyp" aria-labelledby="hero-title">
+      <canvas class="hyp-fx" id="hyp-fx" aria-hidden="true"></canvas>
+      <div class="hyp-wall" id="hyp-wall" aria-hidden="true"></div>
+      <div class="wrap hero-center hyp-center">
+        <div class="hyp-me" id="hyp-me"><svg class="dot" id="hyp-dot" data-dot='{"mood":"smug","floor":false}'></svg></div>
+        <div class="hyp-copy" id="hyp-copy">
+          <p class="eyebrow">Don’t believe the hype</p>
+          <h1 id="hero-title">Clear the air with something real.</h1>
+          <p class="hero-lede" id="hyp-lede">Your Dot protects one thing and tells you plainly what’s going on.</p>
+          <div class="hero-cta">
+            <a class="pill" href="#price">Buy a Dot for 99¢</a>
+            <a class="down-link" href="#how">What’s a Dot?</a>
+          </div>
+        </div>
+      </div>
+      <button class="replay" id="hyp-replay" type="button" aria-label="Replay the animation"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>Replay</button>
+    </section>
+
+    <!-- Section nav: the same piece as How VEX works -->
+    <nav class="hw-nav" aria-label="On this page">
+      <div class="hw-tabs"><a href="#how">Meet your Dot</a><a href="#trust">Who’s behind your Dot</a><a href="#price">Pricing</a><a href="#faq">Questions</a></div>
+    </nav>
+
+    <!-- ============================== MEET YOUR DOT (shared) ==============================
+         Rebuilt 2026-10-30 around the three buying answers (what it fixes, what it asks about, what happens when it
+         can't fix something) plus the controlled test. DRAFT CLAIMS, to confirm with the team: which tests a Dot runs,
+         what it fixes on its own vs. asks about, how it tells you. The version before this is build_dot_campaigns.v1.py. -->
+    <section class="section" id="how" aria-labelledby="how-title">
+      <div class="wrap">
+        <div class="head">
+          <p class="eyebrow">Meet your Dot</p>
+          <p class="kicker">What is a Dot?</p>   <!-- the bridge from the heroes' claims to the real answer -->
+          <h2 id="how-title">Your security stack, tested from the inside.</h2>
+          <p>A Dot is a lightweight program on one endpoint. It runs safe, attacker-style tests against the controls you already pay for, fixes routine gaps on its own and reports to VEX, our AI SOC. No heavyweight agent and no console to watch.</p>
+        </div>
+        <ol class="story">
+          <li>
+            <svg width="248" height="147" viewBox="0 0 248 147" fill="none" aria-hidden="true">
+              <use href="#laptop"/>
+              <!-- your Dot sends a harmless test at the shield; the shield stops it -->
+              <circle cx="58" cy="66" r="11" fill="#1BA8EE" filter="url(#lt-shadow)"/>
+              <line x1="72" y1="66" x2="92" y2="66" stroke="#1BA8EE" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="2 4"/>
+              <rect x="94" y="62" width="8" height="8" transform="rotate(45 98 66)" fill="#E5484D"/>
+              <line x1="104" y1="56" x2="100" y2="52" stroke="#E5484D" stroke-width="1.5" stroke-linecap="round"/>
+              <line x1="104" y1="76" x2="100" y2="80" stroke="#E5484D" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M134 36l24 8v20c0 16-10 26-24 31-14-5-24-15-24-31V44l24-8z" fill="#fff" stroke="#8A8A8E" stroke-width="1.5" stroke-linejoin="round" filter="url(#lt-shadow)"/>
+              <path d="M134 44l16 5.5V64c0 10.5-6.5 17.5-16 21-9.5-3.5-16-10.5-16-21V49.5l16-5.5z" fill="#F1F1EE"/>
+              <circle cx="158" cy="40" r="9" fill="#029266"/>
+              <path d="M154 40.5l3 3 5.5-5.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <b>Validates your controls</b>
+            <p>A safe, controlled test shows whether your EDR and antivirus actually block a threat, not just whether they’re running.</p>
+          </li>
+          <li>
+            <svg width="248" height="147" viewBox="0 0 248 147" fill="none" aria-hidden="true">
+              <use href="#laptop"/>
+              <use href="#window" x="54" y="22" width="120" height="84" filter="url(#lt-shadow)"/>
+              <circle cx="66" cy="46" r="4" fill="#029266"/>
+              <circle cx="66" cy="62" r="4" fill="#029266"/>
+              <circle cx="66" cy="78" r="4" fill="#029266"/>
+              <circle cx="66" cy="94" r="4" fill="#029266"/>
+              <circle cx="190" cy="78" r="11" fill="#029266" filter="url(#lt-shadow)"/>
+              <path d="M185 78.5l3.5 3.5 7-7" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <b>Remediates the routine</b>
+            <p>Missing patches and insecure settings are fixed automatically.</p>
+          </li>
+          <li>
+            <svg width="248" height="147" viewBox="0 0 248 147" fill="none" aria-hidden="true">
+              <use href="#laptop"/>
+              <!-- a small "allow this change?" prompt, waiting on you -->
+              <g filter="url(#lt-shadow)">
+                <rect x="52" y="30" width="114" height="72" rx="3.37" fill="#fff" stroke="#8A8A8E" stroke-width="0.5"/>
+                <line x1="52" y1="40" x2="166" y2="40" stroke="#8A8A8E" stroke-width="0.5"/>
+              </g>
+              <circle cx="57" cy="35" r="1.5" fill="#D9D9D9"/>
+              <line x1="64" y1="54" x2="140" y2="54" stroke="#0B0C0D" stroke-width="1.8"/>
+              <line x1="64" y1="64" x2="124" y2="64" stroke="#8A8A8E" stroke-width="1.8"/>
+              <rect x="64" y="76" width="40" height="14" rx="7" fill="#E01280"/>
+              <rect x="110" y="76.5" width="44" height="13" rx="6.5" fill="#fff" stroke="#8A8A8E"/>
+              <circle cx="192" cy="66" r="11" fill="#B811DE" filter="url(#lt-shadow)"/>
+              <line x1="178" y1="66" x2="168" y2="66" stroke="#B811DE" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="2 4"/>
+            </svg>
+            <b>Approval for the rest</b>
+            <p>Changes that could affect users wait for a person to approve them.</p>
+          </li>
+          <li>
+            <svg width="248" height="147" viewBox="0 0 248 147" fill="none" aria-hidden="true">
+              <use href="#laptop"/>
+              <!-- a plain note for you, and a person to help -->
+              <g filter="url(#lt-shadow)">
+                <rect x="48" y="24" width="104" height="80" rx="3.37" fill="#fff" stroke="#8A8A8E" stroke-width="0.5"/>
+                <line x1="48" y1="34" x2="152" y2="34" stroke="#8A8A8E" stroke-width="0.5"/>
+              </g>
+              <circle cx="53" cy="29" r="1.5" fill="#D9D9D9"/>
+              <circle cx="66" cy="51" r="7" fill="#F7B828" filter="url(#lt-shadow)"/>   <!-- your Dot, writing the note -->
+              <line x1="80" y1="51" x2="132" y2="51" stroke="#0B0C0D" stroke-width="1.8"/>
+              <line x1="62" y1="66" x2="138" y2="66" stroke="#8A8A8E" stroke-width="1.8"/>
+              <line x1="62" y1="78" x2="130" y2="78" stroke="#8A8A8E" stroke-width="1.8"/>
+              <line x1="62" y1="90" x2="112" y2="90" stroke="#8A8A8E" stroke-width="1.8"/>
+              <circle cx="182" cy="74" r="18" fill="#fff" stroke="#8A8A8E" stroke-width="1.5" filter="url(#lt-shadow)"/>
+              <circle cx="182" cy="69" r="5.5" stroke="#0B0C0D" stroke-width="1.6"/>
+              <path d="M172 86c2-5 5.6-7.5 10-7.5s8 2.5 10 7.5" stroke="#0B0C0D" stroke-width="1.6" stroke-linecap="round"/>
+            </svg>
+            <b>Escalates with context</b>
+            <p>What it can’t fix goes to VEX and our security team, findings attached.</p>
+          </li>
+        </ol>
+        <div class="does">
+          <h3>Everything your Dot does</h3>
+          <ul>
+            <li><span class="check check--lg" aria-hidden="true"></span><span>Flags suspicious AI agent behavior</span><span class="tag tag--tell">Alerts</span></li>
+            <li><span class="check check--lg" aria-hidden="true"></span><span>Validates that your EDR and antivirus block a real threat</span><span class="tag tag--test">Validates</span></li>
+            <li><span class="check check--lg" aria-hidden="true"></span><span>Deploys missing security patches</span><span class="tag tag--fix">Remediates</span></li>
+            <li><span class="check check--lg" aria-hidden="true"></span><span>Enforces baseline security settings</span><span class="tag tag--fix">Remediates</span></li>
+            <li><span class="check check--lg" aria-hidden="true"></span><span>Audits browser extensions</span><span class="tag tag--ask">Approval</span></li>
+            <li><span class="check check--lg" aria-hidden="true"></span><span>Keeps an activity record for investigations</span><span class="tag tag--tell">Logs</span></li>
+            <li><span class="check check--lg" aria-hidden="true"></span><span>Escalates to our security team</span><span class="tag tag--person">Escalates</span></li>
+          </ul>
+          <!-- phones show the first three; the rest are a tap away (without JS everything shows and this stays hidden) -->
+          <button class="link link--md does-more" type="button" aria-expanded="false" hidden><span>Show 4 more</span><span class="icon" style="--icon:url(../../static/icon-chevron-down.svg)" aria-hidden="true"></span></button>
+        </div>
+        <p class="report">Every month you get a report your team can act on: what was tested, what was remediated and what needs a decision.</p>
+      </div>
+    </section>
+
+    <!-- ============================== TRUST (shared) ============================== -->
+    <section class="section section--subtle" id="trust" aria-labelledby="trust-title">
+      <div class="wrap trust">
+        <div class="trust-copy">
+          <p class="eyebrow">Who’s behind your Dot</p>
+          <h2 id="trust-title">Made by people who stop attackers for a living.</h2>
+          <p>Dots come from Unmanned, the team behind VEX. Our people come from MITRE, Mandiant, U.S. intelligence agencies and the Department of Defense.</p>
+          <a class="link link--md" href="/team/" target="_blank" rel="noopener">Meet the team<span class="icon" style="--icon:url(../../static/icon-arrow-square-out.svg)" aria-hidden="true"></span><span class="visually-hidden"> (opens in a new tab)</span></a>
+        </div>
+        <ul class="trust-list">
+          <!-- about the team, from the facts on /team/ (2026-10-29) -->
+          <li><span class="check" aria-hidden="true"></span><div><b>We think like attackers</b><span>Our team has found zero-days and built offensive tools, so we know where attackers look first.</span></div></li>
+          <li><span class="check" aria-hidden="true"></span><div><b>Tools the pros use</b><span>Our founder led development of MITRE’s CALDERA, an open-source tool security teams use to test their defenses.</span></div></li>
+          <li><span class="check" aria-hidden="true"></span><div><b>Defending businesses every day</b><span>The same team runs VEX, the AI SOC that looks after our business customers.</span></div></li>
+          <li><span class="check" aria-hidden="true"></span><div><b>Built and supported in the U.S.</b><span>The people who build your Dot are the people who help you.</span></div></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============================== PRICE (shared) ============================== -->
+    <section class="section" id="price" aria-labelledby="price-title">
+      <div class="wrap price-row">
+        <div class="price-card">
+          <div class="price"><b>99¢</b><span>a month<br>per endpoint</span></div>
+          <ul class="incl">
+            <li><span class="check check--lg" aria-hidden="true"></span>Works on Mac and Windows</li>
+            <li><span class="check check--lg" aria-hidden="true"></span>A monthly report your team can act on</li>
+            <li><span class="check check--lg" aria-hidden="true"></span>Support from our U.S.-based security team</li>
+          </ul>
+          <a class="pill" href="https://buy.stripe.com/cNi7sDalf8ob8ct5CKfQI01?utm_campaign=dots-hype" data-checkout>Get your Dot</a>
+          <p class="fine">Secure checkout with Stripe. Billed yearly at $11.88.</p>
+        </div>
+        <div class="price-head">
+          <p class="eyebrow">Simple pricing</p>
+          <h2 id="price-title">Less than a dollar per endpoint.</h2>
+          <p>No surprise fees and no sales call. Start with one machine. As you add Dots, VEX connects what they find, maps the attack paths between them and coordinates the response.</p>
+          <p class="ask">Rolling out to a team? <a class="link" href="mailto:security@vex.unmanned.team"><span class="icon" style="--icon:url(../../static/icon-envelope.svg)" aria-hidden="true"></span>Send us a message</a></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== FAQ (shared) ============================== -->
+    <section class="section section--gray" id="faq" aria-labelledby="faq-title">
+      <div class="wrap">
+        <div class="head">
+          <p class="eyebrow">Questions</p>
+          <h2 id="faq-title">Questions security teams ask.</h2>
+        </div>
+        <div class="faq">
+          <!-- data and report answers: drafts, confirm with David before launch -->
+          <details>
+            <summary>What data does a Dot collect?</summary>
+            <p>Security state: patch levels, security settings and the results of its own tests. It isn’t there to read files or messages, and we never sell data.</p>
+          </details>
+          <details>
+            <summary>Will it conflict with our EDR?</summary>
+            <p>No. Dots run alongside your EDR and antivirus, and test that they’re doing their job.</p>
+          </details>
+          <details>
+            <summary>What’s the performance impact?</summary>
+            <p>Dots are tiny by design and built to stay out of the way. Most users never notice one is there.</p>
+          </details>
+          <details>
+            <summary>How do Dots relate to VEX?</summary>
+            <p>Every Dot reports to VEX, our AI SOC. One Dot protects one thing; VEX connects what all your Dots find, maps the attack paths between them and coordinates the response. <a href="/how-it-works/" target="_blank" rel="noopener">See how VEX works<span class="visually-hidden"> (opens in a new tab)</span></a>.</p>
+          </details>
+          <details>
+            <summary>How do we deploy it?</summary>
+            <p>After sign-up we email install instructions. Dots run on Mac and Windows and take a couple of minutes per machine.</p>
+          </details>
+          <details>
+            <summary>What’s in the monthly report?</summary>
+            <p>What was tested, what was remediated and what needs a decision, per endpoint.</p>
+          </details>
+          <details>
+            <summary>How does pricing work across many machines?</summary>
+            <p>Each endpoint gets its own Dot at 99¢ a month, billed yearly. Planning a larger rollout? Send us a message.</p>
+          </details>
+          <details>
+            <summary>Can we remove it?</summary>
+            <p>Yes, anytime. Remove it like any other app, or send us a message and we’ll walk you through it.</p>
+          </details>
+          <details>
+            <summary>I’m a security researcher. Can we work together?</summary>
+            <p>We’d love to. For more on how Dots work, <a class="ext" href="https://gounmanned.substack.com/" target="_blank" rel="noopener noreferrer">read our research<span class="visually-hidden"> (opens in a new tab)</span></a>. Then <a href="mailto:go@unmanned.team">let us know</a> what you have in mind.</p>
+          </details>
+        </div>
+        <p class="ask faq-ask">More questions? Ask a person. <a class="link" href="mailto:security@vex.unmanned.team"><span class="icon" style="--icon:url(../../static/icon-envelope.svg)" aria-hidden="true"></span>Send us a message</a></p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- phones: a buy bar that slides up once the hero's button has scrolled away, and steps aside at the price card -->
+  <div class="buybar" id="buybar"><a class="pill" href="#price">Buy a Dot for 99¢</a></div>
+
+  <!-- shared:footer --><footer>
+    <span>© 2026 Unmanned, Inc.</span>
+    <nav class="flinks" aria-label="Company"><a class="fext" href="/privacy/" target="_blank" rel="noopener">Privacy<span class="visually-hidden"> (opens in a new tab)</span></a><span aria-hidden="true">·</span><a class="fext" href="/terms/" target="_blank" rel="noopener">Terms of service<span class="visually-hidden"> (opens in a new tab)</span></a><span aria-hidden="true">·</span><a class="fext" href="/team/" target="_blank" rel="noopener">About us<span class="visually-hidden"> (opens in a new tab)</span></a><span aria-hidden="true">·</span><a class="fext" href="https://gounmanned.substack.com/" target="_blank" rel="noopener noreferrer">Our research</a></nav>
+  </footer><!-- /shared:footer -->
+  <!-- shared:scripts --><script src="../../static/feedback.js" defer></script><!-- /shared:scripts -->
+
+  <script>
+    var PAGE = 'dots-hype';
+    var REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // ---------- Checkout ----------
+    // The button's Stripe Payment Link already carries utm_campaign=<this page> (it works without JS).
+    // Here any utm_source, utm_medium, utm_content and utm_term the visitor arrived with ride along too, plus
+    // client_reference_id (utm_source-utm_medium-utm_campaign, or this page's name), so each Stripe payment shows where it came from.
+    (function(){
+      var q = new URLSearchParams(location.search);
+      var ref = [q.get('utm_source'), q.get('utm_medium'), q.get('utm_campaign') || PAGE].filter(Boolean).join('-').replace(/[^A-Za-z0-9_-]/g, '').slice(0, 200);
+      document.querySelectorAll('[data-checkout]').forEach(function(a){
+        var u = new URL(a.href);
+        ['utm_source', 'utm_medium', 'utm_content', 'utm_term'].forEach(function(k){ if(q.get(k)){ u.searchParams.set(k, q.get(k)); } });
+        u.searchParams.set('client_reference_id', ref);
+        a.href = u.toString();
+      });
+    })();
+
+    // ---------- Header: hides on scroll down (same as the other pages) ----------
+    (function(){
+      var root = document.documentElement, top = document.querySelector('.site-top'), classbar = document.querySelector('.classbar');
+      var lastY = window.scrollY, ticking = false;
+      function update(){
+        ticking = false;
+        var y = window.scrollY, showZone = top.offsetHeight + classbar.offsetHeight;
+        if(y <= showZone){ root.classList.remove('header-hidden'); lastY = y; return; }
+        if(Math.abs(y - lastY) < 6) return;
+        root.classList.toggle('header-hidden', y > lastY);
+        lastY = y;
+      }
+      window.addEventListener('scroll', function(){ if(!ticking){ ticking = true; requestAnimationFrame(update); } }, { passive:true });
+      top.addEventListener('focusin', function(){ root.classList.remove('header-hidden'); });
+    })();
+
+    // ---------- Buy bar (phones): on once the hero's button is scrolled past, off while the price card is on screen ----------
+    (function(){
+      var bar = document.getElementById('buybar'), heroBtn = document.querySelector('.hero .pill'), card = document.querySelector('.price-card');
+      if(!bar || !heroBtn || !card || !window.IntersectionObserver) return;
+      var past = false, atPrice = false;
+      function set(){ bar.classList.toggle('is-on', past && !atPrice); }
+      new IntersectionObserver(function(es){ var e = es[0]; past = !e.isIntersecting && e.boundingClientRect.top < 0; set(); }).observe(heroBtn);
+      new IntersectionObserver(function(es){ atPrice = es[0].isIntersecting; set(); }).observe(card);
+    })();
+
+    // ---------- Everything your Dot does: on phones, the first three and a "Show 4 more" button ----------
+    (function(){
+      var box = document.querySelector('.does'), btn = box && box.querySelector('.does-more');
+      if(!btn) return;
+      var extra = box.querySelectorAll('li').length - 3, label = btn.querySelector('span');
+      box.classList.add('is-short'); btn.hidden = false;
+      btn.addEventListener('click', function(){
+        var open = box.classList.toggle('is-short') === false;
+        btn.setAttribute('aria-expanded', open);
+        label.textContent = open ? 'Show less' : 'Show ' + extra + ' more';
+      });
+    })();
+
+    // ---------- Section nav (as How VEX works): sits under the site header; marks the section you're in ----------
+    (function(){
+      var root = document.documentElement, head = document.querySelector('.site-top');
+      function setHead(){ if(head){ root.style.setProperty('--header-h', head.offsetHeight + 'px'); } }
+      setHead(); window.addEventListener('resize', setHead);
+      var links = [].slice.call(document.querySelectorAll('.hw-tabs a')), strip = document.querySelector('.hw-tabs');
+      var secs = links.map(function(a){ return document.getElementById(a.getAttribute('href').slice(1)); });
+      function mark(){
+        var y = window.innerHeight * 0.35, cur = -1;   // nothing marked while in the hero
+        secs.forEach(function(s, i){ if(s.getBoundingClientRect().top < y){ cur = i; } });
+        links.forEach(function(a, i){
+          var on = i === cur;
+          if(on && a.getAttribute('aria-current') !== 'true'){
+            var l = a.offsetLeft - 16, r = a.offsetLeft + a.offsetWidth + 16;   // keep it in view inside the strip only
+            if(l < strip.scrollLeft){ strip.scrollLeft = l; } else if(r > strip.scrollLeft + strip.clientWidth){ strip.scrollLeft = r - strip.clientWidth; }
+          }
+          if(on){ a.setAttribute('aria-current', 'true'); } else { a.removeAttribute('aria-current'); }
+        });
+      }
+      var t = false;
+      window.addEventListener('scroll', function(){ if(!t){ t = true; requestAnimationFrame(function(){ t = false; mark(); }); } }, { passive:true });
+      mark();
+    })();
+
+    // ---------- Helpers for the hero animations ----------
+    var cl = function(v){ return Math.max(0, Math.min(1, v)); };
+    var lerp = function(a, b, p){ return a + (b - a) * p; };
+    var prog = function(T, a, b){ return cl((T - a) / (b - a)); };
+    var outCubic = function(p){ return 1 - Math.pow(1 - p, 3); };
+    var inOut = function(p){ return p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2; };
+    var $ = function(id){ return document.getElementById(id); };
+
+    // ---------- The Dot ----------
+    // A port of the canvas's Dot: a circle with a darker slice bottom-left, pixel eyes and a pixel mouth.
+    // Drawn in a 100 x 104 box (the last 4 hold the floor shadow). o: color, shade, mood, look, open, pupil, floor, raise.
+    var dotId = 0;
+    function dotMarkup(o, id){
+      var look = o.look || 'center', open = +o.open || 0, mood = o.mood || 'smug';
+      var lx = look.indexOf('left') >= 0 ? -2.6 : look.indexOf('right') >= 0 ? 2.6 : 0;
+      var ly = look.indexOf('up') === 0 ? -5.5 : 0;
+      var W = '#fff', K = '#0b0c0d', P = o.pupil || K, s = '';
+      function f(n){ return Math.round(n * 100) / 100; }
+      // k: how far the brow slants in (a percent of the eye's height); flip for the right eye
+      function r(x, y, w, h, c, k, flip){
+        if(k){
+          var pts = flip ? [x, y + h * k / 100, x + w, y, x + w, y + h, x, y + h] : [x, y, x + w, y + h * k / 100, x + w, y + h, x, y + h];
+          s += '<polygon points="' + pts.map(f).join(' ') + '" fill="' + c + '"/>';
+        } else {
+          s += '<rect x="' + f(x) + '" y="' + f(y) + '" width="' + f(w) + '" height="' + f(h) + '" fill="' + c + '"/>';
+        }
+      }
+      // o.raise ('left' or 'right'): that eye opens taller under a raised brow; the other narrows
+      function eyes(k, py, pw){
+        var rl = o.raise === 'left', rr = o.raise === 'right';
+        r(27.2, rl ? 25.8 : 31.8, 13.6, rl ? 24 : 18, W, rr ? 45 : k, false);
+        r(57.5, rr ? 25.8 : 31.8, 13.6, rr ? 24 : 18, W, rl ? 45 : k, true);
+        if(rl) r(25.4, 17.5, 17.2, 4.5, K, -60, true);   // a pixel brow over the raised eye, tilted up at the outside
+        if(rr) r(55.7, 17.5, 17.2, 4.5, K, -60);
+        var w = pw || 9.1, off = (9.1 - w) / 2;
+        r(29.4 + off + lx, (py || 38.5) + ly, w, w, P);
+        r(59.8 + off + lx, (py || 38.5) + ly, w, w, P);
+      }
+      function openMouth(){
+        var w = 12 + 22 * open, h = 5 + 25 * open, x = 48.3 - w / 2;
+        r(x, 60, w, h, K);
+        if(open > 0.35) r(x + w * 0.2, 60 + h * 0.62, w * 0.6, h * 0.3, '#e5484d');
+      }
+      function smile(){ if(open > 0.02) return openMouth(); r(37, 60.5, 4.5, 4.5, K); r(55.1, 60.5, 4.5, 4.5, K); r(41.5, 65, 13.6, 4.5, K); }
+      function frown(){ if(open > 0.02) return openMouth(); r(41.5, 60.5, 13.6, 4.5, K); r(37, 65, 4.5, 4.5, K); r(55.1, 65, 4.5, 4.5, K); }
+      if(mood === 'smug'){ eyes(13); smile(); }
+      else if(mood === 'happy'){ eyes(0); smile(); }
+      else if(mood === 'angry'){ eyes(36, 40.5); frown(); }
+      else if(mood === 'evil'){ eyes(36, 40.5); r(33, 60.5, 4.5, 4.5, K); r(59.6, 60.5, 4.5, 4.5, K); r(37.5, 65, 22.1, 4.5, K); }
+      else if(mood === 'shocked'){ eyes(0, 40, 6); if(open > 0.02) openMouth(); else r(45, 58, 9, 12, K); }
+      else if(mood === 'flat'){ eyes(13); r(37, 62.5, 22.6, 4.5, K); }   // unimpressed: a straight mouth
+      else if(mood === 'straight'){ eyes(0); r(37, 62.5, 22.6, 4.5, K); }   // a straight face, eyes open
+      else if(mood === 'scrunch'){ eyes(13); r(53, 62.5, 15, 4.5, K); r(68, 67, 4.5, 4.5, K); }   // skeptical: the mouth pushed into one cheek
+      else if(mood === 'chill'){ r(27.2, 42, 13.6, 4.5, K); r(57.5, 42, 13.6, 4.5, K); smile(); }
+      else if(mood === 'squeeze'){   // eyes squeezed shut (> <) and a straight mouth: bracing for something
+        r(28, 33, 4.5, 4.5, K); r(32.5, 37.5, 4.5, 4.5, K); r(37, 42, 4.5, 4.5, K); r(32.5, 46.5, 4.5, 4.5, K); r(28, 51, 4.5, 4.5, K);
+        r(68, 33, 4.5, 4.5, K); r(63.5, 37.5, 4.5, 4.5, K); r(59, 42, 4.5, 4.5, K); r(63.5, 46.5, 4.5, 4.5, K); r(68, 51, 4.5, 4.5, K);
+        r(37, 62.5, 22.6, 4.5, K);
+      }
+      else if(mood === 'shades'){
+        r(22, 33.5, 56, 4.5, K); r(24.5, 33.5, 20, 14, K); r(54.5, 33.5, 20, 14, K);
+        r(27.5, 36.5, 4, 4, W); r(57.5, 36.5, 4, 4, W); smile();
+      }
+      var floor = o.floor === false ? '' : '<ellipse cx="51.5" cy="98" rx="48.5" ry="4.5" fill="rgba(0,0,0,0.09)"/>';
+      return floor + '<clipPath id="' + id + '"><circle cx="50" cy="50" r="50"/></clipPath>' +
+        '<g clip-path="url(#' + id + ')"><circle cx="50" cy="50" r="50" fill="' + (o.shade || '#4499c7') + '"/>' +
+        '<circle cx="52.6" cy="42.7" r="50" fill="' + (o.color || '#5bc0eb') + '"/><g class="dot-face">' + s + '</g></g>';   // the face in its own group, so it can turn
+    }
+    // Turns <svg class="dot" data-dot='{...}'> into a Dot; returns set(changes), which redraws only when something changed
+    function makeDot(svg, base){
+      var o = Object.assign({}, base || JSON.parse(svg.getAttribute('data-dot') || '{}')), key = '', id = 'dotc' + (dotId++);
+      svg.setAttribute('viewBox', '0 0 100 104');
+      svg.setAttribute('aria-hidden', 'true');
+      function set(ch){
+        if(ch) Object.assign(o, ch);
+        var k = JSON.stringify(o);
+        if(k !== key){ key = k; svg.innerHTML = dotMarkup(o, id); }
+      }
+      set();
+      return set;
+    }
+    var dots = {};
+    document.querySelectorAll('svg.dot').forEach(function(svg){ var set = makeDot(svg); if(svg.id) dots[svg.id] = set; });
+
+    // ---------- Stages: scale each scene to its column ----------
+    function fitStages(){
+      document.querySelectorAll('.stage').forEach(function(st){
+        var s = st.parentNode.clientWidth / +st.getAttribute('data-w');
+        st.style.transform = 'scale(' + s + ')';
+        var hero = st.closest('.hero');
+        if(hero && st.hasAttribute('data-main')) hero.style.setProperty('--s', s);
+      });
+    }
+    fitStages();
+    if(window.ResizeObserver){ new ResizeObserver(fitStages).observe(document.body); } else { window.addEventListener('resize', fitStages); }
+
+    // ---------- Scenes: play once when seen (or loop), Replay restarts, reduced motion shows the end ----------
+    function scene(opts){
+      var raf = 0, t0 = null, started = false, visible = false;
+      function tick(now){
+        if(t0 === null) t0 = now;
+        var T = (now - t0) / 1000;
+        if(opts.loop) T = T % opts.loop; else T = Math.min(T, opts.end);
+        opts.frame(T);
+        if((opts.loop && visible) || T < opts.end) raf = requestAnimationFrame(tick);
+      }
+      function play(){ cancelAnimationFrame(raf); t0 = null; raf = requestAnimationFrame(tick); }
+      if(REDUCED){ opts.frame(opts.end); }
+      else {
+        opts.frame(0);
+        new IntersectionObserver(function(es){
+          visible = es[0].isIntersecting;
+          if(visible && (!started || opts.loop)){ started = true; play(); }
+        }, { threshold:0.3 }).observe(opts.root);
+      }
+      if(opts.replay) opts.replay.addEventListener('click', function(){ if(REDUCED) opts.frame(opts.end); else play(); });
+    }
+
+    // ==================== THIS PAGE’S HERO ====================
+    (function(){
+      var hero = document.getElementById('hyp'), wall = document.getElementById('hyp-wall'), cv = document.getElementById('hyp-fx');
+      var me = document.getElementById('hyp-me'), copy = document.getElementById('hyp-copy'), replay = document.getElementById('hyp-replay');
+      var dot = dots['hyp-dot'];
+      var ctx = cv.getContext('2d');
+
+      var INKS = [[209, 1, 118], [68, 153, 199], [138, 134, 124]], INK = [11, 12, 13];   // pink, the Dot's blue, warm gray, then ink
+
+      // the claims: [text, look, size, on phones]. 'COUNTER' is the agent count that keeps climbing.
+      var CLAIMS = [
+        ['Fully autonomous', 'tag', 18, 1], ['Zero false positives', 'banner', 24, 1], ['AI-native', 'tag', 16, 1],
+        ['Stops every breach', 'ad', 26, 1], ['Machine speed', 'toast', 18, 1], ['100% detection', 'big', 78, 1],
+        ['No humans in the loop', 'post', 18, 0], ['Fully agentic', 'banner', 30, 1], ['COUNTER', 'counter', 26, 1],
+        ['Replaces your analysts', 'loud', 22, 1], ['Self-healing', 'tag', 20, 0], ['Largest swarm on record', 'post', 20, 1],
+        ['Fight AI with AI', 'ad', 22, 0], ['Lights-out security', 'purple', 20, 0], ['Military-grade', 'tag', 18, 0],
+        ['One platform for everything', 'purple', 24, 1], ['Hyper swarm', 'loud', 34, 1], ['Quantum-ready', 'toast', 16, 0],
+        ['Secure the unknown', 'ad', 20, 0], ['One switch for all your AI', 'toast', 18, 1], ['100% protection', 'big', 56, 0],
+        ['AI vs AI', 'banner', 20, 0]
+      ];
+      // the echo: the same claims again in other shapes, so the wall saturates (the industry repeats itself). Desktop only.
+      CLAIMS = CLAIMS.concat([
+        ['Agentic', 'loud', 26, 0], ['AI-native', 'ad', 20, 0], ['Autonomous', 'banner', 22, 0], ['Zero false positives', 'toast', 16, 0],
+        ['Machine speed', 'banner', 18, 0], ['Next-gen AI', 'purple', 18, 0], ['Stops every breach', 'tag', 16, 1], ['Self-healing', 'post', 16, 0],
+        ['100%', 'big', 96, 0], ['Fully autonomous', 'ad', 18, 0], ['Agents vs agents', 'toast', 18, 0], ['Hyper swarm', 'tag', 18, 0],
+        ['AI-powered everything', 'post', 16, 0], ['Zero humans', 'loud', 18, 0], ['Fully agentic', 'purple', 16, 0], ['No analysts needed', 'banner', 18, 0],
+        ['Unstoppable', 'ad', 24, 0], ['Military-grade AI', 'toast', 16, 0], ['Autonomous', 'tag', 14, 0], ['10x faster', 'big', 54, 0]
+      ]);
+      var COUNTS = [10000, 25000, 50000, 120000, 250000, 500000, 1000000];
+
+      // timeline (seconds)
+      var T_IN = 0.8, T_FULL = 6.2, T_SQ = 7.8, T_FLEX = 8.6, T_RIPPLE = 9.2, T_SMILE = 10.7, T_COPY = 11.2, T_END = 13.1;
+      // after the full wall: a rest, the squeeze (eyes shut, mouth straight), the breath in, then two ripples in the Dots'
+      // colors (grid dots growing and changing color, as in the /dots grid prototypes). The first one blows the type away.
+      var RINGS = [[T_RIPPLE, 1], [T_RIPPLE + 1.3, 1]], PAL = ['#5bc0eb', '#e01280', '#b811de', '#029266', '#f4b400'];
+      var GRID = 20, PX = 5;
+
+      var W = 0, H = 0, dpr = 1, cx = 0, cy = 0, items = [], parts = [], maxR = 1, counter = null;
+      function rng(seed){ return function(){ seed |= 0; seed = seed + 0x6D2B79F5 | 0; var t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+      function clamp(x){ return x < 0 ? 0 : x > 1 ? 1 : x; }
+      function ease(x){ x = clamp(x); return x * x * (3 - 2 * x); }
+      function fmt(n){ return n.toLocaleString('en-US') + ' AI agents'; }
+
+      function layout(){
+        var r = hero.getBoundingClientRect(), m = me.getBoundingClientRect();
+        W = r.width; H = r.height; dpr = Math.min(window.devicePixelRatio || 1, 2);
+        cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+        cx = m.left - r.left + m.width / 2; cy = m.top - r.top + m.height / 2;
+        maxR = Math.max(Math.hypot(cx, cy), Math.hypot(W - cx, cy), Math.hypot(cx, H - cy), Math.hypot(W - cx, H - cy)) + 40;
+        var phone = W < 700, k = phone ? 1.25 : W < 1100 ? 1.875 : 2.175, rand = rng(7), clearR = m.width * (phone ? 0.85 : 0.95);
+        wall.innerHTML = ''; items = []; counter = null;
+        var placed = [];
+        CLAIMS.forEach(function(c, i){
+          if(phone && i >= 30) return;   // phones: the main list and the first few echoes
+          var el = document.createElement('div');
+          el.className = 'hyp-c';
+          el.style.setProperty('--f', c[2] + 'px'); el.style.setProperty('--k', k);
+          el.textContent = c[0] === 'COUNTER' ? fmt(COUNTS[COUNTS.length - 1]) : c[0];
+          wall.appendChild(el);
+          var w = el.offsetWidth, hh = el.offsetHeight, best = null, bestScore = Infinity;
+          for(var n = 0; n < 40; n++){
+            var x = -w * 0.15 + rand() * (W - w * 0.7), y = -hh * 0.2 + rand() * (H - hh * 0.6);
+            var mx = x + w / 2, my = y + hh / 2;
+            // keep a clearing around the Dot
+            var dx = Math.max(Math.abs(mx - cx) - w / 2, 0), dy = Math.max(Math.abs(my - cy) - hh / 2, 0);
+            var score = Math.hypot(dx, dy) < clearR ? 1e9 : 0;
+            placed.forEach(function(p){
+              var ox = Math.max(0, Math.min(x + w, p.x + p.w) - Math.max(x, p.x)), oy = Math.max(0, Math.min(y + hh, p.y + p.h) - Math.max(y, p.y));
+              score += ox * oy;
+            });
+            if(score < bestScore){ bestScore = score; best = { x:x, y:y }; }
+          }
+          var it = { i:i, el:el, c:c, x:best.x, y:best.y, w:w, h:hh, rot:(rand() - 0.5) * 8, gone:-1 };
+          // the ring breaks a claim the moment it touches it: distance to the nearest corner of the (roughly rotated) box
+          it.d = Math.hypot(Math.max(Math.abs(it.x + w / 2 - cx) - w / 2, 0), Math.max(Math.abs(it.y + hh / 2 - cy) - hh / 2, 0)) - 10;
+          el.style.transform = 'translate(' + it.x + 'px,' + it.y + 'px) rotate(' + it.rot + 'deg)';
+          placed.push(it); items.push(it);
+          if(c[0] === 'COUNTER') counter = it;
+        });
+        var n = items.length;
+        items.forEach(function(it, i){ var x = i / n; it.at = T_IN + (T_FULL - T_IN) * (1 - (1 - x) * (1 - x)); });
+        if(counter) counter.el.textContent = fmt(COUNTS[0]);
+      }
+
+      // a claim breaks into square pixels: drawn off screen (its box and its text), sampled every PX, turned into particles
+      function shatter(it, now){
+        var cs = getComputedStyle(it.el), off = document.createElement('canvas'), w = Math.ceil(it.w), hh = Math.ceil(it.h);
+        off.width = w; off.height = hh;
+        var o = off.getContext('2d', { willReadFrequently:true });
+        var bg = cs.backgroundColor;
+        if(bg && bg !== 'rgba(0, 0, 0, 0)'){ o.fillStyle = bg; o.fillRect(0, 0, w, hh); }
+        o.fillStyle = cs.color;
+        o.font = cs.fontStyle + ' ' + cs.fontWeight + ' ' + cs.fontSize + ' ' + cs.fontFamily;
+        o.textBaseline = 'middle';
+        var text = it.el.textContent;
+        if(cs.textTransform === 'uppercase') text = text.toUpperCase();
+        o.fillText(text, parseFloat(cs.paddingLeft) || 0, hh / 2 + 1);
+        var data = o.getImageData(0, 0, w, hh).data, a = it.rot * Math.PI / 180, ca = Math.cos(a), sa = Math.sin(a);
+        var mx = it.x + w / 2, my = it.y + hh / 2;
+        for(var y = PX / 2; y < hh; y += PX){
+          for(var x = PX / 2; x < w; x += PX){
+            var i = ((y | 0) * w + (x | 0)) * 4;
+            if(data[i + 3] < 120) continue;
+            var lx = x - w / 2, ly = y - hh / 2, px = mx + lx * ca - ly * sa, py = my + lx * sa + ly * ca;
+            var ang = Math.atan2(py - cy, px - cx);
+            parts.push({ x:px, y:py, gx:Math.round(px / GRID) * GRID, gy:Math.round(py / GRID) * GRID, ang:ang,
+                         c:'rgb(' + data[i] + ',' + data[i + 1] + ',' + data[i + 2] + ')', t0:now, j:Math.random() });
+          }
+        }
+      }
+
+      function drawGrid(T){
+        var rs = [];
+        RINGS.forEach(function(g, n){ var r = (T - g[0]) / (n ? 2.2 : 1.9) * maxR; if(r > 0 && r < maxR) rs.push([r, g[1]]); });
+        var gi = 0;
+        for(var y = GRID / 2; y < H; y += GRID){
+          for(var x = GRID / 2; x < W; x += GRID){
+            var px = x, py = y, s = 1.2, colB = 0, d = Math.hypot(x - cx, y - cy);
+            var ht = heat[gi++] || 0;
+            if(ht > 0.01){ s += 6 * ht; colB = Math.max(colB, ht); }
+            rs.forEach(function(rg){
+              var b = Math.exp(-Math.pow((d - rg[0]) / (rg[1] ? 44 : 26), 2));
+              if(b < 0.02) return;
+              px += (x - cx) / (d || 1) * 7 * b; py += (y - cy) / (d || 1) * 7 * b;
+              if(rg[1]){ var fade = 1 - rg[0] / maxR; s += 7 * b * fade; colB = Math.max(colB, b * fade); } else s += 1.6 * b;
+            });
+            if(colB > 0.08){
+              var hsh = Math.abs(Math.sin(x * 12.9898 + y * 78.233) * 43758.5453) % 1;
+              ctx.globalAlpha = Math.min(1, colB * 1.4); ctx.fillStyle = PAL[Math.floor(hsh * PAL.length)];
+              ctx.beginPath(); ctx.arc(px, py, s / 2, 0, Math.PI * 2); ctx.fill(); ctx.globalAlpha = 1;
+            } else { ctx.fillStyle = '#e4e4e0'; ctx.fillRect(px - s / 2, py - s / 2, s, s); }
+          }
+        }
+      }
+
+      // after the animation, the grid answers the pointer (fine pointers only): dots near it grow and take a Dot color
+      // Each dot the pointer passes (within 40px) lights up, then shrinks back and fades over about a second on its own.
+      var ptr = null, ptrRaf = 0, ended = false, heat = [], lastT = 0, PR = 40;
+      function paintIdle(now){
+        var dt = lastT ? Math.min((now - lastT) / 1000, 0.1) : 0.016, any = false; lastT = now;
+        var cols = Math.ceil((W - GRID / 2) / GRID), i = 0, k = Math.exp(-dt / 0.35);
+        for(var y = GRID / 2; y < H; y += GRID){
+          for(var x = GRID / 2; x < W; x += GRID){
+            var ht = (heat[i] || 0) * k;
+            if(ptr){ var pd = Math.hypot(x - ptr[0], y - ptr[1]); if(pd < PR) ht = Math.max(ht, 1 - pd / PR); }
+            heat[i++] = ht < 0.01 ? 0 : ht; if(ht >= 0.01) any = true;
+          }
+        }
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H); drawGrid(T_END + 10);
+        if(any || ptr){ ptrRaf = requestAnimationFrame(paintIdle); } else { ptrRaf = 0; lastT = 0; }
+      }
+      if(matchMedia('(pointer: fine)').matches && !REDUCED){
+        hero.addEventListener('pointermove', function(e){
+          if(!ended) return;
+          var b = hero.getBoundingClientRect(); ptr = [e.clientX - b.left, e.clientY - b.top];
+          if(!ptrRaf) ptrRaf = requestAnimationFrame(paintIdle);
+        });
+        hero.addEventListener('pointerleave', function(){ ptr = null; });
+      }
+      function frame(T){
+        // the Dot: alone, a blink, watching, unimpressed, eyes closed for the breath, then a smile
+        var look = 'center';
+        var latest = null;
+        items.forEach(function(it){ if(T >= it.at) latest = it; });
+        if(latest && T < T_SQ){ var lx = latest.x + latest.w / 2 - cx, ly = latest.y + latest.h / 2 - cy; look = (ly < -60 ? 'up' : '') + (lx < -40 ? 'left' : lx > 40 ? 'right' : (ly < -60 ? '' : 'center')); if(look === '') look = 'up'; }
+        var mood = T < 0.45 ? 'straight' : T < 0.58 ? 'chill' : T < 4 ? 'straight' : T < T_SQ ? 'flat' : T < T_RIPPLE ? 'squeeze' : T < T_SMILE ? 'chill' : 'happy';
+        if(T >= T_END) mood = 'happy';
+        dot({ mood:mood, look:T >= T_SQ ? 'center' : look, floor:false });
+        var shrink = 1 - 0.1 * ease((T - T_IN) / (T_FULL - T_IN));
+        // squeeze (squashed), breathe in (grows), let go with the ripple (a small spring back)
+        var sq = ease((T - T_SQ) / 0.25) * (1 - ease((T - T_RIPPLE) / 0.2));
+        var breath = ease((T - T_FLEX) / (T_RIPPLE - T_FLEX)) * (1 - ease((T - T_RIPPLE) / 0.35));
+        var spring = T > T_RIPPLE ? Math.sin((T - T_RIPPLE) * 14) * Math.exp(-(T - T_RIPPLE) * 4) * 0.05 : 0;
+        var back = ease((T - T_RIPPLE) / 1.6), base = (shrink + (1 - shrink) * back) * (1 + 0.08 * breath);
+        me.style.transform = 'scale(' + (base * (1 + 0.05 * sq) * (1 + spring)) + ',' + (base * (1 - 0.07 * sq) * (1 - spring)) + ')';
+
+        // the claims pop in, the counter climbs
+        if(counter){ var p = clamp((T - counter.at) / (T_FULL - counter.at)); counter.el.textContent = fmt(COUNTS[Math.min(COUNTS.length - 1, Math.floor(p * COUNTS.length))]); }
+        var rippleR = T > T_RIPPLE ? (T - T_RIPPLE) / 1.9 * maxR : 0;
+        items.forEach(function(it){
+          var a = clamp((T - it.at) / 0.18);
+          var hit = rippleR > 0 && rippleR >= it.d;
+          if(hit && it.gone < 0){ it.gone = T; if(T < T_END) shatter(it, T); }
+          it.el.style.opacity = hit ? 0 : a;
+          // arrives in pink, blue or warm gray, settles to ink
+          var c0 = INKS[it.i % 3], m = ease((T - it.at - 0.6) / 0.9);
+          it.el.style.color = 'rgb(' + c0.map(function(v, j){ return Math.round(v + (INK[j] - v) * m); }).join(',') + ')';
+          it.el.style.transform = 'translate(' + it.x + 'px,' + it.y + 'px) rotate(' + it.rot + 'deg) scale(' + (0.85 + 0.15 * ease(a) + 0.04 * Math.sin(Math.PI * a)) + ')';
+        });
+
+        // the copy rolls in at the end
+        [].forEach.call(copy.children, function(el, i){
+          var q = ease((T - (T_COPY + i * 0.28)) / 0.5);
+          el.style.opacity = q; el.style.transform = 'translateY(' + (12 * (1 - q)) + 'px)';
+          el.style.visibility = q > 0 ? 'visible' : 'hidden';
+        });
+        replay.classList.toggle('is-on', T >= T_END);
+        ended = T >= T_END;
+
+        // canvas: the grid (rippling), the ring, the pixels
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        ctx.clearRect(0, 0, W, H);
+        drawGrid(T);
+        parts = parts.filter(function(p){ return T - p.t0 < 1.6 && T >= p.t0; });
+        parts.forEach(function(p){
+          var u = (T - p.t0) / 1.6, burst = Math.sin(Math.min(u * 2.2, 1) * Math.PI / 2) * (6 + 10 * p.j), settle = ease((u - 0.25) / 0.6);
+          var x = p.x + Math.cos(p.ang) * burst, y = p.y + Math.sin(p.ang) * burst;
+          x += (p.gx - x) * settle; y += (p.gy - y) * settle;
+          var s = PX * (1 - 0.7 * settle);
+          ctx.globalAlpha = 1 - ease((u - 0.55) / 0.45);
+          ctx.fillStyle = settle > 0.6 ? '#cfcfca' : p.c;
+          ctx.fillRect(x - s / 2, y - s / 2, s, s);
+        });
+        ctx.globalAlpha = 1;
+      }
+
+      var running = false, raf = 0, t0 = 0;
+      function tick(now){
+        var T = (now - t0) / 1000;
+        frame(Math.min(T, T_END));
+        if(T < T_END) raf = requestAnimationFrame(tick); else running = false;
+      }
+      function play(){
+        cancelAnimationFrame(raf); cancelAnimationFrame(ptrRaf); ptrRaf = 0; heat = []; layout(); parts = []; items.forEach(function(it){ it.gone = -1; });
+        running = true; t0 = performance.now(); raf = requestAnimationFrame(tick);
+      }
+      function showEnd(){ layout(); parts = []; frame(T_END + 1); }
+
+      function init(){
+        if(REDUCED){ showEnd(); return; }
+        layout(); frame(0);
+        var started = false;
+        new IntersectionObserver(function(es){ if(es[0].isIntersecting && !started){ started = true; play(); } }, { threshold:0.3 }).observe(hero);
+      }
+      // the claims are measured and sampled in Anton, so it waits for the font
+      if(document.fonts && document.fonts.load){ document.fonts.load('400 40px Anton').then(init, init); } else init();
+      replay.addEventListener('click', function(){ if(REDUCED) showEnd(); else play(); });
+      var rw = window.innerWidth;
+      window.addEventListener('resize', function(){ if(window.innerWidth === rw) return; rw = window.innerWidth; if(!running) showEnd(); });
+    })();
+  </script>
+</body>
+</html>

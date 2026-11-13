@@ -31,12 +31,12 @@
     white-space: nowrap;
   }
 
-  .dot-banner-stat-value, .dot-pack-count, .dot-item-seen, .dot-group-count,
+  .dot-banner-stat-value, .dot-item-seen, .dot-group-count,
   .dot-mid-stat-value, .dot-action-id, .dot-action-time, .dot-term-time {
     font-variant-numeric: tabular-nums;
   }
 
-  .dot-shelf-title, .dot-group-toggle, .dot-mid-stat-label, .dot-action-pack {
+  .dot-group-toggle, .dot-mid-stat-label, .dot-action-pack {
     text-transform: uppercase;
     letter-spacing: 0.08em;
   }
@@ -99,105 +99,6 @@
   .dot-banner-stat-value { font-size: 22px; font-weight: 800; line-height: 1; letter-spacing: -0.015em; }
   .dot-banner-stat-total { font-size: 0.72em; font-weight: 700; color: var(--dot-text-faint); }
   .dot-banner-stat-label { font-size: 11px; color: var(--dot-text-faint); }
-
-  /* ── SHELF — ACTION PACKS ───────────────────────────────────── */
-
-  .dot-shelf {
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    gap: 24px;
-    padding: 12px 24px 10px;
-    border-bottom: 1px solid var(--dot-line);
-    background: var(--dot-surface);
-  }
-
-  .dot-shelf-head {
-    flex-shrink: 0;
-    align-self: stretch;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 4px;
-    padding-right: 24px;
-    border-right: 1px solid var(--dot-line);
-  }
-
-  .dot-shelf-title { font-size: 11px; font-weight: 800; }
-
-  .dot-shelf-hint {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 11px;
-    color: var(--dot-text-faint);
-
-    .material-symbols-outlined { font-size: 15px; }
-  }
-
-  #dot-shelf {
-    flex: 1;
-    min-width: 0;
-    display: flex;
-    gap: 22px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    overflow-x: auto;
-  }
-
-  .dot-pack {
-    flex-shrink: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-    cursor: grab;
-    user-select: none;
-
-    &.dragging { opacity: 0.45; cursor: grabbing; }
-  }
-
-  .dot-pack-logo {
-    position: relative;
-    width: 64px;
-    height: 64px;
-    border-radius: 50%;
-    box-shadow: 3px 3px 0 rgb(11 12 13 / 0.15);
-    transition: transform 0.12s, box-shadow 0.12s;
-
-    img {
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      object-fit: cover;
-      pointer-events: none;
-      filter: grayscale(0.5) opacity(0.6);
-      transition: filter 0.15s;
-    }
-  }
-
-  .dot-pack:hover .dot-pack-logo { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 rgb(11 12 13 / 0.18); }
-  .dot-pack:hover .dot-pack-logo img { filter: none; }
-
-  .dot-pack-count {
-    position: absolute;
-    right: -6px;
-    bottom: -4px;
-    min-width: 18px;
-    height: 18px;
-    padding: 0 5px;
-    border: 2px solid var(--dot-surface);
-    border-radius: 9px;
-    background: var(--dot-ink);
-    color: var(--dot-surface);
-    font-size: 10px;
-    font-weight: 800;
-    line-height: 14px;
-    text-align: center;
-  }
-
-  .dot-pack-name { font-size: 11px; font-weight: 700; }
 
   /* ── BODY ───────────────────────────────────────────────────── */
 
@@ -467,7 +368,6 @@
     color: var(--dot-body-soft);
   }
 
-  .dot-mid.drop-ready { outline: 2px dashed var(--dot-line-strong); outline-offset: -8px; }
   .dot-mid.drop-active {
     outline: 2px dashed var(--dot-accent);
     outline-offset: -8px;

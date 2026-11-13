@@ -14,7 +14,6 @@ class DotRollup {
     constructor(state) {
         this.api = state.api;
         this.screen = document.getElementById('dot-screen');
-        this.shelf = document.getElementById('dot-shelf');
         this.list = document.getElementById('dot-list');
         this.wrap = this.list.parentElement;
         this.mid = document.getElementById('dot-mid');
@@ -24,7 +23,6 @@ class DotRollup {
         this.toast = this._append('dot-toast');
 
         this.dots = new Map();
-        this.packs = new Map();
         this.packOf = new Map();
         this.selected = null;       // asset key
         this.sorted = [];           // its actions, newest first
@@ -57,7 +55,6 @@ class DotRollup {
             if (e.key === 'Escape') this._closeTerminal();
         });
 
-        this._initShelf();
         this._listenForDrops();
         this._empty();
     }
@@ -71,70 +68,19 @@ class DotRollup {
 
     // --- running -----------------------------------------------------------
 
-    async _queue(actions, message) {
-        await SiteSpinner.withLoading(() => Promise.all(
-            actions.map(({ id, name }) => this.api.inventory.run(this.selected, { id, name }))
-        ));
-        this._toast(message);
+    async _rerun(key) {
+        const { id, name } = this.sorted.find(a => a.key === key);
+        await SiteSpinner.withLoading(() => this.api.inventory.run(this.selected, { id, name }));
+        this._toast(`${name} queued`);
         await this.refresh();
-    }
-
-    _rerun(key) {
-        const action = this.sorted.find(a => a.key === key);
-        this._queue([action], `${action.name} queued`);
-    }
-
-    _runPack(pack) {
-        const actions = this.packs.get(pack);
-        this._queue(actions, `${pack} queued · ${actions.length} action${actions.length === 1 ? '' : 's'}`);
     }
 
     // --- action packs ------------------------------------------------------
 
-    _initShelf() {
-        this.shelf.insertAdjacentHTML('beforebegin', `
-            <div class="dot-shelf-head">
-                <span class="dot-shelf-title">Action packs</span>
-                <span class="dot-shelf-hint">
-                    <span class="material-symbols-outlined">drag_pan</span>
-                    Drag onto a selected dot to run
-                </span>
-            </div>
-        `);
-
-        this.shelf.addEventListener('dragstart', (e) => {
-            const card = e.target.closest('.dot-pack');
-            e.dataTransfer.setData('application/x-dot-pack', card.dataset.pack);
-            e.dataTransfer.effectAllowed = 'copy';
-            card.classList.add('dragging');
-            if (this.selected) this.mid.classList.add('drop-ready');
-            else this._toast('Select a dot first, then drop the pack on it');
-        });
-
-        this.shelf.addEventListener('dragend', (e) => {
-            e.target.closest('.dot-pack').classList.remove('dragging');
-            this.mid.classList.remove('drop-ready');
-        });
-    }
-
     async _loadPacks() {
         const packs = await this.api.action.list();
-        this.packs = new Map(Object.entries(packs));
-        this.packOf = new Map([...this.packs].flatMap(([name, actions]) => actions.map(a => [String(a.id), name])));
-        this._renderShelf();
+        this.packOf = new Map(Object.entries(packs).flatMap(([name, actions]) => actions.map(a => [String(a.id), name])));
         if (this.sorted.length) this._renderActions(this.dots.get(this.selected), this.sorted);
-    }
-
-    _renderShelf() {
-        this.shelf.innerHTML = [...this.packs].map(([name, actions]) => `
-            <li class="dot-pack" draggable="true" data-pack="${name}" title="${name} · ${actions.map(a => a.name).join(', ')}">
-                <span class="dot-pack-logo">
-                    <img src="static/img/packs/${name.toLowerCase()}.png" alt="">
-                    <span class="dot-pack-count">${actions.length}</span>
-                </span>
-                <span class="dot-pack-name">${name}</span>
-            </li>
-        `).join('');
     }
 
     // --- dots list ---------------------------------------------------------
@@ -148,10 +94,8 @@ class DotRollup {
     reset() {
         this._clearSelection();
         this.dots.clear();
-        this.packs.clear();
         this.packOf.clear();
         this.list.innerHTML = '';
-        this.shelf.innerHTML = '';
         this.search.value = '';
         this.bannerCount.innerHTML = SiteSpinner.inline;
     }
@@ -289,7 +233,7 @@ class DotRollup {
 
         const list = this.sorted.length
             ? `<ul class="dot-actions">${this.sorted.map(a => this._actionRow(a)).join('')}</ul>`
-            : this._placeholder('drag_pan', 'No actions yet', 'Drag an action pack here to run it.', 'dot-empty--overlay');
+            : this._placeholder('drag_pan', 'No actions yet', 'Drop a file here to run it.', 'dot-empty--overlay');
 
         this.mid.innerHTML = this._actionsHeader(asset) + list;
 
@@ -445,9 +389,7 @@ class DotRollup {
 
         this.mid.addEventListener('drop', (e) => {
             e.preventDefault();
-            this.mid.classList.remove('drop-active', 'drop-ready');
-            const pack = e.dataTransfer.getData('application/x-dot-pack');
-            if (pack) return this._runPack(pack);
+            this.mid.classList.remove('drop-active');
             const file = e.dataTransfer.files[0];
             if (file) this._submitAction(file);
         });

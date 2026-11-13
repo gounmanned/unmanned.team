@@ -17,8 +17,6 @@ class TenantScreen {
             move: (signal, status) => this.move(signal, status),
         });
 
-        this.audit = new AuditRollup(this.api);
-
         this.listen();
         new ResizeObserver(() => this.renderTrend()).observe(document.getElementById('trend-svg'));
     }
@@ -33,7 +31,6 @@ class TenantScreen {
     async reset() {
         this.api.reset();
         this.table.clear();
-        this.audit.clear();
         this.renderThreat();
         this.renderTrend();
     }

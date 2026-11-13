@@ -86,6 +86,34 @@
     }
   }
 
+  /* live indicator — shown only while tailing; bars drawn in CSS */
+
+  .audit-tailing {
+    display: none;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 7px;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--brand);
+
+    &::before {
+      content: '';
+      width: 14px;
+      height: 12px;
+      background:
+        linear-gradient(currentColor 0 0) 0    100% / 2px 30% no-repeat,
+        linear-gradient(currentColor 0 0) 4px  100% / 2px 80% no-repeat,
+        linear-gradient(currentColor 0 0) 8px  100% / 2px 50% no-repeat,
+        linear-gradient(currentColor 0 0) 12px 100% / 2px 100% no-repeat;
+      animation: audit-tailing 1.2s ease-in-out infinite;
+    }
+  }
+
+  &.tailing .audit-tailing { display: inline-flex; }
+
   /* ── RESULTS ────────────────────────────────────────────────── */
 
   .audit-results {
@@ -131,6 +159,8 @@
 
       &:hover::after { opacity: 1; }
 
+      &.tail-new { animation: audit-tail-flash 2.4s ease-out; }
+
       &.expanded { padding-right: 60px; }
       &.expanded span { white-space: pre-wrap; word-break: break-all; }
       &.expanded::after { content: 'less'; opacity: 1; background: none; }
@@ -170,4 +200,20 @@
       &::after { display: none; }
     }
   }
+}
+@keyframes audit-tailing {
+  0%, 100% { background-size: 2px 30%, 2px 80%, 2px 50%, 2px 100%; }
+  50%      { background-size: 2px 100%, 2px 40%, 2px 90%, 2px 30%; }
+}
+
+/* freshly tailed lines flash in */
+
+@keyframes audit-tail-flash {
+  from { background: color-mix(in srgb, var(--brand) 14%, var(--surface)); }
+  to   { background: var(--row-bg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #audit-screen .audit-results li.tail-new { animation: none; }
+  #audit-screen .audit-tailing::before { animation: none; }
 }

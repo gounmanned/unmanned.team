@@ -5,6 +5,10 @@
    Surface:  <html data-surface="web|app">    (default web)
 */
 
+/* Layer order, lowest priority first. A site that puts its base element rules (a { color: inherit }, button resets) in
+   @layer reset keeps them below every Pulse rule. Rules outside any layer still win over Pulse. */
+@layer reset, pulse-icons, pulse-components;
+
 /* Primitives */
 :root {
   --color-neutral-0: #ffffff;
@@ -59,6 +63,8 @@
   --color-blue-500: #407bd0;
   --color-blue-600: #3366bb;
   --color-blue-700: #284e99;
+  --color-purple-400: #b594f2;
+  --color-purple-600: #7a3fc4;
   --color-alpha-black-5: rgb(11 12 13 / 0.05);
   --color-alpha-black-8: rgb(11 12 13 / 0.08);
   --color-alpha-black-15: rgb(11 12 13 / 0.15);
@@ -73,6 +79,7 @@
   --color-alpha-green-12: rgb(84 203 153 / 0.12);
   --color-alpha-red-12: rgb(251 130 100 / 0.12);
   --color-alpha-amber-12: rgb(250 202 75 / 0.12);
+  --color-alpha-amber-30: rgb(250 202 75 / 0.3);
   --color-alpha-blue-12: rgb(127 172 240 / 0.12);
   --font-sans: 'Inter', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, monospace;
@@ -128,6 +135,7 @@
   --color-surface-control-off: var(--color-neutral-400);
   --color-surface-contrast: var(--color-neutral-900);
   --color-surface-overlay: var(--color-alpha-black-50);
+  --color-surface-highlight: var(--color-amber-100);
   --color-text-primary: var(--color-neutral-900);
   --color-text-secondary: var(--color-neutral-600);
   --color-text-tertiary: var(--color-neutral-500);
@@ -142,6 +150,13 @@
   --color-text-danger: var(--color-red-600);
   --color-text-warning: var(--color-amber-600);
   --color-text-info: var(--color-blue-600);
+  /* Code: syntax colors for code samples. */
+  --color-code-function: var(--color-blue-600);
+  --color-code-keyword: var(--color-pink-600);
+  --color-code-string: var(--color-green-600);
+  --color-code-number: var(--color-amber-600);
+  --color-code-key: var(--color-purple-600);
+  --color-code-comment: var(--color-neutral-500);
   --color-border-page: var(--color-neutral-0);
   --color-border-subtle: var(--color-neutral-100);
   --color-border-default: var(--color-neutral-200);
@@ -191,6 +206,7 @@
   --color-surface-control-off: var(--color-neutral-500);
   --color-surface-contrast: var(--color-neutral-0);
   --color-surface-overlay: var(--color-alpha-black-50);
+  --color-surface-highlight: var(--color-alpha-amber-30);
   --color-text-primary: var(--color-neutral-0);
   --color-text-secondary: var(--color-neutral-300);
   --color-text-tertiary: var(--color-neutral-350);
@@ -205,6 +221,12 @@
   --color-text-danger: var(--color-red-400);
   --color-text-warning: var(--color-amber-400);
   --color-text-info: var(--color-blue-400);
+  --color-code-function: var(--color-blue-400);
+  --color-code-keyword: var(--color-pink-400);
+  --color-code-string: var(--color-green-400);
+  --color-code-number: var(--color-amber-400);
+  --color-code-key: var(--color-purple-400);
+  --color-code-comment: var(--color-neutral-350);
   --color-border-page: var(--color-neutral-900);
   --color-border-subtle: var(--color-alpha-white-8);
   --color-border-default: var(--color-neutral-600);
@@ -285,16 +307,18 @@
   --space-stack-lg: 32px;
   --space-stack-md: 24px;
   --space-card-padding: 20px;
-  --type-display-size: 40px;
-  --type-display-line-height: 48px;
-  --type-heading-section-size: 32px;
-  --type-heading-section-line-height: 40px;
-  --type-heading-subsection-size: 24px;
-  --type-heading-subsection-line-height: 32px;
-  --type-heading-card-size: 20px;
-  --type-heading-card-line-height: 28px;
-  --type-body-lede-size: 18px;
-  --type-body-lede-line-height: 28px;
+  /* Fluid type: display, the three headings and the lede scale smoothly from their Mobile value at 375px wide to their
+     Desktop value at 1280px (the Figma Tablet values are a guide; code lands within 2px of them). */
+  --type-display-size: clamp(40px, calc(40px + 24 * (100vw - 375px) / 905), 64px);
+  --type-display-line-height: clamp(48px, calc(48px + 20 * (100vw - 375px) / 905), 68px);
+  --type-heading-section-size: clamp(32px, calc(32px + 16 * (100vw - 375px) / 905), 48px);
+  --type-heading-section-line-height: clamp(40px, calc(40px + 16 * (100vw - 375px) / 905), 56px);
+  --type-heading-subsection-size: clamp(24px, calc(24px + 8 * (100vw - 375px) / 905), 32px);
+  --type-heading-subsection-line-height: clamp(32px, calc(32px + 8 * (100vw - 375px) / 905), 40px);
+  --type-heading-card-size: clamp(20px, calc(20px + 4 * (100vw - 375px) / 905), 24px);
+  --type-heading-card-line-height: clamp(28px, calc(28px + 4 * (100vw - 375px) / 905), 32px);
+  --type-body-lede-size: clamp(18px, calc(18px + 2 * (100vw - 375px) / 905), 20px);
+  --type-body-lede-line-height: clamp(28px, calc(28px + 4 * (100vw - 375px) / 905), 32px);
   --type-body-lg-size: 16px;
   --type-body-lg-line-height: 24px;
   --type-body-md-size: 16px;
@@ -336,12 +360,6 @@
     --space-stack-xl: 48px;
     --space-stack-lg: 40px;
     --space-card-padding: 24px;
-    --type-display-size: 52px;
-    --type-display-line-height: 60px;
-    --type-heading-section-size: 40px;
-    --type-heading-section-line-height: 48px;
-    --type-heading-subsection-size: 28px;
-    --type-heading-subsection-line-height: 36px;
     --type-body-lg-size: 18px;
     --type-body-lg-line-height: 28px;
     --type-mono-code-size: 14px;
@@ -364,16 +382,6 @@
     --space-stack-lg: 48px;
     --space-stack-md: 32px;
     --space-card-padding: 32px;
-    --type-display-size: 64px;
-    --type-display-line-height: 68px;
-    --type-heading-section-size: 48px;
-    --type-heading-section-line-height: 56px;
-    --type-heading-subsection-size: 32px;
-    --type-heading-subsection-line-height: 40px;
-    --type-heading-card-size: 24px;
-    --type-heading-card-line-height: 32px;
-    --type-body-lede-size: 20px;
-    --type-body-lede-line-height: 32px;
     --type-mono-data-size: 40px;
     --type-mono-data-line-height: 48px;
   }

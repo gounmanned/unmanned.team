@@ -51,6 +51,11 @@
   background-color: var(--color-surface-disabled); background-image: none; border-color: transparent;
   color: var(--color-text-disabled); cursor: not-allowed; box-shadow: none;
 }
+/* Disabled keeps the button's shape and drains its color: filled buttons keep a gray fill (above); buttons with no fill
+   stay unfilled, with gray text or icon, and outlined ones keep a gray border. */
+.pulse-btn--ghost:disabled, .pulse-btn--ghost.is-disabled, .pulse-btn--ghost-neutral:disabled, .pulse-btn--ghost-neutral.is-disabled,
+.pulse-btn--secondary:disabled, .pulse-btn--secondary.is-disabled, .pulse-btn--neutral:disabled, .pulse-btn--neutral.is-disabled { background-color: transparent; }
+.pulse-btn--secondary:disabled, .pulse-btn--secondary.is-disabled, .pulse-btn--neutral:disabled, .pulse-btn--neutral.is-disabled { border-color: var(--color-border-mid); }
 .pulse-btn[aria-busy="true"] { cursor: progress; pointer-events: none; }
 .pulse-btn[aria-busy="true"]::before {
   content: ""; width: var(--pulse-icon-size); height: var(--pulse-icon-size); flex: none; box-sizing: border-box;
@@ -62,7 +67,7 @@
 
 /* ---------- Link ---------- */
 .pulse-link {
-  display: inline-flex; align-items: center; gap: var(--space-8); color: var(--color-text-accent);
+  display: inline-flex; align-items: center; gap: var(--space-8); padding: 0; border: 0; background: none; color: var(--color-text-accent);
   font: 500 var(--type-label-md-size) / var(--type-label-md-line-height) var(--font-sans); text-decoration: none; cursor: pointer;
 }
 .pulse-link:hover, .pulse-link.is-hover { color: var(--color-text-accent-hover); text-decoration: underline; }
@@ -70,11 +75,25 @@
 .pulse-link:not(.pulse-link--inline) { padding-inline-end: var(--space-4); }
 .pulse-link > .pulse-icon:last-child { transition: transform .15s ease; }
 .pulse-link:not(.pulse-link--inline):hover > .pulse-icon:last-child, .pulse-link:not(.pulse-link--inline).is-hover > .pulse-icon:last-child { transform: translateX(var(--space-4)); }
+/* Down: for a link that jumps further down the same page. Use it with the arrow-down icon; the arrow nudges down, not right. */
+.pulse-link--down:not(.pulse-link--inline):hover > .pulse-icon:last-child, .pulse-link--down:not(.pulse-link--inline).is-hover > .pulse-icon:last-child { transform: translateY(var(--space-4)); }
 .pulse-link:focus-visible, .pulse-link.is-focus { outline: var(--border-width-2) solid var(--color-border-focus); outline-offset: 2px; border-radius: var(--radius-sm); }
 .pulse-link--inline { display: inline; font: inherit; text-decoration: underline; }
 .pulse-link--inline { padding-inline-end: 0; }
 .pulse-link--sm { font-size: var(--type-label-sm-size); line-height: var(--type-label-sm-line-height); }
 .pulse-link--lg { font-size: var(--type-label-lg-size); line-height: var(--type-label-lg-line-height); }
+/* Quiet: for navigation (header links, footer links). Gray at rest, pink on hover, never underlined. Keep the regular pink link for the one action. */
+.pulse-link--quiet { color: var(--color-text-tertiary); }
+.pulse-link--quiet:hover, .pulse-link--quiet.is-hover { color: var(--color-text-accent); text-decoration: none; }
+/* Current: the page or section you are on, set with aria-current (any value except "false"). Ink and semibold on any link.
+   Hover stays pink, so hover and current never look alike. ("Current", not "active": in CSS :active means pressed.) */
+.pulse-link[aria-current]:not([aria-current="false"]), .pulse-link.is-current { color: var(--color-text-primary); font-weight: 600; }
+.pulse-link[aria-current]:not([aria-current="false"]):hover, .pulse-link.is-current:hover { color: var(--color-text-accent); }
+/* A link that opens a menu: a <button class="pulse-link pulse-link--quiet" aria-expanded="false" aria-controls="…"> with a caret-down icon.
+   The caret turns over while the menu is open instead of nudging. */
+.pulse-link[aria-expanded] > .pulse-icon:last-child, .pulse-link[aria-expanded]:hover > .pulse-icon:last-child { transform: none; }
+.pulse-link[aria-expanded="true"] { color: var(--color-text-primary); }
+.pulse-link[aria-expanded="true"] > .pulse-icon:last-child, .pulse-link[aria-expanded="true"]:hover > .pulse-icon:last-child { transform: rotate(180deg); }
 
 /* ---------- Badge ---------- */
 .pulse-badge {
@@ -188,16 +207,31 @@
 .pulse-tabs { display: flex; font-family: var(--font-sans); }
 .pulse-tabs--line { border-bottom: var(--border-width-1) solid var(--color-border-default); }
 .pulse-tabs--bar { justify-content: center; box-sizing: border-box; padding-top: var(--space-4); background: var(--color-surface-page); border-top: var(--border-width-1) solid var(--color-border-default); border-bottom: var(--border-width-1) solid var(--color-border-default); box-shadow: var(--shadow-elevation-default-sm); }
-.pulse-tabs--vertical { flex-direction: column; width: 240px; }
+/* Vertical tabs take the width of their container (a 240px column is the usual size). Two ways to write them:
+   flat, with the links straight inside a <nav class="pulse-tabs pulse-tabs--vertical">; or as a list, a
+   <ul class="pulse-tabs pulse-tabs--vertical"> of <li>, where an <li> can also hold a <ul class="pulse-tabs__sub"> of sub-items.
+   Optional parts: __label above the list ("On this page"), and a pulse-tab__count at the end of an item. */
+.pulse-tabs--vertical { flex-direction: column; margin: 0; padding: 0; list-style: none; }
+.pulse-tabs__sub { margin: 0; padding: 0; list-style: none; }
+.pulse-tabs__label { margin: 0 0 var(--space-16); }
+/* One small mono label for groups of links: above vertical tabs, and inside a nav menu. */
+.pulse-tabs__label, .pulse-dropdown__label { font: 400 var(--type-mono-eyebrow-size) / var(--type-mono-eyebrow-line-height) var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-text-tertiary); }
 .pulse-tab {
   appearance: none; background: transparent; border: 0; border-bottom: var(--border-width-2) solid transparent; box-sizing: border-box; padding: var(--space-12) var(--space-16);
   color: var(--color-text-tertiary); font: 400 var(--type-body-sm-size) / var(--type-body-sm-line-height) var(--font-sans); cursor: pointer; text-align: left; text-decoration: none;
 }
 .pulse-tab:hover, .pulse-tab.is-hover { color: var(--color-text-primary); }
-.pulse-tab[aria-selected="true"], .pulse-tab[aria-current="true"] { color: var(--color-text-primary); font-weight: 500; border-bottom-color: var(--color-accent-default); }
+/* The current item is aria-selected="true" (tabs) or any aria-current value except "false" (links: "page", "location", "true"). */
+.pulse-tab[aria-selected="true"], .pulse-tab[aria-current]:not([aria-current="false"]) { color: var(--color-text-primary); font-weight: 500; border-bottom-color: var(--color-accent-default); }
 .pulse-tab:focus-visible { outline: 0; box-shadow: var(--shadow-focus-ring); }
-.pulse-tabs--vertical .pulse-tab { border-bottom: 0; border-left: var(--border-width-1) solid var(--color-border-default); padding: var(--space-12) 0 var(--space-12) var(--space-16); font-weight: 500; color: var(--color-text-secondary); }
-.pulse-tabs--vertical .pulse-tab[aria-selected="true"], .pulse-tabs--vertical .pulse-tab[aria-current="true"] { border-left: var(--border-width-2) solid var(--color-accent-default); padding-left: calc(var(--space-16) - 1px); color: var(--color-text-primary); }
+.pulse-tabs--vertical .pulse-tab { display: flex; justify-content: space-between; align-items: center; gap: var(--space-12); border-bottom: 0; border-left: var(--border-width-1) solid var(--color-border-default); padding: var(--space-12) 0 var(--space-12) var(--space-16); font-weight: 500; color: var(--color-text-secondary); }
+.pulse-tabs--vertical .pulse-tab:hover, .pulse-tabs--vertical .pulse-tab.is-hover { color: var(--color-text-accent); }
+.pulse-tabs--vertical .pulse-tab[aria-selected="true"], .pulse-tabs--vertical .pulse-tab[aria-current]:not([aria-current="false"]) { border-left: var(--border-width-2) solid var(--color-accent-default); padding-left: calc(var(--space-16) - 1px); color: var(--color-text-primary); font-weight: 600; }
+/* Sub-items: indented, lighter and closer together. The current one keeps the pink bar on the same line as its parents'. */
+.pulse-tabs__sub .pulse-tab { padding: var(--space-4) 0 var(--space-4) calc(var(--space-16) + var(--space-12)); font-weight: 400; color: var(--color-text-tertiary); }
+.pulse-tabs__sub .pulse-tab[aria-selected="true"], .pulse-tabs__sub .pulse-tab[aria-current]:not([aria-current="false"]) { padding-left: calc(var(--space-16) + var(--space-12) - 1px); font-weight: 500; }
+/* A count at the end of an item. It stays gray when the item is hovered or current. */
+.pulse-tab__count { flex: none; font: 400 var(--type-mono-label-size) / var(--type-body-sm-line-height) var(--font-mono); font-variant-numeric: tabular-nums; color: var(--color-text-tertiary); }
 
 /* ---------- Alert and Toast ---------- */
 .pulse-alert, .pulse-toast {
@@ -234,7 +268,11 @@
 
 /* ---------- Dropdown (listbox) and menu item ---------- */
 /* The option list that opens from a select. Width follows the trigger. Items are 40px tall with an 8px inset;
-   the panel uses the medium radius and the item radius is the tag radius. */
+   the panel uses the medium radius and the item radius is the tag radius.
+   Which markup goes with which use:
+   - Picking a value (a select): <ul role="listbox"> of <li role="option">, the chosen one aria-selected="true".
+   - Going somewhere (a site menu): pulse-dropdown--nav, a plain list of links opened by a button with aria-expanded and
+     aria-controls (a disclosure). No role="menu" or role="listbox". The page you are on is aria-current="page". */
 .pulse-dropdown { display: flex; flex-direction: column; gap: 2px; box-sizing: border-box; margin: 0; padding: var(--space-8); list-style: none;
   border: var(--border-width-1) solid var(--color-border-default); border-radius: var(--radius-medium);
   background-color: var(--color-surface-raised); box-shadow: var(--shadow-elevation-default-md); font-family: var(--font-sans); }
@@ -250,6 +288,16 @@
 .pulse-menu-item:focus-visible, .pulse-menu-item.is-focus { outline: 0; background-color: var(--color-interactive-hover); box-shadow: inset 0 0 0 var(--border-width-2) var(--color-border-focus); }
 .pulse-menu-item[aria-disabled="true"], .pulse-menu-item.is-disabled { color: var(--color-text-disabled); background-color: transparent; cursor: not-allowed; }
 .pulse-menu-item[aria-disabled="true"]:hover { background-color: transparent; }
+/* Nav menu: links with a title and a line of description. Its own width (320px), lined up with the start of its trigger by the page.
+   Hover is the gray background and a pink title; the current page is an ink, semibold title. __label groups items (also the phone menu). */
+.pulse-dropdown--nav { width: 320px; max-width: calc(100vw - 2 * var(--space-16)); }
+.pulse-dropdown--nav .pulse-menu-item { flex-direction: column; align-items: stretch; gap: 2px; text-decoration: none; }
+.pulse-dropdown--nav .pulse-menu-item__label { flex: none; font: 500 var(--type-label-md-size) / var(--type-label-md-line-height) var(--font-sans); color: var(--color-text-secondary); }
+.pulse-menu-item__desc { font: 400 var(--type-body-sm-size) / var(--type-body-sm-line-height) var(--font-sans); color: var(--color-text-tertiary); }
+.pulse-dropdown--nav .pulse-menu-item[aria-current]:not([aria-current="false"]) .pulse-menu-item__label { color: var(--color-text-primary); font-weight: 600; }
+.pulse-dropdown--nav .pulse-menu-item:hover .pulse-menu-item__label, .pulse-dropdown--nav .pulse-menu-item.is-hover .pulse-menu-item__label,
+.pulse-dropdown--nav .pulse-menu-item[aria-current]:not([aria-current="false"]):hover .pulse-menu-item__label { color: var(--color-text-accent); }
+.pulse-dropdown__label { padding: var(--space-8) var(--space-12) var(--space-4); }
 
 /* ---------- Dialog ---------- */
 /* The panel works on its own or inside a native <dialog class="pulse-dialog">. Wrap a hand-built modal in
@@ -267,6 +315,41 @@ dialog.pulse-dialog::backdrop { background-color: var(--color-surface-overlay); 
 .pulse-dialog__close { flex: none; }
 .pulse-dialog__resource { padding: var(--space-12); border: var(--border-width-1) solid var(--color-border-subtle); border-radius: var(--radius-control); background-color: var(--color-surface-subtle);
   font: 400 var(--type-body-xs-size) / var(--type-body-sm-line-height) var(--font-sans); color: var(--color-text-secondary); overflow-wrap: anywhere; }
+/* ---------- Drawer ---------- */
+/* A panel that slides in from the end side of the window and runs its full height. Square corners, so it reads as part of
+   the window. Two widths: 400px, and --lg at 640px; both go full width on a screen narrower than that.
+   Parts: __head (a __title and a close button), __body (scrolls) and an optional __foot that stays pinned (pulse-actions--end inside).
+   Use a native <dialog class="pulse-drawer" aria-labelledby="…">. With pulse.js, a button with data-pulse-open="the-id" opens it,
+   any element inside with data-pulse-close closes it, and so do Esc and a click on the dimmed page; focus goes back to the button.
+   It opens as a modal (the page behind is dimmed and can't be used). Add data-modal="false" to leave the page usable: no dimming,
+   and only the close button or Esc from inside closes it. A dark drawer on a light page: data-theme="dark" on the dialog.
+   The class on a plain <div> is just the panel, for a static example. */
+.pulse-drawer { display: flex; flex-direction: column; box-sizing: border-box; width: min(400px, 100%); margin: 0; padding: 0; overflow: hidden;
+  border: 0; border-inline-start: var(--border-width-1) solid var(--color-border-default); border-radius: 0;
+  background-color: var(--color-surface-raised); color: var(--color-text-primary); box-shadow: var(--shadow-elevation-default-lg); font-family: var(--font-sans); }
+.pulse-drawer--lg { width: min(640px, 100%); }
+/* z-index only matters when the page stays usable (data-modal="false"): a modal drawer is already above everything. */
+dialog.pulse-drawer { position: fixed; inset: 0 0 0 auto; z-index: 1000; height: 100%; max-width: 100%; max-height: none; transform: translateX(100%);
+  transition: transform .3s cubic-bezier(.2,.8,.2,1), display .3s allow-discrete, overlay .3s allow-discrete; }
+dialog.pulse-drawer:not([open]) { display: none; }
+dialog.pulse-drawer[open] { transform: none; }
+@starting-style { dialog.pulse-drawer[open] { transform: translateX(100%); } }
+dialog.pulse-drawer::backdrop { background-color: var(--color-surface-overlay); opacity: 0; transition: opacity .3s ease, display .3s allow-discrete, overlay .3s allow-discrete; }
+dialog.pulse-drawer[open]::backdrop { opacity: 1; }
+@starting-style { dialog.pulse-drawer[open]::backdrop { opacity: 0; } }
+/* The page behind a modal drawer doesn't scroll. */
+html:has(dialog.pulse-drawer:modal) { overflow: hidden; }
+.pulse-drawer__head { flex: none; display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-16); padding: var(--space-24) var(--space-24) var(--space-20); border-bottom: var(--border-width-1) solid var(--color-border-default); }
+.pulse-drawer__title { margin: 0; font: 600 var(--type-heading-card-size) / var(--type-heading-card-line-height) var(--font-sans); color: var(--color-text-primary); }
+.pulse-drawer__close { flex: none; margin: calc(-1 * var(--space-4)) calc(-1 * var(--space-8)) 0 0; }
+.pulse-drawer__body { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: var(--space-24); font: 400 var(--type-body-md-size) / var(--type-body-md-line-height) var(--font-sans); color: var(--color-text-secondary); }
+.pulse-drawer__foot { flex: none; padding: var(--space-16) var(--space-24); border-top: var(--border-width-1) solid var(--color-border-default); }
+@media (max-width: 599px) {
+  .pulse-drawer__head { padding: var(--space-20) var(--space-16) var(--space-16); }
+  .pulse-drawer__body { padding: var(--space-16); }
+  .pulse-drawer__foot { padding: var(--space-16); }
+}
+
 /* Action groups. Start-aligned by default (forms, cards, panels); --end for dialog and drawer footers (Cancel, then the main action).
    Under 768px both stack at full width; in an --end group the main action goes on top. */
 .pulse-actions { display: flex; flex-direction: column; gap: var(--space-12); }
@@ -304,8 +387,36 @@ dialog.pulse-dialog::backdrop { background-color: var(--color-surface-overlay); 
 .pulse-slider:has(:disabled) .pulse-slider__label, .pulse-slider:has(:disabled) .pulse-slider__value { color: var(--color-text-disabled); }
 
 /* ---------- Tooltip ---------- */
-.pulse-tooltip { position: relative; display: inline-block; box-sizing: border-box; max-width: 240px; padding: var(--space-8) var(--space-12); border-radius: var(--radius-tag); background: var(--color-surface-contrast); color: var(--color-text-on-contrast); font: 400 var(--type-body-sm-size) / var(--type-body-sm-line-height) var(--font-sans); box-shadow: var(--shadow-elevation-default-md); }
+/* A short label for a control. On its own it is just the bubble (for a static example). Inside an element with
+   pulse-tooltip-host (the button itself, or a wrapper around a control that can't hold children) it stays hidden and
+   shows when the host is hovered or focused with the keyboard, or while the tooltip has is-open (say, "Copied").
+   Placement: above the host by default; --bottom, --left and --right for the other sides. With above or below, --start / --end
+   line it up with that edge of the host instead of centering it (use them near the edge of a container). No script needed; pulse.js adds Esc to hide it.
+   The tooltip is extra: give the control its own name (aria-label or text) and mark the tooltip aria-hidden="true",
+   or point aria-describedby at it when it says more than the name. */
+.pulse-tooltip { --tip-gap: var(--space-8); position: relative; display: inline-block; box-sizing: border-box; max-width: 240px; padding: var(--space-8) var(--space-12); border-radius: var(--radius-tag); background: var(--color-surface-contrast); color: var(--color-text-on-contrast); font: 400 var(--type-body-sm-size) / var(--type-body-sm-line-height) var(--font-sans); letter-spacing: normal; text-align: left; text-transform: none; white-space: normal; box-shadow: var(--shadow-elevation-default-md); }
 .pulse-tooltip::after { content: ""; position: absolute; left: 50%; bottom: -4px; width: 8px; height: 8px; background: inherit; transform: translateX(-50%) rotate(45deg); }
+.pulse-tooltip--bottom::after { bottom: auto; top: -4px; }
+.pulse-tooltip--left::after { left: auto; right: -4px; bottom: auto; top: 50%; transform: translateY(-50%) rotate(45deg); }
+.pulse-tooltip--right::after { left: -4px; bottom: auto; top: 50%; transform: translateY(-50%) rotate(45deg); }
+.pulse-tooltip--start::after { left: var(--space-24); }
+.pulse-tooltip--end::after { left: auto; right: var(--space-24); transform: translateX(50%) rotate(45deg); }
+.pulse-tooltip-host { position: relative; }
+.pulse-tooltip-host > .pulse-tooltip { position: absolute; z-index: 10; bottom: calc(100% + var(--tip-gap)); left: 50%; width: max-content; translate: -50% 0; transform: translateY(var(--space-4)); opacity: 0; visibility: hidden; pointer-events: none; cursor: default; transition: opacity .15s ease, transform .15s ease, visibility 0s linear .15s; }
+.pulse-tooltip-host > .pulse-tooltip--bottom { bottom: auto; top: calc(100% + var(--tip-gap)); transform: translateY(calc(-1 * var(--space-4))); }
+.pulse-tooltip-host > .pulse-tooltip--left { bottom: auto; top: 50%; left: auto; right: calc(100% + var(--tip-gap)); translate: 0 -50%; transform: translateX(var(--space-4)); }
+.pulse-tooltip-host > .pulse-tooltip--right { bottom: auto; top: 50%; left: calc(100% + var(--tip-gap)); translate: 0 -50%; transform: translateX(calc(-1 * var(--space-4))); }
+/* Start / End: the bubble overhangs the host by 8px so the caret, 24px in, points at the middle of a 32px icon button. */
+.pulse-tooltip-host > .pulse-tooltip--start { left: calc(-1 * var(--space-8)); translate: 0 0; }
+.pulse-tooltip-host > .pulse-tooltip--end { left: auto; right: calc(-1 * var(--space-8)); translate: 0 0; }
+/* An invisible bridge over the gap, so the pointer can move from the control onto the tooltip without it closing. */
+.pulse-tooltip-host > .pulse-tooltip::before { content: ""; position: absolute; left: 0; right: 0; top: 100%; height: var(--tip-gap); }
+.pulse-tooltip-host > .pulse-tooltip--bottom::before { top: auto; bottom: 100%; }
+.pulse-tooltip-host > .pulse-tooltip--left::before { top: 0; bottom: 0; left: 100%; right: auto; width: var(--tip-gap); height: auto; }
+.pulse-tooltip-host > .pulse-tooltip--right::before { top: 0; bottom: 0; left: auto; right: 100%; width: var(--tip-gap); height: auto; }
+.pulse-tooltip-host:hover > .pulse-tooltip, .pulse-tooltip-host:focus-visible > .pulse-tooltip, .pulse-tooltip-host > :focus-visible ~ .pulse-tooltip, .pulse-tooltip-host > .pulse-tooltip.is-open { opacity: 1; visibility: visible; pointer-events: auto; transform: none; transition: opacity .15s ease, transform .15s ease, visibility 0s; }
+/* Esc (pulse.js) hides it until the pointer or focus leaves the host. */
+.pulse-tooltip-host.is-dismissed > .pulse-tooltip:not(.is-open) { opacity: 0; visibility: hidden; pointer-events: none; }
 
 /* ---------- Popover ---------- */
 /* A click-opened card next to its trigger (info icon, feedback button). Placement names the side of the trigger it sits on
@@ -339,6 +450,8 @@ dialog.pulse-dialog::backdrop { background-color: var(--color-surface-overlay); 
 
 @media (prefers-reduced-motion: reduce) {
   .pulse-btn, .pulse-toggle input, .pulse-toggle input::before, .pulse-slider__input::-webkit-slider-thumb, .pulse-link > .pulse-icon:last-child { transition: none; }
+  .pulse-tooltip-host > .pulse-tooltip { transform: none; transition: none; }
+  dialog.pulse-drawer, dialog.pulse-drawer::backdrop { transition: none; }
   .pulse-btn[aria-busy="true"]::before { animation-duration: 2.4s; }
   .pulse-progress--indeterminate .pulse-progress__fill { animation: none; width: 100%; opacity: .5; }
 }

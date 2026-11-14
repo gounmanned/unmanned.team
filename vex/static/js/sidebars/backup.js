@@ -1,10 +1,14 @@
 class BackupSidebar {
+    static ICONS = { txt: 'description', csv: 'table_chart', md: 'article', json: 'code', log: 'bug_report', yml: 'code', zip: 'folder_zip', sql: 'storage' };
+
     constructor(state) {
         this.state = state;
         this.api = state.api;
         this.list = document.getElementById('file-list');
         this.wrap = document.getElementById('file-list-wrap');
+        this.crumbs = document.getElementById('file-breadcrumb');
         this.pathStack = [];
+        this.listen();
     }
 
     reset() {
@@ -13,6 +17,7 @@ class BackupSidebar {
 
     async reload() {
         this.list.innerHTML = '';
+        this.wrap.classList.remove('empty');
         this.api.file.root = ['backup', ...this.pathStack].join('/') + '/';
         this.breadcrumb();
 
@@ -21,46 +26,34 @@ class BackupSidebar {
         loader.remove();
 
         files.forEach(name => this.add(name));
-        this.wrap.classList.toggle('empty', files.length === 0);
+        this.wrap.classList.toggle('empty', !this.list.children.length);
     }
 
     breadcrumb() {
-        const bar = document.getElementById('file-breadcrumb');
-        bar.innerHTML = ['root', ...this.pathStack].map((part, i, arr) => {
-            const last = i === arr.length - 1;
-            return last
-                ? `<span class="crumb-active">${part}</span>`
-                : `<span class="crumb-link" data-depth="${i}">${part}</span><span class="crumb-sep">›</span>`;
-        }).join('');
-
-        bar.querySelectorAll('.crumb-link').forEach(el => {
-            el.addEventListener('click', () => {
-                this.pathStack = this.pathStack.slice(0, parseInt(el.dataset.depth));
-                this.reload();
-            });
-        });
+        const esc = Workspace.esc;
+        this.crumbs.innerHTML = ['Backups', ...this.pathStack].map((part, i, all) => i === all.length - 1
+            ? `<span class="crumb-active">${esc(part)}</span>`
+            : `<span class="crumb-link" data-depth="${i}">${esc(part)}</span><span class="crumb-sep">/</span>`
+        ).join('');
     }
 
     add(name) {
-        const folder = name.endsWith('/');
-        const rawName = name.replace(/\/$/, '');
-        const stripped = rawName.replace(/^backup\/?/, '');
-        if (!stripped) return;
+        const path = name.replace(/\/$/, '').replace(/^backup\/?/, '');
+        if (!path) return;
 
-        const displayName = stripped.split('/').pop();
-        const icons = { txt: 'description', csv: 'table_chart', md: 'article', json: 'code', log: 'bug_report', yml: 'code', zip: 'folder_zip', sql: 'storage' };
-        const icon = folder ? 'folder' : (icons[displayName.split('.').pop().toLowerCase()] || 'description');
+        const folder = name.endsWith('/');
+        const display = path.split('/').pop();
+        const icon = folder ? 'folder' : BackupSidebar.ICONS[display.split('.').pop().toLowerCase()] ?? 'description';
 
         const item = document.createElement('li');
         item.className = `entry ${folder ? 'entry-folder' : 'entry-file'}`;
         item.innerHTML = `
             <span class="material-symbols-outlined file-icon">${icon}</span>
-            <span class="message">${displayName}</span>
-            ${folder ? '<span class="material-symbols-outlined entry-chevron">chevron_right</span>' : ''}
-        `;
+            <span class="message">${Workspace.esc(display)}</span>
+            ${folder ? '<span class="material-symbols-outlined entry-chevron">chevron_right</span>' : ''}`;
 
-        item.addEventListener('click', () => folder ? this.open(displayName) : this.download(item, displayName));
-        this.list.appendChild(item);
+        item.addEventListener('click', () => folder ? this.open(display) : this.download(item, display));
+        this.list.append(item);
     }
 
     open(folder) {
@@ -74,22 +67,29 @@ class BackupSidebar {
         item.append(spinner);
 
         try {
-            const redirect = await this.api.file.call('GET', `file/${this.api.file.root.replace(/\/$/, '')}?name=${name}`);
+            const redirect = await this.api.file.call('GET', `file/${this.api.file.root.replace(/\/$/, '')}?name=${encodeURIComponent(name)}`);
             if (!redirect) return;
 
-            const response = await fetch(redirect.url, { method: 'GET' });
+            const response = await fetch(redirect.url);
             if (!response.ok) return;
 
-            const blob = await response.blob();
             const a = Object.assign(document.createElement('a'), {
-                href: URL.createObjectURL(blob),
+                href: URL.createObjectURL(await response.blob()),
                 download: name,
             });
-
             a.click();
             URL.revokeObjectURL(a.href);
         } finally {
             spinner.remove();
         }
+    }
+
+    listen() {
+        this.crumbs.addEventListener('click', (e) => {
+            const crumb = e.target.closest('.crumb-link');
+            if (!crumb) return;
+            this.pathStack = this.pathStack.slice(0, Number(crumb.dataset.depth));
+            this.reload();
+        });
     }
 }

@@ -42,8 +42,8 @@ class SiteHeader extends HTMLElement {
           color: var(--text-body);
         }
         .brand img {
-          height: 40px;
-          width: 40px;
+          height: 25px;
+          width: 25px;
           object-fit: contain;
         }
         .brand span {

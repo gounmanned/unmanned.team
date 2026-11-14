@@ -169,9 +169,8 @@ class TenantScreen {
         const [lx, ly] = pts.at(-1);
         const area = `${line} L${lx.toFixed(1)},${base} L${pts[0][0].toFixed(1)},${base} Z`;
 
-        const ticks = [0, 0.25, 0.5, 0.75, 1].map(f => {
-            const i = Math.round(f * (size - 1));
-            const anchor = f === 0 ? 'start' : f === 1 ? 'end' : 'middle';
+        const ticks = counts.map((_, i) => {
+            const anchor = i === 0 ? 'start' : i === size - 1 ? 'end' : 'middle';
             const text = yearly ? date(i).toLocaleDateString(undefined, { month: 'short' }) : i + 1;
             return `<text x="${x(i)}" y="${H - 4}" text-anchor="${anchor}">${text}</text>`;
         }).join('');

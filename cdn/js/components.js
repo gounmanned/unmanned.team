@@ -24,13 +24,13 @@ class SiteHeader extends HTMLElement {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          padding: 0 32px;
+          padding: 0 40px;
           height: 100%;
         }
         .logo-area {
           display: flex;
           align-items: center;
-          gap: 12px;
+          gap: 18px;
           flex-shrink: 0;
         }
         .brand {
@@ -42,8 +42,8 @@ class SiteHeader extends HTMLElement {
           color: var(--text-body);
         }
         .brand img {
-          height: 25px;
-          width: 25px;
+          height: 22px;
+          width: 22px;
           object-fit: contain;
         }
         .brand span {

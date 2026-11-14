@@ -23,7 +23,11 @@ class CoverageRollup {
     }
 
     static isActive(ts) {
-        return Date.now() - new Date(ts) < 15 * 60000;
+        return Date.now() - Workspace.time(ts) < 15 * 60000;
+    }
+
+    static later(a, b) {
+        return !b || Workspace.time(a) > Workspace.time(b) ? a : b;
     }
 
     static byDot = (a, b) => {
@@ -61,6 +65,7 @@ class CoverageRollup {
 
         this.ready = this._loadManifest();
         this.listen();
+        setInterval(() => this.loaded && this.screen.checkVisibility() && this._tick(), 60000);
     }
 
     // ── lifecycle ──────────────────────────────────────────────────
@@ -89,13 +94,19 @@ class CoverageRollup {
         this._loadPacks();
         await this._load();
         this._render();
+        this._loadSeen();
     }
 
     async refresh() {
-        await this._load();
-        this._render();
+        await this._tick();
         if (this.open?.kind !== 'asset') return;
         this.items.has(this.open.key) ? this._loadRuns() : this._close();
+    }
+
+    async _tick() {
+        await this._load();
+        this._render();
+        await this._loadSeen();
     }
 
     async _load() {
@@ -109,6 +120,20 @@ class CoverageRollup {
 
         this.items = this._merge(assets, sources);
         this.loaded = true;
+    }
+
+    async _loadSeen() {
+        const dotted = [...this.items.values()].filter(i => i.dot);
+        await Promise.all(dotted.map(async item => {
+            const runs = await this.api.inventory.get(item.dot.key) ?? [];
+            runs.forEach(r => this._see(item, r.created));
+        }));
+        this._render();
+    }
+
+    _see(item, ts) {
+        item.seen = CoverageRollup.later(ts, item.seen);
+        item.state = CoverageRollup.isActive(item.seen) ? 'live' : 'idle';
     }
 
     async _loadPacks() {
@@ -128,7 +153,7 @@ class CoverageRollup {
         const groups = Map.groupBy(assets, a => a.name.toLowerCase());
 
         return new Map([...groups.values()].map(members => {
-            const dot = members.filter(a => a.metadata.runtime).sort((a, b) => b.updated.localeCompare(a.updated))[0];
+            const dot = members.filter(a => a.metadata.runtime).sort((a, b) => Workspace.time(b.updated) - Workspace.time(a.updated))[0];
             const found = members.find(a => a.source && sources.some(s => s.includes(a.source)));
             const item = {
                 key: (dot ?? members[0]).key,
@@ -136,8 +161,9 @@ class CoverageRollup {
                 ref: found && this._parse(sources.find(s => s.includes(found.source))).ref,
                 dot,
                 members,
-                state: !dot ? 'none' : CoverageRollup.isActive(dot.updated) ? 'live' : 'idle',
+                state: 'none',
             };
+            if (dot) this._see(item, CoverageRollup.later(dot.updated, this.items.get(item.key)?.seen));
             return [item.key, item];
         }));
     }
@@ -159,10 +185,6 @@ class CoverageRollup {
         return other.length ? [...groups, { ref: 'other', name: 'Other', items: other, other: true }] : groups;
     }
 
-    _coverage(items) {
-        return Math.round(items.filter(i => i.dot).length / items.length * 100);
-    }
-
     // ── render ─────────────────────────────────────────────────────
 
     _render() {
@@ -177,7 +199,7 @@ class CoverageRollup {
         this.stats.innerHTML = [
             `<span class="stat"><b>${n(this._connections().length)}</b>sources</span>`,
             `<span class="stat"><b>${n(items.length)}</b>assets</span>`,
-            `<span class="stat"><b>${n(items.length ? `${this._coverage(items)}%` : '—')}</b>coverage</span>`,
+            `<span class="stat"><b>${n(items.filter(i => i.dot).length)}</b>dots</span>`,
         ].join('<span class="stat-divider"></span>');
     }
 
@@ -248,7 +270,7 @@ class CoverageRollup {
                 <span class="cov-col-source">${source ? `${this._logo(source.vendor, 'cov-chip-logo')}${this._sourceName(source)}` : '—'}</span>
                 <span class="cov-state">${CoverageRollup.STATE_LABEL[item.state]}</span>
                 <span class="cov-col-extra">${Workspace.esc(item.dot?.metadata.runtime ?? '')}</span>
-                <span class="cov-col-extra cov-seen">${item.dot ? this._ago(item.dot.updated) : ''}</span>
+                <span class="cov-col-extra cov-seen">${item.dot ? this._ago(item.seen) : ''}</span>
                 <span class="material-symbols-outlined cov-go">chevron_right</span>
             </div>`;
     }
@@ -414,8 +436,10 @@ class CoverageRollup {
         const key = this.open.key;
         const runs = await this.api.inventory.get(this.items.get(key).dot.key) ?? [];
         if (this.open?.key !== key) return;   // they opened something else mid-fetch
-        this.runs = runs.sort((a, b) => b.created.localeCompare(a.created));
+        this.runs = runs.sort((a, b) => Workspace.time(b.created) - Workspace.time(a.created));
+        this.runs.forEach(r => this._see(this.items.get(key), r.created));
         this._renderDrawer();
+        this._render();
     }
 
     _runsView() {
@@ -569,7 +593,7 @@ class CoverageRollup {
     }
 
     _ago(ts) {
-        const minutes = Math.round((Date.now() - new Date(ts)) / 60000);
+        const minutes = Math.round((Date.now() - Workspace.time(ts)) / 60000);
         if (minutes < 1) return 'just now';
         if (minutes < 60) return `${minutes}m ago`;
         if (minutes < 1440) return `${Math.round(minutes / 60)}h ago`;
@@ -577,7 +601,7 @@ class CoverageRollup {
     }
 
     _clock(ts) {
-        return new Date(ts).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        return new Date(Workspace.time(ts)).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' });
     }
 
     // ── events ─────────────────────────────────────────────────────

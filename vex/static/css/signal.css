@@ -1,76 +1,80 @@
 #signal-sidebar {
-  --accent: var(--brand);
+  --accent: var(--text-faint);  
   display: flex;
   flex-direction: column;
   height: 100%;
+  background: var(--surface);
 
   &[data-risk="low"]    { --accent: var(--risk-low, #16a34a); }
   &[data-risk="medium"] { --accent: var(--risk-medium, #ea580c); }
   &[data-risk="high"]   { --accent: var(--risk-high, #dc2626); }
 
-  /* ── Banner ─────────────────────────────────────────────────── */
+  /* ── Header: plain surface, risk carried by the icon and chip ─────── */
 
   .signal-banner {
     flex-shrink: 0;
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 9px 12px 9px 18px;
-    background: var(--accent);
-    color: #fff;
-    font-size: 11.5px;
-    font-weight: 700;
-    letter-spacing: 0.6px;
-    text-transform: uppercase;
-    transition: background-color 0.2s;
+    gap: 10px;
+    padding: 14px 14px 14px 18px;
+    border-bottom: 1px solid var(--line);
 
-    > .material-symbols-outlined { font-size: 16px; }
+    > .material-symbols-outlined {
+      font-size: 20px;
+      color: var(--accent);
+    }
   }
 
-  .banner-label { flex: 1; }
+  .banner-label {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-body);
+  }
 
   .banner-threat {
-    padding: 2px 8px;
-    border-radius: 999px;
-    background: rgba(255,255,255,0.22);
+    padding: 3px 9px;
+    border-radius: 20px;
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
     font-size: 10.5px;
-    letter-spacing: 0.4px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
     white-space: nowrap;
+    color: var(--accent);
   }
 
   .delete-btn {
+    all: unset;
     display: grid;
     place-items: center;
-    width: 24px;
-    height: 24px;
-    padding: 0;
-    border: none;
+    width: 28px;
+    height: 28px;
     border-radius: 6px;
-    background: none;
-    color: rgba(255,255,255,0.75);
+    color: var(--text-faint);
     cursor: pointer;
-    transition: background-color 0.15s, color 0.15s;
+    transition: background 0.15s, color 0.15s;
 
-    &:hover {
-      background: rgba(255,255,255,0.18);
-      color: #fff;
-    }
+    &:hover { background: color-mix(in srgb, var(--risk-high, #dc2626) 10%, transparent); color: var(--risk-high, #dc2626); }
+    &:focus-visible { outline: 2px solid var(--brand); outline-offset: 1px; }
 
-    .material-symbols-outlined { font-size: 16px; }
+    .material-symbols-outlined { font-size: 18px; }
   }
 
-  /* ── Thread ─────────────────────────────────────────────────── */
+  /* ── Thread ───────────────────────────────────────────────────────── */
 
   .thread {
     flex: 1;
     min-height: 0;
     overflow-y: auto;
-    background: var(--surface);
 
     .avatar {
       width: 28px;
       height: 28px;
-      border-radius: 6px;
+      border-radius: 50%;
       object-fit: cover;
       background: var(--surface);
       box-shadow: 0 0 0 1px var(--line);
@@ -80,9 +84,9 @@
 
     .meta {
       display: flex;
-      align-items: baseline;
+      align-items: center;
       gap: 8px;
-      line-height: 28px;
+      height: 28px;
     }
 
     .sender {
@@ -92,51 +96,50 @@
     }
 
     .tag {
-      padding: 0 6px;
-      border: 1px solid color-mix(in srgb, var(--brand) 35%, transparent);
-      border-radius: 4px;
-      font-size: 11px;
-      font-weight: 500;
-      line-height: 18px;
+      padding: 2px 8px;
+      border-radius: 20px;
+      background: color-mix(in srgb, var(--brand) 10%, transparent);
+      font-size: 10.5px;
+      font-weight: 700;
       color: var(--brand);
     }
 
     .timestamp {
       margin-left: auto;
-      font-size: 11.5px;
-      color: var(--text-faint);
+      font-size: 11px;
+      font-variant-numeric: tabular-nums;
       white-space: nowrap;
+      color: var(--text-faint);
     }
   }
 
   .updates {
-    list-style: none;
     margin: 0;
     padding: 0;
+    list-style: none;
 
     > li {
       position: relative;
       display: grid;
-      grid-template-columns: 28px 1fr;
+      grid-template-columns: 28px minmax(0, 1fr);
       column-gap: 12px;
-      padding: 14px 18px;
+      padding: 12px 18px;
     }
 
     > li:not(:first-child)::before {
-      content: "";
+      content: '';
       position: absolute;
+      top: 44px;
+      bottom: -8px;
       left: 31.5px;
-      top: 46px;
-      bottom: -10px;
       width: 1px;
       background: var(--line);
     }
 
     > li:first-child {
-      padding: 18px;
       margin-bottom: 6px;
-      background: color-mix(in srgb, var(--accent) 5%, var(--surface));
-      border-bottom: 1px solid color-mix(in srgb, var(--accent) 15%, var(--line));
+      padding: 18px;
+      border-bottom: 1px solid var(--line);
 
       .body { font-size: 14.5px; }
     }
@@ -146,19 +149,33 @@
       line-height: 1.6;
       color: var(--text-body);
     }
+
+    .thinking { color: var(--text-faint); }
+
+    pre {
+      max-height: 420px;
+      margin: 4px 0 0;
+      padding: 12px 14px;
+      overflow: auto;
+      border-radius: 8px;
+      background: color-mix(in srgb, var(--text-faint) 7%, transparent);
+      font: 12px/1.6 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      white-space: pre;
+      color: var(--text-body);
+    }
   }
 
-  /* ── vex's turn: your call ──────────────────────────────────── */
+  /* ── vex's turn: your call ────────────────────────────────────────── */
 
   .next-turn {
     display: grid;
-    grid-template-columns: 28px 1fr;
+    grid-template-columns: 28px minmax(0, 1fr);
     column-gap: 12px;
-    padding: 14px 18px 22px;
+    padding: 12px 18px 24px;
   }
 
   .prompt {
-    margin: 0 0 10px;
+    margin: 0 0 12px;
     font-size: 13.5px;
     line-height: 1.6;
     color: var(--text-body);
@@ -176,26 +193,27 @@
     border: 1px solid var(--line);
     border-radius: 6px;
     background: var(--surface);
-    font-family: inherit;
-    font-size: 13px;
+    font: inherit;
+    font-size: 12.5px;
     font-weight: 500;
     color: var(--text-body);
     cursor: pointer;
-    transition: border-color 0.15s, background-color 0.15s;
+    transition: background 0.15s, border-color 0.15s;
 
-    &:hover { border-color: var(--brand); }
+    &:hover { background: var(--surface-alt); }
+    &:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
 
     &.is-primary {
-      border-color: var(--brand);
-      background: var(--brand);
-      color: #fff;
+      border-color: var(--text-body);
+      background: var(--text-body);
+      color: var(--surface);
 
-      &:hover { background: color-mix(in srgb, var(--brand) 88%, #000); }
+      &:hover { background: color-mix(in srgb, var(--text-body) 85%, var(--surface)); }
     }
   }
 
   .closes {
-    margin: 10px 0 0;
+    margin: 12px 0 0;
     font-size: 12px;
     color: var(--text-faint);
 
@@ -208,37 +226,45 @@
       color: var(--text-body);
       cursor: pointer;
 
-      &:hover { text-decoration: underline; }
+      &:hover { color: var(--brand); }
     }
   }
 
   &.is-busy .next-turn { display: none; }
 
-  /* ── Composer ───────────────────────────────────────────────── */
+  /* ── Composer: a soft filled field, no box lines ──────────────────── */
 
   .composer {
     flex-shrink: 0;
     display: grid;
     grid-template-areas: "input";
-    padding: 12px 18px 10px;
-    border-top: 1px solid var(--line);
+    margin: 0;
+    padding: 8px 14px 14px;
   }
 
   .composer-input {
     grid-area: input;
+    box-sizing: border-box;
     width: 100%;
-    height: 96px;
-    padding: 13px 44px 13px 14px;
+    height: 84px;
+    padding: 12px 52px 12px 16px;
     border: none;
-    font-family: inherit;
+    border-radius: 14px;
+    outline: none;
+    background: color-mix(in srgb, var(--text-faint) 8%, transparent);
+    font: inherit;
     font-size: 13.5px;
     line-height: 1.55;
     color: var(--text-body);
-    box-sizing: border-box;
     resize: none;
-    outline: none;
+    transition: background 0.15s, box-shadow 0.15s;
 
     &::placeholder { color: var(--text-faint); }
+
+    &:focus {
+      background: var(--surface);
+      box-shadow: 0 0 0 1px var(--line), 0 6px 20px rgb(0 0 0 / 0.06);
+    }
   }
 
   .fields { display: none; }
@@ -250,30 +276,27 @@
     justify-self: end;
     display: grid;
     place-items: center;
-    width: 28px;
-    height: 28px;
-    margin: 0 8px 8px 0;
+    width: 30px;
+    height: 30px;
+    margin: 0 10px 10px 0;
     padding: 0;
     border: none;
     border-radius: 50%;
-    background: var(--accent);
-    font-family: inherit;
-    color: #fff;
+    background: var(--text-body);
+    color: var(--surface);
     cursor: pointer;
-    transition: background-color 0.15s;
+    transition: opacity 0.15s;
 
-    &:hover { background: color-mix(in srgb, var(--accent) 88%, #000); }
-
-    .material-symbols-outlined { font-size: 16px; }
+    .material-symbols-outlined { font-size: 17px; }
   }
+
+  .composer:has(.composer-input:placeholder-shown) .send-btn { opacity: 0.2; }
 
   .send-label { display: none; }
 
-  /* ── New signal ─────────────────────────────────────────────── */
+  /* ── New signal ───────────────────────────────────────────────────── */
 
   &.is-new {
-    .signal-banner { background: #111; }
-
     .thread,
     .delete-btn { display: none; }
 
@@ -292,17 +315,21 @@
     .composer-input {
       height: auto;
       padding: 18px;
-      font-size: 14px;
       border-bottom: 1px solid var(--line);
+      border-radius: 0;
+      background: none;
+      font-size: 14px;
+
+      &:focus { box-shadow: none; }
     }
 
     .fields {
       grid-area: fields;
       display: flex;
       flex-wrap: wrap;
-      gap: 10px 8px;
+      gap: 12px 8px;
       min-width: 0;
-      padding: 12px 8px 18px 18px;
+      padding: 14px 8px 18px 18px;
     }
 
     .field {
@@ -310,41 +337,41 @@
       min-width: 0;
       display: flex;
       flex-direction: column;
-      gap: 5px;
+      gap: 6px;
 
       label {
-        font-size: 9px;
-        font-weight: 700;
-        letter-spacing: 0.8px;
+        font-size: 10.5px;
+        font-weight: 600;
+        letter-spacing: 0.06em;
         text-transform: uppercase;
-        color: #b8bfc9;
+        color: var(--text-faint);
       }
 
       input {
+        box-sizing: border-box;
         width: 100%;
         min-width: 0;
-        height: 30px;
-        padding: 5px 10px;
+        height: 32px;
+        padding: 0 10px;
         border: 1px solid var(--line);
         border-radius: 6px;
-        background: var(--surface);
-        font-family: inherit;
-        font-size: 12px;
-        color: var(--text-body);
-        box-sizing: border-box;
         outline: none;
-        transition: border-color 0.15s;
+        background: var(--surface);
+        font: inherit;
+        font-size: 12.5px;
+        color: var(--text-body);
+        transition: border-color 0.15s, box-shadow 0.15s;
 
-        &:focus { border-color: var(--accent); }
+        &:focus {
+          border-color: var(--text-body);
+          box-shadow: 0 0 0 3px color-mix(in srgb, var(--text-body) 8%, transparent);
+        }
       }
 
       input[type="datetime-local"] {
         padding-right: 6px;
 
-        &::-webkit-calendar-picker-indicator {
-          opacity: 0.45;
-          cursor: pointer;
-        }
+        &::-webkit-calendar-picker-indicator { opacity: 0.45; cursor: pointer; }
         &:hover::-webkit-calendar-picker-indicator { opacity: 0.8; }
       }
     }
@@ -353,13 +380,13 @@
 
     .send-btn {
       grid-area: send;
-      flex-shrink: 0;
-      width: 30px;
-      height: 30px;
+      width: 32px;
+      height: 32px;
       margin: 0 18px 18px 0;
-      background: #111;
-
-      &:hover { background: #2a2a2a; }
     }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition: none !important; }
   }
 }

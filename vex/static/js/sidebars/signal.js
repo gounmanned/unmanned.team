@@ -127,11 +127,24 @@ class SignalSidebar {
         timestamp.dateTime = when ?? "";
 
         li.querySelector(".sender").textContent = source;
-        li.querySelector(".body").innerHTML = Markdown.parse(update.value ?? "");
+
+        const body = li.querySelector(".body");
+        const json = SignalSidebar.json(update.value);
+        if (json) body.replaceChildren(Object.assign(document.createElement("pre"), { textContent: json }));
+        else body.innerHTML = Markdown.parse(update.value ?? "");
 
         document.getElementById("updates").append(li);
         document.getElementById("response").value = "";
         li.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+
+    static json(text) {
+        try {
+            const value = JSON.parse(text);
+            return typeof value === "object" && value ? JSON.stringify(value, null, 2) : null;
+        } catch {
+            return null;
+        }
     }
 
     async note() {

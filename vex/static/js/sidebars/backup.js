@@ -21,12 +21,15 @@ class BackupSidebar {
         this.api.file.root = ['backup', ...this.pathStack].join('/') + '/';
         this.breadcrumb();
 
-        const loader = SiteSpinner.cover(this.wrap);
         const files = await this.api.file.list();
-        loader.remove();
-
         files.forEach(name => this.add(name));
         this.wrap.classList.toggle('empty', !this.list.children.length);
+    }
+
+    async browse() {
+        const loader = SiteSpinner.cover(this.wrap);
+        await this.reload();
+        loader.remove();
     }
 
     breadcrumb() {
@@ -58,7 +61,7 @@ class BackupSidebar {
 
     open(folder) {
         this.pathStack.push(folder);
-        this.reload();
+        this.browse();
     }
 
     async download(item, name) {
@@ -89,7 +92,7 @@ class BackupSidebar {
             const crumb = e.target.closest('.crumb-link');
             if (!crumb) return;
             this.pathStack = this.pathStack.slice(0, Number(crumb.dataset.depth));
-            this.reload();
+            this.browse();
         });
     }
 }

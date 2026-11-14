@@ -29,7 +29,6 @@ class TenantScreen {
 
     // ── data ───────────────────────────────────────────────────────
 
-    // background reloads update in place; only a reset() hides the numbers
     async reload() {
         const filter = this.month ? `date=${TenantScreen.yyyymm(this.month)}` : '';
         await Promise.all([
@@ -43,7 +42,6 @@ class TenantScreen {
         this.schedule();
     }
 
-    // data is cleared, so numbers stay hidden until reload() refills them, then fade in once
     reset() {
         this.api.reset();
         this.loading = true;
@@ -145,7 +143,6 @@ class TenantScreen {
     }
 
     renderTrend(signals) {
-        // month view: one point per day · year view: one point per month
         const now = new Date();
         const yearly = !this.month;
         const size = yearly ? 12 : new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
@@ -244,7 +241,6 @@ class TenantScreen {
 
     // ── audit ──────────────────────────────────────────────────────
 
-    // a single 1h count; the audit rollup does the live tailing once opened
     async loadEvents() {
         const end = new Date();
         const start = new Date(end - 3600000);

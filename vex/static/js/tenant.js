@@ -6,6 +6,7 @@ class TenantScreen {
         this.api = state.api;
         this.month = new Date();
         this.outcome = 'all';
+        this.loading = true;
 
         this.screen = document.getElementById('tenant-screen');
         this.period = document.getElementById('trend-period');
@@ -30,13 +31,20 @@ class TenantScreen {
 
     async reload() {
         const filter = this.month ? `date=${TenantScreen.yyyymm(this.month)}` : '';
-        await this.api.signals.list(filter, new CustomEvent('signal:account'));
-        await this.api.signals.list('status=O', new CustomEvent('signal:account'));
-        await this.loadSetup();
+        await Promise.all([
+            this.api.signals.list(filter, new CustomEvent('signal:account')),
+            this.api.signals.list('status=O', new CustomEvent('signal:account')),
+            this.loadSetup(),
+            this.loadEvents(),
+        ]);
+
+        this.loading = false;
+        this.schedule();
     }
 
     reset() {
         this.api.reset();
+        this.loading = true;
         this.schedule();
     }
 
@@ -95,6 +103,7 @@ class TenantScreen {
             this.renderOutcomes(closed);
             this.renderTrend(all.filter(Table.SCOPES.threats));
             this.screen.classList.toggle('critical', threats.some(s => s.metadata.threat));
+            this.screen.classList.toggle('loading', this.loading);
         });
     }
 
@@ -116,21 +125,14 @@ class TenantScreen {
     renderKpis(closed) {
         const timed = closed.filter(Table.SCOPES.threats);
         const withDue = closed.filter(s => s.due);
-        const span = s => Table.ended(s) - Workspace.time(s.created);
-        const mttr = timed.length ? timed.reduce((t, s) => t + span(s), 0) / timed.length : null;
-        const pct = (n, of) => of ? `${Math.round(n / of * 100)}%` : null;
+        const mttr = timed.reduce((t, s) => t + Table.ended(s) - Workspace.time(s.created), 0) / timed.length;
+        const pct = (n, of, none = '—') => of ? `${Math.round(n / of * 100)}%` : none;
+        const set = (id, text) => document.getElementById(id).textContent = text;
 
-        const kpis = [
-            ['MTTR', mttr == null ? null : Table.span(mttr)],
-            ['Autoclosed', pct(closed.filter(s => s.status === 'CV').length, closed.length)],
-            ['Within SLA', pct(withDue.filter(s => Table.ended(s) <= Workspace.time(s.due)).length, withDue.length)],
-        ];
-
-        document.getElementById('resolved-count').textContent = closed.length.toLocaleString();
-        document.getElementById('kpis').innerHTML = kpis
-            .filter(([, value]) => value != null)
-            .map(([label, value]) => `<div><dt>${label}</dt><dd>${value}</dd></div>`)
-            .join('');
+        set('kpi-mttr', !timed.length ? '—' : mttr < 60000 ? '0' : Table.span(mttr));
+        set('kpi-autoclosed', pct(closed.filter(s => s.status === 'CV').length, closed.length));
+        set('kpi-sla', pct(withDue.filter(s => Table.ended(s) <= Workspace.time(s.due)).length, withDue.length, '100%'));
+        set('resolved-count', closed.length.toLocaleString());
     }
 
     renderOutcomes(closed) {
@@ -141,7 +143,6 @@ class TenantScreen {
     }
 
     renderTrend(signals) {
-        // month view: one point per day · year view: one point per month
         const now = new Date();
         const yearly = !this.month;
         const size = yearly ? 12 : new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
@@ -236,6 +237,15 @@ class TenantScreen {
             chip.querySelector('.setup-chip-count').textContent = count.toLocaleString();
             chip.querySelector('.setup-chip-noun').textContent = count === 1 ? chip.dataset.noun.slice(0, -1) : chip.dataset.noun;
         }
+    }
+
+    // ── audit ──────────────────────────────────────────────────────
+
+    async loadEvents() {
+        const end = new Date();
+        const start = new Date(end - 3600000);
+        const logs = await this.api.audit.get(start.toISOString(), end.toISOString()) ?? [];
+        document.getElementById('events-count').textContent = logs.length.toLocaleString();
     }
 
     // ── events ─────────────────────────────────────────────────────

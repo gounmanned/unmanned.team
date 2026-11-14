@@ -1,6 +1,6 @@
 class AuditRollup {
     static TAIL_INTERVAL = 10000;
-    static TAIL_LOOKBACK = 15 * 60000;
+    static TAIL_LOOKBACK = 3600000;
     static TAIL_LIMIT = 1000;
     static CLOCK = new Intl.DateTimeFormat(undefined, {
         month: 'short', day: '2-digit',
@@ -16,11 +16,10 @@ class AuditRollup {
         this.input = document.getElementById('audit-search-input');
         this.results = document.getElementById('audit-results');
         this.count = document.getElementById('audit-count');
+        this.countLabel = document.getElementById('audit-count-label');
 
         this.listen();
     }
-
-    // Workspace calls reset() then reload() each time the rollup opens
 
     async reset() {
         this.stopTail();
@@ -36,13 +35,14 @@ class AuditRollup {
 
     startTail() {
         this.stopTail();
-        this.count.textContent = '0';
-        this.empty(`${SiteSpinner.inline} Tailing logs`);
+        this.total = 0;
+        this.setCount(0, '1h events');
+        this.empty(`${SiteSpinner.inline} Loading the last hour`);
 
         this.tailFrom = new Date(Date.now() - AuditRollup.TAIL_LOOKBACK);
         this.tailTimer = setInterval(() => this.pollTail(), AuditRollup.TAIL_INTERVAL);
         this.screen.classList.add('tailing');
-        this.pollTail();
+        this.pollTail(false);
     }
 
     stopTail() {
@@ -51,7 +51,7 @@ class AuditRollup {
         this.screen.classList.remove('tailing');
     }
 
-    async pollTail() {
+    async pollTail(flash = true) {
         const timer = this.tailTimer;
         const start = this.tailFrom;
         const end = this.tailFrom = new Date();
@@ -59,12 +59,15 @@ class AuditRollup {
         const logs = await this.api.audit.get(start.toISOString(), end.toISOString()) ?? [];
         if (timer !== this.tailTimer || !logs.length) return;
 
+        this.total += logs.length;
+        this.setCount(this.total, '1h events');
+
+        const rows = logs.slice(0, AuditRollup.TAIL_LIMIT);
         this.results.querySelector('.audit-empty')?.remove();
         this.results.insertAdjacentHTML('afterbegin',
-            logs.map(log => `<li class="tail-new">${this.line(log)}</li>`).join(''));
+            rows.map(log => `<li${flash ? ' class="tail-new"' : ''}>${this.line(log)}</li>`).join(''));
 
         while (this.results.children.length > AuditRollup.TAIL_LIMIT) this.results.lastElementChild.remove();
-        this.count.textContent = this.results.children.length.toLocaleString();
     }
 
     // ── search ─────────────────────────────────────────────────────
@@ -82,7 +85,7 @@ class AuditRollup {
         });
 
         if (query !== this.query) return;
-        this.count.textContent = logs.length.toLocaleString();
+        this.setCount(logs.length, 'matches');
         if (!logs.length) return this.empty(`No logs match "${Workspace.esc(query)}"`);
 
         const pattern = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
@@ -100,6 +103,11 @@ class AuditRollup {
         return `<time datetime="${log.timestamp}">${time}</time><span>${message}</span>`;
     }
 
+    setCount(n, label) {
+        this.count.textContent = n.toLocaleString();
+        this.countLabel.textContent = label;
+    }
+
     empty(text) {
         this.results.innerHTML = `<li class="audit-empty">${text}</li>`;
     }
@@ -110,7 +118,6 @@ class AuditRollup {
             this.search();
         };
 
-        // Escape drops the search and goes back to the live tail
         this.input.onkeydown = (e) => {
             if (e.key !== 'Escape') return;
             this.input.value = '';
@@ -122,7 +129,6 @@ class AuditRollup {
             e.target.closest('li:not(.audit-empty)')?.classList.toggle('expanded');
         };
 
-        // the rollup going out of view (closed) stops the tail
         new IntersectionObserver(([entry]) => {
             if (!entry.isIntersecting) this.stopTail();
         }).observe(this.screen);

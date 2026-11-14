@@ -52,12 +52,20 @@
     </button>
   </site-header>
 
-  <main class="container" id="tenant-screen">
+  <main class="container loading" id="tenant-screen">
     <section class="pulse" id="overview">
       <header class="pulse-head">
         <div class="pulse-title">
           <span class="pulse-label">Managed SOC</span>
-          <dl class="pulse-stats" id="kpis"></dl>
+          <div class="pulse-stats">
+            <span class="stat"><b id="kpi-mttr">—</b>MTTR</span>
+            <span class="stat"><b id="kpi-autoclosed">—</b>Autoclosed</span>
+            <span class="stat"><b id="kpi-sla">—</b>Within SLA</span>
+            <span class="stat-divider"></span>
+            <button type="button" class="stat stat-live" id="open-audit-rollup" title="Audit events in the last hour. Click to open the live log">
+              <b id="events-count">—</b>1h events
+            </button>
+          </div>
         </div>
         <nav class="segmented" id="trend-period" aria-label="Period">
           <button type="button" data-period="month" aria-pressed="true"></button>
@@ -100,12 +108,6 @@
     </section>
 
     <footer class="links">
-      <div class="links-start">
-        <button type="button" class="audit-live" id="open-audit-rollup" title="Audit log" aria-label="Audit log">
-          <i></i><i></i><i></i><i></i>
-        </button>
-      </div>
-
       <a id="open-backup-sidebar">Backups</a>
       <a id="open-signal-sidebar" class="cta">+ Add Signal</a>
     </footer>
@@ -198,7 +200,7 @@
       </div>
       <div class="audit-banner-stat">
         <span class="audit-banner-stat-value" id="audit-count">—</span>
-        <span class="audit-banner-stat-label">events</span>
+        <span class="audit-banner-stat-label" id="audit-count-label">1h events</span>
       </div>
     </div>
 

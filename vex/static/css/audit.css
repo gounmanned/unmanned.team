@@ -86,8 +86,6 @@
     }
   }
 
-  /* live indicator — shown only while tailing; bars drawn in CSS */
-
   .audit-tailing {
     display: none;
     flex-shrink: 0;
@@ -101,14 +99,11 @@
 
     &::before {
       content: '';
-      width: 14px;
-      height: 12px;
-      background:
-        linear-gradient(currentColor 0 0) 0    100% / 2px 30% no-repeat,
-        linear-gradient(currentColor 0 0) 4px  100% / 2px 80% no-repeat,
-        linear-gradient(currentColor 0 0) 8px  100% / 2px 50% no-repeat,
-        linear-gradient(currentColor 0 0) 12px 100% / 2px 100% no-repeat;
-      animation: audit-tailing 1.2s ease-in-out infinite;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+      animation: live-ping 1.8s ease-out infinite;
     }
   }
 
@@ -201,12 +196,6 @@
     }
   }
 }
-@keyframes audit-tailing {
-  0%, 100% { background-size: 2px 30%, 2px 80%, 2px 50%, 2px 100%; }
-  50%      { background-size: 2px 100%, 2px 40%, 2px 90%, 2px 30%; }
-}
-
-/* freshly tailed lines flash in */
 
 @keyframes audit-tail-flash {
   from { background: color-mix(in srgb, var(--brand) 14%, var(--surface)); }

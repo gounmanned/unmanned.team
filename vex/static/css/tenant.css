@@ -1,4 +1,4 @@
-/* ── layout: slim pulse on top, stacked lanes below ─────────────── */
+/* ── layout ─────────────── */
 
 :root {
   --header-h: calc(52px + 20px);
@@ -98,7 +98,6 @@
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand) 18%, transparent);
 }
 
-/* the top of the must-do queue is the thing to do next */
 #queue-list .q-item:first-child {
   padding: 12px 14px;
   border-color: color-mix(in srgb, var(--brand) 35%, var(--line));
@@ -118,7 +117,6 @@
   border-radius: 50%;
 }
 
-/* one line: name, then asset · source · age */
 .q-main {
   display: flex;
   align-items: baseline;
@@ -256,6 +254,7 @@
 /* ── pulse: pinned full-width SOC trend strip ───────────────────── */
 
 .pulse {
+  --radar: var(--brand);
   position: relative;
   z-index: 1;
   margin: -16px -20px 0;
@@ -264,7 +263,8 @@
   transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
 }
 
-/* once the lanes slide under it, lift the strip off the page */
+#tenant-screen.critical .pulse { --radar: var(--critical); }
+
 #tenant-screen.scrolled .pulse {
   background: var(--surface-alt);
   border-bottom-color: var(--line);
@@ -291,28 +291,75 @@
 
 .pulse-stats {
   display: flex;
+  align-items: baseline;
   gap: 28px;
-  margin: 0;
+  font-size: 12px;
+  color: var(--text-faint);
 }
 
-.pulse-stats div {
-  display: flex;
-  flex-direction: row-reverse;
+.stat {
+  display: inline-flex;
   align-items: baseline;
   gap: 6px;
 }
 
-.pulse-stats dd {
-  margin: 0;
+.stat b {
   font-size: 18px;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
   color: var(--text-body);
 }
 
-.pulse-stats dt {
-  font-size: 12px;
+.stat-divider {
+  align-self: center;
+  width: 1px;
+  height: 14px;
+  margin: 0 -8px;
+  background: var(--line);
+}
+
+.stat-live {
+  margin: -2px -8px;
+  padding: 2px 8px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.stat-live::before {
+  content: '';
+  align-self: center;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  color: var(--radar);
+  background: currentColor;
+  animation: live-ping 1.8s ease-out infinite;
+}
+
+.stat-live::after {
+  content: 'keyboard_arrow_down';
+  align-self: center;
+  margin-left: -2px;
+  font-family: 'Material Symbols Outlined';
+  font-size: 16px;
+  line-height: 1;
+  font-feature-settings: 'liga';
   color: var(--text-faint);
+  transition: color 0.15s, transform 0.15s;
+}
+
+.stat-live:hover { background: color-mix(in srgb, var(--text-faint) 10%, transparent); color: var(--text-body); }
+.stat-live:hover::after { color: var(--brand); transform: translateY(1px); }
+.stat-live:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+
+@keyframes live-ping {
+  from { box-shadow: 0 0 0 0 color-mix(in srgb, currentColor 60%, transparent); }
+  to   { box-shadow: 0 0 0 6px transparent; }
 }
 
 .segmented {
@@ -454,12 +501,7 @@
 
 /* ── trend chart ────────────────────────────────────────────────── */
 
-.trend-chart {
-  --radar: var(--brand);
-  min-width: 0;
-}
-
-#tenant-screen.critical .trend-chart { --radar: var(--critical); }
+.trend-chart { min-width: 0; }
 
 #trend-svg {
   display: block;
@@ -661,8 +703,8 @@
 .links {
   position: fixed;
   inset: auto 0 0;
-  display: grid;
-  grid-template-columns: 1fr auto auto;
+  display: flex;
+  justify-content: flex-end;
   align-items: center;
   gap: 8px;
   height: var(--footer-h);
@@ -670,12 +712,6 @@
   border-top: 1px solid var(--line);
   background: var(--surface);
   box-sizing: border-box;
-}
-
-.links-start {
-  display: flex;
-  align-items: center;
-  gap: 10px;
 }
 
 .links a {
@@ -697,40 +733,10 @@
   color: #fff;
 }
 
-/* audit log — a live equalizer that opens the rollup */
+.stat b, .lane-count, .trend-chart { transition: opacity 0.3s ease-out; }
 
-.audit-live {
-  all: unset;
-  display: inline-flex;
-  align-items: flex-end;
-  gap: 2px;
-  height: 14px;
-  padding: 6px 7px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background 0.15s;
-}
-
-.audit-live:hover { background: color-mix(in srgb, var(--brand) 10%, transparent); }
-.audit-live:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
-
-.audit-live i {
-  width: 2px;
-  height: 100%;
-  border-radius: 1px;
-  background: var(--brand);
-  transform-origin: bottom;
-  animation: audit-live 1.2s ease-in-out infinite;
-}
-
-.audit-live i:nth-child(2) { animation-delay: -0.45s; }
-.audit-live i:nth-child(3) { animation-delay: -0.9s; }
-.audit-live i:nth-child(4) { animation-delay: -0.2s; }
-
-@keyframes audit-live {
-  0%, 100% { transform: scaleY(0.3); }
-  50%      { transform: scaleY(1); }
-}
+#tenant-screen.loading :is(.stat b, .lane-count) { opacity: 0; transition: none; }
+#tenant-screen.loading .trend-chart { opacity: 0.35; transition: none; }
 
 /* ── reduced motion ─────────────────────────────────────────────── */
 
@@ -738,6 +744,6 @@
   .setup-chip-dot::after { animation: none !important; }
   #trend-svg .trend-today-pulse,
   #trend-svg .trend-wave { animation: none; opacity: 0; }
-  .audit-live i { animation: none; transform: scaleY(0.6); }
+  .stat-live::before { animation: none; }
   .q-item, .q-actions { transition: none; }
 }

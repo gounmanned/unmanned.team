@@ -10,7 +10,7 @@
   .managed-head {
     position: relative;
     flex-shrink: 0;
-    display: flex; align-items: center; gap: 20px;
+    display: flex; align-items: center; gap: 24px;
     height: 72px; padding: 0 var(--pad);
     border-bottom: 1px solid var(--line);
     background:
@@ -27,12 +27,12 @@
   }
 
   .managed-brand {
-    display: flex; align-items: center; gap: 4px;
+    display: flex; align-items: center; gap: 10px;
     flex-shrink: 0;
     color: var(--text-body);
 
-    img { width: 40px; height: 40px; object-fit: contain; }
-    span { font-size: 17px; font-weight: 700; letter-spacing: 0.01em; }
+    img { display: block; width: 24px; height: 24px; object-fit: contain; }
+    span { font-size: 17px; font-weight: 800; letter-spacing: 0.06em; line-height: 1; }
   }
 
   .managed-divider {

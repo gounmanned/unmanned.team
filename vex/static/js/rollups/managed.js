@@ -18,7 +18,6 @@ class ManagedRollup {
         this.scanning = true;       // until signals are in
         this.counting = true;       // until assets are in
 
-        document.getElementById('managed-user').textContent = this.me;
         this.listen();
         setInterval(() => this.loading || this.schedule(), 30000);   // keep countdowns fresh
     }
@@ -112,13 +111,13 @@ class ManagedRollup {
 
     _renderTotals() {
         const totals = [...this.assets.values()].reduce((t, a) => ({ assets: t.assets + a.assets, dots: t.dots + a.dots }), { assets: 0, dots: 0 });
-        const parts = [
-            !this.loading && plural(this.members.size, 'account'),
-            !this.counting && plural(totals.assets, 'asset'),
-            !this.counting && plural(totals.dots, 'dot'),
-        ].filter(Boolean);
+        const stat = (n, noun, ready) => `<span class="stat"><b>${ready ? fmt(n) : '—'}</b>${noun}${n === 1 ? '' : 's'}</span>`;
 
-        document.getElementById('managed-totals').innerHTML = parts.join('<i>·</i>');
+        document.getElementById('managed-totals').innerHTML = [
+            stat(this.members.size, 'account', !this.loading),
+            stat(totals.assets, 'asset', !this.counting),
+            stat(totals.dots, 'dot', !this.counting),
+        ].join('<span class="stat-divider"></span>');
     }
 
     _renderList() {

@@ -57,9 +57,7 @@ class Workspace {
 
                     this.rollups = {
                         managed: new ManagedRollup(state),
-                        source: new SourceRollup(state),
-                        dot: new DotRollup(state),
-                        map: new MapRollup(state),
+                        coverage: new CoverageRollup(state),
                         audit: new AuditRollup(state),
                     };
 

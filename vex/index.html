@@ -14,11 +14,9 @@
   <script>
     document.write(`
       <link rel="stylesheet" href="static/system/markdown.css?v=${v}">
-      <link rel="stylesheet" href="static/css/map.css?v=${v}">
       <link rel="stylesheet" href="static/css/managed.css?v=${v}">
-      <link rel="stylesheet" href="static/css/dot.css?v=${v}">
       <link rel="stylesheet" href="static/css/tenant.css?v=${v}">
-      <link rel="stylesheet" href="static/css/sources.css?v=${v}">
+      <link rel="stylesheet" href="static/css/coverage.css?v=${v}">
       <link rel="stylesheet" href="static/css/backups.css?v=${v}">
       <link rel="stylesheet" href="static/css/audit.css?v=${v}">
       <link rel="stylesheet" href="static/css/signal.css?v=${v}">
@@ -36,19 +34,17 @@
       <span class="material-symbols-outlined">keyboard_arrow_down</span>
     </button>
 
-    <button class="setup-chip" id="open-dot-rollup" data-state="empty" data-noun="Dots" title="Install the endpoint agent">
-      <span class="setup-chip-dot"></span>
-      <span class="setup-chip-count">0</span>
-      <span class="setup-chip-noun">Dots</span>
-    </button>
-    <button class="setup-chip" id="open-source-rollup" data-state="empty" data-noun="Sources" title="Connect an integration">
-      <span class="setup-chip-dot"></span>
-      <span class="setup-chip-count">0</span>
-      <span class="setup-chip-noun">Sources</span>
-    </button>
-    <span class="header-divider"></span>
-    <button class="header-icon-btn" id="open-map-rollup" title="Open map" aria-label="Open map">
-      <span class="material-symbols-outlined">location_on</span>
+    <button class="setup-chip" id="open-coverage-rollup" title="Sources and dots">
+      <span class="setup-seg" data-key="source" data-noun="Sources" data-state="empty">
+        <span class="setup-chip-dot"></span>
+        <span class="setup-chip-noun">Sources</span>
+        <span class="setup-chip-count">0</span>
+      </span>
+      <span class="setup-seg" data-key="dot" data-noun="Dots" data-state="empty">
+        <span class="setup-chip-dot"></span>
+        <span class="setup-chip-noun">Dots</span>
+        <span class="setup-chip-count">0</span>
+      </span>
     </button>
   </site-header>
 
@@ -145,47 +141,28 @@
 
   <!-- Rollups -->
 
-  <site-rollup id="dot-screen">
-    <div class="dot-banner">
-      <span class="dot-banner-dot"></span>
-      <div class="dot-banner-copy">
-        <h2 class="dot-banner-title">Dots</h2>
-        <p class="dot-banner-text">Tiny runtime processes that continuously harden their environment.</p>
+  <site-rollup id="coverage-screen">
+    <header class="cov-head">
+      <span class="material-symbols-outlined cov-head-icon">hub</span>
+      <div class="cov-head-text">
+        <h2>Coverage</h2>
+        <p>Sources discover your assets. Dots run on each one to keep it hardened.</p>
       </div>
-      <div class="dot-banner-stat">
-        <span class="dot-banner-stat-value" id="dot-banner-count">—</span>
-        <span class="dot-banner-stat-label">dots deployed</span>
-      </div>
+      <div class="cov-stats" id="cov-stats"></div>
+    </header>
+
+    <div class="cov-toolbar">
+      <label class="cov-search">
+        <span class="material-symbols-outlined">search</span>
+        <input id="cov-search" type="text" placeholder="Filter sources and assets" spellcheck="false" autocomplete="off">
+      </label>
+      <button type="button" class="cov-add" data-catalog>
+        <span class="material-symbols-outlined">add</span>Add source
+      </button>
     </div>
 
-    <div class="dot-body">
-      <div class="dot-left">
-        <div class="dot-search">
-          <span class="material-symbols-outlined">search</span>
-          <input id="dot-search-input" type="text" placeholder="Filter assets" spellcheck="false">
-        </div>
-        <div class="dot-list-wrap">
-          <ul id="dot-list"></ul>
-          <div class="dot-list-empty">No matching dots</div>
-        </div>
-      </div>
-      <div class="dot-mid" id="dot-mid"></div>
-    </div>
-  </site-rollup>
-
-  <site-rollup id="source-screen">
-    <div class="rollup-head">
-      <span class="material-symbols-outlined rollup-head-icon">radar</span>
-      <div class="rollup-head-text">
-        <h2>Sources</h2>
-        <p>Collect event logs and security alerts from third-party sources.</p>
-      </div>
-      <div class="src-mailbox" id="source-mailbox"></div>
-    </div>
-
-    <div class="table-wrap" id="source-table-wrap">
-      <div id="source-list"></div>
-    </div>
+    <div class="cov-body" id="cov-body"></div>
+    <aside class="cov-drawer" id="cov-drawer" hidden></aside>
   </site-rollup>
 
   <site-rollup id="audit-screen">
@@ -210,35 +187,6 @@
     <ul class="audit-results" id="audit-results"></ul>
   </site-rollup>
 
-  <site-rollup id="map-screen">
-    <div class="rollup-head">
-      <span class="material-symbols-outlined rollup-head-icon">location_on</span>
-      <div class="rollup-head-text">
-        <h2>Map</h2>
-        <p>Live view of sources and discovered assets.</p>
-      </div>
-      <div class="map-stats" id="map-stats"></div>
-    </div>
-
-    <div class="map-stage" id="map-stage">
-      <div class="map-graph" id="map-graph"></div>
-
-      <div class="map-overlay map-controls" id="map-controls">
-        <button data-act="in" aria-label="Zoom in" title="Zoom in"><span class="material-symbols-outlined">add</span></button>
-        <button data-act="out" aria-label="Zoom out" title="Zoom out"><span class="material-symbols-outlined">remove</span></button>
-        <button data-act="fit" aria-label="Fit" title="Fit to screen"><span class="material-symbols-outlined">fit_screen</span></button>
-      </div>
-
-      <div class="map-overlay map-legend">
-        <span><i class="sw-live"></i>Active</span>
-        <span><i class="sw-idle"></i>Idle</span>
-        <span><i class="sw-none"></i>Missing</span>
-      </div>
-
-      <aside class="map-peek" id="map-peek"></aside>
-    </div>
-  </site-rollup>
-  
   <!--Sidebars-->
 
   <site-sidebar id="signal-sidebar">
@@ -319,9 +267,7 @@
     <script src="static/js/sidebars/signal.js?v=${v}"><\/script>
     <script src="static/js/sidebars/backup.js?v=${v}"><\/script>
     <script src="static/js/rollups/managed.js?v=${v}"><\/script>
-    <script src="static/js/rollups/map.js?v=${v}"><\/script>
-    <script src="static/js/rollups/sources.js?v=${v}"><\/script>
-    <script src="static/js/rollups/dot.js?v=${v}"><\/script>
+    <script src="static/js/rollups/coverage.js?v=${v}"><\/script>
     <script src="static/js/rollups/audit.js?v=${v}"><\/script>
   `);
 </script>

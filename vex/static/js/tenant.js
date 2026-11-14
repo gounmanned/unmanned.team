@@ -29,6 +29,7 @@ class TenantScreen {
 
     // ── data ───────────────────────────────────────────────────────
 
+    // background reloads update in place; only a reset() hides the numbers
     async reload() {
         const filter = this.month ? `date=${TenantScreen.yyyymm(this.month)}` : '';
         await Promise.all([
@@ -42,6 +43,7 @@ class TenantScreen {
         this.schedule();
     }
 
+    // data is cleared, so numbers stay hidden until reload() refills them, then fade in once
     reset() {
         this.api.reset();
         this.loading = true;
@@ -143,6 +145,7 @@ class TenantScreen {
     }
 
     renderTrend(signals) {
+        // month view: one point per day · year view: one point per month
         const now = new Date();
         const yearly = !this.month;
         const size = yearly ? 12 : new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
@@ -169,6 +172,7 @@ class TenantScreen {
         const [lx, ly] = pts.at(-1);
         const area = `${line} L${lx.toFixed(1)},${base} L${pts[0][0].toFixed(1)},${base} Z`;
 
+        // a label for every day (or month); the ends anchor inward so they don't clip
         const ticks = counts.map((_, i) => {
             const anchor = i === 0 ? 'start' : i === size - 1 ? 'end' : 'middle';
             const text = yearly ? date(i).toLocaleDateString(undefined, { month: 'short' }) : i + 1;
@@ -229,17 +233,18 @@ class TenantScreen {
         });
     }
 
-    renderSetup({ dots, sources, warn = {} }) {
-        for (const [key, count] of Object.entries({ dot: dots, source: sources })) {
-            const chip = document.getElementById(`open-${key}-rollup`);
-            chip.dataset.state = !count ? 'empty' : warn[key] ? 'warn' : 'ok';
-            chip.querySelector('.setup-chip-count').textContent = count.toLocaleString();
-            chip.querySelector('.setup-chip-noun').textContent = count === 1 ? chip.dataset.noun.slice(0, -1) : chip.dataset.noun;
+    renderSetup({ dots, sources }) {
+        for (const [key, count] of Object.entries({ source: sources, dot: dots })) {
+            const seg = document.querySelector(`.setup-seg[data-key="${key}"]`);
+            seg.dataset.state = count ? 'ok' : 'empty';
+            seg.querySelector('.setup-chip-count').textContent = count.toLocaleString();
+            seg.querySelector('.setup-chip-noun').textContent = count === 1 ? seg.dataset.noun.slice(0, -1) : seg.dataset.noun;
         }
     }
 
     // ── audit ──────────────────────────────────────────────────────
 
+    // a single 1h count; the audit rollup does the live tailing once opened
     async loadEvents() {
         const end = new Date();
         const start = new Date(end - 3600000);

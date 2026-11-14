@@ -1,4 +1,4 @@
-/* ── layout ─────────────── */
+/* ── layout: slim pulse on top, stacked lanes below ─────────────── */
 
 :root {
   --header-h: calc(52px + 20px);
@@ -98,6 +98,7 @@
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand) 18%, transparent);
 }
 
+/* the top of the must-do queue is the thing to do next */
 #queue-list .q-item:first-child {
   padding: 12px 14px;
   border-color: color-mix(in srgb, var(--brand) 35%, var(--line));
@@ -117,6 +118,7 @@
   border-radius: 50%;
 }
 
+/* one line: name, then asset · source · age */
 .q-main {
   display: flex;
   align-items: baseline;
@@ -265,6 +267,7 @@
 
 #tenant-screen.critical .pulse { --radar: var(--critical); }
 
+/* once the lanes slide under it, lift the strip off the page */
 #tenant-screen.scrolled .pulse {
   background: var(--surface-alt);
   border-bottom-color: var(--line);
@@ -310,6 +313,7 @@
   color: var(--text-body);
 }
 
+/* sets the live, clickable events stat apart from the period KPIs */
 .stat-divider {
   align-self: center;
   width: 1px;
@@ -318,6 +322,7 @@
   background: var(--line);
 }
 
+/* events: a stat you can click into the live audit log */
 .stat-live {
   margin: -2px -8px;
   padding: 2px 8px;
@@ -353,10 +358,12 @@
   transition: color 0.15s, transform 0.15s;
 }
 
+/* hover matches the header setup chips */
 .stat-live:hover { background: color-mix(in srgb, var(--text-faint) 10%, transparent); color: var(--text-body); }
 .stat-live:hover::after { color: var(--brand); transform: translateY(1px); }
 .stat-live:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
 
+/* shared with the audit rollup's live indicator */
 @keyframes live-ping {
   from { box-shadow: 0 0 0 0 color-mix(in srgb, currentColor 60%, transparent); }
   to   { box-shadow: 0 0 0 6px transparent; }
@@ -587,12 +594,12 @@
 
 /* ── header ────────────────────── */
 
+/* one chip for coverage: a status dot + count per segment (sources, dots) */
 .setup-chip {
   all: unset;
-  --state: #16a34a;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 14px;
   height: 28px;
   padding: 0 4px 0 8px;
   border-radius: 6px;
@@ -604,8 +611,16 @@
 .setup-chip:hover { background: color-mix(in srgb, var(--text-faint) 10%, transparent); }
 .setup-chip:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
 
+.setup-seg {
+  --state: var(--risk-low, #16a34a);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.setup-seg[data-state="empty"] { --state: var(--brand); }
+
 .setup-chip-dot {
-  order: 0;
   position: relative;
   width: 6px;
   height: 6px;
@@ -613,8 +628,16 @@
   background: var(--state);
 }
 
+.setup-seg[data-state="empty"] .setup-chip-dot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--state);
+  animation: setup-ping 1.8s ease-out infinite;
+}
+
 .setup-chip-noun {
-  order: 1;
   font-size: 10.5px;
   font-weight: 600;
   letter-spacing: 0.06em;
@@ -624,17 +647,17 @@
 }
 
 .setup-chip-count {
-  order: 2;
   font-size: 13px;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
   color: var(--text-body);
 }
 
+.setup-seg[data-state="empty"] .setup-chip-count { color: var(--text-faint); }
+
 .setup-chip::after {
   content: 'keyboard_arrow_down';
-  order: 3;
-  margin-left: -2px;
+  margin-left: -8px;
   font-family: 'Material Symbols Outlined';
   font-size: 16px;
   line-height: 1;
@@ -645,53 +668,6 @@
 
 .setup-chip:hover .setup-chip-noun { color: var(--text-body); }
 .setup-chip:hover::after { color: var(--brand); transform: translateY(1px); }
-.setup-chip[aria-expanded="true"]::after { transform: rotate(180deg); }
-
-.setup-chip[data-state="warn"]  { --state: var(--risk-medium, #ea580c); }
-.setup-chip[data-state="empty"] { --state: var(--brand); }
-
-.setup-chip[data-state="warn"] .setup-chip-count { color: var(--state); }
-.setup-chip[data-state="empty"] .setup-chip-count { color: var(--text-faint); }
-
-.setup-chip[data-state="empty"] .setup-chip-dot::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background: var(--state);
-  animation: setup-ping 1.8s ease-out infinite;
-}
-
-.header-divider {
-  width: 1px;
-  height: 20px;
-  margin: 0 6px;
-  background: var(--line);
-}
-
-.header-icon-btn {
-  all: unset;
-  display: grid;
-  place-items: center;
-  width: 28px;
-  height: 28px;
-  border-radius: 6px;
-  color: var(--text-faint);
-  cursor: pointer;
-  transition: background 0.15s, color 0.15s;
-}
-
-.header-icon-btn:hover {
-  background: color-mix(in srgb, var(--text-faint) 10%, transparent);
-  color: var(--brand);
-}
-
-.header-icon-btn:focus-visible {
-  outline: 2px solid var(--brand);
-  outline-offset: 2px;
-}
-
-.header-icon-btn .material-symbols-outlined { font-size: 20px; }
 
 @keyframes setup-ping {
   from { transform: scale(1); opacity: 0.6; }
@@ -732,6 +708,8 @@
   background: #111;
   color: #fff;
 }
+
+/* ── loading: numbers wait for the data to settle, then fade in ── */
 
 .stat b, .lane-count, .trend-chart { transition: opacity 0.3s ease-out; }
 

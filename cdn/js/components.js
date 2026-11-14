@@ -20,60 +20,71 @@ class SiteHeader extends HTMLElement {
           backdrop-filter: var(--glass-blur, blur(24px) saturate(180%));
           border-bottom: 1px solid var(--line);
         }
+
         .header-container {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          padding: 0 40px;
           height: 100%;
+          padding: 0 40px;
         }
+
         .logo-area {
           display: flex;
           align-items: center;
-          gap: 18px;
+          gap: 24px;
           flex-shrink: 0;
         }
+
+        /* mark + product name, as one lockup */
         .brand {
           display: flex;
           align-items: center;
-          padding-right: 8px;
-          gap: 4px;
-          text-decoration: none;
+          gap: 10px;
           color: var(--text-body);
+          text-decoration: none;
         }
-        .brand img {
-          height: 22px;
-          width: 22px;
+
+        .brand-logo {
+          display: block;
+          width: 20px;
+          height: 20px;
           object-fit: contain;
         }
-        .brand span {
-          font-size: 0.95rem;
-          font-weight: 700;
-          letter-spacing: 0.01em;
+
+        .brand-name {
+          font-size: 15px;
+          font-weight: 800;
+          letter-spacing: 0.06em;
+          line-height: 1;
         }
+
         .divider {
-          width: 1px;
-          height: 24px;
-          background: var(--line);
           flex-shrink: 0;
+          width: 1px;
+          height: 20px;
+          background: var(--line);
         }
+
         .account-group {
           display: flex;
           align-items: center;
           gap: 6px;
+          margin-left: -8px;
           padding: 6px 8px;
           border-radius: 6px;
           cursor: pointer;
           transition: background 0.15s;
         }
-        .account-group:hover {
-          background: var(--surface-alt);
-        }
+
+        .account-group:hover { background: var(--surface-alt); }
+
         .account-name {
-          font-size: 0.95rem;
+          font-size: 15px;
           font-weight: 600;
           color: var(--text-body);
         }
+
         ::slotted([slot="account-switcher"]) {
           display: flex;
           align-items: center;
@@ -84,16 +95,17 @@ class SiteHeader extends HTMLElement {
           border: none;
           background: transparent;
           color: inherit;
-          cursor: pointer;
           font-size: 16px;
           line-height: 1;
           pointer-events: none;
         }
+
         nav {
           display: flex;
           align-items: center;
           gap: 12px;
         }
+
         @media (max-width: 768px) {
           nav { display: none; }
         }
@@ -102,7 +114,7 @@ class SiteHeader extends HTMLElement {
       <div class="header-container">
         <div class="logo-area">
           <a class="brand" href="/">
-            <img class="brand-logo" src="https://cdn.unmanned.team/img/logo.png"/>
+            <img class="brand-logo" src="https://cdn.unmanned.team/img/logo.png" alt="Unmanned">
             <span class="brand-name">VEX</span>
           </a>
           <span class="divider"></span>
@@ -118,10 +130,7 @@ class SiteHeader extends HTMLElement {
     `;
 
     this.shadowRoot.querySelector('.account-group').addEventListener('click', () => {
-      const switcher = this.shadowRoot
-        .querySelector('slot[name="account-switcher"]')
-        .assignedElements()[0];
-      switcher?.click();
+      this.shadowRoot.querySelector('slot[name="account-switcher"]').assignedElements()[0]?.click();
     });
   }
 

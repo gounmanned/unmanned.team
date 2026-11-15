@@ -428,7 +428,7 @@ class CoverageRollup {
                 <span class="cov-install-mark"></span>
                 <h4>No dot found</h4>
                 <p>Install a dot to keep ${Workspace.esc(item.name)} hardened.</p>
-                <button type="button" class="cov-primary" data-act="invite"><span class="material-symbols-outlined">mail</span>Send install invite</button>
+                <button type="button" class="cov-primary" data-act="invite"><span class="material-symbols-outlined">mail</span>Send invitation</button>
             </div>`;
     }
 

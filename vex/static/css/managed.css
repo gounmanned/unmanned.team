@@ -146,27 +146,16 @@
     &[aria-selected="true"] { box-shadow: inset 2px 0 0 var(--text-body); }
   }
 
-  .acct-needs .acct:first-child {
-    padding: 14px;
-    border-color: color-mix(in srgb, var(--overdue) 35%, var(--line));
-    box-shadow: 0 6px 20px rgb(0 0 0 / 0.05);
-
-    .acct-name { font-size: 15px; }
-  }
-
-  .acct-calm { gap: 0; }
-
-  .acct.calm {
+  .acct-needs, .acct-calm { gap: 0; }
+  .acct-needs .acct, .acct.calm {
     position: relative;
-    grid-template-columns: 30px minmax(0, 1fr) auto auto 132px;
     padding-block: 9px;
     border-color: transparent;
     background: none;
 
     &:hover { background: var(--surface-alt); }
-    .acct-name { font-weight: 500; }
 
-    & + .acct.calm::before {
+    & + .acct::before {
       content: '';
       position: absolute; top: -1px; left: 56px; right: 12px;
       height: 1px;
@@ -174,7 +163,12 @@
     }
 
     &:hover::before,
-    &:hover + .acct.calm::before { opacity: 0; }
+    &:hover + .acct::before { opacity: 0; }
+  }
+
+  .acct.calm {
+    grid-template-columns: 30px minmax(0, 1fr) auto auto 132px;
+    .acct-name { font-weight: 500; }
   }
 
   .acct-recs {

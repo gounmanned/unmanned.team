@@ -244,7 +244,7 @@ class ManagedRollup {
 
         return `
             <span class="acct-chip" title="${fmt(dots)} of ${fmt(assets)} assets running a dot">
-                <span class="acct-chip-assets"><b>${fmt(assets)}</b> asset${assets === 1 ? '' : 's'}</span>
+                <span class="acct-chip-assets"><b>${fmt(assets)}</b> assets</span>
                 <span class="acct-chip-cov" data-level="${level}"><i></i>${pct}%</span>
             </span>`;
     }

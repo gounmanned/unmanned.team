@@ -211,7 +211,7 @@ class CoverageRollup {
                 <div class="cov-empty">
                     <span class="material-symbols-outlined">hub</span>
                     <h4>Nothing connected yet</h4>
-                    <p>Connect a source to discover your assets, then install dots to keep them hardened.</p>
+                    <p>Connect a source. Then install dots.</p>
                     <button type="button" class="cov-primary" data-catalog><span class="material-symbols-outlined">add</span>Add source</button>
                 </div>`;
         }
@@ -229,7 +229,7 @@ class CoverageRollup {
                     <span></span><span>Asset</span><span class="cov-col-source">Source</span><span>Dot</span><span class="cov-col-extra">Runtime</span><span class="cov-col-extra cov-seen">Last seen</span><span></span>
                 </div>
                 ${items.map(i => this._row(i, sources.get(i.ref))).join('')}` : ''}
-            <p class="cov-no-match">No assets match</p>`;
+            <p class="cov-no-match">No match</p>`;
 
         this._filter();
     }
@@ -344,7 +344,7 @@ class CoverageRollup {
         const vendors = Object.keys(this.vendors).sort((a, b) => this.vendors[a].name.localeCompare(this.vendors[b].name));
 
         return `
-            ${this._drawerHead('Add a source', { sub: 'Connect an integration to collect its logs and alerts. The assets it reports show up here.' })}
+            ${this._drawerHead('Add a source', { sub: 'Connect an integration to collect security events and alerts.' })}
             <div class="cov-drawer-body">
                 <div class="cov-tiles">
                     <button type="button" class="cov-tile" data-act="mailbox">
@@ -367,7 +367,7 @@ class CoverageRollup {
         const disabled = this.connecting ? 'disabled' : '';
 
         return `
-            ${this._drawerHead(`Connect ${name}`, { sub: `Collect ${name} event logs, alerts and assets.`, back: this._iconBtn('back', 'arrow_back', 'All sources') })}
+            ${this._drawerHead(`Connect ${name}`, { sub: `Collect ${name} security events and alerts.`, back: this._iconBtn('back', 'arrow_back', 'All sources') })}
             <div class="cov-drawer-body cov-connect">
                 ${this._logo(vendor, 'cov-connect-logo')}
                 <div class="cov-field-head">
@@ -412,7 +412,7 @@ class CoverageRollup {
     _assetView(item) {
         const actions = `
             ${this._iconBtn('key', 'key', 'Copy dot key')}
-            ${this._iconBtn('delete', 'delete', 'Delete asset', 'is-danger')}
+            ${this._iconBtn('delete', 'delete', 'Delete', 'is-danger')}
             <span class="cov-head-divider"></span>`;
 
         return `
@@ -426,7 +426,7 @@ class CoverageRollup {
         return `
             <div class="cov-install">
                 <span class="cov-install-mark"></span>
-                <h4>No dot on this asset yet</h4>
+                <h4>No dot found</h4>
                 <p>Install a dot to keep ${Workspace.esc(item.name)} hardened.</p>
                 <button type="button" class="cov-primary" data-act="invite"><span class="material-symbols-outlined">mail</span>Send install invite</button>
             </div>`;

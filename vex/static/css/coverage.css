@@ -137,7 +137,7 @@
 
   .cov-sources button.is-confirming { border-color: var(--bad); background: var(--bad); color: #fff; font-weight: 600; }
 
-  /* ── Asset table: every asset in one list ─────────────────────── */
+  /* ── Table: each on one list ─────────────────────── */
 
   .cov-row {
     display: grid;

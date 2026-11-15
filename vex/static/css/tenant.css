@@ -118,7 +118,6 @@
   border-radius: 50%;
 }
 
-/* one line: name, then asset · source · age */
 .q-main {
   display: flex;
   align-items: baseline;

@@ -223,20 +223,14 @@ class TenantScreen {
     // ── setup ──────────────────────────────────────────────────────
 
     async loadSetup() {
-        const [assets, sources] = await Promise.all([this.api.inventory.list(), this.api.sources.list()]);
-        this.renderSetup({
-            dots: assets.filter(a => a.metadata?.runtime).length,
-            sources: sources.length,
-        });
+        const assets = await this.api.inventory.list();
+        this.renderSetup(new Set(assets.map(a => a.name.toLowerCase())).size);   // same de-dupe as the coverage table
     }
 
-    renderSetup({ dots, sources }) {
-        for (const [key, count] of Object.entries({ source: sources, dot: dots })) {
-            const seg = document.querySelector(`.setup-seg[data-key="${key}"]`);
-            seg.dataset.state = count ? 'ok' : 'empty';
-            seg.querySelector('.setup-chip-count').textContent = count.toLocaleString();
-            seg.querySelector('.setup-chip-noun').textContent = count === 1 ? seg.dataset.noun.slice(0, -1) : seg.dataset.noun;
-        }
+    renderSetup(assets) {
+        const seg = document.querySelector('.setup-seg');
+        seg.dataset.state = assets ? 'ok' : 'empty';
+        seg.querySelector('.setup-chip-count').textContent = assets.toLocaleString();
     }
 
     // ── audit ──────────────────────────────────────────────────────

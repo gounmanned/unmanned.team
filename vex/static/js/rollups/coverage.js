@@ -44,6 +44,7 @@ class CoverageRollup {
         this.search = document.getElementById('cov-search');
         this.stats = document.getElementById('cov-stats');
         this.drawer = document.getElementById('cov-drawer');
+        this.sourcesBtn = document.getElementById('cov-sources-btn');
         this.toast = document.createElement('div');
         this.toast.className = 'cov-toast';
         this.screen.append(this.toast);
@@ -53,8 +54,7 @@ class CoverageRollup {
         this.packOf = new Map();    // action id -> pack name
         this.loaded = false;
 
-        this.source = 'all';        // source chip: 'all', a source ref, or 'other'
-        this.confirming = false;    // disconnect awaiting a second click
+        this.confirming = null;     // source ref whose disconnect awaits a second click
 
         this.open = null;           // drawer: { kind: 'asset' | 'catalog' | 'connect' | 'mailbox', key }
         this.runs = [];             // open asset's runs, newest first
@@ -81,8 +81,7 @@ class CoverageRollup {
         await this.ready;
         this.loaded = false;
         this.items = new Map();
-        this.source = 'all';
-        this.confirming = false;
+        this.confirming = null;
         this.search.value = '';
         Object.values(this.vendors).forEach(v => { v.ids = []; });
         this._close();
@@ -178,18 +177,28 @@ class CoverageRollup {
         return this.vendors[vendor].name + (this.vendors[vendor].ids.length > 1 && id !== '0' ? ` · ${id}` : '');
     }
 
-    _groups() {
-        const items = [...this.items.values()];
-        const groups = this._connections().map(c => ({ ...c, name: this._sourceName(c), items: items.filter(i => i.ref === c.ref) }));
-        const other = items.filter(i => !i.ref);
-        return other.length ? [...groups, { ref: 'other', name: 'Other', items: other, other: true }] : groups;
+    _sourcesOpen() {
+        return ['catalog', 'connect', 'mailbox'].includes(this.open?.kind);
     }
 
     // ── render ─────────────────────────────────────────────────────
 
     _render() {
         this._renderStats();
+        this._renderSourcesBtn();
         this._renderBody();
+    }
+
+    _renderSourcesBtn() {
+        const conns = this._connections();
+        const vendors = [...new Set(conns.map(c => c.vendor))];
+        const stack = vendors.slice(0, 4).map(v => this._logo(v, 'cov-stack-logo')).join('');
+        const more = vendors.length > 4 ? `<span class="cov-stack-more">+${vendors.length - 4}</span>` : '';
+
+        this.sourcesBtn.classList.toggle('is-active', this._sourcesOpen());
+        this.sourcesBtn.innerHTML = conns.length
+            ? `<span class="cov-stack">${stack}${more}</span>Sources<span class="n">${conns.length + 1}</span>`
+            : '<span class="material-symbols-outlined">add</span>Connect a source';
     }
 
     _renderStats() {
@@ -197,7 +206,6 @@ class CoverageRollup {
         const n = value => this.loaded ? value : '—';
 
         this.stats.innerHTML = [
-            `<span class="stat"><b>${n(this._connections().length)}</b>sources</span>`,
             `<span class="stat"><b>${n(items.length)}</b>assets</span>`,
             `<span class="stat"><b>${n(items.filter(i => i.dot).length)}</b>dots</span>`,
         ].join('<span class="stat-divider"></span>');
@@ -216,14 +224,10 @@ class CoverageRollup {
                 </div>`;
         }
 
-        const groups = this._groups();
-        const group = groups.find(g => g.ref === this.source);
-        if (!group) this.source = 'all';
-        const items = (group?.items ?? [...this.items.values()]).sort(CoverageRollup.byDot);
+        const items = [...this.items.values()].sort(CoverageRollup.byDot);
         const sources = new Map(this._connections().map(c => [c.ref, c]));
 
         this.body.innerHTML = `
-            ${this._chips(groups)}
             ${items.length ? `
                 <div class="cov-row cov-row-head">
                     <span></span><span>Asset</span><span class="cov-col-source">Source</span><span>Dot</span><span class="cov-col-extra">Runtime</span><span class="cov-col-extra cov-seen">Last seen</span><span></span>
@@ -236,28 +240,6 @@ class CoverageRollup {
 
     _logo(vendor, cls) {
         return `<img class="${cls}" src="static/img/source/${vendor}.png" alt="">`;
-    }
-
-    _chips(groups) {
-        const chip = (group, label, count, icon = '') => {
-            const ref = group?.ref ?? 'all';
-            const pressed = this.source === ref;
-            const confirming = pressed && this.confirming;
-            const trailing = !pressed || !group || group.other ? ''
-                : group.system ? '<span class="material-symbols-outlined cov-chip-end" title="Managed by your SOC">lock</span>'
-                : `<span class="material-symbols-outlined cov-chip-end" data-disconnect="${ref}" title="Disconnect">link_off</span>`;
-
-            return `
-                <button type="button" class="${confirming ? 'is-confirming' : ''}" data-source="${ref}" aria-pressed="${pressed}"${confirming ? ` data-disconnect="${ref}"` : ''}>
-                    ${confirming ? `Disconnect ${label}?` : `${icon}${label}<span class="n">${count}</span>${trailing}`}
-                </button>`;
-        };
-
-        return `
-            <nav class="outcomes cov-sources" aria-label="Source">
-                ${chip(null, 'All', this.items.size)}
-                ${groups.map(g => chip(g, g.name, g.items.length, g.other ? '' : this._logo(g.vendor, 'cov-chip-logo'))).join('')}
-            </nav>`;
     }
 
     _row(item, source) {
@@ -289,6 +271,7 @@ class CoverageRollup {
         this.open = { kind, key };
         this.error = null;
         this.expanded = null;
+        this.confirming = null;
         if (kind !== 'connect') this.draft = '';
 
         this.screen.classList.add('drawer-open');
@@ -309,6 +292,7 @@ class CoverageRollup {
     _markSelected() {
         const key = this.open?.kind === 'asset' && this.open.key;
         this.body.querySelectorAll('.cov-row').forEach(row => row.classList.toggle('is-selected', row.dataset.item === key));
+        this.sourcesBtn.classList.toggle('is-active', this._sourcesOpen());
     }
 
     _renderDrawer() {
@@ -337,29 +321,61 @@ class CoverageRollup {
         return `<button type="button" class="cov-icon-btn ${cls}" data-act="${act}" title="${title}"><span class="material-symbols-outlined">${icon}</span></button>`;
     }
 
-    // ── drawer: add a source ──
+    // ── drawer: sources ──
 
     _catalog() {
-        const connected = new Set(this._connections().filter(c => !c.system).map(c => c.vendor));
-        const vendors = Object.keys(this.vendors).sort((a, b) => this.vendors[a].name.localeCompare(this.vendors[b].name));
+        const conns = this._connections();
+        const connected = new Set(conns.filter(c => !c.system).map(c => c.vendor));
+        const available = Object.keys(this.vendors)
+            .filter(v => !connected.has(v))
+            .sort((a, b) => this.vendors[a].name.localeCompare(this.vendors[b].name));
 
         return `
-            ${this._drawerHead('Add a source', { sub: 'Connect an integration to collect security events and alerts.' })}
-            <div class="cov-drawer-body">
-                <div class="cov-tiles">
-                    <button type="button" class="cov-tile" data-act="mailbox">
-                        <span class="material-symbols-outlined cov-tile-logo">alternate_email</span>
-                        <span>Alert mailbox</span>
-                        <span class="cov-tile-meta">Always on</span>
-                    </button>
-                    ${vendors.map(v => `
-                        <button type="button" class="cov-tile" data-connect="${v}">
-                            ${this._logo(v, 'cov-tile-logo')}
-                            <span>${this.vendors[v].name}</span>
-                            ${connected.has(v) ? '<span class="cov-tile-meta">Connected</span>' : ''}
-                        </button>`).join('')}
-                </div>
+            ${this._drawerHead('Sources', { sub: 'Sources stream security events and alerts into your SOC.' })}
+            <div class="cov-drawer-body cov-catalog">
+                <section>
+                    <h4 class="cov-section-head">Connected <span>${conns.length + 1}</span></h4>
+                    <ul class="cov-list">
+                        <li class="cov-item is-link" data-act="mailbox">
+                            <span class="material-symbols-outlined cov-item-logo">alternate_email</span>
+                            <span class="cov-item-name">SOC mailbox</span>
+                            <span class="cov-item-meta">Managed by your SOC</span>
+                            <span class="material-symbols-outlined cov-conn-end">lock</span>
+                            <span class="material-symbols-outlined cov-conn-end cov-item-enter">arrow_forward</span>
+                        </li>
+                        ${conns.map(c => this._conn(c)).join('')}
+                    </ul>
+                </section>
+
+                ${available.length ? `
+                    <section>
+                        <h4 class="cov-section-head">Available <span>${available.length}</span></h4>
+                        <ul class="cov-list">
+                            ${available.map(v => `
+                                <li class="cov-item is-link" data-connect="${v}">
+                                    ${this._logo(v, 'cov-item-logo')}
+                                    <span class="cov-item-name">${this.vendors[v].name}</span>
+                                    <span class="cov-item-go">Connect<span class="material-symbols-outlined">arrow_forward</span></span>
+                                </li>`).join('')}
+                        </ul>
+                    </section>` : ''}
             </div>`;
+    }
+
+    _conn(conn) {
+        const end = conn.system
+            ? '<span class="material-symbols-outlined cov-conn-end" title="Managed by your SOC">lock</span>'
+            : this.confirming === conn.ref
+                ? `<button type="button" class="cov-confirm" data-disconnect="${conn.ref}">Disconnect?</button>`
+                : `<button type="button" class="cov-icon-btn cov-conn-action" data-disconnect="${conn.ref}" title="Disconnect"><span class="material-symbols-outlined">link_off</span></button>`;
+
+        return `
+            <li class="cov-item" data-ref="${conn.ref}">
+                ${this._logo(conn.vendor, 'cov-item-logo')}
+                <span class="cov-item-name">${this._sourceName(conn)}</span>
+                <span class="cov-item-meta">${conn.system ? 'Managed by your SOC' : ''}</span>
+                ${end}
+            </li>`;
     }
 
     _connectForm(vendor) {
@@ -387,7 +403,7 @@ class CoverageRollup {
 
     _mailboxView() {
         return `
-            ${this._drawerHead('Alert mailbox', { sub: 'Collect signals from tools that can only send email.', back: this._iconBtn('back', 'arrow_back', 'All sources') })}
+            ${this._drawerHead('SOC mailbox', { sub: 'Collect signals from tools that can only send email.', back: this._iconBtn('back', 'arrow_back', 'All sources') })}
             <div class="cov-drawer-body cov-mailbox">
                 <span class="material-symbols-outlined cov-connect-logo">alternate_email</span>
                 <p>Every alert sent to this address becomes a signal for this account. Use it wherever a tool can email you but can't be connected directly.</p>
@@ -558,20 +574,25 @@ class CoverageRollup {
 
         const before = this._connections().map(c => c.ref);
         await this._load();
-        this.source = this._connections().map(c => c.ref).find(ref => !before.includes(ref)) ?? 'all';
-        this._close();
+        const added = this._connections().map(c => c.ref).find(ref => !before.includes(ref));
+
         this._render();
+        this._openDrawer('catalog');
+        this.drawer.querySelector(`[data-ref="${added}"]`)?.classList.add('is-fresh');
+        this._toast(`${this.vendors[vendor].name} connected`);
         document.dispatchEvent(new CustomEvent('page:reset'));
     }
 
     _disconnect(ref) {
         const [vendor, id] = ref.split('/');
+        const name = this._sourceName({ vendor, id });
         this.api.sources.disconnect(ref);
         this.vendors[vendor].ids = this.vendors[vendor].ids.filter(i => i !== id);
         this.items.forEach(item => { if (item.ref === ref) item.ref = undefined; });
-        this.confirming = false;
-        this.source = 'all';
+        this.confirming = null;
         this._render();
+        this._renderDrawer();
+        this._toast(`${name} disconnected`);
     }
 
     async _copyMailbox() {
@@ -614,25 +635,22 @@ class CoverageRollup {
         });
 
         this.body.addEventListener('click', (e) => {
-            const disconnect = e.target.closest('[data-disconnect]')?.dataset.disconnect;
-            if (disconnect) {
-                if (this.confirming) return this._disconnect(disconnect);
-                this.confirming = true;
-                return this._renderBody();
-            }
-
-            const source = e.target.closest('[data-source]')?.dataset.source;
-            if (source) {
-                this.confirming = false;
-                this.source = source;
-                return this._renderBody();
-            }
-
             const item = e.target.closest('[data-item]')?.dataset.item;
             if (item) this.open?.key === item ? this._close() : this._openDrawer('asset', item);
         });
 
         this.drawer.addEventListener('click', (e) => {
+            const disconnect = e.target.closest('[data-disconnect]')?.dataset.disconnect;
+            if (disconnect) {
+                if (this.confirming === disconnect) return this._disconnect(disconnect);
+                this.confirming = disconnect;
+                return this._renderDrawer();
+            }
+            if (this.confirming) {
+                this.confirming = null;
+                this._renderDrawer();
+            }
+
             const target = e.target.closest('[data-act], [data-connect], [data-expand], [data-rerun], [data-copy-mailbox], [data-submit]');
             if (!target) return;
             const { act, connect, expand, rerun } = target.dataset;

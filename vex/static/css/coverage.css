@@ -86,24 +86,51 @@
     &:focus-within { background: var(--surface); box-shadow: 0 0 0 1px var(--line); color: var(--text-body); }
   }
 
-  .cov-add {
+  .cov-sources-btn {
     display: inline-flex;
     align-items: center;
-    gap: 4px;
-    height: 32px;
-    padding: 0 14px 0 10px;
-    border: none;
+    gap: 8px;
+    height: 34px;
+    padding: 0 12px 0 8px;
+    border: 1px solid var(--line);
     border-radius: 8px;
-    background: var(--text-body);
+    background: var(--surface);
     font: inherit;
     font-size: 12.5px;
     font-weight: 600;
-    color: var(--surface);
+    color: var(--text-body);
     cursor: pointer;
-    transition: background 0.15s;
+    transition: border-color 0.15s, box-shadow 0.15s;
 
     .material-symbols-outlined { font-size: 17px; }
-    &:hover { background: color-mix(in srgb, var(--text-body) 85%, var(--surface)); }
+    .n { margin-left: -2px; font-variant-numeric: tabular-nums; color: var(--text-faint); }
+
+    &:hover, &.is-active { border-color: color-mix(in srgb, var(--text-faint) 40%, var(--line)); box-shadow: 0 2px 8px rgb(0 0 0 / 0.05); }
+    &:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+  }
+
+  .cov-stack { display: inline-flex; align-items: center; padding-left: 6px; }
+
+  .cov-stack-logo, .cov-stack-more {
+    box-sizing: border-box;
+    width: 20px;
+    height: 20px;
+    margin-left: -6px;
+    padding: 3px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 0 0 1.5px var(--surface), inset 0 0 0 1px var(--line);
+    object-fit: contain;
+  }
+
+  .cov-stack-more {
+    display: grid;
+    place-items: center;
+    padding: 0;
+    background: var(--surface-alt);
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--text-faint);
   }
 
   /* ── Body ─────────────────────────────────────────────────────── */
@@ -120,22 +147,7 @@
 
   [hidden] { display: none !important; }
 
-  .cov-sources { margin: 0 0 18px; }
-  .cov-sources button { display: inline-flex; align-items: center; }
   .cov-chip-logo { width: 14px; height: 14px; margin-right: 6px; object-fit: contain; }
-
-  .cov-chip-end {
-    margin: 0 -4px 0 8px;
-    padding: 1px;
-    border-radius: 50%;
-    font-size: 14px;
-    opacity: 0.7;
-    transition: opacity 0.15s, background 0.15s;
-
-    &[data-disconnect]:hover { opacity: 1; background: rgb(255 255 255 / 0.2); }
-  }
-
-  .cov-sources button.is-confirming { border-color: var(--bad); background: var(--bad); color: #fff; font-weight: 600; }
 
   /* ── Table: each on one list ─────────────────────── */
 
@@ -429,49 +441,100 @@
 
   .cov-install .cov-primary { margin-top: 22px; }
 
-  /* ── Drawer: add a source ─────────────────────────────────────── */
+  /* ── Drawer: sources — one flat list ──────────────────────────── */
 
-  .cov-tiles {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 8px;
-    margin-top: 12px;
-  }
+  .cov-catalog { display: flex; flex-direction: column; gap: 24px; }
 
-  .cov-tile {
+  .cov-section-head {
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-    padding: 14px;
-    border: 1px solid var(--line);
-    border-radius: 10px;
-    background: var(--surface);
-    font: inherit;
-    font-size: 13px;
+    align-items: baseline;
+    gap: 8px;
+    margin: 0 0 4px;
+    font-size: 10.5px;
     font-weight: 600;
-    text-align: left;
-    color: var(--text-body);
-    cursor: pointer;
-    transition: border-color 0.15s, box-shadow 0.15s;
-
-    &:hover { border-color: color-mix(in srgb, var(--text-faint) 40%, var(--line)); box-shadow: 0 4px 14px rgb(0 0 0 / 0.05); }
-    &:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
-  }
-
-  .cov-tile-logo { width: 24px; height: 24px; object-fit: contain; }
-  span.cov-tile-logo { font-size: 24px; color: var(--text-faint); }
-
-  .cov-tile-meta {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    margin-top: -6px;
-    font-size: 11px;
-    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
     color: var(--text-faint);
 
-    &::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--live); }
+    span { font-weight: 500; letter-spacing: 0; font-variant-numeric: tabular-nums; }
+  }
+
+  .cov-list { margin: 0 -10px; padding: 0; list-style: none; }
+
+  .cov-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 44px;
+    padding: 0 6px 0 10px;
+    border-radius: 6px;
+    font-size: 13px;
+    transition: background 0.15s;
+
+    & + &::before {
+      content: '';
+      position: absolute; top: -1px; left: 42px; right: 10px;
+      height: 1px;
+      background: color-mix(in srgb, var(--line) 55%, transparent);
+    }
+
+    &:hover { background: var(--surface-alt); }
+    &:hover::before, &:hover + &::before { opacity: 0; }
+    &.is-link { cursor: pointer; }
+    &.is-fresh { animation: cov-fresh 1.8s ease-out; }
+  }
+
+  .cov-item-logo { flex-shrink: 0; width: 20px; height: 20px; object-fit: contain; }
+  span.cov-item-logo { font-size: 20px; color: var(--text-faint); }
+
+  .cov-item-name { flex-shrink: 0; font-weight: 600; white-space: nowrap; }
+  .cov-item-meta { min-width: 0; margin-left: auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; color: var(--text-faint); }
+  .cov-item-enter { transition: color 0.15s, transform 0.15s; }
+  .cov-item:hover .cov-item-enter { color: var(--text-body); transform: translateX(2px); }
+
+  .cov-item-go {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    height: 28px;
+    margin-left: auto;
+    padding-right: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-body);
+    opacity: 0;
+    transition: opacity 0.15s;
+
+    .material-symbols-outlined { font-size: 15px; }
+    .cov-item:hover & { opacity: 1; }
+    @media (hover: none) { opacity: 1; }
+  }
+
+  .cov-conn-end {
+    display: grid;
+    place-items: center;
+    width: 28px;
+    font-size: 16px;
+    color: var(--text-faint);
+  }
+
+  .cov-conn-action { opacity: 0; }
+  .cov-item:hover .cov-conn-action, .cov-conn-action:focus-visible { opacity: 1; }
+  .cov-conn-action:hover { background: color-mix(in srgb, var(--bad) 10%, transparent); color: var(--bad); }
+  @media (hover: none) { .cov-conn-action { opacity: 1; } }
+
+  .cov-confirm {
+    height: 26px;
+    padding: 0 10px;
+    border: none;
+    border-radius: 6px;
+    background: var(--bad);
+    font: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    color: #fff;
+    cursor: pointer;
   }
 
   /* ── Drawer: alert mailbox ────────────────────────────────────── */
@@ -613,3 +676,4 @@
 }
 
 @keyframes cov-drawer-in { from { opacity: 0; transform: translateX(16px); } }
+@keyframes cov-fresh { from { background: color-mix(in srgb, var(--live) 14%, transparent); } }

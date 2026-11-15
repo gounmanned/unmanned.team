@@ -209,7 +209,8 @@
   }
 
   .acct-chip {
-    display: inline-flex; align-items: center;
+    display: inline-flex; align-items: center; justify-content: flex-end;
+    min-width: 169px;   /* same width loaded or loading, so the row doesn't shift */
     white-space: nowrap;
     font-variant-numeric: tabular-nums;
   }
@@ -341,9 +342,6 @@
     border-color: transparent;
     cursor: default;
     pointer-events: none;
-
-    &:nth-child(2) { opacity: 0.6; }
-    &:nth-child(3) { opacity: 0.3; }
 
     i {
       display: block;
@@ -555,6 +553,39 @@
     &:has(input:valid) button { opacity: 1; }
   }
 
+  /* ── Loading ────────────────────────────────────────────────────────────── */
+
+  .shimmer, .acct-skeleton .acct-ghost i {
+    background: linear-gradient(90deg,
+      color-mix(in srgb, var(--line) 80%, transparent) 25%,
+      color-mix(in srgb, var(--line) 35%, transparent) 50%,
+      color-mix(in srgb, var(--line) 80%, transparent) 75%);
+    background-size: 300% 100%;
+    animation: managed-shimmer 1.6s ease-in-out infinite;
+  }
+
+  .shimmer {
+    display: inline-block; vertical-align: middle;
+    height: 8px; border-radius: 4px;
+
+    h1 > & { height: 14px; }
+    .stat b > & { margin-right: 4px; }
+  }
+
+  /* Held back briefly so quick loads go straight to content without a flash. */
+  .acct-skeleton {
+    animation: managed-fade 0.3s ease 0.18s both;
+    .lane-head { margin-top: 0; }
+  }
+
+  .scan-dot {
+    display: inline-block; vertical-align: middle;
+    width: 6px; height: 6px; margin: -2px 8px 0 1px;
+    border-radius: 50%;
+    background: var(--brand);
+    animation: managed-pulse 1.4s ease-in-out infinite;
+  }
+
   /* ── Motion ─────────────────────────────────────────────────────────────── */
 
   @media (prefers-reduced-motion: reduce) {
@@ -563,3 +594,8 @@
 }
 
 @keyframes managed-fade { from { opacity: 0; } }
+@keyframes managed-shimmer { from { background-position: 100% 0; } to { background-position: 0 0; } }
+@keyframes managed-pulse {
+  0%, 100% { opacity: 0.3; box-shadow: 0 0 0 0 color-mix(in srgb, var(--brand) 40%, transparent); }
+  50% { opacity: 1; box-shadow: 0 0 0 4px transparent; }
+}

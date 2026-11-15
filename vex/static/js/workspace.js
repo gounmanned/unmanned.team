@@ -49,46 +49,54 @@ class Workspace {
         Workspace.#instance = this;
 
         Auth.init(code)
-            .then(async user => {
-                await SiteSpinner.withLoading(async () => {
-                    const state = new AppState(user);
+            .then(user => {
+                const state = new AppState(user);
 
-                    this.rollups = {
-                        managed: new ManagedRollup(state),
-                        coverage: new CoverageRollup(state),
-                        audit: new AuditRollup(state),
-                    };
+                this.rollups = {
+                    managed: new ManagedRollup(state),
+                    coverage: new CoverageRollup(state),
+                    audit: new AuditRollup(state),
+                };
 
-                    this.sidebars = {
-                        signal: new SignalSidebar(state),
-                        backup: new BackupSidebar(state),
-                    }
+                this.sidebars = {
+                    signal: new SignalSidebar(state),
+                    backup: new BackupSidebar(state),
+                }
 
-                    this.tenant = new TenantScreen(state);
-                    this.listen();
+                this.tenant = new TenantScreen(state);
+                this.listen();
 
-                    setInterval(() => this.reload(), 60000);
-                    document.addEventListener('page:reload', () => this.reload());
-                    document.addEventListener('page:reset', () => this.reset(state));
-                    document.getElementById("open-managed-rollup").click();
-                });
-                document.getElementById('auth-gate').remove();
+                setInterval(() => this.reload(), 60000);
+                document.addEventListener('page:reload', () => this.reload());
+                document.addEventListener('page:reset', () => this.reset(state));
+
+                this.open('managed');
+                this.reveal();
             })
             .catch(err => {
                 console.error(err);
             });
     }
 
+    reveal() {
+        document.getElementById('auth-gate').remove();
+        document.documentElement.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 240, easing: 'ease-out' });
+    }
+
+    open(name) {
+        const rollup = this.rollups[name];
+        const run = async () => {
+            document.getElementById(`${name}-screen`).show();
+            await rollup.reset();
+            await rollup.reload();
+        };
+
+        return rollup.quiet ? run() : SiteSpinner.withLoading(run);
+    }
+
     listen() {
         Object.keys(this.rollups).forEach(name => {
-            document.getElementById(`open-${name}-rollup`).addEventListener("click", () => {
-                SiteSpinner.withLoading(async () => {
-                    document.getElementById(`${name}-screen`).show();
-                    const rollup = this.rollups[name];
-                    await rollup.reset();
-                    await rollup.reload();
-                });
-            });
+            document.getElementById(`open-${name}-rollup`).addEventListener("click", () => this.open(name));
         });
 
         Object.keys(this.sidebars).forEach(name => {

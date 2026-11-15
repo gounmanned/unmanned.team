@@ -1,12 +1,22 @@
 class TenantScreen {
     static OUTCOMES = { all: 'All', CV: 'Autoclosed', CH: 'By you', CR: 'Accepted risk' };
+    static PENDING = {
+        queue: '#queue-count, #recs-count, #queue-summary',
+        history: '#kpi-mttr, #kpi-autoclosed, #kpi-sla, #resolved-count',
+        setup: '.setup-chip-count',
+        events: '#events-count',
+    };
 
     constructor(state) {
         this.state = state;
         this.api = state.api;
         this.month = new Date();
         this.outcome = 'all';
-        this.loading = true;
+        this.run = 0;
+        this.pending = new Set(Object.keys(TenantScreen.PENDING));
+        this.revealed = false;
+        this.assets = 0;
+        this.events = 0;
 
         this.screen = document.getElementById('tenant-screen');
         this.period = document.getElementById('trend-period');
@@ -29,30 +39,54 @@ class TenantScreen {
 
     // ── data ───────────────────────────────────────────────────────
 
-    async reload() {
-        const filter = this.month ? `date=${TenantScreen.yyyymm(this.month)}` : '';
-        await Promise.all([
-            this.api.signals.list(filter, new CustomEvent('signal:account')),
-            this.api.signals.list('status=O', new CustomEvent('signal:account')),
-            this.loadSetup(),
-            this.loadEvents(),
-        ]);
+    get loading() {
+        return this.pending.size > 0;
+    }
 
-        this.loading = false;
-        this.schedule();
+    async reload() {
+        if (!this.state.account()) return;
+
+        await Promise.all([
+            this.api.signals.list('status=O', new CustomEvent('signal:account')).then(this.settle('queue')),
+            this.loadHistory().then(this.settle('history')),
+            this.countAssets().then(this.settle('setup', n => this.assets = n)),
+            this.countEvents().then(this.settle('events', n => this.events = n)),
+        ]);
+    }
+
+    loadHistory() {
+        const filter = this.month ? `date=${TenantScreen.yyyymm(this.month)}` : '';
+        return this.api.signals.list(filter, new CustomEvent('signal:account'));
+    }
+
+    settle(part, apply) {
+        const run = this.run;
+        return value => {
+            if (run !== this.run) return;
+            apply?.(value);
+            this.pending.delete(part);
+            this.schedule();
+        };
     }
 
     reset() {
         this.api.reset();
-        this.loading = true;
+        this.run++;
+        this.pending = new Set(Object.keys(TenantScreen.PENDING));
+        this.revealed = false;
+
+        this.screen.classList.remove('critical', 'scrolled');
+        document.getElementById('signal-section').scrollTop = 0;
+        document.getElementById('queue-summary').textContent = 'Loading signals for this account';
+        document.querySelector('.setup-seg').dataset.state = 'loading';
+        this.skeleton();
+        this.mark();
         this.schedule();
     }
 
     async refresh() {
-        const loader = SiteSpinner.cover(this.screen);
         this.reset();
         await this.reload();
-        loader.remove();
     }
 
     signals() {
@@ -84,6 +118,12 @@ class TenantScreen {
         return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
     }
 
+    inPeriod(signal) {
+        const d = new Date(Workspace.time(signal.created));
+        const now = new Date();
+        return d.getFullYear() === now.getFullYear() && (!this.month || d.getMonth() === now.getMonth());
+    }
+
     // ── render ─────────────────────────────────────────────────────
 
     schedule() {
@@ -92,18 +132,62 @@ class TenantScreen {
 
             const all = this.signals();
             const open = all.filter(s => !s.status.startsWith('C'));
-            const closed = all.filter(s => s.status.startsWith('C'));
+            const closed = all.filter(s => s.status.startsWith('C') && this.inPeriod(s));
             const threats = open.filter(Table.SCOPES.threats);
             const recs = open.filter(Table.SCOPES.recs);
             const shown = this.outcome === 'all' ? closed : closed.filter(s => s.status === this.outcome);
+            const ready = part => !this.pending.has(part);
 
-            this.table.render({ threats, recs, closed: shown, resolved: closed.length });
-            this.renderLanes(threats, recs);
-            this.renderKpis(closed);
-            this.renderOutcomes(closed);
-            this.renderTrend(all.filter(Table.SCOPES.threats));
-            this.screen.classList.toggle('critical', threats.some(s => s.metadata.threat));
-            this.screen.classList.toggle('loading', this.loading);
+            if (ready('queue')) {
+                this.table.render({ threats, recs, closed: ready('history') ? shown : [], resolved: closed.length });
+                this.renderLanes(threats, recs);
+                this.screen.classList.toggle('critical', threats.some(s => s.metadata.threat));
+            }
+
+            if (ready('history')) {
+                this.renderKpis(closed);
+                this.renderOutcomes(closed);
+            }
+
+            if (ready('setup')) this.renderSetup(this.assets);
+            if (ready('events')) document.getElementById('events-count').textContent = this.events.toLocaleString();
+
+            this.renderTrend(all.filter(s => Table.SCOPES.threats(s) && this.inPeriod(s)));
+            this.mark();
+            this.reveal();
+        });
+    }
+
+    mark() {
+        Object.entries(TenantScreen.PENDING).forEach(([part, selector]) => {
+            document.querySelectorAll(selector).forEach(el => el.classList.toggle('is-pending', this.pending.has(part)));
+        });
+        this.screen.querySelector('.trend-chart').classList.toggle('is-dim', this.pending.has('history'));
+    }
+
+    skeleton() {
+        const row = (name, sub, opacity) => `
+            <li class="q-item q-ghost" style="opacity:${opacity}" aria-hidden="true">
+                <span class="q-avatar shimmer"></span>
+                <span class="q-main"><i class="shimmer" style="width:${name}px"></i><i class="shimmer" style="width:${sub}px"></i></span>
+            </li>`;
+        const rows = list => list.map(r => row(...r)).join('');
+
+        document.getElementById('queue-list').innerHTML = rows([[184, 96, 1], [148, 120, 0.75], [204, 80, 0.5], [132, 104, 0.25]]);
+        document.getElementById('recs-list').innerHTML = rows([[164, 88, 0.6], [140, 112, 0.3]]);
+        document.getElementById('history').innerHTML = '';
+    }
+
+    reveal() {
+        if (this.revealed || this.pending.has('queue')) return;
+        this.revealed = true;
+        if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+        ['queue-list', 'recs-list'].forEach(id => {
+            [...document.getElementById(id).children].slice(0, 14).forEach((li, i) => li.animate(
+                [{ opacity: 0, transform: 'translateY(6px)' }, { opacity: 1, transform: 'none' }],
+                { duration: 280, delay: i * 28, easing: 'ease-out', fill: 'backwards' },
+            ));
         });
     }
 
@@ -150,13 +234,13 @@ class TenantScreen {
         const date = i => yearly ? new Date(now.getFullYear(), i) : new Date(now.getFullYear(), now.getMonth(), i + 1);
 
         const counts = new Array(size).fill(0);
-        signals.map(s => new Date(Workspace.time(s.created)))
-            .filter(d => d.getFullYear() === now.getFullYear() && (yearly || d.getMonth() === now.getMonth()))
-            .forEach(d => counts[bucket(d)]++);
+        signals.forEach(s => counts[bucket(new Date(Workspace.time(s.created)))]++);
 
         const svg = document.getElementById('trend-svg');
         const W = svg.clientWidth, H = svg.clientHeight;
-        if (!W || !H) return;
+        const key = [W, H, bucket(now), counts].join('|');
+        if (!W || !H || key === this.trendKey) return;
+        this.trendKey = key;
 
         const pad = { t: 6, r: 0, b: 14, l: 0 };
         const max = Math.max(1, ...counts);
@@ -169,7 +253,6 @@ class TenantScreen {
         const [lx, ly] = pts.at(-1);
         const area = `${line} L${lx.toFixed(1)},${base} L${pts[0][0].toFixed(1)},${base} Z`;
 
-        // a label for every day (or month); the ends anchor inward so they don't clip
         const ticks = counts.map((_, i) => {
             const anchor = i === 0 ? 'start' : i === size - 1 ? 'end' : 'middle';
             const text = yearly ? date(i).toLocaleDateString(undefined, { month: 'short' }) : i + 1;
@@ -222,9 +305,9 @@ class TenantScreen {
 
     // ── setup ──────────────────────────────────────────────────────
 
-    async loadSetup() {
+    async countAssets() {
         const assets = await this.api.inventory.list();
-        this.renderSetup(new Set(assets.map(a => a.name.toLowerCase())).size);   // same de-dupe as the coverage table
+        return new Set(assets.map(a => a.name.toLowerCase())).size;   // same de-dupe as the coverage table
     }
 
     renderSetup(assets) {
@@ -235,11 +318,11 @@ class TenantScreen {
 
     // ── audit ──────────────────────────────────────────────────────
 
-    async loadEvents() {
+    async countEvents() {
         const end = new Date();
         const start = new Date(end - 3600000);
         const logs = await this.api.audit.get(start.toISOString(), end.toISOString()) ?? [];
-        document.getElementById('events-count').textContent = logs.length.toLocaleString();
+        return logs.length;
     }
 
     // ── events ─────────────────────────────────────────────────────
@@ -255,10 +338,11 @@ class TenantScreen {
             if (!tab || tab.getAttribute('aria-pressed') === 'true') return;
 
             this.period.querySelectorAll('[data-period]').forEach(b => b.setAttribute('aria-pressed', b === tab));
-            this.state.reset();
             this.month = tab.dataset.period === 'month' ? new Date() : null;
+            this.pending.add('history');
+            this.schedule();
 
-            await this.refresh();
+            await this.loadHistory().then(this.settle('history'));
         });
 
         const work = document.getElementById('signal-section');

@@ -677,10 +677,51 @@
   color: #fff;
 }
 
-.stat b, .lane-count, .trend-chart { transition: opacity 0.3s ease-out; }
+/* ── loading ────────────────────────────────────────────────────── */
 
-#tenant-screen.loading :is(.stat b, .lane-count) { opacity: 0; transition: none; }
-#tenant-screen.loading .trend-chart { opacity: 0.35; transition: none; }
+.shimmer,
+:is(#tenant-screen, .setup-chip) .is-pending {
+  background: linear-gradient(90deg,
+    color-mix(in srgb, var(--line) 80%, transparent) 25%,
+    color-mix(in srgb, var(--line) 35%, transparent) 50%,
+    color-mix(in srgb, var(--line) 80%, transparent) 75%);
+  background-size: 300% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+}
+
+.shimmer {
+  display: inline-block;
+  height: 8px;
+  border-radius: 4px;
+}
+
+/* A value still loading keeps its space but shows a shimmer instead of
+   the previous account's number. */
+:is(#tenant-screen, .setup-chip) .is-pending {
+  color: transparent;
+  border-radius: 4px;
+  user-select: none;
+}
+
+#queue-summary.is-pending { width: fit-content; }
+
+.stat b, .lane-count, #queue-summary, .setup-chip-count { transition: color 0.3s ease-out; }
+.trend-chart { transition: opacity 0.4s ease-out; }
+.trend-chart.is-dim { opacity: 0.35; }
+
+.setup-seg[data-state="loading"] { --state: var(--line); }
+
+.q-ghost {
+  grid-template-columns: 22px minmax(0, 1fr);
+  cursor: default;
+  pointer-events: none;
+  animation: tenant-fade 0.3s ease 0.15s both;   /* held back so fast loads skip it */
+
+  .q-avatar { border-color: transparent; }
+}
+
+@keyframes shimmer { from { background-position: 100% 0; } to { background-position: 0 0; } }
+@keyframes tenant-fade { from { opacity: 0; } }
 
 /* ── reduced motion ─────────────────────────────────────────────── */
 
@@ -690,4 +731,5 @@
   #trend-svg .trend-wave { animation: none; opacity: 0; }
   .stat-live::before { animation: none; }
   .q-item, .q-actions { transition: none; }
+  .shimmer, .is-pending, .q-ghost { animation: none !important; }
 }

@@ -1,8 +1,13 @@
-const SPINNER = SiteSpinner.inline;
 const fmt = n => n.toLocaleString();
 const plural = (n, noun) => `${fmt(n)} ${noun}${n === 1 ? '' : 's'}`;
+const pending = width => `<i class="shimmer" style="width:${width}px"></i>`;
+
+const FLIP = '[data-domain], [data-create], [data-flip]';
+const flipKey = el => el.dataset.domain ?? el.dataset.create ?? el.dataset.flip;
 
 class ManagedRollup {
+    quiet = true;
+
     constructor(state) {
         this.state = state;
         this.api = state.api;
@@ -17,9 +22,11 @@ class ManagedRollup {
         this.loading = true;        // until grants() returns
         this.scanning = true;       // until signals are in
         this.counting = true;       // until assets are in
+        this.scanned = false;
+        this.sorted = false;
 
         this.listen();
-        setInterval(() => this.loading || this.schedule(), 30000);   // keep countdowns fresh
+        setInterval(() => this.list.checkVisibility() && this.schedule(), 30000);   // keep countdowns fresh
     }
 
     get me() {
@@ -27,10 +34,10 @@ class ManagedRollup {
     }
 
     reset() {
-        this.loading = true;
         this.scanning = true;
         this.counting = true;
-        this.render();
+        this.list.scrollTop = 0;
+        this.schedule();
     }
 
     async reload() {
@@ -48,16 +55,16 @@ class ManagedRollup {
     }
 
     async _loadSignals() {
-        await this.api.managed.signals(new CustomEvent('signal:managed'));
+        await this.api.managed.signals(new CustomEvent('signal:managed')).catch(console.error);
         this.scanning = false;
-        this.render();
+        this.schedule();
     }
 
     async _loadAssets() {
         this.assets = new Map();
         await this.api.managed.assets(new CustomEvent('managed:asset'));
         this.counting = false;
-        this.render();
+        this.schedule();
     }
 
     // ── data ────────────────────────────────────────────────────────────────
@@ -79,7 +86,6 @@ class ManagedRollup {
         };
     }
 
-    static urgency = ([, a], [, b]) => a.next - b.next || b.peak - a.peak || b.soc - a.soc;
     static calm = ([a, x], [b, y]) => y.recs - x.recs || a.localeCompare(b);
 
     _query() {
@@ -90,6 +96,7 @@ class ManagedRollup {
         const query = this._query();
         return [...this.members.keys()]
             .filter(domain => domain.includes(query))
+            .sort()
             .map(domain => [domain, this._stats(domain)]);
     }
 
@@ -111,7 +118,7 @@ class ManagedRollup {
 
     _renderTotals() {
         const totals = [...this.assets.values()].reduce((t, a) => ({ assets: t.assets + a.assets, dots: t.dots + a.dots }), { assets: 0, dots: 0 });
-        const stat = (n, noun, ready) => `<span class="stat"><b>${ready ? fmt(n) : '—'}</b>${noun}${n === 1 ? '' : 's'}</span>`;
+        const stat = (n, noun, ready) => `<span class="stat"><b>${ready ? fmt(n) : pending(18)}</b>${noun}${n === 1 ? '' : 's'}</span>`;
 
         document.getElementById('managed-totals').innerHTML = [
             stat(this.members.size, 'account', !this.loading),
@@ -121,66 +128,113 @@ class ManagedRollup {
     }
 
     _renderList() {
-        const searchBar = this.search.closest('.managed-search');
+        this.search.closest('.managed-search').hidden = !this.loading && !this.members.size;
 
-        if (this.loading) {
-            searchBar.hidden = true;
-            this.list.innerHTML = '';
-            return;
-        }
-
-        searchBar.hidden = !this.members.size;
-        if (!this.members.size) {
-            this.list.innerHTML = this._empty();
-            return;
-        }
+        if (this.loading) return this._draw(this._skeleton());
+        if (!this.members.size) return this._draw(this._empty());
+        if (this.scanning) return this.scanned || this._draw(this._skeleton());
+        if (!this.scanned) setTimeout(() => { this.sorted = true; this.schedule(); }, 650);
+        this.scanned = true;
 
         const query = this._query();
         const rows = this._matches();
-        const needs = this.scanning ? [] : rows.filter(([, s]) => s.soc).sort(ManagedRollup.urgency);
-        const calm = rows.filter(([, s]) => this.scanning || !s.soc).sort(ManagedRollup.calm);
+        const needs = rows.filter(([, s]) => s.soc);
+        const calm = rows.filter(([, s]) => !s.soc);
+        if (this.sorted) calm.sort(ManagedRollup.calm);
         const create = query && !this.members.has(query) ? this._createRow(query, !rows.length) : '';
 
-        this.keepFocus(() => {
-            this.list.innerHTML = `
-                ${create ? `<ol class="acct-list">${create}</ol>` : ''}
-                ${this._needsLane(needs)}
-                ${calm.length ? this._calmLane(calm) : ''}`;
+        this._draw(`
+            ${create ? `<ol class="acct-list">${create}</ol>` : ''}
+            ${this._needsLane(needs)}
+            ${calm.length ? this._calmLane(calm) : ''}`);
+    }
+
+    _draw(html) {
+        if (html === this.drawn) return;   // nothing changed; keep hover, focus and animations intact
+        this.drawn = html;
+
+        const focused = this.list.contains(document.activeElement) && document.activeElement.closest('[data-domain]')?.dataset.domain;
+        const before = new Map([...this.list.querySelectorAll(FLIP)].map(el => [flipKey(el), el.getBoundingClientRect().top]));
+
+        this.list.innerHTML = html;
+        if (focused) this.list.querySelector(`[data-domain="${CSS.escape(focused)}"]`)?.focus({ preventScroll: true });
+
+        this._settle(before);
+    }
+
+    _settle(before) {
+        if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+        const cascade = !before.size;
+        let order = 0;
+
+        this.list.querySelectorAll(FLIP).forEach(el => {
+            const top = before.get(flipKey(el));
+
+            if (top === undefined) {
+                el.animate(
+                    [{ opacity: 0, transform: 'translateY(6px)' }, { opacity: 1, transform: 'none' }],
+                    { duration: 280, delay: cascade ? Math.min(order++, 12) * 28 : 0, easing: 'ease-out', fill: 'backwards' },
+                );
+                return;
+            }
+
+            const dy = top - el.getBoundingClientRect().top;
+            if (Math.abs(dy) < 1) return;
+            el.animate(
+                [{ transform: `translateY(${dy}px)` }, { transform: 'none' }],
+                { duration: 520, easing: 'cubic-bezier(0.22, 1, 0.36, 1)' },
+            );
         });
     }
 
-    keepFocus(draw) {
-        const id = this.list.contains(document.activeElement) && document.activeElement.closest('[data-domain]')?.dataset.domain;
-        draw();
-        if (id) this.list.querySelector(`[data-domain="${CSS.escape(id)}"]`)?.focus({ preventScroll: true });
+    _ghost(name, status, opacity) {
+        return `
+            <li class="acct acct-ghost" style="opacity:${opacity}" aria-hidden="true">
+                <span class="tenant-mark"></span>
+                <span class="acct-main"><i style="width:${name}px"></i><i style="width:${status}px"></i></span>
+            </li>`;
+    }
+
+    _skeleton() {
+        return `
+            <div class="acct-skeleton" aria-busy="true" aria-label="Loading accounts">
+                <header class="lane-head">
+                    <div class="lane-title">
+                        <h1>${pending(132)}</h1>
+                        <p>${pending(240)}</p>
+                    </div>
+                </header>
+                <ol class="acct-list">
+                    ${[[148, 72, 1], [116, 92, 0.8], [164, 60, 0.6], [128, 84, 0.4], [100, 70, 0.2]].map(r => this._ghost(...r)).join('')}
+                </ol>
+            </div>`;
     }
 
     _needsLane(needs) {
         const soc = needs.reduce((n, [, s]) => n + s.soc, 0);
         const overdue = needs.reduce((n, [, s]) => n + s.overdue, 0);
 
-        const summary = this.scanning
-            ? `${SPINNER} Checking every account for active security threats.`
-            : needs.length
-                ? [
-                    `${plural(soc, 'signal')} across ${plural(needs.length, 'account')}`,
-                    overdue && `<span class="is-overdue">${fmt(overdue)} past SLA</span>`,
-                ].filter(Boolean).join(' · ')
-                : 'Accounts with active security threats.';
+        const summary = needs.length
+            ? [
+                `${plural(soc, 'signal')} across ${plural(needs.length, 'account')}`,
+                overdue && `<span class="is-overdue">${fmt(overdue)} past SLA</span>`,
+            ].filter(Boolean).join(' · ')
+            : 'Accounts with active security threats.';
 
         const body = needs.length
             ? needs.map(([domain, s]) => this._needsRow(domain, s)).join('')
-            : this.scanning ? '' : `
-                <li class="acct-clear">
+            : `
+                <li class="acct-clear" data-flip="clear">
                     <span class="material-symbols-outlined">verified_user</span>
                     <h3>Nothing needs you</h3>
                     <p>Every account is clear of active security threats.</p>
                 </li>`;
 
         return `
-            <header class="lane-head">
+            <header class="lane-head" data-flip="needs-head">
                 <div class="lane-title">
-                    <h1>Needs triage <span class="lane-count">${this.scanning ? '' : fmt(needs.length)}</span></h1>
+                    <h1>Needs triage <span class="lane-count">${fmt(needs.length)}</span></h1>
                     <p>${summary}</p>
                 </div>
             </header>
@@ -189,10 +243,10 @@ class ManagedRollup {
 
     _calmLane(calm) {
         return `
-            <header class="lane-head lane-head-quiet">
+            <header class="lane-head lane-head-quiet" data-flip="calm-head">
                 <div class="lane-title">
-                    <h2>${this.scanning ? 'Accounts' : 'Everything else'} <span class="lane-count">${fmt(calm.length)}</span></h2>
-                    <p>${this.scanning ? 'Status appears as each account is checked.' : 'No active security threats. Below are your recommendations.'}</p>
+                    <h2>Everything else <span class="lane-count">${fmt(calm.length)}</span></h2>
+                    <p>No active security threats. Below are your recommendations.</p>
                 </div>
             </header>
             <ol class="acct-list acct-calm">
@@ -224,7 +278,7 @@ class ManagedRollup {
 
     _calmRow(domain, s) {
         const esc = Workspace.esc;
-        const recs = this.scanning ? SPINNER : s.recs ? plural(s.recs, 'recommendation') : '';
+        const recs = s.recs ? plural(s.recs, 'recommendation') : '';
 
         return `
             <li class="acct calm" data-domain="${esc(domain)}" tabindex="0" aria-selected="${domain === this.managing}">
@@ -237,7 +291,7 @@ class ManagedRollup {
     }
 
     _chip({ assets, dots }) {
-        if (this.counting) return `<span class="acct-chip is-loading">${SPINNER}</span>`;
+        if (this.counting) return `<span class="acct-chip is-loading">${pending(120)}</span>`;
 
         const pct = assets ? Math.round(dots / assets * 100) : 0;
         const level = !dots ? 'none' : pct === 100 ? 'full' : 'some';
@@ -273,7 +327,7 @@ class ManagedRollup {
         const esc = Workspace.esc;
 
         if (name === this.rejected) return `
-            <li class="acct acct-create is-taken">
+            <li class="acct acct-create is-taken" data-flip="taken">
                 <span class="tenant-mark"><span class="material-symbols-outlined">block</span></span>
                 <span class="acct-name">Sorry, <b>${esc(name)}</b> isn't available. Try a different name.</span>
             </li>`;
@@ -290,17 +344,11 @@ class ManagedRollup {
         const { rejected } = this;
         const esc = Workspace.esc;
 
-        const ghost = (name, status) => `
-            <li class="acct acct-ghost" aria-hidden="true">
-                <span class="tenant-mark"></span>
-                <span class="acct-main"><i style="width:${name}px"></i><i style="width:${status}px"></i></span>
-            </li>`;
-
         return `
             <ol class="acct-list">
-                ${ghost(132, 64)}${ghost(104, 80)}${ghost(150, 56)}
+                ${this._ghost(132, 64, 1)}${this._ghost(104, 80, 0.6)}${this._ghost(150, 56, 0.3)}
 
-                <li class="managed-empty">
+                <li class="managed-empty" data-flip="empty">
                     <h3>Create your workspace</h3>
                     <p>Your workspace brings together the devices, identities, and services you want to protect.</p>
 
@@ -513,7 +561,7 @@ class ManagedRollup {
         this.detail.addEventListener('submit', (e) => {
             e.preventDefault();
             const email = new FormData(e.target).get('email').trim().toLowerCase();
-            if (email) this._assign(email);
+            if (email && !this.members.get(this.managing).includes(email)) this._assign(email);
         });
     }
 }

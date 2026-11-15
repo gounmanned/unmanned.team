@@ -25,7 +25,7 @@ class Api {
     constructor(state) {
         this.state = state;
         this.signals = new SignalApi(state);
-        this.inventory = new AssetApi(state);
+        this.inventory = new InventoryApi(state);
         this.managed = new ManagedApi(state);
         this.audit = new AuditApi(state);
         this.file = new FileApi(state);

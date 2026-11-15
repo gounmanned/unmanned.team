@@ -51,7 +51,7 @@ class SourceApi extends Gateway {
     }
 }
 
-class AssetApi extends Gateway {
+class InventoryApi extends Gateway {
     constructor(){
         super();
     }
@@ -147,17 +147,6 @@ class FileApi extends Gateway {
 
     async add(file) {
         await this.upload(`file/${this.root}?name=${file.name}`, file);
-    }
-}
-
-class ActionApi extends Gateway {
-    constructor(root){
-        super();
-        this.root = root;
-    }
-
-    async list() {
-        return await this.call("GET", "action");
     }
 }
 

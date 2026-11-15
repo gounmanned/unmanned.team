@@ -166,7 +166,7 @@ class ManagedRollup {
                     `${plural(soc, 'signal')} across ${plural(needs.length, 'account')}`,
                     overdue && `<span class="is-overdue">${fmt(overdue)} past SLA</span>`,
                 ].filter(Boolean).join(' · ')
-                : 'Accounts with active security threats land here.';
+                : 'Accounts with active security threats.';
 
         const body = needs.length
             ? needs.map(([domain, s]) => this._needsRow(domain, s)).join('')
@@ -174,7 +174,7 @@ class ManagedRollup {
                 <li class="acct-clear">
                     <span class="material-symbols-outlined">verified_user</span>
                     <h3>Nothing needs you</h3>
-                    <p>Every account is clear of open security threats.</p>
+                    <p>Every account is clear of active security threats.</p>
                 </li>`;
 
         return `
@@ -192,7 +192,7 @@ class ManagedRollup {
             <header class="lane-head lane-head-quiet">
                 <div class="lane-title">
                     <h2>${this.scanning ? 'Accounts' : 'Everything else'} <span class="lane-count">${fmt(calm.length)}</span></h2>
-                    <p>${this.scanning ? 'Status appears as each account is checked.' : 'No open security threats. Below are your recommendations.'}</p>
+                    <p>${this.scanning ? 'Status appears as each account is checked.' : 'No active security threats. Below are your recommendations.'}</p>
                 </div>
             </header>
             <ol class="acct-list acct-calm">

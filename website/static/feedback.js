@@ -11,7 +11,6 @@
   const ENDPOINT = 'https://script.google.com/macros/s/AKfycbzgLpFT1hnP1ArPuZgm8tZ_go-ZCxO9_sUHy3eX6nJ7G1uOTrN4xfmm4uJV7qhZ20Qs/exec';   // the Apps Script behind the feedback sheet; failures stay silent so a visitor never sees them
   const MAX = 500;
   const STORE = 'feedback:' + location.pathname;
-  const STATIC = document.currentScript.src.replace(/[^/]*$/, '');
   const TITLES = {
     up: 'Thank you! What do you like? (optional)',
     down: 'Thank you. What didn’t you like? (optional)',
@@ -57,7 +56,7 @@
   }
 
   /* ---------- Markup ---------- */
-  const thumb = (vote, label) => `<button type="button" class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm fb-btn" data-vote="${vote}" aria-label="${label}" aria-haspopup="dialog" aria-pressed="${state.vote === vote}"><img src="${STATIC}icon-thumbs-${vote}.svg" width="16" height="16" alt=""></button>`;
+  const thumb = (vote, label) => `<button type="button" class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm fb-btn" data-vote="${vote}" aria-label="${label}" aria-haspopup="dialog" aria-pressed="${state.vote === vote}"><i class="pulse-icon pulse-icon--thumbs-${vote}" aria-hidden="true"></i></button>`;
   const bar = document.createElement('div');
   bar.className = 'fb';
   bar.innerHTML = `<span class="fb-label" role="status">What do you think?</span><span class="fb-btns">${thumb('up', 'I like this page')}${thumb('down', 'I don’t like this page')}</span>`;

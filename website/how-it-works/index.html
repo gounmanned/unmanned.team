@@ -26,7 +26,7 @@
 <style>
   /* shared:basecss */ /* Base, class bar and header rules the main pages keep in their own <style> (API and detections style these
      their own way, so they are not in site.css). */
-  h1,h2,h3,h4,p{margin:0;}
+  @layer reset{h1,h2,h3,h4,p{margin:0;}}   /* below Pulse, so Pulse parts keep their spacing */
   img{display:block;}
   .wrap{width:min(1100px,calc(100% - 2 * var(--gutter)));margin:0 auto;} /* the design's 900px content column */
   @media (max-width:700px){:root{--gutter:16px;}}
@@ -56,12 +56,13 @@
      Everything inside .slack is drawn to look like Slack: Lato, Slack's colors and spacing. */
 
   /* ---------- WHAT YOU GET ---------- */
-  .ico{flex-shrink:0;width:20px;height:20px;background:var(--color-accent-default);-webkit-mask:var(--i) center/contain no-repeat;mask:var(--i) center/contain no-repeat;}
+  .ico{flex-shrink:0;width:20px;height:20px;--pulse-icon-size:20px;color:var(--color-accent-default);}
+  span.ico{background:var(--color-accent-default);-webkit-mask:var(--i) center/contain no-repeat;mask:var(--i) center/contain no-repeat;}   /* robot: no Pulse icon yet */
 
   /* ---------- HOW VEX WORKS (coded from Figma 1702:63619) ---------- */
   
   /* the DS eyebrow, in the site's mono */
-  .eyebrow{font-family:var(--font-mono);font-weight:400;font-size:12px;line-height:16px;letter-spacing:0.08em;text-transform:uppercase;color:var(--color-text-tertiary);}
+  .eyebrow{font-family:var(--font-mono);font-weight:400;font-size:var(--type-mono-eyebrow-size);line-height:var(--type-mono-eyebrow-line-height);letter-spacing:0.08em;text-transform:uppercase;color:var(--color-text-tertiary);}
   .eyebrow--dot{display:flex;align-items:center;gap:11px;}
   .eyebrow--on-dark{color:var(--color-neutral-300);}
 
@@ -72,8 +73,8 @@
   .hw-hero-glow{position:absolute;top:0;left:50%;width:2160px;max-width:none;height:auto;margin-left:-1080px;pointer-events:none;}   /* this page's blue-gray */
   .hw-hero-inner{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:60px;align-items:center;}
   .hw-hero-copy{display:flex;flex-direction:column;align-items:flex-start;}
-  .hw-hero h1{margin-top:16px;font-weight:600;font-size:clamp(40px,5.2vw,64px);line-height:1.0625;letter-spacing:-0.02em;color:var(--color-text-primary);}
-  .hw-lede{margin-top:24px;font-size:20px;line-height:32px;color:var(--color-text-primary);}
+  .hw-hero h1{margin-top:16px;font-weight:600;font-size:var(--type-display-size);line-height:var(--type-display-line-height);letter-spacing:-0.02em;color:var(--color-text-primary);}
+  .hw-lede{margin-top:24px;font-size:var(--type-body-lede-size);line-height:var(--type-body-lede-line-height);color:var(--color-text-primary);}
   .hw-hero .pulse-btn{margin-top:32px;}
   .hw-try{display:flex;flex-direction:column;gap:4px;margin-top:40px;padding-top:32px;border-top:1px solid var(--color-border-default);font-size:14px;line-height:20px;color:var(--color-text-secondary);}
   .hw-try p:last-child{display:flex;flex-wrap:wrap;align-items:center;gap:4px 16px;}
@@ -84,8 +85,8 @@
   .hw-hero-art{display:flex;justify-content:center;align-items:center;}
 
   /* shared section type */
-  .hw-loop h2,.hw-sec h2{margin-top:16px;font-weight:600;font-size:clamp(34px,4.2vw,48px);line-height:1.1667;letter-spacing:-0.015em;color:var(--color-text-primary);}
-  .hw-lede-2{margin-top:24px;font-size:20px;line-height:32px;color:var(--color-text-secondary);}
+  .hw-loop h2,.hw-sec h2{margin-top:16px;font-weight:600;font-size:var(--type-heading-section-size);line-height:var(--type-heading-section-line-height);letter-spacing:-0.015em;color:var(--color-text-primary);}
+  .hw-lede-2{margin-top:24px;font-size:var(--type-body-lede-size);line-height:var(--type-body-lede-line-height);color:var(--color-text-secondary);}
   .hw-lede-2 + .hw-lede-2{margin-top:32px;}
 
   /* the loop overview */
@@ -101,20 +102,15 @@
   .hw-loop-list li{display:flex;flex-direction:column;gap:8px;}
   .hw-loop-list p{font-size:18px;line-height:28px;color:var(--color-text-secondary);}
   .hw-loop-list b{font-weight:700;}
-  .hw-loop-list a{color:inherit;text-decoration:none;}
-  .hw-loop-list a:hover b,.hw-loop-list a:focus-visible b{color:var(--color-text-accent);}
-  .method-n{font-family:var(--font-mono);font-size:12px;line-height:16px;letter-spacing:0.08em;color:var(--color-accent-default);}
+  .hw-loop-list .pulse-link--quiet:not(:hover){color:var(--color-text-primary);text-decoration:none;}   /* quiet Pulse link, in ink so it doesn't look grayed back */
+  .method-n{font-family:var(--font-mono);font-size:var(--type-mono-eyebrow-size);line-height:var(--type-mono-eyebrow-line-height);letter-spacing:0.08em;color:var(--color-text-accent);}   /* eyebrow style, pink */
 
   /* section nav: sticks under the site header, rises when the header hides */
-  .hw-nav{position:sticky;top:calc(var(--classbar-h) + var(--header-h, 61px));z-index:40;display:flex;flex-direction:column;align-items:center;gap:8px;padding-top:16px;background:var(--color-surface-page);
-    border-top:1px solid var(--color-border-default);border-bottom:1px solid var(--color-border-default);box-shadow:0 2px 6px rgba(11,12,13,0.06),0 1px 2px rgba(11,12,13,0.06);transition:top 0.3s cubic-bezier(0.4,0,0.2,1);}
+  .hw-nav{position:sticky;top:calc(var(--classbar-h) + var(--header-h, 61px));z-index:40;flex-direction:column;align-items:center;transition:top 0.3s cubic-bezier(0.4,0,0.2,1);}   /* Pulse tabs, bar */
   html.header-hidden .hw-nav{top:0;}
   .hw-tabs{display:flex;max-width:100%;overflow-x:auto;scrollbar-width:none;}
   .hw-tabs::-webkit-scrollbar{display:none;}
-  .hw-tabs a,.hw-tabs span{flex-shrink:0;padding:0 16px 16px;border-bottom:2px solid transparent;font-size:14px;line-height:1.5;color:var(--color-neutral-400);text-decoration:none;white-space:nowrap;transition:color 0.2s ease, border-color 0.2s ease;}
-  .hw-tabs a:hover{color:var(--color-text-primary);}
-  .hw-tabs a[aria-current="true"]{border-bottom-color:var(--color-accent-default);color:var(--color-text-primary);font-weight:600;}
-  .hw-tabs span{cursor:default;}
+  .hw-tabs a{flex-shrink:0;white-space:nowrap;transition:color 0.2s ease, border-color 0.2s ease;}
 
   /* inside-the-loop sections: copy 500 + visual 450, 80 apart */
   .hw-sec{padding:96px 0;scroll-margin-top:110px;}
@@ -185,7 +181,6 @@
   }
   @media (max-width:700px){
     .hw-hero{padding:56px 0 48px;}
-    .hw-lede,.hw-lede-2{font-size:18px;line-height:28px;}
     .hw-loop,.hw-sec{padding:64px 0;}
     .hw-loop-list{grid-template-columns:minmax(0,1fr);}
     .hw-tabs{padding:0 8px;}
@@ -200,7 +195,7 @@
   .hw-grid--bleed{grid-template-columns:minmax(0,500px) minmax(0,1fr);}
   .eyebrow b{font-weight:600;color:var(--color-text-primary);}
   .link-btn{padding:0;border:0;background:none;}
-  .hw-more{margin-top:32px;display:flex;flex-wrap:wrap;gap:12px 28px;}
+  .hw-more{margin-top:32px;display:flex;flex-wrap:wrap;align-items:center;gap:12px 28px;}   /* drawer openers are ghost buttons (open something here), links go to a page */
   .db-wrap{margin:0;min-width:0;}
   .db{width:1200px;border:4px solid var(--color-border-mid);border-radius:10px;background:var(--color-surface-page);overflow:hidden;box-shadow:0 16px 40px -16px rgba(11,12,13,0.22);color:var(--color-text-primary);}
   .db-vex{display:inline-block;flex-shrink:0;width:7px;height:7px;border-radius:50%;background:var(--color-accent-default);}
@@ -232,15 +227,10 @@
   .db-name b{font-weight:500;font-size:13px;color:var(--color-neutral-800);}
   .db-name small{font-size:11px;color:var(--color-neutral-400);}
 
-  /* ---------- side drawers (the homepage draft's, opened by any [data-drawer]) ---------- */
-  .drawer-panel{position:absolute;top:0;right:0;bottom:0;width:min(440px,100%);display:flex;flex-direction:column;background:var(--color-surface-page);
-    box-shadow:-12px 0 40px -16px rgba(11,12,13,0.35);transform:translateX(100%);transition:transform 0.35s cubic-bezier(0.2,0.8,0.2,1);}
-  .drawer--wide .drawer-panel{width:min(560px,100%);}
-  .drawer-head .eyebrow{margin-bottom:10px;}
-  .drawer-head h2{font-weight:600;font-size:clamp(34px * 24 / 52, 4.2vw * 24 / 52, 24px);line-height:1.25;color:var(--color-text-primary);}
-  .drawer-head p{margin-top:8px;font-size:15px;line-height:1.55;color:var(--color-text-secondary);}
-  .drawer-body{flex:1;overflow-y:auto;padding:8px 28px 28px;}
-  .drawer-group{margin-top:24px;}
+  /* ---------- side drawers: Pulse drawers (pulse.js opens them from data-pulse-open); only their contents are styled here ---------- */
+  .pulse-drawer__head .eyebrow{margin-bottom:10px;}
+  .pulse-drawer__head p:not(.eyebrow){margin-top:8px;font-size:var(--type-body-sm-size);line-height:var(--type-body-sm-line-height);color:var(--color-text-secondary);}
+  .drawer-group + .drawer-group{margin-top:24px;}
   .drawer-group h3{font-family:var(--font-mono);font-weight:500;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--color-text-tertiary);}
   .drawer-list{list-style:none;margin:10px 0 0;padding:0;}
   .drawer-list li{display:grid;grid-template-columns:20px minmax(0,1fr);gap:4px 14px;padding:12px 0;border-top:1px solid var(--color-border-default);}
@@ -249,7 +239,6 @@
   .drawer-list b{font-weight:600;font-size:15px;line-height:1.4;}
   .drawer-list span:not(.ico){grid-column:2;font-size:13px;line-height:1.5;color:var(--color-text-secondary);}
   .drawer-list .tick{width:8px;height:8px;margin:6px 6px 0;border-radius:50%;background:var(--color-accent-default);}
-  .drawer-foot{padding:18px 28px;border-top:1px solid var(--color-border-default);background:var(--color-surface-subtle);}
   .prose{padding-top:4px;}
   .prose p,.prose li{font-size:16px;line-height:26px;color:var(--color-text-secondary);}
   .prose p{margin-top:16px;}
@@ -258,7 +247,7 @@
   .prose li{margin-top:10px;padding-left:4px;}
   .prose b{font-weight:600;color:var(--color-text-primary);}
   .prose pre.code{margin-top:12px;padding:16px;background:var(--color-surface-subtle);border:1px solid var(--color-border-default);border-radius:2px;font-family:var(--font-mono);font-size:13px;line-height:20px;color:var(--color-text-primary);white-space:pre;overflow-x:auto;}
-  .prose .k{color:var(--color-text-accent);}
+  .prose .k{color:var(--color-code-keyword);}
   @media (min-width:1024px) and (max-width:1199px){   /* little of the app shows beside the copy: give it to the signal names */
     .db-app{grid-template-columns:minmax(0,1fr);}
     .db-side{display:none;}
@@ -274,11 +263,9 @@
     .db-app{grid-template-columns:minmax(0,1fr);}
     .db-side{display:none;}
     .db-main{padding:20px 20px 24px;}
-    .drawer-body{padding:4px 16px 24px;}
-    .drawer-foot{padding:16px;}
   }
   @media (prefers-reduced-motion: reduce){
-    .drawer,.drawer-scrim,.drawer-panel{transition:none !important;}
+    dialog.pulse-drawer,dialog.pulse-drawer::backdrop{transition:none !important;}
   }
 
   /* ---------- 03 DETECT: the reviewers' panel (Figma 1828:130770), in the hero card's style ---------- */
@@ -331,9 +318,7 @@
   .su-card--new{border-color:var(--color-pink-600);}
   .su-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px;}
   .su-head span{font-family:var(--font-mono);font-size:11px;line-height:16px;letter-spacing:0.08em;text-transform:uppercase;color:var(--color-text-tertiary);}
-  .su-sev{padding:2px 8px;border:1px solid;border-radius:2px;font-style:normal;font-weight:600;font-size:12px;line-height:16px;}
-  .su-sev--high{border-color:var(--color-amber-100);background:var(--color-status-warning-subtle);color:var(--color-text-warning);}
-  .su-sev--crit{border-color:var(--color-pink-600);background:var(--color-accent-subtle);color:var(--color-text-accent);}
+  .su-sev{font-style:normal;}   /* Pulse badges */
   .su-card p{font-size:15px;line-height:23px;color:var(--color-text-primary);}
   .su-card b{font-weight:600;}
   .su .nw{white-space:nowrap;}
@@ -360,8 +345,8 @@
   /* ---------- closing: operations + getting started (dark) ---------- */
   .hw-close{padding:96px 0;background:var(--color-surface-contrast);color:var(--color-text-on-contrast);}
   .hw-close-grid{display:grid;grid-template-columns:minmax(0,560px) minmax(0,420px);justify-content:space-between;gap:60px;align-items:center;}
-  .hw-close h2{margin-top:16px;font-weight:600;font-size:clamp(34px,4.2vw,48px);line-height:1.1667;letter-spacing:-0.015em;color:var(--color-text-on-contrast);}
-  .hw-close-lede{margin-top:24px;font-size:20px;line-height:32px;color:rgba(255,255,255,0.72);}
+  .hw-close h2{margin-top:16px;font-weight:600;font-size:var(--type-heading-section-size);line-height:var(--type-heading-section-line-height);letter-spacing:-0.015em;color:var(--color-text-on-contrast);}
+  .hw-close-lede{margin-top:24px;font-size:var(--type-body-lede-size);line-height:var(--type-body-lede-line-height);color:rgba(255,255,255,0.72);}
   .hw-close h3{margin-top:40px;font-weight:600;font-size:24px;line-height:32px;letter-spacing:-0.005em;color:var(--color-text-on-contrast);}
   .hw-close-list{list-style:none;margin:20px 0 0;padding:0;border-top:1px solid rgba(255,255,255,0.16);}
   .hw-close-list li{display:flex;align-items:baseline;gap:8px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.16);}
@@ -383,7 +368,6 @@
   }
   @media (max-width:700px){
     .hw-close{padding:64px 0;}
-    .hw-close-lede{font-size:18px;line-height:28px;}
     .hw-close h3{font-size:20px;line-height:28px;}
     .hw-close-list b{font-size:16px;line-height:24px;}
     .hw-close-cta{flex-direction:column;align-items:flex-start;margin-top:48px;}
@@ -392,8 +376,7 @@
   /* ---------- short laptop screens (e.g. 1280 x 800): each section's content fits in one view ---------- */
   @media (min-width:1024px) and (max-height:900px){
     .hw-loop,.hw-sec,.hw-close{padding:64px 0;}
-    .hw-loop h2,.hw-sec h2,.hw-close h2{font-size:clamp(34px,3.6vw,42px);}
-    .hw-lede-2,.hw-close-lede{margin-top:16px;font-size:18px;line-height:28px;}
+    .hw-lede-2,.hw-close-lede{margin-top:16px;}
     .hw-sub,.hw-close h3{margin-top:20px;font-size:20px;line-height:28px;}
     .methods{margin-top:16px;}
     .methods--rules .method{padding:12px 0;}
@@ -408,7 +391,7 @@
   .in-short{margin:20px 0 4px;padding:16px 18px;background:var(--color-surface-subtle);border-radius:2px;}
   .in-short p{margin:0;font-size:16px;line-height:25px;color:var(--color-text-primary);}
   .prose .in-short p{margin-top:0;color:var(--color-text-primary);}
-  .prose .in-short .in-short-label{margin-bottom:6px;font-family:var(--font-mono);font-size:11px;line-height:16px;letter-spacing:0.08em;text-transform:uppercase;color:var(--color-text-accent);}
+  .prose .in-short .in-short-label{margin-bottom:6px;font-family:var(--font-mono);font-weight:400;font-size:var(--type-mono-eyebrow-size);line-height:var(--type-mono-eyebrow-line-height);letter-spacing:0.08em;text-transform:uppercase;color:var(--color-text-accent);}   /* eyebrow style */
   .prose h3{margin-top:32px;}
   .prose h4{margin-top:24px;font-weight:600;font-size:16px;line-height:24px;color:var(--color-text-primary);}
   .tags{list-style:none;display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 0;padding:0;}
@@ -421,7 +404,7 @@
   .compare{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:16px;}
   .compare > div{padding:14px 16px;border:1px solid var(--color-border-default);border-radius:2px;}
   .prose .compare p{margin:0;font-size:15px;line-height:23px;color:var(--color-text-primary);}
-  .prose .compare .compare-label{margin-bottom:6px;font-family:var(--font-mono);font-size:11px;line-height:16px;letter-spacing:0.08em;text-transform:uppercase;color:var(--color-text-tertiary);}
+  .prose .compare .compare-label{margin-bottom:6px;font-family:var(--font-mono);font-weight:400;font-size:var(--type-mono-eyebrow-size);line-height:var(--type-mono-eyebrow-line-height);letter-spacing:0.08em;text-transform:uppercase;color:var(--color-text-tertiary);}   /* eyebrow style */
   .prose .compare .compare-note{margin-top:8px;font-size:14px;line-height:21px;color:var(--color-text-secondary);}
   .compare--ask > div:last-child{border-color:var(--color-pink-600);background:var(--color-accent-subtle);}
   .prose .compare--ask > div:last-child .compare-label{color:var(--color-text-accent);}
@@ -491,7 +474,7 @@
     .hw-loop,.hw-sec,.hw-close{padding:48px 0;}
     .hw-hero{padding:40px 0 40px;}
     .hw-loop-top,.hw-grid,.hw-grid--flip,.hw-grid--bleed,.hw-close-grid{gap:32px;}
-    .hw-lede,.hw-lede-2,.hw-close-lede{margin-top:16px;font-size:17px;line-height:26px;}
+    .hw-lede,.hw-lede-2,.hw-close-lede{margin-top:16px;}
     .hw-sub,.hw-close h3{margin-top:20px;font-size:19px;line-height:26px;}
     .methods{margin-top:12px;}
     .methods--rules .method,.method{padding:12px 0;}
@@ -645,10 +628,10 @@
           <span class="brand-tag">Don’t get hacked</span>
         </div>
         <nav class="header-links" aria-label="Main">
-          <div class="nav-drop"><button class="header-link nav-drop-btn is-current" type="button" aria-expanded="false" aria-controls="soc-menu">VEX AI SOC<span class="nav-caret" aria-hidden="true"></span></button><div class="nav-drop-menu" id="soc-menu" hidden><a href="/how-it-works/" aria-current="page"><b>Meet VEX</b><span>Good prevention starts with great detection.</span></a><a href="/detections/"><b>What VEX detects</b><span>Every alert type it can raise.</span></a><a href="/api/"><b>The API</b><span>Security engineer? This is for you.</span></a><a href="/slack"><b>VEX in Slack</b><span>Right where your team already works.</span></a></div></div>
-          <a class="header-link header-link--cta" href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener">Schedule a chat <img src="../static/icon-arrow-right-pink.svg" width="16" height="16" alt=""></a>
+          <div class="nav-drop"><button class="pulse-link pulse-link--quiet nav-drop-btn is-current" type="button" aria-expanded="false" aria-controls="soc-menu">VEX AI SOC <i class="pulse-icon pulse-icon--caret-down" aria-hidden="true"></i></button><div class="pulse-dropdown pulse-dropdown--nav nav-drop-menu" id="soc-menu" hidden><a class="pulse-menu-item" href="/how-it-works/" aria-current="page"><span class="pulse-menu-item__label">Meet VEX</span><span class="pulse-menu-item__desc">Good prevention starts with great detection.</span></a><a class="pulse-menu-item" href="/detections/"><span class="pulse-menu-item__label">What VEX detects</span><span class="pulse-menu-item__desc">Every alert type it can raise.</span></a><a class="pulse-menu-item" href="/api/"><span class="pulse-menu-item__label">The API</span><span class="pulse-menu-item__desc">Security engineer? This is for you.</span></a><a class="pulse-menu-item" href="/slack"><span class="pulse-menu-item__label">VEX in Slack</span><span class="pulse-menu-item__desc">Right where your team already works.</span></a></div></div>
+          <a class="pulse-link header-cta" href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener">Schedule a chat <i class="pulse-icon pulse-icon--arrow-right" aria-hidden="true"></i></a>
         </nav>
-        <button class="menu-btn" type="button" aria-label="Open menu" aria-controls="site-nav" aria-expanded="false"><img src="../static/icon-menu.svg" width="32" height="32" alt=""></button>
+        <button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon menu-btn" type="button" aria-label="Open menu" aria-controls="site-nav" aria-expanded="false"><img src="../static/icon-menu.svg" width="24" height="24" alt=""></button>
       </div>
     </header>
   </div>
@@ -660,13 +643,13 @@
     <div class="site-header">
       <div class="wrap header-inner">
         <a href="/" class="brand"><span class="status-dot"></span>VEX</a>
-        <button class="menu-btn menu-close" type="button" aria-label="Close menu"><img src="../static/icon-close.svg" width="32" height="32" alt=""></button>
+        <button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon menu-btn menu-close" type="button" aria-label="Close menu"><i class="pulse-icon pulse-icon--x" aria-hidden="true"></i></button>
       </div>
     </div>
     <nav class="wrap" aria-label="Menu">
       <ul class="nav-list">
         <li><a href="/"><span class="nav-link">Home</span><span class="nav-sub">One Dot protects one thing. VEX protects everything.</span></a></li>
-        <li class="nav-group"><span class="nav-group-label">VEX AI SOC</span><ul class="nav-sublist"><li><a href="/how-it-works/" aria-current="page"><span class="nav-link">Meet VEX</span><span class="nav-sub">Good prevention starts with great detection.</span></a></li><li><a href="/detections/"><span class="nav-link">What VEX detects</span><span class="nav-sub">Every alert type it can raise.</span></a></li><li><a href="/api/"><span class="nav-link">The API</span><span class="nav-sub">Security engineer? This is for you.</span></a></li><li><a href="/slack"><span class="nav-link">VEX in Slack</span><span class="nav-sub">Right where your team already works.</span></a></li></ul></li>
+        <li class="nav-group"><span class="pulse-dropdown__label nav-group-label">VEX AI SOC</span><ul class="nav-sublist"><li><a href="/how-it-works/" aria-current="page"><span class="nav-link">Meet VEX</span><span class="nav-sub">Good prevention starts with great detection.</span></a></li><li><a href="/detections/"><span class="nav-link">What VEX detects</span><span class="nav-sub">Every alert type it can raise.</span></a></li><li><a href="/api/"><span class="nav-link">The API</span><span class="nav-sub">Security engineer? This is for you.</span></a></li><li><a href="/slack"><span class="nav-link">VEX in Slack</span><span class="nav-sub">Right where your team already works.</span></a></li></ul></li>
         <li><a href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener"><span class="nav-link">Schedule a chat</span></a></li>
       </ul>
     </nav>
@@ -678,10 +661,10 @@
     <img class="hw-hero-glow" src="static/hero-glow.svg" width="2160" height="228" alt="" aria-hidden="true">
     <div class="wrap hw-hero-inner">
       <div class="hw-hero-copy">
-        <div class="eyebrow-label"><span class="status-dot"></span>VEX AI SOC</div>
+        <div class="eyebrow eyebrow--dot"><span class="status-dot"></span>VEX AI SOC</div>
         <h1>Good prevention starts with great detection.</h1>
         <p class="hw-lede">We call it an Offensive SOC. VEX looks for the accounts, settings and behaviors likely to become part of an attack, so there’s less to detect and respond to in the first place.</p>
-        <a class="pulse-btn pulse-btn--primary pulse-btn--lg" href="#loop">See how VEX works <img src="static/icon-arrow-down-white.svg" width="20" height="20" alt=""></a>
+        <a class="pulse-btn pulse-btn--primary pulse-btn--lg" href="#loop">See how VEX works <i class="pulse-icon pulse-icon--arrow-down" aria-hidden="true"></i></a>
         <div class="hw-try">
           <p>Don’t take our word for it.</p>
           <p><span>Add VEX to <b>Slack</b> for free. It gets to work right away.</span> <a class="pulse-link" href="/slack">Get VEX for Slack <i class="pulse-icon pulse-icon--arrow-right"></i></a></p>
@@ -720,8 +703,8 @@
       </figure></div>
     </div>
   </section>
-  <nav class="hw-nav" aria-label="On this page">
-    <div class="hw-tabs"><a href="#loop">The loop</a><a href="#collect">Collect</a><a href="#triage">Triage</a><a href="#detect">Detect</a><a href="#update">Update</a></div>
+  <nav class="hw-nav pulse-tabs pulse-tabs--bar" aria-label="On this page">
+    <div class="hw-tabs"><a class="pulse-tab" href="#loop">The loop</a><a class="pulse-tab" href="#collect">Collect</a><a class="pulse-tab" href="#triage">Triage</a><a class="pulse-tab" href="#detect">Detect</a><a class="pulse-tab" href="#update">Update</a></div>
   </nav>
   <section class="hw-loop" id="loop">
     <div class="wrap">
@@ -828,7 +811,7 @@
 </svg>
 </div>
       </div>
-      <ol class="hw-loop-list"><li><span class="method-n">01</span><p><a href="#collect"><b>Collect telemetry</b></a><br>Gather activity from connected systems.</p></li><li><span class="method-n">02</span><p><a href="#triage"><b>Triage signal</b></a><br>Assess the affected asset and investigate the signal.</p></li><li><span class="method-n">03</span><p><a href="#detect"><b>Detect evil</b></a><br>Determine whether activity is malicious, and challenge the conclusion.</p></li><li><span class="method-n">04</span><p><a href="#update"><b>Update state</b></a><br>Carry findings and human judgment into the next investigation.</p></li></ol>
+      <ol class="hw-loop-list"><li><span class="method-n">01</span><p><a class="pulse-link pulse-link--quiet pulse-link--inline" href="#collect"><b>Collect telemetry</b></a><br>Gather activity from connected systems.</p></li><li><span class="method-n">02</span><p><a class="pulse-link pulse-link--quiet pulse-link--inline" href="#triage"><b>Triage signal</b></a><br>Assess the affected asset and investigate the signal.</p></li><li><span class="method-n">03</span><p><a class="pulse-link pulse-link--quiet pulse-link--inline" href="#detect"><b>Detect evil</b></a><br>Determine whether activity is malicious, and challenge the conclusion.</p></li><li><span class="method-n">04</span><p><a class="pulse-link pulse-link--quiet pulse-link--inline" href="#update"><b>Update state</b></a><br>Carry findings and human judgment into the next investigation.</p></li></ol>
     </div>
   </section>
   <section class="hw-sec hw-sec--bleed" id="collect">
@@ -839,11 +822,11 @@
         <p class="hw-lede-2">Attackers don’t stay inside the systems you watch most. VEX collects activity from identities, devices, domains, network gear and the SaaS apps you rely on, so its investigations start with what’s really happening.</p>
         <h3 class="hw-sub">Designed to make collection boring.</h3>
         <ul class="methods methods--rules">
-          <li class="method"><span class="method-n">01</span><div><p class="method-title">100+ integrations.</p><p class="method-text">Connect platforms like Microsoft 365 and Google Workspace directly. <button class="pulse-link pulse-link--inline link-btn" type="button" data-drawer="integrations" aria-haspopup="dialog">View all</button></p></div></li>
+          <li class="method"><span class="method-n">01</span><div><p class="method-title">100+ integrations.</p><p class="method-text">Connect platforms like Microsoft 365 and Google Workspace directly. <button class="pulse-link pulse-link--inline link-btn" type="button" data-pulse-open="integrations" aria-haspopup="dialog">View all</button></p></div></li>
           <li class="method"><span class="method-n">02</span><div><p class="method-title">The VEX API.</p><p class="method-text">Send in any other data source. <a class="pulse-link pulse-link--inline" href="/api/">See the API</a></p></div></li>
           <li class="method"><span class="method-n">03</span><div><p class="method-title">No API? Use email.</p><p class="method-text">Forward reports and notices to the mailbox included with every VEX deployment.</p></div></li>
         </ul>
-        <p class="hw-more"><button class="pulse-link link-btn" type="button" data-drawer="drawer-collect" aria-haspopup="dialog">How collection works <i class="pulse-icon pulse-icon--arrow-right"></i></button></p>
+        <p class="hw-more"><button class="pulse-btn pulse-btn--ghost" type="button" data-pulse-open="drawer-collect" aria-haspopup="dialog">How collection works</button></p>
       </div>
       <figure class="hw-visual db-wrap cs is-slack" data-collect aria-label="The VEX app’s list of signals from many sources. Three are picked out: a HubSpot data export, a missing DMARC record and a suspicious script on a laptop. Our UI is optional: when something looks suspicious, VEX investigates and messages you in Slack, here about the laptop, which it has isolated.">
         <div class="db" aria-hidden="true">
@@ -929,7 +912,7 @@
           <li class="method"><span class="method-n">02</span><div><p class="method-title">Pull the history.</p><p class="method-text">VEX looks back through past activity, because a single event rarely tells the whole story.</p></div></li>
           <li class="method"><span class="method-n">03</span><div><p class="method-title">Close what’s routine.</p><p class="method-text">If the evidence shows nothing malicious, the signal closes itself. No one has to look at it.</p></div></li>
         </ul>
-        <p class="hw-more"><button class="pulse-link link-btn" type="button" data-drawer="drawer-triage" aria-haspopup="dialog">How triage works <i class="pulse-icon pulse-icon--arrow-right"></i></button></p>
+        <p class="hw-more"><button class="pulse-btn pulse-btn--ghost" type="button" data-pulse-open="drawer-triage" aria-haspopup="dialog">How triage works</button></p>
       </div>
     </div>
   </section>
@@ -944,7 +927,7 @@
           <li class="method"><span class="method-n">02</span><div><p class="method-title">Try to prove it wrong.</p><p class="method-text">Other AI models check the same evidence. Some are told the answer is wrong and have to check for themselves.</p></div></li>
           <li class="method"><span class="method-n">03</span><div><p class="method-title">Act on the result.</p><p class="method-text">Agreement raises confidence. Above the threshold, your team gets a signal. Below it, the investigation closes.</p></div></li>
         </ul>
-        <p class="hw-more"><button class="pulse-link link-btn" type="button" data-drawer="drawer-detect" aria-haspopup="dialog">How detection works <i class="pulse-icon pulse-icon--arrow-right"></i></button><a class="pulse-link" href="/detections/">See what VEX detects <i class="pulse-icon pulse-icon--arrow-right"></i></a></p>
+        <p class="hw-more"><button class="pulse-btn pulse-btn--ghost" type="button" data-pulse-open="drawer-detect" aria-haspopup="dialog">How detection works</button><a class="pulse-link" href="/detections/">See what VEX detects <i class="pulse-icon pulse-icon--arrow-right"></i></a></p>
       </div>
       <div class="hw-visual hw-visual--meter">
         <figure class="cm" data-meter aria-label="How VEX decides: the AI analyst answers yes, compromised, with 79% confidence. AI reviewer 1 agrees, AI reviewer 2 is unsure, and AI reviewer 3 checks the evidence and agrees. Confidence ends at 88%, above the threshold, so a signal opens for your team.">
@@ -972,7 +955,7 @@
       <div class="hw-visual">
         <figure class="su" aria-label="One signal, updated. Before: an unapproved script on HR-laptop-428936 reached an unknown address; the laptop is contained and the severity is high. k.moore comments: “I didn’t install anything. I did open an invoice email yesterday.” The signal goes back through collect, triage and detect. After: the script likely came from a phishing email, two related signals are linked, and the severity is raised to critical.">
           <div class="su-card" aria-hidden="true">
-            <div class="su-head"><span>Signal summary</span><i class="su-sev su-sev--high">High</i></div>
+            <div class="su-head"><span>Signal summary</span><i class="su-sev pulse-badge pulse-badge--warning">High</i></div>
             <p>Unapproved script on <b class="nw">HR-laptop-428936</b> reached an unknown address. Laptop contained. Open for investigation.</p>
           </div>
           <div class="su-step su-comment" aria-hidden="true">
@@ -981,7 +964,7 @@
           </div>
           <div class="su-step su-loop" aria-hidden="true"><b>Back through the loop</b><span class="su-chips"><span>Collect</span><i></i><span>Triage</span><i></i><span>Detect</span></span></div>
           <div class="su-card su-card--new" aria-hidden="true">
-            <div class="su-head"><span>Signal summary · updated</span><i class="su-sev su-sev--crit">Critical</i></div>
+            <div class="su-head"><span>Signal summary · updated</span><i class="su-sev pulse-badge pulse-badge--danger">Critical</i></div>
             <p>Script likely came from <mark>a phishing email k.moore opened on October 7</mark>. <mark>Linked to 2 related signals.</mark> Laptop stays contained.</p>
           </div>
         </figure>
@@ -996,7 +979,7 @@
           <li class="method"><span class="method-n">02</span><div><p class="method-title">Treat people as evidence.</p><p class="method-text">A comment or a severity change from your team becomes part of the record, just like an event from an integration.</p></div></li>
           <li class="method"><span class="method-n">03</span><div><p class="method-title">Run the loop again.</p><p class="method-text">Every change sends the signal back through collect, triage and detect, with everything VEX now knows.</p></div></li>
         </ul>
-        <p class="hw-more"><button class="pulse-link link-btn" type="button" data-drawer="drawer-update" aria-haspopup="dialog">How updates work <i class="pulse-icon pulse-icon--arrow-right"></i></button></p>
+        <p class="hw-more"><button class="pulse-btn pulse-btn--ghost" type="button" data-pulse-open="drawer-update" aria-haspopup="dialog">How updates work</button></p>
       </div>
     </div>
   </section>
@@ -1027,199 +1010,184 @@
     </div>
   </section>
 
-  <div class="drawer" id="integrations" role="dialog" aria-modal="true" aria-labelledby="integrations-title" aria-hidden="true">
-    <div class="drawer-scrim" data-close></div>
-    <div class="drawer-panel">
-      <div class="drawer-head">
-        <div>
-          <h2 id="integrations-title">What VEX watches</h2>
-          <p>VEX connects to the tools you already use and watches every identity in them.</p>
-        </div>
-        <button class="drawer-close" type="button" data-close aria-label="Close"><img src="../static/icon-close.svg" width="20" height="20" alt=""></button>
+  <dialog class="pulse-drawer" id="integrations" aria-labelledby="integrations-title">
+    <div class="pulse-drawer__head">
+      <div>
+        <h2 class="pulse-drawer__title" id="integrations-title">What VEX watches</h2>
+        <p>VEX connects to the tools you already use and watches every identity in them.</p>
       </div>
-      <div class="drawer-body">
-        <div class="drawer-group">
-          <h3>Identities</h3>
-          <ul class="drawer-list">
-            <li><span class="ico" style="--i:url(../static/icon-users.svg)"></span><b>People</b><span>Everyone with a work account.</span></li>
-            <li><span class="ico" style="--i:url(../static/icon-laptop.svg)"></span><b>Computers</b><span>Laptops, desktops and servers (endpoints).</span></li>
-            <li><span class="ico" style="--i:url(../static/icon-robot.svg)"></span><b>AI agents</b><span>Bots and agents that act with their own access.</span></li>
-            <li><span class="ico" style="--i:url(../static/icon-envelope.svg)"></span><b>Service accounts</b><span>Shared inboxes and the logins apps use to talk to each other.</span></li>
-          </ul>
-        </div>
-        <div class="drawer-group">
-          <h3>Integrations</h3>
-          <ul class="drawer-list">
-            <li><i class="tick"></i><b>Microsoft 365</b><span>Entra ID Protection, Defender for Identity, Defender for Cloud Apps and Microsoft 365 alert policies</span></li>
-            <li><i class="tick"></i><b>Azure</b><span>Microsoft Defender for Cloud</span></li>
-            <li><i class="tick"></i><b>Google Workspace</b><span>Google Workspace Alert Center</span></li>
-            <li><i class="tick"></i><b>AWS</b><span>IAM Access Analyzer</span></li>
-            <li><i class="tick"></i><b>GitHub</b><span>Secret scanning</span></li>
-            <li><i class="tick"></i><b>Level</b><span>Endpoint security alerts and help desk tickets</span></li>
-          </ul>
-        </div>
-        <div class="drawer-group">
-          <h3>Where VEX reports</h3>
-          <ul class="drawer-list">
-            <li><img src="../static/slack-logo.svg" width="20" height="20" alt=""><b>Slack</b><span>What VEX found, fixed and needs from you, where your team already works.</span></li>
-          </ul>
-        </div>
-      </div>
-      <div class="drawer-foot"><a class="pulse-link" href="/detections/" target="_blank" rel="noopener">See everything we detect <i class="pulse-icon pulse-icon--arrow-right"></i></a></div>
+      <button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-drawer__close" type="button" aria-label="Close" data-pulse-close><i class="pulse-icon pulse-icon--x" aria-hidden="true"></i></button>
     </div>
-  </div>
-
-  <div class="drawer drawer--wide" id="drawer-collect" role="dialog" aria-modal="true" aria-labelledby="drawer-collect-title" aria-hidden="true">
-    <div class="drawer-scrim" data-close></div>
-    <div class="drawer-panel">
-      <div class="drawer-head">
-        <div><p class="eyebrow"><b>The loop:</b> Collect</p><h2 id="drawer-collect-title">How collection works</h2><p>Detection starts with reality.</p></div>
-        <button class="drawer-close" type="button" data-close aria-label="Close"><img src="../static/icon-close.svg" width="20" height="20" alt=""></button>
-      </div>
-      <div class="drawer-body prose">
-        <aside class="in-short"><p class="in-short-label">In short</p><p>VEX collects activity from everything an attacker might touch, not just endpoints. Data comes in through 100+ integrations, the VEX API or email for systems without an API. Security-relevant events become signals, and everything else is kept in an audit log that’s never purged.</p></aside>
-        <h3>What VEX collects</h3>
-        <p>To detect malicious behavior, you need a reliable stream of what’s actually happening across an environment. That means collecting activity from everything an attacker might touch:</p>
-        <ul class="tags"><li>Identities</li><li>Endpoints</li><li>Domains</li><li>SaaS applications</li><li>Network devices</li><li>Email systems</li></ul>
-        <h3>The hard-to-reach sources</h3>
-        <p>Identity providers like Microsoft and Google have well-documented APIs and mature integrations. But what about:</p>
-        <ul>
-          <li>The firewall?</li>
-          <li>The domain registrar?</li>
-          <li>An ISP portal?</li>
-          <li>DMARC reports?</li>
-          <li>The dozens, or hundreds, of SaaS applications a company relies on?</li>
+    <div class="pulse-drawer__body drawer-body">
+      <div class="drawer-group">
+        <h3>Identities</h3>
+        <ul class="drawer-list">
+          <li><i class="pulse-icon pulse-icon--users ico" aria-hidden="true"></i><b>People</b><span>Everyone with a work account.</span></li>
+          <li><i class="pulse-icon pulse-icon--laptop ico" aria-hidden="true"></i><b>Computers</b><span>Laptops, desktops and servers (endpoints).</span></li>
+          <li><span class="ico" style="--i:url(../static/icon-robot.svg)"></span><b>AI agents</b><span>Bots and agents that act with their own access.</span></li>
+          <li><i class="pulse-icon pulse-icon--envelope ico" aria-hidden="true"></i><b>Service accounts</b><span>Shared inboxes and the logins apps use to talk to each other.</span></li>
         </ul>
-        <h3>VEX is designed to make collection boring</h3>
-        <ol>
-          <li><b>Connect an API.</b> Connect any data source through the <a class="pulse-link pulse-link--inline" href="/api/">VEX API</a>.</li>
-          <li><b>Push data by email.</b> When a system doesn’t have an API, send its data to the unique mailbox included with every VEX deployment.</li>
-        </ol>
-        <p>VEX supports 100+ third-party integrations, plus an unlimited number of additional data sources that can feed it through the API or email.</p>
-        <h3>Where the data goes</h3>
-        <p>Once connected, VEX continuously collects and normalizes the data.</p>
-        <dl class="route"><div><dt>Security-relevant events</dt><dd>Become signals for analysis.</dd></div><div><dt>Everything else</dt><dd>Goes into a never-purged audit log, available for retrieval over the API.</dd></div></dl>
-        <p class="closing">The result is a much broader view of reality than a traditional SOC typically gets: not just what happened on an endpoint, but what happened everywhere.</p>
+      </div>
+      <div class="drawer-group">
+        <h3>Integrations</h3>
+        <ul class="drawer-list">
+          <li><i class="tick"></i><b>Microsoft 365</b><span>Entra ID Protection, Defender for Identity, Defender for Cloud Apps and Microsoft 365 alert policies</span></li>
+          <li><i class="tick"></i><b>Azure</b><span>Microsoft Defender for Cloud</span></li>
+          <li><i class="tick"></i><b>Google Workspace</b><span>Google Workspace Alert Center</span></li>
+          <li><i class="tick"></i><b>AWS</b><span>IAM Access Analyzer</span></li>
+          <li><i class="tick"></i><b>GitHub</b><span>Secret scanning</span></li>
+          <li><i class="tick"></i><b>Level</b><span>Endpoint security alerts and help desk tickets</span></li>
+        </ul>
+      </div>
+      <div class="drawer-group">
+        <h3>Where VEX reports</h3>
+        <ul class="drawer-list">
+          <li><img src="../static/slack-logo.svg" width="20" height="20" alt=""><b>Slack</b><span>What VEX found, fixed and needs from you, where your team already works.</span></li>
+        </ul>
       </div>
     </div>
-  </div>
+    <div class="pulse-drawer__foot drawer-foot"><a class="pulse-link" href="/detections/" target="_blank" rel="noopener">See everything we detect <i class="pulse-icon pulse-icon--arrow-right"></i></a></div>
+  </dialog>
 
-  <div class="drawer drawer--wide" id="drawer-triage" role="dialog" aria-modal="true" aria-labelledby="drawer-triage-title" aria-hidden="true">
-    <div class="drawer-scrim" data-close></div>
-    <div class="drawer-panel">
-      <div class="drawer-head">
-        <div><p class="eyebrow"><b>The loop:</b> Triage</p><h2 id="drawer-triage-title">How triage works</h2><p>Every security signal goes through a real-time, two-stage triage.</p></div>
-        <button class="drawer-close" type="button" data-close aria-label="Close"><img src="../static/icon-close.svg" width="20" height="20" alt=""></button>
-      </div>
-      <div class="drawer-body prose">
-        <aside class="in-short"><p class="in-short-label">In short</p><p>Every signal is triaged in real time, in two stages. First the asset: if a breach looks likely, VEX can log the identity out or contain the asset. Then the signal: VEX pulls the history, decides whether there’s evil, and closes the signal itself if there isn’t.</p></aside>
-        <h3>1. Triage the asset</h3>
-        <p>First, VEX looks at the asset associated with the signal (a computer, identity, domain or other resource) and determines whether action should be taken against it.</p>
-        <div class="compare">
-          <div><p class="compare-label">Log out</p><p>Should active sessions be revoked?</p><p class="compare-note">Relatively low-impact.</p></div>
-          <div><p class="compare-label">Contain</p><p>Should the asset be isolated or otherwise prevented from continuing to operate?</p><p class="compare-note">More disruptive. May require a human to intervene before the asset is returned to service.</p></div>
-        </div>
-        <p>These actions are reserved for signals with sufficiently high confidence that a breach may be underway.</p>
-        <h3>2. Triage the signal</h3>
-        <p>Next, VEX investigates the signal itself.</p>
-        <ol>
-          <li><b>Retrieve historical evidence.</b> VEX pulls relevant historical activity to put the signal in context. A single event rarely tells the whole story.</li>
-          <li><b>Determine whether there’s evil.</b> VEX analyzes the signal and its surrounding evidence to determine whether it represents malicious activity.</li>
-          <li><b>Auto-close when appropriate.</b> If the evidence doesn’t indicate malicious activity, the signal is automatically closed.</li>
-        </ol>
-        <p class="closing">This is where collection becomes detection. We’ve gathered the evidence; now VEX has to decide what it means.</p>
-      </div>
+  <dialog class="pulse-drawer pulse-drawer--lg" id="drawer-collect" aria-labelledby="drawer-collect-title">
+    <div class="pulse-drawer__head">
+      <div><p class="eyebrow"><b>The loop:</b> Collect</p><h2 class="pulse-drawer__title" id="drawer-collect-title">How collection works</h2><p>Detection starts with reality.</p></div>
+      <button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-drawer__close" type="button" aria-label="Close" data-pulse-close><i class="pulse-icon pulse-icon--x" aria-hidden="true"></i></button>
     </div>
-  </div>
+    <div class="pulse-drawer__body drawer-body prose">
+      <aside class="in-short"><p class="in-short-label">In short</p><p>VEX collects activity from everything an attacker might touch, not just endpoints. Data comes in through 100+ integrations, the VEX API or email for systems without an API. Security-relevant events become signals, and everything else is kept in an audit log that’s never purged.</p></aside>
+      <h3>What VEX collects</h3>
+      <p>To detect malicious behavior, you need a reliable stream of what’s actually happening across an environment. That means collecting activity from everything an attacker might touch:</p>
+      <ul class="tags"><li>Identities</li><li>Endpoints</li><li>Domains</li><li>SaaS applications</li><li>Network devices</li><li>Email systems</li></ul>
+      <h3>The hard-to-reach sources</h3>
+      <p>Identity providers like Microsoft and Google have well-documented APIs and mature integrations. But what about:</p>
+      <ul>
+        <li>The firewall?</li>
+        <li>The domain registrar?</li>
+        <li>An ISP portal?</li>
+        <li>DMARC reports?</li>
+        <li>The dozens, or hundreds, of SaaS applications a company relies on?</li>
+      </ul>
+      <h3>VEX is designed to make collection boring</h3>
+      <ol>
+        <li><b>Connect an API.</b> Connect any data source through the <a class="pulse-link pulse-link--inline" href="/api/">VEX API</a>.</li>
+        <li><b>Push data by email.</b> When a system doesn’t have an API, send its data to the unique mailbox included with every VEX deployment.</li>
+      </ol>
+      <p>VEX supports 100+ third-party integrations, plus an unlimited number of additional data sources that can feed it through the API or email.</p>
+      <h3>Where the data goes</h3>
+      <p>Once connected, VEX continuously collects and normalizes the data.</p>
+      <dl class="route"><div><dt>Security-relevant events</dt><dd>Become signals for analysis.</dd></div><div><dt>Everything else</dt><dd>Goes into a never-purged audit log, available for retrieval over the API.</dd></div></dl>
+      <p class="closing">The result is a much broader view of reality than a traditional SOC typically gets: not just what happened on an endpoint, but what happened everywhere.</p>
+    </div>
+  </dialog>
 
-  <div class="drawer drawer--wide" id="drawer-detect" role="dialog" aria-modal="true" aria-labelledby="drawer-detect-title" aria-hidden="true">
-    <div class="drawer-scrim" data-close></div>
-    <div class="drawer-panel">
-      <div class="drawer-head">
-        <div><p class="eyebrow"><b>The loop:</b> Detect</p><h2 id="drawer-detect-title">How detection works</h2><p>This is where VEX gets opinionated.</p></div>
-        <button class="drawer-close" type="button" data-close aria-label="Close"><img src="../static/icon-close.svg" width="20" height="20" alt=""></button>
+  <dialog class="pulse-drawer pulse-drawer--lg" id="drawer-triage" aria-labelledby="drawer-triage-title">
+    <div class="pulse-drawer__head">
+      <div><p class="eyebrow"><b>The loop:</b> Triage</p><h2 class="pulse-drawer__title" id="drawer-triage-title">How triage works</h2><p>Every security signal goes through a real-time, two-stage triage.</p></div>
+      <button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-drawer__close" type="button" aria-label="Close" data-pulse-close><i class="pulse-icon pulse-icon--x" aria-hidden="true"></i></button>
+    </div>
+    <div class="pulse-drawer__body drawer-body prose">
+      <aside class="in-short"><p class="in-short-label">In short</p><p>Every signal is triaged in real time, in two stages. First the asset: if a breach looks likely, VEX can log the identity out or contain the asset. Then the signal: VEX pulls the history, decides whether there’s evil, and closes the signal itself if there isn’t.</p></aside>
+      <h3>1. Triage the asset</h3>
+      <p>First, VEX looks at the asset associated with the signal (a computer, identity, domain or other resource) and determines whether action should be taken against it.</p>
+      <div class="compare">
+        <div><p class="compare-label">Log out</p><p>Should active sessions be revoked?</p><p class="compare-note">Relatively low-impact.</p></div>
+        <div><p class="compare-label">Contain</p><p>Should the asset be isolated or otherwise prevented from continuing to operate?</p><p class="compare-note">More disruptive. May require a human to intervene before the asset is returned to service.</p></div>
       </div>
-      <div class="drawer-body prose">
-        <aside class="in-short"><p class="in-short-label">In short</p><p>VEX doesn’t match events against rules. For each investigation, an AI analyst answers one question: has this environment been compromised? Then models from other families try to prove that answer wrong. Only a conclusion that survives, with enough confidence, opens a signal.</p></aside>
-        <h3>No rules engine</h3>
-        <p>Traditional detection engineering generally starts with a known bad behavior: a suspicious login, an impossible-travel event, a malicious process, a known indicator. You encode that behavior as a rule, wait for an event to match it and investigate the resulting alert.</p>
-        <p>VEX doesn’t have a traditional rules engine. There aren’t thousands of detection rules waiting for individual events to match. Instead, VEX gives an AI analyst a bounded set of evidence and asks it to reason about what happened.</p>
-        <div class="compare compare--ask">
-          <div><p class="compare-label">Rather than asking</p><p>“Does this event match a detection?”</p></div>
-          <div><p class="compare-label">VEX asks</p><p>“Given everything we know about this environment, is there high confidence that a compromise has occurred?”</p></div>
-        </div>
-        <h3>How an investigation runs</h3>
-        <p>Each detection runs as an investigation against a specific question. VEX:</p>
+      <p>These actions are reserved for signals with sufficiently high confidence that a breach may be underway.</p>
+      <h3>2. Triage the signal</h3>
+      <p>Next, VEX investigates the signal itself.</p>
+      <ol>
+        <li><b>Retrieve historical evidence.</b> VEX pulls relevant historical activity to put the signal in context. A single event rarely tells the whole story.</li>
+        <li><b>Determine whether there’s evil.</b> VEX analyzes the signal and its surrounding evidence to determine whether it represents malicious activity.</li>
+        <li><b>Auto-close when appropriate.</b> If the evidence doesn’t indicate malicious activity, the signal is automatically closed.</li>
+      </ol>
+      <p class="closing">This is where collection becomes detection. We’ve gathered the evidence; now VEX has to decide what it means.</p>
+    </div>
+  </dialog>
+
+  <dialog class="pulse-drawer pulse-drawer--lg" id="drawer-detect" aria-labelledby="drawer-detect-title">
+    <div class="pulse-drawer__head">
+      <div><p class="eyebrow"><b>The loop:</b> Detect</p><h2 class="pulse-drawer__title" id="drawer-detect-title">How detection works</h2><p>This is where VEX gets opinionated.</p></div>
+      <button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-drawer__close" type="button" aria-label="Close" data-pulse-close><i class="pulse-icon pulse-icon--x" aria-hidden="true"></i></button>
+    </div>
+    <div class="pulse-drawer__body drawer-body prose">
+      <aside class="in-short"><p class="in-short-label">In short</p><p>VEX doesn’t match events against rules. For each investigation, an AI analyst answers one question: has this environment been compromised? Then models from other families try to prove that answer wrong. Only a conclusion that survives, with enough confidence, opens a signal.</p></aside>
+      <h3>No rules engine</h3>
+      <p>Traditional detection engineering generally starts with a known bad behavior: a suspicious login, an impossible-travel event, a malicious process, a known indicator. You encode that behavior as a rule, wait for an event to match it and investigate the resulting alert.</p>
+      <p>VEX doesn’t have a traditional rules engine. There aren’t thousands of detection rules waiting for individual events to match. Instead, VEX gives an AI analyst a bounded set of evidence and asks it to reason about what happened.</p>
+      <div class="compare compare--ask">
+        <div><p class="compare-label">Rather than asking</p><p>“Does this event match a detection?”</p></div>
+        <div><p class="compare-label">VEX asks</p><p>“Given everything we know about this environment, is there high confidence that a compromise has occurred?”</p></div>
+      </div>
+      <h3>How an investigation runs</h3>
+      <p>Each detection runs as an investigation against a specific question. VEX:</p>
+      <ol>
+        <li>Collects the relevant audit history.</li>
+        <li>Compresses the most recent hours of audit events and days of security signals into a working state.</li>
+        <li>Provides that state to the AI analyst along with the detection-specific instructions.</li>
+      </ol>
+      <p>The model returns a decision and its self-reported confidence.</p>
+      <details class="tech">
+        <summary>Technical implementation</summary>
+        <div class="tech-body">
+        <h4>The runtime context has three layers</h4>
         <ol>
-          <li>Collects the relevant audit history.</li>
-          <li>Compresses the most recent hours of audit events and days of security signals into a working state.</li>
-          <li>Provides that state to the AI analyst along with the detection-specific instructions.</li>
+          <li><b>Historical context:</b> a vector-based filesystem containing historical signal results and their associated context.</li>
+          <li><b>Detection instructions:</b> a system prompt specific to the investigation being performed.</li>
+          <li><b>The question:</b> a user prompt containing the single question the analyst must answer.</li>
         </ol>
-        <p>The model returns a decision and its self-reported confidence.</p>
-        <details class="tech">
-          <summary>Technical implementation</summary>
-          <div class="tech-body">
-          <h4>The runtime context has three layers</h4>
-          <ol>
-            <li><b>Historical context:</b> a vector-based filesystem containing historical signal results and their associated context.</li>
-            <li><b>Detection instructions:</b> a system prompt specific to the investigation being performed.</li>
-            <li><b>The question:</b> a user prompt containing the single question the analyst must answer.</li>
-          </ol>
-          <p>The model’s decision comes back as structured JSON:</p>
-          <pre class="code">{
-  <span class="k">"answer"</span>: true,
-  <span class="k">"probability"</span>: 0.79,
-  <span class="k">"response"</span>: "A description of what occurred"
+        <p>The model’s decision comes back as structured JSON:</p>
+        <pre class="code">{
+<span class="k">"answer"</span>: true,
+<span class="k">"probability"</span>: 0.79,
+<span class="k">"response"</span>: "A description of what occurred"
 }</pre>
-          <dl class="fields"><div><dt>answer</dt><dd>The decision.</dd></div><div><dt>probability</dt><dd>The model’s self-reported confidence.</dd></div><div><dt>response</dt><dd>A description of what occurred.</dd></div></dl>
-          </div>
-        </details>
-        <h3>But VEX doesn’t take the model’s word for it</h3>
-        <p>The initial conclusion is independently reviewed by multiple model families. Each reviewer receives the same underlying evidence and is asked to evaluate the conclusion from a different perspective and at different temperatures. Some reviews are deliberately adversarial:</p>
-        <ul class="quotes">
-          <li>“Is the proposed answer correct?”</li>
-          <li>“A reviewer believes the answer is wrong. Check the evidence independently. Is it actually correct?”</li>
-        </ul>
-        <p>The goal isn’t to get several models to agree with one another. It’s to make the original hypothesis survive attempts to disprove it.</p>
-        <h3>How the decision is made</h3>
-        <p>Agreement across independent checks increases confidence. Disagreement introduces uncertainty. VEX combines those evaluations with the analyst’s initial confidence to produce a final confidence estimate: not a binary alert or no alert, but how strongly the evidence supports the hypothesis that the environment has been compromised.</p>
-        <dl class="route"><div><dt>Crosses the detection threshold</dt><dd>VEX creates a signal for investigation.</dd></div><div><dt>Doesn’t cross it</dt><dd>The investigation is closed automatically.</dd></div></dl>
-        <p class="closing">The important part isn’t that an AI makes the decision. It’s that the decision is treated as a hypothesis that must survive independent attempts to disprove it.</p>
-      </div>
+        <dl class="fields"><div><dt>answer</dt><dd>The decision.</dd></div><div><dt>probability</dt><dd>The model’s self-reported confidence.</dd></div><div><dt>response</dt><dd>A description of what occurred.</dd></div></dl>
+        </div>
+      </details>
+      <h3>But VEX doesn’t take the model’s word for it</h3>
+      <p>The initial conclusion is independently reviewed by multiple model families. Each reviewer receives the same underlying evidence and is asked to evaluate the conclusion from a different perspective and at different temperatures. Some reviews are deliberately adversarial:</p>
+      <ul class="quotes">
+        <li>“Is the proposed answer correct?”</li>
+        <li>“A reviewer believes the answer is wrong. Check the evidence independently. Is it actually correct?”</li>
+      </ul>
+      <p>The goal isn’t to get several models to agree with one another. It’s to make the original hypothesis survive attempts to disprove it.</p>
+      <h3>How the decision is made</h3>
+      <p>Agreement across independent checks increases confidence. Disagreement introduces uncertainty. VEX combines those evaluations with the analyst’s initial confidence to produce a final confidence estimate: not a binary alert or no alert, but how strongly the evidence supports the hypothesis that the environment has been compromised.</p>
+      <dl class="route"><div><dt>Crosses the detection threshold</dt><dd>VEX creates a signal for investigation.</dd></div><div><dt>Doesn’t cross it</dt><dd>The investigation is closed automatically.</dd></div></dl>
+      <p class="closing">The important part isn’t that an AI makes the decision. It’s that the decision is treated as a hypothesis that must survive independent attempts to disprove it.</p>
     </div>
-  </div>
+  </dialog>
 
-  <div class="drawer drawer--wide" id="drawer-update" role="dialog" aria-modal="true" aria-labelledby="drawer-update-title" aria-hidden="true">
-    <div class="drawer-scrim" data-close></div>
-    <div class="drawer-panel">
-      <div class="drawer-head">
-        <div><p class="eyebrow"><b>The loop:</b> Update</p><h2 id="drawer-update-title">How updates work</h2><p>The loop doesn’t end at a decision.</p></div>
-        <button class="drawer-close" type="button" data-close aria-label="Close"><img src="../static/icon-close.svg" width="20" height="20" alt=""></button>
-      </div>
-      <div class="drawer-body prose">
-        <aside class="in-short"><p class="in-short-label">In short</p><p>A signal is never final. Whenever its state changes, including a comment from your team, VEX rewrites its summary and runs it back through the loop. Over time that builds a security knowledge store instead of a pile of static alerts.</p></aside>
-        <h3>Writing back the decision</h3>
-        <p>Once VEX has made a detection decision, it writes that decision back to the signal and persists the updated state.</p>
-        <dl class="route"><div><dt>Malicious activity</dt><dd>The signal remains open for human investigation.</dd></div><div><dt>Evidence doesn’t support the hypothesis</dt><dd>VEX marks it auto-closed.</dd></div></dl>
-        <h3>A living piece of security state</h3>
-        <p>A signal’s state can change as new evidence becomes available:</p>
-        <ul class="tags"><li>Status</li><li>Severity</li><li>Disposition</li><li>Analyst comments</li></ul>
-        <p>Whenever that state changes, VEX regenerates the signal’s compact stub and sends the signal back through the same collection, triage and detection process.</p>
-        <dl class="fields"><div><dt>Compact stub</dt><dd>A current, plain-text summary of what VEX knows about the signal.</dd></div></dl>
-        <h3>People count as evidence</h3>
-        <p>A human analyst’s judgment becomes part of the record’s future context, just like an event collected from an API.</p>
-        <ul>
-          <li>A comment can add evidence.</li>
-          <li>A disposition can change the interpretation of an incident.</li>
-          <li>A severity change can alter how the signal is treated.</li>
-        </ul>
-        <p>Each update gives VEX another chance to reconsider what it knows.</p>
-        <p class="closing">The result is a continuously evolving security knowledge store rather than a collection of static alerts.</p>
-        <h3>Your data stays yours</h3>
-        <p>VEX is a multi-tenant system that separates each account into its own logical partition, and runs every query, deterministic or LLM-based, against only the data in that account.</p>
-      </div>
+  <dialog class="pulse-drawer pulse-drawer--lg" id="drawer-update" aria-labelledby="drawer-update-title">
+    <div class="pulse-drawer__head">
+      <div><p class="eyebrow"><b>The loop:</b> Update</p><h2 class="pulse-drawer__title" id="drawer-update-title">How updates work</h2><p>The loop doesn’t end at a decision.</p></div>
+      <button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-drawer__close" type="button" aria-label="Close" data-pulse-close><i class="pulse-icon pulse-icon--x" aria-hidden="true"></i></button>
     </div>
-  </div>
+    <div class="pulse-drawer__body drawer-body prose">
+      <aside class="in-short"><p class="in-short-label">In short</p><p>A signal is never final. Whenever its state changes, including a comment from your team, VEX rewrites its summary and runs it back through the loop. Over time that builds a security knowledge store instead of a pile of static alerts.</p></aside>
+      <h3>Writing back the decision</h3>
+      <p>Once VEX has made a detection decision, it writes that decision back to the signal and persists the updated state.</p>
+      <dl class="route"><div><dt>Malicious activity</dt><dd>The signal remains open for human investigation.</dd></div><div><dt>Evidence doesn’t support the hypothesis</dt><dd>VEX marks it auto-closed.</dd></div></dl>
+      <h3>A living piece of security state</h3>
+      <p>A signal’s state can change as new evidence becomes available:</p>
+      <ul class="tags"><li>Status</li><li>Severity</li><li>Disposition</li><li>Analyst comments</li></ul>
+      <p>Whenever that state changes, VEX regenerates the signal’s compact stub and sends the signal back through the same collection, triage and detection process.</p>
+      <dl class="fields"><div><dt>Compact stub</dt><dd>A current, plain-text summary of what VEX knows about the signal.</dd></div></dl>
+      <h3>People count as evidence</h3>
+      <p>A human analyst’s judgment becomes part of the record’s future context, just like an event collected from an API.</p>
+      <ul>
+        <li>A comment can add evidence.</li>
+        <li>A disposition can change the interpretation of an incident.</li>
+        <li>A severity change can alter how the signal is treated.</li>
+      </ul>
+      <p>Each update gives VEX another chance to reconsider what it knows.</p>
+      <p class="closing">The result is a continuously evolving security knowledge store rather than a collection of static alerts.</p>
+      <h3>Your data stays yours</h3>
+      <p>VEX is a multi-tenant system that separates each account into its own logical partition, and runs every query, deterministic or LLM-based, against only the data in that account.</p>
+    </div>
+  </dialog>
 
   </main>
 
@@ -1273,33 +1241,7 @@
       window.addEventListener('scroll', function(){ if(!t){ t = true; requestAnimationFrame(function(){ t = false; mark(); }); } }, { passive:true });
       mark();
     })();
-    (function(){
-      // SIDE DRAWERS: any [data-drawer="id"] opens that drawer; Esc, the scrim or × closes it; focus stays inside while open.
-      var root = document.documentElement, cur = null, opener = null;
-      function open(d, btn){
-        cur = d; opener = btn; d.classList.add('is-open'); d.setAttribute('aria-hidden', 'false'); root.style.overflow = 'hidden';
-        setTimeout(function(){ d.querySelector('.drawer-close').focus(); }, 50);
-      }
-      function close(){
-        if(!cur){ return; }
-        cur.classList.remove('is-open'); cur.setAttribute('aria-hidden', 'true'); root.style.overflow = ''; cur = null;
-        if(opener){ opener.focus(); }
-      }
-      document.querySelectorAll('[data-drawer]').forEach(function(b){
-        var d = document.getElementById(b.getAttribute('data-drawer'));
-        if(d){ b.addEventListener('click', function(){ open(d, b); }); }
-      });
-      document.querySelectorAll('.drawer [data-close]').forEach(function(el){ el.addEventListener('click', close); });
-      document.addEventListener('keydown', function(e){
-        if(!cur){ return; }
-        if(e.key === 'Escape'){ close(); return; }
-        if(e.key === 'Tab'){
-          var f = [].slice.call(cur.querySelector('.drawer-panel').querySelectorAll('a[href],button')), first = f[0], last = f[f.length - 1];
-          if(e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
-          else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
-        }
-      });
-    })();
+    // SIDE DRAWERS: Pulse drawers. pulse.js opens them from data-pulse-open; Esc, the dimmed page or × closes them.
     (function(){
       // CONFIDENCE METER: the analyst's row is there; the bar moves to its confidence; then each reviewer fades in (in
       // its own place) and the bar moves again. Crossing the threshold turns it pink.

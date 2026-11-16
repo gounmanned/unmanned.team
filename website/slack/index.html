@@ -27,7 +27,7 @@
 <style>
     /* shared:basecss */ /* Base, class bar and header rules the main pages keep in their own <style> (API and detections style these
      their own way, so they are not in site.css). */
-  h1,h2,h3,h4,p{margin:0;}
+  @layer reset{h1,h2,h3,h4,p{margin:0;}}   /* below Pulse, so Pulse parts keep their spacing */
   img{display:block;}
   .wrap{width:min(1100px,calc(100% - 2 * var(--gutter)));margin:0 auto;} /* the design's 900px content column */
   @media (max-width:700px){:root{--gutter:16px;}}
@@ -63,7 +63,7 @@
   .hero .col{position:relative;display:flex;flex-direction:column;align-items:center;gap:28px;}
   .hero-mark{display:flex;flex-direction:column;align-items:center;gap:16px;}
   .hero-mark img{width:64px;height:64px;}
-  .hero h1{max-width:660px;font-weight:600;font-size:clamp(40px,6vw,70px);line-height:1.03;letter-spacing:-0.03em;color:var(--slack-aubergine);}
+  .hero h1{max-width:660px;font-weight:600;font-size:var(--type-display-size);line-height:var(--type-display-line-height);letter-spacing:-0.03em;color:var(--slack-aubergine);}
   .ctas{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:12px 28px;}   /* the button's height, so the two line up */
   .hero-note{width:100%;max-width:660px;font-size:14px;line-height:22px;color:var(--color-text-tertiary);} /* a set width: Safari measured it too narrow and wrapped it */
   .hero-note strong{font-weight:600;color:var(--color-text-primary);}
@@ -156,7 +156,7 @@
   .sorted{margin-top:-300px;padding:360px 0 40px;} /* starts behind the middle of the Slack window */
   .sorted .col{display:flex;flex-direction:column;gap:40px;}
   .band-head{display:flex;flex-direction:column;gap:20px;}
-  .band-head h2{font-weight:600;font-size:clamp(34px,4.2vw,52px);line-height:1.14;letter-spacing:-0.015em;} /* same size as "Up and running in three steps" */
+  .band-head h2{font-weight:600;font-size:var(--type-heading-section-size);line-height:var(--type-heading-section-line-height);letter-spacing:-0.015em;} /* same size as "Up and running in three steps" */
   .band-head p{max-width:635px;font-size:18px;line-height:28px;color:rgba(255,255,255,0.72);}
   .types{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;}
   .type{display:flex;flex-direction:column;gap:8px;}
@@ -192,19 +192,17 @@
   .setup{background:var(--color-surface-subtle);padding:60px 0 64px;}
   .setup .col{display:flex;flex-direction:column;gap:32px;}
   .setup-head{display:flex;flex-direction:column;gap:20px;}
-  .setup-head h2{font-weight:600;font-size:clamp(34px,4.2vw,52px);line-height:1.14;letter-spacing:-0.015em;}
+  .setup-head h2{font-weight:600;font-size:var(--type-heading-section-size);line-height:var(--type-heading-section-line-height);letter-spacing:-0.015em;}
   .setup-head p{max-width:620px;font-size:16.5px;line-height:1.7;color:var(--color-text-secondary);}
   .steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;}
   .step{display:flex;flex-direction:column;gap:24px;}
   .visual{display:flex;flex-direction:column;justify-content:center;gap:12px;min-height:276px;padding:16px;background:var(--color-surface-page);border:1px solid var(--color-border-default);border-radius:2px;}
   .step-text{display:flex;flex-direction:column;gap:8px;align-items:flex-start;}
-  .step-num{font-family:var(--font-mono);font-size:12px;line-height:16px;letter-spacing:0.08em;color:var(--color-text-accent);}
+  .step-num{font-family:var(--font-mono);font-size:var(--type-mono-eyebrow-size);line-height:var(--type-mono-eyebrow-line-height);letter-spacing:0.08em;color:var(--color-text-accent);}
   .step-text h3{font-weight:600;font-size:20px;line-height:1.5;letter-spacing:-0.01em;}
   .step-text h3 code{font-family:var(--font-mono);font-weight:400;color:var(--color-text-secondary);}
   .step-text p{font-size:14px;line-height:20px;color:var(--color-text-secondary);}
   .step-text p code{font-family:var(--font-mono);font-size:13px;}
-  .link{font-size:16px;line-height:24px;color:var(--color-text-accent);text-decoration:underline;text-underline-offset:3px;}
-  .link:hover{color:var(--color-text-primary);}
   .chip{display:inline-block;padding:4px 8px;background:var(--color-surface-page);border:1px solid var(--color-border-default);font-family:var(--font-mono);font-size:12px;line-height:16px;letter-spacing:0.08em;color:var(--color-text-tertiary);white-space:nowrap;}
   .chips{display:flex;flex-direction:column;align-items:flex-start;gap:8px;}
 
@@ -236,12 +234,10 @@
   .dialog-actions{display:flex;justify-content:flex-end;}
   .dialog-actions .s-btn{padding:5px 12px;}
   /* step 2: setup guide buttons */
-  .visual-label{font-weight:700;font-size:12px;line-height:16px;color:var(--color-text-tertiary);}
+  .visual-label{font-weight:500;font-size:var(--type-label-sm-size);line-height:var(--type-label-sm-line-height);color:var(--color-text-tertiary);}   /* Pulse label-sm */
   /* side by side with a 24px gap while both fit; each drops to its own full-width row when they don't */
   .guides{display:flex;flex-wrap:wrap;gap:12px 24px;}
-  .guide{flex:1 1 0;min-width:max-content;white-space:nowrap;display:flex;align-items:center;justify-content:center;gap:8px;height:32px;padding:0 12px;border:1px solid var(--color-border-strong);border-radius:2px;background:var(--color-surface-page);font-weight:500;font-size:14px;line-height:20px;color:var(--color-text-accent);text-decoration:none;box-shadow:4px 4px 0 rgba(11,12,13,0.15);transition:border-color 0.2s ease;}
-  .guide:hover{border-color:var(--color-neutral-900);}
-  .guide img{width:16px;height:16px;}
+  .guide{flex:1 1 0;min-width:max-content;white-space:nowrap;}   /* Pulse secondary buttons, small: an exception to the links rule (Chad, 2026-11-16) */
   /* step 3: Slack's command suggestion */
   .suggest{padding:8px 0;border:1px solid var(--color-border-mid);border-radius:8px;background:var(--slack-surface);filter:drop-shadow(0 2px 3px rgba(11,12,13,0.06)) drop-shadow(0 1px 1px rgba(11,12,13,0.06));}
   .suggest-row{display:flex;gap:10px;align-items:flex-start;padding:10px;background:var(--slack-hover);font-size:12px;}
@@ -262,7 +258,7 @@
   .slack-tile{display:flex;align-items:center;justify-content:center;width:48px;height:48px;border-radius:12px;background:var(--color-surface-page);}
   .slack-tile img{width:25.5px;height:25.5px;}
   .final-copy{display:flex;flex-direction:column;gap:4px;padding:0 var(--gutter);}
-  .final h2{font-weight:600;font-size:clamp(34px * 32 / 52, 4.2vw * 32 / 52, 32px);line-height:1.25;letter-spacing:-0.01em;}
+  .final h2{font-weight:600;font-size:var(--type-heading-subsection-size);line-height:var(--type-heading-subsection-line-height);letter-spacing:-0.01em;}
   .final p{font-size:16px;line-height:24px;color:rgba(255,255,255,0.72);}
 
   /* ---------- SMALLER SCREENS ----------
@@ -381,7 +377,7 @@
     .story-steps{--s:clamp(0, (var(--t) - 0.4) / 0.6, 1);width:300px;display:flex;flex-direction:column;gap:20px;opacity:var(--s);transform:translateX(calc((1 - var(--s)) * -32px));}
     .story-grid:not(.is-open) .story-steps{pointer-events:none;}
     .story-win{position:absolute;top:0;left:0;width:900px;transform-origin:0 0;} /* left, top, width and scale come from the script */
-    .story-steps h2{font-weight:600;font-size:clamp(34px * 24 / 52, 4.2vw * 24 / 52, 24px);line-height:1.25;letter-spacing:-0.01em;}
+    .story-steps h2{font-weight:600;font-size:var(--type-heading-card-size);line-height:var(--type-heading-card-line-height);letter-spacing:-0.01em;}
     .story-lede{font-size:14px;line-height:1.6;color:rgba(255,255,255,0.72);}
     .steps-list{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;}
     .story-step{
@@ -420,8 +416,8 @@
       opacity:var(--s);pointer-events:none;transform:translateX(-50%);
     }
     .story-grid.is-open .story-skip{pointer-events:auto;}
-    .story-skip img{width:16px;height:16px;transition:transform 0.2s ease;}
-    .story-skip:hover img{transform:translateY(2px);}
+    .story-skip .pulse-icon{transition:transform 0.2s ease;}
+    .story-skip:hover .pulse-icon{transform:translateY(2px);}
     /* the setup intro: its three messages fade in one after another */
     .js-story .intro-msg{opacity:0;transform:translateY(8px);transition:opacity 0.45s ease, transform 0.45s ease;}
     .js-story .intro-msg.is-in{opacity:1;transform:none;}
@@ -429,11 +425,14 @@
 
   @media (prefers-reduced-motion: reduce){
     html{scroll-behavior:auto;}
-    .story-step,.scene,.scene.is-on,.js-story .intro-msg,.story-skip img,.pulse-link img{transition:none;}
+    .story-step,.scene,.scene.is-on,.js-story .intro-msg,.story-skip .pulse-icon{transition:none;}
     .status-dot{animation:none;}
-    .classbar,.site-top .site-header,.nav-panel,.header-link--cta img,.pulse-btn,.guide{transition:none;}
+    .classbar,.site-top .site-header,.nav-panel,.header-link--cta img,.pulse-btn{transition:none;}
   }
 
+  .eyebrow{font-family:var(--font-mono);font-weight:400;font-size:var(--type-mono-eyebrow-size);line-height:var(--type-mono-eyebrow-line-height);letter-spacing:0.08em;text-transform:uppercase;color:var(--color-text-tertiary);}
+  .eyebrow--dot{display:flex;align-items:center;gap:11px;}   /* the pink dot: hero and closing band only */
+  .eyebrow--on-dark{color:var(--color-neutral-300);}
 </style>
 </head>
 <body>
@@ -451,10 +450,10 @@
           <span class="brand-tag">Don’t get hacked</span>
         </div>
         <nav class="header-links" aria-label="Main">
-          <div class="nav-drop"><button class="header-link nav-drop-btn is-current" type="button" aria-expanded="false" aria-controls="soc-menu">VEX AI SOC<span class="nav-caret" aria-hidden="true"></span></button><div class="nav-drop-menu" id="soc-menu" hidden><a href="/how-it-works/"><b>Meet VEX</b><span>Good prevention starts with great detection.</span></a><a href="/detections/"><b>What VEX detects</b><span>Every alert type it can raise.</span></a><a href="/api/"><b>The API</b><span>Security engineer? This is for you.</span></a><a href="/slack" aria-current="page"><b>VEX in Slack</b><span>Right where your team already works.</span></a></div></div>
-          <a class="header-link header-link--cta" href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener">Schedule a chat <img src="../static/icon-arrow-right-pink.svg" width="16" height="16" alt=""></a>
+          <div class="nav-drop"><button class="pulse-link pulse-link--quiet nav-drop-btn is-current" type="button" aria-expanded="false" aria-controls="soc-menu">VEX AI SOC <i class="pulse-icon pulse-icon--caret-down" aria-hidden="true"></i></button><div class="pulse-dropdown pulse-dropdown--nav nav-drop-menu" id="soc-menu" hidden><a class="pulse-menu-item" href="/how-it-works/"><span class="pulse-menu-item__label">Meet VEX</span><span class="pulse-menu-item__desc">Good prevention starts with great detection.</span></a><a class="pulse-menu-item" href="/detections/"><span class="pulse-menu-item__label">What VEX detects</span><span class="pulse-menu-item__desc">Every alert type it can raise.</span></a><a class="pulse-menu-item" href="/api/"><span class="pulse-menu-item__label">The API</span><span class="pulse-menu-item__desc">Security engineer? This is for you.</span></a><a class="pulse-menu-item" href="/slack" aria-current="page"><span class="pulse-menu-item__label">VEX in Slack</span><span class="pulse-menu-item__desc">Right where your team already works.</span></a></div></div>
+          <a class="pulse-link header-cta" href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener">Schedule a chat <i class="pulse-icon pulse-icon--arrow-right" aria-hidden="true"></i></a>
         </nav>
-        <button class="menu-btn" type="button" aria-label="Open menu" aria-controls="site-nav" aria-expanded="false"><img src="../static/icon-menu.svg" width="32" height="32" alt=""></button>
+        <button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon menu-btn" type="button" aria-label="Open menu" aria-controls="site-nav" aria-expanded="false"><img src="../static/icon-menu.svg" width="24" height="24" alt=""></button>
       </div>
     </header>
   </div>
@@ -466,13 +465,13 @@
     <div class="site-header">
       <div class="wrap header-inner">
         <a href="/" class="brand"><span class="status-dot"></span>VEX</a>
-        <button class="menu-btn menu-close" type="button" aria-label="Close menu"><img src="../static/icon-close.svg" width="32" height="32" alt=""></button>
+        <button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon menu-btn menu-close" type="button" aria-label="Close menu"><i class="pulse-icon pulse-icon--x" aria-hidden="true"></i></button>
       </div>
     </div>
     <nav class="wrap" aria-label="Menu">
       <ul class="nav-list">
         <li><a href="/"><span class="nav-link">Home</span><span class="nav-sub">One Dot protects one thing. VEX protects everything.</span></a></li>
-        <li class="nav-group"><span class="nav-group-label">VEX AI SOC</span><ul class="nav-sublist"><li><a href="/how-it-works/"><span class="nav-link">Meet VEX</span><span class="nav-sub">Good prevention starts with great detection.</span></a></li><li><a href="/detections/"><span class="nav-link">What VEX detects</span><span class="nav-sub">Every alert type it can raise.</span></a></li><li><a href="/api/"><span class="nav-link">The API</span><span class="nav-sub">Security engineer? This is for you.</span></a></li><li><a href="/slack" aria-current="page"><span class="nav-link">VEX in Slack</span><span class="nav-sub">Right where your team already works.</span></a></li></ul></li>
+        <li class="nav-group"><span class="pulse-dropdown__label nav-group-label">VEX AI SOC</span><ul class="nav-sublist"><li><a href="/how-it-works/"><span class="nav-link">Meet VEX</span><span class="nav-sub">Good prevention starts with great detection.</span></a></li><li><a href="/detections/"><span class="nav-link">What VEX detects</span><span class="nav-sub">Every alert type it can raise.</span></a></li><li><a href="/api/"><span class="nav-link">The API</span><span class="nav-sub">Security engineer? This is for you.</span></a></li><li><a href="/slack" aria-current="page"><span class="nav-link">VEX in Slack</span><span class="nav-sub">Right where your team already works.</span></a></li></ul></li>
         <li><a href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener"><span class="nav-link">Schedule a chat</span></a></li>
       </ul>
     </nav>
@@ -488,12 +487,12 @@
     <div class="col">
       <div class="hero-mark">
         <img src="../static/slack-logo.svg" width="64" height="64" alt="">
-        <div class="eyebrow-label"><span class="status-dot"></span>VEX for Slack</div>
+        <div class="eyebrow eyebrow--dot"><span class="status-dot"></span>VEX for Slack</div>
       </div>
       <h1>Security, handled. Right in Slack.</h1>
       <div class="ctas">
         <a class="pulse-btn pulse-btn--primary pulse-btn--lg" href="https://slack.com/oauth/v2/authorize?client_id=11574043500291.12158197069719&amp;scope=users:read,app_mentions:read,channels:history,chat:write,commands,incoming-webhook,users:read.email&amp;user_scope=">Add to Slack</a>
-        <a class="pulse-link" href="#how">See VEX in Slack <img src="../static/icon-arrow-down.svg" width="16" height="16" alt=""></a>
+        <a class="pulse-link pulse-link--down" href="#how">See VEX in Slack <i class="pulse-icon pulse-icon--arrow-down" aria-hidden="true"></i></a>
       </div>
       <p class="hero-note"><strong>Free to use.</strong> No sign-up, no payment. Install it and it just works.<br>For security and IT teams who already live in Slack</p>
     </div>
@@ -519,7 +518,7 @@
               <li><button class="story-step" type="button" data-step="4" style="--key:var(--color-neutral-0)"><span class="story-key"><img class="story-check" src="static/check.svg" width="16" height="16" alt="">Close tickets</span><span class="story-cap">One click to ignore, mark it fixed or ask VEX to assess.</span></button></li>
             </ol>
           </div>
-          <a class="story-skip" href="#get-started">Get set up now <img src="../static/icon-arrow-down.svg" width="16" height="16" alt=""></a>
+          <a class="story-skip" href="#get-started">Get set up now <i class="pulse-icon pulse-icon--arrow-down" aria-hidden="true"></i></a>
           <div class="story-win">
       <div class="win-wrap"><div class="win slack" aria-hidden="true">
         <div class="win-bar">
@@ -943,7 +942,7 @@
   <section class="setup" id="get-started">
     <div class="col">
       <div class="setup-head">
-        <div class="eyebrow-label"><span class="status-dot"></span>Get started</div>
+        <div class="eyebrow">Get started</div>
         <h2>Up and running in three steps.</h2>
         <p>You’ll need permission to install Slack apps and admin access to Microsoft 365 or Google Workspace.</p>
       </div>
@@ -962,7 +961,7 @@
             <span class="step-num">01</span>
             <h3>Add VEX to Slack</h3>
             <p>Approve the install and pick the channel your security team already watches. You’ll see exactly what VEX can read and post before you click Allow.</p>
-            <a class="link" href="https://slack.com/oauth/v2/authorize?client_id=11574043500291.12158197069719&amp;scope=users:read,app_mentions:read,channels:history,chat:write,commands,incoming-webhook,users:read.email&amp;user_scope=">Start now, add to Slack</a>
+            <a class="pulse-link link" href="https://slack.com/oauth/v2/authorize?client_id=11574043500291.12158197069719&amp;scope=users:read,app_mentions:read,channels:history,chat:write,commands,incoming-webhook,users:read.email&amp;user_scope=">Start now, add to Slack <i class="pulse-icon pulse-icon--arrow-right" aria-hidden="true"></i></a>
             <p class="added"><span class="added-check" aria-hidden="true"></span>Added to Slack</p>
             <p class="install-error">Something went wrong adding VEX to Slack, please <a href="https://slack.com/oauth/v2/authorize?client_id=11574043500291.12158197069719&amp;scope=users:read,app_mentions:read,channels:history,chat:write,commands,incoming-webhook,users:read.email&amp;user_scope=">try again</a>.</p>
           </div>
@@ -972,8 +971,8 @@
           <div class="visual">
             <p class="visual-label">Review the setup guide:</p>
             <div class="guides">
-              <a class="guide" href="https://vex.unmanned.team/docs/microsoft" target="_blank" rel="noopener">Microsoft 365 <img src="static/step-external.svg" width="16" height="16" alt=""></a>
-            <a class="guide" href="https://vex.unmanned.team/docs/google" target="_blank" rel="noopener">Google Workspace <img src="static/step-external.svg" width="16" height="16" alt=""></a>
+              <a class="pulse-btn pulse-btn--secondary pulse-btn--sm guide" href="https://vex.unmanned.team/docs/microsoft" target="_blank" rel="noopener">Microsoft 365<i class="pulse-icon pulse-icon--arrow-square-out" aria-hidden="true"></i><span class="visually-hidden"> (opens in a new tab)</span></a>
+            <a class="pulse-btn pulse-btn--secondary pulse-btn--sm guide" href="https://vex.unmanned.team/docs/google" target="_blank" rel="noopener">Google Workspace<i class="pulse-icon pulse-icon--arrow-square-out" aria-hidden="true"></i><span class="visually-hidden"> (opens in a new tab)</span></a>
             </div>
           </div>
           <div class="step-text">

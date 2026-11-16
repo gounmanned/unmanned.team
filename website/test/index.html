@@ -34,15 +34,13 @@
   *{box-sizing:border-box;}
   html{overflow-x:hidden;scroll-behavior:smooth;scrollbar-gutter:stable;}
   body{margin:0;padding-top:var(--classbar-h);background:var(--color-surface-page);color:var(--color-text-primary);-webkit-font-smoothing:antialiased;}
-  h1,h2,h3,h4,p{margin:0;}
+  @layer reset{h1,h2,h3,h4,p{margin:0;}}   /* below Pulse, so Pulse parts keep their spacing */
   /* line breaks: headlines get even line lengths, body text avoids a single word alone on its last line
      (browsers that don't support these just wrap as before) */
   h1,h2,h3,h4{text-wrap:balance;}
   p,li{text-wrap:pretty;}
   .mono{letter-spacing:0.04em;}
-  a:where(:not([class*="pulse-"])){color:inherit;}
   ::selection{background:var(--color-accent-default);color:var(--color-text-on-contrast);}
-  a:where(:not([class*="pulse-"])):focus-visible,button:where(:not([class*="pulse-"])):focus-visible{outline:1.5px solid var(--color-accent-default);outline-offset:4px;}
   .wrap{width:min(1100px,calc(100% - 48px));margin:0 auto;}
 
   /* ---------- STATUS DOT ---------- */
@@ -55,8 +53,9 @@
     70%{box-shadow:0 0 0 8px rgba(224,18,128,0);}
     100%{box-shadow:0 0 0 0 rgba(224,18,128,0);}
   }
-  .eyebrow-label{font-size:11px;line-height:1.5;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-text-tertiary);display:flex;align-items:center;gap:11px;}
-  .dark-frame .eyebrow-label{color:var(--color-neutral-400);}
+  .eyebrow{font-family:var(--font-mono);font-weight:400;font-size:var(--type-mono-eyebrow-size);line-height:var(--type-mono-eyebrow-line-height);letter-spacing:0.08em;text-transform:uppercase;color:var(--color-text-tertiary);}
+  .eyebrow--dot{display:flex;align-items:center;gap:11px;}   /* the pink dot: hero and closing band only */
+  .eyebrow--on-dark{color:var(--color-neutral-300);}
 
   /* ---------- CLASSIFICATION BAR ---------- */
   .classbar{
@@ -104,7 +103,7 @@
   .section--even{padding-right:24px;} /* how it works: 24px gutter on both sides */
   @media (max-width:948px){.section{padding-right:24px;}}
   .section-head{display:flex;flex-direction:column;gap:16px;}
-  .section h2{font-weight:500;font-size:clamp(34px,4.2vw,52px);line-height:1.14;letter-spacing:-0.01em;}
+  .section h2{font-weight:500;font-size:var(--type-heading-section-size);line-height:var(--type-heading-section-line-height);letter-spacing:-0.01em;}
   /* 30px sub-heads (phase titles, "What you get") stay 30/52 of the section headline at every width,
      so they shrink together and the size difference between them holds */
   .sub-head{font-weight:500;font-size:clamp(34px * 30 / 52, 4.2vw * 30 / 52, 30px);line-height:1.14;letter-spacing:-0.01em;}
@@ -127,8 +126,8 @@
     margin-right:calc(-1 * clamp(0px, (100vw - 948px) / 2, 80px));
   }
   .hero-eyebrow{grid-area:eyebrow;}
-  .hero-lede{grid-area:lede;}
-  .hero h1{grid-area:title;font-weight:600;font-size:clamp(40px,6vw,70px);line-height:0.99;letter-spacing:-0.03em;}
+  .hero-lede{grid-area:lede;font-size:var(--type-body-lede-size);line-height:var(--type-body-lede-line-height);}
+  .hero h1{grid-area:title;font-weight:600;font-size:var(--type-display-size);line-height:var(--type-display-line-height);letter-spacing:-0.03em;}
   .hero-cta{grid-area:cta;justify-self:start;}
   .hero .clock{grid-area:clock;align-self:center;width:clamp(220px,34vw,330px);}
   @media (max-width:900px){.hero .section{padding-top:64px;padding-bottom:72px;}}
@@ -265,7 +264,7 @@
   .report-doc{position:absolute;left:-1px;top:-1px;display:block;}
   .report-lines{position:absolute;left:34.5px;top:22px;width:127px;display:flex;flex-direction:column;gap:10px;}
   .report-line{display:flex;align-items:center;gap:7px;}
-  .report-line img{display:block;flex-shrink:0;}
+  .report-line .pulse-icon{display:block;flex-shrink:0;color:var(--color-text-primary);}
   .report-line::after{content:'';flex:1;height:5px;border-radius:2px;background:var(--color-neutral-200);}
   .report-slot{position:absolute;left:-26.5px;top:112px;width:298px;height:23px;overflow:hidden;}
   .report-slot::after{content:'';position:absolute;left:15.45px;top:23px;width:267.1px;height:14px;box-shadow:0 -2px 8px 3px rgba(0,0,0,0.15);}
@@ -327,7 +326,7 @@
     <img class="hero-backdrop" src="../static/glow-grid-bg.svg" width="2936" height="258" alt="" aria-hidden="true">
     <div class="section">
       <div class="hero-grid">
-        <div class="eyebrow-label hero-eyebrow"><span class="status-dot"></span>24-hour security test</div>
+        <div class="eyebrow eyebrow--dot hero-eyebrow"><span class="status-dot"></span>24-hour security test</div>
         <h1>Are you safe from <br>an adversarial AI?</h1>
         <p class="lede hero-lede">Attackers don’t open with something sophisticated. They walk the perimeter and test every door. They do it quietly, at scale, before you know they’re there. VEX runs that same sweep on you first.</p>
         <a class="pulse-btn pulse-btn--primary pulse-btn--lg hero-cta" href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener">Schedule test</a>
@@ -366,7 +365,7 @@
     </div>
     <div class="section why">
       <div class="section-head">
-        <div class="eyebrow-label"><span class="status-dot"></span>Why this matters</div>
+        <div class="eyebrow">Why this matters</div>
         <h2>Attackers find open doors.</h2>
         <p class="lede">Before anyone tries anything sophisticated, <b>they test every door</b>. The unlocked one wins. In most businesses, it’s one of these:</p>
       </div>
@@ -410,7 +409,7 @@
     </div>
     <div class="section section--even how">
       <div class="section-head">
-        <div class="eyebrow-label"><span class="status-dot"></span>How it works</div>
+        <div class="eyebrow">How it works</div>
         <h2>Human-augmented. 100% signal.</h2>
         <p class="lede">VEX handles discovery at machine speed. Our people handle the nuance, the manual validation, and the judgment calls a scanner can’t make.</p>
       </div>
@@ -480,7 +479,7 @@
       <span>FINDINGS COMPILED</span>
     </div>
     <div class="section get">
-      <div class="eyebrow-label"><span class="status-dot"></span>What you get</div>
+      <div class="eyebrow">What you get</div>
       <h2>We’ll fix it all.</h2>
       <div class="get-body">
         <h3 class="sub-head get-title">Anything we can close live, we close, before you hang up.</h3>
@@ -489,9 +488,9 @@
           <img class="report-doc" src="../static/report-doc.svg" width="247" height="136" alt="">
           <div class="report-lines">
             <span class="brand"><span class="status-dot"></span>VEX</span>
-            <span class="report-line"><img src="../static/icon-check.svg" width="16" height="16" alt=""></span>
-            <span class="report-line"><img src="../static/icon-check.svg" width="16" height="16" alt=""></span>
-            <span class="report-line"><img src="../static/icon-check.svg" width="16" height="16" alt=""></span>
+            <span class="report-line"><i class="pulse-icon pulse-icon--check" aria-hidden="true"></i></span>
+            <span class="report-line"><i class="pulse-icon pulse-icon--check" aria-hidden="true"></i></span>
+            <span class="report-line"><i class="pulse-icon pulse-icon--check" aria-hidden="true"></i></span>
           </div>
           <div class="report-slot"></div>
         </div>
@@ -506,7 +505,7 @@
   <section class="dark-frame contact-section">
     <img class="radar-echo" src="../static/radar-circles.svg" width="903" height="903" alt="" aria-hidden="true">
     <div class="body-wrap">
-      <div class="eyebrow-label"><span class="status-dot"></span>Get started</div>
+      <div class="eyebrow eyebrow--dot eyebrow--on-dark"><span class="status-dot"></span>Get started</div>
       <h2 class="contact-statement">Know if you’re exposed.<br>In 24 hours.</h2>
       <p class="contact-sub">One call to scope. One day to run.</p>
       <a class="pulse-btn pulse-btn--primary pulse-btn--lg" href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener">Schedule test</a>

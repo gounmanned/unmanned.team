@@ -28,7 +28,7 @@
   :root{
                     --lift:2px 2px 0 rgba(11,12,13,0.15);
   }
-  h1,h2,h3,h4,p{margin:0;}
+  @layer reset{h1,h2,h3,h4,p{margin:0;}}   /* below Pulse, so Pulse parts keep their spacing */
   [hidden]{display:none !important;}
   .wrap{width:min(1100px,calc(100% - 48px));margin:0 auto;}
 
@@ -58,12 +58,11 @@
   .hero{position:relative;overflow:hidden;padding:96px 0 56px;}
   .hero-backdrop{position:absolute;top:0;left:50%;margin-left:-1468px;pointer-events:none;max-width:none;}
   .hero .wrap{position:relative;z-index:1;display:flex;flex-direction:column;align-items:flex-start;gap:24px;}
-  .hero h1{font-weight:600;font-size:clamp(40px,6vw,70px);line-height:0.99;letter-spacing:-0.03em;}
+  .hero h1{font-weight:600;font-size:var(--type-display-size);line-height:var(--type-display-line-height);letter-spacing:-0.03em;}
   /* intro: the copy on the left, the custom-detections button on the right (bottom-aligned) */
   .intro-row{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px 24px;width:100%;}
   .intro-row .lede{max-width:600px;font-size:14px;line-height:20px;color:var(--color-text-primary);}
   /* DS Button, Secondary / sm */
-  .custom-btn img{width:16px;height:16px;}
 
   /* the search sits at the top of the content column, beside the jump menu, so it reads as part of the catalog */
   .cat-main{min-width:0;padding-top:64px;}
@@ -82,36 +81,13 @@
   .field{position:relative;flex:1;min-width:0;}
 
   /* "Show details" toggle (the Unmanned DS Toggle): shows or hides every row's vendor ID at once */
-  .details-toggle{display:inline-flex;align-items:center;gap:12px;flex-shrink:0;padding:0;border:0;background:none;cursor:pointer;
-    font:400 16px/24px var(--font-sans);color:var(--color-text-primary);white-space:nowrap;}
-  .details-toggle .track{--t:var(--color-neutral-400);position:relative;flex-shrink:0;width:36px;height:20px;border-radius:2px;background:var(--t);
-    transition:background-color 0.12s ease-out, box-shadow 0.12s ease-out;}
-  .details-toggle .knob{position:absolute;top:2px;left:2px;width:16px;height:16px;background:var(--color-surface-page);transition:left 0.12s ease-out, width 0.12s ease-out;}
-  .details-toggle .knob::before{content:'';position:absolute;inset:0;background:var(--t);
-    -webkit-mask:url(../static/icon-x-small.svg) center/14px 14px no-repeat;mask:url(../static/icon-x-small.svg) center/14px 14px no-repeat;}
-  .details-toggle[aria-checked="true"] .track{--t:var(--color-accent-default);}
-  .details-toggle[aria-checked="true"] .knob{left:18px;}
-  .details-toggle[aria-checked="true"] .knob::before{-webkit-mask-image:url(../static/icon-check.svg);mask-image:url(../static/icon-check.svg);}
-  .details-toggle[aria-checked="true"]:hover .track{--t:var(--color-pink-600);}
-  .details-toggle:active .knob{width:20px;}   /* pressed: the knob squishes */
-  .details-toggle[aria-checked="true"]:active .knob{left:14px;}
-  .details-toggle[aria-checked="true"]:active .track{--t:var(--color-accent-hover);}
-  .details-toggle:focus{outline:none;}
-  .details-toggle:focus-visible .track{box-shadow:0 0 0 3px rgba(224,18,128,0.35);}
-  .field .mag{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:20px;height:20px;pointer-events:none;}
-  #q{
-    width:100%;height:40px;padding:0 44px 0 40px;font:400 16px var(--font-sans);color:var(--color-text-primary);background:var(--color-surface-page);
-    border:1px solid var(--color-border-strong);border-radius:2px;outline:none;-webkit-appearance:none;appearance:none;
-    transition:border-color 0.15s, box-shadow 0.15s;
-  }
+  .details-toggle{flex-shrink:0;white-space:nowrap;}   /* a Pulse toggle */
+  .field .mag{position:absolute;left:12px;top:50%;transform:translateY(-50%);--pulse-icon-size:20px;color:var(--color-text-tertiary);pointer-events:none;}
+  #q{width:100%;padding-left:40px;padding-right:44px;}   /* pulse-input pulse-input--lg; room for the icon and the clear button */
   /* the browser's own clear button is hidden: it doubled up with ours */
   #q::-webkit-search-cancel-button,#q::-webkit-search-decoration{-webkit-appearance:none;appearance:none;display:none;}
-  #q::placeholder{color:var(--color-text-tertiary);font-weight:400;}
-  #q:hover{border-color:var(--color-neutral-900);}
-  #q:focus{border-color:var(--color-accent-default);box-shadow:0 0 0 3px rgba(224,18,128,0.12);}
-  #clear{position:absolute;right:8px;top:50%;transform:translateY(-50%);display:flex;padding:6px;border:0;background:none;cursor:pointer;border-radius:2px;}
-  #clear:hover{background:rgba(11,12,13,0.06);}
-  #clear img{width:20px;height:20px;}
+  #clear{position:absolute;right:8px;top:50%;transform:translateY(-50%);}
+  #clear[hidden]{display:none;}
   .try{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:13px;line-height:1.5;color:var(--color-text-tertiary);}
   .try button{font:500 12px var(--font-mono);background:var(--color-surface-subtle);border:1px solid var(--color-border-default);color:var(--color-neutral-700);padding:4px 8px;border-radius:2px;cursor:pointer;}
   .try button:hover{border-color:var(--color-accent-default);color:var(--color-text-accent);}
@@ -130,17 +106,13 @@
   .jump-list,.jump-sub{list-style:none;margin:0;padding:0;}
   /* desktop: a menu taller than the screen scrolls on its own; at its end (or when it fits) the page scrolls on */
   .jump-scroll{max-height:calc(100vh - 160px);overflow-y:auto;}
-  .jump-link{display:flex;justify-content:space-between;gap:12px;transition:color 0.2s ease;}
-  .jump-sub .jump-link{padding:5px 0 6px 28px;font-weight:400;font-size:13px;color:var(--color-text-tertiary);}
-  .jump-link .c{font:500 11px/1.9 var(--font-mono);color:var(--color-text-tertiary);font-variant-numeric:tabular-nums;}
-  .jump-sub .jump-link[aria-current="true"]{padding-left:27px;font-weight:500;}
 
   .bucket{display:flex;flex-direction:column;gap:40px;padding:64px 0 24px;scroll-margin-top:calc(var(--classbar-h) + var(--top-h, 61px) - 40px);}
   .bucket + .bucket{border-top:1px solid var(--color-border-default);}
   .bucket-head{display:flex;flex-direction:column;gap:16px;}
-  .bucket-head h2{font-weight:500;font-size:clamp(34px,4.2vw,52px);line-height:1.14;letter-spacing:-0.01em;}
+  .bucket-head h2{font-weight:500;font-size:var(--type-heading-section-size);line-height:var(--type-heading-section-line-height);letter-spacing:-0.01em;}
   .bucket-head .lede{font-size:15px;}
-  .count{font:500 12px/1.5 var(--font-mono);color:var(--color-text-tertiary);font-variant-numeric:tabular-nums;}
+  .count{font:400 var(--type-mono-label-size)/var(--type-body-sm-line-height) var(--font-mono);color:var(--color-text-tertiary);font-variant-numeric:tabular-nums;}   /* same look as pulse-tab__count */
 
   .source{display:flex;flex-direction:column;gap:24px;scroll-margin-top:calc(var(--classbar-h) + var(--top-h, 61px) - 16px);}
   .source-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 16px;}
@@ -152,17 +124,13 @@
   .group-head .official{font:500 11px/1.5 var(--font-mono);color:var(--color-text-tertiary);}
   .list{list-style:none;margin:0;padding:0;}
   .row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:0 16px;padding:11px 0;border-top:1px solid var(--color-border-default);align-items:baseline;}
-  .row .resp{grid-column:2;grid-row:1;align-self:start;background:var(--color-surface-subtle);}
+  .row .resp{grid-column:2;grid-row:1;align-self:start;}
   .row .name{font-size:14.5px;line-height:1.5;color:var(--color-text-primary);overflow-wrap:anywhere;}
   .row .id{grid-column:1;grid-row:3;margin-top:8px;font:500 11px/1.5 var(--font-mono);color:var(--color-text-tertiary);overflow-wrap:anywhere;}
   .catalog:not(.show-details) .row:not(.id-hit) .id{display:none;}   /* a search that matched the ID shows it anyway */
   .row .desc{grid-column:1 / -1;grid-row:2;margin-top:2px;font-size:13px;line-height:1.5;color:var(--color-neutral-700);}
-  mark{background:var(--color-status-warning);color:inherit;padding:0 1px;border-radius:1px;}
-  .more{
-    margin-top:12px;font:600 13px var(--font-sans);background:var(--color-surface-page);border:1px solid var(--color-border-default);color:var(--color-text-primary);
-    padding:8px 14px;border-radius:2px;cursor:pointer;
-  }
-  .more:hover{border-color:var(--color-neutral-900);}
+  mark{background:var(--color-surface-highlight);color:inherit;padding:0 1px;border-radius:1px;}
+  .more{margin-top:12px;}   /* a Pulse neutral button, small */
   .group.is-collapsed .row.extra{display:none;}
   .catalog.is-searching .more{display:none;}
 
@@ -170,15 +138,11 @@
   .responses{box-sizing:border-box;width:100%;padding:16px;background:var(--color-surface-band);border:1px solid var(--color-border-strong);border-radius:2px;box-shadow:var(--lift);text-align:left;}
   .resp-top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px 16px;}
   .resp-top p{flex:1 1 220px;font-size:14px;line-height:20px;color:var(--color-text-primary);}
-  .resp-toggle{padding:1px 2px;border:0;background:none;cursor:pointer;font:500 12px/16px var(--font-sans);color:var(--color-text-tertiary);transition:color 0.15s ease;text-transform:lowercase;white-space:nowrap;} /* a utility, so gray like the side menu, not pink */
-  .resp-toggle:hover{color:var(--color-text-primary);}
-  .resp-toggle::after{content:'';display:inline-block;width:6px;height:6px;margin:0 2px 2px 8px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(45deg);transition:transform 0.2s ease;}
-  .responses.is-open .resp-toggle::after{transform:rotate(-135deg);margin-bottom:-2px;}
+  .resp-toggle{flex-shrink:0;white-space:nowrap;}   /* a Pulse toggle, like Show details */
   .resp-list{list-style:none;margin:12px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:12px 32px;}
   .resp-list li{display:flex;align-items:center;gap:8px;}
-  /* DS Badge, Mono / Outline: the legend's codes and the code on every row */
-  .resp-list code,.row .resp{box-sizing:border-box;display:inline-flex;align-items:center;height:24px;padding:4px 8px;border:1px solid var(--color-border-strong);border-radius:2px;
-    background:var(--color-surface-page);font:400 12px/16px var(--font-mono);letter-spacing:0.08em;color:var(--color-text-secondary);white-space:nowrap;}
+  /* Pulse badge (neutral, outline, no dot) in mono: the legend's codes and the code on every row. Mono until Pulse has pulse-badge--mono */
+  .badge-mono{font-family:var(--font-mono);font-weight:400;letter-spacing:0.08em;}
   .resp-list b{font-weight:600;font-size:12px;line-height:16px;color:var(--color-text-primary);}
   .resp-list span{display:none;}
   /* open: one code per line, with what it does */
@@ -187,12 +151,8 @@
   .responses.is-open .resp-list code{grid-row:1 / 3;}
   .responses.is-open .resp-list b{padding-top:4px;}
   .responses.is-open .resp-list span{display:block;font-size:13px;line-height:1.45;color:var(--color-neutral-700);}
-  .drawer-panel{position:absolute;top:0;right:0;bottom:0;width:min(680px,100%);display:flex;flex-direction:column;background:var(--color-surface-page);
-    box-shadow:-12px 0 40px -16px rgba(11,12,13,0.35);transform:translateX(100%);transition:transform 0.35s cubic-bezier(0.2,0.8,0.2,1);}
-  .drawer-head h2{font-weight:600;font-size:clamp(34px * 24 / 52, 4.2vw * 24 / 52, 24px);line-height:1.25;}
-  .drawer-head p{margin-top:8px;max-width:560px;font-size:15px;line-height:1.6;color:var(--color-neutral-700);}
-  .drawer-body{flex:1;overflow-y:auto;padding:24px 28px 28px;}
-  @media (max-width:700px){ .drawer-body{padding:16px;} }
+  /* custom detections drawer: a Pulse drawer (pulse.js opens it from data-pulse-open); only its contents are styled here */
+  .pulse-drawer__head p{margin-top:8px;max-width:560px;font-size:var(--type-body-sm-size);line-height:var(--type-body-sm-line-height);color:var(--color-text-secondary);}
 
   .empty,.load-error{margin-top:64px;padding:20px 24px;background:var(--color-neutral-25);border:1px solid var(--color-border-default);border-radius:2px;font-size:14.5px;line-height:1.75;color:var(--color-neutral-700);}
   .empty strong{display:block;color:var(--color-text-primary);}
@@ -212,11 +172,6 @@
     html.jump-open{overflow:hidden;}
   }
   @media (max-width:900px){ .responses.is-open .resp-list{grid-template-columns:repeat(2,minmax(0,1fr));} }
-  /* phones: no hover to hint it's tappable, so the legend toggle becomes a bordered button (beside the sentence when it fits, else below it) */
-  @media (max-width:700px){
-    .resp-toggle{display:inline-flex;align-items:center;height:36px;padding:0 12px;border:1px solid var(--color-border-strong);border-radius:2px;background:var(--color-surface-page);
-      font-size:14px;line-height:20px;color:var(--color-text-primary);text-transform:none;}
-  }
   @media (max-width:520px){ .responses.is-open .resp-list{grid-template-columns:minmax(0,1fr);} .responses{padding:14px 16px;} .resp-list{gap:12px 22px;} }
   @media (max-width:700px){
     .hero{padding:48px 0 40px;}
@@ -225,7 +180,6 @@
     .cat-main{padding-top:32px;}
     .search-bar{margin-top:-8px;padding:8px 0;flex-wrap:wrap;} /* slimmer sticky stack on phones */
     .field{flex-basis:100%;}
-    #q{height:44px;}
   }
   /* a long vendor name at 34px is wider than a 302px phone (Galaxy Z Flip with zoom) */
   @media (max-width:340px){.bucket-head h2{font-size:29px;}}
@@ -235,13 +189,16 @@
   @media (prefers-reduced-motion: reduce){
     html{scroll-behavior:auto;}
     .status-dot{animation:none;}
-    .drawer,.drawer-scrim,.drawer-panel,.details-toggle .track,.details-toggle .knob,.resp-toggle::after,.topstack,.site-top .site-header,.jump,.jump-toggle img,#q,.search-bar,.group-head,.to-top,.to-top.is-shown{transition:none;}
+    dialog.pulse-drawer,dialog.pulse-drawer::backdrop,.topstack,.site-top .site-header,.jump,.jump-toggle img,.search-bar,.group-head,.to-top,.to-top.is-shown{transition:none;}
   }
 
   /* ---------- SITE NAV (as on the other pages) ---------- */   /* header links (4.8:1 on white) */
   a.brand{text-decoration:none;}
   @media (prefers-reduced-motion: reduce){ .nav-panel,.nav-panel.is-open,.header-link,.header-link--cta img{transition:none;} }
 
+  .eyebrow{font-family:var(--font-mono);font-weight:400;font-size:var(--type-mono-eyebrow-size);line-height:var(--type-mono-eyebrow-line-height);letter-spacing:0.08em;text-transform:uppercase;color:var(--color-text-tertiary);}
+  .eyebrow--dot{display:flex;align-items:center;gap:11px;}   /* the pink dot: hero and closing band only */
+  .eyebrow--on-dark{color:var(--color-neutral-300);}
 </style>
 </head>
 <body>
@@ -258,10 +215,10 @@
           <span class="brand-tag">Don’t get hacked</span>
         </div>
         <nav class="header-links" aria-label="Main">
-          <div class="nav-drop"><button class="header-link nav-drop-btn is-current" type="button" aria-expanded="false" aria-controls="soc-menu">VEX AI SOC<span class="nav-caret" aria-hidden="true"></span></button><div class="nav-drop-menu" id="soc-menu" hidden><a href="/how-it-works/"><b>Meet VEX</b><span>Good prevention starts with great detection.</span></a><a href="/detections/" aria-current="page"><b>What VEX detects</b><span>Every alert type it can raise.</span></a><a href="/api/"><b>The API</b><span>Security engineer? This is for you.</span></a><a href="/slack"><b>VEX in Slack</b><span>Right where your team already works.</span></a></div></div>
-          <a class="header-link header-link--cta" href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener">Schedule a chat <img src="../static/icon-arrow-right-pink.svg" width="16" height="16" alt=""></a>
+          <div class="nav-drop"><button class="pulse-link pulse-link--quiet nav-drop-btn is-current" type="button" aria-expanded="false" aria-controls="soc-menu">VEX AI SOC <i class="pulse-icon pulse-icon--caret-down" aria-hidden="true"></i></button><div class="pulse-dropdown pulse-dropdown--nav nav-drop-menu" id="soc-menu" hidden><a class="pulse-menu-item" href="/how-it-works/"><span class="pulse-menu-item__label">Meet VEX</span><span class="pulse-menu-item__desc">Good prevention starts with great detection.</span></a><a class="pulse-menu-item" href="/detections/" aria-current="page"><span class="pulse-menu-item__label">What VEX detects</span><span class="pulse-menu-item__desc">Every alert type it can raise.</span></a><a class="pulse-menu-item" href="/api/"><span class="pulse-menu-item__label">The API</span><span class="pulse-menu-item__desc">Security engineer? This is for you.</span></a><a class="pulse-menu-item" href="/slack"><span class="pulse-menu-item__label">VEX in Slack</span><span class="pulse-menu-item__desc">Right where your team already works.</span></a></div></div>
+          <a class="pulse-link header-cta" href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener">Schedule a chat <i class="pulse-icon pulse-icon--arrow-right" aria-hidden="true"></i></a>
         </nav>
-        <button class="menu-btn" type="button" aria-label="Open menu" aria-controls="site-nav" aria-expanded="false"><img src="../static/icon-menu.svg" width="32" height="32" alt=""></button>
+        <button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon menu-btn" type="button" aria-label="Open menu" aria-controls="site-nav" aria-expanded="false"><img src="../static/icon-menu.svg" width="24" height="24" alt=""></button>
       </div>
     </header>
   </div>
@@ -273,13 +230,13 @@
     <div class="site-header">
       <div class="wrap header-inner">
         <a href="/" class="brand"><span class="status-dot"></span>VEX</a>
-        <button class="menu-btn menu-close" type="button" aria-label="Close menu"><img src="../static/icon-close.svg" width="32" height="32" alt=""></button>
+        <button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon menu-btn menu-close" type="button" aria-label="Close menu"><i class="pulse-icon pulse-icon--x" aria-hidden="true"></i></button>
       </div>
     </div>
     <nav class="wrap" aria-label="Menu">
       <ul class="nav-list">
         <li><a href="/"><span class="nav-link">Home</span><span class="nav-sub">One Dot protects one thing. VEX protects everything.</span></a></li>
-        <li class="nav-group"><span class="nav-group-label">VEX AI SOC</span><ul class="nav-sublist"><li><a href="/how-it-works/"><span class="nav-link">Meet VEX</span><span class="nav-sub">Good prevention starts with great detection.</span></a></li><li><a href="/detections/" aria-current="page"><span class="nav-link">What VEX detects</span><span class="nav-sub">Every alert type it can raise.</span></a></li><li><a href="/api/"><span class="nav-link">The API</span><span class="nav-sub">Security engineer? This is for you.</span></a></li><li><a href="/slack"><span class="nav-link">VEX in Slack</span><span class="nav-sub">Right where your team already works.</span></a></li></ul></li>
+        <li class="nav-group"><span class="pulse-dropdown__label nav-group-label">VEX AI SOC</span><ul class="nav-sublist"><li><a href="/how-it-works/"><span class="nav-link">Meet VEX</span><span class="nav-sub">Good prevention starts with great detection.</span></a></li><li><a href="/detections/" aria-current="page"><span class="nav-link">What VEX detects</span><span class="nav-sub">Every alert type it can raise.</span></a></li><li><a href="/api/"><span class="nav-link">The API</span><span class="nav-sub">Security engineer? This is for you.</span></a></li><li><a href="/slack"><span class="nav-link">VEX in Slack</span><span class="nav-sub">Right where your team already works.</span></a></li></ul></li>
         <li><a href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener"><span class="nav-link">Schedule a chat</span></a></li>
       </ul>
     </nav>
@@ -293,18 +250,18 @@
   <section class="hero">
     <img class="hero-backdrop" src="../static/glow-grid-bg.svg" width="2936" height="258" alt="" aria-hidden="true">
     <div class="wrap">
-      <div class="eyebrow-label"><span class="status-dot"></span>Detection catalog</div>
+      <div class="eyebrow eyebrow--dot"><span class="status-dot"></span>Detection catalog</div>
       <h1>What VEX detects.</h1>
       <div class="intro-row">
         <p class="lede">Every alert type VEX can raise, by vendor, in the vendor’s own words, and what VEX does when it sees one. Vendors rename and retire alerts over time, so a newly changed name may take a little while to appear here.</p>
-        <button class="pulse-btn pulse-btn--secondary pulse-btn--surface pulse-btn--sm custom-btn" type="button" data-drawer="custom-drawer" aria-haspopup="dialog">Write your own custom detections <img src="../static/icon-arrow-right-pink.svg" width="16" height="16" alt=""></button>
+        <button class="pulse-btn pulse-btn--secondary pulse-btn--surface pulse-btn--sm custom-btn" type="button" data-pulse-open="custom-drawer" aria-haspopup="dialog">Write your own custom detections</button>
       </div>
       <section class="responses" aria-label="Response codes">
         <div class="resp-top">
           <p>These are the responses VEX applies to a detection when it sees it.</p>
-          <button class="resp-toggle" type="button" aria-expanded="false" aria-controls="resp-list">Show descriptions</button>
+          <label class="pulse-toggle resp-toggle"><input id="resp-switch" type="checkbox" role="switch" aria-controls="resp-list"> Show descriptions</label>
         </div>
-        <ul class="resp-list" id="resp-list"><li><code>R0</code><b>Log</b><span>Logged to your audit history. No further action.</span></li><li><code>R1</code><b>Contain</b><span>Locks the asset out and keeps it from getting back in.</span></li><li><code>R2</code><b>Release</b><span>Releases the asset from containment.</span></li><li><code>R3</code><b>Investigate</b><span>Starts an automatic investigation into the root cause.</span></li><li><code>R4</code><b>Recommend</b><span>Writes a specific security recommendation.</span></li></ul>
+        <ul class="resp-list" id="resp-list"><li><code class="pulse-badge pulse-badge--nodot pulse-badge--outline badge-mono">R0</code><b>Log</b><span>Logged to your audit history. No further action.</span></li><li><code class="pulse-badge pulse-badge--nodot pulse-badge--outline badge-mono">R1</code><b>Contain</b><span>Locks the asset out and keeps it from getting back in.</span></li><li><code class="pulse-badge pulse-badge--nodot pulse-badge--outline badge-mono">R2</code><b>Release</b><span>Releases the asset from containment.</span></li><li><code class="pulse-badge pulse-badge--nodot pulse-badge--outline badge-mono">R3</code><b>Investigate</b><span>Starts an automatic investigation into the root cause.</span></li><li><code class="pulse-badge pulse-badge--nodot pulse-badge--outline badge-mono">R4</code><b>Recommend</b><span>Writes a specific security recommendation.</span></li></ul>
       </section>
     </div>
   </section>
@@ -317,7 +274,7 @@
     <div class="wrap cat-layout">
 
       <nav class="jump" id="jump" aria-label="On this page">
-        <p class="jump-label">On this page</p>
+        <p class="pulse-tabs__label jump-label">On this page</p>
         <button class="jump-toggle" type="button" aria-expanded="false" aria-controls="jump-scroll">
           <span class="jump-toggle-text"><span class="jump-toggle-label">On this page</span><span class="jump-current">Microsoft 365</span></span>
           <img src="../static/icon-chevron-down.svg" width="20" height="20" alt="">
@@ -328,12 +285,12 @@
       <div class="cat-main">
         <div class="search-bar" role="search">
           <div class="field">
-            <img class="mag" src="../static/icon-magnifying-glass.svg" width="20" height="20" alt="">
+            <i class="pulse-icon pulse-icon--magnifying-glass mag" aria-hidden="true"></i>
             <label class="visually-hidden" for="q">Search detections</label>
-            <input id="q" type="search" placeholder="Try “ransomware”, “phishing” or an ID" autocomplete="off" spellcheck="false">
-            <button id="clear" type="button" aria-label="Clear search" hidden><img src="../static/icon-x-small.svg" width="20" height="20" alt=""></button>
+            <input class="pulse-input pulse-input--lg" id="q" type="search" placeholder="Try “ransomware”, “phishing” or an ID" autocomplete="off" spellcheck="false">
+            <button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm" id="clear" type="button" aria-label="Clear search" hidden><i class="pulse-icon pulse-icon--x" aria-hidden="true"></i></button>
           </div>
-          <button class="details-toggle" id="details" type="button" role="switch" aria-checked="false"><span class="track" aria-hidden="true"><span class="knob"></span></span>Show details</button>
+          <label class="pulse-toggle details-toggle"><input id="details" type="checkbox" role="switch"> Show details</label>
         </div>
         <div class="search">
           <div class="try">Try:
@@ -355,20 +312,18 @@
 
   </main>
 
-  <div class="drawer" id="custom-drawer" role="dialog" aria-modal="true" aria-labelledby="custom-title" aria-hidden="true">
-    <div class="drawer-scrim" data-close></div>
-    <div class="drawer-panel">
-      <div class="drawer-head">
-        <div>
-          <h2 id="custom-title">Write your own custom detections</h2>
-          <p>This is an example script that shows how you can contact the VEX API every 5 minutes, get the logs, run them through your own detection rules (i.e. custom), and create a signal in VEX for any matches.</p>
-        </div>
-        <button class="drawer-close" type="button" data-close aria-label="Close"><img src="../static/icon-close.svg" width="20" height="20" alt=""></button>
+  <dialog class="pulse-drawer pulse-drawer--lg" id="custom-drawer" aria-labelledby="custom-title">
+    <div class="pulse-drawer__head">
+      <div>
+        <h2 class="pulse-drawer__title" id="custom-title">Write your own custom detections</h2>
+        <p>This is an example script that shows how you can contact the VEX API every 5 minutes, get the logs, run them through your own detection rules (i.e. custom), and create a signal in VEX for any matches.</p>
       </div>
-      <div class="drawer-body">
-        <div class="code-panel">
-          <div class="code-head"><span class="code-file">custom_detections.py</span><span class="code-lang">Python</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn" type="button" aria-label="Copy custom_detections.py to clipboard"><i class="pulse-icon pulse-icon--copy"></i><span class="pulse-tooltip tooltip" aria-hidden="true">copy to clipboard</span></button></div>
-          <pre><code><span class="t-kw">import</span> os
+      <button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-drawer__close" type="button" aria-label="Close" data-pulse-close><i class="pulse-icon pulse-icon--x" aria-hidden="true"></i></button>
+    </div>
+    <div class="pulse-drawer__body drawer-body">
+      <div class="code-panel">
+        <div class="code-head"><span class="code-file">custom_detections.py</span><span class="code-lang">Python</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn pulse-tooltip-host" type="button" aria-label="Copy custom_detections.py to clipboard"><i class="pulse-icon pulse-icon--copy"></i><span class="pulse-tooltip pulse-tooltip--bottom pulse-tooltip--end" aria-hidden="true">Copy to clipboard</span></button></div>
+        <pre><code><span class="t-kw">import</span> os
 <span class="t-kw">import</span> time
 <span class="t-kw">from</span> datetime <span class="t-kw">import</span> datetime, timedelta, timezone
 
@@ -379,57 +334,56 @@ INTERVAL = <span class="t-num">300</span>
 
 <span class="t-cmnt">""" Authenticate with VEX """</span>
 <span class="t-kw">def</span> <span class="t-fn">login</span>():
-    resp = requests.<span class="t-fn">post</span>(
-        <span class="t-str">"https://cognito-idp.us-east-2.amazonaws.com"</span>,
-        headers={
-            <span class="t-str">"Content-Type"</span>: <span class="t-str">"application/x-amz-json-1.1"</span>,
-            <span class="t-str">"X-Amz-Target"</span>: <span class="t-str">"AWSCognitoIdentityProviderService.InitiateAuth"</span>,
-        },
-        json={
-            <span class="t-str">"AuthFlow"</span>: <span class="t-str">"USER_PASSWORD_AUTH"</span>,
-            <span class="t-str">"ClientId"</span>: <span class="t-str">"2314edi18c3o3t8sroh2u2hucf"</span>,
-            <span class="t-str">"AuthParameters"</span>: {
-                <span class="t-str">"USERNAME"</span>: os.environ[<span class="t-str">"VEX_USERNAME"</span>],
-                <span class="t-str">"PASSWORD"</span>: os.environ[<span class="t-str">"VEX_PASSWORD"</span>],
-            },
-        },
-    )
-    resp.<span class="t-fn">raise_for_status</span>()
-    <span class="t-kw">return</span> resp.<span class="t-fn">json</span>()[<span class="t-str">"AuthenticationResult"</span>][<span class="t-str">"IdToken"</span>]
+  resp = requests.<span class="t-fn">post</span>(
+      <span class="t-str">"https://cognito-idp.us-east-2.amazonaws.com"</span>,
+      headers={
+          <span class="t-str">"Content-Type"</span>: <span class="t-str">"application/x-amz-json-1.1"</span>,
+          <span class="t-str">"X-Amz-Target"</span>: <span class="t-str">"AWSCognitoIdentityProviderService.InitiateAuth"</span>,
+      },
+      json={
+          <span class="t-str">"AuthFlow"</span>: <span class="t-str">"USER_PASSWORD_AUTH"</span>,
+          <span class="t-str">"ClientId"</span>: <span class="t-str">"2314edi18c3o3t8sroh2u2hucf"</span>,
+          <span class="t-str">"AuthParameters"</span>: {
+              <span class="t-str">"USERNAME"</span>: os.environ[<span class="t-str">"VEX_USERNAME"</span>],
+              <span class="t-str">"PASSWORD"</span>: os.environ[<span class="t-str">"VEX_PASSWORD"</span>],
+          },
+      },
+  )
+  resp.<span class="t-fn">raise_for_status</span>()
+  <span class="t-kw">return</span> resp.<span class="t-fn">json</span>()[<span class="t-str">"AuthenticationResult"</span>][<span class="t-str">"IdToken"</span>]
 
 
 <span class="t-cmnt">""" Pull audit logs between timestamps from VEX """</span>
 <span class="t-kw">def</span> <span class="t-fn">poll</span>(start, end):
-    session = requests.<span class="t-fn">Session</span>()
-    session.headers[<span class="t-str">"Authorization"</span>] = <span class="t-str">f"Bearer {login()}"</span>
+  session = requests.<span class="t-fn">Session</span>()
+  session.headers[<span class="t-str">"Authorization"</span>] = <span class="t-str">f"Bearer {login()}"</span>
 
-    resp = session.<span class="t-fn">get</span>(<span class="t-str">"https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/audit"</span>, params={<span class="t-str">"start"</span>: start, <span class="t-str">"end"</span>: end})
-    resp.<span class="t-fn">raise_for_status</span>()
+  resp = session.<span class="t-fn">get</span>(<span class="t-str">"https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/audit"</span>, params={<span class="t-str">"start"</span>: start, <span class="t-str">"end"</span>: end})
+  resp.<span class="t-fn">raise_for_status</span>()
 
-    <span class="t-kw">for</span> log <span class="t-kw">in</span> resp.<span class="t-fn">json</span>():
-        <span class="t-fn">run_rules</span>(session, log)
+  <span class="t-kw">for</span> log <span class="t-kw">in</span> resp.<span class="t-fn">json</span>():
+      <span class="t-fn">run_rules</span>(session, log)
 
 
 <span class="t-cmnt">""" Run a custom ruleset and POST matches to VEX """</span>
 <span class="t-kw">def</span> <span class="t-fn">run_rules</span>(session, line):
-    <span class="t-kw">if</span> <span class="t-str">"MALICIOUS"</span> <span class="t-kw">in</span> line:
-        signal = {<span class="t-str">"name"</span>: <span class="t-str">"audit.malicious"</span>, <span class="t-str">"source"</span>: <span class="t-str">"specialsauce"</span>, <span class="t-str">"value"</span>: line}
-        session.<span class="t-fn">post</span>(<span class="t-str">"https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/signal"</span>, json=signal)
+  <span class="t-kw">if</span> <span class="t-str">"MALICIOUS"</span> <span class="t-kw">in</span> line:
+      signal = {<span class="t-str">"name"</span>: <span class="t-str">"audit.malicious"</span>, <span class="t-str">"source"</span>: <span class="t-str">"specialsauce"</span>, <span class="t-str">"value"</span>: line}
+      session.<span class="t-fn">post</span>(<span class="t-str">"https://4ycv63am8b.execute-api.us-east-2.amazonaws.com/signal"</span>, json=signal)
 
 
 end = (datetime.<span class="t-fn">now</span>(timezone.utc) - <span class="t-fn">timedelta</span>(seconds=INTERVAL)).<span class="t-fn">strftime</span>(<span class="t-str">"%Y-%m-%dT%H:%M:%SZ"</span>)
 <span class="t-kw">while</span> <span class="t-kw">True</span>:
-    start, end = end, datetime.<span class="t-fn">now</span>(timezone.utc).<span class="t-fn">strftime</span>(<span class="t-str">"%Y-%m-%dT%H:%M:%SZ"</span>)
-    <span class="t-fn">poll</span>(start, end)
-    time.<span class="t-fn">sleep</span>(INTERVAL)</code></pre>
-        </div>
+  start, end = end, datetime.<span class="t-fn">now</span>(timezone.utc).<span class="t-fn">strftime</span>(<span class="t-str">"%Y-%m-%dT%H:%M:%SZ"</span>)
+  <span class="t-fn">poll</span>(start, end)
+  time.<span class="t-fn">sleep</span>(INTERVAL)</code></pre>
       </div>
     </div>
-  </div>
+  </dialog>
 
   <span class="visually-hidden" id="copy-status" role="status"></span>
 
-  <button class="to-top" id="to-top" type="button"><span class="to-top-icon" aria-hidden="true"></span>Top</button>
+  <button class="pulse-btn pulse-btn--neutral to-top" id="to-top" type="button"><i class="pulse-icon pulse-icon--arrow-down to-top-icon" aria-hidden="true"></i>Top</button>
 
   <!-- shared:footer --><footer>
     <span>© 2026 Unmanned, Inc.</span>
@@ -452,30 +406,14 @@ end = (datetime.<span class="t-fn">now</span>(timezone.utc) - <span class="t-fn"
       }
 
       // the response legend: codes and names by default; "What each means" shows the descriptions
-      var legend = document.querySelector('.responses'), legendBtn = legend.querySelector('.resp-toggle');
-      legendBtn.addEventListener('click', function(){
+      var legend = document.querySelector('.responses'), legendSwitch = document.getElementById('resp-switch');
+      legendSwitch.addEventListener('change', function(){
         relayout();
-        var open = legend.classList.toggle('is-open');
-        legendBtn.setAttribute('aria-expanded', String(open));
-        legendBtn.textContent = open ? 'Hide descriptions' : 'Show descriptions';   // lowercase on desktop via CSS
+        legend.classList.toggle('is-open', legendSwitch.checked);
       });
 
-      // the custom-detections drawer: Esc, the scrim or × closes it; focus stays inside while open
+      // the custom-detections drawer is a Pulse drawer (pulse.js); this block copies its code
       (function(){
-        var d = document.getElementById('custom-drawer'), opener = null, rootEl = document.documentElement, panel = d.querySelector('.drawer-panel');
-        function open(b){ opener = b; d.classList.add('is-open'); d.setAttribute('aria-hidden', 'false'); rootEl.style.overflow = 'hidden'; setTimeout(function(){ d.querySelector('.drawer-close').focus(); }, 50); }
-        function close(){ d.classList.remove('is-open'); d.setAttribute('aria-hidden', 'true'); rootEl.style.overflow = ''; if(opener){ opener.focus(); } }
-        document.querySelectorAll('[data-drawer="custom-drawer"]').forEach(function(b){ b.addEventListener('click', function(){ open(b); }); });
-        d.querySelectorAll('[data-close]').forEach(function(el){ el.addEventListener('click', close); });
-        document.addEventListener('keydown', function(e){
-          if(!d.classList.contains('is-open')){ return; }
-          if(e.key === 'Escape'){ close(); return; }
-          if(e.key === 'Tab'){
-            var f = [].slice.call(panel.querySelectorAll('a[href],button')), first = f[0], last = f[f.length - 1];
-            if(e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
-            else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
-          }
-        });
         var status = document.getElementById('copy-status');
         function fallback(text, done){
           var box = document.createElement('textarea');
@@ -485,14 +423,14 @@ end = (datetime.<span class="t-fn">now</span>(timezone.utc) - <span class="t-fn"
           try { if(document.execCommand('copy')){ done(); } } catch(e){}
           document.body.removeChild(box);
         }
-        [].forEach.call(d.querySelectorAll('.copy-btn'), function(btn){
-          var timer, tip = btn.querySelector('.tooltip');
+        [].forEach.call(document.getElementById('custom-drawer').querySelectorAll('.copy-btn'), function(btn){
+          var timer, tip = btn.querySelector('.pulse-tooltip');
           btn.addEventListener('click', function(){
             var text = btn.closest('.code-panel').querySelector('pre').textContent.trim();
             function done(){
-              tip.textContent = 'Copied'; status.textContent = 'Copied to clipboard'; btn.classList.add('is-copied');
+              tip.textContent = 'Copied'; status.textContent = 'Copied to clipboard'; tip.classList.add('is-open');
               clearTimeout(timer);
-              timer = setTimeout(function(){ btn.classList.remove('is-copied'); tip.textContent = 'copy to clipboard'; status.textContent = ''; }, 1600);
+              timer = setTimeout(function(){ tip.classList.remove('is-open'); tip.textContent = 'Copy to clipboard'; status.textContent = ''; }, 1600);
             }
             if(navigator.clipboard && window.isSecureContext){ navigator.clipboard.writeText(text).then(done, function(){ fallback(text, done); }); }
             else { fallback(text, done); }
@@ -502,9 +440,8 @@ end = (datetime.<span class="t-fn">now</span>(timezone.utc) - <span class="t-fn"
 
       // "Show details": one switch for every row's vendor ID (off by default)
       var detailsBtn = document.getElementById('details'), catalogEl = document.getElementById('catalog');
-      detailsBtn.addEventListener('click', function(){
-        var on = detailsBtn.getAttribute('aria-checked') !== 'true';
-        detailsBtn.setAttribute('aria-checked', String(on));
+      detailsBtn.addEventListener('change', function(){
+        var on = detailsBtn.checked;
         relayout();
         catalogEl.classList.toggle('show-details', on);
       });
@@ -551,13 +488,13 @@ end = (datetime.<span class="t-fn">now</span>(timezone.utc) - <span class="t-fn"
         m.order.forEach(function(v){
           var vm = m.vendors[v], vlabel = vendorLabel(v), total = 0, many = vm.order.length > 1;
           vm.order.forEach(function(k){ vm.sources[k].order.forEach(function(g){ total += vm.sources[k].groups[g].length; }); });
-          nav += '<li><a class="jump-link pulse-tab" href="#' + v + '" data-bucket="' + v + '"><span>' + esc(vlabel) + '</span><span class="c">' + fmt(total) + '</span></a><ul class="jump-sub">';
+          nav += '<li><a class="jump-link pulse-tab" href="#' + v + '" data-bucket="' + v + '"><span>' + esc(vlabel) + '</span><span class="pulse-tab__count c">' + fmt(total) + '</span></a><ul class="pulse-tabs__sub jump-sub">';
           html += '<section class="bucket" id="' + v + '" data-bucket="' + v + '"><div class="bucket-head"><h2>' + esc(vlabel) + '</h2></div>';
           vm.order.forEach(function(k){
             var s = vm.sources[k], label = data.sources[k].label, id = v + '-' + slug(label), n = 0;
             s.order.forEach(function(g){ n += s.groups[g].length; });
             // the product list in the menu only where a vendor has several (Microsoft 365)
-            if(many){ nav += '<li><a class="jump-link pulse-tab" href="#' + id + '" data-source="' + id + '"><span>' + esc(label) + '</span><span class="c">' + fmt(n) + '</span></a></li>'; }
+            if(many){ nav += '<li><a class="jump-link pulse-tab" href="#' + id + '" data-source="' + id + '"><span>' + esc(label) + '</span><span class="pulse-tab__count c">' + fmt(n) + '</span></a></li>'; }
             html += '<div class="source" id="' + id + '">' + (label !== vlabel ? '<div class="source-head"><h3>' + esc(label) + '</h3><span class="count" data-count>' + fmt(n) + '</span></div>' : '<span hidden data-count></span>');
             s.order.forEach(function(g){
               var rows = s.groups[g], fold = rows.length > SHOW + 4;
@@ -567,11 +504,11 @@ end = (datetime.<span class="t-fn">now</span>(timezone.utc) - <span class="t-fn"
               rows.forEach(function(ri, k){
                 var r = data.rows[ri], code = resp(r);
                 html += '<li class="row' + (fold && k >= SHOW ? ' extra' : '') + '" data-i="' + ri + '"><span class="name">' + esc(r[2]) + '</span>'
-                  + '<span class="resp" title="' + code + ': ' + RESPONSES[code] + '" aria-label="Response ' + code + ', ' + RESPONSES[code] + '">' + code + '</span>'
+                  + '<span class="resp pulse-badge pulse-badge--nodot pulse-badge--outline badge-mono" title="' + code + ': ' + RESPONSES[code] + '" aria-label="Response ' + code + ', ' + RESPONSES[code] + '">' + code + '</span>'
                   + (r[4] ? '<p class="desc">' + esc(r[4]) + '</p>' : '')
                   + (r[3] && r[3] !== r[2] ? '<code class="id">' + esc(r[3]) + '</code>' : '') + '</li>';
               });
-              html += '</ul>' + (fold ? '<button class="more" type="button" data-n="' + rows.length + '">Show all ' + fmt(rows.length) + '</button>' : '') + '</div>';
+              html += '</ul>' + (fold ? '<button class="pulse-btn pulse-btn--neutral pulse-btn--sm more" type="button" data-n="' + rows.length + '">Show all ' + fmt(rows.length) + '</button>' : '') + '</div>';
             });
             html += '</div>';
           });
@@ -727,7 +664,7 @@ end = (datetime.<span class="t-fn">now</span>(timezone.utc) - <span class="t-fn"
       function setActive(i){
         links.forEach(function(a, j){
           a.classList.toggle('is-active', j === i);
-          if(j === i){ a.setAttribute('aria-current', 'true'); } else { a.removeAttribute('aria-current'); }
+          if(j === i){ a.setAttribute('aria-current', 'location'); } else { a.removeAttribute('aria-current'); }
         });
         if(links[i]){ current.textContent = links[i].querySelector('span').textContent; }
         // desktop: keep the highlighted link in view when the menu is taller than the screen

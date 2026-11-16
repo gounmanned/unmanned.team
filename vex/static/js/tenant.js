@@ -307,7 +307,7 @@ class TenantScreen {
 
     async countAssets() {
         const assets = await this.api.inventory.list();
-        return new Set(assets.map(a => a.name.toLowerCase())).size;   // same de-dupe as the coverage table
+        return assets.length;   // one per asset key, same as the coverage table
     }
 
     renderSetup(assets) {

@@ -174,6 +174,8 @@
 
     &.is-none .cov-name { color: var(--text-faint); }
 
+    .cov-name small { margin-left: 8px; font-size: 11.5px; font-weight: 500; color: var(--text-faint); }
+
     > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   }
 
@@ -298,6 +300,7 @@
 
   .cov-head-divider { width: 1px; height: 18px; margin: 0 4px; background: var(--line); }
 
+
   .cov-drawer-body {
     flex: 1;
     min-height: 0;
@@ -347,6 +350,52 @@
     .material-symbols-outlined { font-size: 17px; }
     &:hover { background: color-mix(in srgb, var(--text-body) 85%, var(--surface)); }
     &:disabled { opacity: 0.5; cursor: default; }
+  }
+
+  /* ── Drawer: a person's devices ───────────────────────────────── */
+
+  .cov-devices {
+    flex-shrink: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 12px 24px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .cov-device {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 30px;
+    padding: 0 12px 0 10px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    background: none;
+    font: inherit;
+    font-size: 12.5px;
+    font-weight: 600;
+    white-space: nowrap;
+    color: var(--text-faint);
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+
+    .cov-dot { flex-shrink: 0; }
+    code { display: inline-block; max-width: 14ch; overflow: hidden; text-overflow: ellipsis; font: 500 12px var(--mono); }
+    small { font-size: 11.5px; font-weight: 500; color: var(--text-faint); }
+
+    &:hover { background: var(--surface-alt); color: var(--text-body); }
+    &[aria-pressed="true"] { border-color: var(--line); background: var(--surface); box-shadow: 0 1px 2px rgb(0 0 0 / 0.05); color: var(--text-body); }
+    &:focus-visible { outline: 2px solid var(--brand); outline-offset: 1px; }
+  }
+
+  .cov-device-add {
+    gap: 4px;
+    padding-left: 8px;
+    border: 1px dashed color-mix(in srgb, var(--text-faint) 40%, var(--line));
+
+    .material-symbols-outlined { font-size: 16px; }
+    &:hover { border-style: solid; }
   }
 
   /* ── Drawer: runs, one row each ───────────────────────────────── */

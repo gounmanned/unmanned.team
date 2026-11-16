@@ -17,6 +17,7 @@ class CoverageRollup {
     };
 
     static STATE_LABEL = { live: 'Live', idle: 'Idle', none: 'No dot' };
+    static STATE_RANK = { live: 0, idle: 1, none: 2 };
 
     static runStatus(status) {
         return CoverageRollup.RUN_STATUS[status] ?? CoverageRollup.RUN_STATUS.FAILED;
@@ -30,10 +31,9 @@ class CoverageRollup {
         return !b || Workspace.time(a) > Workspace.time(b) ? a : b;
     }
 
-    static byDot = (a, b) => {
-        const rank = { live: 0, idle: 1, none: 2 };
-        return rank[a.state] - rank[b.state] || a.name.localeCompare(b.name);
-    };
+    static byState = (a, b) => CoverageRollup.STATE_RANK[a.state] - CoverageRollup.STATE_RANK[b.state];
+
+    static byDot = (a, b) => CoverageRollup.byState(a, b) || a.name.localeCompare(b.name);
 
     constructor(state) {
         this.state = state;
@@ -50,14 +50,14 @@ class CoverageRollup {
         this.screen.append(this.toast);
 
         this.vendors = {};          // vendor -> { name, ids }
-        this.items = new Map();     // key -> asset item (dot + discovered asset merged)
+        this.items = new Map();     // name -> person { key, name, ref, devices: [{ key, asset, runtime, seen, state }] }
         this.packOf = new Map();    // action id -> pack name
         this.loaded = false;
 
         this.confirming = null;     // source ref whose disconnect awaits a second click
 
-        this.open = null;           // drawer: { kind: 'asset' | 'catalog' | 'connect' | 'mailbox', key }
-        this.runs = [];             // open asset's runs, newest first
+        this.open = null;           // drawer: { kind: 'asset' | 'catalog' | 'connect' | 'mailbox', key, device }
+        this.runs = null;           // open device's runs, newest first (null while loading)
         this.expanded = null;       // run whose output is showing
         this.draft = '';
         this.error = null;
@@ -99,7 +99,7 @@ class CoverageRollup {
     async refresh() {
         await this._tick();
         if (this.open?.kind !== 'asset') return;
-        this.items.has(this.open.key) ? this._loadRuns() : this._close();
+        this._device() ? this._loadRuns() : this._close();
     }
 
     async _tick() {
@@ -122,17 +122,16 @@ class CoverageRollup {
     }
 
     async _loadSeen() {
-        const dotted = [...this.items.values()].filter(i => i.dot);
-        await Promise.all(dotted.map(async item => {
-            const runs = await this.api.inventory.get(item.dot.key) ?? [];
-            runs.forEach(r => this._see(item, r.created));
+        await Promise.all(this._devices().filter(d => d.runtime).map(async device => {
+            const runs = await this.api.inventory.get(device.key) ?? [];
+            runs.forEach(r => this._see(device, r.created));
         }));
         this._render();
     }
 
-    _see(item, ts) {
-        item.seen = CoverageRollup.later(ts, item.seen);
-        item.state = CoverageRollup.isActive(item.seen) ? 'live' : 'idle';
+    _see(device, ts) {
+        device.seen = CoverageRollup.later(ts, device.seen);
+        device.state = CoverageRollup.isActive(device.seen) ? 'live' : 'idle';
     }
 
     async _loadPacks() {
@@ -148,23 +147,41 @@ class CoverageRollup {
         return { vendor, id, ref: `${vendor}/${id}` };
     }
 
+    // one person per name; each of their assets is a device that can carry a dot
     _merge(assets, sources) {
         const groups = Map.groupBy(assets, a => a.name.toLowerCase());
 
-        return new Map([...groups.values()].map(members => {
-            const dot = members.filter(a => a.metadata.runtime).sort((a, b) => Workspace.time(b.updated) - Workspace.time(a.updated))[0];
-            const found = members.find(a => a.source && sources.some(s => s.includes(a.source)));
-            const item = {
-                key: (dot ?? members[0]).key,
+        return new Map([...groups].map(([key, members]) => {
+            const sourceOf = a => a.source && sources.find(s => s.includes(a.source));
+            const found = members.find(sourceOf);
+            const previous = this.items.get(key)?.devices ?? [];
+
+            const devices = members.map(asset => {
+                const device = { key: asset.key, id: asset.key.slice(asset.key.lastIndexOf(':') + 1), asset, runtime: asset.metadata.runtime, state: 'none' };
+                const seen = previous.find(d => d.key === asset.key)?.seen;
+                if (device.runtime) this._see(device, CoverageRollup.later(asset.updated, seen));
+                return device;
+            });
+
+            return [key, {
+                key,
                 name: (found ?? members[0]).name,
-                ref: found && this._parse(sources.find(s => s.includes(found.source))).ref,
-                dot,
-                members,
-                state: 'none',
-            };
-            if (dot) this._see(item, CoverageRollup.later(dot.updated, this.items.get(item.key)?.seen));
-            return [item.key, item];
+                ref: found && this._parse(sourceOf(found)).ref,
+                vex: members.some(a => a.source === 'vex'),
+                devices,
+                get top() { return [...this.devices].sort(CoverageRollup.byState)[0]; },   // most active device
+                get state() { return this.top.state; },
+                get seen() { return this.devices.reduce((latest, d) => d.seen ? CoverageRollup.later(d.seen, latest) : latest, undefined); },
+            }];
         }));
+    }
+
+    _devices() {
+        return [...this.items.values()].flatMap(p => p.devices);
+    }
+
+    _device() {
+        return this.items.get(this.open.key)?.devices.find(d => d.key === this.open.device);
     }
 
     _connections() {
@@ -202,12 +219,12 @@ class CoverageRollup {
     }
 
     _renderStats() {
-        const items = [...this.items.values()];
+        const devices = this._devices();
         const n = value => this.loaded ? value : '—';
 
         this.stats.innerHTML = [
-            `<span class="stat"><b>${n(items.length)}</b>assets</span>`,
-            `<span class="stat"><b>${n(items.filter(i => i.dot).length)}</b>dots</span>`,
+            `<span class="stat"><b>${n(devices.length)}</b>assets</span>`,
+            `<span class="stat"><b>${n(devices.filter(d => d.runtime).length)}</b>dots</span>`,
         ].join('<span class="stat-divider"></span>');
     }
 
@@ -242,43 +259,58 @@ class CoverageRollup {
         return `<img class="${cls}" src="static/img/source/${vendor}.png" alt="">`;
     }
 
-    _row(item, source) {
-        const selected = this.open?.kind === 'asset' && this.open.key === item.key;
+    _row(person, source) {
+        const selected = this.open?.kind === 'asset' && this.open.key === person.key;
+        const count = person.devices.length;
+        const runtimes = [...new Set(person.devices.map(d => d.runtime).filter(Boolean))].join(', ');
 
         return `
-            <div class="cov-row is-${item.state}${selected ? ' is-selected' : ''}" data-item="${Workspace.esc(item.key)}">
+            <div class="cov-row is-${person.state}${selected ? ' is-selected' : ''}" data-item="${Workspace.esc(person.key)}">
                 <span class="cov-dot"></span>
-                <span class="cov-name">${Workspace.esc(item.name)}</span>
-                <span class="cov-col-source">${source ? `${this._logo(source.vendor, 'cov-chip-logo')}${this._sourceName(source)}` : '—'}</span>
-                <span class="cov-state">${CoverageRollup.STATE_LABEL[item.state]}</span>
-                <span class="cov-col-extra">${Workspace.esc(item.dot?.metadata.runtime ?? '')}</span>
-                <span class="cov-col-extra cov-seen">${item.dot ? this._ago(item.seen) : ''}</span>
+                <span class="cov-name">${Workspace.esc(person.name)}${count > 1 ? `<small>${count} devices</small>` : ''}</span>
+                <span class="cov-col-source">${this._sourceCell(person, source)}</span>
+                <span class="cov-state">${CoverageRollup.STATE_LABEL[person.state]}</span>
+                <span class="cov-col-extra">${Workspace.esc(runtimes)}</span>
+                <span class="cov-col-extra cov-seen">${person.seen ? this._ago(person.seen) : ''}</span>
                 <span class="material-symbols-outlined cov-go">chevron_right</span>
             </div>`;
+    }
+
+    _sourceCell(person, source) {
+        if (source) return `${this._logo(source.vendor, 'cov-chip-logo')}${this._sourceName(source)}`;
+        if (person.vex) return `${this._logo('vex', 'cov-chip-logo')}VEX`;
+        return '—';
     }
 
     _filter() {
         const query = this.search.value.trim().toLowerCase();
         for (const row of this.body.querySelectorAll('.cov-row[data-item]')) {
-            row.hidden = !(JSON.stringify(this.items.get(row.dataset.item).members) + row.textContent).toLowerCase().includes(query);
+            const assets = this.items.get(row.dataset.item).devices.map(d => d.asset);
+            row.hidden = !(JSON.stringify(assets) + row.textContent).toLowerCase().includes(query);
         }
         this.body.classList.toggle('no-match', !!query && !this.body.querySelector('.cov-row[data-item]:not([hidden])'));
     }
 
     // ── drawer ─────────────────────────────────────────────────────
 
-    _openDrawer(kind, key) {
+    // for an asset, `device` picks the tab; it defaults to the person's most active device
+    _openDrawer(kind, key, device) {
         this.open = { kind, key };
         this.error = null;
         this.expanded = null;
         this.confirming = null;
         if (kind !== 'connect') this.draft = '';
 
+        if (kind === 'asset') {
+            this.open.device = device ?? this.items.get(key).top.key;
+            this.runs = null;
+        }
+
         this.screen.classList.add('drawer-open');
         this._renderDrawer();
         this._markSelected();
 
-        if (kind === 'asset' && this.items.get(key).dot) this._loadRuns();
+        if (kind === 'asset' && this._device().runtime) this._loadRuns();
         if (kind === 'connect') this.drawer.querySelector('[data-cred]').focus();
     }
 
@@ -423,42 +455,60 @@ class CoverageRollup {
             </div>`;
     }
 
-    // ── drawer: an asset ──
+    // ── drawer: a person and their devices ──
 
-    _assetView(item) {
+    _assetView(person) {
+        const device = this._device();
         const actions = `
-            ${this._iconBtn('key', 'key', 'Copy dot key')}
-            ${this._iconBtn('delete', 'delete', 'Delete', 'is-danger')}
+            ${this._iconBtn('key', 'key', 'Copy dot key for this device')}
+            ${this._iconBtn('delete', 'delete', person.devices.length > 1 ? 'Delete this device' : 'Delete', 'is-danger')}
             <span class="cov-head-divider"></span>`;
 
         return `
-            ${this._drawerHead(Workspace.esc(item.name), { actions })}
-            <div class="cov-drawer-body${item.dot ? '' : ' is-centered'}">
-                ${item.dot ? this._runsView() : this._install(item)}
+            ${this._drawerHead(Workspace.esc(person.name), { actions })}
+            ${this._deviceTabs(person)}
+            <div class="cov-drawer-body${device.runtime ? '' : ' is-centered'}">
+                ${device.runtime ? this._runsView() : this._install()}
             </div>`;
     }
 
-    _install(item) {
+    _deviceTabs(person) {
+        const tabs = person.devices.map(d => `
+            <button type="button" class="cov-device is-${d.state}" data-device="${Workspace.esc(d.key)}" aria-pressed="${d.key === this.open.device}" title="${Workspace.esc(d.key)}">
+                <span class="cov-dot"></span><code>${Workspace.esc(d.id)}</code>${d.runtime ? `<small>${Workspace.esc(d.runtime)}</small>` : ''}
+            </button>`).join('');
+
+        return `
+            <nav class="cov-devices" aria-label="Devices">
+                ${tabs}
+                <button type="button" class="cov-device cov-device-add" data-act="add-device" title="Add another computer for ${Workspace.esc(person.name)}">
+                    <span class="material-symbols-outlined">add</span>Add device
+                </button>
+            </nav>`;
+    }
+
+    _install() {
         return `
             <div class="cov-install">
                 <span class="cov-install-mark"></span>
-                <h4>No dot found</h4>
-                <p>Install a dot to keep ${Workspace.esc(item.name)} hardened.</p>
-                <button type="button" class="cov-primary" data-act="invite"><span class="material-symbols-outlined">mail</span>Send invitation</button>
+                <h4>No dot on this device</h4>
+                <p>Install a dot on this computer to keep it hardened.</p>
+                <button type="button" class="cov-primary" data-act="invite"><span class="material-symbols-outlined">mail</span>Invite</button>
             </div>`;
     }
 
     async _loadRuns() {
-        const key = this.open.key;
-        const runs = await this.api.inventory.get(this.items.get(key).dot.key) ?? [];
-        if (this.open?.key !== key) return;   // they opened something else mid-fetch
+        const { device } = this.open;
+        const runs = await this.api.inventory.get(device) ?? [];
+        if (this.open?.device !== device) return;   // they opened something else mid-fetch
         this.runs = runs.sort((a, b) => Workspace.time(b.created) - Workspace.time(a.created));
-        this.runs.forEach(r => this._see(this.items.get(key), r.created));
+        this.runs.forEach(r => this._see(this._device(), r.created));
         this._renderDrawer();
         this._render();
     }
 
     _runsView() {
+        if (!this.runs) return '';
         if (!this.runs.length) return '<p class="cov-quiet">No runs yet.</p>';
 
         const ok = Math.round(this.runs.filter(r => r.status === 'T0').length / this.runs.length * 100);
@@ -506,27 +556,46 @@ class CoverageRollup {
 
     async _rerun(key) {
         const { id, name } = this.runs.find(r => r.key === key);
-        await SiteSpinner.withLoading(() => this.api.inventory.run(this.items.get(this.open.key).dot.key, { id, name }));
+        await SiteSpinner.withLoading(() => this.api.inventory.run(this.open.device, { id, name }));
         this._toast(`${name} queued`);
         await this.refresh();
     }
 
     _copyKey() {
-        const item = this.items.get(this.open.key);
-        navigator.clipboard.writeText((item.dot ?? item.members[0]).token).then(() => this._toast('Dot key copied'));
+        navigator.clipboard.writeText(this._device().asset.token).then(() => this._toast('Dot key copied'));
     }
 
     async _invite() {
-        const item = this.items.get(this.open.key);
-        await SiteSpinner.withLoading(() => this.api.inventory.invite(item.members[0]));
-        this._toast(`Install invite sent to ${item.name}`);
+        const person = this.items.get(this.open.key);
+        await SiteSpinner.withLoading(() => this.api.inventory.invite(this._device().asset));
+        this._toast(`Install invite sent to ${person.name}`);
     }
 
-    async _deleteAsset() {
-        const item = this.items.get(this.open.key);
-        await SiteSpinner.withLoading(() => Promise.all(item.members.map(a => this.api.inventory.delete(a.key))));
-        this.items.delete(item.key);
-        this._close();
+    async _addDevice() {
+        const person = this.items.get(this.open.key);
+        const before = new Set(person.devices.map(d => d.key));
+
+        await SiteSpinner.withLoading(() => this.api.inventory.create({ asset: this._device().asset.asset, source: 'vex' }));
+        await this._load();
+        this._render();
+
+        const added = this.items.get(person.key).devices.find(d => !before.has(d.key));
+        this._openDrawer('asset', person.key, added.key);
+        this._toast(`Device added for ${person.name}`);
+    }
+
+    async _deleteDevice() {
+        const person = this.items.get(this.open.key);
+        const device = this._device();
+        await SiteSpinner.withLoading(() => this.api.inventory.delete(device.key));
+
+        person.devices = person.devices.filter(d => d !== device);
+        if (person.devices.length) {
+            this._openDrawer('asset', person.key);
+        } else {
+            this.items.delete(person.key);
+            this._close();
+        }
         this._render();
     }
 
@@ -539,7 +608,7 @@ class CoverageRollup {
 
             this.api.file.root = 'action';
             await this.api.file.add(new File([file], `${id}${ext}`, { type: file.type }));
-            await this.api.inventory.run(this.items.get(this.open.key).dot.key, { id, name });
+            await this.api.inventory.run(this.open.device, { id, name });
         });
         await this.refresh();
     }
@@ -639,6 +708,16 @@ class CoverageRollup {
             if (item) this.open?.key === item ? this._close() : this._openDrawer('asset', item);
         });
 
+        const acts = {
+            close: () => this._close(),
+            back: () => this._openDrawer('catalog'),
+            mailbox: () => this._openDrawer('mailbox'),
+            invite: () => this._invite(),
+            key: () => this._copyKey(),
+            'add-device': () => this._addDevice(),
+            delete: () => this._deleteDevice(),
+        };
+
         this.drawer.addEventListener('click', (e) => {
             const disconnect = e.target.closest('[data-disconnect]')?.dataset.disconnect;
             if (disconnect) {
@@ -651,17 +730,13 @@ class CoverageRollup {
                 this._renderDrawer();
             }
 
-            const target = e.target.closest('[data-act], [data-connect], [data-expand], [data-rerun], [data-copy-mailbox], [data-submit]');
+            const target = e.target.closest('[data-act], [data-connect], [data-device], [data-expand], [data-rerun], [data-copy-mailbox], [data-submit]');
             if (!target) return;
-            const { act, connect, expand, rerun } = target.dataset;
+            const { act, connect, device, expand, rerun } = target.dataset;
 
             if (rerun) return this._rerun(rerun);
-            if (act === 'close') return this._close();
-            if (act === 'back') return this._openDrawer('catalog');
-            if (act === 'mailbox') return this._openDrawer('mailbox');
-            if (act === 'invite') return this._invite();
-            if (act === 'key') return this._copyKey();
-            if (act === 'delete') return this._deleteAsset();
+            if (device) return this._openDrawer('asset', this.open.key, device);
+            if (act) return acts[act]();
             if (connect) return this._openDrawer('connect', connect);
             if ('copyMailbox' in target.dataset) return this._copyMailbox();
             if ('submit' in target.dataset && !this.connecting) return this._submitCredentials();
@@ -685,7 +760,7 @@ class CoverageRollup {
             ['connect', 'mailbox'].includes(this.open.kind) ? this._openDrawer('catalog') : this._close();
         });
 
-        const droppable = () => this.open?.kind === 'asset' && this.items.get(this.open.key).dot;
+        const droppable = () => this.open?.kind === 'asset' && this._device()?.runtime;
 
         this.drawer.addEventListener('dragover', (e) => {
             if (!droppable()) return;

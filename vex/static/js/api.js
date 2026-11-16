@@ -131,6 +131,16 @@ class AuditApi extends Gateway {
     }
 }
 
+class SettingsApi extends Gateway {
+    constructor(){
+        super();
+    }
+
+    async list() {return this.call("GET", "settings"); }
+    async enable(name)  { return this.call("DELETE", `settings/${name}`); }
+    async disable(name) { return this.call("POST",   `settings/${name}`); }
+}
+
 class FileApi extends Gateway {
     constructor(root){
         super();

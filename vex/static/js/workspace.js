@@ -30,6 +30,7 @@ class Api {
         this.audit = new AuditApi(state);
         this.file = new FileApi(state);
         this.sources = new SourceApi(state);
+        this.settings = new SettingsApi(state);
     }
 
     reset(){
@@ -39,6 +40,7 @@ class Api {
         this.audit.set("account", this.state.account());
         this.file.set("account", this.state.account());
         this.sources.set("account", this.state.account());
+        this.settings.set("account", this.state.account());
     }
 }
 

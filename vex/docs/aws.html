@@ -167,18 +167,22 @@ Outputs:
         <h2>Step 3: Upload the Template</h2>
         <ol>
             <li>Under <strong>Specify template</strong>, select <strong>"Upload a template file"</strong>.</li>
-            <li>Save the template you copied in Step 1 as a file named <code>vex.yml</code> on your computer.</li>
+            <li>Save the template you copied in Step 1 as a file named <code>vex.yml</code> on your computer.
+                <div class="note">
+                    <strong>Optional (recommended for added security):</strong> By default, the template uses your AWS account ID as the <code>ExternalId</code>. To use a randomly generated secret instead, generate a UUID (or another random secret) and replace <code>!Sub '${AWS::AccountId}'</code> in the <code>sts:ExternalId</code> line of <code>vex.yml</code> with your value in quotes, e.g. <code>sts:ExternalId: 'your-generated-uuid'</code>. Save the file, and keep this value handy: you will enter it in the <code>"account"</code> field in Step 6.
+                </div>
+            </li>
             <li>Click <strong>"Choose file"</strong> and select <code>vex.yml</code>.</li>
             <li>Click <strong>"Next"</strong>.</li>
         </ol>
 
         <h2>Step 4: Configure the Stack</h2>
         <ol>
-            <li>Set the <strong>Stack name</strong> to <code>vex</code>.</li>
+            <li>Set the <strong>Stack name</strong> to <code>Vex</code>.</li>
             <li>Click <strong>"Next"</strong>.</li>
-            <li>Click <strong>"Next"</strong> again on the Configure stack options page (no changes needed).</li>
-            <li>On the Review page, scroll to the bottom and check the box acknowledging that CloudFormation may create IAM resources.</li>
-            <li>Click <strong>"Submit"</strong>.</li>
+            <li>On the <strong>Configure stack options</strong> page, make no changes, but scroll to the bottom and check the box acknowledging that CloudFormation may create IAM resources.</li>
+            <li>Click <strong>"Next"</strong>.</li>
+            <li>On the Review page, click <strong>"Submit"</strong>.</li>
         </ol>
 
         <h2>Step 5: Retrieve the Outputs</h2>
@@ -199,7 +203,10 @@ Outputs:
             <li>Go to <strong>Sources &gt; AWS</strong>.</li>
             <li>Paste both values in the following format and click <strong>Save</strong>:</li>
         </ol>
-        <pre>{"account":"&lt;YOUR-AWS-ACCOUNT-ID&gt;", "role":"&lt;RoleArn&gt;", "region":"&lt;YOUR-AWS-REGION&gt;"}</pre>
+        <pre>{"account":"&lt;YOUR-EXTERNAL-ID&gt;", "role":"&lt;RoleArn&gt;", "region":"&lt;YOUR-AWS-REGION&gt;"}</pre>
+        <div class="note">
+            For <code>account</code>, use your AWS account ID, or, if you generated your own <code>ExternalId</code> in Step 3, use that value instead. It must match the value in the role's trust policy.
+        </div>
     </div>
 </body>
 </html>

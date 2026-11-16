@@ -357,5 +357,20 @@ class TenantScreen {
             this.outcome = chip.dataset.outcome;
             this.schedule();
         });
+
+        const settings = document.getElementById('settings-toggles');
+
+        document.getElementById('settings-menu').addEventListener('toggle', async ({ newState }) => {
+            if (newState !== 'open') return;
+
+            settings.disabled = true;
+            const off = new Set((await this.api.settings.list()).map(s => s.name));
+            settings.querySelectorAll('[role="switch"]').forEach(t => t.checked = !off.has(t.name));
+            settings.disabled = false;
+        });
+
+        settings.addEventListener('change', ({ target }) => {
+            target.checked ? this.api.settings.enable(target.name) : this.api.settings.disable(target.name);
+        });
     }
 }

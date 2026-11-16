@@ -99,10 +99,60 @@
     </section>
 
     <footer class="links">
+      <button type="button" class="settings-btn" popovertarget="settings-menu" aria-label="Settings" title="Settings">
+        <span class="material-symbols-outlined">settings</span>
+      </button>
       <a id="open-backup-sidebar">Recovery</a>
       <a id="open-signal-sidebar" class="cta">+ Add Signal</a>
     </footer>
   </main>
+
+  <!-- Settings -->
+
+  <div class="settings-menu" id="settings-menu" popover>
+    <header class="settings-head">
+      <h2>Tune each autonomous capability</h2>
+      <p>Turn off anything you'd rather handle yourself.</p>
+    </header>
+
+    <fieldset class="settings-list" id="settings-toggles">
+      <label class="setting">
+        <span class="setting-text">
+          <span class="setting-name">Recommendations</span>
+          <span class="setting-desc">Suggest next steps for every signal.</span>
+        </span>
+        <input type="checkbox" role="switch" name="R4" checked>
+      </label>
+      <label class="setting">
+        <span class="setting-text">
+          <span class="setting-name">Investigations</span>
+          <span class="setting-desc">Score each signal's threat level using past activity.</span>
+        </span>
+        <input type="checkbox" role="switch" name="R3" checked>
+      </label>
+      <label class="setting">
+        <span class="setting-text">
+          <span class="setting-name">Lock accounts</span>
+          <span class="setting-desc">Disable a user account if 95%+ confidence.</span>
+        </span>
+        <input type="checkbox" role="switch" name="R1" checked>
+      </label>
+      <label class="setting">
+        <span class="setting-text">
+          <span class="setting-name">Unlock accounts</span>
+          <span class="setting-desc">Enable a user account if the threat has passed.</span>
+        </span>
+        <input type="checkbox" role="switch" name="R2" checked>
+      </label>
+      <label class="setting">
+        <span class="setting-text">
+          <span class="setting-name">Desktop notifications</span>
+          <span class="setting-desc">Show a note when a major service goes down.</span>
+        </span>
+        <input type="checkbox" role="switch" name="R5" checked>
+      </label>
+    </fieldset>
+  </div>
 
   <!-- Managed -->
 

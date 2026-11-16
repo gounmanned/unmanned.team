@@ -1,8 +1,32 @@
-const SOURCE_NAMES = {
-    okta: 'Okta',
+// integrations a user can connect; each needs static/img/source/<key>.png
+const CONNECTABLE = {
+    aws: 'AWS',
+    azure: 'Azure',
+    cloudflare: 'Cloudflare',
+    constantcontact: 'Constant Contact',
+    datto: 'Datto',
+    github: 'GitHub',
+    godaddy: 'GoDaddy',
     google: 'Google Workspace',
+    hubspot: 'HubSpot',
+    jira: 'Jira',
+    level: 'Level',
     microsoft: 'Microsoft 365',
+    okta: 'Okta',
+    orca: 'Orca',
+    ramp: 'Ramp',
+    rapid7: 'Rapid7',
+    shopify: 'Shopify',
+    slack: 'Slack',
+    square: 'Square',
+    teams: 'Microsoft Teams',
+};
+
+// every source we can name, including ones that only arrive on assets
+const SOURCE_NAMES = {
+    ...CONNECTABLE,
     stripe: 'Stripe',
+    vex: 'VEX',
 };
 
 class CoverageRollup {
@@ -44,9 +68,8 @@ class CoverageRollup {
         this.toast.className = 'cov-toast';
         this.screen.append(this.toast);
 
-        this.vendors = {};          // vendor -> { name, ids }
+        this.vendors = Object.fromEntries(Object.entries(CONNECTABLE).map(([key, name]) => [key, { name, ids: [] }]));   // vendor -> { name, ids }
         this.items = new Map();     // name -> person { key, name, ref, devices: [{ key, asset, runtime, seen, state }] }
-        this.packOf = new Map();    // action id -> pack name
         this.loaded = false;
 
         this.confirming = null;     // source ref whose disconnect awaits a second click
@@ -58,22 +81,13 @@ class CoverageRollup {
         this.error = null;
         this.connecting = false;
 
-        this.ready = this._loadManifest();
         this.listen();
         setInterval(() => this.loaded && this.screen.checkVisibility() && this._tick(), 60000);
     }
 
     // ── lifecycle ──────────────────────────────────────────────────
 
-    async _loadManifest() {
-        const keys = await fetch('static/img/source/manifest.json').then(r => r.json());
-        for (const key of keys) {
-            this.vendors[key] = { name: SOURCE_NAMES[key] ?? key[0].toUpperCase() + key.slice(1), ids: [] };
-        }
-    }
-
-    async reset() {
-        await this.ready;
+    reset() {
         this.loaded = false;
         this.items = new Map();
         this.confirming = null;
@@ -84,8 +98,6 @@ class CoverageRollup {
     }
 
     async reload() {
-        await this.ready;
-        this._loadPacks();
         await this._load();
         this._render();
         this._loadSeen();
@@ -129,12 +141,6 @@ class CoverageRollup {
         device.state = CoverageRollup.isActive(device.seen) ? 'live' : 'idle';
     }
 
-    async _loadPacks() {
-        const packs = await this.api.action.list();
-        this.packOf = new Map(Object.entries(packs).flatMap(([name, actions]) => actions.map(a => [String(a.id), name])));
-        if (this.open?.kind === 'asset') this._renderDrawer();
-    }
-
     // ── model ──────────────────────────────────────────────────────
 
     _parse(raw) {
@@ -162,7 +168,7 @@ class CoverageRollup {
                 key,
                 name: (found ?? members[0]).name,
                 ref: found && this._parse(sourceOf(found)).ref,
-                vex: members.some(a => a.source === 'vex'),
+                origin: members.map(a => a.source).find(s => s && s !== 'vex') ?? members.find(a => a.source === 'vex')?.source,   // the asset's own source, when it isn't a connection
                 devices,
                 get top() { return [...this.devices].sort(CoverageRollup.byState)[0]; },   // most active device
                 get state() { return this.top.state; },
@@ -283,7 +289,7 @@ class CoverageRollup {
 
     _sourceCell(person, source) {
         if (source) return `${this._logo(source.vendor, 'cov-chip-logo')}${this._sourceName(source)}`;
-        if (person.vex) return `${this._logo('vex', 'cov-chip-logo')}VEX`;
+        if (person.origin) return `${this._logo(person.origin, 'cov-chip-logo')}${Workspace.esc(SOURCE_NAMES[person.origin] ?? person.origin)}`;
         return '—';
     }
 
@@ -525,7 +531,6 @@ class CoverageRollup {
 
     _run(run) {
         const { tone, label, icon } = CoverageRollup.runStatus(run.status);
-        const pack = this.packOf.get(String(run.id));
         const open = this.expanded === run.key;
 
         return `
@@ -533,7 +538,6 @@ class CoverageRollup {
                 <div class="cov-run-head" data-expand="${run.key}">
                     <span class="material-symbols-outlined cov-run-status is-${tone}" title="${label}">${icon}</span>
                     <span class="cov-run-name">${Workspace.esc(run.name)}</span>
-                    ${pack ? `<span class="cov-run-pack">${Workspace.esc(pack)}</span>` : ''}
                     <time class="cov-run-time">${this._clock(run.created)}</time>
                     <button type="button" class="cov-icon-btn" data-rerun="${run.key}" title="Run again"><span class="material-symbols-outlined">replay</span></button>
                 </div>

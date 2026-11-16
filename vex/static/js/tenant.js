@@ -320,7 +320,7 @@ class TenantScreen {
 
     async countEvents() {
         const end = new Date();
-        const start = new Date(end - 3600000);
+        const start = new Date(end - 60000);
         const logs = await this.api.audit.get(start.toISOString(), end.toISOString()) ?? [];
         return logs.length;
     }

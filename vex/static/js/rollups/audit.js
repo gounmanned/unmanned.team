@@ -1,6 +1,6 @@
 class AuditRollup {
     static TAIL_INTERVAL = 10000;
-    static TAIL_LOOKBACK = 3600000;
+    static TAIL_LOOKBACK = 60000;
     static TAIL_LIMIT = 1000;
     static CLOCK = new Intl.DateTimeFormat(undefined, {
         month: 'short', day: '2-digit',
@@ -36,8 +36,8 @@ class AuditRollup {
     startTail() {
         this.stopTail();
         this.total = 0;
-        this.setCount(0, '1h events');
-        this.empty(`${SiteSpinner.inline} Loading the last hour`);
+        this.setCount(0, '1m events');
+        this.empty(`${SiteSpinner.inline} Loading the last minute`);
 
         this.tailFrom = new Date(Date.now() - AuditRollup.TAIL_LOOKBACK);
         this.tailTimer = setInterval(() => this.pollTail(), AuditRollup.TAIL_INTERVAL);
@@ -60,7 +60,7 @@ class AuditRollup {
         if (timer !== this.tailTimer || !logs.length) return;
 
         this.total += logs.length;
-        this.setCount(this.total, '1h events');
+        this.setCount(this.total, '1m events');
 
         const rows = logs.slice(0, AuditRollup.TAIL_LIMIT);
         this.results.querySelector('.audit-empty')?.remove();

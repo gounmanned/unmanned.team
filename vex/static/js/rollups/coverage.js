@@ -1,12 +1,8 @@
 const SOURCE_NAMES = {
-    aws: 'AWS',
-    constantcontact: 'Constant Contact',
-    github: 'GitHub',
-    godaddy: 'GoDaddy',
+    okta: 'Okta',
     google: 'Google Workspace',
-    hubspot: 'HubSpot',
     microsoft: 'Microsoft 365',
-    teams: 'Microsoft Teams',
+    stripe: 'Stripe',
 };
 
 class CoverageRollup {
@@ -16,7 +12,6 @@ class CoverageRollup {
         FAILED: { tone: 'bad', label: 'Failed', icon: 'close' },
     };
 
-    static STATE_LABEL = { live: 'Live', idle: 'Idle', none: 'No dot' };
     static STATE_RANK = { live: 0, idle: 1, none: 2 };
 
     static runStatus(status) {
@@ -172,6 +167,10 @@ class CoverageRollup {
                 get top() { return [...this.devices].sort(CoverageRollup.byState)[0]; },   // most active device
                 get state() { return this.top.state; },
                 get seen() { return this.devices.reduce((latest, d) => d.seen ? CoverageRollup.later(d.seen, latest) : latest, undefined); },
+                get score() {   // weakest device sets the person's score
+                    const scores = this.devices.map(d => d.asset.metadata.score).filter(s => s != null);
+                    return scores.length ? Math.min(...scores) : undefined;
+                },
             }];
         }));
     }
@@ -247,7 +246,7 @@ class CoverageRollup {
         this.body.innerHTML = `
             ${items.length ? `
                 <div class="cov-row cov-row-head">
-                    <span></span><span>Asset</span><span class="cov-col-source">Source</span><span>Dot</span><span class="cov-col-extra">Runtime</span><span class="cov-col-extra cov-seen">Last seen</span><span></span>
+                    <span></span><span>Asset</span><span class="cov-col-source">Source</span><span class="cov-score">Score</span><span class="cov-col-extra">Runtime</span><span class="cov-col-extra cov-seen">Last seen</span><span></span>
                 </div>
                 ${items.map(i => this._row(i, sources.get(i.ref))).join('')}` : ''}
             <p class="cov-no-match">No match</p>`;
@@ -269,11 +268,17 @@ class CoverageRollup {
                 <span class="cov-dot"></span>
                 <span class="cov-name">${Workspace.esc(person.name)}${count > 1 ? `<small>${count} devices</small>` : ''}</span>
                 <span class="cov-col-source">${this._sourceCell(person, source)}</span>
-                <span class="cov-state">${CoverageRollup.STATE_LABEL[person.state]}</span>
+                ${this._scoreCell(person.score)}
                 <span class="cov-col-extra">${Workspace.esc(runtimes)}</span>
                 <span class="cov-col-extra cov-seen">${person.seen ? this._ago(person.seen) : ''}</span>
                 <span class="material-symbols-outlined cov-go">chevron_right</span>
             </div>`;
+    }
+
+    _scoreCell(score) {
+        if (score == null) return '<span class="cov-score">—</span>';
+        const tone = score >= 80 ? ' is-ok' : score <= 25 ? ' is-bad' : '';
+        return `<span class="cov-score${tone}">${score}%</span>`;
     }
 
     _sourceCell(person, source) {

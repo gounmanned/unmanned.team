@@ -15,8 +15,6 @@ class AuditRollup {
         this.screen = document.getElementById('audit-screen');
         this.input = document.getElementById('audit-search-input');
         this.results = document.getElementById('audit-results');
-        this.count = document.getElementById('audit-count');
-        this.countLabel = document.getElementById('audit-count-label');
 
         this.listen();
     }
@@ -35,8 +33,6 @@ class AuditRollup {
 
     startTail() {
         this.stopTail();
-        this.total = 0;
-        this.setCount(0, '1m events');
         this.empty(`${SiteSpinner.inline} Loading the last minute`);
 
         this.tailFrom = new Date(Date.now() - AuditRollup.TAIL_LOOKBACK);
@@ -58,9 +54,6 @@ class AuditRollup {
 
         const logs = await this.api.audit.get(start.toISOString(), end.toISOString()) ?? [];
         if (timer !== this.tailTimer || !logs.length) return;
-
-        this.total += logs.length;
-        this.setCount(this.total, '1m events');
 
         const rows = logs.slice(0, AuditRollup.TAIL_LIMIT);
         this.results.querySelector('.audit-empty')?.remove();
@@ -85,7 +78,6 @@ class AuditRollup {
         });
 
         if (query !== this.query) return;
-        this.setCount(logs.length, 'matches');
         if (!logs.length) return this.empty(`No logs match "${Workspace.esc(query)}"`);
 
         const pattern = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
@@ -101,11 +93,6 @@ class AuditRollup {
     line(log, message = Workspace.esc(log.message)) {
         const time = AuditRollup.CLOCK.format(new Date(log.timestamp));
         return `<time datetime="${log.timestamp}">${time}</time><span>${message}</span>`;
-    }
-
-    setCount(n, label) {
-        this.count.textContent = n.toLocaleString();
-        this.countLabel.textContent = label;
     }
 
     empty(text) {

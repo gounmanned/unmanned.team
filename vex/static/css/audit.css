@@ -43,18 +43,6 @@
     text-overflow: ellipsis;
   }
 
-  .audit-banner-stat {
-    flex-shrink: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 2px;
-    padding-left: 20px;
-  }
-
-  .audit-banner-stat-value { font-size: 22px; font-weight: 800; line-height: 1; letter-spacing: -0.015em; font-variant-numeric: tabular-nums; }
-  .audit-banner-stat-label { font-size: 11px; color: var(--text-faint); }
-
   /* ── SEARCH — mirrors .dot-search ───────────────────────────── */
 
   .audit-search {

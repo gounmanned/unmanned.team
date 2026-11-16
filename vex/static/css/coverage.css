@@ -197,10 +197,13 @@
   .cov-col-source { display: flex; align-items: center; font-size: 12px; color: var(--text-faint); }
   .cov-row-head .cov-col-source { font-size: inherit; }
 
-  .cov-state, .cov-col-extra { font-size: 12px; color: var(--text-faint); }
+  .cov-col-extra { font-size: 12px; color: var(--text-faint); }
   .cov-seen { text-align: right; font-variant-numeric: tabular-nums; }
-  .is-live > .cov-state { color: var(--live); }
-  .is-idle > .cov-state { color: var(--idle); }
+
+  .cov-score { font-size: 12px; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--text-faint); }
+  .cov-row-head .cov-score { font-size: inherit; }
+  .cov-score.is-ok { color: var(--live); }
+  .cov-score.is-bad { color: var(--bad); }
 
   .cov-go { font-size: 18px; color: var(--text-faint); opacity: 0; transition: opacity 0.15s; }
   .cov-row:hover .cov-go { opacity: 1; }
@@ -219,8 +222,7 @@
   &.drawer-open .cov-row { grid-template-columns: 16px minmax(0, 1fr) 64px 18px; }
   &.drawer-open :is(.cov-col-source, .cov-col-extra) { display: none; }
 
-  .cov-no-match { margin: 0; padding: 40px 0; text-align: center; font-size: 13px; color: var(--text-faint); }
-  .cov-no-match { display: none; }
+  .cov-no-match { display: none; margin: 0; padding: 40px 0; text-align: center; font-size: 13px; color: var(--text-faint); }
   .cov-body.no-match .cov-no-match { display: block; }
 
   .cov-empty {
@@ -285,21 +287,14 @@
     }
 
     p {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 0 6px;
       margin: 4px 0 0;
       font-size: 12.5px;
       line-height: 1.5;
       color: var(--text-faint);
-
-      i { font-style: normal; opacity: 0.6; }
     }
   }
 
   .cov-head-divider { width: 1px; height: 18px; margin: 0 4px; background: var(--line); }
-
 
   .cov-drawer-body {
     flex: 1;
@@ -443,15 +438,6 @@
 
   .cov-run-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .is-open .cov-run-name { font-weight: 600; }
-
-  .cov-run-pack {
-    padding: 2px 8px;
-    border-radius: 20px;
-    background: color-mix(in srgb, var(--text-faint) 10%, transparent);
-    font-size: 10.5px;
-    font-weight: 600;
-    color: var(--text-faint);
-  }
 
   .cov-run-time { margin-left: auto; font-size: 12px; font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--text-faint); }
 

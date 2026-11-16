@@ -39,15 +39,11 @@
   .card{width:100%;max-width:480px;background:var(--color-surface-page);border:1px solid var(--color-border-mid);border-top:4px solid var(--color-accent-default);border-radius:2px;
     padding:40px;}
   .icon{display:block;width:48px;height:48px;margin:0 0 24px;}
-  h1{margin:0;font-size:clamp(28px,6vw,34px);line-height:1.2;font-weight:600;letter-spacing:-0.01em;color:var(--color-text-primary);}
+  h1{margin:0;font-size:var(--type-heading-subsection-size);line-height:var(--type-heading-subsection-line-height);font-weight:600;letter-spacing:-0.01em;color:var(--color-text-primary);}
   .lede{margin:16px 0 0;}
-  .link{display:inline-flex;align-items:center;gap:6px;margin:24px 0 0;font-weight:600;color:var(--color-text-accent);text-decoration:none;}
-  .link svg{width:16px;height:16px;transition:transform 0.2s ease;}
-  .link:hover svg{transform:translateX(3px);}
-  .link:focus-visible{outline:3px solid var(--color-neutral-900);outline-offset:3px;}
+  .link{margin:24px 0 0;}   /* a Pulse link */
   .help{margin:32px 0 0;padding:24px 0 0;border-top:1px solid var(--color-border-default);font-size:14px;line-height:20px;color:var(--color-text-tertiary);}
-  .help a{color:var(--color-text-accent);font-weight:600;text-decoration:none;overflow-wrap:anywhere;}
-  .help a:hover{text-decoration:underline;}
+  .help a{overflow-wrap:anywhere;}   /* a Pulse inline link */
   .help a:focus-visible{outline:3px solid var(--color-neutral-900);outline-offset:2px;}
   .foot{margin:24px 0 0;font-size:12px;line-height:16px;color:var(--color-text-tertiary);}
 
@@ -55,7 +51,6 @@
     body{justify-content:flex-start;padding-top:32px;}
     .card{padding:32px 24px;}
   }
-  @media (prefers-reduced-motion:reduce){ .link svg{transition:none;} }
 </style>
 </head>
 <body>
@@ -68,8 +63,8 @@
     <svg class="icon" viewBox="0 0 256 256" aria-hidden="true"><circle cx="128" cy="128" r="96" fill="none" stroke="var(--color-green-500)" stroke-width="16"/><polyline points="88 136 112 160 168 104" fill="none" stroke="var(--color-green-500)" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/></svg>
     <h1>You’re all set.</h1>
     <p class="lede">Your invitation has been accepted. VEX will take it from here.</p>
-    <a class="link" href="https://unmanned.team/how-it-works/">See how VEX works <svg viewBox="0 0 256 256" aria-hidden="true"><line x1="40" y1="128" x2="216" y2="128" stroke="currentColor" stroke-width="20" stroke-linecap="round"/><polyline points="144 56 216 128 144 200" fill="none" stroke="currentColor" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-    <p class="help">Need help? <a href="mailto:security@vex.unmanned.team">security@vex.unmanned.team</a></p>
+    <a class="pulse-link link" href="https://unmanned.team/how-it-works/">See how VEX works <i class="pulse-icon pulse-icon--arrow-right" aria-hidden="true"></i></a>
+    <p class="help">Need help? <a class="pulse-link pulse-link--inline" href="mailto:security@vex.unmanned.team">security@vex.unmanned.team</a></p>
   </main>
 
   <p class="foot">© 2026 Unmanned, Inc.</p>

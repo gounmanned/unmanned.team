@@ -30,7 +30,7 @@
      (Chromebook). The steps follow /install/ (VEX's install page); main header and footer since 2026-11-13. */
   /* shared:basecss */ /* Base, class bar and header rules the main pages keep in their own <style> (API and detections style these
      their own way, so they are not in site.css). */
-  h1,h2,h3,h4,p{margin:0;}
+  @layer reset{h1,h2,h3,h4,p{margin:0;}}   /* below Pulse, so Pulse parts keep their spacing */
   img{display:block;}
   .wrap{width:min(1100px,calc(100% - 2 * var(--gutter)));margin:0 auto;} /* the design's 900px content column */
   @media (max-width:700px){:root{--gutter:16px;}}
@@ -77,22 +77,16 @@
   }
   .hero .wrap{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;}
   .hero-art{width:248px;max-width:100%;height:auto;}
-  .hero h1{margin-top:32px;font-size:clamp(34px,6vw,48px);line-height:1.1667;font-weight:600;letter-spacing:-0.015em;}
-  .hero .lede{margin-top:32px;max-width:680px;font-size:16px;line-height:28px;color:var(--color-neutral-700);}
+  .hero h1{margin-top:32px;font-size:var(--type-heading-section-size);line-height:var(--type-heading-section-line-height);font-weight:600;letter-spacing:-0.015em;}
+  .hero .intro{margin-top:32px;max-width:680px;font-size:var(--type-body-lg-size);line-height:var(--type-body-lg-line-height);color:var(--color-neutral-700);}   /* Pulse body large, not a lede */
 
   /* ---------- INSTRUCTIONS ---------- */
   .instructions{padding:48px 0 64px;}
   .instructions .wrap{max-width:700px;display:flex;flex-direction:column;gap:32px;}
   .os-head{display:flex;flex-direction:column;align-items:center;gap:24px;text-align:center;}
   .os-picker{display:flex;flex-direction:column;align-items:center;gap:8px;font-size:12px;line-height:16px;}
-  .os-toggle{display:inline-flex;gap:4px;padding:4px;background:var(--color-surface-sunken);border-radius:4px;}
-  .os-toggle button{
-    height:40px;padding:0 16px;border:1px solid transparent;border-radius:2px;background:none;cursor:pointer;
-    font:inherit;font-size:16px;line-height:24px;color:var(--color-text-tertiary);
-  }
-  .os-toggle button:hover{color:var(--color-text-primary);}
-  .os-toggle [aria-pressed="true"]{background:var(--color-surface-page);border-color:var(--color-border-strong);color:var(--color-text-primary);font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,0.3);}
-  .os-head h2{font-size:clamp(26px,4vw,32px);line-height:1.25;font-weight:600;letter-spacing:-0.01em;}
+  /* the Mac / Windows / Chromebook switch is a Pulse segmented control */
+  .os-head h2{font-size:var(--type-heading-subsection-size);line-height:var(--type-heading-subsection-line-height);font-weight:600;letter-spacing:-0.01em;}
   .needs{font-size:14px;line-height:20px;}
 
   .install-steps{margin:0;padding:0;list-style:none;counter-reset:step;text-align:left;}
@@ -116,10 +110,6 @@
   .command{display:flex;align-items:flex-start;gap:36px;width:100%;padding:16px 16px 18px;background:var(--color-surface-subtle);border:1px solid var(--color-border-default);border-radius:2px;}
   .command code,.command pre{flex:1;min-width:0;margin:0;font-family:var(--font-mono);font-size:12.5px;line-height:21px;color:var(--color-text-primary);overflow-wrap:anywhere;white-space:pre-wrap;}
 
-  /* copy button and its tooltip come from site.css; the button sits at the box's right edge, so the tooltip lines up on the right */
-  .command .tooltip{left:auto;right:-6px;transform:translateY(-4px);}
-  .command .tooltip::after{left:auto;right:12px;transform:rotate(45deg);}
-  .command .copy-btn:hover .tooltip,.command .copy-btn:focus-visible .tooltip,.command .copy-btn.is-copied .tooltip{transform:translateY(0);}
 
   /* Chromebook: pictures of Chrome (a real screenshot with our popup drawn over it, as in Figma 2914:53221).
      Everything inside is measured in the design's px times --u, so the picture shrinks to fit narrow phones. */
@@ -151,18 +141,18 @@
   .shot--popup .shot-arrow{left:calc(301 * var(--u));top:calc(127 * var(--u));}
 
   /* three choices on the narrowest phones */
-  @media (max-width:400px){ .os-toggle button{padding:0 10px;} }
-  @media (max-width:330px){ .os-toggle button{padding:0 8px;font-size:15px;} }
+  @media (max-width:400px){ .os-toggle button{padding-inline:10px;} }
+  @media (max-width:330px){ .os-toggle button{padding-inline:8px;} }
 
   @media (max-width:560px){
     .step-body .pulse-btn{align-self:stretch;max-width:100%;white-space:normal;text-align:center;}   /* the extension button fits the column */
     .hero{padding-top:40px;}
-    .hero .lede{margin-top:24px;}
+    .hero .intro{margin-top:24px;}
     .instructions{padding:40px 0 48px;}
     .command{gap:16px;}
   }
   @media (prefers-reduced-motion:reduce){
-    .classbar,.site-top .site-header,.tooltip{transition:none;}
+    .classbar,.site-top .site-header{transition:none;}
   }
 </style>
 </head>
@@ -178,10 +168,10 @@
           <span class="brand-tag">Don’t get hacked</span>
         </div>
         <nav class="header-links" aria-label="Main">
-          <div class="nav-drop"><button class="header-link nav-drop-btn" type="button" aria-expanded="false" aria-controls="soc-menu">VEX AI SOC<span class="nav-caret" aria-hidden="true"></span></button><div class="nav-drop-menu" id="soc-menu" hidden><a href="/how-it-works/"><b>Meet VEX</b><span>Good prevention starts with great detection.</span></a><a href="/detections/"><b>What VEX detects</b><span>Every alert type it can raise.</span></a><a href="/api/"><b>The API</b><span>Security engineer? This is for you.</span></a><a href="/slack"><b>VEX in Slack</b><span>Right where your team already works.</span></a></div></div>
-          <a class="header-link header-link--cta" href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener">Schedule a chat <img src="../../static/icon-arrow-right-pink.svg" width="16" height="16" alt=""></a>
+          <div class="nav-drop"><button class="pulse-link pulse-link--quiet nav-drop-btn" type="button" aria-expanded="false" aria-controls="soc-menu">VEX AI SOC <i class="pulse-icon pulse-icon--caret-down" aria-hidden="true"></i></button><div class="pulse-dropdown pulse-dropdown--nav nav-drop-menu" id="soc-menu" hidden><a class="pulse-menu-item" href="/how-it-works/"><span class="pulse-menu-item__label">Meet VEX</span><span class="pulse-menu-item__desc">Good prevention starts with great detection.</span></a><a class="pulse-menu-item" href="/detections/"><span class="pulse-menu-item__label">What VEX detects</span><span class="pulse-menu-item__desc">Every alert type it can raise.</span></a><a class="pulse-menu-item" href="/api/"><span class="pulse-menu-item__label">The API</span><span class="pulse-menu-item__desc">Security engineer? This is for you.</span></a><a class="pulse-menu-item" href="/slack"><span class="pulse-menu-item__label">VEX in Slack</span><span class="pulse-menu-item__desc">Right where your team already works.</span></a></div></div>
+          <a class="pulse-link header-cta" href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener">Schedule a chat <i class="pulse-icon pulse-icon--arrow-right" aria-hidden="true"></i></a>
         </nav>
-        <button class="menu-btn" type="button" aria-label="Open menu" aria-controls="site-nav" aria-expanded="false"><img src="../../static/icon-menu.svg" width="32" height="32" alt=""></button>
+        <button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon menu-btn" type="button" aria-label="Open menu" aria-controls="site-nav" aria-expanded="false"><img src="../../static/icon-menu.svg" width="24" height="24" alt=""></button>
       </div>
     </header>
   </div>
@@ -193,13 +183,13 @@
     <div class="site-header">
       <div class="wrap header-inner">
         <a href="/" class="brand"><span class="status-dot"></span>VEX</a>
-        <button class="menu-btn menu-close" type="button" aria-label="Close menu"><img src="../../static/icon-close.svg" width="32" height="32" alt=""></button>
+        <button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon menu-btn menu-close" type="button" aria-label="Close menu"><i class="pulse-icon pulse-icon--x" aria-hidden="true"></i></button>
       </div>
     </div>
     <nav class="wrap" aria-label="Menu">
       <ul class="nav-list">
         <li><a href="/"><span class="nav-link">Home</span><span class="nav-sub">One Dot protects one thing. VEX protects everything.</span></a></li>
-        <li class="nav-group"><span class="nav-group-label">VEX AI SOC</span><ul class="nav-sublist"><li><a href="/how-it-works/"><span class="nav-link">Meet VEX</span><span class="nav-sub">Good prevention starts with great detection.</span></a></li><li><a href="/detections/"><span class="nav-link">What VEX detects</span><span class="nav-sub">Every alert type it can raise.</span></a></li><li><a href="/api/"><span class="nav-link">The API</span><span class="nav-sub">Security engineer? This is for you.</span></a></li><li><a href="/slack"><span class="nav-link">VEX in Slack</span><span class="nav-sub">Right where your team already works.</span></a></li></ul></li>
+        <li class="nav-group"><span class="pulse-dropdown__label nav-group-label">VEX AI SOC</span><ul class="nav-sublist"><li><a href="/how-it-works/"><span class="nav-link">Meet VEX</span><span class="nav-sub">Good prevention starts with great detection.</span></a></li><li><a href="/detections/"><span class="nav-link">What VEX detects</span><span class="nav-sub">Every alert type it can raise.</span></a></li><li><a href="/api/"><span class="nav-link">The API</span><span class="nav-sub">Security engineer? This is for you.</span></a></li><li><a href="/slack"><span class="nav-link">VEX in Slack</span><span class="nav-sub">Right where your team already works.</span></a></li></ul></li>
         <li><a href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener"><span class="nav-link">Schedule a chat</span></a></li>
       </ul>
     </nav>
@@ -210,7 +200,7 @@
       <div class="wrap">
         <img class="hero-art" src="static/dots-laptop.svg" width="248" height="147" alt="">
         <h1>Let’s get your Dot set up.</h1>
-        <p class="lede">Install a Dot on your computer to connect it to your security team.</p>
+        <p class="intro">Install a Dot on your computer to connect it to your security team.</p>
       </div>
     </section>
 
@@ -221,10 +211,10 @@
         <div class="os-head">
           <div class="os-picker">
             <span id="os-label">Select your computer type</span>
-            <div class="os-toggle" role="group" aria-labelledby="os-label">
-              <button type="button" data-os-select="mac" aria-pressed="true">Mac</button>
-              <button type="button" data-os-select="windows" aria-pressed="false">Windows</button>
-              <button type="button" data-os-select="chromebook" aria-pressed="false">Chromebook</button>
+            <div class="pulse-segmented os-toggle" role="group" aria-labelledby="os-label">
+              <button class="pulse-segmented__item" type="button" data-os-select="mac" aria-pressed="true">Mac</button>
+              <button class="pulse-segmented__item" type="button" data-os-select="windows" aria-pressed="false">Windows</button>
+              <button class="pulse-segmented__item" type="button" data-os-select="chromebook" aria-pressed="false">Chromebook</button>
             </div>
           </div>
           <h2 data-os="mac">Install on Mac</h2>
@@ -255,9 +245,9 @@
               <p>Copy and paste this in Terminal then press Return.</p>
               <div class="command">
                 <code id="mac-command">curl -fsSL https://us.unmanned.team/install/setup.sh | sudo bash</code>
-                <button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn" type="button" data-copy="mac-command" aria-label="Copy the Terminal command to clipboard">
+                <button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn pulse-tooltip-host" type="button" data-copy="mac-command" aria-label="Copy the Terminal command to clipboard">
                   <i class="pulse-icon pulse-icon--copy"></i>
-                  <span class="pulse-tooltip tooltip" aria-hidden="true">Copy to clipboard</span>
+                  <span class="pulse-tooltip pulse-tooltip--bottom pulse-tooltip--end" aria-hidden="true">Copy to clipboard</span>
                 </button>
               </div>
               <a class="pulse-link pulse-link--sm script-link" href="https://gounmanned.substack.com/p/meet-your-dot-a-little-army-of-friendly" target="_blank" rel="noopener noreferrer">How Dots work <i class="pulse-icon pulse-icon--arrow-square-out"></i><span class="visually-hidden"> (opens in a new tab)</span></a>
@@ -309,9 +299,9 @@
               <p>Copy and paste this in Terminal then press Enter.</p>
               <div class="command">
                 <code id="windows-command">powershell -NoProfile -ExecutionPolicy Bypass -Command "iex (New-Object Net.WebClient).DownloadString('https://us.unmanned.team/install/setup.ps1')"</code>
-                <button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn" type="button" data-copy="windows-command" aria-label="Copy the Terminal command to clipboard">
+                <button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm copy-btn pulse-tooltip-host" type="button" data-copy="windows-command" aria-label="Copy the Terminal command to clipboard">
                   <i class="pulse-icon pulse-icon--copy"></i>
-                  <span class="pulse-tooltip tooltip" aria-hidden="true">Copy to clipboard</span>
+                  <span class="pulse-tooltip pulse-tooltip--bottom pulse-tooltip--end" aria-hidden="true">Copy to clipboard</span>
                 </button>
               </div>
               <a class="pulse-link pulse-link--sm script-link" href="https://gounmanned.substack.com/p/meet-your-dot-a-little-army-of-friendly" target="_blank" rel="noopener noreferrer">How Dots work <i class="pulse-icon pulse-icon--arrow-square-out"></i><span class="visually-hidden"> (opens in a new tab)</span></a>
@@ -419,16 +409,16 @@ No reboot required. The script is already running.</pre></div>
       // copy buttons: each copies the text of the element named in its data-copy
       var status = document.getElementById('copy-status');
       document.querySelectorAll('[data-copy]').forEach(function(btn){
-        var tip = btn.querySelector('.tooltip');
+        var tip = btn.querySelector('.pulse-tooltip');
         var timer;
         btn.addEventListener('click', function(){
           navigator.clipboard.writeText(document.getElementById(btn.dataset.copy).textContent).then(function(){
             tip.textContent = 'Copied';
             status.textContent = 'Copied to clipboard';
-            btn.classList.add('is-copied');
+            tip.classList.add('is-open');
             clearTimeout(timer);
             timer = setTimeout(function(){
-              btn.classList.remove('is-copied');
+              tip.classList.remove('is-open');
               tip.textContent = 'Copy to clipboard';
               status.textContent = '';
             }, 1600);

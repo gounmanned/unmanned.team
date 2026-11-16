@@ -60,7 +60,7 @@
 <style>
   /* shared:basecss */ /* Base, class bar and header rules the main pages keep in their own <style> (API and detections style these
      their own way, so they are not in site.css). */
-  h1,h2,h3,h4,p{margin:0;}
+  @layer reset{h1,h2,h3,h4,p{margin:0;}}   /* below Pulse, so Pulse parts keep their spacing */
   img{display:block;}
   .wrap{width:min(1100px,calc(100% - 2 * var(--gutter)));margin:0 auto;} /* the design's 900px content column */
   @media (max-width:700px){:root{--gutter:16px;}}
@@ -92,7 +92,7 @@
   /* ---------- SECTION SHELL ---------- */
   .section{padding:96px 0;}
   .sec-head{display:flex;flex-direction:column;gap:16px;max-width:760px;}
-  .sec-head h2{font-weight:600;font-size:clamp(34px,4.2vw,52px);line-height:1.12;letter-spacing:-0.02em;}
+  .sec-head h2{font-weight:600;font-size:var(--type-heading-section-size);line-height:var(--type-heading-section-line-height);letter-spacing:-0.02em;}
   .sec-head p{font-size:17px;line-height:1.7;color:var(--color-neutral-700);}
   .sec-head--center{margin:0 auto;align-items:center;text-align:center;}
 
@@ -141,10 +141,10 @@
   #team .team{gap:24px;}}
   /* Homepage since 2026-11-09: the /dots page (Figma 2091:29811), restyled to the unmanned.team look in Chad's frame 2763:82092.
      Dot colors are the Dots palette. Header, nav, footer, class bar, buttons and the closing band come from the shared build. */
-    h1,h2,h3,h4,p{margin:0;}
+    @layer reset{h1,h2,h3,h4,p{margin:0;}}   /* below Pulse, so Pulse parts keep their spacing */
   img{display:block;}
   /* ---------- SHARED BITS ---------- */
-  .eyebrow{font-family:var(--font-mono);font-size:12px;line-height:16px;letter-spacing:0.08em;text-transform:uppercase;color:var(--color-text-tertiary);}
+  .eyebrow{font-family:var(--font-mono);font-weight:400;font-size:var(--type-mono-eyebrow-size);line-height:var(--type-mono-eyebrow-line-height);letter-spacing:0.08em;text-transform:uppercase;color:var(--color-text-tertiary);}
   .eyebrow--pink{color:var(--color-text-accent);}
   .eyebrow--dot{display:flex;align-items:center;gap:11px;}   /* the pink dot: hero and closing band only, as on How it works */
   .eyebrow--on-dark{color:var(--color-neutral-300);}
@@ -160,14 +160,14 @@
   .h1-clip{overflow:hidden;padding-bottom:14px;margin-bottom:-14px;}
   /* 6vw as before, capped by the copy column so "One Dot. One / thing protected." stays two lines, as in Figma */
   .hero-copy{container-type:inline-size;}
-  .home-hero h1,.intro-word{font-size:clamp(40px,min(6vw,12.2cqi),64px);line-height:1.0625;font-weight:600;letter-spacing:-0.02em;color:var(--color-text-primary);}
+  .home-hero h1,.intro-word{font-size:clamp(40px,min(var(--type-display-size),12.2cqi),64px);line-height:var(--type-display-line-height);font-weight:600;letter-spacing:-0.02em;color:var(--color-text-primary);}
   .home-hero h1{max-width:509px;}
   /* "code" in the four Dot colors; cyan and yellow deepened so every letter is at least 3:1 on white (large text) */
   .code span:nth-child(1){color:var(--illo-dot-cyan-text);}
   .code span:nth-child(2){color:var(--illo-dot-green);}
   .code span:nth-child(3){color:var(--illo-dot-purple);}
   .code span:nth-child(4){color:var(--illo-dot-yellow-text);}
-  .home-lede{font-size:18px;line-height:28px;color:var(--color-text-secondary);max-width:526px;}
+  .home-lede{font-size:var(--type-body-lede-size);line-height:var(--type-body-lede-line-height);color:var(--color-text-secondary);max-width:526px;}
 
   /* the dots: --x/--y/--s in Figma units (526 x 217 box), scaled by --u when the column is narrower */
   .stage-col{container-type:inline-size;width:100%;max-width:526px;justify-self:center;display:flex;flex-direction:column;align-items:center;gap:8px;}
@@ -183,8 +183,6 @@
   .dot-shadow{position:absolute;left:calc(145.75 * var(--u));top:calc(203 * var(--u));width:calc(215 * var(--u));height:calc(14 * var(--u));border-radius:50%;background:var(--color-neutral-300);}
   .dot-label{font-family:var(--font-mono);font-size:16px;line-height:21px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--color-text-primary);}
   .dot-link{margin-top:16px;}
-  .dot-link img{width:20px;height:20px;transition:transform 0.2s ease;}
-  .dot-link:hover img{transform:translateY(3px);}
 
   /* intro-only pieces: hidden unless the intro is running */
   .wall,.intro-word,.screen,.ring{display:none;}
@@ -264,7 +262,7 @@
   .meet .wrap{position:relative;display:flex;flex-direction:column;align-items:center;gap:40px;}
   .section-intro{display:flex;flex-direction:column;align-items:center;gap:24px;text-align:center;}
   .section-intro .titles{display:flex;flex-direction:column;align-items:center;gap:16px;}
-  .meet h2,.vex h2,#team .sec-head h2{font-size:clamp(34px,4.2vw,48px);line-height:1.1667;font-weight:600;letter-spacing:-0.015em;color:var(--color-text-primary);}   /* one size for every section headline (Chad, 2026-11-10) */
+  .meet h2,.vex h2,#team .sec-head h2{font-size:var(--type-heading-section-size);line-height:var(--type-heading-section-line-height);font-weight:600;letter-spacing:-0.015em;color:var(--color-text-primary);}   /* one size for every section headline (Chad, 2026-11-10) */
   .section-intro > p{max-width:700px;font-size:18px;line-height:28px;color:var(--color-text-secondary);}
 
   /* the big Dot with four callouts (Figma 2822:27656, offsets minus 25px: Figma's frame is 1100 wide) */
@@ -286,11 +284,6 @@
   .c-lives{left:129px;top:212px;width:264px;}
   .c-specialty{left:662px;top:44px;width:299px;}
   .c-reports{left:674px;top:212px;width:287px;}
-  /* the joke footnote under the giant Dot, then the badge */
-  .dot-meta{position:absolute;left:50%;top:344px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:24px;}
-  .badge{display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border:1px solid var(--color-border-strong);border-radius:2px;background:var(--color-surface-subtle);white-space:nowrap;}
-  .badge::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--illo-dot-green);}
-  .badge .eyebrow{color:var(--color-text-secondary);}
   /* four places a Dot can live, each with its own job */
   .envs{width:100%;display:flex;flex-direction:column;align-items:center;gap:16px;padding:32px 0;}
   .envs-title{font-size:16px;line-height:24px;font-weight:600;color:var(--color-text-primary);text-align:center;}
@@ -308,9 +301,8 @@
   @media (max-width:1099px) and (min-width:901px){ .concepts{zoom:0.8;} }
   @media (max-width:900px){
     .concepts{width:100%;height:auto;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:32px 24px;}
-    .big-dot,.dot-meta{position:relative;left:auto;top:auto;transform:none;grid-column:1 / -1;justify-self:center;}
+    .big-dot{position:relative;left:auto;top:auto;transform:none;grid-column:1 / -1;justify-self:center;}
     .big-dot{zoom:0.8;}
-    .dot-meta{order:-1;margin-top:-16px;}
     .big-dot{order:-2;}
     .callout{position:static;width:auto;gap:8px;} .callout hr{margin:0;}
     .callout--r{align-items:stretch;}
@@ -364,27 +356,16 @@
   }
 
   @media (prefers-reduced-motion: reduce){
-    .dot-link img{transition:none;}
     .home-hero::after{display:none;}
   }
 
   /* ---------- CLOSING BAND (the shared dark band, with Figma's sizes) ---------- */
   .close-row{gap:16px 24px;}
-  .close-row p{font-size:clamp(34px * 32 / 52, 4.2vw * 32 / 52, 32px);line-height:1.25;}
+  .close-row p{font-size:var(--type-heading-subsection-size);line-height:var(--type-heading-subsection-line-height);}
 
-  /* ---------- PRICING DRAWER (dark, 400px from the right: about 4 of the site's 12 columns plus padding; Figma 2763:83309) ---------- */
-  .drawer--price .drawer-scrim{background:rgba(11,12,13,0.5);}
-  .drawer--price .drawer-panel{position:absolute;top:0;right:0;bottom:0;width:min(400px,100%);box-sizing:border-box;overflow-y:auto;overscroll-behavior:contain;
-    display:flex;flex-direction:column;gap:56px;padding-bottom:40px;background:var(--color-surface-page);border-left:1px solid var(--color-neutral-600);box-shadow:-8px 0 6px rgba(11,12,13,0.15);
-    transform:translateX(100%);transition:transform 0.35s cubic-bezier(0.4,0,0.2,1);}
-  .drawer--price .drawer-head{align-items:center;padding:24px;border-bottom-color:var(--color-neutral-500);}
-  .drawer--price .drawer-head h2{font-size:20px;line-height:32px;font-weight:600;color:var(--color-text-primary);}
-  .drawer--price .drawer-close{width:32px;height:32px;margin:0;}
-  .drawer--price .drawer-close:hover{background:rgba(255,255,255,0.1);}
-  .drawer--price .drawer-close:focus-visible{outline:2px solid var(--color-neutral-0);outline-offset:2px;}
-  .drawer--price .drawer-close img{filter:invert(1);}
-  .pr-body{display:flex;flex-direction:column;gap:40px;padding:0 24px;color:var(--color-text-primary);}
-  .pr-title{font-size:32px;line-height:40px;font-weight:600;letter-spacing:-0.01em;}
+  /* ---------- PRICING DRAWER (pulse-drawer, dark; Figma 2763:83309): only its contents are styled here ---------- */
+  .pr-body{display:flex;flex-direction:column;gap:40px;padding-top:16px;color:var(--color-text-primary);}
+  .pr-title{font-size:var(--type-heading-subsection-size);line-height:var(--type-heading-subsection-line-height);font-weight:600;letter-spacing:-0.01em;}
   .pr-sub{font-size:20px;line-height:32px;text-wrap:balance;}
   .pr-card{display:flex;flex-direction:column;gap:24px;padding:32px 24px;background:var(--color-neutral-650);border:1px solid var(--color-border-strong);border-radius:2px;box-shadow:4px 4px 0 var(--color-neutral-700);}
   .pr-top{display:flex;flex-direction:column;gap:16px;}
@@ -396,15 +377,12 @@
   .pr-list li::before{content:"";flex-shrink:0;width:20px;height:20px;background:var(--color-text-success);-webkit-mask:url(static/icon-check.svg) center/contain no-repeat;mask:url(static/icon-check.svg) center/contain no-repeat;}
   .pr-buy{width:100%;box-sizing:border-box;}
   .pr-fine{font-size:12px;line-height:16px;color:var(--color-neutral-300);text-align:center;}
-  @media (max-width:400px){ .drawer--price .drawer-head{padding:16px;} .pr-body{padding:0 16px;} }
-  @media (prefers-reduced-motion: reduce){ .drawer--price .drawer-panel,.drawer--price .drawer-scrim{transition:none;} }
+  @media (prefers-reduced-motion: reduce){ dialog.pulse-drawer,dialog.pulse-drawer::backdrop{transition:none;} }
 
   /* ---------- PHONES (Chad, 2026-11-10): one hierarchy for the small screen ----------
      h1 40 > h2 30 > ledes (hero 17, sections 16) > small copy 15 > labels 14. The big Dot shrinks with the screen so it
-     and its badge keep clear of the edges. */
+     keeps clear of the edges. */
   @media (max-width:560px){
-    .meet h2,.vex h2,#team .sec-head h2{font-size:30px;line-height:36px;}
-    .home-lede{font-size:17px;line-height:26px;}
     .section-intro > p,#team .sec-head p,.vex-copy > p{font-size:16px;line-height:26px;}
     .dot-link{font-size:16px;line-height:24px;margin-top:12px;}
     .dot-label{font-size:14px;line-height:20px;}
@@ -412,7 +390,6 @@
     .along img{width:22px;height:22px;margin-top:0;}
     .big-dot{zoom:min(0.7, calc((100vw - 96px) / 331px));}   /* 230px at most; at 302 it leaves 48px each side */
     .big-dot .name{font-size:28px;}
-    .badge{max-width:100%;box-sizing:border-box;}
     .meet,.vex{padding:64px 0;}
     .meet .wrap{gap:32px;}
   }
@@ -433,10 +410,10 @@
           <span class="brand-tag">Don’t get hacked</span>
         </div>
         <nav class="header-links" aria-label="Main">
-          <div class="nav-drop"><button class="header-link nav-drop-btn" type="button" aria-expanded="false" aria-controls="soc-menu">VEX AI SOC<span class="nav-caret" aria-hidden="true"></span></button><div class="nav-drop-menu" id="soc-menu" hidden><a href="/how-it-works/"><b>Meet VEX</b><span>Good prevention starts with great detection.</span></a><a href="/detections/"><b>What VEX detects</b><span>Every alert type it can raise.</span></a><a href="/api/"><b>The API</b><span>Security engineer? This is for you.</span></a><a href="/slack"><b>VEX in Slack</b><span>Right where your team already works.</span></a></div></div>
-          <a class="header-link header-link--cta" href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener">Schedule a chat <img src="static/icon-arrow-right-pink.svg" width="16" height="16" alt=""></a>
+          <div class="nav-drop"><button class="pulse-link pulse-link--quiet nav-drop-btn" type="button" aria-expanded="false" aria-controls="soc-menu">VEX AI SOC <i class="pulse-icon pulse-icon--caret-down" aria-hidden="true"></i></button><div class="pulse-dropdown pulse-dropdown--nav nav-drop-menu" id="soc-menu" hidden><a class="pulse-menu-item" href="/how-it-works/"><span class="pulse-menu-item__label">Meet VEX</span><span class="pulse-menu-item__desc">Good prevention starts with great detection.</span></a><a class="pulse-menu-item" href="/detections/"><span class="pulse-menu-item__label">What VEX detects</span><span class="pulse-menu-item__desc">Every alert type it can raise.</span></a><a class="pulse-menu-item" href="/api/"><span class="pulse-menu-item__label">The API</span><span class="pulse-menu-item__desc">Security engineer? This is for you.</span></a><a class="pulse-menu-item" href="/slack"><span class="pulse-menu-item__label">VEX in Slack</span><span class="pulse-menu-item__desc">Right where your team already works.</span></a></div></div>
+          <a class="pulse-link header-cta" href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener">Schedule a chat <i class="pulse-icon pulse-icon--arrow-right" aria-hidden="true"></i></a>
         </nav>
-        <button class="menu-btn" type="button" aria-label="Open menu" aria-controls="site-nav" aria-expanded="false"><img src="static/icon-menu.svg" width="32" height="32" alt=""></button>
+        <button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon menu-btn" type="button" aria-label="Open menu" aria-controls="site-nav" aria-expanded="false"><img src="static/icon-menu.svg" width="24" height="24" alt=""></button>
       </div>
     </header>
   </div>
@@ -448,13 +425,13 @@
     <div class="site-header">
       <div class="wrap header-inner">
         <a href="/" class="brand"><span class="status-dot"></span>VEX</a>
-        <button class="menu-btn menu-close" type="button" aria-label="Close menu"><img src="static/icon-close.svg" width="32" height="32" alt=""></button>
+        <button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon menu-btn menu-close" type="button" aria-label="Close menu"><i class="pulse-icon pulse-icon--x" aria-hidden="true"></i></button>
       </div>
     </div>
     <nav class="wrap" aria-label="Menu">
       <ul class="nav-list">
         <li><a href="/" aria-current="page"><span class="nav-link">Home</span><span class="nav-sub">One Dot protects one thing. VEX protects everything.</span></a></li>
-        <li class="nav-group"><span class="nav-group-label">VEX AI SOC</span><ul class="nav-sublist"><li><a href="/how-it-works/"><span class="nav-link">Meet VEX</span><span class="nav-sub">Good prevention starts with great detection.</span></a></li><li><a href="/detections/"><span class="nav-link">What VEX detects</span><span class="nav-sub">Every alert type it can raise.</span></a></li><li><a href="/api/"><span class="nav-link">The API</span><span class="nav-sub">Security engineer? This is for you.</span></a></li><li><a href="/slack"><span class="nav-link">VEX in Slack</span><span class="nav-sub">Right where your team already works.</span></a></li></ul></li>
+        <li class="nav-group"><span class="pulse-dropdown__label nav-group-label">VEX AI SOC</span><ul class="nav-sublist"><li><a href="/how-it-works/"><span class="nav-link">Meet VEX</span><span class="nav-sub">Good prevention starts with great detection.</span></a></li><li><a href="/detections/"><span class="nav-link">What VEX detects</span><span class="nav-sub">Every alert type it can raise.</span></a></li><li><a href="/api/"><span class="nav-link">The API</span><span class="nav-sub">Security engineer? This is for you.</span></a></li><li><a href="/slack"><span class="nav-link">VEX in Slack</span><span class="nav-sub">Right where your team already works.</span></a></li></ul></li>
         <li><a href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener"><span class="nav-link">Schedule a chat</span></a></li>
       </ul>
     </nav>
@@ -475,7 +452,7 @@
           </div>
           <div class="intro-word" aria-hidden="true">Introducing <span>Dots</span></div>
           <p class="home-lede">An identity, an endpoint or a domain. Each Dot protects one thing and reports to VEX, the AI SOC behind your protection.</p>
-          <a class="pulse-btn pulse-btn--primary pulse-btn--lg hero-cta" href="https://buy.stripe.com/cNi7sDalf8ob8ct5CKfQI01?utm_campaign=home" data-checkout data-drawer="pricing">Buy a Dot</a>
+          <a class="pulse-btn pulse-btn--primary pulse-btn--lg hero-cta" href="https://buy.stripe.com/cNi7sDalf8ob8ct5CKfQI01?utm_campaign=home" data-checkout data-pulse-open="pricing">Buy a Dot</a>
         </div>
 
         <div class="stage-col">
@@ -490,7 +467,7 @@
             <div class="dot dot--cyan" data-dot="cyan"><svg viewBox="0 0 125 125"><path d="M24.9814 12.5117C14.0194 23.7714 7.26769 39.1506 7.26758 56.1064C7.26758 90.6244 35.2498 118.607 69.7676 118.607C83.8444 118.607 96.8329 113.952 107.281 106.099C95.9276 117.759 80.0603 125.003 62.5 125.003C27.9822 125.003 0 97.0199 0 62.502C9.03362e-05 42.0627 9.81158 23.9152 24.9814 12.5117Z"/></svg></div>
           </div>
           <p class="dot-label">Dot #001</p>
-          <a class="pulse-link pulse-link--lg dot-link" href="#meet">Meet a Dot <img src="static/icon-arrow-down-pink.svg" width="20" height="20" alt=""></a>
+          <a class="pulse-link pulse-link--lg pulse-link--down dot-link" href="#meet">Meet a Dot <i class="pulse-icon pulse-icon--arrow-down" aria-hidden="true"></i></a>
         </div>
       </div>
       <button class="vz-replay" type="button" hidden>Replay</button>
@@ -530,9 +507,6 @@
           <div class="callout callout--r c-reports">
             <p class="eyebrow eyebrow--pink">Reports to</p><hr>
             <dl><dt>VEX, the AI SOC</dt><dd>Sends findings back for analysis and response.</dd></dl>
-          </div>
-          <div class="dot-meta">
-            <p class="badge"><span class="eyebrow">Security team Dot · active</span></p>
           </div>
         </div>
 
@@ -625,21 +599,20 @@
       <div class="wrap">
         <div class="close-box">
           <p class="eyebrow eyebrow--dot eyebrow--on-dark"><span class="status-dot"></span>Get started</p>
-          <div class="close-row"><p id="close-title">Ready to connect the Dots?</p><a class="pulse-btn pulse-btn--primary" href="https://buy.stripe.com/cNi7sDalf8ob8ct5CKfQI01?utm_campaign=home" data-checkout data-drawer="pricing">Buy a Dot</a></div>
+          <div class="close-row"><p id="close-title">Ready to connect the Dots?</p><a class="pulse-btn pulse-btn--primary" href="https://buy.stripe.com/cNi7sDalf8ob8ct5CKfQI01?utm_campaign=home" data-checkout data-pulse-open="pricing">Buy a Dot</a></div>
         </div>
       </div>
     </section>
 
   </main>
 
-  <!-- PRICING DRAWER (Figma 2763:83309): every Buy a Dot opens it; without JS those buttons go straight to checkout -->
-  <div class="drawer drawer--price" id="pricing" role="dialog" aria-modal="true" aria-labelledby="pricing-title" aria-hidden="true">
-    <div class="drawer-scrim" data-close></div>
-    <div class="drawer-panel" data-theme="dark">
-      <div class="drawer-head">
-        <h2 id="pricing-title">Simple pricing</h2>
-        <button class="drawer-close" type="button" data-close aria-label="Close"><img src="static/icon-close.svg" width="20" height="20" alt=""></button>
-      </div>
+  <!-- PRICING DRAWER (Figma 2763:83309): a Pulse drawer; every Buy a Dot opens it; without JS those buttons go straight to checkout -->
+  <dialog class="pulse-drawer drawer--price" id="pricing" aria-labelledby="pricing-title" data-theme="dark">
+    <div class="pulse-drawer__head">
+      <h2 class="pulse-drawer__title" id="pricing-title">Simple pricing</h2>
+      <button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-drawer__close" type="button" aria-label="Close" data-pulse-close><i class="pulse-icon pulse-icon--x" aria-hidden="true"></i></button>
+    </div>
+    <div class="pulse-drawer__body">
       <div class="pr-body">
         <div class="pr-head">
           <p class="pr-title">Start with a Dot.</p>
@@ -659,7 +632,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </dialog>
 
   <!-- shared:footer --><footer>
     <span>© 2026 Unmanned, Inc.</span>
@@ -1017,30 +990,9 @@
     })();
 
     (function(){
-      // PRICING DRAWER: every "Buy a Dot" opens it; Esc, the scrim or × closes it; focus stays inside while open.
-      var d = document.getElementById('pricing'), opener = null, root = document.documentElement;
-      var panel = d.querySelector('.drawer-panel');
-      function focusables(){ return [].slice.call(panel.querySelectorAll('a[href],button')); }
-      function open(btn){
-        opener = btn; d.classList.add('is-open'); d.setAttribute('aria-hidden', 'false');
-        root.style.overflow = 'hidden';
-        setTimeout(function(){ d.querySelector('.drawer-close').focus(); }, 50);
-      }
-      function close(){
-        d.classList.remove('is-open'); d.setAttribute('aria-hidden', 'true'); root.style.overflow = '';
-        if(opener){ opener.focus(); }
-      }
-      document.querySelectorAll('[data-drawer="pricing"]').forEach(function(b){ b.addEventListener('click', function(e){ e.preventDefault(); open(b); }); });
-      d.querySelectorAll('[data-close]').forEach(function(el){ el.addEventListener('click', close); });
-      document.addEventListener('keydown', function(e){
-        if(!d.classList.contains('is-open')){ return; }
-        if(e.key === 'Escape'){ close(); return; }
-        if(e.key === 'Tab'){
-          var f = focusables(), first = f[0], last = f[f.length - 1];
-          if(e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
-          else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
-        }
-      });
+      // PRICING DRAWER: pulse.js opens it from data-pulse-open (Esc, the dimmed page or × close it, focus goes back).
+      // The buttons are links to checkout (the no-JS fallback), so keep them from following the link.
+      document.querySelectorAll('a[data-pulse-open="pricing"]').forEach(function(a){ a.addEventListener('click', function(e){ e.preventDefault(); }); });
     })();
   
 </script>

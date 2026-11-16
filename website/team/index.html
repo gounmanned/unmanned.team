@@ -26,7 +26,7 @@
 <style>
   /* shared:basecss */ /* Base, class bar and header rules the main pages keep in their own <style> (API and detections style these
      their own way, so they are not in site.css). */
-  h1,h2,h3,h4,p{margin:0;}
+  @layer reset{h1,h2,h3,h4,p{margin:0;}}   /* below Pulse, so Pulse parts keep their spacing */
   img{display:block;}
   .wrap{width:min(1100px,calc(100% - 2 * var(--gutter)));margin:0 auto;} /* the design's 900px content column */
   @media (max-width:700px){:root{--gutter:16px;}}
@@ -65,8 +65,8 @@
   .tm-hero{position:relative;overflow:hidden;background:var(--color-surface-page);}
   .tm-hero-glow{position:absolute;top:-204px;left:50%;width:1802px;height:432px;margin-left:-901px;pointer-events:none;max-width:none;}
   .tm-hero .tm-wrap{position:relative;display:flex;flex-direction:column;align-items:center;gap:24px;padding:128px 0;text-align:center;}
-  .tm-hero h1{font-weight:600;font-size:clamp(34px, 4.2vw, 48px);line-height:1.17;letter-spacing:-0.015em;color:var(--color-text-primary);}
-  .tm-lede{max-width:680px;font-size:20px;line-height:32px;color:var(--color-neutral-700);}
+  .tm-hero h1{font-weight:600;font-size:var(--type-heading-section-size);line-height:var(--type-heading-section-line-height);letter-spacing:-0.015em;color:var(--color-text-primary);}
+  .tm-lede{max-width:680px;font-size:var(--type-body-lede-size);line-height:var(--type-body-lede-line-height);color:var(--color-neutral-700);}
 
   /* founder, on black: a dark-theme section (data-theme="dark"), so Pulse tokens give the on-dark colors */
   .tm-founder{background:var(--color-surface-page);color:var(--color-text-primary);overflow:hidden;}
@@ -81,15 +81,12 @@
   .tm-founder-copy .tm-role{color:var(--color-text-accent);}
   .tm-founder-copy h2{margin-top:4px;font-weight:700;font-size:20px;line-height:32px;}
   .tm-bio{font-size:16px;line-height:24px;}
-  .tm-book{display:block;font-size:14px;line-height:20px;color:var(--color-text-primary);text-decoration:none;}   /* flows as text, so it wraps cleanly on phones */
-  .tm-book span{color:var(--color-text-accent);}
-  .tm-book:hover span{text-decoration:underline;text-underline-offset:3px;}
-  .tm-book img{display:inline-block;width:16px;height:16px;margin-left:4px;vertical-align:-3px;}
+  .tm-book{font-size:14px;line-height:20px;color:var(--color-text-primary);}   /* text, then a small Pulse link */
 
   /* the team */
   .tm-team{background:var(--color-surface-subtle);}
   .tm-team .tm-wrap{display:flex;flex-direction:column;gap:24px;padding:40px 0 64px;}
-  .tm-team h2,.tm-backers h2{font-weight:600;font-size:clamp(34px * 32 / 52, 4.2vw * 32 / 52, 32px);line-height:1.25;letter-spacing:-0.01em;color:var(--color-text-primary);}
+  .tm-team h2,.tm-backers h2{font-weight:600;font-size:var(--type-heading-subsection-size);line-height:var(--type-heading-subsection-line-height);letter-spacing:-0.01em;color:var(--color-text-primary);}
   .tm-grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4, minmax(0,1fr));gap:32px;}
   .tm-person{display:flex;flex-direction:column;gap:16px;color:var(--color-neutral-700);}
   .tm-person .tm-photo{border:1px solid var(--color-border-mid);border-radius:2px;}
@@ -129,7 +126,6 @@
   /* phones: the same tighter pass as the other pages */
   @media (max-width:700px){
     .tm-hero .tm-wrap{padding:56px 0 48px;gap:20px;}
-    .tm-lede{font-size:17px;line-height:26px;}
     .tm-founder .tm-wrap{padding:48px 0 40px;}
     .tm-team .tm-wrap{padding:40px 0 48px;}
     .tm-backers .tm-wrap{padding:48px 0;}
@@ -139,6 +135,9 @@
     .tm-person,.tm-founder-row{grid-template-columns:112px minmax(0,1fr);column-gap:16px;}   /* the narrowest phones: room for the name */
   }
 
+  .eyebrow{font-family:var(--font-mono);font-weight:400;font-size:var(--type-mono-eyebrow-size);line-height:var(--type-mono-eyebrow-line-height);letter-spacing:0.08em;text-transform:uppercase;color:var(--color-text-tertiary);}
+  .eyebrow--dot{display:flex;align-items:center;gap:11px;}   /* the pink dot: hero and closing band only */
+  .eyebrow--on-dark{color:var(--color-neutral-300);}
 </style>
 </head>
 <body>
@@ -156,10 +155,10 @@
           <span class="brand-tag">Don’t get hacked</span>
         </div>
         <nav class="header-links" aria-label="Main">
-          <div class="nav-drop"><button class="header-link nav-drop-btn" type="button" aria-expanded="false" aria-controls="soc-menu">VEX AI SOC<span class="nav-caret" aria-hidden="true"></span></button><div class="nav-drop-menu" id="soc-menu" hidden><a href="/how-it-works/"><b>Meet VEX</b><span>Good prevention starts with great detection.</span></a><a href="/detections/"><b>What VEX detects</b><span>Every alert type it can raise.</span></a><a href="/api/"><b>The API</b><span>Security engineer? This is for you.</span></a><a href="/slack"><b>VEX in Slack</b><span>Right where your team already works.</span></a></div></div>
-          <a class="header-link header-link--cta" href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener">Schedule a chat <img src="../static/icon-arrow-right-pink.svg" width="16" height="16" alt=""></a>
+          <div class="nav-drop"><button class="pulse-link pulse-link--quiet nav-drop-btn" type="button" aria-expanded="false" aria-controls="soc-menu">VEX AI SOC <i class="pulse-icon pulse-icon--caret-down" aria-hidden="true"></i></button><div class="pulse-dropdown pulse-dropdown--nav nav-drop-menu" id="soc-menu" hidden><a class="pulse-menu-item" href="/how-it-works/"><span class="pulse-menu-item__label">Meet VEX</span><span class="pulse-menu-item__desc">Good prevention starts with great detection.</span></a><a class="pulse-menu-item" href="/detections/"><span class="pulse-menu-item__label">What VEX detects</span><span class="pulse-menu-item__desc">Every alert type it can raise.</span></a><a class="pulse-menu-item" href="/api/"><span class="pulse-menu-item__label">The API</span><span class="pulse-menu-item__desc">Security engineer? This is for you.</span></a><a class="pulse-menu-item" href="/slack"><span class="pulse-menu-item__label">VEX in Slack</span><span class="pulse-menu-item__desc">Right where your team already works.</span></a></div></div>
+          <a class="pulse-link header-cta" href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener">Schedule a chat <i class="pulse-icon pulse-icon--arrow-right" aria-hidden="true"></i></a>
         </nav>
-        <button class="menu-btn" type="button" aria-label="Open menu" aria-controls="site-nav" aria-expanded="false"><img src="../static/icon-menu.svg" width="32" height="32" alt=""></button>
+        <button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon menu-btn" type="button" aria-label="Open menu" aria-controls="site-nav" aria-expanded="false"><img src="../static/icon-menu.svg" width="24" height="24" alt=""></button>
       </div>
     </header>
   </div>
@@ -171,13 +170,13 @@
     <div class="site-header">
       <div class="wrap header-inner">
         <a href="/" class="brand"><span class="status-dot"></span>VEX</a>
-        <button class="menu-btn menu-close" type="button" aria-label="Close menu"><img src="../static/icon-close.svg" width="32" height="32" alt=""></button>
+        <button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon menu-btn menu-close" type="button" aria-label="Close menu"><i class="pulse-icon pulse-icon--x" aria-hidden="true"></i></button>
       </div>
     </div>
     <nav class="wrap" aria-label="Menu">
       <ul class="nav-list">
         <li><a href="/"><span class="nav-link">Home</span><span class="nav-sub">One Dot protects one thing. VEX protects everything.</span></a></li>
-        <li class="nav-group"><span class="nav-group-label">VEX AI SOC</span><ul class="nav-sublist"><li><a href="/how-it-works/"><span class="nav-link">Meet VEX</span><span class="nav-sub">Good prevention starts with great detection.</span></a></li><li><a href="/detections/"><span class="nav-link">What VEX detects</span><span class="nav-sub">Every alert type it can raise.</span></a></li><li><a href="/api/"><span class="nav-link">The API</span><span class="nav-sub">Security engineer? This is for you.</span></a></li><li><a href="/slack"><span class="nav-link">VEX in Slack</span><span class="nav-sub">Right where your team already works.</span></a></li></ul></li>
+        <li class="nav-group"><span class="pulse-dropdown__label nav-group-label">VEX AI SOC</span><ul class="nav-sublist"><li><a href="/how-it-works/"><span class="nav-link">Meet VEX</span><span class="nav-sub">Good prevention starts with great detection.</span></a></li><li><a href="/detections/"><span class="nav-link">What VEX detects</span><span class="nav-sub">Every alert type it can raise.</span></a></li><li><a href="/api/"><span class="nav-link">The API</span><span class="nav-sub">Security engineer? This is for you.</span></a></li><li><a href="/slack"><span class="nav-link">VEX in Slack</span><span class="nav-sub">Right where your team already works.</span></a></li></ul></li>
         <li><a href="https://calendar.proton.me/bookings#SWBVC_uaPiZQ5kexRfSKUatHJDu2RJOugwIb-_woXBM=" target="_blank" rel="noopener"><span class="nav-link">Schedule a chat</span></a></li>
       </ul>
     </nav>
@@ -189,7 +188,7 @@
   <section class="tm-hero">
     <img class="tm-hero-glow" src="static/hero-glow.svg" width="1802" height="432" alt="" aria-hidden="true">
     <div class="tm-wrap">
-      <div class="eyebrow-label"><span class="status-dot"></span>About Unmanned</div>
+      <div class="eyebrow eyebrow--dot"><span class="status-dot"></span>About Unmanned</div>
       <h1>The people behind your defense.</h1>
       <p class="tm-lede">Unmanned brings together offensive-security experts, engineers, analysts and designers to make security more proactive and easier to live with. We build VEX and run the operations behind it.</p>
     </div>
@@ -203,7 +202,7 @@
         <div class="tm-founder-copy">
           <div><p class="tm-role">Founder &amp; CEO</p><h2 id="founder-name">David Hunt</h2></div>
           <p class="tm-bio">David has worked on both sides of security: how attackers get in, and how defenders find out. He was an offensive security contractor for U.S. intelligence agencies, worked on threat intelligence at Mandiant, led development of MITRE’s CALDERA and co-founded Prelude. Along the way, one question kept coming up: what do we actually know is working? Unmanned is his answer.</p>
-          <a class="tm-book" href="https://www.amazon.com/dp/B0CSH2Z9DL" target="_blank" rel="noopener">He wrote the book on it, too:&nbsp; <span>Irreducibly Complex Systems</span><img src="static/icon-arrow-square-out.svg" width="16" height="16" alt="(opens Amazon in a new tab)"></a>
+          <p class="tm-book">He wrote the book on it, too:&nbsp; <a class="pulse-link pulse-link--sm" href="https://www.amazon.com/dp/B0CSH2Z9DL" target="_blank" rel="noopener">Irreducibly Complex Systems<i class="pulse-icon pulse-icon--arrow-square-out" aria-hidden="true"></i><span class="visually-hidden"> (opens Amazon in a new tab)</span></a></p>
         </div>
       </div>
     </div>
@@ -259,7 +258,7 @@
   <section class="close-band">
     <div class="wrap">
       <div class="close-box">
-        <div class="eyebrow-label"><span class="status-dot"></span>Get started with VEX</div>
+        <div class="eyebrow eyebrow--dot eyebrow--on-dark"><span class="status-dot"></span>Get started with VEX</div>
         <div class="close-row"><p>Ready to start using VEX?</p><a class="pulse-btn pulse-btn--primary pulse-btn--lg" href="/slack">Get VEX for Slack</a></div>
       </div>
     </div>

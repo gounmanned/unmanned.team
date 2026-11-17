@@ -225,6 +225,16 @@ Danger:
 </div>
 ```
 
+No icon:
+
+```html
+<div class="pulse-alert pulse-alert--warning" role="status">
+  <div class="pulse-alert__body">
+    <span class="pulse-alert__title">Access expires in 24 hours</span>
+  </div>
+</div>
+```
+
 ### Toast
 
 Solid color, for confirming an action that just happened (“Report exported”). Its action is a text link. Don’t put toasts in your page’s HTML: pulse.js makes them. A button with `data-pulse-toast` shows one when clicked; from a script, call `Pulse.toast()`.
@@ -248,7 +258,8 @@ Error toast:
     text: 'Your 24-hour test is ready to start.',  // optional
     tone: 'success',          // neutral (default), info, success, warning, danger
     action: { label: 'View report', href: '/reports/latest' },  // optional; or onClick instead of href
-    duration: 5000            // ms; 0 keeps it until dismissed
+    duration: 5000,           // ms; 0 keeps it until dismissed
+    icon: true                // false for no icon
   });
 </script>
 ```
@@ -262,6 +273,19 @@ Toasts stack in the bottom right (full width on phones), go away after five seco
     <span class="pulse-toast__title">Report exported</span>
     <a class="pulse-toast__cta" href="#">View report</a>
   </div>
+  <button class="pulse-dismiss" type="button" aria-label="Dismiss"><i class="pulse-icon pulse-icon--x" aria-hidden="true"></i></button>
+</div>
+```
+
+### Icons
+
+The icon is optional: leave the `<i>` out and the text starts at the edge (for `Pulse.toast()`, pass `icon: false`). Keep it when the message is a warning or an error, so the tone isn’t carried by color alone. In an alert the icon takes the tone’s text color, which is darker than the border.
+
+Toast with no icon:
+
+```html
+<div class="pulse-toast pulse-toast--neutral" role="status">
+  <div class="pulse-toast__body"><span class="pulse-toast__title">Saved</span></div>
   <button class="pulse-dismiss" type="button" aria-label="Dismiss"><i class="pulse-icon pulse-icon--x" aria-hidden="true"></i></button>
 </div>
 ```

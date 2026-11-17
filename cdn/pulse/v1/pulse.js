@@ -50,7 +50,7 @@
    are touched, so a page that runs its own menu script is left alone.
 
    Toast
-     Pulse.toast({ title: 'Report exported', text: '…', tone: 'success', action: { label: 'View', href: '…' }, duration: 5000 })
+     Pulse.toast({ title: 'Report exported', text: '…', tone: 'success', action: { label: 'View', href: '…' }, duration: 5000, icon: false })
      or a button with data-pulse-toast="Report exported" (and data-pulse-toast-tone, -text).
    Stacks toasts bottom right, removes them after the duration (0 keeps it), pauses while hovered or focused. Any .pulse-dismiss
    inside an alert or toast removes it (fires "pulse:dismiss" first; cancel it to keep it).
@@ -423,7 +423,7 @@
     if (!toaster || !toaster.isConnected) { toaster = el('div', 'pulse-toaster'); document.body.appendChild(toaster); }
     var t = el('div', 'pulse-toast' + (tone === 'info' ? '' : ' pulse-toast--' + tone));
     t.setAttribute('role', tone === 'danger' ? 'alert' : 'status');
-    var icon = el('i', 'pulse-icon pulse-icon--' + ICON[tone] + ' pulse-icon--fill'); icon.setAttribute('aria-hidden', 'true'); t.appendChild(icon);
+    if (o.icon !== false) { var icon = el('i', 'pulse-icon pulse-icon--' + ICON[tone] + ' pulse-icon--fill'); icon.setAttribute('aria-hidden', 'true'); t.appendChild(icon); }
     var body = el('div', 'pulse-toast__body'); body.appendChild(el('span', 'pulse-toast__title', o.title || ''));
     if (o.text) body.appendChild(el('span', 'pulse-toast__text', o.text));
     if (o.action) {

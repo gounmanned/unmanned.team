@@ -284,15 +284,17 @@ button.pulse-select { display: block; text-align: start; cursor: pointer; white-
 
 /* ---------- Alert and Toast ---------- */
 .pulse-alert, .pulse-toast {
-  --tone: var(--color-indicator-info); --tint: var(--color-status-info-subtle); --solid: var(--color-status-info); --on: var(--color-text-on-accent);
+  --tone: var(--color-indicator-info); --icon: var(--color-text-info); --tint: var(--color-status-info-subtle); --solid: var(--color-status-info); --on: var(--color-text-on-accent);
   display: flex; align-items: flex-start; gap: var(--space-12); box-sizing: border-box; padding: var(--space-16); border-radius: var(--radius-medium); font-family: var(--font-sans);
 }
 .pulse-alert { padding: calc(var(--space-16) - var(--border-width-1)); background: var(--tint); border: var(--border-width-1) solid var(--tone); color: var(--color-text-primary); }
-.pulse-alert--success, .pulse-toast--success { --tone: var(--color-indicator-success); --tint: var(--color-status-success-subtle); --solid: var(--color-status-success); }
-.pulse-alert--danger, .pulse-toast--danger { --tone: var(--color-indicator-danger); --tint: var(--color-status-danger-subtle); --solid: var(--color-status-danger); }
-.pulse-alert--warning, .pulse-toast--warning { --tone: var(--color-indicator-warning); --tint: var(--color-status-warning-subtle); --solid: var(--color-status-warning); --on: var(--color-text-on-warning); }
+.pulse-alert--success, .pulse-toast--success { --tone: var(--color-indicator-success); --icon: var(--color-text-success); --tint: var(--color-status-success-subtle); --solid: var(--color-status-success); }
+.pulse-alert--danger, .pulse-toast--danger { --tone: var(--color-indicator-danger); --icon: var(--color-text-danger); --tint: var(--color-status-danger-subtle); --solid: var(--color-status-danger); }
+.pulse-alert--warning, .pulse-toast--warning { --tone: var(--color-indicator-warning); --icon: var(--color-text-warning); --tint: var(--color-status-warning-subtle); --solid: var(--color-status-warning); --on: var(--color-text-on-warning); }
 .pulse-alert > .pulse-icon, .pulse-toast > .pulse-icon { --pulse-icon-size: var(--size-icon-20); margin-top: var(--space-0); }
-.pulse-alert > .pulse-icon { color: var(--tone); }
+/* The icon is optional: leave it out and the text starts at the edge. In an alert it takes the tone's text color, which reads
+   better than the lighter border color (most of all for warning). */
+.pulse-alert > .pulse-icon { color: var(--icon); }
 .pulse-alert__body, .pulse-toast__body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--space-8); align-items: flex-start; }
 .pulse-alert__title, .pulse-toast__title { font: 500 var(--type-label-sm-size) / var(--type-label-sm-line-height) var(--font-sans); }
 .pulse-alert__text, .pulse-toast__text { font: 400 var(--type-body-sm-size) / var(--type-body-sm-line-height) var(--font-sans); color: var(--color-text-secondary); }

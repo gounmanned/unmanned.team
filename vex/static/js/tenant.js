@@ -1,21 +1,20 @@
 class TenantScreen {
-    static OUTCOMES = { all: 'All', CV: 'Autoclosed', CH: 'By you', CR: 'Accepted risk' };
     static PENDING = {
         queue: '#queue-count, #recs-count, #queue-summary',
         history: '#kpi-mttr, #kpi-autoclosed, #kpi-sla, #resolved-count',
-        setup: '.setup-chip-count',
+        setup: '.setup-chip-count, .setup-chip-pct',
         events: '#events-count',
     };
 
     constructor(state) {
         this.state = state;
         this.api = state.api;
-        this.month = new Date();
+        this.monthly = true;
         this.outcome = 'all';
         this.run = 0;
         this.pending = new Set(Object.keys(TenantScreen.PENDING));
         this.revealed = false;
-        this.assets = 0;
+        this.coverage = { assets: 0, dots: 0 };
         this.events = 0;
 
         this.screen = document.getElementById('tenant-screen');
@@ -49,13 +48,13 @@ class TenantScreen {
         await Promise.all([
             this.api.signals.list('status=O', new CustomEvent('signal:account')).then(this.settle('queue')),
             this.loadHistory().then(this.settle('history')),
-            this.countAssets().then(this.settle('setup', n => this.assets = n)),
+            this.countAssets().then(this.settle('setup', c => this.coverage = c)),
             this.countEvents().then(this.settle('events', n => this.events = n)),
         ]);
     }
 
     loadHistory() {
-        const filter = this.month ? `date=${TenantScreen.yyyymm(this.month)}` : '';
+        const filter = this.monthly ? `date=${TenantScreen.yyyymm(new Date())}` : '';
         return this.api.signals.list(filter, new CustomEvent('signal:account'));
     }
 
@@ -121,7 +120,7 @@ class TenantScreen {
     inPeriod(signal) {
         const d = new Date(Workspace.time(signal.created));
         const now = new Date();
-        return d.getFullYear() === now.getFullYear() && (!this.month || d.getMonth() === now.getMonth());
+        return d.getFullYear() === now.getFullYear() && (!this.monthly || d.getMonth() === now.getMonth());
     }
 
     // ── render ─────────────────────────────────────────────────────
@@ -139,7 +138,7 @@ class TenantScreen {
             const ready = part => !this.pending.has(part);
 
             if (ready('queue')) {
-                this.table.render({ threats, recs, closed: ready('history') ? shown : [], resolved: closed.length });
+                this.table.render({ threats, recs, closed: ready('history') ? shown : [] });
                 this.renderLanes(threats, recs);
                 this.screen.classList.toggle('critical', threats.some(s => s.metadata.threat));
             }
@@ -149,7 +148,7 @@ class TenantScreen {
                 this.renderOutcomes(closed);
             }
 
-            if (ready('setup')) this.renderSetup(this.assets);
+            if (ready('setup')) this.renderSetup(this.coverage);
             if (ready('events')) document.getElementById('events-count').textContent = this.events.toLocaleString();
 
             this.renderTrend(all.filter(s => Table.SCOPES.threats(s) && this.inPeriod(s)));
@@ -220,7 +219,8 @@ class TenantScreen {
     }
 
     renderOutcomes(closed) {
-        document.getElementById('outcomes').innerHTML = Object.entries(TenantScreen.OUTCOMES).map(([key, label]) => {
+        const chips = [['all', 'All'], ...Object.entries(Table.OUTCOMES).map(([key, o]) => [key, o.label])];
+        document.getElementById('outcomes').innerHTML = chips.map(([key, label]) => {
             const n = key === 'all' ? closed.length : closed.filter(s => s.status === key).length;
             return `<button type="button" data-outcome="${key}" aria-pressed="${key === this.outcome}">${label}<span class="n">${n.toLocaleString()}</span></button>`;
         }).join('');
@@ -228,7 +228,7 @@ class TenantScreen {
 
     renderTrend(signals) {
         const now = new Date();
-        const yearly = !this.month;
+        const yearly = !this.monthly;
         const size = yearly ? 12 : new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
         const bucket = d => yearly ? d.getMonth() : d.getDate() - 1;
         const date = i => yearly ? new Date(now.getFullYear(), i) : new Date(now.getFullYear(), now.getMonth(), i + 1);
@@ -307,13 +307,17 @@ class TenantScreen {
 
     async countAssets() {
         const assets = await this.api.inventory.list();
-        return assets.length;   // one per asset key, same as the coverage table
+        return {
+            assets: assets.length,   // one per asset key, same as the coverage table
+            dots: assets.filter(a => a.metadata?.runtime).length,
+        };
     }
 
-    renderSetup(assets) {
+    renderSetup({ assets, dots }) {
         const seg = document.querySelector('.setup-seg');
         seg.dataset.state = assets ? 'ok' : 'empty';
         seg.querySelector('.setup-chip-count').textContent = assets.toLocaleString();
+        seg.querySelector('.setup-chip-pct').textContent = assets ? `(${Math.round(dots / assets * 100)}%)` : '';
     }
 
     // ── audit ──────────────────────────────────────────────────────
@@ -338,7 +342,7 @@ class TenantScreen {
             if (!tab || tab.getAttribute('aria-pressed') === 'true') return;
 
             this.period.querySelectorAll('[data-period]').forEach(b => b.setAttribute('aria-pressed', b === tab));
-            this.month = tab.dataset.period === 'month' ? new Date() : null;
+            this.monthly = tab.dataset.period === 'month';
             this.pending.add('history');
             this.schedule();
 

@@ -317,10 +317,9 @@
   animation: live-ping 1.8s ease-out infinite;
 }
 
-.stat-live::after {
+.chevron::after {
   content: 'keyboard_arrow_down';
   align-self: center;
-  margin-left: -2px;
   font-family: 'Material Symbols Outlined';
   font-size: 16px;
   line-height: 1;
@@ -329,8 +328,10 @@
   transition: color 0.15s, transform 0.15s;
 }
 
+.chevron:hover::after { color: var(--brand); transform: translateY(1px); }
+
+.stat-live::after { margin-left: -2px; }
 .stat-live:hover { background: color-mix(in srgb, var(--text-faint) 10%, transparent); color: var(--text-body); }
-.stat-live:hover::after { color: var(--brand); transform: translateY(1px); }
 .stat-live:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
 
 @keyframes live-ping {
@@ -621,21 +622,20 @@
   color: var(--text-body);
 }
 
-.setup-seg[data-state="empty"] .setup-chip-count { color: var(--text-faint); }
-
-.setup-chip::after {
-  content: 'keyboard_arrow_down';
-  margin-left: -8px;
-  font-family: 'Material Symbols Outlined';
-  font-size: 16px;
-  line-height: 1;
-  font-feature-settings: 'liga';
+.setup-chip-pct {
+  margin-left: -2px;
+  font-size: 12px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
   color: var(--text-faint);
-  transition: color 0.15s, transform 0.15s;
 }
 
+.setup-chip-pct:empty { display: none; }
+
+.setup-seg[data-state="empty"] .setup-chip-count { color: var(--text-faint); }
+
+.setup-chip::after { margin-left: -8px; }
 .setup-chip:hover .setup-chip-noun { color: var(--text-body); }
-.setup-chip:hover::after { color: var(--brand); transform: translateY(1px); }
 
 @keyframes setup-ping {
   from { transform: scale(1); opacity: 0.6; }

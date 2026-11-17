@@ -1,24 +1,19 @@
 class Table {
-    static COLUMNS = {
-        OB: 'Waiting on decision',
-        CR: 'Accepted risk',
-        CH: 'Closed by human',
-        CV: 'Autoclosed by VEX',
+    static OUTCOMES = {
+        CV: { label: 'Autoclosed', icon: 'bolt' },
+        CH: { label: 'By you', icon: 'person' },
+        CR: { label: 'Accepted risk', icon: 'shield' },
     };
 
     static SCOPES = {
-        all: () => true,
         threats: s => s.metadata?.threat != null,
         recs: s => s.metadata?.threat == null,
     };
 
-    static OUTCOME_ICONS = { CV: 'bolt', CH: 'person', CR: 'shield' };
     static HISTORY_LIMIT = 200;
 
     static due = s => s.due ? Workspace.time(s.due) : Infinity;
     static ended = s => Workspace.time(s.updated ?? s.created);
-
-    // most overdue / soonest due first, then highest threat, then oldest
     static urgency = (a, b) =>
         Table.due(a) - Table.due(b) ||
         (b.metadata?.threat ?? 0) - (a.metadata?.threat ?? 0) ||
@@ -40,18 +35,18 @@ class Table {
 
     // ── render ─────────────────────────────────────────────────────
 
-    render({ threats, recs, closed, resolved }) {
+    render({ threats, recs, closed }) {
         this.signals = new Map([...threats, ...recs, ...closed].map(s => [String(s.id), s]));
 
         this.keepFocus(this.queue, () => {
             this.queue.innerHTML = threats.length
-                ? threats.toSorted(Table.urgency).map(s => this.threatItem(s)).join('')
-                : this.empty(resolved);
+                ? threats.toSorted(Table.urgency).map(s => this.item(s)).join('')
+                : this.empty(recs.length);
         });
 
         this.keepFocus(this.recs, () => {
             this.recs.innerHTML = recs.length
-                ? recs.toSorted(Table.recency).map(s => this.recItem(s)).join('')
+                ? recs.toSorted(Table.recency).map(s => this.item(s)).join('')
                 : `<li class="queue-none">No open recommendations.</li>`;
         });
 
@@ -74,41 +69,27 @@ class Table {
         if (id) list.querySelector(`li[data-id="${CSS.escape(id)}"]`)?.focus({ preventScroll: true });
     }
 
-    empty(resolved) {
+    empty(recs) {
         return `
             <li class="queue-empty">
                 <span class="material-symbols-outlined">verified_user</span>
                 <h3>Nothing needs you</h3>
-                <p>${resolved.toLocaleString()} signal${resolved === 1 ? '' : 's'} resolved this period.</p>
+                <p>Work on the ${recs.toLocaleString()} recommendation${recs === 1 ? '' : 's'} while you wait.</p>
             </li>`;
     }
 
-    threatItem(signal) {
+    item(signal) {
         const esc = Workspace.esc;
+        const threat = Table.SCOPES.threats(signal);
 
         return `
-            <li class="q-item" data-id="${esc(signal.id)}" tabindex="0">
+            <li class="q-item${threat ? '' : ' rec'}" data-id="${esc(signal.id)}" tabindex="0">
                 <img class="q-avatar" src="${esc(Workspace.avatar(signal.source))}" alt="">
                 <div class="q-main">
                     <div class="q-name" title="${esc(signal.name)}">${esc(signal.name)}</div>
                     ${this.sub(signal)}
                 </div>
-                ${this.threat(signal.metadata?.threat)}
-                ${this.countdown(signal)}
-                ${this.actions()}
-            </li>`;
-    }
-
-    recItem(signal) {
-        const esc = Workspace.esc;
-
-        return `
-            <li class="q-item rec" data-id="${esc(signal.id)}" tabindex="0">
-                <img class="q-avatar" src="${esc(Workspace.avatar(signal.source))}" alt="">
-                <div class="q-main">
-                    <div class="q-name" title="${esc(signal.name)}">${esc(signal.name)}</div>
-                    ${this.sub(signal)}
-                </div>
+                ${threat ? this.threat(signal.metadata.threat) + this.countdown(signal) : ''}
                 ${this.actions()}
             </li>`;
     }
@@ -117,12 +98,13 @@ class Table {
         const esc = Workspace.esc;
         const missed = signal.due && Table.ended(signal) > Workspace.time(signal.due);
         const took = Table.span(Table.ended(signal) - Workspace.time(signal.created));
-        const kind = signal.metadata?.threat != null ? 'SOC' : 'Rec';
+        const kind = Table.SCOPES.threats(signal) ? 'SOC' : 'Rec';
+        const outcome = Table.OUTCOMES[signal.status];
 
         return `
             <li class="h-item" data-id="${esc(signal.id)}" tabindex="0">
                 <span class="h-outcome material-symbols-outlined" data-status="${esc(signal.status)}"
-                      title="${Table.COLUMNS[signal.status] ?? ''}">${Table.OUTCOME_ICONS[signal.status] ?? 'done'}</span>
+                      title="${outcome?.label ?? ''}">${outcome?.icon ?? 'done'}</span>
                 <div class="h-main">
                     <div class="h-name" title="${esc(signal.name)}">${esc(signal.name)}</div>
                     <div class="h-sub">${kind} · ${esc(signal.asset)} · took ${took}${missed ? ' · <em>SLA missed</em>' : ''}</div>

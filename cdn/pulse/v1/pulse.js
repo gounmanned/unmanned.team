@@ -17,6 +17,7 @@
    Drawer (and any native <dialog>)
      <button data-pulse-open="prices">…</button>
      <dialog id="prices" class="pulse-drawer" aria-labelledby="prices-t">… <button data-pulse-close aria-label="Close">…</button> …</dialog>
+   The opener can be an <a href>, so it still goes somewhere without JS; with JS the link is cancelled.
    data-pulse-open opens the dialog with that id as a modal (or beside the page, still usable, when the dialog has data-modal="false").
    data-pulse-close inside it closes it; so does a click on the dimmed page. Esc and returning focus are the browser's. */
 (function () {
@@ -122,7 +123,10 @@
     var opener = t.closest('[data-pulse-open]');
     if (opener) {
       var rn = opener.getRootNode(), dlg = rn.getElementById ? rn.getElementById(opener.getAttribute('data-pulse-open')) : null;
-      if (!dlg || !dlg.showModal || dlg.open) return;
+      if (!dlg || !dlg.showModal) return;
+      // An <a href> opener still works without JS (it goes to its link); with JS it opens the dialog instead.
+      e.preventDefault();
+      if (dlg.open) return;
       dlg._pulseOpener = opener;
       if (dlg.getAttribute('data-modal') === 'false') dlg.show(); else dlg.showModal();
       return;

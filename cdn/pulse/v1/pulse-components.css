@@ -80,6 +80,7 @@
 .pulse-link:focus-visible, .pulse-link.is-focus { outline: var(--border-width-2) solid var(--color-border-focus); outline-offset: 2px; border-radius: var(--radius-sm); }
 .pulse-link--inline { display: inline; font: inherit; text-decoration: underline; }
 .pulse-link--inline { padding-inline-end: 0; }
+.pulse-link--xs { font-size: var(--type-label-xs-size); line-height: var(--type-label-xs-line-height); gap: var(--space-4); --pulse-icon-size: var(--size-icon-12); }
 .pulse-link--sm { font-size: var(--type-label-sm-size); line-height: var(--type-label-sm-line-height); }
 .pulse-link--lg { font-size: var(--type-label-lg-size); line-height: var(--type-label-lg-line-height); }
 /* Quiet: for navigation (header links, footer links). Gray at rest, pink on hover, never underlined. Keep the regular pink link for the one action. */
@@ -95,6 +96,45 @@
 .pulse-link[aria-expanded="true"] { color: var(--color-text-primary); }
 .pulse-link[aria-expanded="true"] > .pulse-icon:last-child, .pulse-link[aria-expanded="true"]:hover > .pulse-icon:last-child { transform: rotate(180deg); }
 
+/* ---------- Eyebrow ---------- */
+/* The small mono line above a headline. Write it in sentence case; CSS makes it caps. Tertiary gray by default,
+   --accent for pink, --dot adds the pink status dot (hero and closing band only). On a dark section it follows
+   data-theme="dark" like everything else. */
+.pulse-eyebrow { display: block; margin: 0; font: 400 var(--type-mono-eyebrow-size) / var(--type-mono-eyebrow-line-height) var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-text-tertiary); }
+.pulse-eyebrow--accent { color: var(--color-text-accent); }
+.pulse-eyebrow--dot { display: flex; align-items: center; gap: var(--space-12); }
+.pulse-eyebrow--dot::before { content: ""; flex: none; width: var(--space-8); height: var(--space-8); border-radius: 50%; background: var(--color-accent-default); animation: pulse-dot 2.2s infinite; }
+@keyframes pulse-dot { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-accent-default) 50%, transparent); } 70% { box-shadow: 0 0 0 8px transparent; } 100% { box-shadow: 0 0 0 0 transparent; } }
+
+/* ---------- Step number ---------- */
+/* A number in a pink ring, beside each step of a numbered how-to (the install pages). Put the number in the markup,
+   or leave it empty inside a list with pulse-steps to count automatically. Mark the list as <ol> so the order is read out. */
+.pulse-step-num { flex: none; display: inline-flex; align-items: center; justify-content: center; box-sizing: border-box; width: var(--space-24); height: var(--space-24);
+  border: var(--border-width-2) solid var(--color-accent-default); border-radius: 50%; color: var(--color-text-accent);
+  font: 400 var(--type-mono-label-size) / 1 var(--font-mono); font-variant-numeric: tabular-nums; }
+.pulse-steps { counter-reset: pulse-step; }
+.pulse-steps > * { counter-increment: pulse-step; }
+.pulse-step-num:empty::before { content: counter(pulse-step); }
+
+/* ---------- Code panel ---------- */
+/* A block of code with a head: file name, a language tag and a copy button (an icon button with a tooltip).
+   Syntax colors: wrap tokens in __fn, __kw, __str, __num, __key, __cmt (the --color-code-* tokens).
+   Copying is the page's job for now: the button is a normal pulse-btn. Long lines scroll sideways inside the panel. */
+.pulse-code { box-sizing: border-box; min-width: 0; border: var(--border-width-1) solid var(--color-border-default); border-radius: var(--radius-control); background: var(--color-surface-subtle); }
+.pulse-code__head { display: flex; align-items: center; gap: var(--space-8); min-height: var(--control-height-md); padding: var(--space-4) var(--space-8) var(--space-4) var(--space-16); box-sizing: border-box;
+  border-bottom: var(--border-width-1) solid var(--color-border-default); border-radius: var(--radius-control) var(--radius-control) 0 0; background: var(--color-surface-sunken); }
+.pulse-code__file { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 400 var(--type-mono-label-size) / var(--type-mono-label-line-height) var(--font-mono); color: var(--color-text-primary); }
+.pulse-code__lang { font: 400 var(--type-mono-caption-size) / var(--type-mono-caption-line-height) var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-text-accent); }
+.pulse-code__head > .pulse-btn { margin-inline-start: auto; }
+.pulse-code pre { margin: 0; padding: var(--space-16); overflow-x: auto; }
+.pulse-code code { font: 400 var(--type-mono-code-size) / var(--type-mono-code-line-height) var(--font-mono); color: var(--color-text-primary); white-space: pre; }
+.pulse-code__fn { color: var(--color-code-function); }
+.pulse-code__kw { color: var(--color-code-keyword); }
+.pulse-code__str { color: var(--color-code-string); }
+.pulse-code__num { color: var(--color-code-number); }
+.pulse-code__key { color: var(--color-code-key); }
+.pulse-code__cmt { color: var(--color-code-comment); font-style: italic; }
+
 /* ---------- Badge ---------- */
 .pulse-badge {
   --t: var(--color-text-secondary); --tint: var(--color-status-neutral-subtle); --solid: var(--color-status-neutral); --on: var(--color-text-on-accent); --mark: var(--color-status-neutral);
@@ -104,6 +144,11 @@
 }
 .pulse-badge::before { content: ""; width: var(--space-8); height: var(--space-8); border-radius: 50%; background: var(--mark); }
 .pulse-badge--nodot::before { display: none; }
+/* Mono: JetBrains Mono caps, no dot, for codes and methods (GET, R0). On its own it is gray (Figma's Mono tone);
+   add a tone after it (--success, --accent, --danger...) to color it, and --outline or --solid as usual. */
+.pulse-badge--mono { --t: var(--color-text-secondary); --tint: var(--color-surface-subtle); --solid: var(--color-surface-contrast); --on: var(--color-text-on-contrast); --mark: var(--color-text-disabled);
+  font: 400 var(--type-mono-eyebrow-size) / var(--type-mono-eyebrow-line-height) var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; }
+.pulse-badge--mono::before { display: none; }
 .pulse-badge--accent { --t: var(--color-text-accent); --tint: var(--color-accent-subtle); --solid: var(--color-accent-default); --mark: var(--color-indicator-accent); }
 .pulse-badge--success { --t: var(--color-text-success); --tint: var(--color-status-success-subtle); --solid: var(--color-status-success); --mark: var(--color-indicator-success); }
 .pulse-badge--danger { --t: var(--color-text-danger); --tint: var(--color-status-danger-subtle); --solid: var(--color-status-danger); --mark: var(--color-indicator-danger); }
@@ -202,6 +247,8 @@
   background: var(--color-surface-raised); border-color: var(--color-border-strong); color: var(--color-text-primary); font-weight: 600; box-shadow: var(--shadow-elevation-controls-segment);
 }
 .pulse-segmented__item:focus-visible { outline: 0; box-shadow: var(--shadow-focus-ring); }
+/* Large: 16px labels at the same 40px height, to sit beside medium buttons (the install pages' OS switch). */
+.pulse-segmented--lg .pulse-segmented__item { padding: calc(var(--space-4) - var(--border-width-1)) var(--space-20); font-size: var(--type-label-md-size); line-height: var(--type-label-md-line-height); }
 
 /* ---------- Tabs ---------- */
 .pulse-tabs { display: flex; font-family: var(--font-sans); }
@@ -415,6 +462,8 @@ html:has(dialog.pulse-drawer:modal) { overflow: hidden; }
 .pulse-tooltip-host > .pulse-tooltip--left::before { top: 0; bottom: 0; left: 100%; right: auto; width: var(--tip-gap); height: auto; }
 .pulse-tooltip-host > .pulse-tooltip--right::before { top: 0; bottom: 0; left: auto; right: 100%; width: var(--tip-gap); height: auto; }
 .pulse-tooltip-host:hover > .pulse-tooltip, .pulse-tooltip-host:focus-visible > .pulse-tooltip, .pulse-tooltip-host > :focus-visible ~ .pulse-tooltip, .pulse-tooltip-host > .pulse-tooltip.is-open { opacity: 1; visibility: visible; pointer-events: auto; transform: none; transition: opacity .15s ease, transform .15s ease, visibility 0s; }
+/* A disabled control shows no tooltip, even held open. */
+.pulse-tooltip-host:disabled > .pulse-tooltip, .pulse-tooltip-host[aria-disabled="true"] > .pulse-tooltip { display: none; }
 /* Esc (pulse.js) hides it until the pointer or focus leaves the host. */
 .pulse-tooltip-host.is-dismissed > .pulse-tooltip:not(.is-open) { opacity: 0; visibility: hidden; pointer-events: none; }
 
@@ -452,6 +501,7 @@ html:has(dialog.pulse-drawer:modal) { overflow: hidden; }
   .pulse-btn, .pulse-toggle input, .pulse-toggle input::before, .pulse-slider__input::-webkit-slider-thumb, .pulse-link > .pulse-icon:last-child { transition: none; }
   .pulse-tooltip-host > .pulse-tooltip { transform: none; transition: none; }
   dialog.pulse-drawer, dialog.pulse-drawer::backdrop { transition: none; }
+  .pulse-eyebrow--dot::before { animation: none; }
   .pulse-btn[aria-busy="true"]::before { animation-duration: 2.4s; }
   .pulse-progress--indeterminate .pulse-progress__fill { animation: none; width: 100%; opacity: .5; }
 }

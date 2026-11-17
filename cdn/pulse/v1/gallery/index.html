@@ -67,7 +67,9 @@
 <section id="link">
   <h2>Link</h2>
   <p class="note">Standalone links nudge their arrow on hover. Inline links are always underlined.</p>
+  <p class="note"><b>Link or button?</b> A link goes somewhere: another page (right arrow), further down this page (down arrow, pulse-link--down) or another site (arrow-square-out). A button does something here: opens a drawer, dialog or menu, copies, toggles, submits, replays; no arrow. Exceptions: the page’s main action may be a button even when it goes somewhere (an &lt;a&gt; underneath, so it works without JS); a menu trigger may look like a quiet link with a caret; a drawer opener inside a sentence keeps the inline link look; a pair of guides on another site may be secondary buttons with arrow-square-out. A drawer opener among links is a ghost button with no icon.</p>
   <div class="row"><span class="cap">Standalone</span>
+    <a class="pulse-link pulse-link--xs" href="#link">See how it works <i class="pulse-icon pulse-icon--arrow-right"></i></a>
     <a class="pulse-link pulse-link--sm" href="#link">See how it works <i class="pulse-icon pulse-icon--arrow-right"></i></a>
     <a class="pulse-link" href="#link">See how it works <i class="pulse-icon pulse-icon--arrow-right"></i></a>
     <a class="pulse-link pulse-link--lg" href="#link">See how it works <i class="pulse-icon pulse-icon--arrow-right"></i></a>
@@ -85,6 +87,11 @@
     <button class="pulse-link pulse-link--quiet" type="button" aria-expanded="false">Opens a menu <i class="pulse-icon pulse-icon--caret-down"></i></button>
     <button class="pulse-link pulse-link--quiet" type="button" aria-expanded="true">Menu open <i class="pulse-icon pulse-icon--caret-down"></i></button>
     <span class="hint">for navigation; current is any aria-current value; the regular pink link stays the one action</span></div>
+  <div class="row"><span class="cap">Quiet, xs</span>
+    <a class="pulse-link pulse-link--quiet pulse-link--xs" href="#link">Privacy</a>
+    <a class="pulse-link pulse-link--quiet pulse-link--xs" href="#link">Terms of service</a>
+    <a class="pulse-link pulse-link--quiet pulse-link--xs" href="#link" aria-current="page">About us</a>
+    <span class="hint">12px, for footers and fine print</span></div>
   <div class="row"><span class="cap">Inline</span><p style="margin:0">VEX investigates every alert and <a class="pulse-link pulse-link--inline" href="#link">tells you what it did</a>, in Slack.</p></div>
 </section>
 
@@ -97,6 +104,10 @@
     <span class="pulse-badge pulse-badge--solid">Neutral</span><span class="pulse-badge pulse-badge--solid pulse-badge--accent">Accent</span><span class="pulse-badge pulse-badge--solid pulse-badge--info">Info</span><span class="pulse-badge pulse-badge--solid pulse-badge--success">Success</span><span class="pulse-badge pulse-badge--solid pulse-badge--warning">Warning</span><span class="pulse-badge pulse-badge--solid pulse-badge--danger">Danger</span></div>
   <div class="row"><span class="cap">Outline</span>
     <span class="pulse-badge pulse-badge--outline pulse-badge--nodot">Neutral</span><span class="pulse-badge pulse-badge--outline pulse-badge--nodot pulse-badge--info">Info</span><span class="pulse-badge pulse-badge--outline pulse-badge--nodot pulse-badge--success">Success</span><span class="pulse-badge pulse-badge--outline pulse-badge--nodot pulse-badge--warning">Warning</span><span class="pulse-badge pulse-badge--outline pulse-badge--nodot pulse-badge--danger">Danger</span></div>
+  <div class="row"><span class="cap">Mono</span>
+    <span class="pulse-badge pulse-badge--mono">R0</span><span class="pulse-badge pulse-badge--mono pulse-badge--outline">R1</span><span class="pulse-badge pulse-badge--mono pulse-badge--solid">Solid</span>
+    <span class="pulse-badge pulse-badge--mono pulse-badge--solid pulse-badge--success">Get</span><span class="pulse-badge pulse-badge--mono pulse-badge--solid pulse-badge--accent">Post</span><span class="pulse-badge pulse-badge--mono pulse-badge--solid pulse-badge--danger">Delete</span>
+    <span class="hint">gray on its own; add a tone to color it</span></div>
   <div class="row"><span class="cap">Chip</span>
     <button class="pulse-chip" aria-pressed="false">All</button>
     <button class="pulse-chip" aria-pressed="true">Identity</button>
@@ -220,6 +231,9 @@
   <div class="row"><span class="cap">Segmented</span>
     <div class="pulse-segmented"><button class="pulse-segmented__item" aria-pressed="true">Business</button><button class="pulse-segmented__item">Individual</button></div>
     <div class="pulse-segmented"><button class="pulse-segmented__item">Monthly</button><button class="pulse-segmented__item" aria-pressed="true">Annual</button><button class="pulse-segmented__item">Quarterly</button></div></div>
+  <div class="row"><span class="cap">Segmented lg</span>
+    <div class="pulse-segmented pulse-segmented--lg" role="group" aria-label="Operating system"><button class="pulse-segmented__item" aria-pressed="true">Mac</button><button class="pulse-segmented__item" aria-pressed="false">Windows</button><button class="pulse-segmented__item" aria-pressed="false">Chromebook</button></div>
+    <span class="hint">16px labels, same 40px height</span></div>
   <div class="row top"><span class="cap">Tabs line</span>
     <div class="pulse-tabs pulse-tabs--line" role="tablist"><button class="pulse-tab" role="tab" aria-selected="true">Overview</button><button class="pulse-tab" role="tab">Findings</button><button class="pulse-tab" role="tab">Activity</button><button class="pulse-tab" role="tab">Settings</button></div></div>
   <div class="row top"><span class="cap">Tabs bar</span>
@@ -306,6 +320,27 @@
   </div>
 </section>
 
+<section id="content">
+  <h2>Eyebrow, step number and code panel</h2>
+  <p class="note">Small pieces for page content. The eyebrow is written in sentence case and set in caps by CSS.</p>
+  <div class="row"><span class="cap">Eyebrow</span>
+    <p class="pulse-eyebrow">Meet a Dot</p><p class="pulse-eyebrow pulse-eyebrow--accent">The loop: Collect</p><p class="pulse-eyebrow pulse-eyebrow--dot">Don’t get hacked</p>
+    <div data-theme="dark" style="background:var(--color-surface-page);padding:var(--space-12) var(--space-16);display:flex;gap:var(--space-24)"><p class="pulse-eyebrow">On dark</p><p class="pulse-eyebrow pulse-eyebrow--dot">Ready to connect</p></div></div>
+  <div class="row top"><span class="cap">Step number</span>
+    <ol class="pulse-steps" style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:var(--space-16);max-width:420px">
+      <li style="display:flex;gap:var(--space-16);align-items:flex-start"><span class="pulse-step-num"></span><span>Download the installer.</span></li>
+      <li style="display:flex;gap:var(--space-16);align-items:flex-start"><span class="pulse-step-num"></span><span>Open it and follow the steps.</span></li>
+      <li style="display:flex;gap:var(--space-16);align-items:flex-start"><span class="pulse-step-num"></span><span>Your Dot reports in within a minute.</span></li>
+    </ol><span class="hint">empty inside pulse-steps counts by itself; or put the number in</span></div>
+  <div class="row top"><span class="cap">Code panel</span>
+    <div class="pulse-code" style="flex:1 1 360px;max-width:640px">
+      <div class="pulse-code__head"><span class="pulse-code__file">request</span><span class="pulse-code__lang">Shell</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-tooltip-host" type="button" aria-label="Copy request"><i class="pulse-icon pulse-icon--copy"></i><span class="pulse-tooltip pulse-tooltip--bottom pulse-tooltip--end" aria-hidden="true">Copy to clipboard</span></button></div>
+      <pre><code><span class="pulse-code__cmt"># list open signals</span>
+<span class="pulse-code__fn">curl</span> <span class="pulse-code__kw">-H</span> <span class="pulse-code__str">"Authorization: Bearer $TOKEN"</span> https://api.example/signals
+{ <span class="pulse-code__key">"count"</span>: <span class="pulse-code__num">12</span>, <span class="pulse-code__key">"status"</span>: <span class="pulse-code__str">"open"</span> }</code></pre>
+    </div></div>
+</section>
+
 <section id="icons">
   <h2>Icons</h2>
   <p class="note">Phosphor, generated into pulse-icons.css from icons.txt. Regular for normal UI, bold at 14px and below, fill for status and selected states, light only for large decorative icons.</p>
@@ -354,7 +389,7 @@
   document.getElementById('btn-matrix').innerHTML = html;
 
   // Icon grid and layout readout
-  var icons = [['arrow-right',['regular','light','bold']],['arrow-down',['regular','light','bold']],['caret-down',['regular']],['x',['regular']],['check',['regular','bold']],['minus',['bold']],['info',['regular','fill']],['check-circle',['regular','fill']],['warning',['regular','fill']],['warning-octagon',['regular','fill']],['warning-circle',['regular']],['magnifying-glass',['regular']],['code',['regular']],['question',['fill']],['lock-simple',['fill']],['copy',['regular']],['envelope',['regular']],['globe',['regular']],['laptop',['regular']],['shield',['regular']],['users',['regular']],['gear',['regular']],['bell',['regular']],['funnel',['regular']],['arrow-square-out',['regular']],['thumbs-up',['regular','fill']],['thumbs-down',['regular','fill']]];
+  var icons = [['arrow-right',['regular','light','bold']],['arrow-down',['regular','light','bold']],['caret-down',['regular']],['x',['regular']],['check',['regular','bold']],['minus',['bold']],['info',['regular','fill']],['check-circle',['regular','fill']],['warning',['regular','fill']],['warning-octagon',['regular','fill']],['warning-circle',['regular']],['magnifying-glass',['regular']],['code',['regular']],['question',['fill']],['lock-simple',['fill']],['copy',['regular']],['envelope',['regular']],['globe',['regular']],['laptop',['regular']],['shield',['regular']],['users',['regular']],['gear',['regular']],['bell',['regular']],['funnel',['regular']],['arrow-square-out',['regular']],['thumbs-up',['regular','fill']],['thumbs-down',['regular','fill']],['arrow-up',['regular','light','bold']],['arrow-counter-clockwise',['regular']],['list',['regular']],['robot',['regular']]];
   var ig = '';
   icons.forEach(function (i) { i[1].forEach(function (w) { ig += '<span style="display:inline-flex;flex-direction:column;align-items:center;gap:6px;width:104px"><i class="pulse-icon pulse-icon--' + i[0] + (w === 'regular' ? '' : ' pulse-icon--' + w) + '" style="--pulse-icon-size:var(--size-icon-24)"></i><span class="hint" style="text-align:center">' + i[0] + (w === 'regular' ? '' : ' · ' + w) + '</span></span>'; }); });
   document.getElementById('icon-grid').innerHTML = ig;

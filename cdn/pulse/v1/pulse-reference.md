@@ -930,13 +930,29 @@ A native select, wrapped for the arrow. Its open list is drawn by the operating 
 
 ### Ghost
 
-No border or background, for a field that sits inside another surface, like a search bar.
+A field with no border or background, at rest. It shows a light gray fill on hover and the focus ring when it has focus. Use it where the field sits inside something that already draws the edge: a search bar, a toolbar, a table cell.
+
+Ghost field on its own:
 
 ```html
-<div style="display: flex; align-items: center; gap: var(--space-8); max-width: 320px; padding: var(--space-4) var(--space-12); border: 1px solid var(--color-border-default); border-radius: var(--radius-control)">
+<div class="pulse-field" style="max-width: 320px">
+  <label class="pulse-field__label" for="invite">Invite by email</label>
+  <input class="pulse-input pulse-input--ghost" id="invite" type="email" placeholder="name@company.com">
+</div>
+```
+
+Inside a search bar: the border here belongs to the bar (your page’s own element), not to the field.
+
+```html
+<div class="search-bar">
   <i class="pulse-icon pulse-icon--magnifying-glass" aria-hidden="true"></i>
   <input class="pulse-input pulse-input--ghost" type="search" placeholder="Search signals" aria-label="Search signals">
 </div>
+<style>
+  /* The bar is your page's own piece; it draws the border. The field inside has none. */
+  .search-bar { display: flex; align-items: center; gap: var(--space-8); max-width: 320px; padding: 0 var(--space-12);
+    border: 1px solid var(--color-border-default); border-radius: var(--radius-control); background: var(--color-surface-raised); }
+</style>
 ```
 
 ### Options

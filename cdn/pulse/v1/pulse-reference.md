@@ -1,5 +1,5 @@
 # Pulse v1: reference for building pages
-The Unmanned design system as plain HTML, CSS and one small script. This file is the whole reference in one place, for AI assistants and anyone who prefers text. The same content, with live examples: https://cdn.unmanned.team/pulse/v1/docs/index.html. Every state of every component: https://cdn.unmanned.team/pulse/v1/gallery/index.html.
+The Unmanned design system as plain HTML, CSS and one small script. This file is the whole reference in one place, for AI assistants and anyone who prefers text. The same content, with live examples and every state of every component: https://cdn.unmanned.team/pulse/v1/docs/index.html.
 
 ## Getting started
 

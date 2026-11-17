@@ -70,6 +70,16 @@
   .docs-icon code{font-size:12px !important;}
   .docs-next{display:flex;justify-content:space-between;gap:var(--space-16);margin-top:var(--space-64);padding-top:var(--space-24);border-top:1px solid var(--color-border-default);}
   .docs-menu{display:none;}
+  .docs-meta{align-items:center;}
+  .docs-states .pulse-drawer__body{color:var(--color-text-primary);}
+  .docs-states-note{margin:0 0 var(--space-24);font-size:var(--type-body-sm-size);line-height:var(--type-body-sm-line-height);color:var(--color-text-secondary);}
+  .docs-states-row{margin:0 0 var(--space-32);}
+  .docs-states-label{margin:0 0 var(--space-12);font:400 var(--type-mono-eyebrow-size)/var(--type-mono-eyebrow-line-height) var(--font-mono);letter-spacing:0.08em;text-transform:uppercase;color:var(--color-text-tertiary);}
+  .docs-states-items{display:flex;flex-wrap:wrap;align-items:flex-start;gap:var(--space-16) var(--space-24);}
+  .docs-states-items--stack{flex-direction:column;align-items:stretch;}
+  .docs-state{display:flex;flex-direction:column;align-items:flex-start;gap:var(--space-8);}
+  .docs-state-cap{font:400 var(--type-mono-caption-size)/var(--type-mono-caption-line-height) var(--font-mono);color:var(--color-text-tertiary);}
+  .docs-states .pulse-popover{max-width:260px;margin:var(--space-12);}
   @media (max-width:900px){
     .docs-layout{grid-template-columns:minmax(0,1fr);gap:0;padding:0 var(--space-16);}
     .docs-side{display:none;}
@@ -88,7 +98,6 @@
 <header class="docs-top">
   <a class="docs-brand" href="index.html">Pulse<span>v1 docs</span></a>
   <nav aria-label="Pulse">
-    <a class="pulse-link pulse-link--quiet pulse-link--sm" href="../gallery/index.html">Gallery</a>
     <a class="pulse-link pulse-link--quiet pulse-link--sm docs-hide-sm" href="../pulse-reference.md">AI reference</a>
     <div class="pulse-segmented" role="group" aria-label="Surface"><button class="pulse-segmented__item" type="button" data-docs-set="surface" data-docs-value="web" aria-pressed="false">Web</button><button class="pulse-segmented__item" type="button" data-docs-set="surface" data-docs-value="app" aria-pressed="true">App</button></div>
     <div class="pulse-segmented" role="group" aria-label="Theme"><button class="pulse-segmented__item" type="button" data-docs-set="theme" data-docs-value="light" aria-pressed="true">Light</button><button class="pulse-segmented__item" type="button" data-docs-set="theme" data-docs-value="dark" aria-pressed="false">Dark</button></div>
@@ -100,7 +109,7 @@
     <details class="docs-menu"><summary>All pages</summary><div class="docs-menu__list"><p class="pulse-tabs__label">Start</p><nav class="pulse-tabs pulse-tabs--vertical" aria-label="Start"><a class="pulse-tab" href="index.html">Getting started</a><a class="pulse-tab" href="starter.html">Starter page</a><a class="pulse-tab" href="foundations.html">Foundations</a><a class="pulse-tab" href="patterns.html">Patterns</a></nav><p class="pulse-tabs__label">Components</p><nav class="pulse-tabs pulse-tabs--vertical" aria-label="Components"><a class="pulse-tab" href="alert-toast.html">Alert and toast</a><a class="pulse-tab" href="badge.html">Badge</a><a class="pulse-tab" href="button.html">Button</a><a class="pulse-tab" href="checkbox-radio-toggle.html">Checkbox, radio and toggle</a><a class="pulse-tab" href="chip.html">Chip</a><a class="pulse-tab" href="code-panel.html">Code panel</a><a class="pulse-tab" href="dialog.html">Dialog</a><a class="pulse-tab" href="drawer.html">Drawer</a><a class="pulse-tab" href="dropdown.html">Dropdown and nav menu</a><a class="pulse-tab" href="eyebrow.html">Eyebrow</a><a class="pulse-tab" href="fields.html">Fields</a><a class="pulse-tab" href="link.html">Link</a><a class="pulse-tab" href="popover.html">Popover</a><a class="pulse-tab" href="progress.html">Progress</a><a class="pulse-tab" href="segmented.html">Segmented control</a><a class="pulse-tab" href="slider.html">Slider</a><a class="pulse-tab" href="step-number.html">Step number</a><a class="pulse-tab" href="tabs.html" aria-current="page">Tabs</a><a class="pulse-tab" href="tooltip.html">Tooltip</a></nav></div></details>
     <h1>Tabs</h1>
     <p class="docs-lede">Switch between views, or jump to sections of a long page.</p>
-    <div class="docs-meta"><span class="pulse-badge pulse-badge--mono pulse-badge--outline">Figma: Tabs, Tab item</span><a class="pulse-link pulse-link--sm" href="../gallery/index.html#nav">Every state in the gallery <i class="pulse-icon pulse-icon--arrow-square-out" aria-hidden="true"></i></a></div>
+    <div class="docs-meta"><span class="pulse-badge pulse-badge--mono pulse-badge--outline">Figma: Tabs, Tab item</span><button class="pulse-btn pulse-btn--ghost pulse-btn--sm docs-states-open" type="button" data-pulse-open="states">See every state</button></div>
     <h2>Line</h2>
 <p>A row of tabs over a baseline. <code>pulse-tabs--bar</code> centers them in a full-width bar, for a sticky section nav.</p>
 <div class="docs-example"><div class="docs-live"><div style="width: 100%">
@@ -160,6 +169,10 @@
 <li>A jump menu is plain links, with <code>aria-current</code> on the current one.</li>
 </ul>
     <div class="docs-next"><a class="pulse-link pulse-link--sm" href="step-number.html">Step number</a><a class="pulse-link pulse-link--sm" href="tooltip.html">Tooltip <i class="pulse-icon pulse-icon--arrow-right" aria-hidden="true"></i></a></div>
+    <dialog class="pulse-drawer pulse-drawer--lg docs-states" id="states" aria-labelledby="states-title"><div class="pulse-drawer__head"><h2 class="pulse-drawer__title" id="states-title">Tabs: every state</h2><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-drawer__close" type="button" aria-label="Close" data-pulse-close><i class="pulse-icon pulse-icon--x" aria-hidden="true"></i></button></div><div class="pulse-drawer__body"><p class="docs-states-note">Hover, focus and pressed are drawn here with demo classes (is-hover, is-focus, is-pressed) so they can be seen side by side. On a real page they come from the mouse and keyboard; don’t copy those classes. The Web, App, Light and Dark switches apply here too.</p><div class="docs-states-row"><p class="docs-states-label">Line</p><div class="docs-states-items docs-states-items--stack"><div class="pulse-tabs pulse-tabs--line" role="tablist" aria-label="States"><button class="pulse-tab" type="button" role="tab" aria-selected="true">Selected</button><button class="pulse-tab is-hover" type="button" role="tab" aria-selected="false">Hover</button><button class="pulse-tab" type="button" role="tab" aria-selected="false">Rest</button></div></div></div>
+<div class="docs-states-row"><p class="docs-states-label">Bar</p><div class="docs-states-items docs-states-items--stack"><div class="pulse-tabs pulse-tabs--bar" role="tablist" aria-label="States" style="width:100%"><button class="pulse-tab" type="button" role="tab" aria-selected="true">Selected</button><button class="pulse-tab is-hover" type="button" role="tab" aria-selected="false">Hover</button><button class="pulse-tab" type="button" role="tab" aria-selected="false">Rest</button></div></div></div>
+<div class="docs-states-row"><p class="docs-states-label">Vertical</p><div class="docs-states-items"><div style="width:260px"><p class="pulse-tabs__label">On this page</p><ul class="pulse-tabs pulse-tabs--vertical"><li><a class="pulse-tab" href="#">Rest <span class="pulse-tab__count">412</span></a><ul class="pulse-tabs__sub"><li><a class="pulse-tab" href="#" aria-current="location">Current sub-item <span class="pulse-tab__count">58</span></a></li><li><a class="pulse-tab is-hover" href="#">Hover sub-item <span class="pulse-tab__count">31</span></a></li></ul></li><li><a class="pulse-tab" href="#" aria-current="location">Current <span class="pulse-tab__count">187</span></a></li><li><a class="pulse-tab is-hover" href="#">Hover <span class="pulse-tab__count">9</span></a></li></ul></div></div></div>
+</div></dialog>
   </main>
 </div>
 <script>

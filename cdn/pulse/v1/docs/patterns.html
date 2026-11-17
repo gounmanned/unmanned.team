@@ -70,6 +70,16 @@
   .docs-icon code{font-size:12px !important;}
   .docs-next{display:flex;justify-content:space-between;gap:var(--space-16);margin-top:var(--space-64);padding-top:var(--space-24);border-top:1px solid var(--color-border-default);}
   .docs-menu{display:none;}
+  .docs-meta{align-items:center;}
+  .docs-states .pulse-drawer__body{color:var(--color-text-primary);}
+  .docs-states-note{margin:0 0 var(--space-24);font-size:var(--type-body-sm-size);line-height:var(--type-body-sm-line-height);color:var(--color-text-secondary);}
+  .docs-states-row{margin:0 0 var(--space-32);}
+  .docs-states-label{margin:0 0 var(--space-12);font:400 var(--type-mono-eyebrow-size)/var(--type-mono-eyebrow-line-height) var(--font-mono);letter-spacing:0.08em;text-transform:uppercase;color:var(--color-text-tertiary);}
+  .docs-states-items{display:flex;flex-wrap:wrap;align-items:flex-start;gap:var(--space-16) var(--space-24);}
+  .docs-states-items--stack{flex-direction:column;align-items:stretch;}
+  .docs-state{display:flex;flex-direction:column;align-items:flex-start;gap:var(--space-8);}
+  .docs-state-cap{font:400 var(--type-mono-caption-size)/var(--type-mono-caption-line-height) var(--font-mono);color:var(--color-text-tertiary);}
+  .docs-states .pulse-popover{max-width:260px;margin:var(--space-12);}
   @media (max-width:900px){
     .docs-layout{grid-template-columns:minmax(0,1fr);gap:0;padding:0 var(--space-16);}
     .docs-side{display:none;}
@@ -88,7 +98,6 @@
 <header class="docs-top">
   <a class="docs-brand" href="index.html">Pulse<span>v1 docs</span></a>
   <nav aria-label="Pulse">
-    <a class="pulse-link pulse-link--quiet pulse-link--sm" href="../gallery/index.html">Gallery</a>
     <a class="pulse-link pulse-link--quiet pulse-link--sm docs-hide-sm" href="../pulse-reference.md">AI reference</a>
     <div class="pulse-segmented" role="group" aria-label="Surface"><button class="pulse-segmented__item" type="button" data-docs-set="surface" data-docs-value="web" aria-pressed="false">Web</button><button class="pulse-segmented__item" type="button" data-docs-set="surface" data-docs-value="app" aria-pressed="true">App</button></div>
     <div class="pulse-segmented" role="group" aria-label="Theme"><button class="pulse-segmented__item" type="button" data-docs-set="theme" data-docs-value="light" aria-pressed="true">Light</button><button class="pulse-segmented__item" type="button" data-docs-set="theme" data-docs-value="dark" aria-pressed="false">Dark</button></div>
@@ -100,7 +109,7 @@
     <details class="docs-menu"><summary>All pages</summary><div class="docs-menu__list"><p class="pulse-tabs__label">Start</p><nav class="pulse-tabs pulse-tabs--vertical" aria-label="Start"><a class="pulse-tab" href="index.html">Getting started</a><a class="pulse-tab" href="starter.html">Starter page</a><a class="pulse-tab" href="foundations.html">Foundations</a><a class="pulse-tab" href="patterns.html" aria-current="page">Patterns</a></nav><p class="pulse-tabs__label">Components</p><nav class="pulse-tabs pulse-tabs--vertical" aria-label="Components"><a class="pulse-tab" href="alert-toast.html">Alert and toast</a><a class="pulse-tab" href="badge.html">Badge</a><a class="pulse-tab" href="button.html">Button</a><a class="pulse-tab" href="checkbox-radio-toggle.html">Checkbox, radio and toggle</a><a class="pulse-tab" href="chip.html">Chip</a><a class="pulse-tab" href="code-panel.html">Code panel</a><a class="pulse-tab" href="dialog.html">Dialog</a><a class="pulse-tab" href="drawer.html">Drawer</a><a class="pulse-tab" href="dropdown.html">Dropdown and nav menu</a><a class="pulse-tab" href="eyebrow.html">Eyebrow</a><a class="pulse-tab" href="fields.html">Fields</a><a class="pulse-tab" href="link.html">Link</a><a class="pulse-tab" href="popover.html">Popover</a><a class="pulse-tab" href="progress.html">Progress</a><a class="pulse-tab" href="segmented.html">Segmented control</a><a class="pulse-tab" href="slider.html">Slider</a><a class="pulse-tab" href="step-number.html">Step number</a><a class="pulse-tab" href="tabs.html">Tabs</a><a class="pulse-tab" href="tooltip.html">Tooltip</a></nav></div></details>
     <h1>Patterns</h1>
     <p class="docs-lede">Common page pieces built from Pulse parts, and the rule for links and buttons.</p>
-    <div class="docs-meta"><a class="pulse-link pulse-link--sm" href="../gallery/index.html#themes">Every state in the gallery <i class="pulse-icon pulse-icon--arrow-square-out" aria-hidden="true"></i></a></div>
+    <div class="docs-meta"></div>
     <h2 id="links-buttons">Link or button</h2>
 <p>A <strong>link</strong> goes somewhere: another page (right arrow), further down this page (down arrow, <code>pulse-link--down</code>) or another site or a new tab (<code>arrow-square-out</code>). A <strong>button</strong> does something here: opens a drawer, dialog or menu, copies, toggles, submits, replays. Buttons have no arrow.</p>
 <p>Exceptions:</p>
@@ -146,6 +155,7 @@
   &lt;i class=&quot;pulse-icon pulse-icon--arrow-up&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;
 &lt;/button&gt;</code></pre></div></div>
     <div class="docs-next"><a class="pulse-link pulse-link--sm" href="foundations.html">Foundations</a><a class="pulse-link pulse-link--sm" href="alert-toast.html">Alert and toast <i class="pulse-icon pulse-icon--arrow-right" aria-hidden="true"></i></a></div>
+    
   </main>
 </div>
 <script>

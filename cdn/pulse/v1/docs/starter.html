@@ -70,6 +70,16 @@
   .docs-icon code{font-size:12px !important;}
   .docs-next{display:flex;justify-content:space-between;gap:var(--space-16);margin-top:var(--space-64);padding-top:var(--space-24);border-top:1px solid var(--color-border-default);}
   .docs-menu{display:none;}
+  .docs-meta{align-items:center;}
+  .docs-states .pulse-drawer__body{color:var(--color-text-primary);}
+  .docs-states-note{margin:0 0 var(--space-24);font-size:var(--type-body-sm-size);line-height:var(--type-body-sm-line-height);color:var(--color-text-secondary);}
+  .docs-states-row{margin:0 0 var(--space-32);}
+  .docs-states-label{margin:0 0 var(--space-12);font:400 var(--type-mono-eyebrow-size)/var(--type-mono-eyebrow-line-height) var(--font-mono);letter-spacing:0.08em;text-transform:uppercase;color:var(--color-text-tertiary);}
+  .docs-states-items{display:flex;flex-wrap:wrap;align-items:flex-start;gap:var(--space-16) var(--space-24);}
+  .docs-states-items--stack{flex-direction:column;align-items:stretch;}
+  .docs-state{display:flex;flex-direction:column;align-items:flex-start;gap:var(--space-8);}
+  .docs-state-cap{font:400 var(--type-mono-caption-size)/var(--type-mono-caption-line-height) var(--font-mono);color:var(--color-text-tertiary);}
+  .docs-states .pulse-popover{max-width:260px;margin:var(--space-12);}
   @media (max-width:900px){
     .docs-layout{grid-template-columns:minmax(0,1fr);gap:0;padding:0 var(--space-16);}
     .docs-side{display:none;}
@@ -88,7 +98,6 @@
 <header class="docs-top">
   <a class="docs-brand" href="index.html">Pulse<span>v1 docs</span></a>
   <nav aria-label="Pulse">
-    <a class="pulse-link pulse-link--quiet pulse-link--sm" href="../gallery/index.html">Gallery</a>
     <a class="pulse-link pulse-link--quiet pulse-link--sm docs-hide-sm" href="../pulse-reference.md">AI reference</a>
     <div class="pulse-segmented" role="group" aria-label="Surface"><button class="pulse-segmented__item" type="button" data-docs-set="surface" data-docs-value="web" aria-pressed="false">Web</button><button class="pulse-segmented__item" type="button" data-docs-set="surface" data-docs-value="app" aria-pressed="true">App</button></div>
     <div class="pulse-segmented" role="group" aria-label="Theme"><button class="pulse-segmented__item" type="button" data-docs-set="theme" data-docs-value="light" aria-pressed="true">Light</button><button class="pulse-segmented__item" type="button" data-docs-set="theme" data-docs-value="dark" aria-pressed="false">Dark</button></div>
@@ -137,6 +146,7 @@
 &lt;/body&gt;
 &lt;/html&gt;</code></pre></div>
     <div class="docs-next"><a class="pulse-link pulse-link--sm" href="index.html">Getting started</a><a class="pulse-link pulse-link--sm" href="foundations.html">Foundations <i class="pulse-icon pulse-icon--arrow-right" aria-hidden="true"></i></a></div>
+    
   </main>
 </div>
 <script>

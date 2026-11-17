@@ -127,24 +127,24 @@
     <button class="pulse-btn pulse-btn--secondary" type="button" data-pulse-close autofocus>Cancel</button>
     <button class="pulse-btn pulse-btn--destructive" type="button" data-pulse-close>Delete</button>
   </div>
-</dialog></div><div class="pulse-code docs-code"><div class="pulse-code__head"><span class="pulse-code__file">HTML</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-tooltip-host" type="button" data-pulse-copy aria-label="Copy the code"><i class="pulse-icon pulse-icon--copy" aria-hidden="true"></i><span class="pulse-tooltip pulse-tooltip--bottom pulse-tooltip--end" aria-hidden="true">Copy to clipboard</span></button></div><pre><code>&lt;button class=&quot;pulse-btn pulse-btn--destructive&quot; type=&quot;button&quot; data-pulse-open=&quot;delete-test&quot;&gt;Delete test&lt;/button&gt;
+</dialog></div><div class="pulse-code docs-code"><div class="pulse-code__head"><span class="pulse-code__file">HTML</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-tooltip-host" type="button" data-pulse-copy aria-label="Copy the code"><i class="pulse-icon pulse-icon--copy" aria-hidden="true"></i><span class="pulse-tooltip pulse-tooltip--bottom pulse-tooltip--end" aria-hidden="true">Copy to clipboard</span></button></div><pre><code>&lt;<span class="pulse-code__kw">button</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-btn pulse-btn--destructive"</span> <span class="pulse-code__key">type</span>=<span class="pulse-code__str">"button"</span> <span class="pulse-code__key">data-pulse-open</span>=<span class="pulse-code__str">"delete-test"</span>&gt;Delete test&lt;/<span class="pulse-code__kw">button</span>&gt;
 
-&lt;dialog class=&quot;pulse-dialog&quot; id=&quot;delete-test&quot; aria-labelledby=&quot;delete-test-title&quot; aria-describedby=&quot;delete-test-body&quot;&gt;
-  &lt;div class=&quot;pulse-dialog__head&quot;&gt;
-    &lt;div class=&quot;pulse-dialog__copy&quot;&gt;
-      &lt;h2 class=&quot;pulse-dialog__title&quot; id=&quot;delete-test-title&quot;&gt;Delete this test?&lt;/h2&gt;
-      &lt;p class=&quot;pulse-dialog__body&quot; id=&quot;delete-test-body&quot;&gt;This removes the report and every finding. You can’t undo it.&lt;/p&gt;
-    &lt;/div&gt;
-    &lt;button class=&quot;pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-dialog__close&quot; type=&quot;button&quot; aria-label=&quot;Close&quot; data-pulse-close&gt;
-      &lt;i class=&quot;pulse-icon pulse-icon--x&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;
-    &lt;/button&gt;
-  &lt;/div&gt;
-  &lt;div class=&quot;pulse-dialog__resource&quot;&gt;Acme workspace · 24-hour test&lt;/div&gt;
-  &lt;div class=&quot;pulse-dialog__actions&quot;&gt;
-    &lt;button class=&quot;pulse-btn pulse-btn--secondary&quot; type=&quot;button&quot; data-pulse-close autofocus&gt;Cancel&lt;/button&gt;
-    &lt;button class=&quot;pulse-btn pulse-btn--destructive&quot; type=&quot;button&quot; data-pulse-close&gt;Delete&lt;/button&gt;
-  &lt;/div&gt;
-&lt;/dialog&gt;</code></pre></div></div>
+&lt;<span class="pulse-code__kw">dialog</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-dialog"</span> <span class="pulse-code__key">id</span>=<span class="pulse-code__str">"delete-test"</span> <span class="pulse-code__key">aria-labelledby</span>=<span class="pulse-code__str">"delete-test-title"</span> <span class="pulse-code__key">aria-describedby</span>=<span class="pulse-code__str">"delete-test-body"</span>&gt;
+  &lt;<span class="pulse-code__kw">div</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-dialog__head"</span>&gt;
+    &lt;<span class="pulse-code__kw">div</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-dialog__copy"</span>&gt;
+      &lt;<span class="pulse-code__kw">h2</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-dialog__title"</span> <span class="pulse-code__key">id</span>=<span class="pulse-code__str">"delete-test-title"</span>&gt;Delete this test?&lt;/<span class="pulse-code__kw">h2</span>&gt;
+      &lt;<span class="pulse-code__kw">p</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-dialog__body"</span> <span class="pulse-code__key">id</span>=<span class="pulse-code__str">"delete-test-body"</span>&gt;This removes the report and every finding. You can’t undo it.&lt;/<span class="pulse-code__kw">p</span>&gt;
+    &lt;/<span class="pulse-code__kw">div</span>&gt;
+    &lt;<span class="pulse-code__kw">button</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-dialog__close"</span> <span class="pulse-code__key">type</span>=<span class="pulse-code__str">"button"</span> <span class="pulse-code__key">aria-label</span>=<span class="pulse-code__str">"Close"</span> <span class="pulse-code__key">data-pulse-close</span>&gt;
+      &lt;<span class="pulse-code__kw">i</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-icon pulse-icon--x"</span> <span class="pulse-code__key">aria-hidden</span>=<span class="pulse-code__str">"true"</span>&gt;&lt;/<span class="pulse-code__kw">i</span>&gt;
+    &lt;/<span class="pulse-code__kw">button</span>&gt;
+  &lt;/<span class="pulse-code__kw">div</span>&gt;
+  &lt;<span class="pulse-code__kw">div</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-dialog__resource"</span>&gt;Acme workspace · 24-hour test&lt;/<span class="pulse-code__kw">div</span>&gt;
+  &lt;<span class="pulse-code__kw">div</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-dialog__actions"</span>&gt;
+    &lt;<span class="pulse-code__kw">button</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-btn pulse-btn--secondary"</span> <span class="pulse-code__key">type</span>=<span class="pulse-code__str">"button"</span> <span class="pulse-code__key">data-pulse-close</span> <span class="pulse-code__key">autofocus</span>&gt;Cancel&lt;/<span class="pulse-code__kw">button</span>&gt;
+    &lt;<span class="pulse-code__kw">button</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-btn pulse-btn--destructive"</span> <span class="pulse-code__key">type</span>=<span class="pulse-code__str">"button"</span> <span class="pulse-code__key">data-pulse-close</span>&gt;Delete&lt;/<span class="pulse-code__kw">button</span>&gt;
+  &lt;/<span class="pulse-code__kw">div</span>&gt;
+&lt;/<span class="pulse-code__kw">dialog</span>&gt;</code></pre></div></div>
 <h2>How it works</h2>
 <p>It’s a native <code>&lt;dialog&gt;</code>. A button with <code>data-pulse-open="its-id"</code> opens it; anything inside with <code>data-pulse-close</code> closes it, and so does Esc. Focus moves into the dialog and goes back to the button afterwards.</p>
 <h2>Parts</h2>

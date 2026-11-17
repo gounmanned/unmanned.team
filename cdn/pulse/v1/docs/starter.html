@@ -113,38 +113,38 @@
     <p>It loads the fonts and the four Pulse files, sets the theme and the surface, and has a small hero to replace. The <code>&lt;style&gt;</code> block is where your page’s own layout goes.</p>
 <p><a class="pulse-link" href="starter-template.html">Open it as a page <i class="pulse-icon pulse-icon--arrow-square-out" aria-hidden="true"></i></a></p>
 <h2>The file</h2>
-<div class="pulse-code docs-code"><div class="pulse-code__head"><span class="pulse-code__file">HTML</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-tooltip-host" type="button" data-pulse-copy aria-label="Copy the code"><i class="pulse-icon pulse-icon--copy" aria-hidden="true"></i><span class="pulse-tooltip pulse-tooltip--bottom pulse-tooltip--end" aria-hidden="true">Copy to clipboard</span></button></div><pre><code>&lt;!doctype html&gt;
-&lt;html lang=&quot;en&quot; data-theme=&quot;light&quot; data-surface=&quot;web&quot;&gt;
-&lt;head&gt;
-  &lt;meta charset=&quot;utf-8&quot;&gt;
-  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
-  &lt;title&gt;Page title&lt;/title&gt;
-  &lt;link rel=&quot;preconnect&quot; href=&quot;https://fonts.googleapis.com&quot;&gt;
-  &lt;link href=&quot;https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap&quot; rel=&quot;stylesheet&quot;&gt;
-  &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.unmanned.team/pulse/v1/pulse-tokens.css&quot;&gt;
-  &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.unmanned.team/pulse/v1/pulse-icons.css&quot;&gt;
-  &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.unmanned.team/pulse/v1/pulse-components.css&quot;&gt;
-  &lt;script src=&quot;https://cdn.unmanned.team/pulse/v1/pulse.js&quot; defer&gt;&lt;/script&gt;
-  &lt;style&gt;
-    /* Your page&#x27;s own layout. Unlayered, so it always wins over Pulse. Use Pulse tokens, not hex or px. */
-    body { margin: 0; background: var(--color-surface-page); color: var(--color-text-primary); font-family: var(--font-sans); }
-    main { max-width: 720px; margin: 0 auto; padding: var(--space-64) var(--space-16); }
-    h1 { margin: var(--space-12) 0 var(--space-16); font: 600 var(--type-display-size) / var(--type-display-line-height) var(--font-sans); }
-    .lede { margin: 0 0 var(--space-32); font-size: var(--type-body-lede-size); line-height: var(--type-body-lede-line-height); color: var(--color-text-secondary); }
-  &lt;/style&gt;
-&lt;/head&gt;
-&lt;body&gt;
-  &lt;main&gt;
-    &lt;p class=&quot;pulse-eyebrow pulse-eyebrow--dot&quot;&gt;Don’t get hacked&lt;/p&gt;
-    &lt;h1&gt;Your headline.&lt;/h1&gt;
-    &lt;p class=&quot;lede&quot;&gt;One or two sentences that say what this page is for.&lt;/p&gt;
-    &lt;div class=&quot;pulse-actions&quot;&gt;
-      &lt;a class=&quot;pulse-btn pulse-btn--primary pulse-btn--lg&quot; href=&quot;#&quot;&gt;Main action&lt;/a&gt;
-      &lt;a class=&quot;pulse-link&quot; href=&quot;#&quot;&gt;See how it works &lt;i class=&quot;pulse-icon pulse-icon--arrow-right&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;&lt;/a&gt;
-    &lt;/div&gt;
-  &lt;/main&gt;
-&lt;/body&gt;
-&lt;/html&gt;</code></pre></div>
+<div class="pulse-code docs-code"><div class="pulse-code__head"><span class="pulse-code__file">HTML</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-tooltip-host" type="button" data-pulse-copy aria-label="Copy the code"><i class="pulse-icon pulse-icon--copy" aria-hidden="true"></i><span class="pulse-tooltip pulse-tooltip--bottom pulse-tooltip--end" aria-hidden="true">Copy to clipboard</span></button></div><pre><code><span class="pulse-code__cmt">&lt;!doctype html&gt;</span>
+&lt;<span class="pulse-code__kw">html</span> <span class="pulse-code__key">lang</span>=<span class="pulse-code__str">"en"</span> <span class="pulse-code__key">data-theme</span>=<span class="pulse-code__str">"light"</span> <span class="pulse-code__key">data-surface</span>=<span class="pulse-code__str">"web"</span>&gt;
+&lt;<span class="pulse-code__kw">head</span>&gt;
+  &lt;<span class="pulse-code__kw">meta</span> <span class="pulse-code__key">charset</span>=<span class="pulse-code__str">"utf-8"</span>&gt;
+  &lt;<span class="pulse-code__kw">meta</span> <span class="pulse-code__key">name</span>=<span class="pulse-code__str">"viewport"</span> <span class="pulse-code__key">content</span>=<span class="pulse-code__str">"width=device-width, initial-scale=1"</span>&gt;
+  &lt;<span class="pulse-code__kw">title</span>&gt;Page title&lt;/<span class="pulse-code__kw">title</span>&gt;
+  &lt;<span class="pulse-code__kw">link</span> <span class="pulse-code__key">rel</span>=<span class="pulse-code__str">"preconnect"</span> <span class="pulse-code__key">href</span>=<span class="pulse-code__str">"https://fonts.googleapis.com"</span>&gt;
+  &lt;<span class="pulse-code__kw">link</span> <span class="pulse-code__key">href</span>=<span class="pulse-code__str">"https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap"</span> <span class="pulse-code__key">rel</span>=<span class="pulse-code__str">"stylesheet"</span>&gt;
+  &lt;<span class="pulse-code__kw">link</span> <span class="pulse-code__key">rel</span>=<span class="pulse-code__str">"stylesheet"</span> <span class="pulse-code__key">href</span>=<span class="pulse-code__str">"https://cdn.unmanned.team/pulse/v1/pulse-tokens.css"</span>&gt;
+  &lt;<span class="pulse-code__kw">link</span> <span class="pulse-code__key">rel</span>=<span class="pulse-code__str">"stylesheet"</span> <span class="pulse-code__key">href</span>=<span class="pulse-code__str">"https://cdn.unmanned.team/pulse/v1/pulse-icons.css"</span>&gt;
+  &lt;<span class="pulse-code__kw">link</span> <span class="pulse-code__key">rel</span>=<span class="pulse-code__str">"stylesheet"</span> <span class="pulse-code__key">href</span>=<span class="pulse-code__str">"https://cdn.unmanned.team/pulse/v1/pulse-components.css"</span>&gt;
+  &lt;<span class="pulse-code__kw">script</span> <span class="pulse-code__key">src</span>=<span class="pulse-code__str">"https://cdn.unmanned.team/pulse/v1/pulse.js"</span> <span class="pulse-code__key">defer</span>&gt;&lt;/<span class="pulse-code__kw">script</span>&gt;
+  &lt;<span class="pulse-code__kw">style</span>&gt;
+    <span class="pulse-code__cmt">/* Your page's own layout. Unlayered, so it always wins over Pulse. Use Pulse tokens, not hex or px. */</span>
+    body { <span class="pulse-code__key">margin</span>: <span class="pulse-code__num">0</span>; <span class="pulse-code__key">background</span>: <span class="pulse-code__fn">var</span>(--color-surface-page); <span class="pulse-code__key">color</span>: <span class="pulse-code__fn">var</span>(--color-text-primary); <span class="pulse-code__key">font-family</span>: <span class="pulse-code__fn">var</span>(--font-sans); }
+    main { <span class="pulse-code__key">max-width</span>: <span class="pulse-code__num">720px</span>; <span class="pulse-code__key">margin</span>: <span class="pulse-code__num">0</span> auto; <span class="pulse-code__key">padding</span>: <span class="pulse-code__fn">var</span>(--space-<span class="pulse-code__num">64</span>) <span class="pulse-code__fn">var</span>(--space-<span class="pulse-code__num">16</span>); }
+    h<span class="pulse-code__num">1</span> { <span class="pulse-code__key">margin</span>: <span class="pulse-code__fn">var</span>(--space-<span class="pulse-code__num">12</span>) <span class="pulse-code__num">0</span> <span class="pulse-code__fn">var</span>(--space-<span class="pulse-code__num">16</span>); <span class="pulse-code__key">font</span>: <span class="pulse-code__num">600</span> <span class="pulse-code__fn">var</span>(--type-display-size) / <span class="pulse-code__fn">var</span>(--type-display-line-height) <span class="pulse-code__fn">var</span>(--font-sans); }
+    .lede { <span class="pulse-code__key">margin</span>: <span class="pulse-code__num">0</span> <span class="pulse-code__num">0</span> <span class="pulse-code__fn">var</span>(--space-<span class="pulse-code__num">32</span>); <span class="pulse-code__key">font-size</span>: <span class="pulse-code__fn">var</span>(--type-body-lede-size); <span class="pulse-code__key">line-height</span>: <span class="pulse-code__fn">var</span>(--type-body-lede-line-height); <span class="pulse-code__key">color</span>: <span class="pulse-code__fn">var</span>(--color-text-secondary); }
+  &lt;/<span class="pulse-code__kw">style</span>&gt;
+&lt;/<span class="pulse-code__kw">head</span>&gt;
+&lt;<span class="pulse-code__kw">body</span>&gt;
+  &lt;<span class="pulse-code__kw">main</span>&gt;
+    &lt;<span class="pulse-code__kw">p</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-eyebrow pulse-eyebrow--dot"</span>&gt;Don’t get hacked&lt;/<span class="pulse-code__kw">p</span>&gt;
+    &lt;<span class="pulse-code__kw">h1</span>&gt;Your headline.&lt;/<span class="pulse-code__kw">h1</span>&gt;
+    &lt;<span class="pulse-code__kw">p</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"lede"</span>&gt;One or two sentences that say what this page is for.&lt;/<span class="pulse-code__kw">p</span>&gt;
+    &lt;<span class="pulse-code__kw">div</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-actions"</span>&gt;
+      &lt;<span class="pulse-code__kw">a</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-btn pulse-btn--primary pulse-btn--lg"</span> <span class="pulse-code__key">href</span>=<span class="pulse-code__str">"#"</span>&gt;Main action&lt;/<span class="pulse-code__kw">a</span>&gt;
+      &lt;<span class="pulse-code__kw">a</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-link"</span> <span class="pulse-code__key">href</span>=<span class="pulse-code__str">"#"</span>&gt;See how it works &lt;<span class="pulse-code__kw">i</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-icon pulse-icon--arrow-right"</span> <span class="pulse-code__key">aria-hidden</span>=<span class="pulse-code__str">"true"</span>&gt;&lt;/<span class="pulse-code__kw">i</span>&gt;&lt;/<span class="pulse-code__kw">a</span>&gt;
+    &lt;/<span class="pulse-code__kw">div</span>&gt;
+  &lt;/<span class="pulse-code__kw">main</span>&gt;
+&lt;/<span class="pulse-code__kw">body</span>&gt;
+&lt;/<span class="pulse-code__kw">html</span>&gt;</code></pre></div>
     <div class="docs-next"><a class="pulse-link pulse-link--sm" href="index.html">Getting started</a><a class="pulse-link pulse-link--sm" href="foundations.html">Foundations <i class="pulse-icon pulse-icon--arrow-right" aria-hidden="true"></i></a></div>
     
   </main>

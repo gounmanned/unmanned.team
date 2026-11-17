@@ -116,13 +116,13 @@
     <output class="pulse-slider__value" for="coverage" data-pulse-mirror="%">40%</output>
   </div>
   <input class="pulse-slider__input" id="coverage" type="range" min="0" max="100" step="5" value="40">
-</div></div><div class="pulse-code docs-code"><div class="pulse-code__head"><span class="pulse-code__file">HTML</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-tooltip-host" type="button" data-pulse-copy aria-label="Copy the code"><i class="pulse-icon pulse-icon--copy" aria-hidden="true"></i><span class="pulse-tooltip pulse-tooltip--bottom pulse-tooltip--end" aria-hidden="true">Copy to clipboard</span></button></div><pre><code>&lt;div class=&quot;pulse-slider&quot; style=&quot;width: 100%; max-width: 320px&quot;&gt;
-  &lt;div class=&quot;pulse-slider__head&quot;&gt;
-    &lt;label class=&quot;pulse-slider__label&quot; for=&quot;coverage&quot;&gt;Coverage&lt;/label&gt;
-    &lt;output class=&quot;pulse-slider__value&quot; for=&quot;coverage&quot; data-pulse-mirror=&quot;%&quot;&gt;40%&lt;/output&gt;
-  &lt;/div&gt;
-  &lt;input class=&quot;pulse-slider__input&quot; id=&quot;coverage&quot; type=&quot;range&quot; min=&quot;0&quot; max=&quot;100&quot; step=&quot;5&quot; value=&quot;40&quot;&gt;
-&lt;/div&gt;</code></pre></div></div>
+</div></div><div class="pulse-code docs-code"><div class="pulse-code__head"><span class="pulse-code__file">HTML</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-tooltip-host" type="button" data-pulse-copy aria-label="Copy the code"><i class="pulse-icon pulse-icon--copy" aria-hidden="true"></i><span class="pulse-tooltip pulse-tooltip--bottom pulse-tooltip--end" aria-hidden="true">Copy to clipboard</span></button></div><pre><code>&lt;<span class="pulse-code__kw">div</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-slider"</span> <span class="pulse-code__key">style</span>=<span class="pulse-code__str">"width: 100%; max-width: 320px"</span>&gt;
+  &lt;<span class="pulse-code__kw">div</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-slider__head"</span>&gt;
+    &lt;<span class="pulse-code__kw">label</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-slider__label"</span> <span class="pulse-code__key">for</span>=<span class="pulse-code__str">"coverage"</span>&gt;Coverage&lt;/<span class="pulse-code__kw">label</span>&gt;
+    &lt;<span class="pulse-code__kw">output</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-slider__value"</span> <span class="pulse-code__key">for</span>=<span class="pulse-code__str">"coverage"</span> <span class="pulse-code__key">data-pulse-mirror</span>=<span class="pulse-code__str">"%"</span>&gt;40%&lt;/<span class="pulse-code__kw">output</span>&gt;
+  &lt;/<span class="pulse-code__kw">div</span>&gt;
+  &lt;<span class="pulse-code__kw">input</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-slider__input"</span> <span class="pulse-code__key">id</span>=<span class="pulse-code__str">"coverage"</span> <span class="pulse-code__key">type</span>=<span class="pulse-code__str">"range"</span> <span class="pulse-code__key">min</span>=<span class="pulse-code__str">"0"</span> <span class="pulse-code__key">max</span>=<span class="pulse-code__str">"100"</span> <span class="pulse-code__key">step</span>=<span class="pulse-code__str">"5"</span> <span class="pulse-code__key">value</span>=<span class="pulse-code__str">"40"</span>&gt;
+&lt;/<span class="pulse-code__kw">div</span>&gt;</code></pre></div></div>
 <h2>How it works</h2>
 <p>pulse.js keeps the fill in step with the thumb, and writes the value into any <code>&lt;output for="its-id"&gt;</code> (or any element with <code>data-pulse-value-of="its-id"</code>) that has a format attribute. The slider’s <code>aria-valuetext</code> follows its first output, so screen readers hear the formatted value.</p>
 <h2>Formats</h2>
@@ -135,28 +135,28 @@
     <input class="pulse-slider__input" id="employees" type="range" min="10" max="1000" step="10" value="120">
   </div>
   <span class="pulse-field__help"><output for="employees" data-pulse-format="currency" data-pulse-scale="4" data-pulse-suffix=" / month">$480 / month</output></span>
-</div></div><div class="pulse-code docs-code"><div class="pulse-code__head"><span class="pulse-code__file">HTML</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-tooltip-host" type="button" data-pulse-copy aria-label="Copy the code"><i class="pulse-icon pulse-icon--copy" aria-hidden="true"></i><span class="pulse-tooltip pulse-tooltip--bottom pulse-tooltip--end" aria-hidden="true">Copy to clipboard</span></button></div><pre><code>&lt;div class=&quot;pulse-field&quot; style=&quot;width: 100%; max-width: 360px&quot;&gt;
-  &lt;div class=&quot;pulse-slider&quot;&gt;
-    &lt;div class=&quot;pulse-slider__head&quot;&gt;
-      &lt;label class=&quot;pulse-slider__label&quot; for=&quot;employees&quot;&gt;Employees&lt;/label&gt;
-      &lt;output class=&quot;pulse-slider__value&quot; for=&quot;employees&quot; data-pulse-format=&quot;number&quot;&gt;120&lt;/output&gt;
-    &lt;/div&gt;
-    &lt;input class=&quot;pulse-slider__input&quot; id=&quot;employees&quot; type=&quot;range&quot; min=&quot;10&quot; max=&quot;1000&quot; step=&quot;10&quot; value=&quot;120&quot;&gt;
-  &lt;/div&gt;
-  &lt;span class=&quot;pulse-field__help&quot;&gt;&lt;output for=&quot;employees&quot; data-pulse-format=&quot;currency&quot; data-pulse-scale=&quot;4&quot; data-pulse-suffix=&quot; / month&quot;&gt;$480 / month&lt;/output&gt;&lt;/span&gt;
-&lt;/div&gt;</code></pre></div></div>
+</div></div><div class="pulse-code docs-code"><div class="pulse-code__head"><span class="pulse-code__file">HTML</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-tooltip-host" type="button" data-pulse-copy aria-label="Copy the code"><i class="pulse-icon pulse-icon--copy" aria-hidden="true"></i><span class="pulse-tooltip pulse-tooltip--bottom pulse-tooltip--end" aria-hidden="true">Copy to clipboard</span></button></div><pre><code>&lt;<span class="pulse-code__kw">div</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-field"</span> <span class="pulse-code__key">style</span>=<span class="pulse-code__str">"width: 100%; max-width: 360px"</span>&gt;
+  &lt;<span class="pulse-code__kw">div</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-slider"</span>&gt;
+    &lt;<span class="pulse-code__kw">div</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-slider__head"</span>&gt;
+      &lt;<span class="pulse-code__kw">label</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-slider__label"</span> <span class="pulse-code__key">for</span>=<span class="pulse-code__str">"employees"</span>&gt;Employees&lt;/<span class="pulse-code__kw">label</span>&gt;
+      &lt;<span class="pulse-code__kw">output</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-slider__value"</span> <span class="pulse-code__key">for</span>=<span class="pulse-code__str">"employees"</span> <span class="pulse-code__key">data-pulse-format</span>=<span class="pulse-code__str">"number"</span>&gt;120&lt;/<span class="pulse-code__kw">output</span>&gt;
+    &lt;/<span class="pulse-code__kw">div</span>&gt;
+    &lt;<span class="pulse-code__kw">input</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-slider__input"</span> <span class="pulse-code__key">id</span>=<span class="pulse-code__str">"employees"</span> <span class="pulse-code__key">type</span>=<span class="pulse-code__str">"range"</span> <span class="pulse-code__key">min</span>=<span class="pulse-code__str">"10"</span> <span class="pulse-code__key">max</span>=<span class="pulse-code__str">"1000"</span> <span class="pulse-code__key">step</span>=<span class="pulse-code__str">"10"</span> <span class="pulse-code__key">value</span>=<span class="pulse-code__str">"120"</span>&gt;
+  &lt;/<span class="pulse-code__kw">div</span>&gt;
+  &lt;<span class="pulse-code__kw">span</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-field__help"</span>&gt;&lt;<span class="pulse-code__kw">output</span> <span class="pulse-code__key">for</span>=<span class="pulse-code__str">"employees"</span> <span class="pulse-code__key">data-pulse-format</span>=<span class="pulse-code__str">"currency"</span> <span class="pulse-code__key">data-pulse-scale</span>=<span class="pulse-code__str">"4"</span> <span class="pulse-code__key">data-pulse-suffix</span>=<span class="pulse-code__str">" / month"</span>&gt;$480 / month&lt;/<span class="pulse-code__kw">output</span>&gt;&lt;/<span class="pulse-code__kw">span</span>&gt;
+&lt;/<span class="pulse-code__kw">div</span>&gt;</code></pre></div></div>
 <div class="docs-table"><table><thead><tr><th>Attribute</th><th>What it does</th></tr></thead><tbody>
 <tr><td><code>data-pulse-format</code></td><td><code>number</code> (1,200), <code>currency</code> ($480; <code>data-pulse-currency</code> picks it, USD by default) or <code>percent</code> (40%).</td></tr>
 <tr><td><code>data-pulse-scale</code></td><td>Multiplies the value first: 120 employees at <code>4</code> is $480.</td></tr>
 <tr><td><code>data-pulse-prefix</code>, <code>data-pulse-suffix</code></td><td>Text before and after. <code>data-pulse-mirror="%"</code> is the short form of a suffix.</td></tr>
 <tr><td><code>data-pulse-formatter</code></td><td>Your own function, for anything else.</td></tr>
 </tbody></table></div>
-<div class="pulse-code docs-code"><div class="pulse-code__head"><span class="pulse-code__file">HTML</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-tooltip-host" type="button" data-pulse-copy aria-label="Copy the code"><i class="pulse-icon pulse-icon--copy" aria-hidden="true"></i><span class="pulse-tooltip pulse-tooltip--bottom pulse-tooltip--end" aria-hidden="true">Copy to clipboard</span></button></div><pre><code>&lt;output for=&quot;seats&quot; data-pulse-formatter=&quot;seats&quot;&gt;&lt;/output&gt;
-&lt;script&gt;
-  Pulse.formats.seats = function (value) {
-    return value === 1 ? &#x27;1 seat&#x27; : value + &#x27; seats&#x27;;
+<div class="pulse-code docs-code"><div class="pulse-code__head"><span class="pulse-code__file">HTML</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-tooltip-host" type="button" data-pulse-copy aria-label="Copy the code"><i class="pulse-icon pulse-icon--copy" aria-hidden="true"></i><span class="pulse-tooltip pulse-tooltip--bottom pulse-tooltip--end" aria-hidden="true">Copy to clipboard</span></button></div><pre><code>&lt;<span class="pulse-code__kw">output</span> <span class="pulse-code__key">for</span>=<span class="pulse-code__str">"seats"</span> <span class="pulse-code__key">data-pulse-formatter</span>=<span class="pulse-code__str">"seats"</span>&gt;&lt;/<span class="pulse-code__kw">output</span>&gt;
+&lt;<span class="pulse-code__kw">script</span>&gt;
+  Pulse.formats.seats = <span class="pulse-code__kw">function</span> (value) {
+    <span class="pulse-code__kw">return</span> value === <span class="pulse-code__num">1</span> ? <span class="pulse-code__str">'1 seat'</span> : value + <span class="pulse-code__str">' seats'</span>;
   };
-&lt;/script&gt;</code></pre></div>
+&lt;/<span class="pulse-code__kw">script</span>&gt;</code></pre></div>
 <h2>Accessibility</h2>
 <ul><li>It’s a real range input: arrow keys step, Page Up and Down jump, and screen readers announce the value. Give it a <code>&lt;label for&gt;</code>.</li></ul>
     <div class="docs-next"><a class="pulse-link pulse-link--sm" href="segmented.html">Segmented control</a><a class="pulse-link pulse-link--sm" href="step-number.html">Step number <i class="pulse-icon pulse-icon--arrow-right" aria-hidden="true"></i></a></div>

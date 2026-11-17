@@ -127,11 +127,11 @@
   <p class="pulse-eyebrow">Meet a Dot</p>
   <h2>Your Dot. A little offensive.</h2>
   <p>A sentence or two that says what this section shows.</p>
-</section></div><div class="pulse-code docs-code"><div class="pulse-code__head"><span class="pulse-code__file">HTML</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-tooltip-host" type="button" data-pulse-copy aria-label="Copy the code"><i class="pulse-icon pulse-icon--copy" aria-hidden="true"></i><span class="pulse-tooltip pulse-tooltip--bottom pulse-tooltip--end" aria-hidden="true">Copy to clipboard</span></button></div><pre><code>&lt;section class=&quot;section-intro&quot;&gt;
-  &lt;p class=&quot;pulse-eyebrow&quot;&gt;Meet a Dot&lt;/p&gt;
-  &lt;h2&gt;Your Dot. A little offensive.&lt;/h2&gt;
-  &lt;p&gt;A sentence or two that says what this section shows.&lt;/p&gt;
-&lt;/section&gt;</code></pre></div></div>
+</section></div><div class="pulse-code docs-code"><div class="pulse-code__head"><span class="pulse-code__file">HTML</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-tooltip-host" type="button" data-pulse-copy aria-label="Copy the code"><i class="pulse-icon pulse-icon--copy" aria-hidden="true"></i><span class="pulse-tooltip pulse-tooltip--bottom pulse-tooltip--end" aria-hidden="true">Copy to clipboard</span></button></div><pre><code>&lt;<span class="pulse-code__kw">section</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"section-intro"</span>&gt;
+  &lt;<span class="pulse-code__kw">p</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-eyebrow"</span>&gt;Meet a Dot&lt;/<span class="pulse-code__kw">p</span>&gt;
+  &lt;<span class="pulse-code__kw">h2</span>&gt;Your Dot. A little offensive.&lt;/<span class="pulse-code__kw">h2</span>&gt;
+  &lt;<span class="pulse-code__kw">p</span>&gt;A sentence or two that says what this section shows.&lt;/<span class="pulse-code__kw">p</span>&gt;
+&lt;/<span class="pulse-code__kw">section</span>&gt;</code></pre></div></div>
 
 <h2 id="dark">Dark section on a light page</h2>
 <p>Put <code>data-theme="dark"</code> on the section and give it the page surface as its background. Everything inside follows: text, borders, buttons, links. Never pick dark colors by hand. A dark drawer works the same way: <code>data-theme="dark"</code> on the <code>&lt;dialog&gt;</code>.</p>
@@ -139,19 +139,19 @@
   <p class="pulse-eyebrow">The team</p>
   <p>Text, borders and buttons inside follow the dark colors.</p>
   <a class="pulse-btn pulse-btn--primary" href="#">Buy a Dot</a>
-</section></div><div class="pulse-code docs-code"><div class="pulse-code__head"><span class="pulse-code__file">HTML</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-tooltip-host" type="button" data-pulse-copy aria-label="Copy the code"><i class="pulse-icon pulse-icon--copy" aria-hidden="true"></i><span class="pulse-tooltip pulse-tooltip--bottom pulse-tooltip--end" aria-hidden="true">Copy to clipboard</span></button></div><pre><code>&lt;section data-theme=&quot;dark&quot; style=&quot;background: var(--color-surface-page); color: var(--color-text-primary); padding: var(--space-32)&quot;&gt;
-  &lt;p class=&quot;pulse-eyebrow&quot;&gt;The team&lt;/p&gt;
-  &lt;p&gt;Text, borders and buttons inside follow the dark colors.&lt;/p&gt;
-  &lt;a class=&quot;pulse-btn pulse-btn--primary&quot; href=&quot;#&quot;&gt;Buy a Dot&lt;/a&gt;
-&lt;/section&gt;</code></pre></div></div>
+</section></div><div class="pulse-code docs-code"><div class="pulse-code__head"><span class="pulse-code__file">HTML</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-tooltip-host" type="button" data-pulse-copy aria-label="Copy the code"><i class="pulse-icon pulse-icon--copy" aria-hidden="true"></i><span class="pulse-tooltip pulse-tooltip--bottom pulse-tooltip--end" aria-hidden="true">Copy to clipboard</span></button></div><pre><code>&lt;<span class="pulse-code__kw">section</span> <span class="pulse-code__key">data-theme</span>=<span class="pulse-code__str">"dark"</span> <span class="pulse-code__key">style</span>=<span class="pulse-code__str">"background: var(--color-surface-page); color: var(--color-text-primary); padding: var(--space-32)"</span>&gt;
+  &lt;<span class="pulse-code__kw">p</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-eyebrow"</span>&gt;The team&lt;/<span class="pulse-code__kw">p</span>&gt;
+  &lt;<span class="pulse-code__kw">p</span>&gt;Text, borders and buttons inside follow the dark colors.&lt;/<span class="pulse-code__kw">p</span>&gt;
+  &lt;<span class="pulse-code__kw">a</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-btn pulse-btn--primary"</span> <span class="pulse-code__key">href</span>=<span class="pulse-code__str">"#"</span>&gt;Buy a Dot&lt;/<span class="pulse-code__kw">a</span>&gt;
+&lt;/<span class="pulse-code__kw">section</span>&gt;</code></pre></div></div>
 
 <h2 id="top">Back to top</h2>
 <p>On long pages: a neutral button with the <code>arrow-up</code> icon and the word “Top”, with the medium shadow. Neutral keeps it quiet (pink is for actions), <code>pulse-btn--surface</code> keeps it solid over the content scrolling behind it, and the word says what it does, so it needs no <code>aria-label</code>. Fix it 24px from the bottom right (16px on phones) and show it once the reader has scrolled a screen or two; showing and hiding it is the page’s script.</p>
 <div class="docs-example"><div class="docs-live"><button class="pulse-btn pulse-btn--neutral pulse-btn--surface" type="button" style="box-shadow: var(--shadow-elevation-default-md)">
   <i class="pulse-icon pulse-icon--arrow-up" aria-hidden="true"></i> Top
-</button></div><div class="pulse-code docs-code"><div class="pulse-code__head"><span class="pulse-code__file">HTML</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-tooltip-host" type="button" data-pulse-copy aria-label="Copy the code"><i class="pulse-icon pulse-icon--copy" aria-hidden="true"></i><span class="pulse-tooltip pulse-tooltip--bottom pulse-tooltip--end" aria-hidden="true">Copy to clipboard</span></button></div><pre><code>&lt;button class=&quot;pulse-btn pulse-btn--neutral pulse-btn--surface&quot; type=&quot;button&quot; style=&quot;box-shadow: var(--shadow-elevation-default-md)&quot;&gt;
-  &lt;i class=&quot;pulse-icon pulse-icon--arrow-up&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt; Top
-&lt;/button&gt;</code></pre></div></div>
+</button></div><div class="pulse-code docs-code"><div class="pulse-code__head"><span class="pulse-code__file">HTML</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-tooltip-host" type="button" data-pulse-copy aria-label="Copy the code"><i class="pulse-icon pulse-icon--copy" aria-hidden="true"></i><span class="pulse-tooltip pulse-tooltip--bottom pulse-tooltip--end" aria-hidden="true">Copy to clipboard</span></button></div><pre><code>&lt;<span class="pulse-code__kw">button</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-btn pulse-btn--neutral pulse-btn--surface"</span> <span class="pulse-code__key">type</span>=<span class="pulse-code__str">"button"</span> <span class="pulse-code__key">style</span>=<span class="pulse-code__str">"box-shadow: var(--shadow-elevation-default-md)"</span>&gt;
+  &lt;<span class="pulse-code__kw">i</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-icon pulse-icon--arrow-up"</span> <span class="pulse-code__key">aria-hidden</span>=<span class="pulse-code__str">"true"</span>&gt;&lt;/<span class="pulse-code__kw">i</span>&gt; Top
+&lt;/<span class="pulse-code__kw">button</span>&gt;</code></pre></div></div>
     <div class="docs-next"><a class="pulse-link pulse-link--sm" href="foundations.html">Foundations</a><a class="pulse-link pulse-link--sm" href="alert-toast.html">Alert and toast <i class="pulse-icon pulse-icon--arrow-right" aria-hidden="true"></i></a></div>
     
   </main>

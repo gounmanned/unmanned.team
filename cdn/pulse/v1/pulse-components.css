@@ -222,6 +222,8 @@
 .pulse-textarea { min-height: 120px; padding: var(--space-12); resize: vertical; }
 .pulse-textarea--lg { min-height: 144px; padding: var(--space-16); font-size: var(--type-body-lg-size); line-height: var(--type-body-lg-line-height); }
 .pulse-select { appearance: none; -webkit-appearance: none; padding-right: var(--space-40); }
+/* A button that opens a branded listbox (Dropdown) looks like a select. */
+button.pulse-select { display: block; text-align: start; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .pulse-select-wrap { position: relative; display: block; }
 .pulse-select-wrap::after { content: ""; position: absolute; right: var(--space-12); top: 50%; width: var(--size-icon-16); height: var(--size-icon-16); transform: translateY(-50%); pointer-events: none;
   background: var(--color-text-secondary); -webkit-mask: var(--pulse-i-caret-down-regular) center / contain no-repeat; mask: var(--pulse-i-caret-down-regular) center / contain no-repeat; }
@@ -301,6 +303,12 @@
 .pulse-dismiss { appearance: none; border: 0; background: transparent; color: var(--color-text-tertiary); width: var(--control-height-sm); height: var(--control-height-sm); margin: calc(var(--space-4) * -1) calc(var(--space-4) * -1) 0 0; border-radius: var(--radius-control); cursor: pointer; display: grid; place-items: center; }
 .pulse-toast .pulse-dismiss { color: inherit; }
 .pulse-dismiss:hover { background: var(--color-interactive-hover); }
+/* Toaster: where Pulse.toast() stacks toasts, bottom right (bottom, full width on phones). */
+.pulse-toaster { position: fixed; z-index: 1100; right: var(--space-24); bottom: var(--space-24); display: flex; flex-direction: column; gap: var(--space-8);
+  width: min(400px, calc(100vw - 2 * var(--space-16))); pointer-events: none; }
+.pulse-toaster > .pulse-toast { pointer-events: auto; animation: pulse-toast-in .2s ease-out; }
+@keyframes pulse-toast-in { from { opacity: 0; transform: translateY(var(--space-8)); } }
+@media (max-width: 599px) { .pulse-toaster { right: var(--space-16); bottom: var(--space-16); } }
 
 /* ---------- Progress ---------- */
 .pulse-progress { display: flex; flex-direction: column; gap: var(--space-8); font-family: var(--font-sans); }
@@ -335,6 +343,16 @@
 .pulse-menu-item:focus-visible, .pulse-menu-item.is-focus { outline: 0; background-color: var(--color-interactive-hover); box-shadow: inset 0 0 0 var(--border-width-2) var(--color-border-focus); }
 .pulse-menu-item[aria-disabled="true"], .pulse-menu-item.is-disabled { color: var(--color-text-disabled); background-color: transparent; cursor: not-allowed; }
 .pulse-menu-item[aria-disabled="true"]:hover { background-color: transparent; }
+/* The check shows on the chosen option only, so every option can carry one. */
+.pulse-menu-item:not([aria-selected="true"]):not(.is-selected) > .pulse-menu-item__check { visibility: hidden; }
+.pulse-dropdown[hidden] { display: none; }
+/* Anchor: wrap a trigger and its dropdown to place the list under the trigger, lined up with its start (--end: its end). */
+.pulse-menu-anchor { position: relative; display: inline-block; }
+.pulse-menu-anchor > .pulse-dropdown { position: absolute; z-index: 50; top: calc(100% + var(--space-8)); left: 0; }
+.pulse-menu-anchor--end > .pulse-dropdown { left: auto; right: 0; }
+.pulse-select-wrap.pulse-menu-anchor { display: block; }
+.pulse-select-wrap.pulse-menu-anchor > .pulse-dropdown:not(.pulse-dropdown--nav) { width: 100%; top: calc(100% + var(--space-4)); }
+.pulse-dropdown[role="listbox"]:focus-visible { outline: 0; box-shadow: var(--shadow-elevation-default-md), var(--shadow-focus-ring); }
 /* Nav menu: links with a title and a line of description. Its own width (320px), lined up with the start of its trigger by the page.
    Hover is the gray background and a pink title; the current page is an ink, semibold title. __label groups items (also the phone menu). */
 .pulse-dropdown--nav { width: 320px; max-width: calc(100vw - 2 * var(--space-16)); }
@@ -502,6 +520,7 @@ html:has(dialog.pulse-drawer:modal) { overflow: hidden; }
   .pulse-tooltip-host > .pulse-tooltip { transform: none; transition: none; }
   dialog.pulse-drawer, dialog.pulse-drawer::backdrop { transition: none; }
   .pulse-eyebrow--dot::before { animation: none; }
+  .pulse-toaster > .pulse-toast { animation: none; }
   .pulse-btn[aria-busy="true"]::before { animation-duration: 2.4s; }
   .pulse-progress--indeterminate .pulse-progress__fill { animation: none; width: 100%; opacity: .5; }
 }

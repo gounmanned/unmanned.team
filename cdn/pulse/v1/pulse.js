@@ -28,8 +28,33 @@
    screen reader hears it too.
 
    Slider
-     <input class="pulse-slider__input" type="range" …>   keeps the fill in step with the thumb. An <output for="its-id"
-     data-pulse-mirror="%"> shows the value with that suffix (data-pulse-mirror="" for none). Other formats are the page's job. */
+     <input class="pulse-slider__input" type="range" …>   keeps the fill in step with the thumb. Any <output for="its-id"> or element
+     with data-pulse-value-of="its-id" shows the value, formatted by its attributes:
+       data-pulse-format="number" | "currency" | "percent"   (data-pulse-currency="USD" by default)
+       data-pulse-scale="4"          multiplies first (120 employees x $4 = $480)
+       data-pulse-prefix / data-pulse-suffix   text around it; data-pulse-mirror="%" is the short form of a suffix
+       data-pulse-formatter="name"   your own: Pulse.formats.name = function (value, input) { return '…'; }
+     The slider's aria-valuetext follows its <output>, so screen readers hear the formatted value.
+
+   Tabs
+     <div class="pulse-tabs pulse-tabs--line" role="tablist" aria-label="…"><button class="pulse-tab" role="tab" aria-selected="true" aria-controls="panel-a">…</button>…</div>
+     <div id="panel-a" role="tabpanel">…</div>
+   A click, or the arrow keys, Home and End, selects a tab and shows its panel (the others get hidden). Fires "pulse:tab" on the tablist.
+
+   Menu (dropdown and nav menu)
+     <div class="pulse-menu-anchor"><button data-pulse-menu aria-expanded="false" aria-controls="m">…</button>
+       <nav class="pulse-dropdown pulse-dropdown--nav" id="m" hidden>…</nav></div>
+   data-pulse-menu opens and closes the list it controls. Esc, a click outside or tabbing away closes it. A listbox
+   (role="listbox") also gets the arrow keys, Enter and Space; choosing an option marks it aria-selected, writes its label into the
+   trigger's [data-pulse-label] and fires "pulse:select" (detail: value, option) on the listbox. Only triggers with data-pulse-menu
+   are touched, so a page that runs its own menu script is left alone.
+
+   Toast
+     Pulse.toast({ title: 'Report exported', text: '…', tone: 'success', action: { label: 'View', href: '…' }, duration: 5000 })
+     or a button with data-pulse-toast="Report exported" (and data-pulse-toast-tone, -text).
+   Stacks toasts bottom right, removes them after the duration (0 keeps it), pauses while hovered or focused. Any .pulse-dismiss
+   inside an alert or toast removes it (fires "pulse:dismiss" first; cancel it to keep it).
+*/
 (function () {
   'use strict';
   if (typeof document === 'undefined') return;
@@ -246,15 +271,188 @@
     }, function () {});
   });
 
-  // Slider: keep the fill (--v) and a mirrored <output> in step with the value.
+  // Slider: keep the fill (--v) and any formatted outputs in step with the value.
+  window.Pulse.formats = window.Pulse.formats || {};
+  function formatValue(el, v, input) {
+    var name = el.getAttribute('data-pulse-formatter');
+    if (name && typeof window.Pulse.formats[name] === 'function') return String(window.Pulse.formats[name](v, input));
+    var scale = parseFloat(el.getAttribute('data-pulse-scale')); if (!isNaN(scale)) v = v * scale;
+    var f = el.getAttribute('data-pulse-format'), text;
+    try {
+      if (f === 'currency') text = new Intl.NumberFormat(undefined, { style: 'currency', currency: el.getAttribute('data-pulse-currency') || 'USD', maximumFractionDigits: v % 1 ? 2 : 0 }).format(v);
+      else if (f === 'number') text = new Intl.NumberFormat().format(v);
+      else if (f === 'percent') text = new Intl.NumberFormat().format(v) + '%';
+      else text = String(v);
+    } catch (e) { text = String(v); }
+    var suffix = el.hasAttribute('data-pulse-suffix') ? el.getAttribute('data-pulse-suffix') : (el.getAttribute('data-pulse-mirror') || '');
+    return (el.getAttribute('data-pulse-prefix') || '') + text + suffix;
+  }
+  var FORMAT_ATTRS = ['data-pulse-format', 'data-pulse-formatter', 'data-pulse-mirror', 'data-pulse-scale', 'data-pulse-prefix', 'data-pulse-suffix'];
   function syncSlider(input) {
     var min = parseFloat(input.min || 0), max = parseFloat(input.max || 100), v = parseFloat(input.value);
     input.style.setProperty('--v', ((v - min) / ((max - min) || 1) * 100) + '%');
     if (!input.id) return;
-    var out = (input.getRootNode().querySelector ? input.getRootNode() : document).querySelector('output[for~="' + input.id + '"][data-pulse-mirror]');
-    if (out) out.textContent = input.value + out.getAttribute('data-pulse-mirror');
+    var root = input.getRootNode().querySelectorAll ? input.getRootNode() : document, first = null;
+    [].forEach.call(root.querySelectorAll('output[for~="' + input.id + '"], [data-pulse-value-of="' + input.id + '"]'), function (el) {
+      if (!FORMAT_ATTRS.some(function (a) { return el.hasAttribute(a); })) return;
+      el.textContent = formatValue(el, v, input);
+      if (!first && el.tagName === 'OUTPUT') first = el;
+    });
+    if (first) input.setAttribute('aria-valuetext', first.textContent);
   }
   document.addEventListener('input', function (e) { if (e.target && e.target.classList && e.target.classList.contains('pulse-slider__input')) syncSlider(e.target); });
   function syncAll() { [].forEach.call(document.querySelectorAll('.pulse-slider__input'), syncSlider); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', syncAll); else syncAll();
+
+  function byId(from, id) { var rn = from.getRootNode(); return id ? (rn.getElementById ? rn.getElementById(id) : document.getElementById(id)) : null; }
+
+  // ---------- Tabs ----------
+  function tabsOf(list) { return [].filter.call(list.querySelectorAll('[role="tab"]'), function (t) { return t.closest('[role="tablist"]') === list && t.getAttribute('aria-disabled') !== 'true' && !t.disabled; }); }
+  function selectTab(tab, focus) {
+    var list = tab.closest('[role="tablist"]');
+    [].forEach.call(list.querySelectorAll('[role="tab"]'), function (t) {
+      if (t.closest('[role="tablist"]') !== list) return;
+      var on = t === tab, panel = byId(t, t.getAttribute('aria-controls'));
+      t.setAttribute('aria-selected', on ? 'true' : 'false'); t.tabIndex = on ? 0 : -1;
+      if (panel) panel.hidden = !on;
+    });
+    if (focus) tab.focus();
+    list.dispatchEvent(new CustomEvent('pulse:tab', { bubbles: true, detail: { tab: tab } }));
+  }
+  function isPulseTab(t) { var l = t && t.closest && t.closest('[role="tablist"]'); return l && l.classList.contains('pulse-tabs') ? l : null; }
+  document.addEventListener('click', function (e) {
+    var tab = e.target.closest && e.target.closest('[role="tab"]');
+    if (tab && isPulseTab(tab) && tab.getAttribute('aria-disabled') !== 'true') selectTab(tab, false);
+  });
+  document.addEventListener('keydown', function (e) {
+    var tab = e.target.closest && e.target.closest('[role="tab"]'), list = isPulseTab(tab);
+    if (!list) return;
+    var tabs = tabsOf(list), i = tabs.indexOf(tab), vertical = list.getAttribute('aria-orientation') === 'vertical';
+    var next = { ArrowRight: !vertical && 1, ArrowLeft: !vertical && -1, ArrowDown: vertical && 1, ArrowUp: vertical && -1 }[e.key];
+    var to = next ? tabs[(i + next + tabs.length) % tabs.length] : e.key === 'Home' ? tabs[0] : e.key === 'End' ? tabs[tabs.length - 1] : null;
+    if (to) { e.preventDefault(); selectTab(to, true); }
+  });
+  function initTabs() {
+    [].forEach.call(document.querySelectorAll('.pulse-tabs[role="tablist"]'), function (list) {
+      var all = tabsOf(list); if (!all.length) return;
+      var sel = all.filter(function (t) { return t.getAttribute('aria-selected') === 'true'; })[0] || all[0];
+      [].forEach.call(list.querySelectorAll('[role="tab"]'), function (t) {
+        if (t.closest('[role="tablist"]') !== list) return;
+        var p = byId(t, t.getAttribute('aria-controls')); t.tabIndex = t === sel ? 0 : -1;
+        t.setAttribute('aria-selected', t === sel ? 'true' : 'false'); if (p) p.hidden = t !== sel;
+      });
+    });
+  }
+
+  // ---------- Menus (dropdown and nav menu) ----------
+  var openMenus = [];
+  function menuOf(btn) { return byId(btn, btn.getAttribute('aria-controls')); }
+  function options(lb) { return [].filter.call(lb.querySelectorAll('[role="option"]'), function (o) { return o.getAttribute('aria-disabled') !== 'true'; }); }
+  function setActive(lb, opt) {
+    [].forEach.call(lb.querySelectorAll('[role="option"]'), function (o) { o.classList.toggle('is-focus', o === opt); });
+    if (opt) { if (!opt.id) opt.id = 'pulse-opt-' + Math.random().toString(36).slice(2, 9); lb.setAttribute('aria-activedescendant', opt.id); if (opt.scrollIntoView) opt.scrollIntoView({ block: 'nearest' }); }
+  }
+  function openMenu(btn) {
+    var m = menuOf(btn); if (!m) return;
+    openMenus.slice().forEach(function (b) { if (b !== btn) closeMenu(b, false); });
+    m.hidden = false; btn.setAttribute('aria-expanded', 'true');
+    if (openMenus.indexOf(btn) < 0) openMenus.push(btn);
+    if (m.getAttribute('role') === 'listbox') {
+      if (!m.hasAttribute('tabindex')) m.tabIndex = -1;
+      var opts = options(m); setActive(m, opts.filter(function (o) { return o.getAttribute('aria-selected') === 'true'; })[0] || opts[0]);
+      m.focus();
+    }
+  }
+  function closeMenu(btn, focusBack) {
+    var m = menuOf(btn); if (m) { m.hidden = true; if (m.getAttribute('role') === 'listbox') setActive(m, null); }
+    btn.setAttribute('aria-expanded', 'false');
+    openMenus = openMenus.filter(function (b) { return b !== btn; });
+    if (focusBack) btn.focus();
+  }
+  function choose(lb, opt) {
+    [].forEach.call(lb.querySelectorAll('[role="option"]'), function (o) { o.setAttribute('aria-selected', o === opt ? 'true' : 'false'); });
+    var label = opt.querySelector('.pulse-menu-item__label'), text = (label || opt).textContent.trim();
+    var btn = openMenus.filter(function (b) { return menuOf(b) === lb; })[0] || document.querySelector('[data-pulse-menu][aria-controls="' + lb.id + '"]');
+    if (btn) { var slot = btn.querySelector('[data-pulse-label]') || btn; if (slot !== btn || !btn.children.length) slot.textContent = text; btn.setAttribute('data-value', opt.getAttribute('data-value') || text); }
+    lb.dispatchEvent(new CustomEvent('pulse:select', { bubbles: true, detail: { value: opt.getAttribute('data-value') || text, option: opt } }));
+    if (btn) closeMenu(btn, true);
+  }
+  document.addEventListener('click', function (e) {
+    var t = e.target; if (!t.closest) return;
+    var btn = t.closest('[data-pulse-menu]');
+    if (btn) { e.preventDefault(); btn.getAttribute('aria-expanded') === 'true' ? closeMenu(btn, false) : openMenu(btn); return; }
+    var opt = t.closest('[role="option"]'), lb = opt && opt.closest('[role="listbox"]');
+    if (opt && lb && openMenus.some(function (b) { return menuOf(b) === lb; }) && opt.getAttribute('aria-disabled') !== 'true') { choose(lb, opt); return; }
+    openMenus.slice().forEach(function (b) { var m = menuOf(b); if (!(m && m.contains(t))) closeMenu(b, false); });
+  });
+  document.addEventListener('keydown', function (e) {
+    if (!openMenus.length) return;
+    var btn = openMenus[openMenus.length - 1], m = menuOf(btn);
+    if (e.key === 'Escape') { e.preventDefault(); closeMenu(btn, true); return; }
+    if (!m || m.getAttribute('role') !== 'listbox' || document.activeElement !== m) return;
+    var opts = options(m), cur = m.querySelector('[role="option"].is-focus'), i = opts.indexOf(cur);
+    if (e.key === 'ArrowDown') { e.preventDefault(); setActive(m, opts[Math.min(i + 1, opts.length - 1)]); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); setActive(m, opts[Math.max(i - 1, 0)]); }
+    else if (e.key === 'Home') { e.preventDefault(); setActive(m, opts[0]); }
+    else if (e.key === 'End') { e.preventDefault(); setActive(m, opts[opts.length - 1]); }
+    else if ((e.key === 'Enter' || e.key === ' ') && cur) { e.preventDefault(); choose(m, cur); }
+    else if (e.key === 'Tab') closeMenu(btn, false);
+  });
+  document.addEventListener('focusout', function (e) {
+    openMenus.slice().forEach(function (b) {
+      var m = menuOf(b), to = e.relatedTarget;
+      if (!to) return;  // clicks on nothing are handled by the click listener
+      if (to !== b && !(m && m.contains(to)) && (b.contains(e.target) || (m && m.contains(e.target)))) closeMenu(b, false);
+    });
+  });
+  function initMenus() {
+    [].forEach.call(document.querySelectorAll('[data-pulse-menu]'), function (b) {
+      var m = menuOf(b); if (!b.hasAttribute('aria-expanded')) b.setAttribute('aria-expanded', 'false');
+      if (m && b.getAttribute('aria-expanded') !== 'true') m.hidden = true;
+      if (m && m.getAttribute('role') === 'listbox' && !b.hasAttribute('aria-haspopup')) b.setAttribute('aria-haspopup', 'listbox');
+    });
+  }
+
+  // ---------- Toasts and dismiss ----------
+  var ICON = { info: 'info', neutral: 'info', success: 'check-circle', warning: 'warning', danger: 'warning-octagon' };
+  var toaster = null;
+  function el(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
+  function toast(o) {
+    o = typeof o === 'string' ? { title: o } : (o || {});
+    var tone = o.tone || 'neutral';
+    if (!toaster || !toaster.isConnected) { toaster = el('div', 'pulse-toaster'); document.body.appendChild(toaster); }
+    var t = el('div', 'pulse-toast' + (tone === 'info' ? '' : ' pulse-toast--' + tone));
+    t.setAttribute('role', tone === 'danger' ? 'alert' : 'status');
+    var icon = el('i', 'pulse-icon pulse-icon--' + ICON[tone] + ' pulse-icon--fill'); icon.setAttribute('aria-hidden', 'true'); t.appendChild(icon);
+    var body = el('div', 'pulse-toast__body'); body.appendChild(el('span', 'pulse-toast__title', o.title || ''));
+    if (o.text) body.appendChild(el('span', 'pulse-toast__text', o.text));
+    if (o.action) {
+      var a = el(o.action.href ? 'a' : 'button', 'pulse-toast__cta', o.action.label);
+      if (o.action.href) a.href = o.action.href; else { a.type = 'button'; a.style.cssText = 'border:0;background:none;padding:0'; }
+      if (o.action.onClick) a.addEventListener('click', o.action.onClick);
+      body.appendChild(a);
+    }
+    t.appendChild(body);
+    var x = el('button', 'pulse-dismiss'); x.type = 'button'; x.setAttribute('aria-label', 'Dismiss');
+    var xi = el('i', 'pulse-icon pulse-icon--x'); xi.setAttribute('aria-hidden', 'true'); x.appendChild(xi); t.appendChild(x);
+    toaster.appendChild(t);
+    var ms = o.duration == null ? 5000 : o.duration, timer = null;
+    function start() { if (ms > 0) timer = setTimeout(function () { t.remove(); }, ms); }
+    function stop() { clearTimeout(timer); }
+    t.addEventListener('mouseenter', stop); t.addEventListener('mouseleave', start);
+    t.addEventListener('focusin', stop); t.addEventListener('focusout', start);
+    start();
+    return t;
+  }
+  window.Pulse.toast = toast;
+  document.addEventListener('click', function (e) {
+    var t = e.target; if (!t.closest) return;
+    var trig = t.closest('[data-pulse-toast]');
+    if (trig) { toast({ title: trig.getAttribute('data-pulse-toast'), text: trig.getAttribute('data-pulse-toast-text'), tone: trig.getAttribute('data-pulse-toast-tone') || undefined }); return; }
+    var x = t.closest('.pulse-dismiss'), box = x && x.closest('.pulse-alert, .pulse-toast');
+    if (box && box.dispatchEvent(new CustomEvent('pulse:dismiss', { bubbles: true, cancelable: true }))) box.remove();
+  });
+
+  function initAll() { initTabs(); initMenus(); }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initAll); else initAll();
 })();

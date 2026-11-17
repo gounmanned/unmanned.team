@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-theme="light" data-surface="web">
+<html lang="en" data-theme="light" data-surface="app">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -13,8 +13,26 @@
 <link rel="stylesheet" href="../pulse-components.css">
 <script src="../pulse.js" defer></script>
 <style>
-  body{margin:0;background:var(--color-surface-page);color:var(--color-text-primary);font:400 var(--type-body-md-size)/var(--type-body-md-line-height) var(--font-sans);}
-  a{color:inherit;}
+  /* Docs prose: plain elements only, in the reset layer so Pulse components inside examples always win. */
+  @layer reset {
+    body{margin:0;background:var(--color-surface-page);color:var(--color-text-primary);font:400 var(--type-body-md-size)/var(--type-body-md-line-height) var(--font-sans);}
+    a{color:inherit;}
+    .docs-main :not(pre)>code{font:400 0.875em/1 var(--font-mono);padding:2px 4px;border-radius:var(--radius-tag);background:var(--color-surface-sunken);color:var(--color-text-primary);}
+    .docs-main h2{margin:var(--space-48) 0 var(--space-12);font:600 var(--type-heading-card-size)/var(--type-heading-card-line-height) var(--font-sans);}
+    .docs-main h3{margin:var(--space-32) 0 var(--space-8);font:600 var(--type-body-md-size)/var(--type-body-md-line-height) var(--font-sans);}
+    .docs-main p,.docs-main li{color:var(--color-text-secondary);}
+    .docs-main p{margin:0 0 var(--space-16);}
+    .docs-main ul,.docs-main ol{margin:0 0 var(--space-16);padding-left:var(--space-24);}
+    .docs-main li{margin-bottom:var(--space-4);}
+    .docs-main strong{color:var(--color-text-primary);font-weight:600;}
+    .docs-main table{width:100%;border-collapse:collapse;font-size:var(--type-body-sm-size);line-height:var(--type-body-sm-line-height);}
+    .docs-main th,.docs-main td{text-align:left;vertical-align:top;padding:var(--space-8) var(--space-12) var(--space-8) 0;border-bottom:1px solid var(--color-border-default);}
+    .docs-main th{font-weight:600;color:var(--color-text-primary);}
+    .docs-main td{color:var(--color-text-secondary);}
+    .docs-main td:first-child{width:40%;}
+    .docs-main td code{overflow-wrap:anywhere;}
+  }
+  /* Docs prose: plain elements only, in the reset layer so Pulse components inside examples always win. */
   .docs-top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:var(--space-16);min-height:56px;padding:0 var(--space-24);background:var(--color-surface-page);border-bottom:1px solid var(--color-border-default);}
   .docs-brand{font-weight:600;text-decoration:none;}
   .docs-brand span{font:400 var(--type-mono-label-size)/1 var(--font-mono);color:var(--color-text-tertiary);margin-left:var(--space-8);}
@@ -27,14 +45,6 @@
   .docs-main h1{margin:var(--space-8) 0 var(--space-16);font:600 var(--type-heading-section-size)/var(--type-heading-section-line-height) var(--font-sans);letter-spacing:-0.01em;}
   .docs-lede{margin:0 0 var(--space-16);font-size:var(--type-body-lede-size);line-height:var(--type-body-lede-line-height);color:var(--color-text-secondary);}
   .docs-meta{display:flex;flex-wrap:wrap;gap:var(--space-8) var(--space-24);margin:0 0 var(--space-40);}
-  .docs-main h2{margin:var(--space-48) 0 var(--space-12);font:600 var(--type-heading-card-size)/var(--type-heading-card-line-height) var(--font-sans);}
-  .docs-main h3{margin:var(--space-32) 0 var(--space-8);font:600 var(--type-body-md-size)/var(--type-body-md-line-height) var(--font-sans);}
-  .docs-main p,.docs-main li{color:var(--color-text-secondary);}
-  .docs-main p{margin:0 0 var(--space-16);}
-  .docs-main ul,.docs-main ol{margin:0 0 var(--space-16);padding-left:var(--space-24);}
-  .docs-main li{margin-bottom:var(--space-4);}
-  .docs-main strong{color:var(--color-text-primary);font-weight:600;}
-  .docs-main :not(pre)>code{font:400 0.875em/1 var(--font-mono);padding:2px 4px;border-radius:var(--radius-tag);background:var(--color-surface-sunken);color:var(--color-text-primary);}
   .docs-example{margin:var(--space-16) 0 var(--space-32);border:1px solid var(--color-border-default);border-radius:var(--radius-container);}
   .docs-live{display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-16);padding:var(--space-32) var(--space-24);background:var(--color-surface-page);border-radius:var(--radius-container) var(--radius-container) 0 0;}
   .docs-live--tall{min-height:280px;align-items:flex-start;}
@@ -42,12 +52,6 @@
   .docs-example .docs-code .pulse-code__head{border-radius:0;}
   .docs-code pre{max-height:420px;overflow:auto;}
   .docs-table{overflow-x:auto;margin:0 0 var(--space-24);}
-  .docs-main table{width:100%;border-collapse:collapse;font-size:var(--type-body-sm-size);line-height:var(--type-body-sm-line-height);}
-  .docs-main th,.docs-main td{text-align:left;vertical-align:top;padding:var(--space-8) var(--space-12) var(--space-8) 0;border-bottom:1px solid var(--color-border-default);}
-  .docs-main th{font-weight:600;color:var(--color-text-primary);}
-  .docs-main td{color:var(--color-text-secondary);}
-  .docs-main td:first-child{width:40%;}
-  .docs-main td code{overflow-wrap:anywhere;}
   .docs-swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:var(--space-8) var(--space-16);margin-bottom:var(--space-16);}
   .docs-swatch{display:flex;align-items:center;gap:var(--space-8);min-width:0;}
   .docs-swatch span{flex:none;width:32px;height:32px;border-radius:var(--radius-tag);border:1px solid var(--color-border-default);}
@@ -69,8 +73,7 @@
     .docs-main{padding-top:var(--space-24);}
     .docs-top{padding:0 var(--space-16);}
     .docs-live{padding:var(--space-24) var(--space-16);}
-  }
-  @media (max-width:560px){ .docs-top nav .docs-hide-sm{display:none;} }
+  @media (max-width:560px){ .docs-top nav .docs-hide-sm{display:none;} .docs-top nav{gap:var(--space-8);} .docs-top{flex-wrap:wrap;padding-block:var(--space-8);position:static;} }
 </style>
 </head>
 <body>
@@ -79,7 +82,8 @@
   <nav aria-label="Pulse">
     <a class="pulse-link pulse-link--quiet pulse-link--sm" href="../gallery/index.html">Gallery</a>
     <a class="pulse-link pulse-link--quiet pulse-link--sm docs-hide-sm" href="../pulse-reference.md">AI reference</a>
-    <div class="pulse-segmented" role="group" aria-label="Theme"><button class="pulse-segmented__item" type="button" data-docs-theme="light" aria-pressed="true">Light</button><button class="pulse-segmented__item" type="button" data-docs-theme="dark" aria-pressed="false">Dark</button></div>
+    <div class="pulse-segmented" role="group" aria-label="Surface"><button class="pulse-segmented__item" type="button" data-docs-set="surface" data-docs-value="web" aria-pressed="false">Web</button><button class="pulse-segmented__item" type="button" data-docs-set="surface" data-docs-value="app" aria-pressed="true">App</button></div>
+    <div class="pulse-segmented" role="group" aria-label="Theme"><button class="pulse-segmented__item" type="button" data-docs-set="theme" data-docs-value="light" aria-pressed="true">Light</button><button class="pulse-segmented__item" type="button" data-docs-set="theme" data-docs-value="dark" aria-pressed="false">Dark</button></div>
   </nav>
 </header>
 <div class="docs-layout">
@@ -103,20 +107,57 @@
   &lt;input class=&quot;pulse-slider__input&quot; id=&quot;coverage&quot; type=&quot;range&quot; min=&quot;0&quot; max=&quot;100&quot; step=&quot;5&quot; value=&quot;40&quot;&gt;
 &lt;/div&gt;</code></pre></div></div>
 <h2>How it works</h2>
-<p>pulse.js keeps the fill in step with the thumb. An <code>&lt;output for="its-id" data-pulse-mirror="%"&gt;</code> shows the value with that suffix (<code>data-pulse-mirror=""</code> for none). Other formats, like a price, are the page’s script.</p>
+<p>pulse.js keeps the fill in step with the thumb, and writes the value into any <code>&lt;output for="its-id"&gt;</code> (or any element with <code>data-pulse-value-of="its-id"</code>) that has a format attribute. The slider’s <code>aria-valuetext</code> follows its first output, so screen readers hear the formatted value.</p>
+<h2>Formats</h2>
+<div class="docs-example"><div class="docs-live"><div class="pulse-field" style="width: 100%; max-width: 360px">
+  <div class="pulse-slider">
+    <div class="pulse-slider__head">
+      <label class="pulse-slider__label" for="employees">Employees</label>
+      <output class="pulse-slider__value" for="employees" data-pulse-format="number">120</output>
+    </div>
+    <input class="pulse-slider__input" id="employees" type="range" min="10" max="1000" step="10" value="120">
+  </div>
+  <span class="pulse-field__help"><output for="employees" data-pulse-format="currency" data-pulse-scale="4" data-pulse-suffix=" / month">$480 / month</output></span>
+</div></div><div class="pulse-code docs-code"><div class="pulse-code__head"><span class="pulse-code__file">HTML</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-tooltip-host" type="button" data-pulse-copy aria-label="Copy the code"><i class="pulse-icon pulse-icon--copy" aria-hidden="true"></i><span class="pulse-tooltip pulse-tooltip--bottom pulse-tooltip--end" aria-hidden="true">Copy to clipboard</span></button></div><pre><code>&lt;div class=&quot;pulse-field&quot; style=&quot;width: 100%; max-width: 360px&quot;&gt;
+  &lt;div class=&quot;pulse-slider&quot;&gt;
+    &lt;div class=&quot;pulse-slider__head&quot;&gt;
+      &lt;label class=&quot;pulse-slider__label&quot; for=&quot;employees&quot;&gt;Employees&lt;/label&gt;
+      &lt;output class=&quot;pulse-slider__value&quot; for=&quot;employees&quot; data-pulse-format=&quot;number&quot;&gt;120&lt;/output&gt;
+    &lt;/div&gt;
+    &lt;input class=&quot;pulse-slider__input&quot; id=&quot;employees&quot; type=&quot;range&quot; min=&quot;10&quot; max=&quot;1000&quot; step=&quot;10&quot; value=&quot;120&quot;&gt;
+  &lt;/div&gt;
+  &lt;span class=&quot;pulse-field__help&quot;&gt;&lt;output for=&quot;employees&quot; data-pulse-format=&quot;currency&quot; data-pulse-scale=&quot;4&quot; data-pulse-suffix=&quot; / month&quot;&gt;$480 / month&lt;/output&gt;&lt;/span&gt;
+&lt;/div&gt;</code></pre></div></div>
+<div class="docs-table"><table><thead><tr><th>Attribute</th><th>What it does</th></tr></thead><tbody>
+<tr><td><code>data-pulse-format</code></td><td><code>number</code> (1,200), <code>currency</code> ($480; <code>data-pulse-currency</code> picks it, USD by default) or <code>percent</code> (40%).</td></tr>
+<tr><td><code>data-pulse-scale</code></td><td>Multiplies the value first: 120 employees at <code>4</code> is $480.</td></tr>
+<tr><td><code>data-pulse-prefix</code>, <code>data-pulse-suffix</code></td><td>Text before and after. <code>data-pulse-mirror="%"</code> is the short form of a suffix.</td></tr>
+<tr><td><code>data-pulse-formatter</code></td><td>Your own function, for anything else.</td></tr>
+</tbody></table></div>
+<div class="pulse-code docs-code"><div class="pulse-code__head"><span class="pulse-code__file">HTML</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-tooltip-host" type="button" data-pulse-copy aria-label="Copy the code"><i class="pulse-icon pulse-icon--copy" aria-hidden="true"></i><span class="pulse-tooltip pulse-tooltip--bottom pulse-tooltip--end" aria-hidden="true">Copy to clipboard</span></button></div><pre><code>&lt;output for=&quot;seats&quot; data-pulse-formatter=&quot;seats&quot;&gt;&lt;/output&gt;
+&lt;script&gt;
+  Pulse.formats.seats = function (value) {
+    return value === 1 ? &#x27;1 seat&#x27; : value + &#x27; seats&#x27;;
+  };
+&lt;/script&gt;</code></pre></div>
 <h2>Accessibility</h2>
 <ul><li>It’s a real range input: arrow keys step, Page Up and Down jump, and screen readers announce the value. Give it a <code>&lt;label for&gt;</code>.</li></ul>
     <div class="docs-next"><a class="pulse-link pulse-link--sm" href="segmented.html">Segmented control</a><a class="pulse-link pulse-link--sm" href="step-number.html">Step number <i class="pulse-icon pulse-icon--arrow-right" aria-hidden="true"></i></a></div>
   </main>
 </div>
 <script>
-  // Docs only: the theme switch. Pulse itself needs no script for themes.
-  document.querySelectorAll('[data-docs-theme]').forEach(function (b) {
-    b.addEventListener('click', function () {
-      document.documentElement.setAttribute('data-theme', b.dataset.docsTheme);
-      document.querySelectorAll('[data-docs-theme]').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
+  // Docs only: the surface and theme switches, remembered between pages. Pulse itself needs no script for these.
+  (function () {
+    var root = document.documentElement;
+    function apply(set, value) {
+      root.setAttribute('data-' + set, value);
+      document.querySelectorAll('[data-docs-set="' + set + '"]').forEach(function (x) { x.setAttribute('aria-pressed', String(x.dataset.docsValue === value)); });
+    }
+    ['surface', 'theme'].forEach(function (set) { try { var v = localStorage.getItem('pulse-docs-' + set); if (v) apply(set, v); } catch (e) {} });
+    document.querySelectorAll('[data-docs-set]').forEach(function (b) {
+      b.addEventListener('click', function () { apply(b.dataset.docsSet, b.dataset.docsValue); try { localStorage.setItem('pulse-docs-' + b.dataset.docsSet, b.dataset.docsValue); } catch (e) {} });
     });
-  });
+  })();
 </script>
 </body>
 </html>

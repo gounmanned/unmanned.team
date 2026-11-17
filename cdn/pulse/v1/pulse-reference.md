@@ -31,7 +31,7 @@ Put these lines in the `<head>`, in this order. Or start from the starter page (
 
 - `pulse-components.css`: the components.
 
-- `pulse.js`: the few behaviors CSS can’t do (placing popovers, opening drawers, copying). Nothing happens until the page uses one.
+- `pulse.js`: every behavior: popovers, dialogs and drawers, menus and dropdowns, tabs, toasts, copying, sliders, tooltips’ Esc. Nothing happens until the page uses one, and pages never need their own script for these.
 
 ### 2. Pick the theme and the surface
 
@@ -204,7 +204,26 @@ Tinted, with a border in its tone. Use it for something the reader should see wh
 
 ### Toast
 
-Solid color, for confirming an action that just happened (“Report exported”). Its action is a text link. Showing, stacking and timing toasts is the page’s script.
+Solid color, for confirming an action that just happened (“Report exported”). Its action is a text link. Don’t put toasts in your page’s HTML: pulse.js makes them. A button with `data-pulse-toast` shows one when clicked; from a script, call `Pulse.toast()`.
+
+```html
+<button class="pulse-btn pulse-btn--secondary" type="button" data-pulse-toast="Report exported" data-pulse-toast-tone="success">Export report</button>
+<button class="pulse-btn pulse-btn--secondary" type="button" data-pulse-toast="Export failed" data-pulse-toast-text="Try again in a minute." data-pulse-toast-tone="danger">Show an error</button>
+```
+
+```html
+<script>
+  Pulse.toast({
+    title: 'Report exported',
+    text: 'Your 24-hour test is ready to start.',  // optional
+    tone: 'success',          // neutral (default), info, success, warning, danger
+    action: { label: 'View report', href: '/reports/latest' },  // optional; or onClick instead of href
+    duration: 5000            // ms; 0 keeps it until dismissed
+  });
+</script>
+```
+
+Toasts stack in the bottom right (full width on phones), go away after five seconds, and wait while the pointer or focus is on them. This is what one looks like:
 
 ```html
 <div class="pulse-toast pulse-toast--neutral" role="status">
@@ -224,7 +243,8 @@ Solid color, for confirming an action that just happened (“Report exported”)
 | `pulse-alert--success`, `--warning`, `--danger` | Tone. No tone class is info (blue). |
 | `pulse-toast--neutral`, `--success`, `--warning`, `--danger` | Tone. No tone class is info. |
 | `__title`, `__text` | The headline and an optional sentence. |
-| `pulse-dismiss` | The × button. Removing the message is the page’s script. |
+| `pulse-dismiss` | The × button. pulse.js removes its alert or toast (it fires `pulse:dismiss` first; cancel that event to keep it). |
+| `data-pulse-toast` | On a button: shows a toast with that title. `data-pulse-toast-text` and `data-pulse-toast-tone` are optional. |
 
 ### Accessibility
 
@@ -596,49 +616,69 @@ Figma component: Dropdown, Menu item, Nav menu.
 
 ### Dropdown (picking a value)
 
-The list that opens from a select-style field. Items can have an icon; the chosen one shows a check. For a simple form, the native select (https://cdn.unmanned.team/pulse/v1/docs/fields.html) is usually enough.
+A select-style button that opens a branded list. Items can have an icon; the chosen one shows its check. For a simple form, the native select (https://cdn.unmanned.team/pulse/v1/docs/fields.html) is usually enough.
 
 ```html
-<ul class="pulse-dropdown" role="listbox" aria-label="Identity provider" style="width: 280px">
-  <li class="pulse-menu-item" role="option" aria-selected="true">
-    <i class="pulse-icon pulse-icon--users" aria-hidden="true"></i>
-    <span class="pulse-menu-item__label">Microsoft Entra ID</span>
-    <i class="pulse-icon pulse-icon--check pulse-menu-item__check" aria-hidden="true"></i>
-  </li>
-  <li class="pulse-menu-item" role="option" aria-selected="false">
-    <i class="pulse-icon pulse-icon--users" aria-hidden="true"></i>
-    <span class="pulse-menu-item__label">Google Workspace</span>
-  </li>
-  <li class="pulse-menu-item" role="option" aria-disabled="true">
-    <i class="pulse-icon pulse-icon--users" aria-hidden="true"></i>
-    <span class="pulse-menu-item__label">OneLogin (coming soon)</span>
-  </li>
-</ul>
+<div class="pulse-field" style="width: 100%; max-width: 320px">
+  <span class="pulse-field__label" id="idp-label">Identity provider</span>
+  <div class="pulse-select-wrap pulse-menu-anchor">
+    <button class="pulse-select" type="button" data-pulse-menu aria-controls="idp-list" aria-expanded="false" aria-labelledby="idp-label idp-value">
+      <span data-pulse-label id="idp-value">Microsoft Entra ID</span>
+    </button>
+    <ul class="pulse-dropdown" id="idp-list" role="listbox" aria-labelledby="idp-label" hidden>
+      <li class="pulse-menu-item" role="option" aria-selected="true" data-value="entra">
+        <span class="pulse-menu-item__label">Microsoft Entra ID</span>
+        <i class="pulse-icon pulse-icon--check pulse-menu-item__check" aria-hidden="true"></i>
+      </li>
+      <li class="pulse-menu-item" role="option" aria-selected="false" data-value="google">
+        <span class="pulse-menu-item__label">Google Workspace</span>
+        <i class="pulse-icon pulse-icon--check pulse-menu-item__check" aria-hidden="true"></i>
+      </li>
+      <li class="pulse-menu-item" role="option" aria-selected="false" data-value="okta">
+        <span class="pulse-menu-item__label">Okta</span>
+        <i class="pulse-icon pulse-icon--check pulse-menu-item__check" aria-hidden="true"></i>
+      </li>
+      <li class="pulse-menu-item" role="option" aria-disabled="true">
+        <span class="pulse-menu-item__label">OneLogin (coming soon)</span>
+      </li>
+    </ul>
+  </div>
+</div>
 ```
 
-Opening, positioning, arrow keys and choosing are the page’s script for now.
+pulse.js does the rest: `data-pulse-menu` on the button opens and closes the list it controls. Arrow keys, Home and End move through the options; Enter, Space or a click chooses one, which marks it `aria-selected`, writes its label into the button’s `[data-pulse-label]` and fires `pulse:select`. Esc, a click outside or Tab closes it. `pulse-menu-anchor` places the list under its trigger.
+
+```html
+<script>
+  document.getElementById('idp-list').addEventListener('pulse:select', function (e) {
+    console.log('Chosen:', e.detail.value);   // "entra", "google" or "okta"
+  });
+</script>
+```
 
 ### Nav menu (going somewhere)
 
 Links with a title and a line of description, opened by a quiet link that is really a button. It’s a list of links, not a listbox, so it has no `role="menu"`.
 
 ```html
-<button class="pulse-link pulse-link--quiet" type="button" aria-expanded="true" aria-controls="soc-menu">
-  VEX AI SOC <i class="pulse-icon pulse-icon--caret-down" aria-hidden="true"></i>
-</button>
-<nav class="pulse-dropdown pulse-dropdown--nav" id="soc-menu" aria-label="VEX AI SOC">
-  <a class="pulse-menu-item" href="/how-it-works/" aria-current="page">
-    <span class="pulse-menu-item__label">Meet VEX</span>
-    <span class="pulse-menu-item__desc">Good prevention starts with great detection.</span>
-  </a>
-  <a class="pulse-menu-item" href="/detections/">
-    <span class="pulse-menu-item__label">What VEX detects</span>
-    <span class="pulse-menu-item__desc">Every alert type it can raise.</span>
-  </a>
-</nav>
+<div class="pulse-menu-anchor">
+  <button class="pulse-link pulse-link--quiet" type="button" data-pulse-menu aria-expanded="false" aria-controls="soc-menu">
+    VEX AI SOC <i class="pulse-icon pulse-icon--caret-down" aria-hidden="true"></i>
+  </button>
+  <nav class="pulse-dropdown pulse-dropdown--nav" id="soc-menu" aria-label="VEX AI SOC" hidden>
+    <a class="pulse-menu-item" href="/how-it-works/" aria-current="page">
+      <span class="pulse-menu-item__label">Meet VEX</span>
+      <span class="pulse-menu-item__desc">Good prevention starts with great detection.</span>
+    </a>
+    <a class="pulse-menu-item" href="/detections/">
+      <span class="pulse-menu-item__label">What VEX detects</span>
+      <span class="pulse-menu-item__desc">Every alert type it can raise.</span>
+    </a>
+  </nav>
+</div>
 ```
 
-Positioning it under its trigger, and opening and closing it (click, Esc, a click outside), are the page’s script for now.
+The same `data-pulse-menu` opens and closes it: Esc, a click outside or tabbing past the last link closes it, and only one menu is open at a time. `pulse-menu-anchor` lines it up with the start of its trigger; `pulse-menu-anchor--end` with the end, for a menu near the right edge. Only triggers with `data-pulse-menu` are touched, so a page that runs its own menu script keeps working.
 
 ### Options
 
@@ -648,10 +688,12 @@ Positioning it under its trigger, and opening and closing it (click, Esc, a clic
 | `pulse-dropdown__hint` | A line under the list (“6 options · scroll for more”). |
 | `pulse-dropdown--nav` | The nav menu: 320px, title and description items. |
 | `pulse-dropdown__label` | A small mono group label above the links. |
+| `pulse-menu-anchor`, `--end` | Wraps the trigger and the list, and places the list under the trigger. |
+| `data-pulse-menu` | On the trigger: pulse.js opens and closes the list named by its `aria-controls`. |
 
 ### Accessibility
 
-- Dropdown: `role="listbox"`, `role="option"`, `aria-selected` on the chosen one, `aria-disabled` on unavailable ones.
+- Dropdown: `role="listbox"`, `role="option"`, `aria-selected` on the chosen one, `aria-disabled` on unavailable ones. The button is labelled by the field label and its current value; pulse.js adds `aria-haspopup` and moves `aria-activedescendant` with the arrow keys.
 
 - Nav menu: the trigger has `aria-expanded` and `aria-controls`; the current page has `aria-current="page"`.
 
@@ -977,7 +1019,38 @@ Figma component: Slider.
 
 ### How it works
 
-pulse.js keeps the fill in step with the thumb. An `<output for="its-id" data-pulse-mirror="%">` shows the value with that suffix (`data-pulse-mirror=""` for none). Other formats, like a price, are the page’s script.
+pulse.js keeps the fill in step with the thumb, and writes the value into any `<output for="its-id">` (or any element with `data-pulse-value-of="its-id"`) that has a format attribute. The slider’s `aria-valuetext` follows its first output, so screen readers hear the formatted value.
+
+### Formats
+
+```html
+<div class="pulse-field" style="width: 100%; max-width: 360px">
+  <div class="pulse-slider">
+    <div class="pulse-slider__head">
+      <label class="pulse-slider__label" for="employees">Employees</label>
+      <output class="pulse-slider__value" for="employees" data-pulse-format="number">120</output>
+    </div>
+    <input class="pulse-slider__input" id="employees" type="range" min="10" max="1000" step="10" value="120">
+  </div>
+  <span class="pulse-field__help"><output for="employees" data-pulse-format="currency" data-pulse-scale="4" data-pulse-suffix=" / month">$480 / month</output></span>
+</div>
+```
+
+| Attribute | What it does |
+|---|---|
+| `data-pulse-format` | `number` (1,200), `currency` ($480; `data-pulse-currency` picks it, USD by default) or `percent` (40%). |
+| `data-pulse-scale` | Multiplies the value first: 120 employees at `4` is $480. |
+| `data-pulse-prefix`, `data-pulse-suffix` | Text before and after. `data-pulse-mirror="%"` is the short form of a suffix. |
+| `data-pulse-formatter` | Your own function, for anything else. |
+
+```html
+<output for="seats" data-pulse-formatter="seats"></output>
+<script>
+  Pulse.formats.seats = function (value) {
+    return value === 1 ? '1 seat' : value + ' seats';
+  };
+</script>
+```
 
 ### Accessibility
 
@@ -1016,14 +1089,19 @@ Figma component: Tabs, Tab item.
 A row of tabs over a baseline. `pulse-tabs--bar` centers them in a full-width bar, for a sticky section nav.
 
 ```html
-<div class="pulse-tabs pulse-tabs--line" role="tablist" aria-label="Test">
-  <button class="pulse-tab" role="tab" aria-selected="true" aria-controls="panel-overview" id="tab-overview">Overview</button>
-  <button class="pulse-tab" role="tab" aria-selected="false" aria-controls="panel-findings" id="tab-findings" tabindex="-1">Findings</button>
-  <button class="pulse-tab" role="tab" aria-selected="false" aria-controls="panel-activity" id="tab-activity" tabindex="-1">Activity</button>
+<div style="width: 100%">
+  <div class="pulse-tabs pulse-tabs--line" role="tablist" aria-label="Test">
+    <button class="pulse-tab" type="button" role="tab" id="tab-overview" aria-controls="panel-overview" aria-selected="true">Overview</button>
+    <button class="pulse-tab" type="button" role="tab" id="tab-findings" aria-controls="panel-findings" aria-selected="false">Findings</button>
+    <button class="pulse-tab" type="button" role="tab" id="tab-activity" aria-controls="panel-activity" aria-selected="false">Activity</button>
+  </div>
+  <div id="panel-overview" role="tabpanel" aria-labelledby="tab-overview" tabindex="0"><p>What the test covers and when it ends.</p></div>
+  <div id="panel-findings" role="tabpanel" aria-labelledby="tab-findings" tabindex="0" hidden><p>Everything the test found, worst first.</p></div>
+  <div id="panel-activity" role="tabpanel" aria-labelledby="tab-activity" tabindex="0" hidden><p>Every step VEX took, newest first.</p></div>
 </div>
 ```
 
-Switching panels and arrow-key movement are the page’s script for now.
+pulse.js does the switching: a click, or the arrow keys, Home and End once a tab has focus, selects a tab and shows its panel; the other panels get `hidden`. Each tab’s `aria-controls` names its panel. It fires `pulse:tab` on the tablist if the page needs to know. For tabs stacked in a column, add `aria-orientation="vertical"` to the tablist and the up and down arrows move instead.
 
 ### Vertical (a jump menu)
 
@@ -1056,7 +1134,7 @@ Highlighting the section as the reader scrolls, and turning the menu into a drop
 
 ### Accessibility
 
-- Tabs that switch views: `role="tablist"`, `role="tab"`, `aria-selected` and `aria-controls`.
+- Tabs that switch views: `role="tablist"` with an `aria-label`, `role="tab"` with `aria-controls`, and `role="tabpanel"` with `aria-labelledby` and `tabindex="0"`. pulse.js keeps `aria-selected` and the tab order right: only the selected tab is in the Tab order, the arrows move between tabs.
 
 - A jump menu is plain links, with `aria-current` on the current one.
 

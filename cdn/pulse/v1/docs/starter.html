@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-theme="light" data-surface="web">
+<html lang="en" data-theme="light" data-surface="app">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -13,8 +13,26 @@
 <link rel="stylesheet" href="../pulse-components.css">
 <script src="../pulse.js" defer></script>
 <style>
-  body{margin:0;background:var(--color-surface-page);color:var(--color-text-primary);font:400 var(--type-body-md-size)/var(--type-body-md-line-height) var(--font-sans);}
-  a{color:inherit;}
+  /* Docs prose: plain elements only, in the reset layer so Pulse components inside examples always win. */
+  @layer reset {
+    body{margin:0;background:var(--color-surface-page);color:var(--color-text-primary);font:400 var(--type-body-md-size)/var(--type-body-md-line-height) var(--font-sans);}
+    a{color:inherit;}
+    .docs-main :not(pre)>code{font:400 0.875em/1 var(--font-mono);padding:2px 4px;border-radius:var(--radius-tag);background:var(--color-surface-sunken);color:var(--color-text-primary);}
+    .docs-main h2{margin:var(--space-48) 0 var(--space-12);font:600 var(--type-heading-card-size)/var(--type-heading-card-line-height) var(--font-sans);}
+    .docs-main h3{margin:var(--space-32) 0 var(--space-8);font:600 var(--type-body-md-size)/var(--type-body-md-line-height) var(--font-sans);}
+    .docs-main p,.docs-main li{color:var(--color-text-secondary);}
+    .docs-main p{margin:0 0 var(--space-16);}
+    .docs-main ul,.docs-main ol{margin:0 0 var(--space-16);padding-left:var(--space-24);}
+    .docs-main li{margin-bottom:var(--space-4);}
+    .docs-main strong{color:var(--color-text-primary);font-weight:600;}
+    .docs-main table{width:100%;border-collapse:collapse;font-size:var(--type-body-sm-size);line-height:var(--type-body-sm-line-height);}
+    .docs-main th,.docs-main td{text-align:left;vertical-align:top;padding:var(--space-8) var(--space-12) var(--space-8) 0;border-bottom:1px solid var(--color-border-default);}
+    .docs-main th{font-weight:600;color:var(--color-text-primary);}
+    .docs-main td{color:var(--color-text-secondary);}
+    .docs-main td:first-child{width:40%;}
+    .docs-main td code{overflow-wrap:anywhere;}
+  }
+  /* Docs prose: plain elements only, in the reset layer so Pulse components inside examples always win. */
   .docs-top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:var(--space-16);min-height:56px;padding:0 var(--space-24);background:var(--color-surface-page);border-bottom:1px solid var(--color-border-default);}
   .docs-brand{font-weight:600;text-decoration:none;}
   .docs-brand span{font:400 var(--type-mono-label-size)/1 var(--font-mono);color:var(--color-text-tertiary);margin-left:var(--space-8);}
@@ -27,14 +45,6 @@
   .docs-main h1{margin:var(--space-8) 0 var(--space-16);font:600 var(--type-heading-section-size)/var(--type-heading-section-line-height) var(--font-sans);letter-spacing:-0.01em;}
   .docs-lede{margin:0 0 var(--space-16);font-size:var(--type-body-lede-size);line-height:var(--type-body-lede-line-height);color:var(--color-text-secondary);}
   .docs-meta{display:flex;flex-wrap:wrap;gap:var(--space-8) var(--space-24);margin:0 0 var(--space-40);}
-  .docs-main h2{margin:var(--space-48) 0 var(--space-12);font:600 var(--type-heading-card-size)/var(--type-heading-card-line-height) var(--font-sans);}
-  .docs-main h3{margin:var(--space-32) 0 var(--space-8);font:600 var(--type-body-md-size)/var(--type-body-md-line-height) var(--font-sans);}
-  .docs-main p,.docs-main li{color:var(--color-text-secondary);}
-  .docs-main p{margin:0 0 var(--space-16);}
-  .docs-main ul,.docs-main ol{margin:0 0 var(--space-16);padding-left:var(--space-24);}
-  .docs-main li{margin-bottom:var(--space-4);}
-  .docs-main strong{color:var(--color-text-primary);font-weight:600;}
-  .docs-main :not(pre)>code{font:400 0.875em/1 var(--font-mono);padding:2px 4px;border-radius:var(--radius-tag);background:var(--color-surface-sunken);color:var(--color-text-primary);}
   .docs-example{margin:var(--space-16) 0 var(--space-32);border:1px solid var(--color-border-default);border-radius:var(--radius-container);}
   .docs-live{display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-16);padding:var(--space-32) var(--space-24);background:var(--color-surface-page);border-radius:var(--radius-container) var(--radius-container) 0 0;}
   .docs-live--tall{min-height:280px;align-items:flex-start;}
@@ -42,12 +52,6 @@
   .docs-example .docs-code .pulse-code__head{border-radius:0;}
   .docs-code pre{max-height:420px;overflow:auto;}
   .docs-table{overflow-x:auto;margin:0 0 var(--space-24);}
-  .docs-main table{width:100%;border-collapse:collapse;font-size:var(--type-body-sm-size);line-height:var(--type-body-sm-line-height);}
-  .docs-main th,.docs-main td{text-align:left;vertical-align:top;padding:var(--space-8) var(--space-12) var(--space-8) 0;border-bottom:1px solid var(--color-border-default);}
-  .docs-main th{font-weight:600;color:var(--color-text-primary);}
-  .docs-main td{color:var(--color-text-secondary);}
-  .docs-main td:first-child{width:40%;}
-  .docs-main td code{overflow-wrap:anywhere;}
   .docs-swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:var(--space-8) var(--space-16);margin-bottom:var(--space-16);}
   .docs-swatch{display:flex;align-items:center;gap:var(--space-8);min-width:0;}
   .docs-swatch span{flex:none;width:32px;height:32px;border-radius:var(--radius-tag);border:1px solid var(--color-border-default);}
@@ -69,8 +73,7 @@
     .docs-main{padding-top:var(--space-24);}
     .docs-top{padding:0 var(--space-16);}
     .docs-live{padding:var(--space-24) var(--space-16);}
-  }
-  @media (max-width:560px){ .docs-top nav .docs-hide-sm{display:none;} }
+  @media (max-width:560px){ .docs-top nav .docs-hide-sm{display:none;} .docs-top nav{gap:var(--space-8);} .docs-top{flex-wrap:wrap;padding-block:var(--space-8);position:static;} }
 </style>
 </head>
 <body>
@@ -79,7 +82,8 @@
   <nav aria-label="Pulse">
     <a class="pulse-link pulse-link--quiet pulse-link--sm" href="../gallery/index.html">Gallery</a>
     <a class="pulse-link pulse-link--quiet pulse-link--sm docs-hide-sm" href="../pulse-reference.md">AI reference</a>
-    <div class="pulse-segmented" role="group" aria-label="Theme"><button class="pulse-segmented__item" type="button" data-docs-theme="light" aria-pressed="true">Light</button><button class="pulse-segmented__item" type="button" data-docs-theme="dark" aria-pressed="false">Dark</button></div>
+    <div class="pulse-segmented" role="group" aria-label="Surface"><button class="pulse-segmented__item" type="button" data-docs-set="surface" data-docs-value="web" aria-pressed="false">Web</button><button class="pulse-segmented__item" type="button" data-docs-set="surface" data-docs-value="app" aria-pressed="true">App</button></div>
+    <div class="pulse-segmented" role="group" aria-label="Theme"><button class="pulse-segmented__item" type="button" data-docs-set="theme" data-docs-value="light" aria-pressed="true">Light</button><button class="pulse-segmented__item" type="button" data-docs-set="theme" data-docs-value="dark" aria-pressed="false">Dark</button></div>
   </nav>
 </header>
 <div class="docs-layout">
@@ -128,13 +132,18 @@
   </main>
 </div>
 <script>
-  // Docs only: the theme switch. Pulse itself needs no script for themes.
-  document.querySelectorAll('[data-docs-theme]').forEach(function (b) {
-    b.addEventListener('click', function () {
-      document.documentElement.setAttribute('data-theme', b.dataset.docsTheme);
-      document.querySelectorAll('[data-docs-theme]').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
+  // Docs only: the surface and theme switches, remembered between pages. Pulse itself needs no script for these.
+  (function () {
+    var root = document.documentElement;
+    function apply(set, value) {
+      root.setAttribute('data-' + set, value);
+      document.querySelectorAll('[data-docs-set="' + set + '"]').forEach(function (x) { x.setAttribute('aria-pressed', String(x.dataset.docsValue === value)); });
+    }
+    ['surface', 'theme'].forEach(function (set) { try { var v = localStorage.getItem('pulse-docs-' + set); if (v) apply(set, v); } catch (e) {} });
+    document.querySelectorAll('[data-docs-set]').forEach(function (b) {
+      b.addEventListener('click', function () { apply(b.dataset.docsSet, b.dataset.docsValue); try { localStorage.setItem('pulse-docs-' + b.dataset.docsSet, b.dataset.docsValue); } catch (e) {} });
     });
-  });
+  })();
 </script>
 </body>
 </html>

@@ -173,6 +173,126 @@ On long pages: a neutral button with the `arrow-up` icon and the word “Top”,
 </button>
 ```
 
+## White labeling
+
+How to make VEX look your own, what we support, and what is yours to keep working.
+
+**Coming soon:** the brand builder and brand files described here are on their way. Until then, talk to us before you change how VEX looks, and we’ll set up your brand with you.
+
+### Three levels
+
+VEX’s front end is open source, so you can change anything. We support a smaller, stable set of changes and keep them working for you. Anything past that is up to you to maintain.
+
+| Level | What you can change | Keeps working after our updates | We help you with it |
+|---|---|---|---|
+| **1. Brand settings** | Brand color, fonts, shape, logo, product name, favicon | Yes, guaranteed | Yes |
+| **2. Custom CSS** | Anything else that style rules can change | Not guaranteed | No |
+| **3. Changing the source** | Anything at all | No: your copy stops getting our updates | No |
+
+Almost everything you’ll want fits in level 1. Start there, and only go further if you’re ready to look after it yourself.
+
+### Level 1: Brand settings
+
+You make these in the brand builder, which shows your choices on real VEX screens, in light and dark, as you go. When you’re done, it gives you two files:
+
+- `brand.json`: everything you chose, including your logo, product name and favicon.
+
+- `brand.css`: your colors, fonts and shape, ready for VEX to load. Every button, link and field takes them on.
+
+#### What you can change
+
+| Setting | What it does |
+|---|---|
+| Brand color | Pick one color. The builder turns it into a full set of shades for buttons, links, focus rings and selected items, in light and dark. |
+| Fonts | A font for text and one for code. Optional: if you don’t choose, VEX uses Inter and JetBrains Mono. |
+| Shape | Choose square corners, or soft corners with round buttons. |
+| Logo and favicon | Your logo for light and dark backgrounds, and your browser tab icon. |
+| Product name | Your name, shown wherever VEX names itself, such as the header and the sign-in screen. |
+
+#### Checks the builder makes for you
+
+- Text on your brand color is white or black, whichever is easier to read.
+
+- For links and small text, your brand color is darkened just enough to be easy to read (4.5:1, the accessibility standard).
+
+- Focus rings, which show keyboard users where they are, stay clearly visible on every background.
+
+#### How your brand loads
+
+For the people setting it up. Pulse keeps everything your brand can change in one small set of settings, with VEX as the default. `brand.css` fills in that set for your brand, and `data-brand` on the page’s `<html>` switches it on. Shape is the page’s `data-surface`: `web` for square corners, `app` for soft corners.
+
+```html
+<html data-brand="acme" data-surface="app">
+
+<link rel="stylesheet" href="https://cdn.unmanned.team/pulse/v1/pulse-tokens.css">
+<link rel="stylesheet" href="/brands/acme/brand.css">   <!-- after Pulse's tokens -->
+
+<style>
+  /* brand.css, as the brand builder writes it */
+  :root[data-brand="acme"] {
+    --color-brand-50: #eff6ff;  --color-brand-100: #dbeafe; --color-brand-200: #bfdbfe;
+    --color-brand-300: #93c5fd; --color-brand-400: #60a5fa; --color-brand-500: #2563eb;
+    --color-brand-600: #1d4ed8; --color-brand-700: #1e40af; --color-brand-800: #1e3a8a;
+    --color-brand-900: #172554; --color-brand-950: #0b1433;
+    --color-brand-on: #ffffff;                               /* text on the brand color */
+    --font-brand-sans: 'Source Sans 3', system-ui, sans-serif;  /* optional */
+    --font-brand-mono: 'JetBrains Mono', ui-monospace, monospace;
+  }
+</style>
+```
+
+A brand can only set these: the eleven brand shades, the text color on them, and the two fonts. Everything else in Pulse reads from them, so buttons, links, focus rings, selected items, checkboxes, toggles, sliders and progress bars all follow, in light and dark.
+
+### What stays the same for every brand
+
+These keep VEX clear and trustworthy for your users, whoever’s name is on it.
+
+- **Status colors:** red for danger, amber for warnings, green for success. A warning should always look like a warning.
+
+- **Text sizes and spacing:** so every screen stays easy to read and nothing overlaps.
+
+- **Readability:** the checks above can’t be switched off.
+
+- **Security information:** severity, containment status and anything that needs your attention is always shown, in full.
+
+### Level 2: Custom CSS
+
+For anything the brand settings don’t cover, you can add one style sheet, `custom.css`. VEX loads it last, so your rules win.
+
+- We can’t help with what’s in it, and an update to VEX may change what your rules apply to. Check your changes after every release.
+
+- Use Pulse tokens (`var(--space-16)`, `var(--color-text-secondary)`) rather than fixed values, so your changes keep matching the rest of VEX.
+
+- Class names are listed in these docs, but how a component is built inside can change without notice.
+
+If you do any of these, they’re yours to look after:
+
+- Hiding or moving parts of a screen.
+
+- Changing the size of buttons, fields or text.
+
+- Changing status colors or anything listed under “What stays the same”.
+
+- Restyling components from scratch.
+
+### Level 3: Changing the source
+
+The license lets you change anything. A changed copy becomes your own version: it no longer gets our updates or security fixes automatically, and we can’t help with it. If you find yourself here, tell us what you needed. It may belong in the brand settings for everyone.
+
+### Getting help
+
+- Open VEX with your custom CSS switched off: add `?custom=off` to the address. Only your brand settings load.
+
+- If the problem goes away, it’s in your custom CSS.
+
+- If it’s still there, it’s ours to fix: send us what you saw and your `brand.json`.
+
+### Our promise on updates
+
+- Within a version of Pulse (v1 today), brand settings only grow. Nothing is renamed or removed, so the brand you make today keeps working.
+
+- Anything that would break your brand waits for the next version (v2). We’ll tell you ahead of time and give you a short guide to move over.
+
 ## Alert and toast
 
 Messages about something that happened. An alert sits in the page; a toast floats for a moment after an action.

@@ -3,6 +3,7 @@
    Variables only: loading this file changes nothing on a page by itself.
    Theme:    <html data-theme="light|dark">   (default light)
    Surface:  <html data-surface="web|app">    (default web)
+   Brand:    <html data-brand="name">         (default VEX; a brand.css made by the brand builder sets the others)
 */
 
 /* Layer order, lowest priority first. A site that puts its base element rules (a { color: inherit }, button resets) in
@@ -85,6 +86,29 @@
   --font-mono: 'JetBrains Mono', ui-monospace, monospace;
 }
 
+/* Brand: the colors and fonts a white-label brand may change, and nothing else. VEX is the default brand.
+   The accent roles below (buttons, links, focus, selected states) read these, never a named color, so a brand only has to
+   set this one block. A brand's file sets the same names on :root[data-brand="name"], with data-brand on <html>.
+   Status colors, neutrals, code colors, sizes and spacing are not brandable. */
+:root {
+  --color-brand-50: var(--color-pink-50);
+  --color-brand-100: var(--color-pink-100);
+  --color-brand-200: var(--color-pink-200);
+  --color-brand-300: var(--color-pink-300);
+  --color-brand-400: var(--color-pink-400);
+  --color-brand-500: var(--color-pink-500);
+  --color-brand-600: var(--color-pink-600);
+  --color-brand-700: var(--color-pink-700);
+  --color-brand-800: var(--color-pink-800);
+  --color-brand-900: var(--color-pink-900);
+  --color-brand-950: var(--color-pink-950);
+  --color-brand-on: var(--color-neutral-0);     /* text and icons on a brand-color fill: white or black, whichever reads */
+  --font-brand-sans: 'Inter', system-ui, sans-serif;
+  --font-brand-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --font-sans: var(--font-brand-sans);
+  --font-mono: var(--font-brand-mono);
+}
+
 /* Dimension: spacing, radius, borders, sizes */
 :root {
   --space-0: 0;
@@ -142,10 +166,11 @@
   --color-text-placeholder: var(--color-neutral-450);
   --color-text-disabled: var(--color-neutral-400);
   --color-text-on-accent: var(--color-neutral-0);
+  --color-text-on-brand: var(--color-brand-on);
   --color-text-on-contrast: var(--color-neutral-0);
   --color-text-on-warning: var(--color-neutral-900);
-  --color-text-accent: var(--color-pink-600);
-  --color-text-accent-hover: var(--color-pink-700);
+  --color-text-accent: var(--color-brand-600);
+  --color-text-accent-hover: var(--color-brand-700);
   --color-text-success: var(--color-green-600);
   --color-text-danger: var(--color-red-600);
   --color-text-warning: var(--color-amber-600);
@@ -163,13 +188,13 @@
   --color-border-mid: var(--color-neutral-300);
   --color-border-strong: var(--color-neutral-400);
   --color-border-hard: var(--color-neutral-600);
-  --color-border-focus: var(--color-pink-600);
+  --color-border-focus: var(--color-brand-600);
   --shadow-focus-ring: 0px 0px 0px 1px var(--color-surface-page), 0px 0px 0px 3px var(--color-border-focus);
-  --color-accent-default: var(--color-pink-500);
-  --color-accent-hover: var(--color-pink-700);
-  --color-accent-pressed: var(--color-pink-800);
-  --color-accent-subtle: var(--color-pink-50);
-  --color-accent-subtle-hover: var(--color-pink-100);
+  --color-accent-default: var(--color-brand-500);
+  --color-accent-hover: var(--color-brand-700);
+  --color-accent-pressed: var(--color-brand-800);
+  --color-accent-subtle: var(--color-brand-50);
+  --color-accent-subtle-hover: var(--color-brand-100);
   --color-interactive-hover: var(--color-alpha-black-5);
   --color-interactive-pressed: var(--color-alpha-black-8);
   --color-status-neutral: var(--color-neutral-500);
@@ -184,13 +209,13 @@
   --color-status-warning-subtle: var(--color-amber-50);
   --color-status-info: var(--color-blue-600);
   --color-status-info-subtle: var(--color-blue-50);
-  --color-indicator-accent: var(--color-pink-500);
+  --color-indicator-accent: var(--color-brand-500);
   --color-indicator-success: var(--color-green-600);
   --color-indicator-danger: var(--color-red-500);
   --color-indicator-warning: var(--color-amber-500);
   --color-indicator-info: var(--color-blue-600);
   --color-shadow-offset: var(--color-alpha-black-15);
-  --color-shadow-offset-accent: var(--color-alpha-accent-25);
+  --color-shadow-offset-accent: color-mix(in srgb, var(--color-brand-600) 25%, transparent);
 }
 
 /* Color, dark */
@@ -213,10 +238,11 @@
   --color-text-placeholder: var(--color-neutral-375);
   --color-text-disabled: var(--color-neutral-500);
   --color-text-on-accent: var(--color-neutral-0);
+  --color-text-on-brand: var(--color-brand-on);
   --color-text-on-contrast: var(--color-neutral-900);
   --color-text-on-warning: var(--color-neutral-900);
-  --color-text-accent: var(--color-pink-400);
-  --color-text-accent-hover: var(--color-pink-300);
+  --color-text-accent: var(--color-brand-400);
+  --color-text-accent-hover: var(--color-brand-300);
   --color-text-success: var(--color-green-400);
   --color-text-danger: var(--color-red-400);
   --color-text-warning: var(--color-amber-400);
@@ -233,13 +259,13 @@
   --color-border-mid: var(--color-neutral-500);
   --color-border-strong: var(--color-neutral-400);
   --color-border-hard: var(--color-neutral-300);
-  --color-border-focus: var(--color-pink-400);
+  --color-border-focus: var(--color-brand-400);
   --shadow-focus-ring: 0px 0px 0px 1px var(--color-surface-page), 0px 0px 0px 3px var(--color-border-focus);
-  --color-accent-default: var(--color-pink-500);
-  --color-accent-hover: var(--color-pink-600);
-  --color-accent-pressed: var(--color-pink-700);
-  --color-accent-subtle: var(--color-pink-950);
-  --color-accent-subtle-hover: var(--color-pink-900);
+  --color-accent-default: var(--color-brand-500);
+  --color-accent-hover: var(--color-brand-600);
+  --color-accent-pressed: var(--color-brand-700);
+  --color-accent-subtle: var(--color-brand-950);
+  --color-accent-subtle-hover: var(--color-brand-900);
   --color-interactive-hover: var(--color-alpha-white-8);
   --color-interactive-pressed: var(--color-alpha-white-20);
   --color-status-neutral: var(--color-neutral-400);
@@ -254,13 +280,13 @@
   --color-status-warning-subtle: var(--color-alpha-amber-12);
   --color-status-info: var(--color-blue-600);
   --color-status-info-subtle: var(--color-alpha-blue-12);
-  --color-indicator-accent: var(--color-pink-400);
+  --color-indicator-accent: var(--color-brand-400);
   --color-indicator-success: var(--color-green-400);
   --color-indicator-danger: var(--color-red-400);
   --color-indicator-warning: var(--color-amber-400);
   --color-indicator-info: var(--color-blue-400);
   --color-shadow-offset: var(--color-alpha-white-20);
-  --color-shadow-offset-accent: var(--color-alpha-accent-25);
+  --color-shadow-offset-accent: color-mix(in srgb, var(--color-brand-600) 25%, transparent);
 }
 
 /* Surface: web */

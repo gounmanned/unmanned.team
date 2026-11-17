@@ -22,7 +22,7 @@
 }
 .pulse-btn--sm { --b-h: var(--control-height-sm); --b-px: var(--space-12); --b-fs: var(--type-label-sm-size); --b-lh: var(--type-label-sm-line-height); --pulse-icon-size: var(--size-icon-16); }
 .pulse-btn--lg { --b-h: var(--control-height-lg); --b-px: var(--space-24); --b-fs: var(--type-label-lg-size); --b-lh: var(--type-label-lg-line-height); --pulse-icon-size: var(--size-icon-20); }
-.pulse-btn--primary { --b-bg: var(--color-accent-default); --b-fg: var(--color-text-on-accent); --b-bg-h: var(--color-accent-hover); --b-bg-p: var(--color-accent-pressed); }
+.pulse-btn--primary { --b-bg: var(--color-accent-default); --b-fg: var(--color-text-on-brand); --b-bg-h: var(--color-accent-hover); --b-bg-p: var(--color-accent-pressed); }
 .pulse-btn--destructive { --b-bg: var(--color-status-danger); --b-fg: var(--color-text-on-accent); --b-bg-h: var(--color-status-danger-hover); --b-bg-p: var(--color-status-danger-pressed); }
 .pulse-btn--secondary { --b-bd: var(--color-accent-default); --b-fg: var(--color-text-accent); --b-bd-h: var(--color-accent-hover); --b-bd-p: var(--color-accent-pressed); --b-ov-h: transparent; --b-ov-p: transparent; --b-sh-h: inset 0 0 0 var(--border-width-1) var(--b-bd-h); --b-sh-p: inset 0 0 0 var(--border-width-1) var(--b-bd-p); }
 /* Secondary and neutral: hover and press change the border only, thickened by 1px drawn inside (no tint, no shadow, no layout shift). */
@@ -149,7 +149,7 @@
 .pulse-badge--mono { --t: var(--color-text-secondary); --tint: var(--color-surface-subtle); --solid: var(--color-surface-contrast); --on: var(--color-text-on-contrast); --mark: var(--color-text-disabled);
   font: 400 var(--type-mono-eyebrow-size) / var(--type-mono-eyebrow-line-height) var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; }
 .pulse-badge--mono::before { display: none; }
-.pulse-badge--accent { --t: var(--color-text-accent); --tint: var(--color-accent-subtle); --solid: var(--color-accent-default); --mark: var(--color-indicator-accent); }
+.pulse-badge--accent { --t: var(--color-text-accent); --tint: var(--color-accent-subtle); --solid: var(--color-accent-default); --on: var(--color-text-on-brand); --mark: var(--color-indicator-accent); }
 .pulse-badge--success { --t: var(--color-text-success); --tint: var(--color-status-success-subtle); --solid: var(--color-status-success); --mark: var(--color-indicator-success); }
 .pulse-badge--danger { --t: var(--color-text-danger); --tint: var(--color-status-danger-subtle); --solid: var(--color-status-danger); --mark: var(--color-indicator-danger); }
 .pulse-badge--warning { --t: var(--color-text-warning); --tint: var(--color-status-warning-subtle); --solid: var(--color-status-warning); --on: var(--color-text-on-warning); --mark: var(--color-indicator-warning); }
@@ -186,7 +186,7 @@
 .pulse-check input:focus-visible, .pulse-radio input:focus-visible, .pulse-toggle input:focus-visible, .pulse-check input.is-focus, .pulse-radio input.is-focus, .pulse-toggle input.is-focus { outline: 0; box-shadow: var(--shadow-focus-ring); }
 .pulse-check input:checked, .pulse-check input:indeterminate { background-color: var(--color-accent-default); border-color: var(--color-accent-default); }
 .pulse-check input:checked::after, .pulse-check input:indeterminate::after {
-  content: ""; display: block; width: 100%; height: 100%; background: var(--color-text-on-accent);
+  content: ""; display: block; width: 100%; height: 100%; background: var(--color-text-on-brand);
   -webkit-mask: var(--pulse-i-check-bold) center / 14px no-repeat; mask: var(--pulse-i-check-bold) center / 14px no-repeat;
 }
 .pulse-check input:indeterminate::after { -webkit-mask-image: var(--pulse-i-minus-bold); mask-image: var(--pulse-i-minus-bold); }

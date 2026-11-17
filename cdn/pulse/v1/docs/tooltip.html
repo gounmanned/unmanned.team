@@ -48,6 +48,12 @@
   .docs-example{margin:var(--space-16) 0 var(--space-32);border:1px solid var(--color-border-default);border-radius:var(--radius-container);}
   .docs-live{display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-16);padding:var(--space-32) var(--space-24);background:var(--color-surface-page);border-radius:var(--radius-container) var(--radius-container) 0 0;}
   .docs-live--tall{min-height:280px;align-items:flex-start;}
+  .docs-variants{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:var(--space-16);margin:var(--space-16) 0 var(--space-32);}
+  .docs-variant{min-width:0;display:flex;flex-direction:column;border:1px solid var(--color-border-default);border-radius:var(--radius-container);}
+  .docs-live--compact{flex:1;justify-content:center;min-height:96px;padding:var(--space-24) var(--space-16);}
+  .docs-variant .docs-code{border:0;border-top:1px solid var(--color-border-default);border-radius:0 0 var(--radius-container) var(--radius-container);}
+  .docs-variant .docs-code .pulse-code__head{border-radius:0;}
+  .docs-variant .docs-code pre{padding:var(--space-12);}
   .docs-example .docs-code{border:0;border-top:1px solid var(--color-border-default);border-radius:0 0 var(--radius-container) var(--radius-container);}
   .docs-example .docs-code .pulse-code__head{border-radius:0;}
   .docs-code pre{max-height:420px;overflow:auto;}
@@ -73,6 +79,8 @@
     .docs-main{padding-top:var(--space-24);}
     .docs-top{padding:0 var(--space-16);}
     .docs-live{padding:var(--space-24) var(--space-16);}
+    .docs-live--compact{min-height:64px;padding:var(--space-16);}
+    .docs-variants{gap:var(--space-12);}
   @media (max-width:560px){ .docs-top nav .docs-hide-sm{display:none;} .docs-top nav{gap:var(--space-8);} .docs-top{flex-wrap:wrap;padding-block:var(--space-8);position:static;} }
 </style>
 </head>
@@ -93,21 +101,19 @@
     <h1>Tooltip</h1>
     <p class="docs-lede">A short hint on hover or keyboard focus, for icon buttons and abbreviations. For anything clicked, use a popover.</p>
     <div class="docs-meta"><span class="pulse-badge pulse-badge--mono pulse-badge--outline">Figma: Tooltip</span><a class="pulse-link pulse-link--sm" href="../gallery/index.html#progress">Every state in the gallery <i class="pulse-icon pulse-icon--arrow-square-out" aria-hidden="true"></i></a></div>
-    <div class="docs-example"><div class="docs-live"><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-tooltip-host" type="button" aria-label="Settings">
+    <div class="docs-variants"><div class="docs-variant"><div class="docs-live docs-live--compact"><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-tooltip-host" type="button" aria-label="Settings">
   <i class="pulse-icon pulse-icon--gear" aria-hidden="true"></i>
   <span class="pulse-tooltip" aria-hidden="true">Settings</span>
-</button>
-<button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-tooltip-host" type="button" aria-label="Copy">
-  <i class="pulse-icon pulse-icon--copy" aria-hidden="true"></i>
-  <span class="pulse-tooltip pulse-tooltip--bottom" aria-hidden="true">Copy to clipboard</span>
-</button></div><div class="pulse-code docs-code"><div class="pulse-code__head"><span class="pulse-code__file">HTML</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-tooltip-host" type="button" data-pulse-copy aria-label="Copy the code"><i class="pulse-icon pulse-icon--copy" aria-hidden="true"></i><span class="pulse-tooltip pulse-tooltip--bottom pulse-tooltip--end" aria-hidden="true">Copy to clipboard</span></button></div><pre><code>&lt;button class=&quot;pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-tooltip-host&quot; type=&quot;button&quot; aria-label=&quot;Settings&quot;&gt;
+</button></div><div class="pulse-code docs-code"><div class="pulse-code__head"><span class="pulse-code__file">Above</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-tooltip-host" type="button" data-pulse-copy aria-label="Copy the code"><i class="pulse-icon pulse-icon--copy" aria-hidden="true"></i><span class="pulse-tooltip pulse-tooltip--bottom pulse-tooltip--end" aria-hidden="true">Copy to clipboard</span></button></div><pre><code>&lt;button class=&quot;pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-tooltip-host&quot; type=&quot;button&quot; aria-label=&quot;Settings&quot;&gt;
   &lt;i class=&quot;pulse-icon pulse-icon--gear&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;
   &lt;span class=&quot;pulse-tooltip&quot; aria-hidden=&quot;true&quot;&gt;Settings&lt;/span&gt;
-&lt;/button&gt;
-&lt;button class=&quot;pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-tooltip-host&quot; type=&quot;button&quot; aria-label=&quot;Copy&quot;&gt;
+&lt;/button&gt;</code></pre></div></div><div class="docs-variant"><div class="docs-live docs-live--compact"><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-tooltip-host" type="button" aria-label="Copy">
+  <i class="pulse-icon pulse-icon--copy" aria-hidden="true"></i>
+  <span class="pulse-tooltip pulse-tooltip--bottom" aria-hidden="true">Copy to clipboard</span>
+</button></div><div class="pulse-code docs-code"><div class="pulse-code__head"><span class="pulse-code__file">Below</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-tooltip-host" type="button" data-pulse-copy aria-label="Copy the code"><i class="pulse-icon pulse-icon--copy" aria-hidden="true"></i><span class="pulse-tooltip pulse-tooltip--bottom pulse-tooltip--end" aria-hidden="true">Copy to clipboard</span></button></div><pre><code>&lt;button class=&quot;pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-tooltip-host&quot; type=&quot;button&quot; aria-label=&quot;Copy&quot;&gt;
   &lt;i class=&quot;pulse-icon pulse-icon--copy&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;
   &lt;span class=&quot;pulse-tooltip pulse-tooltip--bottom&quot; aria-hidden=&quot;true&quot;&gt;Copy to clipboard&lt;/span&gt;
-&lt;/button&gt;</code></pre></div></div>
+&lt;/button&gt;</code></pre></div></div></div>
 <h2>How it works</h2>
 <p>Put the tooltip inside the control and add <code>pulse-tooltip-host</code> to the control. It shows on hover and on keyboard focus, with no script. Esc hides it (pulse.js). It never shows on a disabled control. <code>is-open</code> holds it open, for “Copied”.</p>
 <h2>On something that isn’t a button</h2>

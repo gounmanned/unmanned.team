@@ -196,18 +196,49 @@ Tinted, with a border in its tone. Use it for something the reader should see wh
 </div>
 ```
 
+Info:
+
 ```html
-<div class="pulse-alert" role="status"><i class="pulse-icon pulse-icon--info pulse-icon--fill" aria-hidden="true"></i><div class="pulse-alert__body"><span class="pulse-alert__title">A new report is available</span></div></div>
-<div class="pulse-alert pulse-alert--warning" role="status"><i class="pulse-icon pulse-icon--warning pulse-icon--fill" aria-hidden="true"></i><div class="pulse-alert__body"><span class="pulse-alert__title">Access expires in 24 hours</span></div></div>
-<div class="pulse-alert pulse-alert--danger" role="alert"><i class="pulse-icon pulse-icon--warning-octagon pulse-icon--fill" aria-hidden="true"></i><div class="pulse-alert__body"><span class="pulse-alert__title">Connection failed</span><span class="pulse-alert__text">We couldn’t reach your identity provider. Try again.</span></div></div>
+<div class="pulse-alert" role="status">
+  <i class="pulse-icon pulse-icon--info pulse-icon--fill" aria-hidden="true"></i>
+  <div class="pulse-alert__body"><span class="pulse-alert__title">A new report is available</span></div>
+</div>
+```
+
+Warning:
+
+```html
+<div class="pulse-alert pulse-alert--warning" role="status">
+  <i class="pulse-icon pulse-icon--warning pulse-icon--fill" aria-hidden="true"></i>
+  <div class="pulse-alert__body"><span class="pulse-alert__title">Access expires in 24 hours</span></div>
+</div>
+```
+
+Danger:
+
+```html
+<div class="pulse-alert pulse-alert--danger" role="alert">
+  <i class="pulse-icon pulse-icon--warning-octagon pulse-icon--fill" aria-hidden="true"></i>
+  <div class="pulse-alert__body">
+    <span class="pulse-alert__title">Connection failed</span>
+    <span class="pulse-alert__text">We couldn’t reach your identity provider. Try again.</span>
+  </div>
+</div>
 ```
 
 ### Toast
 
 Solid color, for confirming an action that just happened (“Report exported”). Its action is a text link. Don’t put toasts in your page’s HTML: pulse.js makes them. A button with `data-pulse-toast` shows one when clicked; from a script, call `Pulse.toast()`.
 
+Success toast:
+
 ```html
 <button class="pulse-btn pulse-btn--secondary" type="button" data-pulse-toast="Report exported" data-pulse-toast-tone="success">Export report</button>
+```
+
+Error toast:
+
+```html
 <button class="pulse-btn pulse-btn--secondary" type="button" data-pulse-toast="Export failed" data-pulse-toast-text="Try again in a minute." data-pulse-toast-tone="danger">Show an error</button>
 ```
 
@@ -264,12 +295,39 @@ Figma component: Badge.
 
 A tint and a dot.
 
+Neutral:
+
 ```html
 <span class="pulse-badge">Neutral</span>
+```
+
+Accent:
+
+```html
 <span class="pulse-badge pulse-badge--accent">New</span>
+```
+
+Success:
+
+```html
 <span class="pulse-badge pulse-badge--success">Connected</span>
+```
+
+Warning:
+
+```html
 <span class="pulse-badge pulse-badge--warning">Expiring</span>
+```
+
+Danger:
+
+```html
 <span class="pulse-badge pulse-badge--danger">Failed</span>
+```
+
+Info:
+
+```html
 <span class="pulse-badge pulse-badge--info">Running</span>
 ```
 
@@ -277,8 +335,15 @@ A tint and a dot.
 
 Solid for high-salience labels, such as severity in a table. Outline is the quietest.
 
+Solid:
+
 ```html
 <span class="pulse-badge pulse-badge--solid pulse-badge--danger">Critical</span>
+```
+
+Outline:
+
+```html
 <span class="pulse-badge pulse-badge--outline pulse-badge--nodot">Draft</span>
 ```
 
@@ -286,10 +351,27 @@ Solid for high-salience labels, such as severity in a table. Outline is the quie
 
 JetBrains Mono caps with no dot, for codes and methods (R0, GET). Gray on its own; add a tone after it to color it.
 
+Code:
+
 ```html
 <span class="pulse-badge pulse-badge--mono pulse-badge--outline">R0</span>
+```
+
+Get:
+
+```html
 <span class="pulse-badge pulse-badge--mono pulse-badge--solid pulse-badge--success">Get</span>
+```
+
+Post:
+
+```html
 <span class="pulse-badge pulse-badge--mono pulse-badge--solid pulse-badge--accent">Post</span>
+```
+
+Delete:
+
+```html
 <span class="pulse-badge pulse-badge--mono pulse-badge--solid pulse-badge--danger">Delete</span>
 ```
 
@@ -317,12 +399,39 @@ Figma component: Button.
 
 One primary button per view, for the main action. Destructive only for something that deletes or can’t be undone.
 
+Primary:
+
 ```html
 <button class="pulse-btn pulse-btn--primary" type="button">Start test</button>
+```
+
+Secondary:
+
+```html
 <button class="pulse-btn pulse-btn--secondary" type="button">Secondary</button>
+```
+
+Neutral:
+
+```html
 <button class="pulse-btn pulse-btn--neutral" type="button">Neutral</button>
+```
+
+Ghost:
+
+```html
 <button class="pulse-btn pulse-btn--ghost" type="button">Ghost</button>
+```
+
+Ghost neutral:
+
+```html
 <button class="pulse-btn pulse-btn--ghost-neutral" type="button">Ghost neutral</button>
+```
+
+Destructive:
+
+```html
 <button class="pulse-btn pulse-btn--destructive" type="button">Delete</button>
 ```
 
@@ -339,9 +448,21 @@ One primary button per view, for the main action. Destructive only for something
 
 Small 32px, medium 40px (default), large 48px. Large for the hero and closing actions on the website.
 
+Small:
+
 ```html
 <button class="pulse-btn pulse-btn--primary pulse-btn--sm" type="button">Small</button>
+```
+
+Medium:
+
+```html
 <button class="pulse-btn pulse-btn--primary" type="button">Medium</button>
+```
+
+Large:
+
+```html
 <button class="pulse-btn pulse-btn--primary pulse-btn--lg" type="button">Large</button>
 ```
 
@@ -349,10 +470,17 @@ Small 32px, medium 40px (default), large 48px. Large for the hero and closing ac
 
 An icon-only button has no visible text, so it needs `aria-label`. Add a tooltip for anything that isn’t obvious.
 
+With an icon:
+
 ```html
 <button class="pulse-btn pulse-btn--secondary" type="button">
   <i class="pulse-icon pulse-icon--copy" aria-hidden="true"></i> Copy key
 </button>
+```
+
+Icon only:
+
+```html
 <button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon" type="button" aria-label="Settings">
   <i class="pulse-icon pulse-icon--gear" aria-hidden="true"></i>
 </button>
@@ -362,14 +490,23 @@ An icon-only button has no visible text, so it needs `aria-label`. Add a tooltip
 
 Disabled keeps the shape and drains the color. `aria-busy="true"` shows a spinner and stops clicks while something is saving.
 
+Disabled:
+
 ```html
-<button class="pulse-btn pulse-btn--primary" type="button" disabled>Disabled</button>
+<button class="pulse-btn pulse-btn--primary" type="button" disabled>Start test</button>
+```
+
+Loading:
+
+```html
 <button class="pulse-btn pulse-btn--primary" type="button" aria-busy="true">Saving</button>
 ```
 
 ### A button that goes somewhere
 
 The page’s main action may look like a button even when it navigates. Use an `<a>` with the button classes.
+
+Link that looks like a button:
 
 ```html
 <a class="pulse-btn pulse-btn--primary pulse-btn--lg" href="/install/">Buy a Dot</a>
@@ -397,9 +534,10 @@ Figma component: Checkbox, Radio, Toggle.
 
 ### Checkbox
 
+Checkbox:
+
 ```html
 <label class="pulse-check"><input type="checkbox" checked> Email me the report</label>
-<label class="pulse-check"><input type="checkbox"> Include closed signals</label>
 ```
 
 ### Radio
@@ -417,6 +555,8 @@ Group radios in a `<fieldset>` with a `<legend>`, and give them the same `name`.
 ### Toggle
 
 A checkbox with `role="switch"`. Use it when the change applies right away, without a Save button.
+
+Toggle:
 
 ```html
 <label class="pulse-toggle"><input type="checkbox" role="switch" checked> Auto-contain devices</label>
@@ -703,9 +843,21 @@ The small mono line above a headline. Write it in sentence case; CSS sets the ca
 
 Figma component: Eyebrow.
 
+Default:
+
 ```html
 <p class="pulse-eyebrow">Meet a Dot</p>
+```
+
+Accent:
+
+```html
 <p class="pulse-eyebrow pulse-eyebrow--accent">The loop: Collect</p>
+```
+
+With the dot:
+
+```html
 <p class="pulse-eyebrow pulse-eyebrow--dot">Don’t get hacked</p>
 ```
 
@@ -813,19 +965,48 @@ Figma component: Link.
 
 The arrow says where it goes: right for another page, down for further down this page (`pulse-link--down`), out for another site.
 
+Another page:
+
 ```html
 <a class="pulse-link" href="/how-it-works/">See how VEX works <i class="pulse-icon pulse-icon--arrow-right" aria-hidden="true"></i></a>
+```
+
+Further down this page:
+
+```html
 <a class="pulse-link pulse-link--down" href="#pricing">See pricing <i class="pulse-icon pulse-icon--arrow-down" aria-hidden="true"></i></a>
+```
+
+Another site:
+
+```html
 <a class="pulse-link" href="https://slack.com/help" target="_blank" rel="noopener">Slack’s guide <i class="pulse-icon pulse-icon--arrow-square-out" aria-hidden="true"></i></a>
 ```
 
 ### Sizes
 
+Extra small:
+
 ```html
-<a class="pulse-link pulse-link--xs" href="#">Extra small</a>
-<a class="pulse-link pulse-link--sm" href="#">Small</a>
-<a class="pulse-link" href="#">Medium</a>
-<a class="pulse-link pulse-link--lg" href="#">Large</a>
+<a class="pulse-link pulse-link--xs" href="#">Extra small <i class="pulse-icon pulse-icon--arrow-right" aria-hidden="true"></i></a>
+```
+
+Small:
+
+```html
+<a class="pulse-link pulse-link--sm" href="#">Small <i class="pulse-icon pulse-icon--arrow-right" aria-hidden="true"></i></a>
+```
+
+Medium:
+
+```html
+<a class="pulse-link" href="#">Medium <i class="pulse-icon pulse-icon--arrow-right" aria-hidden="true"></i></a>
+```
+
+Large:
+
+```html
+<a class="pulse-link pulse-link--lg" href="#">Large <i class="pulse-icon pulse-icon--arrow-right" aria-hidden="true"></i></a>
 ```
 
 ### Inline
@@ -978,11 +1159,18 @@ Switches between two to four views of the same thing (Monthly and Yearly, Mac an
 
 Figma component: Segmented control.
 
+Medium:
+
 ```html
 <div class="pulse-segmented" role="group" aria-label="Billing">
   <button class="pulse-segmented__item" type="button" aria-pressed="false">Monthly</button>
   <button class="pulse-segmented__item" type="button" aria-pressed="true">Yearly</button>
 </div>
+```
+
+Large:
+
+```html
 <div class="pulse-segmented pulse-segmented--lg" role="group" aria-label="Operating system">
   <button class="pulse-segmented__item" type="button" aria-pressed="true">Mac</button>
   <button class="pulse-segmented__item" type="button" aria-pressed="false">Windows</button>
@@ -1144,11 +1332,18 @@ A short hint on hover or keyboard focus, for icon buttons and abbreviations. For
 
 Figma component: Tooltip.
 
+Above:
+
 ```html
 <button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-tooltip-host" type="button" aria-label="Settings">
   <i class="pulse-icon pulse-icon--gear" aria-hidden="true"></i>
   <span class="pulse-tooltip" aria-hidden="true">Settings</span>
 </button>
+```
+
+Below:
+
+```html
 <button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-tooltip-host" type="button" aria-label="Copy">
   <i class="pulse-icon pulse-icon--copy" aria-hidden="true"></i>
   <span class="pulse-tooltip pulse-tooltip--bottom" aria-hidden="true">Copy to clipboard</span>

@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en" data-theme="light" data-surface="web">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Dropdown and nav menu · Pulse docs</title>
+<meta name="description" content="Two lists that open from a trigger: a dropdown picks a value, a nav menu goes somewhere.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../pulse-tokens.css">
+<link rel="stylesheet" href="../pulse-icons.css">
+<link rel="stylesheet" href="../pulse-components.css">
+<script src="../pulse.js" defer></script>
+<style>
+  body{margin:0;background:var(--color-surface-page);color:var(--color-text-primary);font:400 var(--type-body-md-size)/var(--type-body-md-line-height) var(--font-sans);}
+  a{color:inherit;}
+  .docs-top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:var(--space-16);min-height:56px;padding:0 var(--space-24);background:var(--color-surface-page);border-bottom:1px solid var(--color-border-default);}
+  .docs-brand{font-weight:600;text-decoration:none;}
+  .docs-brand span{font:400 var(--type-mono-label-size)/1 var(--font-mono);color:var(--color-text-tertiary);margin-left:var(--space-8);}
+  .docs-top nav{margin-left:auto;display:flex;align-items:center;gap:var(--space-20);flex-wrap:wrap;}
+  .docs-layout{display:grid;grid-template-columns:240px minmax(0,1fr);gap:var(--space-48);max-width:1200px;margin:0 auto;padding:0 var(--space-24);}
+  .docs-side{position:sticky;top:57px;align-self:start;max-height:calc(100vh - 57px);overflow-y:auto;padding:var(--space-32) 0;}
+  .docs-side .pulse-tabs__label{margin-top:var(--space-24);}
+  .docs-side .pulse-tabs__label:first-child{margin-top:0;}
+  .docs-main{min-width:0;max-width:800px;padding:var(--space-48) 0 var(--space-96);}
+  .docs-main h1{margin:var(--space-8) 0 var(--space-16);font:600 var(--type-heading-section-size)/var(--type-heading-section-line-height) var(--font-sans);letter-spacing:-0.01em;}
+  .docs-lede{margin:0 0 var(--space-16);font-size:var(--type-body-lede-size);line-height:var(--type-body-lede-line-height);color:var(--color-text-secondary);}
+  .docs-meta{display:flex;flex-wrap:wrap;gap:var(--space-8) var(--space-24);margin:0 0 var(--space-40);}
+  .docs-main h2{margin:var(--space-48) 0 var(--space-12);font:600 var(--type-heading-card-size)/var(--type-heading-card-line-height) var(--font-sans);}
+  .docs-main h3{margin:var(--space-32) 0 var(--space-8);font:600 var(--type-body-md-size)/var(--type-body-md-line-height) var(--font-sans);}
+  .docs-main p,.docs-main li{color:var(--color-text-secondary);}
+  .docs-main p{margin:0 0 var(--space-16);}
+  .docs-main ul,.docs-main ol{margin:0 0 var(--space-16);padding-left:var(--space-24);}
+  .docs-main li{margin-bottom:var(--space-4);}
+  .docs-main strong{color:var(--color-text-primary);font-weight:600;}
+  .docs-main :not(pre)>code{font:400 0.875em/1 var(--font-mono);padding:2px 4px;border-radius:var(--radius-tag);background:var(--color-surface-sunken);color:var(--color-text-primary);}
+  .docs-example{margin:var(--space-16) 0 var(--space-32);border:1px solid var(--color-border-default);border-radius:var(--radius-container);}
+  .docs-live{display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-16);padding:var(--space-32) var(--space-24);background:var(--color-surface-page);border-radius:var(--radius-container) var(--radius-container) 0 0;}
+  .docs-live--tall{min-height:280px;align-items:flex-start;}
+  .docs-example .docs-code{border:0;border-top:1px solid var(--color-border-default);border-radius:0 0 var(--radius-container) var(--radius-container);}
+  .docs-example .docs-code .pulse-code__head{border-radius:0;}
+  .docs-code pre{max-height:420px;overflow:auto;}
+  .docs-table{overflow-x:auto;margin:0 0 var(--space-24);}
+  .docs-main table{width:100%;border-collapse:collapse;font-size:var(--type-body-sm-size);line-height:var(--type-body-sm-line-height);}
+  .docs-main th,.docs-main td{text-align:left;vertical-align:top;padding:var(--space-8) var(--space-12) var(--space-8) 0;border-bottom:1px solid var(--color-border-default);}
+  .docs-main th{font-weight:600;color:var(--color-text-primary);}
+  .docs-main td{color:var(--color-text-secondary);}
+  .docs-main td:first-child{width:40%;}
+  .docs-main td code{overflow-wrap:anywhere;}
+  .docs-swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:var(--space-8) var(--space-16);margin-bottom:var(--space-16);}
+  .docs-swatch{display:flex;align-items:center;gap:var(--space-8);min-width:0;}
+  .docs-swatch span{flex:none;width:32px;height:32px;border-radius:var(--radius-tag);border:1px solid var(--color-border-default);}
+  .docs-swatch code{overflow-wrap:anywhere;}
+  .docs-space{display:flex;flex-direction:column;gap:var(--space-8);}
+  .docs-space div{display:flex;align-items:center;gap:var(--space-12);}
+  .docs-space span{height:12px;background:var(--color-accent-subtle);box-shadow:inset 0 0 0 1px var(--color-accent-default);}
+  .docs-icons{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:var(--space-16);}
+  .docs-icon{display:flex;align-items:center;gap:var(--space-8);--pulse-icon-size:20px;}
+  .docs-icon code{font-size:12px !important;}
+  .docs-next{display:flex;justify-content:space-between;gap:var(--space-16);margin-top:var(--space-64);padding-top:var(--space-24);border-top:1px solid var(--color-border-default);}
+  .docs-menu{display:none;}
+  @media (max-width:900px){
+    .docs-layout{grid-template-columns:minmax(0,1fr);gap:0;padding:0 var(--space-16);}
+    .docs-side{display:none;}
+    .docs-menu{display:block;margin:var(--space-16) 0 0;border:1px solid var(--color-border-default);border-radius:var(--radius-control);}
+    .docs-menu summary{padding:var(--space-12) var(--space-16);cursor:pointer;font-weight:500;}
+    .docs-menu .docs-menu__list{padding:0 var(--space-16) var(--space-16);}
+    .docs-main{padding-top:var(--space-24);}
+    .docs-top{padding:0 var(--space-16);}
+    .docs-live{padding:var(--space-24) var(--space-16);}
+  }
+  @media (max-width:560px){ .docs-top nav .docs-hide-sm{display:none;} }
+</style>
+</head>
+<body>
+<header class="docs-top">
+  <a class="docs-brand" href="index.html">Pulse<span>v1 docs</span></a>
+  <nav aria-label="Pulse">
+    <a class="pulse-link pulse-link--quiet pulse-link--sm" href="../gallery/index.html">Gallery</a>
+    <a class="pulse-link pulse-link--quiet pulse-link--sm docs-hide-sm" href="../pulse-reference.md">AI reference</a>
+    <div class="pulse-segmented" role="group" aria-label="Theme"><button class="pulse-segmented__item" type="button" data-docs-theme="light" aria-pressed="true">Light</button><button class="pulse-segmented__item" type="button" data-docs-theme="dark" aria-pressed="false">Dark</button></div>
+  </nav>
+</header>
+<div class="docs-layout">
+  <aside class="docs-side"><p class="pulse-tabs__label">Start</p><nav class="pulse-tabs pulse-tabs--vertical" aria-label="Start"><a class="pulse-tab" href="index.html">Getting started</a><a class="pulse-tab" href="starter.html">Starter page</a><a class="pulse-tab" href="foundations.html">Foundations</a><a class="pulse-tab" href="patterns.html">Patterns</a></nav><p class="pulse-tabs__label">Components</p><nav class="pulse-tabs pulse-tabs--vertical" aria-label="Components"><a class="pulse-tab" href="alert-toast.html">Alert and toast</a><a class="pulse-tab" href="badge.html">Badge</a><a class="pulse-tab" href="button.html">Button</a><a class="pulse-tab" href="checkbox-radio-toggle.html">Checkbox, radio and toggle</a><a class="pulse-tab" href="chip.html">Chip</a><a class="pulse-tab" href="code-panel.html">Code panel</a><a class="pulse-tab" href="dialog.html">Dialog</a><a class="pulse-tab" href="drawer.html">Drawer</a><a class="pulse-tab" href="dropdown.html" aria-current="page">Dropdown and nav menu</a><a class="pulse-tab" href="eyebrow.html">Eyebrow</a><a class="pulse-tab" href="fields.html">Fields</a><a class="pulse-tab" href="link.html">Link</a><a class="pulse-tab" href="popover.html">Popover</a><a class="pulse-tab" href="progress.html">Progress</a><a class="pulse-tab" href="segmented.html">Segmented control</a><a class="pulse-tab" href="slider.html">Slider</a><a class="pulse-tab" href="step-number.html">Step number</a><a class="pulse-tab" href="tabs.html">Tabs</a><a class="pulse-tab" href="tooltip.html">Tooltip</a></nav></aside>
+  <main class="docs-main">
+    <details class="docs-menu"><summary>All pages</summary><div class="docs-menu__list"><p class="pulse-tabs__label">Start</p><nav class="pulse-tabs pulse-tabs--vertical" aria-label="Start"><a class="pulse-tab" href="index.html">Getting started</a><a class="pulse-tab" href="starter.html">Starter page</a><a class="pulse-tab" href="foundations.html">Foundations</a><a class="pulse-tab" href="patterns.html">Patterns</a></nav><p class="pulse-tabs__label">Components</p><nav class="pulse-tabs pulse-tabs--vertical" aria-label="Components"><a class="pulse-tab" href="alert-toast.html">Alert and toast</a><a class="pulse-tab" href="badge.html">Badge</a><a class="pulse-tab" href="button.html">Button</a><a class="pulse-tab" href="checkbox-radio-toggle.html">Checkbox, radio and toggle</a><a class="pulse-tab" href="chip.html">Chip</a><a class="pulse-tab" href="code-panel.html">Code panel</a><a class="pulse-tab" href="dialog.html">Dialog</a><a class="pulse-tab" href="drawer.html">Drawer</a><a class="pulse-tab" href="dropdown.html" aria-current="page">Dropdown and nav menu</a><a class="pulse-tab" href="eyebrow.html">Eyebrow</a><a class="pulse-tab" href="fields.html">Fields</a><a class="pulse-tab" href="link.html">Link</a><a class="pulse-tab" href="popover.html">Popover</a><a class="pulse-tab" href="progress.html">Progress</a><a class="pulse-tab" href="segmented.html">Segmented control</a><a class="pulse-tab" href="slider.html">Slider</a><a class="pulse-tab" href="step-number.html">Step number</a><a class="pulse-tab" href="tabs.html">Tabs</a><a class="pulse-tab" href="tooltip.html">Tooltip</a></nav></div></details>
+    <h1>Dropdown and nav menu</h1>
+    <p class="docs-lede">Two lists that open from a trigger: a dropdown picks a value, a nav menu goes somewhere.</p>
+    <div class="docs-meta"><span class="pulse-badge pulse-badge--mono pulse-badge--outline">Figma: Dropdown, Menu item, Nav menu</span><a class="pulse-link pulse-link--sm" href="../gallery/index.html#dropdown">Every state in the gallery <i class="pulse-icon pulse-icon--arrow-square-out" aria-hidden="true"></i></a></div>
+    <h2>Dropdown (picking a value)</h2>
+<p>The list that opens from a select-style field. Items can have an icon; the chosen one shows a check. For a simple form, the native <a href="fields.html">select</a> is usually enough.</p>
+<div class="docs-example"><div class="docs-live"><ul class="pulse-dropdown" role="listbox" aria-label="Identity provider" style="width: 280px">
+  <li class="pulse-menu-item" role="option" aria-selected="true">
+    <i class="pulse-icon pulse-icon--users" aria-hidden="true"></i>
+    <span class="pulse-menu-item__label">Microsoft Entra ID</span>
+    <i class="pulse-icon pulse-icon--check pulse-menu-item__check" aria-hidden="true"></i>
+  </li>
+  <li class="pulse-menu-item" role="option" aria-selected="false">
+    <i class="pulse-icon pulse-icon--users" aria-hidden="true"></i>
+    <span class="pulse-menu-item__label">Google Workspace</span>
+  </li>
+  <li class="pulse-menu-item" role="option" aria-disabled="true">
+    <i class="pulse-icon pulse-icon--users" aria-hidden="true"></i>
+    <span class="pulse-menu-item__label">OneLogin (coming soon)</span>
+  </li>
+</ul></div><div class="pulse-code docs-code"><div class="pulse-code__head"><span class="pulse-code__file">HTML</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-tooltip-host" type="button" data-pulse-copy aria-label="Copy the code"><i class="pulse-icon pulse-icon--copy" aria-hidden="true"></i><span class="pulse-tooltip pulse-tooltip--bottom pulse-tooltip--end" aria-hidden="true">Copy to clipboard</span></button></div><pre><code>&lt;ul class=&quot;pulse-dropdown&quot; role=&quot;listbox&quot; aria-label=&quot;Identity provider&quot; style=&quot;width: 280px&quot;&gt;
+  &lt;li class=&quot;pulse-menu-item&quot; role=&quot;option&quot; aria-selected=&quot;true&quot;&gt;
+    &lt;i class=&quot;pulse-icon pulse-icon--users&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;
+    &lt;span class=&quot;pulse-menu-item__label&quot;&gt;Microsoft Entra ID&lt;/span&gt;
+    &lt;i class=&quot;pulse-icon pulse-icon--check pulse-menu-item__check&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;
+  &lt;/li&gt;
+  &lt;li class=&quot;pulse-menu-item&quot; role=&quot;option&quot; aria-selected=&quot;false&quot;&gt;
+    &lt;i class=&quot;pulse-icon pulse-icon--users&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;
+    &lt;span class=&quot;pulse-menu-item__label&quot;&gt;Google Workspace&lt;/span&gt;
+  &lt;/li&gt;
+  &lt;li class=&quot;pulse-menu-item&quot; role=&quot;option&quot; aria-disabled=&quot;true&quot;&gt;
+    &lt;i class=&quot;pulse-icon pulse-icon--users&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;
+    &lt;span class=&quot;pulse-menu-item__label&quot;&gt;OneLogin (coming soon)&lt;/span&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;</code></pre></div></div>
+<p>Opening, positioning, arrow keys and choosing are the page’s script for now.</p>
+<h2>Nav menu (going somewhere)</h2>
+<p>Links with a title and a line of description, opened by a quiet link that is really a button. It’s a list of links, not a listbox, so it has no <code>role="menu"</code>.</p>
+<div class="docs-example"><div class="docs-live"><button class="pulse-link pulse-link--quiet" type="button" aria-expanded="true" aria-controls="soc-menu">
+  VEX AI SOC <i class="pulse-icon pulse-icon--caret-down" aria-hidden="true"></i>
+</button>
+<nav class="pulse-dropdown pulse-dropdown--nav" id="soc-menu" aria-label="VEX AI SOC">
+  <a class="pulse-menu-item" href="/how-it-works/" aria-current="page">
+    <span class="pulse-menu-item__label">Meet VEX</span>
+    <span class="pulse-menu-item__desc">Good prevention starts with great detection.</span>
+  </a>
+  <a class="pulse-menu-item" href="/detections/">
+    <span class="pulse-menu-item__label">What VEX detects</span>
+    <span class="pulse-menu-item__desc">Every alert type it can raise.</span>
+  </a>
+</nav></div><div class="pulse-code docs-code"><div class="pulse-code__head"><span class="pulse-code__file">HTML</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-tooltip-host" type="button" data-pulse-copy aria-label="Copy the code"><i class="pulse-icon pulse-icon--copy" aria-hidden="true"></i><span class="pulse-tooltip pulse-tooltip--bottom pulse-tooltip--end" aria-hidden="true">Copy to clipboard</span></button></div><pre><code>&lt;button class=&quot;pulse-link pulse-link--quiet&quot; type=&quot;button&quot; aria-expanded=&quot;true&quot; aria-controls=&quot;soc-menu&quot;&gt;
+  VEX AI SOC &lt;i class=&quot;pulse-icon pulse-icon--caret-down&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;
+&lt;/button&gt;
+&lt;nav class=&quot;pulse-dropdown pulse-dropdown--nav&quot; id=&quot;soc-menu&quot; aria-label=&quot;VEX AI SOC&quot;&gt;
+  &lt;a class=&quot;pulse-menu-item&quot; href=&quot;/how-it-works/&quot; aria-current=&quot;page&quot;&gt;
+    &lt;span class=&quot;pulse-menu-item__label&quot;&gt;Meet VEX&lt;/span&gt;
+    &lt;span class=&quot;pulse-menu-item__desc&quot;&gt;Good prevention starts with great detection.&lt;/span&gt;
+  &lt;/a&gt;
+  &lt;a class=&quot;pulse-menu-item&quot; href=&quot;/detections/&quot;&gt;
+    &lt;span class=&quot;pulse-menu-item__label&quot;&gt;What VEX detects&lt;/span&gt;
+    &lt;span class=&quot;pulse-menu-item__desc&quot;&gt;Every alert type it can raise.&lt;/span&gt;
+  &lt;/a&gt;
+&lt;/nav&gt;</code></pre></div></div>
+<p>Positioning it under its trigger, and opening and closing it (click, Esc, a click outside), are the page’s script for now.</p>
+<h2>Options</h2>
+<div class="docs-table"><table><thead><tr><th>Class</th><th>What it does</th></tr></thead><tbody>
+<tr><td><code>pulse-dropdown--scroll</code></td><td>Limits the height to 240px and scrolls.</td></tr>
+<tr><td><code>pulse-dropdown__hint</code></td><td>A line under the list (“6 options · scroll for more”).</td></tr>
+<tr><td><code>pulse-dropdown--nav</code></td><td>The nav menu: 320px, title and description items.</td></tr>
+<tr><td><code>pulse-dropdown__label</code></td><td>A small mono group label above the links.</td></tr>
+</tbody></table></div>
+<h2>Accessibility</h2>
+<ul>
+<li>Dropdown: <code>role="listbox"</code>, <code>role="option"</code>, <code>aria-selected</code> on the chosen one, <code>aria-disabled</code> on unavailable ones.</li>
+<li>Nav menu: the trigger has <code>aria-expanded</code> and <code>aria-controls</code>; the current page has <code>aria-current="page"</code>.</li>
+</ul>
+    <div class="docs-next"><a class="pulse-link pulse-link--sm" href="drawer.html">Drawer</a><a class="pulse-link pulse-link--sm" href="eyebrow.html">Eyebrow <i class="pulse-icon pulse-icon--arrow-right" aria-hidden="true"></i></a></div>
+  </main>
+</div>
+<script>
+  // Docs only: the theme switch. Pulse itself needs no script for themes.
+  document.querySelectorAll('[data-docs-theme]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      document.documentElement.setAttribute('data-theme', b.dataset.docsTheme);
+      document.querySelectorAll('[data-docs-theme]').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
+    });
+  });
+</script>
+</body>
+</html>

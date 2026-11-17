@@ -19,7 +19,17 @@
      <dialog id="prices" class="pulse-drawer" aria-labelledby="prices-t">… <button data-pulse-close aria-label="Close">…</button> …</dialog>
    The opener can be an <a href>, so it still goes somewhere without JS; with JS the link is cancelled.
    data-pulse-open opens the dialog with that id as a modal (or beside the page, still usable, when the dialog has data-modal="false").
-   data-pulse-close inside it closes it; so does a click on the dimmed page. Esc and returning focus are the browser's. */
+   data-pulse-close inside it closes it; so does a click on the dimmed page. Esc and returning focus are the browser's.
+
+   Copy
+     <button class="pulse-btn … pulse-tooltip-host" data-pulse-copy aria-label="Copy">… <span class="pulse-tooltip" aria-hidden="true">Copy to clipboard</span></button>
+   data-pulse-copy copies the code of the pulse-code panel the button sits in. data-pulse-copy="some-id" copies the text of that
+   element instead (an input's value). The tooltip says "Copied" for a moment (data-pulse-copied="…" to change the word) and a
+   screen reader hears it too.
+
+   Slider
+     <input class="pulse-slider__input" type="range" …>   keeps the fill in step with the thumb. An <output for="its-id"
+     data-pulse-mirror="%"> shows the value with that suffix (data-pulse-mirror="" for none). Other formats are the page's job. */
 (function () {
   'use strict';
   if (typeof document === 'undefined') return;
@@ -202,4 +212,49 @@
   window.Pulse = window.Pulse || {};
   window.Pulse.popover = { attach: attach, place: place };
   window.Pulse.attach = attach;  // same call under a general name: popovers, drawers and dialogs inside a shadow root
+
+  // Copy: one polite live region per document, so "Copied" is read out.
+  var live = null;
+  function say(text) {
+    if (!live) { live = document.createElement('span'); live.setAttribute('role', 'status'); live.style.cssText = 'position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap'; document.body.appendChild(live); }
+    live.textContent = ''; setTimeout(function () { live.textContent = text; }, 50);
+  }
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    return new Promise(function (ok, fail) {
+      var ta = document.createElement('textarea'); ta.value = text; ta.setAttribute('readonly', ''); ta.style.cssText = 'position:fixed;left:-9999px';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy') ? ok() : fail(); } catch (e) { fail(e); } finally { ta.remove(); }
+    });
+  }
+  document.addEventListener('click', function (e) {
+    var btn = e.target && e.target.closest && e.target.closest('[data-pulse-copy]');
+    if (!btn || btn.disabled) return;
+    var id = btn.getAttribute('data-pulse-copy'), src = null, text = '';
+    if (id) { var rn = btn.getRootNode(); src = rn.getElementById ? rn.getElementById(id) : document.getElementById(id); text = src ? ('value' in src && src.value !== undefined && src.tagName !== 'OUTPUT' ? src.value : src.textContent) : ''; }
+    else { var panel = btn.closest('.pulse-code'); src = panel && (panel.querySelector('code') || panel.querySelector('pre')); text = src ? src.textContent : ''; }
+    if (!text) return;
+    copyText(text).then(function () {
+      var word = btn.getAttribute('data-pulse-copied') || 'Copied', tip = btn.querySelector('.pulse-tooltip');
+      say(word);
+      if (tip) {
+        if (tip._pulseWord === undefined) tip._pulseWord = tip.textContent;
+        tip.textContent = word; tip.classList.add('is-open');
+        clearTimeout(tip._pulseTimer);
+        tip._pulseTimer = setTimeout(function () { tip.classList.remove('is-open'); tip.textContent = tip._pulseWord; }, 1600);
+      }
+    }, function () {});
+  });
+
+  // Slider: keep the fill (--v) and a mirrored <output> in step with the value.
+  function syncSlider(input) {
+    var min = parseFloat(input.min || 0), max = parseFloat(input.max || 100), v = parseFloat(input.value);
+    input.style.setProperty('--v', ((v - min) / ((max - min) || 1) * 100) + '%');
+    if (!input.id) return;
+    var out = (input.getRootNode().querySelector ? input.getRootNode() : document).querySelector('output[for~="' + input.id + '"][data-pulse-mirror]');
+    if (out) out.textContent = input.value + out.getAttribute('data-pulse-mirror');
+  }
+  document.addEventListener('input', function (e) { if (e.target && e.target.classList && e.target.classList.contains('pulse-slider__input')) syncSlider(e.target); });
+  function syncAll() { [].forEach.call(document.querySelectorAll('.pulse-slider__input'), syncSlider); }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', syncAll); else syncAll();
 })();

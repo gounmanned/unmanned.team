@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en" data-theme="light" data-surface="web">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Popover · Pulse docs</title>
+<meta name="description" content="A small card that opens on click next to its trigger: an explanation, or a short form. For a hint on hover, use a tooltip.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../pulse-tokens.css">
+<link rel="stylesheet" href="../pulse-icons.css">
+<link rel="stylesheet" href="../pulse-components.css">
+<script src="../pulse.js" defer></script>
+<style>
+  body{margin:0;background:var(--color-surface-page);color:var(--color-text-primary);font:400 var(--type-body-md-size)/var(--type-body-md-line-height) var(--font-sans);}
+  a{color:inherit;}
+  .docs-top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:var(--space-16);min-height:56px;padding:0 var(--space-24);background:var(--color-surface-page);border-bottom:1px solid var(--color-border-default);}
+  .docs-brand{font-weight:600;text-decoration:none;}
+  .docs-brand span{font:400 var(--type-mono-label-size)/1 var(--font-mono);color:var(--color-text-tertiary);margin-left:var(--space-8);}
+  .docs-top nav{margin-left:auto;display:flex;align-items:center;gap:var(--space-20);flex-wrap:wrap;}
+  .docs-layout{display:grid;grid-template-columns:240px minmax(0,1fr);gap:var(--space-48);max-width:1200px;margin:0 auto;padding:0 var(--space-24);}
+  .docs-side{position:sticky;top:57px;align-self:start;max-height:calc(100vh - 57px);overflow-y:auto;padding:var(--space-32) 0;}
+  .docs-side .pulse-tabs__label{margin-top:var(--space-24);}
+  .docs-side .pulse-tabs__label:first-child{margin-top:0;}
+  .docs-main{min-width:0;max-width:800px;padding:var(--space-48) 0 var(--space-96);}
+  .docs-main h1{margin:var(--space-8) 0 var(--space-16);font:600 var(--type-heading-section-size)/var(--type-heading-section-line-height) var(--font-sans);letter-spacing:-0.01em;}
+  .docs-lede{margin:0 0 var(--space-16);font-size:var(--type-body-lede-size);line-height:var(--type-body-lede-line-height);color:var(--color-text-secondary);}
+  .docs-meta{display:flex;flex-wrap:wrap;gap:var(--space-8) var(--space-24);margin:0 0 var(--space-40);}
+  .docs-main h2{margin:var(--space-48) 0 var(--space-12);font:600 var(--type-heading-card-size)/var(--type-heading-card-line-height) var(--font-sans);}
+  .docs-main h3{margin:var(--space-32) 0 var(--space-8);font:600 var(--type-body-md-size)/var(--type-body-md-line-height) var(--font-sans);}
+  .docs-main p,.docs-main li{color:var(--color-text-secondary);}
+  .docs-main p{margin:0 0 var(--space-16);}
+  .docs-main ul,.docs-main ol{margin:0 0 var(--space-16);padding-left:var(--space-24);}
+  .docs-main li{margin-bottom:var(--space-4);}
+  .docs-main strong{color:var(--color-text-primary);font-weight:600;}
+  .docs-main :not(pre)>code{font:400 0.875em/1 var(--font-mono);padding:2px 4px;border-radius:var(--radius-tag);background:var(--color-surface-sunken);color:var(--color-text-primary);}
+  .docs-example{margin:var(--space-16) 0 var(--space-32);border:1px solid var(--color-border-default);border-radius:var(--radius-container);}
+  .docs-live{display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-16);padding:var(--space-32) var(--space-24);background:var(--color-surface-page);border-radius:var(--radius-container) var(--radius-container) 0 0;}
+  .docs-live--tall{min-height:280px;align-items:flex-start;}
+  .docs-example .docs-code{border:0;border-top:1px solid var(--color-border-default);border-radius:0 0 var(--radius-container) var(--radius-container);}
+  .docs-example .docs-code .pulse-code__head{border-radius:0;}
+  .docs-code pre{max-height:420px;overflow:auto;}
+  .docs-table{overflow-x:auto;margin:0 0 var(--space-24);}
+  .docs-main table{width:100%;border-collapse:collapse;font-size:var(--type-body-sm-size);line-height:var(--type-body-sm-line-height);}
+  .docs-main th,.docs-main td{text-align:left;vertical-align:top;padding:var(--space-8) var(--space-12) var(--space-8) 0;border-bottom:1px solid var(--color-border-default);}
+  .docs-main th{font-weight:600;color:var(--color-text-primary);}
+  .docs-main td{color:var(--color-text-secondary);}
+  .docs-main td:first-child{width:40%;}
+  .docs-main td code{overflow-wrap:anywhere;}
+  .docs-swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:var(--space-8) var(--space-16);margin-bottom:var(--space-16);}
+  .docs-swatch{display:flex;align-items:center;gap:var(--space-8);min-width:0;}
+  .docs-swatch span{flex:none;width:32px;height:32px;border-radius:var(--radius-tag);border:1px solid var(--color-border-default);}
+  .docs-swatch code{overflow-wrap:anywhere;}
+  .docs-space{display:flex;flex-direction:column;gap:var(--space-8);}
+  .docs-space div{display:flex;align-items:center;gap:var(--space-12);}
+  .docs-space span{height:12px;background:var(--color-accent-subtle);box-shadow:inset 0 0 0 1px var(--color-accent-default);}
+  .docs-icons{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:var(--space-16);}
+  .docs-icon{display:flex;align-items:center;gap:var(--space-8);--pulse-icon-size:20px;}
+  .docs-icon code{font-size:12px !important;}
+  .docs-next{display:flex;justify-content:space-between;gap:var(--space-16);margin-top:var(--space-64);padding-top:var(--space-24);border-top:1px solid var(--color-border-default);}
+  .docs-menu{display:none;}
+  @media (max-width:900px){
+    .docs-layout{grid-template-columns:minmax(0,1fr);gap:0;padding:0 var(--space-16);}
+    .docs-side{display:none;}
+    .docs-menu{display:block;margin:var(--space-16) 0 0;border:1px solid var(--color-border-default);border-radius:var(--radius-control);}
+    .docs-menu summary{padding:var(--space-12) var(--space-16);cursor:pointer;font-weight:500;}
+    .docs-menu .docs-menu__list{padding:0 var(--space-16) var(--space-16);}
+    .docs-main{padding-top:var(--space-24);}
+    .docs-top{padding:0 var(--space-16);}
+    .docs-live{padding:var(--space-24) var(--space-16);}
+  }
+  @media (max-width:560px){ .docs-top nav .docs-hide-sm{display:none;} }
+</style>
+</head>
+<body>
+<header class="docs-top">
+  <a class="docs-brand" href="index.html">Pulse<span>v1 docs</span></a>
+  <nav aria-label="Pulse">
+    <a class="pulse-link pulse-link--quiet pulse-link--sm" href="../gallery/index.html">Gallery</a>
+    <a class="pulse-link pulse-link--quiet pulse-link--sm docs-hide-sm" href="../pulse-reference.md">AI reference</a>
+    <div class="pulse-segmented" role="group" aria-label="Theme"><button class="pulse-segmented__item" type="button" data-docs-theme="light" aria-pressed="true">Light</button><button class="pulse-segmented__item" type="button" data-docs-theme="dark" aria-pressed="false">Dark</button></div>
+  </nav>
+</header>
+<div class="docs-layout">
+  <aside class="docs-side"><p class="pulse-tabs__label">Start</p><nav class="pulse-tabs pulse-tabs--vertical" aria-label="Start"><a class="pulse-tab" href="index.html">Getting started</a><a class="pulse-tab" href="starter.html">Starter page</a><a class="pulse-tab" href="foundations.html">Foundations</a><a class="pulse-tab" href="patterns.html">Patterns</a></nav><p class="pulse-tabs__label">Components</p><nav class="pulse-tabs pulse-tabs--vertical" aria-label="Components"><a class="pulse-tab" href="alert-toast.html">Alert and toast</a><a class="pulse-tab" href="badge.html">Badge</a><a class="pulse-tab" href="button.html">Button</a><a class="pulse-tab" href="checkbox-radio-toggle.html">Checkbox, radio and toggle</a><a class="pulse-tab" href="chip.html">Chip</a><a class="pulse-tab" href="code-panel.html">Code panel</a><a class="pulse-tab" href="dialog.html">Dialog</a><a class="pulse-tab" href="drawer.html">Drawer</a><a class="pulse-tab" href="dropdown.html">Dropdown and nav menu</a><a class="pulse-tab" href="eyebrow.html">Eyebrow</a><a class="pulse-tab" href="fields.html">Fields</a><a class="pulse-tab" href="link.html">Link</a><a class="pulse-tab" href="popover.html" aria-current="page">Popover</a><a class="pulse-tab" href="progress.html">Progress</a><a class="pulse-tab" href="segmented.html">Segmented control</a><a class="pulse-tab" href="slider.html">Slider</a><a class="pulse-tab" href="step-number.html">Step number</a><a class="pulse-tab" href="tabs.html">Tabs</a><a class="pulse-tab" href="tooltip.html">Tooltip</a></nav></aside>
+  <main class="docs-main">
+    <details class="docs-menu"><summary>All pages</summary><div class="docs-menu__list"><p class="pulse-tabs__label">Start</p><nav class="pulse-tabs pulse-tabs--vertical" aria-label="Start"><a class="pulse-tab" href="index.html">Getting started</a><a class="pulse-tab" href="starter.html">Starter page</a><a class="pulse-tab" href="foundations.html">Foundations</a><a class="pulse-tab" href="patterns.html">Patterns</a></nav><p class="pulse-tabs__label">Components</p><nav class="pulse-tabs pulse-tabs--vertical" aria-label="Components"><a class="pulse-tab" href="alert-toast.html">Alert and toast</a><a class="pulse-tab" href="badge.html">Badge</a><a class="pulse-tab" href="button.html">Button</a><a class="pulse-tab" href="checkbox-radio-toggle.html">Checkbox, radio and toggle</a><a class="pulse-tab" href="chip.html">Chip</a><a class="pulse-tab" href="code-panel.html">Code panel</a><a class="pulse-tab" href="dialog.html">Dialog</a><a class="pulse-tab" href="drawer.html">Drawer</a><a class="pulse-tab" href="dropdown.html">Dropdown and nav menu</a><a class="pulse-tab" href="eyebrow.html">Eyebrow</a><a class="pulse-tab" href="fields.html">Fields</a><a class="pulse-tab" href="link.html">Link</a><a class="pulse-tab" href="popover.html" aria-current="page">Popover</a><a class="pulse-tab" href="progress.html">Progress</a><a class="pulse-tab" href="segmented.html">Segmented control</a><a class="pulse-tab" href="slider.html">Slider</a><a class="pulse-tab" href="step-number.html">Step number</a><a class="pulse-tab" href="tabs.html">Tabs</a><a class="pulse-tab" href="tooltip.html">Tooltip</a></nav></div></details>
+    <h1>Popover</h1>
+    <p class="docs-lede">A small card that opens on click next to its trigger: an explanation, or a short form. For a hint on hover, use a tooltip.</p>
+    <div class="docs-meta"><span class="pulse-badge pulse-badge--mono pulse-badge--outline">Figma: Popover</span><a class="pulse-link pulse-link--sm" href="../gallery/index.html#popover">Every state in the gallery <i class="pulse-icon pulse-icon--arrow-square-out" aria-hidden="true"></i></a></div>
+    <h2>With a title and actions</h2>
+<div class="docs-example"><div class="docs-live docs-live--tall"><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm" type="button"
+        popovertarget="codes-help" aria-controls="codes-help" aria-expanded="false" aria-label="About response codes">
+  <i class="pulse-icon pulse-icon--info" aria-hidden="true"></i>
+</button>
+
+<div class="pulse-popover pulse-popover--bottom pulse-popover--start" id="codes-help" popover role="dialog" aria-labelledby="codes-help-title">
+  <button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-popover__close" type="button"
+          popovertarget="codes-help" popovertargetaction="hide" aria-label="Close">
+    <i class="pulse-icon pulse-icon--x" aria-hidden="true"></i>
+  </button>
+  <div class="pulse-popover__content">
+    <h3 class="pulse-popover__title" id="codes-help-title">Response codes</h3>
+    <p class="pulse-popover__body">R0 logs only. R1 contains the device, R2 releases it, R3 investigates and R4 recommends a fix.</p>
+    <div class="pulse-popover__actions">
+      <button class="pulse-btn pulse-btn--primary pulse-btn--sm" type="button" popovertarget="codes-help" popovertargetaction="hide">Got it</button>
+    </div>
+  </div>
+</div></div><div class="pulse-code docs-code"><div class="pulse-code__head"><span class="pulse-code__file">HTML</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-tooltip-host" type="button" data-pulse-copy aria-label="Copy the code"><i class="pulse-icon pulse-icon--copy" aria-hidden="true"></i><span class="pulse-tooltip pulse-tooltip--bottom pulse-tooltip--end" aria-hidden="true">Copy to clipboard</span></button></div><pre><code>&lt;button class=&quot;pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm&quot; type=&quot;button&quot;
+        popovertarget=&quot;codes-help&quot; aria-controls=&quot;codes-help&quot; aria-expanded=&quot;false&quot; aria-label=&quot;About response codes&quot;&gt;
+  &lt;i class=&quot;pulse-icon pulse-icon--info&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;
+&lt;/button&gt;
+
+&lt;div class=&quot;pulse-popover pulse-popover--bottom pulse-popover--start&quot; id=&quot;codes-help&quot; popover role=&quot;dialog&quot; aria-labelledby=&quot;codes-help-title&quot;&gt;
+  &lt;button class=&quot;pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-popover__close&quot; type=&quot;button&quot;
+          popovertarget=&quot;codes-help&quot; popovertargetaction=&quot;hide&quot; aria-label=&quot;Close&quot;&gt;
+    &lt;i class=&quot;pulse-icon pulse-icon--x&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;
+  &lt;/button&gt;
+  &lt;div class=&quot;pulse-popover__content&quot;&gt;
+    &lt;h3 class=&quot;pulse-popover__title&quot; id=&quot;codes-help-title&quot;&gt;Response codes&lt;/h3&gt;
+    &lt;p class=&quot;pulse-popover__body&quot;&gt;R0 logs only. R1 contains the device, R2 releases it, R3 investigates and R4 recommends a fix.&lt;/p&gt;
+    &lt;div class=&quot;pulse-popover__actions&quot;&gt;
+      &lt;button class=&quot;pulse-btn pulse-btn--primary pulse-btn--sm&quot; type=&quot;button&quot; popovertarget=&quot;codes-help&quot; popovertargetaction=&quot;hide&quot;&gt;Got it&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre></div></div>
+<h2>Custom content</h2>
+<p>Anything inside <code>pulse-popover__content</code>: a form, a list. <code>--no-caret</code> drops the pointer when it opens right under a button.</p>
+<div class="docs-example"><div class="docs-live docs-live--tall"><button class="pulse-btn pulse-btn--secondary" type="button" popovertarget="send-feedback" aria-controls="send-feedback" aria-expanded="false">Feedback</button>
+
+<div class="pulse-popover pulse-popover--bottom pulse-popover--start pulse-popover--no-caret" id="send-feedback" popover role="dialog" aria-labelledby="send-feedback-title">
+  <div class="pulse-popover__content">
+    <h3 class="pulse-popover__title" id="send-feedback-title">Send feedback</h3>
+    <div class="pulse-field">
+      <label class="pulse-field__label" for="send-feedback-text">What could be better?</label>
+      <textarea class="pulse-textarea" id="send-feedback-text"></textarea>
+    </div>
+    <div class="pulse-popover__actions">
+      <button class="pulse-btn pulse-btn--primary pulse-btn--sm" type="button" popovertarget="send-feedback" popovertargetaction="hide">Send</button>
+      <button class="pulse-btn pulse-btn--secondary pulse-btn--sm" type="button" popovertarget="send-feedback" popovertargetaction="hide">Cancel</button>
+    </div>
+  </div>
+</div></div><div class="pulse-code docs-code"><div class="pulse-code__head"><span class="pulse-code__file">HTML</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-tooltip-host" type="button" data-pulse-copy aria-label="Copy the code"><i class="pulse-icon pulse-icon--copy" aria-hidden="true"></i><span class="pulse-tooltip pulse-tooltip--bottom pulse-tooltip--end" aria-hidden="true">Copy to clipboard</span></button></div><pre><code>&lt;button class=&quot;pulse-btn pulse-btn--secondary&quot; type=&quot;button&quot; popovertarget=&quot;send-feedback&quot; aria-controls=&quot;send-feedback&quot; aria-expanded=&quot;false&quot;&gt;Feedback&lt;/button&gt;
+
+&lt;div class=&quot;pulse-popover pulse-popover--bottom pulse-popover--start pulse-popover--no-caret&quot; id=&quot;send-feedback&quot; popover role=&quot;dialog&quot; aria-labelledby=&quot;send-feedback-title&quot;&gt;
+  &lt;div class=&quot;pulse-popover__content&quot;&gt;
+    &lt;h3 class=&quot;pulse-popover__title&quot; id=&quot;send-feedback-title&quot;&gt;Send feedback&lt;/h3&gt;
+    &lt;div class=&quot;pulse-field&quot;&gt;
+      &lt;label class=&quot;pulse-field__label&quot; for=&quot;send-feedback-text&quot;&gt;What could be better?&lt;/label&gt;
+      &lt;textarea class=&quot;pulse-textarea&quot; id=&quot;send-feedback-text&quot;&gt;&lt;/textarea&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;pulse-popover__actions&quot;&gt;
+      &lt;button class=&quot;pulse-btn pulse-btn--primary pulse-btn--sm&quot; type=&quot;button&quot; popovertarget=&quot;send-feedback&quot; popovertargetaction=&quot;hide&quot;&gt;Send&lt;/button&gt;
+      &lt;button class=&quot;pulse-btn pulse-btn--secondary pulse-btn--sm&quot; type=&quot;button&quot; popovertarget=&quot;send-feedback&quot; popovertargetaction=&quot;hide&quot;&gt;Cancel&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre></div></div>
+<h2>How it works</h2>
+<p>The browser’s popover attribute opens and closes it: the trigger’s <code>popovertarget</code> names the popover’s <code>id</code>; Esc and a click outside close it and focus goes back. pulse.js places it beside the trigger, points the caret at it, flips it when there’s no room and keeps <code>aria-expanded</code> up to date.</p>
+<h2>Options</h2>
+<div class="docs-table"><table><thead><tr><th>Class</th><th>What it does</th></tr></thead><tbody>
+<tr><td><code>pulse-popover--top</code>, <code>--right</code>, <code>--bottom</code>, <code>--left</code></td><td>The side of the trigger it sits on.</td></tr>
+<tr><td><code>pulse-popover--start</code>, <code>--end</code></td><td>Lines the caret up near a corner instead of the middle.</td></tr>
+<tr><td><code>pulse-popover--no-caret</code></td><td>No pointer.</td></tr>
+<tr><td><code>popovertargetaction="hide"</code></td><td>On a button inside, closes it.</td></tr>
+</tbody></table></div>
+<h2>Accessibility</h2>
+<ul>
+<li><code>role="dialog"</code> and <code>aria-labelledby</code> on the popover; <code>aria-controls</code> and <code>aria-expanded="false"</code> on the trigger.</li>
+<li>Inside a shadow root (VEX), call <code>Pulse.attach(shadowRoot)</code> once.</li>
+</ul>
+    <div class="docs-next"><a class="pulse-link pulse-link--sm" href="link.html">Link</a><a class="pulse-link pulse-link--sm" href="progress.html">Progress <i class="pulse-icon pulse-icon--arrow-right" aria-hidden="true"></i></a></div>
+  </main>
+</div>
+<script>
+  // Docs only: the theme switch. Pulse itself needs no script for themes.
+  document.querySelectorAll('[data-docs-theme]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      document.documentElement.setAttribute('data-theme', b.dataset.docsTheme);
+      document.querySelectorAll('[data-docs-theme]').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
+    });
+  });
+</script>
+</body>
+</html>

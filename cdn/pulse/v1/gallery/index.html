@@ -36,12 +36,13 @@
   <h1>Pulse component gallery</h1>
   <label>Theme <select id="theme"><option value="light">light</option><option value="dark">dark</option></select></label>
   <label>Surface <select id="surface"><option value="web">web</option><option value="app">app</option></select></label>
-  <span class="hint">pulse-tokens.css + pulse-components.css · v0</span>
+  <span class="hint">v1 · every component in every state · <a href="../docs/index.html">Docs and copyable code</a></span>
 </div>
 <main>
 
 <section id="button">
   <h2>Button</h2>
+  <p class="note docs-links">Docs and copyable code: <a href="../docs/button.html">Button</a></p>
   <p class="note">Variants × states at md. Square on the website, a pill in the app. Heights come from control-height tokens (32 / 40 / 48).</p>
   <div class="colhead"><span>Default</span><span>Hover</span><span>Pressed</span><span>Focus</span><span>Disabled</span><span>Loading</span></div>
   <div id="btn-matrix"></div>
@@ -66,6 +67,7 @@
 
 <section id="link">
   <h2>Link</h2>
+  <p class="note docs-links">Docs and copyable code: <a href="../docs/link.html">Link</a></p>
   <p class="note">Standalone links nudge their arrow on hover. Inline links are always underlined.</p>
   <p class="note"><b>Link or button?</b> A link goes somewhere: another page (right arrow), further down this page (down arrow, pulse-link--down) or another site (arrow-square-out). A button does something here: opens a drawer, dialog or menu, copies, toggles, submits, replays; no arrow. Exceptions: the page’s main action may be a button even when it goes somewhere (an &lt;a&gt; underneath, so it works without JS); a menu trigger may look like a quiet link with a caret; a drawer opener inside a sentence keeps the inline link look; a pair of guides on another site may be secondary buttons with arrow-square-out. A drawer opener among links is a ghost button with no icon.</p>
   <div class="row"><span class="cap">Standalone</span>
@@ -97,6 +99,7 @@
 
 <section id="badge">
   <h2>Badge and Chip</h2>
+  <p class="note docs-links">Docs and copyable code: <a href="../docs/badge.html">Badge</a> · <a href="../docs/chip.html">Chip</a></p>
   <p class="note">Badges are labels and stay square. Chips are toggles and are always pills.</p>
   <div class="row"><span class="cap">Subtle</span>
     <span class="pulse-badge">Neutral</span><span class="pulse-badge pulse-badge--accent">Accent</span><span class="pulse-badge pulse-badge--info">Info</span><span class="pulse-badge pulse-badge--success">Success</span><span class="pulse-badge pulse-badge--warning">Warning</span><span class="pulse-badge pulse-badge--danger">Danger</span></div>
@@ -120,6 +123,7 @@
 
 <section id="selection">
   <h2>Checkbox, radio, toggle</h2>
+  <p class="note docs-links">Docs and copyable code: <a href="../docs/checkbox-radio-toggle.html">Checkbox, radio and toggle</a></p>
   <p class="note">Native inputs, restyled. Switches and radios stay round on every surface.</p>
   <div class="row"><span class="cap">Checkbox</span>
     <label class="pulse-check"><input type="checkbox"> Off</label>
@@ -141,6 +145,7 @@
 
 <section id="fields">
   <h2>Fields</h2>
+  <p class="note docs-links">Docs and copyable code: <a href="../docs/fields.html">Fields</a></p>
   <p class="note">Inputs, selects and textareas use the control radius (2 on the web, 4 in the app). The native select’s open list is drawn by the operating system and can’t be styled; use the Dropdown for a branded list.</p>
   <div class="row top">
     <div class="pulse-field stack" style="width:320px"><label class="pulse-field__label" for="f1">Work email</label><input id="f1" class="pulse-input" placeholder="name@company.com"><span class="pulse-field__help">We only use this to send the report.</span></div>
@@ -162,6 +167,7 @@
 
 <section id="dropdown">
   <h2>Dropdown and menu item</h2>
+  <p class="note docs-links">Docs and copyable code: <a href="../docs/dropdown.html">Dropdown and nav menu</a></p>
   <p class="note">The option list that opens from a select. Items use the tag radius so they nest inside the container radius. Selected shows a check and the subtle surface; focus adds the focus ring; disabled is skipped by the keyboard.</p>
   <div class="row top">
     <div class="stack" style="width:320px"><span class="cap">Fit</span><ul class="pulse-dropdown" role="listbox" aria-label="Identity provider"><li class="pulse-menu-item" role="option" aria-selected="true"><i class="pulse-icon pulse-icon--users" aria-hidden="true"></i><span class="pulse-menu-item__label">Microsoft Entra ID</span><i class="pulse-icon pulse-icon--check pulse-menu-item__check" aria-hidden="true"></i></li><li class="pulse-menu-item is-focus" role="option" aria-selected="false"><i class="pulse-icon pulse-icon--globe" aria-hidden="true"></i><span class="pulse-menu-item__label">Google Workspace</span><span class="pulse-menu-item__check"></span></li><li class="pulse-menu-item" role="option" aria-selected="false"><i class="pulse-icon pulse-icon--shield" aria-hidden="true"></i><span class="pulse-menu-item__label">Okta</span><span class="pulse-menu-item__check"></span></li><li class="pulse-menu-item" role="option" aria-selected="false" aria-disabled="true"><i class="pulse-icon pulse-icon--laptop" aria-hidden="true"></i><span class="pulse-menu-item__label">JumpCloud (coming soon)</span><span class="pulse-menu-item__check"></span></li></ul></div>
@@ -173,6 +179,7 @@
 
 <section id="dialog">
   <h2>Dialog</h2>
+  <p class="note docs-links">Docs and copyable code: <a href="../docs/dialog.html">Dialog</a></p>
   <p class="note">Standard and destructive. The panel sits on the overlay surface. Destructive dialogs start with focus on Cancel and show the affected resource. The button below opens a real modal.</p>
   <div class="row top">
     <div class="stack" style="width:560px;max-width:100%"><span class="cap">Standard</span><div class="pulse-dialog" role="dialog" aria-modal="true" aria-labelledby="d1-t" aria-describedby="d1-b"><div class="pulse-dialog__head"><div class="pulse-dialog__copy"><h3 class="pulse-dialog__title" id="d1-t">Start your 24-hour test?</h3><p class="pulse-dialog__body" id="d1-b">We’ll check DNS, connected apps and mail rules. Your team will receive a report when the test finishes.</p></div><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-dialog__close" aria-label="Close dialog" data-close><i class="pulse-icon pulse-icon--x" aria-hidden="true"></i></button></div><div class="pulse-dialog__actions"><button class="pulse-btn pulse-btn--secondary" data-close>Cancel</button><button class="pulse-btn pulse-btn--primary">Start test</button></div></div></div>
@@ -187,6 +194,7 @@
 
 <section id="drawer">
   <h2>Drawer</h2>
+  <p class="note docs-links">Docs and copyable code: <a href="../docs/drawer.html">Drawer</a></p>
   <p class="note">A panel that slides in from the side and runs the full height of the window, with square corners. Two widths, 400 and 640; both go full width on a narrower screen. Head, a body that scrolls, and an optional pinned footer. Built on the native dialog; pulse.js wires the open and close buttons.</p>
   <div class="row top"><span class="cap">Panel</span>
     <div style="height:360px;width:400px;max-width:100%;display:flex"><div class="pulse-drawer" role="dialog" aria-labelledby="dw0-t" style="height:100%"><div class="pulse-drawer__head"><h3 class="pulse-drawer__title" id="dw0-t">Buy a Dot</h3><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-drawer__close" type="button" aria-label="Close" data-pulse-close><i class="pulse-icon pulse-icon--x" aria-hidden="true"></i></button></div><div class="pulse-drawer__body"><p style="margin:0 0 var(--space-16)">The body is a slot: put anything here. It scrolls when the content is taller than the window, and the head and footer stay put.</p><p style="margin:0">A drawer keeps people on the page while they look at detail, pick a plan or fill in a short form.</p></div><div class="pulse-drawer__foot"><div class="pulse-actions--end"><button class="pulse-btn pulse-btn--secondary" type="button" data-pulse-close>Cancel</button><button class="pulse-btn pulse-btn--primary" type="button" data-pulse-close>Continue</button></div></div></div></div></div>
@@ -204,6 +212,7 @@
 
 <section id="popover">
   <h2>Popover</h2>
+  <p class="note docs-links">Docs and copyable code: <a href="../docs/popover.html">Popover</a></p>
   <p class="note">Opens on click, never on hover (that is Tooltip). Placement is the side of the trigger it sits on; the caret points back at the trigger. Start and End line the caret up near a corner. Behavior comes from the browser's popover attribute plus pulse.js.</p>
   <div class="row top" style="gap:var(--space-48) var(--space-32);padding:var(--space-8) 0 var(--space-24)"><span class="cap">Placement</span><div id="pop-static-sides" style="display:flex;align-items:flex-start;flex-wrap:wrap;gap:var(--space-48) var(--space-32)"></div></div>
   <div class="row top" style="gap:var(--space-48) var(--space-32);padding:var(--space-8) 0 var(--space-24)"><span class="cap">Align</span><div id="pop-static-align" style="display:flex;align-items:flex-start;flex-wrap:wrap;gap:var(--space-48) var(--space-32)"></div></div>
@@ -220,6 +229,7 @@
 
 <section id="slider">
   <h2>Slider</h2>
+  <p class="note docs-links">Docs and copyable code: <a href="../docs/slider.html">Slider</a></p>
   <p class="note">A styled native range input. The fill and the value text follow the thumb; hover and press grow the thumb, focus adds the ring.</p>
   <div class="row top"><div class="pulse-slider" style="width:280px"><div class="pulse-slider__head"><label class="pulse-slider__label" for="sl1">Default</label><output class="pulse-slider__value" for="sl1">40%</output></div><input id="sl1" class="pulse-slider__input " type="range" min="0" max="100" step="5" value="40" style="--v:40%"></div><div class="pulse-slider" style="width:280px"><div class="pulse-slider__head"><label class="pulse-slider__label" for="sl2">Hover</label><output class="pulse-slider__value" for="sl2">40%</output></div><input id="sl2" class="pulse-slider__input is-hover" type="range" min="0" max="100" step="5" value="40" style="--v:40%"></div><div class="pulse-slider" style="width:280px"><div class="pulse-slider__head"><label class="pulse-slider__label" for="sl3">Pressed</label><output class="pulse-slider__value" for="sl3">40%</output></div><input id="sl3" class="pulse-slider__input is-pressed" type="range" min="0" max="100" step="5" value="40" style="--v:40%"></div><div class="pulse-slider" style="width:280px"><div class="pulse-slider__head"><label class="pulse-slider__label" for="sl4">Focus</label><output class="pulse-slider__value" for="sl4">40%</output></div><input id="sl4" class="pulse-slider__input is-focus" type="range" min="0" max="100" step="5" value="40" style="--v:40%"></div><div class="pulse-slider" style="width:280px"><div class="pulse-slider__head"><label class="pulse-slider__label" for="sl5">Disabled</label><output class="pulse-slider__value" for="sl5">40%</output></div><input id="sl5" class="pulse-slider__input " type="range" min="0" max="100" step="5" value="40" style="--v:40%" disabled></div></div>
   <div class="row top"><div class="pulse-field stack" style="width:360px"><span class="cap">Estimate your price</span><div class="pulse-slider"><div class="pulse-slider__head"><label class="pulse-slider__label" for="sl6">Employees</label><output class="pulse-slider__value" id="sl6-out" for="sl6">120</output></div><input id="sl6" class="pulse-slider__input" type="range" min="10" max="500" step="10" value="120" style="--v:22.4%"></div><span class="pulse-field__help" id="sl6-price">$480 / month</span></div></div>
@@ -227,6 +237,7 @@
 
 <section id="nav">
   <h2>Segmented control and Tabs</h2>
+  <p class="note docs-links">Docs and copyable code: <a href="../docs/segmented.html">Segmented control</a> · <a href="../docs/tabs.html">Tabs</a></p>
   <p class="note">The segmented tray uses the track surface; the selected tile is raised with an outline.</p>
   <div class="row"><span class="cap">Segmented</span>
     <div class="pulse-segmented"><button class="pulse-segmented__item" aria-pressed="true">Business</button><button class="pulse-segmented__item">Individual</button></div>
@@ -254,6 +265,7 @@
 
 <section id="feedback">
   <h2>Alert and Toast</h2>
+  <p class="note docs-links">Docs and copyable code: <a href="../docs/alert-toast.html">Alert and toast</a></p>
   <p class="note">One layout each. Alerts are tinted with a tone border and a neutral button. Toasts are solid and use a text link.</p>
   <div class="stack" style="max-width:640px">
     <div class="pulse-alert pulse-alert--success"><i class="pulse-icon pulse-icon--check-circle pulse-icon--fill"></i><div class="pulse-alert__body"><span class="pulse-alert__title">Workspace connected</span><span class="pulse-alert__text">Your 24-hour test is ready to start.</span><button class="pulse-btn pulse-btn--neutral pulse-btn--sm">View workspace</button></div><button class="pulse-dismiss" aria-label="Dismiss"><i class="pulse-icon pulse-icon--x"></i></button></div>
@@ -270,6 +282,7 @@
 
 <section id="progress">
   <h2>Progress and Tooltip</h2>
+  <p class="note docs-links">Docs and copyable code: <a href="../docs/progress.html">Progress</a> · <a href="../docs/tooltip.html">Tooltip</a></p>
   <div class="stack" style="max-width:480px">
     <div class="pulse-progress" style="--p:50%"><div class="pulse-progress__head"><span>Hours 2–20 · Hunting</span><span class="pulse-progress__value">50%</span></div><div class="pulse-progress__track"><div class="pulse-progress__fill"></div></div></div>
     <div class="pulse-progress pulse-progress--success" style="--p:100%"><div class="pulse-progress__head"><span>Agent connected</span><span class="pulse-progress__value">100%</span></div><div class="pulse-progress__track"><div class="pulse-progress__fill"></div></div></div>
@@ -290,6 +303,7 @@
 
 <section id="type">
   <h2>Fluid type and highlight</h2>
+  <p class="note docs-links">Docs and copyable code: <a href="../docs/foundations.html">Foundations</a></p>
   <p class="note">Display, the three headings and the lede scale smoothly with the window: the Mobile size at 375px wide, the Desktop size at 1280px. Resize the window to see the sizes change. Everything smaller is a fixed size.</p>
   <div class="stack" style="gap:var(--space-16);min-width:0">
     <div data-fluid="display" style="font:600 var(--type-display-size)/var(--type-display-line-height) var(--font-sans)">Display <span class="hint"></span></div>
@@ -303,6 +317,7 @@
 
 <section id="themes">
   <h2>Dark sections and code colors</h2>
+  <p class="note docs-links">Docs and copyable code: <a href="../docs/patterns.html">Patterns</a></p>
   <p class="note">A dark section on a light page: put data-theme="dark" on the section and give it the page surface. Everything inside picks up the dark colors; nothing else changes. The same works for a dark drawer or dialog, and data-theme="light" does the reverse on a dark page.</p>
   <div data-theme="dark" style="background:var(--color-surface-page);color:var(--color-text-primary);padding:var(--space-32);display:flex;flex-direction:column;gap:var(--space-16);align-items:flex-start">
     <span style="font:600 var(--type-heading-card-size)/var(--type-heading-card-line-height) var(--font-sans)">The founder band, the pricing drawer</span>
@@ -322,6 +337,7 @@
 
 <section id="content">
   <h2>Eyebrow, step number and code panel</h2>
+  <p class="note docs-links">Docs and copyable code: <a href="../docs/eyebrow.html">Eyebrow</a> · <a href="../docs/step-number.html">Step number</a> · <a href="../docs/code-panel.html">Code panel</a></p>
   <p class="note">Small pieces for page content. The eyebrow is written in sentence case and set in caps by CSS.</p>
   <div class="row"><span class="cap">Eyebrow</span>
     <p class="pulse-eyebrow">Meet a Dot</p><p class="pulse-eyebrow pulse-eyebrow--accent">The loop: Collect</p><p class="pulse-eyebrow pulse-eyebrow--dot">Don’t get hacked</p>
@@ -343,6 +359,7 @@
 
 <section id="icons">
   <h2>Icons</h2>
+  <p class="note docs-links">Docs and copyable code: <a href="../docs/foundations.html">Foundations</a></p>
   <p class="note">Phosphor, generated into pulse-icons.css from icons.txt. Regular for normal UI, bold at 14px and below, fill for status and selected states, light only for large decorative icons.</p>
   <div class="row"><span class="cap">By size</span>
     <span class="row" style="margin:0;gap:var(--space-24)">

@@ -146,13 +146,11 @@
 &lt;/section&gt;</code></pre></div></div>
 
 <h2 id="top">Back to top</h2>
-<p>On long pages: a secondary icon button with the <code>arrow-up</code> icon and the medium shadow, fixed 24px from the bottom right (16px on phones), shown once the reader has scrolled a screen or two. Showing and hiding it is the page’s script.</p>
-<div class="docs-example"><div class="docs-live"><button class="pulse-btn pulse-btn--secondary pulse-btn--surface pulse-btn--icon" type="button" aria-label="Back to top"
-        style="box-shadow: var(--shadow-elevation-default-md)">
-  <i class="pulse-icon pulse-icon--arrow-up" aria-hidden="true"></i>
-</button></div><div class="pulse-code docs-code"><div class="pulse-code__head"><span class="pulse-code__file">HTML</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-tooltip-host" type="button" data-pulse-copy aria-label="Copy the code"><i class="pulse-icon pulse-icon--copy" aria-hidden="true"></i><span class="pulse-tooltip pulse-tooltip--bottom pulse-tooltip--end" aria-hidden="true">Copy to clipboard</span></button></div><pre><code>&lt;button class=&quot;pulse-btn pulse-btn--secondary pulse-btn--surface pulse-btn--icon&quot; type=&quot;button&quot; aria-label=&quot;Back to top&quot;
-        style=&quot;box-shadow: var(--shadow-elevation-default-md)&quot;&gt;
-  &lt;i class=&quot;pulse-icon pulse-icon--arrow-up&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;
+<p>On long pages: a neutral button with the <code>arrow-up</code> icon and the word “Top”, with the medium shadow. Neutral keeps it quiet (pink is for actions), <code>pulse-btn--surface</code> keeps it solid over the content scrolling behind it, and the word says what it does, so it needs no <code>aria-label</code>. Fix it 24px from the bottom right (16px on phones) and show it once the reader has scrolled a screen or two; showing and hiding it is the page’s script.</p>
+<div class="docs-example"><div class="docs-live"><button class="pulse-btn pulse-btn--neutral pulse-btn--surface" type="button" style="box-shadow: var(--shadow-elevation-default-md)">
+  <i class="pulse-icon pulse-icon--arrow-up" aria-hidden="true"></i> Top
+</button></div><div class="pulse-code docs-code"><div class="pulse-code__head"><span class="pulse-code__file">HTML</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-tooltip-host" type="button" data-pulse-copy aria-label="Copy the code"><i class="pulse-icon pulse-icon--copy" aria-hidden="true"></i><span class="pulse-tooltip pulse-tooltip--bottom pulse-tooltip--end" aria-hidden="true">Copy to clipboard</span></button></div><pre><code>&lt;button class=&quot;pulse-btn pulse-btn--neutral pulse-btn--surface&quot; type=&quot;button&quot; style=&quot;box-shadow: var(--shadow-elevation-default-md)&quot;&gt;
+  &lt;i class=&quot;pulse-icon pulse-icon--arrow-up&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt; Top
 &lt;/button&gt;</code></pre></div></div>
     <div class="docs-next"><a class="pulse-link pulse-link--sm" href="foundations.html">Foundations</a><a class="pulse-link pulse-link--sm" href="alert-toast.html">Alert and toast <i class="pulse-icon pulse-icon--arrow-right" aria-hidden="true"></i></a></div>
     

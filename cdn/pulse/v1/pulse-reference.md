@@ -165,12 +165,11 @@ Put `data-theme="dark"` on the section and give it the page surface as its backg
 
 ### Back to top
 
-On long pages: a secondary icon button with the `arrow-up` icon and the medium shadow, fixed 24px from the bottom right (16px on phones), shown once the reader has scrolled a screen or two. Showing and hiding it is the page’s script.
+On long pages: a neutral button with the `arrow-up` icon and the word “Top”, with the medium shadow. Neutral keeps it quiet (pink is for actions), `pulse-btn--surface` keeps it solid over the content scrolling behind it, and the word says what it does, so it needs no `aria-label`. Fix it 24px from the bottom right (16px on phones) and show it once the reader has scrolled a screen or two; showing and hiding it is the page’s script.
 
 ```html
-<button class="pulse-btn pulse-btn--secondary pulse-btn--surface pulse-btn--icon" type="button" aria-label="Back to top"
-        style="box-shadow: var(--shadow-elevation-default-md)">
-  <i class="pulse-icon pulse-icon--arrow-up" aria-hidden="true"></i>
+<button class="pulse-btn pulse-btn--neutral pulse-btn--surface" type="button" style="box-shadow: var(--shadow-elevation-default-md)">
+  <i class="pulse-icon pulse-icon--arrow-up" aria-hidden="true"></i> Top
 </button>
 ```
 

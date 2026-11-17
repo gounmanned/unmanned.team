@@ -780,7 +780,7 @@ Any button with `data-pulse-copy` inside a code panel copies the panel’s code 
   <input class="pulse-input" id="install-key" value="DOT-7F3K-92QX" readonly aria-label="Install key" style="max-width: 220px">
   <button class="pulse-btn pulse-btn--secondary pulse-btn--icon pulse-tooltip-host" type="button" data-pulse-copy="install-key" aria-label="Copy install key">
     <i class="pulse-icon pulse-icon--copy" aria-hidden="true"></i>
-    <span class="pulse-tooltip pulse-tooltip--bottom" aria-hidden="true">Copy to clipboard</span>
+    <span class="pulse-tooltip pulse-tooltip--bottom pulse-tooltip--end" aria-hidden="true">Copy to clipboard</span>
   </button>
 </div>
 ```

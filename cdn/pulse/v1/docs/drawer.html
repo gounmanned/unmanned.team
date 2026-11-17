@@ -71,6 +71,7 @@
   .docs-next{display:flex;justify-content:space-between;gap:var(--space-16);margin-top:var(--space-64);padding-top:var(--space-24);border-top:1px solid var(--color-border-default);}
   .docs-menu{display:none;}
   .docs-meta{align-items:center;}
+  .docs-meta .pulse-badge{white-space:normal;max-width:100%;}
   .docs-states .pulse-drawer__body{color:var(--color-text-primary);}
   .docs-states-note{margin:0 0 var(--space-24);font-size:var(--type-body-sm-size);line-height:var(--type-body-sm-line-height);color:var(--color-text-secondary);}
   .docs-states-row{margin:0 0 var(--space-32);}
@@ -169,6 +170,11 @@
   </main>
 </div>
 <script>
+  // Docs only: links inside examples are there to look at and copy, so they don't go anywhere here.
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('.docs-live a[href], .docs-states a[href]');
+    if (a && !a.hasAttribute('data-pulse-open')) e.preventDefault();
+  });
   // Docs only: the surface and theme switches, remembered between pages. Pulse itself needs no script for these.
   (function () {
     var root = document.documentElement;

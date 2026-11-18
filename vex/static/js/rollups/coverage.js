@@ -615,7 +615,7 @@ class CoverageRollup {
             const name = dot > 0 ? file.name.slice(0, dot) : file.name;
             const ext = dot > 0 ? file.name.slice(dot) : '';
 
-            this.api.file.root = 'action';
+            this.api.file.root = 'actions';
             await this.api.file.add(new File([file], `${id}${ext}`, { type: file.type }));
             await this.api.inventory.run(this.open.device, { id, name });
         });

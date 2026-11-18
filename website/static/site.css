@@ -37,7 +37,7 @@
   /* ---------- STATUS DOT ---------- */
   .status-dot{width:8px;height:8px;border-radius:50%;background:var(--color-accent-default);box-shadow:0 0 0 0 rgba(224,18,128,0.5);animation:pulse 2.2s infinite;flex-shrink:0;display:inline-block;}
   @keyframes pulse{ 0%{box-shadow:0 0 0 0 rgba(224,18,128,0.45);} 70%{box-shadow:0 0 0 8px rgba(224,18,128,0);} 100%{box-shadow:0 0 0 0 rgba(224,18,128,0);} }
-  .brand .status-dot{animation-iteration-count:2;}
+  .brand .status-dot{width:10px;height:10px;animation-iteration-count:2;}
 
   /* ---------- CLASS BAR AND STICKY HEADER ---------- */
   .site-top{position:sticky;top:var(--classbar-h);z-index:50;}

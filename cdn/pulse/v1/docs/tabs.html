@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en" data-theme="light" data-surface="app">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Tabs · Pulse docs</title>
+<meta name="description" content="Switch between views, or jump to sections of a long page.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../pulse-tokens.css">
+<link rel="stylesheet" href="../pulse-icons.css">
+<link rel="stylesheet" href="../pulse-components.css">
+<script src="../pulse.js" defer></script>
+<style>
+  /* Docs prose: plain elements only, in the reset layer so Pulse components inside examples always win. */
+  @layer reset {
+    body{margin:0;background:var(--color-surface-page);color:var(--color-text-primary);font:400 var(--type-body-md-size)/var(--type-body-md-line-height) var(--font-sans);}
+    a{color:inherit;}
+    .docs-main :not(pre)>code{font:400 0.875em/1 var(--font-mono);padding:2px 4px;border-radius:var(--radius-tag);background:var(--color-surface-sunken);color:var(--color-text-primary);}
+    .docs-main h2{margin:var(--space-48) 0 var(--space-12);font:600 var(--type-heading-card-size)/var(--type-heading-card-line-height) var(--font-sans);}
+    .docs-main h3{margin:var(--space-32) 0 var(--space-8);font:600 var(--type-body-md-size)/var(--type-body-md-line-height) var(--font-sans);}
+    .docs-main p,.docs-main li{color:var(--color-text-secondary);}
+    .docs-main p{margin:0 0 var(--space-16);}
+    .docs-main ul,.docs-main ol{margin:0 0 var(--space-16);padding-left:var(--space-24);}
+    .docs-main li{margin-bottom:var(--space-4);}
+    .docs-main strong{color:var(--color-text-primary);font-weight:600;}
+    .docs-main table{width:100%;border-collapse:collapse;font-size:var(--type-body-sm-size);line-height:var(--type-body-sm-line-height);}
+    .docs-main th,.docs-main td{text-align:left;vertical-align:top;padding:var(--space-8) var(--space-12) var(--space-8) 0;border-bottom:1px solid var(--color-border-default);}
+    .docs-main th{font-weight:600;color:var(--color-text-primary);}
+    .docs-main td{color:var(--color-text-secondary);}
+    .docs-main td:first-child{width:40%;}
+    .docs-main td code{overflow-wrap:anywhere;}
+  }
+  /* Docs prose: plain elements only, in the reset layer so Pulse components inside examples always win. */
+  .docs-top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:var(--space-16);min-height:56px;padding:0 var(--space-24);background:var(--color-surface-page);border-bottom:1px solid var(--color-border-default);}
+  .docs-brand{font-weight:600;text-decoration:none;}
+  .docs-brand span{font:400 var(--type-mono-label-size)/1 var(--font-mono);color:var(--color-text-tertiary);margin-left:var(--space-8);}
+  .docs-top nav{margin-left:auto;display:flex;align-items:center;gap:var(--space-20);flex-wrap:wrap;}
+  .docs-layout{display:grid;grid-template-columns:240px minmax(0,1fr);gap:var(--space-48);max-width:1200px;margin:0 auto;padding:0 var(--space-24);}
+  .docs-side{position:sticky;top:57px;align-self:start;max-height:calc(100vh - 57px);overflow-y:auto;padding:var(--space-32) 0;}
+  .docs-side .pulse-tabs__label{margin-top:var(--space-24);}
+  .docs-side .pulse-tabs__label:first-child{margin-top:0;}
+  .docs-main{min-width:0;max-width:800px;padding:var(--space-48) 0 var(--space-96);}
+  .docs-main h1{margin:var(--space-8) 0 var(--space-16);font:600 var(--type-heading-section-size)/var(--type-heading-section-line-height) var(--font-sans);letter-spacing:-0.01em;}
+  .docs-lede{margin:0 0 var(--space-16);font-size:var(--type-body-lede-size);line-height:var(--type-body-lede-line-height);color:var(--color-text-secondary);}
+  .docs-meta{display:flex;flex-wrap:wrap;gap:var(--space-8) var(--space-24);margin:0 0 var(--space-40);}
+  .docs-example{margin:var(--space-16) 0 var(--space-32);border:1px solid var(--color-border-default);border-radius:var(--radius-container);}
+  .docs-live{display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-16);padding:var(--space-32) var(--space-24);background:var(--color-surface-page);border-radius:var(--radius-container) var(--radius-container) 0 0;}
+  .docs-live--tall{min-height:280px;align-items:flex-start;}
+  .docs-variants{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:var(--space-16);margin:var(--space-16) 0 var(--space-32);}
+  .docs-variant{min-width:0;display:flex;flex-direction:column;border:1px solid var(--color-border-default);border-radius:var(--radius-container);}
+  .docs-live--compact{flex:1;justify-content:center;min-height:96px;padding:var(--space-24) var(--space-16);}
+  .docs-variant .docs-code{border:0;border-top:1px solid var(--color-border-default);border-radius:0 0 var(--radius-container) var(--radius-container);}
+  .docs-variant .docs-code .pulse-code__head{border-radius:0;}
+  .docs-variant .docs-code pre{padding:var(--space-12);}
+  .docs-example .docs-code{border:0;border-top:1px solid var(--color-border-default);border-radius:0 0 var(--radius-container) var(--radius-container);}
+  .docs-example .docs-code .pulse-code__head{border-radius:0;}
+  .docs-code pre{max-height:420px;overflow:auto;}
+  .docs-table{overflow-x:auto;margin:0 0 var(--space-24);}
+  .docs-swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:var(--space-8) var(--space-16);margin-bottom:var(--space-16);}
+  .docs-swatch{display:flex;align-items:center;gap:var(--space-8);min-width:0;}
+  .docs-swatch span{flex:none;width:32px;height:32px;border-radius:var(--radius-tag);border:1px solid var(--color-border-default);}
+  .docs-swatch code{overflow-wrap:anywhere;}
+  .docs-space{display:flex;flex-direction:column;gap:var(--space-8);}
+  .docs-space div{display:flex;align-items:center;gap:var(--space-12);}
+  .docs-space span{height:12px;background:var(--color-accent-subtle);box-shadow:inset 0 0 0 1px var(--color-accent-default);}
+  .docs-icons{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:var(--space-16);}
+  .docs-icon{display:flex;align-items:center;gap:var(--space-8);--pulse-icon-size:20px;}
+  .docs-icon code{font-size:12px !important;}
+  .docs-next{display:flex;justify-content:space-between;gap:var(--space-16);margin-top:var(--space-64);padding-top:var(--space-24);border-top:1px solid var(--color-border-default);}
+  .docs-menu{display:none;}
+  .docs-meta{align-items:center;}
+  .docs-meta .pulse-badge{white-space:normal;max-width:100%;}
+  .docs-states .pulse-drawer__body{color:var(--color-text-primary);}
+  .docs-states-note{margin:0 0 var(--space-24);font-size:var(--type-body-sm-size);line-height:var(--type-body-sm-line-height);color:var(--color-text-secondary);}
+  .docs-states-row{margin:0 0 var(--space-32);}
+  .docs-states-label{margin:0 0 var(--space-12);font:400 var(--type-mono-eyebrow-size)/var(--type-mono-eyebrow-line-height) var(--font-mono);letter-spacing:0.08em;text-transform:uppercase;color:var(--color-text-tertiary);}
+  .docs-states-items{display:flex;flex-wrap:wrap;align-items:flex-start;gap:var(--space-16) var(--space-24);}
+  .docs-states-items--stack{flex-direction:column;align-items:stretch;}
+  .docs-state{display:flex;flex-direction:column;align-items:flex-start;gap:var(--space-8);}
+  .docs-state-cap{font:400 var(--type-mono-caption-size)/var(--type-mono-caption-line-height) var(--font-mono);color:var(--color-text-tertiary);}
+  .docs-states .pulse-popover{max-width:260px;margin:var(--space-12);}
+  @media (max-width:900px){
+    .docs-layout{grid-template-columns:minmax(0,1fr);gap:0;padding:0 var(--space-16);}
+    .docs-side{display:none;}
+    .docs-menu{display:block;margin:var(--space-16) 0 0;border:1px solid var(--color-border-default);border-radius:var(--radius-control);}
+    .docs-menu summary{padding:var(--space-12) var(--space-16);cursor:pointer;font-weight:500;}
+    .docs-menu .docs-menu__list{padding:0 var(--space-16) var(--space-16);}
+    .docs-main{padding-top:var(--space-24);}
+    .docs-top{padding:0 var(--space-16);}
+    .docs-live{padding:var(--space-24) var(--space-16);}
+    .docs-live--compact{min-height:64px;padding:var(--space-16);}
+    .docs-variants{gap:var(--space-12);}
+  @media (max-width:560px){ .docs-top nav .docs-hide-sm{display:none;} .docs-top nav{gap:var(--space-8);} .docs-top{flex-wrap:wrap;padding-block:var(--space-8);position:static;} }
+</style>
+</head>
+<body>
+<header class="docs-top">
+  <a class="docs-brand" href="index.html">Pulse<span>v1 docs</span></a>
+  <nav aria-label="Pulse">
+    <a class="pulse-link pulse-link--quiet pulse-link--sm docs-hide-sm" href="../pulse-reference.md">AI reference</a>
+    <div class="pulse-segmented" role="group" aria-label="Surface"><button class="pulse-segmented__item" type="button" data-docs-set="surface" data-docs-value="web" aria-pressed="false">Web</button><button class="pulse-segmented__item" type="button" data-docs-set="surface" data-docs-value="app" aria-pressed="true">App</button></div>
+    <div class="pulse-segmented" role="group" aria-label="Theme"><button class="pulse-segmented__item" type="button" data-docs-set="theme" data-docs-value="light" aria-pressed="true">Light</button><button class="pulse-segmented__item" type="button" data-docs-set="theme" data-docs-value="dark" aria-pressed="false">Dark</button></div>
+  </nav>
+</header>
+<div class="docs-layout">
+  <aside class="docs-side"><p class="pulse-tabs__label">Start</p><nav class="pulse-tabs pulse-tabs--vertical" aria-label="Start"><a class="pulse-tab" href="index.html">Getting started</a><a class="pulse-tab" href="starter.html">Starter page</a><a class="pulse-tab" href="foundations.html">Foundations</a><a class="pulse-tab" href="patterns.html">Patterns</a><a class="pulse-tab" href="white-labeling.html">White labeling</a></nav><p class="pulse-tabs__label">Components</p><nav class="pulse-tabs pulse-tabs--vertical" aria-label="Components"><a class="pulse-tab" href="alert-toast.html">Alert and toast</a><a class="pulse-tab" href="badge.html">Badge</a><a class="pulse-tab" href="button.html">Button</a><a class="pulse-tab" href="checkbox-radio-toggle.html">Checkbox, radio and toggle</a><a class="pulse-tab" href="chip.html">Chip</a><a class="pulse-tab" href="code-panel.html">Code panel</a><a class="pulse-tab" href="dialog.html">Dialog</a><a class="pulse-tab" href="drawer.html">Drawer</a><a class="pulse-tab" href="dropdown.html">Dropdown and nav menu</a><a class="pulse-tab" href="eyebrow.html">Eyebrow</a><a class="pulse-tab" href="fields.html">Fields</a><a class="pulse-tab" href="link.html">Link</a><a class="pulse-tab" href="popover.html">Popover</a><a class="pulse-tab" href="progress.html">Progress</a><a class="pulse-tab" href="segmented.html">Segmented control</a><a class="pulse-tab" href="slider.html">Slider</a><a class="pulse-tab" href="step-number.html">Step number</a><a class="pulse-tab" href="tabs.html" aria-current="page">Tabs</a><a class="pulse-tab" href="tooltip.html">Tooltip</a></nav></aside>
+  <main class="docs-main">
+    <details class="docs-menu"><summary>All pages</summary><div class="docs-menu__list"><p class="pulse-tabs__label">Start</p><nav class="pulse-tabs pulse-tabs--vertical" aria-label="Start"><a class="pulse-tab" href="index.html">Getting started</a><a class="pulse-tab" href="starter.html">Starter page</a><a class="pulse-tab" href="foundations.html">Foundations</a><a class="pulse-tab" href="patterns.html">Patterns</a><a class="pulse-tab" href="white-labeling.html">White labeling</a></nav><p class="pulse-tabs__label">Components</p><nav class="pulse-tabs pulse-tabs--vertical" aria-label="Components"><a class="pulse-tab" href="alert-toast.html">Alert and toast</a><a class="pulse-tab" href="badge.html">Badge</a><a class="pulse-tab" href="button.html">Button</a><a class="pulse-tab" href="checkbox-radio-toggle.html">Checkbox, radio and toggle</a><a class="pulse-tab" href="chip.html">Chip</a><a class="pulse-tab" href="code-panel.html">Code panel</a><a class="pulse-tab" href="dialog.html">Dialog</a><a class="pulse-tab" href="drawer.html">Drawer</a><a class="pulse-tab" href="dropdown.html">Dropdown and nav menu</a><a class="pulse-tab" href="eyebrow.html">Eyebrow</a><a class="pulse-tab" href="fields.html">Fields</a><a class="pulse-tab" href="link.html">Link</a><a class="pulse-tab" href="popover.html">Popover</a><a class="pulse-tab" href="progress.html">Progress</a><a class="pulse-tab" href="segmented.html">Segmented control</a><a class="pulse-tab" href="slider.html">Slider</a><a class="pulse-tab" href="step-number.html">Step number</a><a class="pulse-tab" href="tabs.html" aria-current="page">Tabs</a><a class="pulse-tab" href="tooltip.html">Tooltip</a></nav></div></details>
+    <h1>Tabs</h1>
+    <p class="docs-lede">Switch between views, or jump to sections of a long page.</p>
+    <div class="docs-meta"><span class="pulse-badge pulse-badge--mono pulse-badge--outline">Figma: Tabs, Tab item</span><button class="pulse-btn pulse-btn--ghost pulse-btn--sm docs-states-open" type="button" data-pulse-open="states">See every state</button></div>
+    <h2>Line</h2>
+<p>A row of tabs over a baseline. <code>pulse-tabs--bar</code> centers them in a full-width bar, for a sticky section nav.</p>
+<div class="docs-example"><div class="docs-live"><div style="width: 100%">
+  <div class="pulse-tabs pulse-tabs--line" role="tablist" aria-label="Test">
+    <button class="pulse-tab" type="button" role="tab" id="tab-overview" aria-controls="panel-overview" aria-selected="true">Overview</button>
+    <button class="pulse-tab" type="button" role="tab" id="tab-findings" aria-controls="panel-findings" aria-selected="false">Findings</button>
+    <button class="pulse-tab" type="button" role="tab" id="tab-activity" aria-controls="panel-activity" aria-selected="false">Activity</button>
+  </div>
+  <div id="panel-overview" role="tabpanel" aria-labelledby="tab-overview" tabindex="0"><p>What the test covers and when it ends.</p></div>
+  <div id="panel-findings" role="tabpanel" aria-labelledby="tab-findings" tabindex="0" hidden><p>Everything the test found, worst first.</p></div>
+  <div id="panel-activity" role="tabpanel" aria-labelledby="tab-activity" tabindex="0" hidden><p>Every step VEX took, newest first.</p></div>
+</div></div><div class="pulse-code docs-code"><div class="pulse-code__head"><span class="pulse-code__file">HTML</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-tooltip-host" type="button" data-pulse-copy aria-label="Copy the code"><i class="pulse-icon pulse-icon--copy" aria-hidden="true"></i><span class="pulse-tooltip pulse-tooltip--bottom pulse-tooltip--end" aria-hidden="true">Copy to clipboard</span></button></div><pre><code>&lt;<span class="pulse-code__kw">div</span> <span class="pulse-code__key">style</span>=<span class="pulse-code__str">"width: 100%"</span>&gt;
+  &lt;<span class="pulse-code__kw">div</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-tabs pulse-tabs--line"</span> <span class="pulse-code__key">role</span>=<span class="pulse-code__str">"tablist"</span> <span class="pulse-code__key">aria-label</span>=<span class="pulse-code__str">"Test"</span>&gt;
+    &lt;<span class="pulse-code__kw">button</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-tab"</span> <span class="pulse-code__key">type</span>=<span class="pulse-code__str">"button"</span> <span class="pulse-code__key">role</span>=<span class="pulse-code__str">"tab"</span> <span class="pulse-code__key">id</span>=<span class="pulse-code__str">"tab-overview"</span> <span class="pulse-code__key">aria-controls</span>=<span class="pulse-code__str">"panel-overview"</span> <span class="pulse-code__key">aria-selected</span>=<span class="pulse-code__str">"true"</span>&gt;Overview&lt;/<span class="pulse-code__kw">button</span>&gt;
+    &lt;<span class="pulse-code__kw">button</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-tab"</span> <span class="pulse-code__key">type</span>=<span class="pulse-code__str">"button"</span> <span class="pulse-code__key">role</span>=<span class="pulse-code__str">"tab"</span> <span class="pulse-code__key">id</span>=<span class="pulse-code__str">"tab-findings"</span> <span class="pulse-code__key">aria-controls</span>=<span class="pulse-code__str">"panel-findings"</span> <span class="pulse-code__key">aria-selected</span>=<span class="pulse-code__str">"false"</span>&gt;Findings&lt;/<span class="pulse-code__kw">button</span>&gt;
+    &lt;<span class="pulse-code__kw">button</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-tab"</span> <span class="pulse-code__key">type</span>=<span class="pulse-code__str">"button"</span> <span class="pulse-code__key">role</span>=<span class="pulse-code__str">"tab"</span> <span class="pulse-code__key">id</span>=<span class="pulse-code__str">"tab-activity"</span> <span class="pulse-code__key">aria-controls</span>=<span class="pulse-code__str">"panel-activity"</span> <span class="pulse-code__key">aria-selected</span>=<span class="pulse-code__str">"false"</span>&gt;Activity&lt;/<span class="pulse-code__kw">button</span>&gt;
+  &lt;/<span class="pulse-code__kw">div</span>&gt;
+  &lt;<span class="pulse-code__kw">div</span> <span class="pulse-code__key">id</span>=<span class="pulse-code__str">"panel-overview"</span> <span class="pulse-code__key">role</span>=<span class="pulse-code__str">"tabpanel"</span> <span class="pulse-code__key">aria-labelledby</span>=<span class="pulse-code__str">"tab-overview"</span> <span class="pulse-code__key">tabindex</span>=<span class="pulse-code__str">"0"</span>&gt;&lt;<span class="pulse-code__kw">p</span>&gt;What the test covers and when it ends.&lt;/<span class="pulse-code__kw">p</span>&gt;&lt;/<span class="pulse-code__kw">div</span>&gt;
+  &lt;<span class="pulse-code__kw">div</span> <span class="pulse-code__key">id</span>=<span class="pulse-code__str">"panel-findings"</span> <span class="pulse-code__key">role</span>=<span class="pulse-code__str">"tabpanel"</span> <span class="pulse-code__key">aria-labelledby</span>=<span class="pulse-code__str">"tab-findings"</span> <span class="pulse-code__key">tabindex</span>=<span class="pulse-code__str">"0"</span> <span class="pulse-code__key">hidden</span>&gt;&lt;<span class="pulse-code__kw">p</span>&gt;Everything the test found, worst first.&lt;/<span class="pulse-code__kw">p</span>&gt;&lt;/<span class="pulse-code__kw">div</span>&gt;
+  &lt;<span class="pulse-code__kw">div</span> <span class="pulse-code__key">id</span>=<span class="pulse-code__str">"panel-activity"</span> <span class="pulse-code__key">role</span>=<span class="pulse-code__str">"tabpanel"</span> <span class="pulse-code__key">aria-labelledby</span>=<span class="pulse-code__str">"tab-activity"</span> <span class="pulse-code__key">tabindex</span>=<span class="pulse-code__str">"0"</span> <span class="pulse-code__key">hidden</span>&gt;&lt;<span class="pulse-code__kw">p</span>&gt;Every step VEX took, newest first.&lt;/<span class="pulse-code__kw">p</span>&gt;&lt;/<span class="pulse-code__kw">div</span>&gt;
+&lt;/<span class="pulse-code__kw">div</span>&gt;</code></pre></div></div>
+<p>pulse.js does the switching: a click, or the arrow keys, Home and End once a tab has focus, selects a tab and shows its panel; the other panels get <code>hidden</code>. Each tab’s <code>aria-controls</code> names its panel. It fires <code>pulse:tab</code> on the tablist if the page needs to know. For tabs stacked in a column, add <code>aria-orientation="vertical"</code> to the tablist and the up and down arrows move instead.</p>
+<h2>Vertical (a jump menu)</h2>
+<p>A list of links beside a long page. Optional parts: a label above, sub-items and counts. The section being read is <code>aria-current="location"</code>.</p>
+<div class="docs-example"><div class="docs-live"><div style="width: 240px">
+  <p class="pulse-tabs__label" id="on-this-page">On this page</p>
+  <ul class="pulse-tabs pulse-tabs--vertical" aria-labelledby="on-this-page">
+    <li><a class="pulse-tab" href="#m365">Microsoft 365 <span class="pulse-tab__count">412</span></a>
+      <ul class="pulse-tabs__sub">
+        <li><a class="pulse-tab" href="#defender">Defender for Office <span class="pulse-tab__count">96</span></a></li>
+        <li><a class="pulse-tab" href="#entra" aria-current="location">Entra ID Protection <span class="pulse-tab__count">58</span></a></li>
+      </ul></li>
+    <li><a class="pulse-tab" href="#google">Google Workspace <span class="pulse-tab__count">187</span></a></li>
+  </ul>
+</div></div><div class="pulse-code docs-code"><div class="pulse-code__head"><span class="pulse-code__file">HTML</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-tooltip-host" type="button" data-pulse-copy aria-label="Copy the code"><i class="pulse-icon pulse-icon--copy" aria-hidden="true"></i><span class="pulse-tooltip pulse-tooltip--bottom pulse-tooltip--end" aria-hidden="true">Copy to clipboard</span></button></div><pre><code>&lt;<span class="pulse-code__kw">div</span> <span class="pulse-code__key">style</span>=<span class="pulse-code__str">"width: 240px"</span>&gt;
+  &lt;<span class="pulse-code__kw">p</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-tabs__label"</span> <span class="pulse-code__key">id</span>=<span class="pulse-code__str">"on-this-page"</span>&gt;On this page&lt;/<span class="pulse-code__kw">p</span>&gt;
+  &lt;<span class="pulse-code__kw">ul</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-tabs pulse-tabs--vertical"</span> <span class="pulse-code__key">aria-labelledby</span>=<span class="pulse-code__str">"on-this-page"</span>&gt;
+    &lt;<span class="pulse-code__kw">li</span>&gt;&lt;<span class="pulse-code__kw">a</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-tab"</span> <span class="pulse-code__key">href</span>=<span class="pulse-code__str">"#m365"</span>&gt;Microsoft 365 &lt;<span class="pulse-code__kw">span</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-tab__count"</span>&gt;412&lt;/<span class="pulse-code__kw">span</span>&gt;&lt;/<span class="pulse-code__kw">a</span>&gt;
+      &lt;<span class="pulse-code__kw">ul</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-tabs__sub"</span>&gt;
+        &lt;<span class="pulse-code__kw">li</span>&gt;&lt;<span class="pulse-code__kw">a</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-tab"</span> <span class="pulse-code__key">href</span>=<span class="pulse-code__str">"#defender"</span>&gt;Defender for Office &lt;<span class="pulse-code__kw">span</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-tab__count"</span>&gt;96&lt;/<span class="pulse-code__kw">span</span>&gt;&lt;/<span class="pulse-code__kw">a</span>&gt;&lt;/<span class="pulse-code__kw">li</span>&gt;
+        &lt;<span class="pulse-code__kw">li</span>&gt;&lt;<span class="pulse-code__kw">a</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-tab"</span> <span class="pulse-code__key">href</span>=<span class="pulse-code__str">"#entra"</span> <span class="pulse-code__key">aria-current</span>=<span class="pulse-code__str">"location"</span>&gt;Entra ID Protection &lt;<span class="pulse-code__kw">span</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-tab__count"</span>&gt;58&lt;/<span class="pulse-code__kw">span</span>&gt;&lt;/<span class="pulse-code__kw">a</span>&gt;&lt;/<span class="pulse-code__kw">li</span>&gt;
+      &lt;/<span class="pulse-code__kw">ul</span>&gt;&lt;/<span class="pulse-code__kw">li</span>&gt;
+    &lt;<span class="pulse-code__kw">li</span>&gt;&lt;<span class="pulse-code__kw">a</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-tab"</span> <span class="pulse-code__key">href</span>=<span class="pulse-code__str">"#google"</span>&gt;Google Workspace &lt;<span class="pulse-code__kw">span</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-tab__count"</span>&gt;187&lt;/<span class="pulse-code__kw">span</span>&gt;&lt;/<span class="pulse-code__kw">a</span>&gt;&lt;/<span class="pulse-code__kw">li</span>&gt;
+  &lt;/<span class="pulse-code__kw">ul</span>&gt;
+&lt;/<span class="pulse-code__kw">div</span>&gt;</code></pre></div></div>
+<p>Highlighting the section as the reader scrolls, and turning the menu into a dropdown on narrow screens, are the page’s script for now.</p>
+<h2>Options</h2>
+<div class="docs-table"><table><thead><tr><th>Class</th><th>What it does</th></tr></thead><tbody>
+<tr><td><code>pulse-tabs--line</code>, <code>--bar</code>, <code>--vertical</code></td><td>The three layouts.</td></tr>
+<tr><td><code>pulse-tabs__label</code></td><td>The small mono label above a vertical list.</td></tr>
+<tr><td><code>pulse-tabs__sub</code></td><td>A nested list of sub-items.</td></tr>
+<tr><td><code>pulse-tab__count</code></td><td>A number at the end of an item.</td></tr>
+</tbody></table></div>
+<h2>Accessibility</h2>
+<ul>
+<li>Tabs that switch views: <code>role="tablist"</code> with an <code>aria-label</code>, <code>role="tab"</code> with <code>aria-controls</code>, and <code>role="tabpanel"</code> with <code>aria-labelledby</code> and <code>tabindex="0"</code>. pulse.js keeps <code>aria-selected</code> and the tab order right: only the selected tab is in the Tab order, the arrows move between tabs.</li>
+<li>A jump menu is plain links, with <code>aria-current</code> on the current one.</li>
+</ul>
+    <div class="docs-next"><a class="pulse-link pulse-link--sm" href="step-number.html">Step number</a><a class="pulse-link pulse-link--sm" href="tooltip.html">Tooltip <i class="pulse-icon pulse-icon--arrow-right" aria-hidden="true"></i></a></div>
+    <dialog class="pulse-drawer pulse-drawer--lg docs-states" id="states" aria-labelledby="states-title"><div class="pulse-drawer__head"><h2 class="pulse-drawer__title" id="states-title">Tabs: every state</h2><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-drawer__close" type="button" aria-label="Close" data-pulse-close><i class="pulse-icon pulse-icon--x" aria-hidden="true"></i></button></div><div class="pulse-drawer__body"><p class="docs-states-note">Hover, focus and pressed are drawn here with demo classes (is-hover, is-focus, is-pressed) so they can be seen side by side. On a real page they come from the mouse and keyboard; don’t copy those classes. The Web, App, Light and Dark switches apply here too.</p><div class="docs-states-row"><p class="docs-states-label">Line</p><div class="docs-states-items docs-states-items--stack"><div class="pulse-tabs pulse-tabs--line" role="tablist" aria-label="States"><button class="pulse-tab" type="button" role="tab" aria-selected="true">Selected</button><button class="pulse-tab is-hover" type="button" role="tab" aria-selected="false">Hover</button><button class="pulse-tab" type="button" role="tab" aria-selected="false">Rest</button></div></div></div>
+<div class="docs-states-row"><p class="docs-states-label">Bar</p><div class="docs-states-items docs-states-items--stack"><div class="pulse-tabs pulse-tabs--bar" role="tablist" aria-label="States" style="width:100%"><button class="pulse-tab" type="button" role="tab" aria-selected="true">Selected</button><button class="pulse-tab is-hover" type="button" role="tab" aria-selected="false">Hover</button><button class="pulse-tab" type="button" role="tab" aria-selected="false">Rest</button></div></div></div>
+<div class="docs-states-row"><p class="docs-states-label">Vertical</p><div class="docs-states-items"><div style="width:260px"><p class="pulse-tabs__label">On this page</p><ul class="pulse-tabs pulse-tabs--vertical"><li><a class="pulse-tab" href="#">Rest <span class="pulse-tab__count">412</span></a><ul class="pulse-tabs__sub"><li><a class="pulse-tab" href="#" aria-current="location">Current sub-item <span class="pulse-tab__count">58</span></a></li><li><a class="pulse-tab is-hover" href="#">Hover sub-item <span class="pulse-tab__count">31</span></a></li></ul></li><li><a class="pulse-tab" href="#" aria-current="location">Current <span class="pulse-tab__count">187</span></a></li><li><a class="pulse-tab is-hover" href="#">Hover <span class="pulse-tab__count">9</span></a></li></ul></div></div></div>
+</div></dialog>
+  </main>
+</div>
+<script>
+  // Docs only: links inside examples are there to look at and copy, so they don't go anywhere here.
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('.docs-live a[href], .docs-states a[href]');
+    if (a && !a.hasAttribute('data-pulse-open')) e.preventDefault();
+  });
+  // Docs only: the surface and theme switches, remembered between pages. Pulse itself needs no script for these.
+  (function () {
+    var root = document.documentElement;
+    function apply(set, value) {
+      root.setAttribute('data-' + set, value);
+      document.querySelectorAll('[data-docs-set="' + set + '"]').forEach(function (x) { x.setAttribute('aria-pressed', String(x.dataset.docsValue === value)); });
+    }
+    ['surface', 'theme'].forEach(function (set) { try { var v = localStorage.getItem('pulse-docs-' + set); if (v) apply(set, v); } catch (e) {} });
+    document.querySelectorAll('[data-docs-set]').forEach(function (b) {
+      b.addEventListener('click', function () { apply(b.dataset.docsSet, b.dataset.docsValue); try { localStorage.setItem('pulse-docs-' + b.dataset.docsSet, b.dataset.docsValue); } catch (e) {} });
+    });
+  })();
+</script>
+</body>
+</html>

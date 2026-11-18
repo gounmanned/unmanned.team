@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en" data-theme="light" data-surface="app">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Getting started · Pulse docs</title>
+<meta name="description" content="How to build a page with Pulse: load four files, copy markup from these pages, and let your own CSS do the layout.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../pulse-tokens.css">
+<link rel="stylesheet" href="../pulse-icons.css">
+<link rel="stylesheet" href="../pulse-components.css">
+<script src="../pulse.js" defer></script>
+<style>
+  /* Docs prose: plain elements only, in the reset layer so Pulse components inside examples always win. */
+  @layer reset {
+    body{margin:0;background:var(--color-surface-page);color:var(--color-text-primary);font:400 var(--type-body-md-size)/var(--type-body-md-line-height) var(--font-sans);}
+    a{color:inherit;}
+    .docs-main :not(pre)>code{font:400 0.875em/1 var(--font-mono);padding:2px 4px;border-radius:var(--radius-tag);background:var(--color-surface-sunken);color:var(--color-text-primary);}
+    .docs-main h2{margin:var(--space-48) 0 var(--space-12);font:600 var(--type-heading-card-size)/var(--type-heading-card-line-height) var(--font-sans);}
+    .docs-main h3{margin:var(--space-32) 0 var(--space-8);font:600 var(--type-body-md-size)/var(--type-body-md-line-height) var(--font-sans);}
+    .docs-main p,.docs-main li{color:var(--color-text-secondary);}
+    .docs-main p{margin:0 0 var(--space-16);}
+    .docs-main ul,.docs-main ol{margin:0 0 var(--space-16);padding-left:var(--space-24);}
+    .docs-main li{margin-bottom:var(--space-4);}
+    .docs-main strong{color:var(--color-text-primary);font-weight:600;}
+    .docs-main table{width:100%;border-collapse:collapse;font-size:var(--type-body-sm-size);line-height:var(--type-body-sm-line-height);}
+    .docs-main th,.docs-main td{text-align:left;vertical-align:top;padding:var(--space-8) var(--space-12) var(--space-8) 0;border-bottom:1px solid var(--color-border-default);}
+    .docs-main th{font-weight:600;color:var(--color-text-primary);}
+    .docs-main td{color:var(--color-text-secondary);}
+    .docs-main td:first-child{width:40%;}
+    .docs-main td code{overflow-wrap:anywhere;}
+  }
+  /* Docs prose: plain elements only, in the reset layer so Pulse components inside examples always win. */
+  .docs-top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:var(--space-16);min-height:56px;padding:0 var(--space-24);background:var(--color-surface-page);border-bottom:1px solid var(--color-border-default);}
+  .docs-brand{font-weight:600;text-decoration:none;}
+  .docs-brand span{font:400 var(--type-mono-label-size)/1 var(--font-mono);color:var(--color-text-tertiary);margin-left:var(--space-8);}
+  .docs-top nav{margin-left:auto;display:flex;align-items:center;gap:var(--space-20);flex-wrap:wrap;}
+  .docs-layout{display:grid;grid-template-columns:240px minmax(0,1fr);gap:var(--space-48);max-width:1200px;margin:0 auto;padding:0 var(--space-24);}
+  .docs-side{position:sticky;top:57px;align-self:start;max-height:calc(100vh - 57px);overflow-y:auto;padding:var(--space-32) 0;}
+  .docs-side .pulse-tabs__label{margin-top:var(--space-24);}
+  .docs-side .pulse-tabs__label:first-child{margin-top:0;}
+  .docs-main{min-width:0;max-width:800px;padding:var(--space-48) 0 var(--space-96);}
+  .docs-main h1{margin:var(--space-8) 0 var(--space-16);font:600 var(--type-heading-section-size)/var(--type-heading-section-line-height) var(--font-sans);letter-spacing:-0.01em;}
+  .docs-lede{margin:0 0 var(--space-16);font-size:var(--type-body-lede-size);line-height:var(--type-body-lede-line-height);color:var(--color-text-secondary);}
+  .docs-meta{display:flex;flex-wrap:wrap;gap:var(--space-8) var(--space-24);margin:0 0 var(--space-40);}
+  .docs-example{margin:var(--space-16) 0 var(--space-32);border:1px solid var(--color-border-default);border-radius:var(--radius-container);}
+  .docs-live{display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-16);padding:var(--space-32) var(--space-24);background:var(--color-surface-page);border-radius:var(--radius-container) var(--radius-container) 0 0;}
+  .docs-live--tall{min-height:280px;align-items:flex-start;}
+  .docs-variants{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:var(--space-16);margin:var(--space-16) 0 var(--space-32);}
+  .docs-variant{min-width:0;display:flex;flex-direction:column;border:1px solid var(--color-border-default);border-radius:var(--radius-container);}
+  .docs-live--compact{flex:1;justify-content:center;min-height:96px;padding:var(--space-24) var(--space-16);}
+  .docs-variant .docs-code{border:0;border-top:1px solid var(--color-border-default);border-radius:0 0 var(--radius-container) var(--radius-container);}
+  .docs-variant .docs-code .pulse-code__head{border-radius:0;}
+  .docs-variant .docs-code pre{padding:var(--space-12);}
+  .docs-example .docs-code{border:0;border-top:1px solid var(--color-border-default);border-radius:0 0 var(--radius-container) var(--radius-container);}
+  .docs-example .docs-code .pulse-code__head{border-radius:0;}
+  .docs-code pre{max-height:420px;overflow:auto;}
+  .docs-table{overflow-x:auto;margin:0 0 var(--space-24);}
+  .docs-swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:var(--space-8) var(--space-16);margin-bottom:var(--space-16);}
+  .docs-swatch{display:flex;align-items:center;gap:var(--space-8);min-width:0;}
+  .docs-swatch span{flex:none;width:32px;height:32px;border-radius:var(--radius-tag);border:1px solid var(--color-border-default);}
+  .docs-swatch code{overflow-wrap:anywhere;}
+  .docs-space{display:flex;flex-direction:column;gap:var(--space-8);}
+  .docs-space div{display:flex;align-items:center;gap:var(--space-12);}
+  .docs-space span{height:12px;background:var(--color-accent-subtle);box-shadow:inset 0 0 0 1px var(--color-accent-default);}
+  .docs-icons{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:var(--space-16);}
+  .docs-icon{display:flex;align-items:center;gap:var(--space-8);--pulse-icon-size:20px;}
+  .docs-icon code{font-size:12px !important;}
+  .docs-next{display:flex;justify-content:space-between;gap:var(--space-16);margin-top:var(--space-64);padding-top:var(--space-24);border-top:1px solid var(--color-border-default);}
+  .docs-menu{display:none;}
+  .docs-meta{align-items:center;}
+  .docs-meta .pulse-badge{white-space:normal;max-width:100%;}
+  .docs-states .pulse-drawer__body{color:var(--color-text-primary);}
+  .docs-states-note{margin:0 0 var(--space-24);font-size:var(--type-body-sm-size);line-height:var(--type-body-sm-line-height);color:var(--color-text-secondary);}
+  .docs-states-row{margin:0 0 var(--space-32);}
+  .docs-states-label{margin:0 0 var(--space-12);font:400 var(--type-mono-eyebrow-size)/var(--type-mono-eyebrow-line-height) var(--font-mono);letter-spacing:0.08em;text-transform:uppercase;color:var(--color-text-tertiary);}
+  .docs-states-items{display:flex;flex-wrap:wrap;align-items:flex-start;gap:var(--space-16) var(--space-24);}
+  .docs-states-items--stack{flex-direction:column;align-items:stretch;}
+  .docs-state{display:flex;flex-direction:column;align-items:flex-start;gap:var(--space-8);}
+  .docs-state-cap{font:400 var(--type-mono-caption-size)/var(--type-mono-caption-line-height) var(--font-mono);color:var(--color-text-tertiary);}
+  .docs-states .pulse-popover{max-width:260px;margin:var(--space-12);}
+  @media (max-width:900px){
+    .docs-layout{grid-template-columns:minmax(0,1fr);gap:0;padding:0 var(--space-16);}
+    .docs-side{display:none;}
+    .docs-menu{display:block;margin:var(--space-16) 0 0;border:1px solid var(--color-border-default);border-radius:var(--radius-control);}
+    .docs-menu summary{padding:var(--space-12) var(--space-16);cursor:pointer;font-weight:500;}
+    .docs-menu .docs-menu__list{padding:0 var(--space-16) var(--space-16);}
+    .docs-main{padding-top:var(--space-24);}
+    .docs-top{padding:0 var(--space-16);}
+    .docs-live{padding:var(--space-24) var(--space-16);}
+    .docs-live--compact{min-height:64px;padding:var(--space-16);}
+    .docs-variants{gap:var(--space-12);}
+  @media (max-width:560px){ .docs-top nav .docs-hide-sm{display:none;} .docs-top nav{gap:var(--space-8);} .docs-top{flex-wrap:wrap;padding-block:var(--space-8);position:static;} }
+</style>
+</head>
+<body>
+<header class="docs-top">
+  <a class="docs-brand" href="index.html">Pulse<span>v1 docs</span></a>
+  <nav aria-label="Pulse">
+    <a class="pulse-link pulse-link--quiet pulse-link--sm docs-hide-sm" href="../pulse-reference.md">AI reference</a>
+    <div class="pulse-segmented" role="group" aria-label="Surface"><button class="pulse-segmented__item" type="button" data-docs-set="surface" data-docs-value="web" aria-pressed="false">Web</button><button class="pulse-segmented__item" type="button" data-docs-set="surface" data-docs-value="app" aria-pressed="true">App</button></div>
+    <div class="pulse-segmented" role="group" aria-label="Theme"><button class="pulse-segmented__item" type="button" data-docs-set="theme" data-docs-value="light" aria-pressed="true">Light</button><button class="pulse-segmented__item" type="button" data-docs-set="theme" data-docs-value="dark" aria-pressed="false">Dark</button></div>
+  </nav>
+</header>
+<div class="docs-layout">
+  <aside class="docs-side"><p class="pulse-tabs__label">Start</p><nav class="pulse-tabs pulse-tabs--vertical" aria-label="Start"><a class="pulse-tab" href="index.html" aria-current="page">Getting started</a><a class="pulse-tab" href="starter.html">Starter page</a><a class="pulse-tab" href="foundations.html">Foundations</a><a class="pulse-tab" href="patterns.html">Patterns</a><a class="pulse-tab" href="white-labeling.html">White labeling</a></nav><p class="pulse-tabs__label">Components</p><nav class="pulse-tabs pulse-tabs--vertical" aria-label="Components"><a class="pulse-tab" href="alert-toast.html">Alert and toast</a><a class="pulse-tab" href="badge.html">Badge</a><a class="pulse-tab" href="button.html">Button</a><a class="pulse-tab" href="checkbox-radio-toggle.html">Checkbox, radio and toggle</a><a class="pulse-tab" href="chip.html">Chip</a><a class="pulse-tab" href="code-panel.html">Code panel</a><a class="pulse-tab" href="dialog.html">Dialog</a><a class="pulse-tab" href="drawer.html">Drawer</a><a class="pulse-tab" href="dropdown.html">Dropdown and nav menu</a><a class="pulse-tab" href="eyebrow.html">Eyebrow</a><a class="pulse-tab" href="fields.html">Fields</a><a class="pulse-tab" href="link.html">Link</a><a class="pulse-tab" href="popover.html">Popover</a><a class="pulse-tab" href="progress.html">Progress</a><a class="pulse-tab" href="segmented.html">Segmented control</a><a class="pulse-tab" href="slider.html">Slider</a><a class="pulse-tab" href="step-number.html">Step number</a><a class="pulse-tab" href="tabs.html">Tabs</a><a class="pulse-tab" href="tooltip.html">Tooltip</a></nav></aside>
+  <main class="docs-main">
+    <details class="docs-menu"><summary>All pages</summary><div class="docs-menu__list"><p class="pulse-tabs__label">Start</p><nav class="pulse-tabs pulse-tabs--vertical" aria-label="Start"><a class="pulse-tab" href="index.html" aria-current="page">Getting started</a><a class="pulse-tab" href="starter.html">Starter page</a><a class="pulse-tab" href="foundations.html">Foundations</a><a class="pulse-tab" href="patterns.html">Patterns</a><a class="pulse-tab" href="white-labeling.html">White labeling</a></nav><p class="pulse-tabs__label">Components</p><nav class="pulse-tabs pulse-tabs--vertical" aria-label="Components"><a class="pulse-tab" href="alert-toast.html">Alert and toast</a><a class="pulse-tab" href="badge.html">Badge</a><a class="pulse-tab" href="button.html">Button</a><a class="pulse-tab" href="checkbox-radio-toggle.html">Checkbox, radio and toggle</a><a class="pulse-tab" href="chip.html">Chip</a><a class="pulse-tab" href="code-panel.html">Code panel</a><a class="pulse-tab" href="dialog.html">Dialog</a><a class="pulse-tab" href="drawer.html">Drawer</a><a class="pulse-tab" href="dropdown.html">Dropdown and nav menu</a><a class="pulse-tab" href="eyebrow.html">Eyebrow</a><a class="pulse-tab" href="fields.html">Fields</a><a class="pulse-tab" href="link.html">Link</a><a class="pulse-tab" href="popover.html">Popover</a><a class="pulse-tab" href="progress.html">Progress</a><a class="pulse-tab" href="segmented.html">Segmented control</a><a class="pulse-tab" href="slider.html">Slider</a><a class="pulse-tab" href="step-number.html">Step number</a><a class="pulse-tab" href="tabs.html">Tabs</a><a class="pulse-tab" href="tooltip.html">Tooltip</a></nav></div></details>
+    <h1>Getting started</h1>
+    <p class="docs-lede">How to build a page with Pulse: load four files, copy markup from these pages, and let your own CSS do the layout.</p>
+    <div class="docs-meta"></div>
+    <h2>What Pulse is</h2>
+<p>Pulse is the Unmanned design system: the same components in Figma (library “Unmanned DS - Core”) and in code. In code it is plain CSS and one small script. There is nothing to install and no build step.</p>
+<p>A Pulse component is not a file you import. It is a piece of HTML with the right classes and attributes. Once the Pulse files are on the page, any HTML written that way becomes the component. These pages show that HTML for each component, ready to copy.</p>
+
+<h2>1. Load Pulse</h2>
+<p>Put these lines in the <code>&lt;head&gt;</code>, in this order. Or start from the <a href="starter.html">starter page</a>, which has them already.</p>
+<div class="docs-example"><div class="docs-live"><html lang="en" data-theme="light" data-surface="web">
+<head>
+  <link rel="stylesheet" href="https://cdn.unmanned.team/pulse/v1/pulse-tokens.css">
+  <link rel="stylesheet" href="https://cdn.unmanned.team/pulse/v1/pulse-icons.css">
+  <link rel="stylesheet" href="https://cdn.unmanned.team/pulse/v1/pulse-components.css">
+  <script src="https://cdn.unmanned.team/pulse/v1/pulse.js" defer></script>
+</head></div><div class="pulse-code docs-code"><div class="pulse-code__head"><span class="pulse-code__file">HTML</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-tooltip-host" type="button" data-pulse-copy aria-label="Copy the code"><i class="pulse-icon pulse-icon--copy" aria-hidden="true"></i><span class="pulse-tooltip pulse-tooltip--bottom pulse-tooltip--end" aria-hidden="true">Copy to clipboard</span></button></div><pre><code>&lt;<span class="pulse-code__kw">html</span> <span class="pulse-code__key">lang</span>=<span class="pulse-code__str">"en"</span> <span class="pulse-code__key">data-theme</span>=<span class="pulse-code__str">"light"</span> <span class="pulse-code__key">data-surface</span>=<span class="pulse-code__str">"web"</span>&gt;
+&lt;<span class="pulse-code__kw">head</span>&gt;
+  &lt;<span class="pulse-code__kw">link</span> <span class="pulse-code__key">rel</span>=<span class="pulse-code__str">"stylesheet"</span> <span class="pulse-code__key">href</span>=<span class="pulse-code__str">"https://cdn.unmanned.team/pulse/v1/pulse-tokens.css"</span>&gt;
+  &lt;<span class="pulse-code__kw">link</span> <span class="pulse-code__key">rel</span>=<span class="pulse-code__str">"stylesheet"</span> <span class="pulse-code__key">href</span>=<span class="pulse-code__str">"https://cdn.unmanned.team/pulse/v1/pulse-icons.css"</span>&gt;
+  &lt;<span class="pulse-code__kw">link</span> <span class="pulse-code__key">rel</span>=<span class="pulse-code__str">"stylesheet"</span> <span class="pulse-code__key">href</span>=<span class="pulse-code__str">"https://cdn.unmanned.team/pulse/v1/pulse-components.css"</span>&gt;
+  &lt;<span class="pulse-code__kw">script</span> <span class="pulse-code__key">src</span>=<span class="pulse-code__str">"https://cdn.unmanned.team/pulse/v1/pulse.js"</span> <span class="pulse-code__key">defer</span>&gt;&lt;/<span class="pulse-code__kw">script</span>&gt;
+&lt;/<span class="pulse-code__kw">head</span>&gt;</code></pre></div></div>
+<ul>
+<li><code>pulse-tokens.css</code>: the values (colors, type, spacing, radius) as CSS variables.</li>
+<li><code>pulse-icons.css</code>: the icons.</li>
+<li><code>pulse-components.css</code>: the components.</li>
+<li><code>pulse.js</code>: every behavior: popovers, dialogs and drawers, menus and dropdowns, tabs, toasts, copying, sliders, tooltips’ Esc. Nothing happens until the page uses one, and pages never need their own script for these.</li>
+</ul>
+
+<h2>2. Pick the theme and the surface</h2>
+<div class="docs-table"><table>
+<thead><tr><th>Attribute</th><th>Values</th><th>What it does</th></tr></thead>
+<tbody>
+<tr><td><code>data-theme</code></td><td><code>light</code> (default), <code>dark</code></td><td>Color mode. Put it on <code>&lt;html&gt;</code> for the page, or on any element to switch just that part (a dark band on a light page).</td></tr>
+<tr><td><code>data-surface</code></td><td><code>web</code> (default), <code>app</code></td><td>Shape. <code>web</code> (the website) gives every corner 2px and square-ish buttons. <code>app</code> (VEX) uses 4, 8 and 12px corners and pill buttons.</td></tr>
+</tbody>
+</table></div>
+
+<h2>3. Copy components</h2>
+<p>Open the component’s page from the menu, find the example closest to what you need, press Copy and paste it into your page. Then change the text, the links and any <code>id</code> (each <code>id</code> must be unique on the page, and the attributes that point to it, like <code>aria-labelledby</code> and <code>data-pulse-open</code>, must match).</p>
+<p>Keep the classes and attributes as they are. If a component doesn’t do what you need, don’t restyle it on your page: ask the design-system side for a new option, so Figma and code stay the same.</p>
+
+<h2>4. Lay out the page yourself</h2>
+<p>Pulse styles components, not pages. Grids, columns, section spacing and headings are your page’s own CSS. Use Pulse tokens there too: <code>var(--space-32)</code>, <code>var(--color-text-secondary)</code>, <code>var(--type-heading-section-size)</code>, never a hex value or a stray px. See <a href="foundations.html">Foundations</a> for the tokens and <a href="patterns.html">Patterns</a> for common page pieces.</p>
+
+<h2>How your CSS and Pulse fit together</h2>
+<p>Pulse puts its components in a CSS cascade layer, so any rule on your page wins over Pulse when both style the same thing. That is safe for layout, but it also means a broad rule like <code>a { color: inherit }</code> or <code>.card button { … }</code> will quietly change Pulse components. Put rules for bare elements in the <code>reset</code> layer, which sits under Pulse:</p>
+<p><code>@layer reset { a { color: inherit; } }</code></p>
+
+<h2>Rules worth knowing</h2>
+<ul>
+<li><strong>Link or button:</strong> a link goes somewhere, a button does something here. See <a href="patterns.html">Patterns</a>.</li>
+<li><strong>Icons need a label:</strong> an icon-only button gets <code>aria-label</code>; a decorative icon gets <code>aria-hidden="true"</code>.</li>
+<li><strong>Copy:</strong> sentence case everywhere (CSS makes eyebrows caps), no em dashes, curly quotes.</li>
+<li><strong>Every width:</strong> check pages at 1440, 1024, 768, 375 and 302px wide, with no sideways scrolling.</li>
+</ul>
+
+<h2>For AI assistants</h2>
+<p>All of these pages, as one Markdown file: <a href="../pulse-reference.md">pulse-reference.md</a>. Point an assistant at it before it writes Pulse markup.</p>
+    <div class="docs-next"><span></span><a class="pulse-link pulse-link--sm" href="starter.html">Starter page <i class="pulse-icon pulse-icon--arrow-right" aria-hidden="true"></i></a></div>
+    
+  </main>
+</div>
+<script>
+  // Docs only: links inside examples are there to look at and copy, so they don't go anywhere here.
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('.docs-live a[href], .docs-states a[href]');
+    if (a && !a.hasAttribute('data-pulse-open')) e.preventDefault();
+  });
+  // Docs only: the surface and theme switches, remembered between pages. Pulse itself needs no script for these.
+  (function () {
+    var root = document.documentElement;
+    function apply(set, value) {
+      root.setAttribute('data-' + set, value);
+      document.querySelectorAll('[data-docs-set="' + set + '"]').forEach(function (x) { x.setAttribute('aria-pressed', String(x.dataset.docsValue === value)); });
+    }
+    ['surface', 'theme'].forEach(function (set) { try { var v = localStorage.getItem('pulse-docs-' + set); if (v) apply(set, v); } catch (e) {} });
+    document.querySelectorAll('[data-docs-set]').forEach(function (b) {
+      b.addEventListener('click', function () { apply(b.dataset.docsSet, b.dataset.docsValue); try { localStorage.setItem('pulse-docs-' + b.dataset.docsSet, b.dataset.docsValue); } catch (e) {} });
+    });
+  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en" data-theme="light" data-surface="app">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>White labeling · Pulse docs</title>
+<meta name="description" content="How to make VEX look your own, what we support, and what is yours to keep working.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../pulse-tokens.css">
+<link rel="stylesheet" href="../pulse-icons.css">
+<link rel="stylesheet" href="../pulse-components.css">
+<script src="../pulse.js" defer></script>
+<style>
+  /* Docs prose: plain elements only, in the reset layer so Pulse components inside examples always win. */
+  @layer reset {
+    body{margin:0;background:var(--color-surface-page);color:var(--color-text-primary);font:400 var(--type-body-md-size)/var(--type-body-md-line-height) var(--font-sans);}
+    a{color:inherit;}
+    .docs-main :not(pre)>code{font:400 0.875em/1 var(--font-mono);padding:2px 4px;border-radius:var(--radius-tag);background:var(--color-surface-sunken);color:var(--color-text-primary);}
+    .docs-main h2{margin:var(--space-48) 0 var(--space-12);font:600 var(--type-heading-card-size)/var(--type-heading-card-line-height) var(--font-sans);}
+    .docs-main h3{margin:var(--space-32) 0 var(--space-8);font:600 var(--type-body-md-size)/var(--type-body-md-line-height) var(--font-sans);}
+    .docs-main p,.docs-main li{color:var(--color-text-secondary);}
+    .docs-main p{margin:0 0 var(--space-16);}
+    .docs-main ul,.docs-main ol{margin:0 0 var(--space-16);padding-left:var(--space-24);}
+    .docs-main li{margin-bottom:var(--space-4);}
+    .docs-main strong{color:var(--color-text-primary);font-weight:600;}
+    .docs-main table{width:100%;border-collapse:collapse;font-size:var(--type-body-sm-size);line-height:var(--type-body-sm-line-height);}
+    .docs-main th,.docs-main td{text-align:left;vertical-align:top;padding:var(--space-8) var(--space-12) var(--space-8) 0;border-bottom:1px solid var(--color-border-default);}
+    .docs-main th{font-weight:600;color:var(--color-text-primary);}
+    .docs-main td{color:var(--color-text-secondary);}
+    .docs-main td:first-child{width:40%;}
+    .docs-main td code{overflow-wrap:anywhere;}
+  }
+  /* Docs prose: plain elements only, in the reset layer so Pulse components inside examples always win. */
+  .docs-top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:var(--space-16);min-height:56px;padding:0 var(--space-24);background:var(--color-surface-page);border-bottom:1px solid var(--color-border-default);}
+  .docs-brand{font-weight:600;text-decoration:none;}
+  .docs-brand span{font:400 var(--type-mono-label-size)/1 var(--font-mono);color:var(--color-text-tertiary);margin-left:var(--space-8);}
+  .docs-top nav{margin-left:auto;display:flex;align-items:center;gap:var(--space-20);flex-wrap:wrap;}
+  .docs-layout{display:grid;grid-template-columns:240px minmax(0,1fr);gap:var(--space-48);max-width:1200px;margin:0 auto;padding:0 var(--space-24);}
+  .docs-side{position:sticky;top:57px;align-self:start;max-height:calc(100vh - 57px);overflow-y:auto;padding:var(--space-32) 0;}
+  .docs-side .pulse-tabs__label{margin-top:var(--space-24);}
+  .docs-side .pulse-tabs__label:first-child{margin-top:0;}
+  .docs-main{min-width:0;max-width:800px;padding:var(--space-48) 0 var(--space-96);}
+  .docs-main h1{margin:var(--space-8) 0 var(--space-16);font:600 var(--type-heading-section-size)/var(--type-heading-section-line-height) var(--font-sans);letter-spacing:-0.01em;}
+  .docs-lede{margin:0 0 var(--space-16);font-size:var(--type-body-lede-size);line-height:var(--type-body-lede-line-height);color:var(--color-text-secondary);}
+  .docs-meta{display:flex;flex-wrap:wrap;gap:var(--space-8) var(--space-24);margin:0 0 var(--space-40);}
+  .docs-example{margin:var(--space-16) 0 var(--space-32);border:1px solid var(--color-border-default);border-radius:var(--radius-container);}
+  .docs-live{display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-16);padding:var(--space-32) var(--space-24);background:var(--color-surface-page);border-radius:var(--radius-container) var(--radius-container) 0 0;}
+  .docs-live--tall{min-height:280px;align-items:flex-start;}
+  .docs-variants{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:var(--space-16);margin:var(--space-16) 0 var(--space-32);}
+  .docs-variant{min-width:0;display:flex;flex-direction:column;border:1px solid var(--color-border-default);border-radius:var(--radius-container);}
+  .docs-live--compact{flex:1;justify-content:center;min-height:96px;padding:var(--space-24) var(--space-16);}
+  .docs-variant .docs-code{border:0;border-top:1px solid var(--color-border-default);border-radius:0 0 var(--radius-container) var(--radius-container);}
+  .docs-variant .docs-code .pulse-code__head{border-radius:0;}
+  .docs-variant .docs-code pre{padding:var(--space-12);}
+  .docs-example .docs-code{border:0;border-top:1px solid var(--color-border-default);border-radius:0 0 var(--radius-container) var(--radius-container);}
+  .docs-example .docs-code .pulse-code__head{border-radius:0;}
+  .docs-code pre{max-height:420px;overflow:auto;}
+  .docs-table{overflow-x:auto;margin:0 0 var(--space-24);}
+  .docs-swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:var(--space-8) var(--space-16);margin-bottom:var(--space-16);}
+  .docs-swatch{display:flex;align-items:center;gap:var(--space-8);min-width:0;}
+  .docs-swatch span{flex:none;width:32px;height:32px;border-radius:var(--radius-tag);border:1px solid var(--color-border-default);}
+  .docs-swatch code{overflow-wrap:anywhere;}
+  .docs-space{display:flex;flex-direction:column;gap:var(--space-8);}
+  .docs-space div{display:flex;align-items:center;gap:var(--space-12);}
+  .docs-space span{height:12px;background:var(--color-accent-subtle);box-shadow:inset 0 0 0 1px var(--color-accent-default);}
+  .docs-icons{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:var(--space-16);}
+  .docs-icon{display:flex;align-items:center;gap:var(--space-8);--pulse-icon-size:20px;}
+  .docs-icon code{font-size:12px !important;}
+  .docs-next{display:flex;justify-content:space-between;gap:var(--space-16);margin-top:var(--space-64);padding-top:var(--space-24);border-top:1px solid var(--color-border-default);}
+  .docs-menu{display:none;}
+  .docs-meta{align-items:center;}
+  .docs-meta .pulse-badge{white-space:normal;max-width:100%;}
+  .docs-states .pulse-drawer__body{color:var(--color-text-primary);}
+  .docs-states-note{margin:0 0 var(--space-24);font-size:var(--type-body-sm-size);line-height:var(--type-body-sm-line-height);color:var(--color-text-secondary);}
+  .docs-states-row{margin:0 0 var(--space-32);}
+  .docs-states-label{margin:0 0 var(--space-12);font:400 var(--type-mono-eyebrow-size)/var(--type-mono-eyebrow-line-height) var(--font-mono);letter-spacing:0.08em;text-transform:uppercase;color:var(--color-text-tertiary);}
+  .docs-states-items{display:flex;flex-wrap:wrap;align-items:flex-start;gap:var(--space-16) var(--space-24);}
+  .docs-states-items--stack{flex-direction:column;align-items:stretch;}
+  .docs-state{display:flex;flex-direction:column;align-items:flex-start;gap:var(--space-8);}
+  .docs-state-cap{font:400 var(--type-mono-caption-size)/var(--type-mono-caption-line-height) var(--font-mono);color:var(--color-text-tertiary);}
+  .docs-states .pulse-popover{max-width:260px;margin:var(--space-12);}
+  @media (max-width:900px){
+    .docs-layout{grid-template-columns:minmax(0,1fr);gap:0;padding:0 var(--space-16);}
+    .docs-side{display:none;}
+    .docs-menu{display:block;margin:var(--space-16) 0 0;border:1px solid var(--color-border-default);border-radius:var(--radius-control);}
+    .docs-menu summary{padding:var(--space-12) var(--space-16);cursor:pointer;font-weight:500;}
+    .docs-menu .docs-menu__list{padding:0 var(--space-16) var(--space-16);}
+    .docs-main{padding-top:var(--space-24);}
+    .docs-top{padding:0 var(--space-16);}
+    .docs-live{padding:var(--space-24) var(--space-16);}
+    .docs-live--compact{min-height:64px;padding:var(--space-16);}
+    .docs-variants{gap:var(--space-12);}
+  @media (max-width:560px){ .docs-top nav .docs-hide-sm{display:none;} .docs-top nav{gap:var(--space-8);} .docs-top{flex-wrap:wrap;padding-block:var(--space-8);position:static;} }
+</style>
+</head>
+<body>
+<header class="docs-top">
+  <a class="docs-brand" href="index.html">Pulse<span>v1 docs</span></a>
+  <nav aria-label="Pulse">
+    <a class="pulse-link pulse-link--quiet pulse-link--sm docs-hide-sm" href="../pulse-reference.md">AI reference</a>
+    <div class="pulse-segmented" role="group" aria-label="Surface"><button class="pulse-segmented__item" type="button" data-docs-set="surface" data-docs-value="web" aria-pressed="false">Web</button><button class="pulse-segmented__item" type="button" data-docs-set="surface" data-docs-value="app" aria-pressed="true">App</button></div>
+    <div class="pulse-segmented" role="group" aria-label="Theme"><button class="pulse-segmented__item" type="button" data-docs-set="theme" data-docs-value="light" aria-pressed="true">Light</button><button class="pulse-segmented__item" type="button" data-docs-set="theme" data-docs-value="dark" aria-pressed="false">Dark</button></div>
+  </nav>
+</header>
+<div class="docs-layout">
+  <aside class="docs-side"><p class="pulse-tabs__label">Start</p><nav class="pulse-tabs pulse-tabs--vertical" aria-label="Start"><a class="pulse-tab" href="index.html">Getting started</a><a class="pulse-tab" href="starter.html">Starter page</a><a class="pulse-tab" href="foundations.html">Foundations</a><a class="pulse-tab" href="patterns.html">Patterns</a><a class="pulse-tab" href="white-labeling.html" aria-current="page">White labeling</a></nav><p class="pulse-tabs__label">Components</p><nav class="pulse-tabs pulse-tabs--vertical" aria-label="Components"><a class="pulse-tab" href="alert-toast.html">Alert and toast</a><a class="pulse-tab" href="badge.html">Badge</a><a class="pulse-tab" href="button.html">Button</a><a class="pulse-tab" href="checkbox-radio-toggle.html">Checkbox, radio and toggle</a><a class="pulse-tab" href="chip.html">Chip</a><a class="pulse-tab" href="code-panel.html">Code panel</a><a class="pulse-tab" href="dialog.html">Dialog</a><a class="pulse-tab" href="drawer.html">Drawer</a><a class="pulse-tab" href="dropdown.html">Dropdown and nav menu</a><a class="pulse-tab" href="eyebrow.html">Eyebrow</a><a class="pulse-tab" href="fields.html">Fields</a><a class="pulse-tab" href="link.html">Link</a><a class="pulse-tab" href="popover.html">Popover</a><a class="pulse-tab" href="progress.html">Progress</a><a class="pulse-tab" href="segmented.html">Segmented control</a><a class="pulse-tab" href="slider.html">Slider</a><a class="pulse-tab" href="step-number.html">Step number</a><a class="pulse-tab" href="tabs.html">Tabs</a><a class="pulse-tab" href="tooltip.html">Tooltip</a></nav></aside>
+  <main class="docs-main">
+    <details class="docs-menu"><summary>All pages</summary><div class="docs-menu__list"><p class="pulse-tabs__label">Start</p><nav class="pulse-tabs pulse-tabs--vertical" aria-label="Start"><a class="pulse-tab" href="index.html">Getting started</a><a class="pulse-tab" href="starter.html">Starter page</a><a class="pulse-tab" href="foundations.html">Foundations</a><a class="pulse-tab" href="patterns.html">Patterns</a><a class="pulse-tab" href="white-labeling.html" aria-current="page">White labeling</a></nav><p class="pulse-tabs__label">Components</p><nav class="pulse-tabs pulse-tabs--vertical" aria-label="Components"><a class="pulse-tab" href="alert-toast.html">Alert and toast</a><a class="pulse-tab" href="badge.html">Badge</a><a class="pulse-tab" href="button.html">Button</a><a class="pulse-tab" href="checkbox-radio-toggle.html">Checkbox, radio and toggle</a><a class="pulse-tab" href="chip.html">Chip</a><a class="pulse-tab" href="code-panel.html">Code panel</a><a class="pulse-tab" href="dialog.html">Dialog</a><a class="pulse-tab" href="drawer.html">Drawer</a><a class="pulse-tab" href="dropdown.html">Dropdown and nav menu</a><a class="pulse-tab" href="eyebrow.html">Eyebrow</a><a class="pulse-tab" href="fields.html">Fields</a><a class="pulse-tab" href="link.html">Link</a><a class="pulse-tab" href="popover.html">Popover</a><a class="pulse-tab" href="progress.html">Progress</a><a class="pulse-tab" href="segmented.html">Segmented control</a><a class="pulse-tab" href="slider.html">Slider</a><a class="pulse-tab" href="step-number.html">Step number</a><a class="pulse-tab" href="tabs.html">Tabs</a><a class="pulse-tab" href="tooltip.html">Tooltip</a></nav></div></details>
+    <h1>White labeling</h1>
+    <p class="docs-lede">How to make VEX look your own, what we support, and what is yours to keep working.</p>
+    <div class="docs-meta"></div>
+    <p><strong>Coming soon:</strong> the brand builder and brand files described here are on their way. Until then, talk to us before you change how VEX looks, and we’ll set up your brand with you.</p>
+
+<h2>Three levels</h2>
+<p>VEX’s front end is open source, so you can change anything. We support a smaller, stable set of changes and keep them working for you. Anything past that is up to you to maintain.</p>
+<div class="docs-table"><table>
+<thead><tr><th>Level</th><th>What you can change</th><th>Keeps working after our updates</th><th>We help you with it</th></tr></thead>
+<tbody>
+<tr><td><strong>1. Brand settings</strong></td><td>Brand color, fonts, shape, logo, product name, favicon</td><td>Yes, guaranteed</td><td>Yes</td></tr>
+<tr><td><strong>2. Custom CSS</strong></td><td>Anything else that style rules can change</td><td>Not guaranteed</td><td>No</td></tr>
+<tr><td><strong>3. Changing the source</strong></td><td>Anything at all</td><td>No: your copy stops getting our updates</td><td>No</td></tr>
+</tbody>
+</table></div>
+<p>Almost everything you’ll want fits in level 1. Start there, and only go further if you’re ready to look after it yourself.</p>
+
+<h2>Level 1: Brand settings</h2>
+<p>You make these in the brand builder, which shows your choices on real VEX screens, in light and dark, as you go. When you’re done, it gives you two files:</p>
+<ul>
+<li><code>brand.json</code>: everything you chose, including your logo, product name and favicon.</li>
+<li><code>brand.css</code>: your colors, fonts and shape, ready for VEX to load. Every button, link and field takes them on.</li>
+</ul>
+<h3>What you can change</h3>
+<div class="docs-table"><table>
+<thead><tr><th>Setting</th><th>What it does</th></tr></thead>
+<tbody>
+<tr><td>Brand color</td><td>Pick one color. The builder turns it into a full set of shades for buttons, links, focus rings and selected items, in light and dark.</td></tr>
+<tr><td>Fonts</td><td>A font for text and one for code. Optional: if you don’t choose, VEX uses Inter and JetBrains Mono.</td></tr>
+<tr><td>Shape</td><td>Choose square corners, or soft corners with round buttons.</td></tr>
+<tr><td>Logo and favicon</td><td>Your logo for light and dark backgrounds, and your browser tab icon.</td></tr>
+<tr><td>Product name</td><td>Your name, shown wherever VEX names itself, such as the header and the sign-in screen.</td></tr>
+</tbody>
+</table></div>
+<h3>Checks the builder makes for you</h3>
+<ul>
+<li>Text on your brand color is white or black, whichever is easier to read.</li>
+<li>For links and small text, your brand color is darkened just enough to be easy to read (4.5:1, the accessibility standard).</li>
+<li>Focus rings, which show keyboard users where they are, stay clearly visible on every background.</li>
+</ul>
+
+<h3>How your brand loads</h3>
+<p>For the people setting it up. Pulse keeps everything your brand can change in one small set of settings, with VEX as the default. <code>brand.css</code> fills in that set for your brand, and <code>data-brand</code> on the page’s <code>&lt;html&gt;</code> switches it on. Shape is the page’s <code>data-surface</code>: <code>web</code> for square corners, <code>app</code> for soft corners.</p>
+<div class="pulse-code docs-code"><div class="pulse-code__head"><span class="pulse-code__file">HTML</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-tooltip-host" type="button" data-pulse-copy aria-label="Copy the code"><i class="pulse-icon pulse-icon--copy" aria-hidden="true"></i><span class="pulse-tooltip pulse-tooltip--bottom pulse-tooltip--end" aria-hidden="true">Copy to clipboard</span></button></div><pre><code>&lt;<span class="pulse-code__kw">html</span> <span class="pulse-code__key">data-brand</span>=<span class="pulse-code__str">"acme"</span> <span class="pulse-code__key">data-surface</span>=<span class="pulse-code__str">"app"</span>&gt;
+
+&lt;<span class="pulse-code__kw">link</span> <span class="pulse-code__key">rel</span>=<span class="pulse-code__str">"stylesheet"</span> <span class="pulse-code__key">href</span>=<span class="pulse-code__str">"https://cdn.unmanned.team/pulse/v1/pulse-tokens.css"</span>&gt;
+&lt;<span class="pulse-code__kw">link</span> <span class="pulse-code__key">rel</span>=<span class="pulse-code__str">"stylesheet"</span> <span class="pulse-code__key">href</span>=<span class="pulse-code__str">"/brands/acme/brand.css"</span>&gt;   <span class="pulse-code__cmt">&lt;!-- after Pulse's tokens --&gt;</span>
+
+&lt;<span class="pulse-code__kw">style</span>&gt;
+  <span class="pulse-code__cmt">/* brand.css, as the brand builder writes it */</span>
+  :root[data-brand="acme"] {
+    <span class="pulse-code__key">--color-brand-50</span>: #eff<span class="pulse-code__num">6</span>ff;  <span class="pulse-code__key">--color-brand-100</span>: #dbeafe; <span class="pulse-code__key">--color-brand-200</span>: #bfdbfe;
+    <span class="pulse-code__key">--color-brand-300</span>: #<span class="pulse-code__num">93</span>c<span class="pulse-code__num">5</span>fd; <span class="pulse-code__key">--color-brand-400</span>: #<span class="pulse-code__num">60</span>a<span class="pulse-code__num">5</span>fa; <span class="pulse-code__key">--color-brand-500</span>: #<span class="pulse-code__num">2563</span>eb;
+    <span class="pulse-code__key">--color-brand-600</span>: #<span class="pulse-code__num">1</span>d<span class="pulse-code__num">4</span>ed<span class="pulse-code__num">8</span>; <span class="pulse-code__key">--color-brand-700</span>: #<span class="pulse-code__num">1</span>e<span class="pulse-code__num">40</span>af; <span class="pulse-code__key">--color-brand-800</span>: #<span class="pulse-code__num">1</span>e<span class="pulse-code__num">3</span>a<span class="pulse-code__num">8</span>a;
+    <span class="pulse-code__key">--color-brand-900</span>: #<span class="pulse-code__num">172554</span>; <span class="pulse-code__key">--color-brand-950</span>: #<span class="pulse-code__num">0</span>b<span class="pulse-code__num">1433</span>;
+    <span class="pulse-code__key">--color-brand-on</span>: #ffffff;                               <span class="pulse-code__cmt">/* text on the brand color */</span>
+    <span class="pulse-code__key">--font-brand-sans</span>: 'Source Sans <span class="pulse-code__num">3</span>', system-ui, sans-serif;  <span class="pulse-code__cmt">/* optional */</span>
+    <span class="pulse-code__key">--font-brand-mono</span>: 'JetBrains Mono', ui-monospace, monospace;
+  }
+&lt;/<span class="pulse-code__kw">style</span>&gt;</code></pre></div>
+<p>A brand can only set these: the eleven brand shades, the text color on them, and the two fonts. Everything else in Pulse reads from them, so buttons, links, focus rings, selected items, checkboxes, toggles, sliders and progress bars all follow, in light and dark.</p>
+
+<h2>What stays the same for every brand</h2>
+<p>These keep VEX clear and trustworthy for your users, whoever’s name is on it.</p>
+<ul>
+<li><strong>Status colors:</strong> red for danger, amber for warnings, green for success. A warning should always look like a warning.</li>
+<li><strong>Text sizes and spacing:</strong> so every screen stays easy to read and nothing overlaps.</li>
+<li><strong>Readability:</strong> the checks above can’t be switched off.</li>
+<li><strong>Security information:</strong> severity, containment status and anything that needs your attention is always shown, in full.</li>
+</ul>
+
+<h2>Level 2: Custom CSS</h2>
+<p>For anything the brand settings don’t cover, you can add one style sheet, <code>custom.css</code>. VEX loads it last, so your rules win.</p>
+<ul>
+<li>We can’t help with what’s in it, and an update to VEX may change what your rules apply to. Check your changes after every release.</li>
+<li>Use Pulse tokens (<code>var(--space-16)</code>, <code>var(--color-text-secondary)</code>) rather than fixed values, so your changes keep matching the rest of VEX.</li>
+<li>Class names are listed in these docs, but how a component is built inside can change without notice.</li>
+</ul>
+<p>If you do any of these, they’re yours to look after:</p>
+<ul>
+<li>Hiding or moving parts of a screen.</li>
+<li>Changing the size of buttons, fields or text.</li>
+<li>Changing status colors or anything listed under “What stays the same”.</li>
+<li>Restyling components from scratch.</li>
+</ul>
+
+<h2>Level 3: Changing the source</h2>
+<p>The license lets you change anything. A changed copy becomes your own version: it no longer gets our updates or security fixes automatically, and we can’t help with it. If you find yourself here, tell us what you needed. It may belong in the brand settings for everyone.</p>
+
+<h2>Getting help</h2>
+<ol>
+<li>Open VEX with your custom CSS switched off: add <code>?custom=off</code> to the address. Only your brand settings load.</li>
+<li>If the problem goes away, it’s in your custom CSS.</li>
+<li>If it’s still there, it’s ours to fix: send us what you saw and your <code>brand.json</code>.</li>
+</ol>
+
+<h2>Our promise on updates</h2>
+<ul>
+<li>Within a version of Pulse (v1 today), brand settings only grow. Nothing is renamed or removed, so the brand you make today keeps working.</li>
+<li>Anything that would break your brand waits for the next version (v2). We’ll tell you ahead of time and give you a short guide to move over.</li>
+</ul>
+    <div class="docs-next"><a class="pulse-link pulse-link--sm" href="patterns.html">Patterns</a><a class="pulse-link pulse-link--sm" href="alert-toast.html">Alert and toast <i class="pulse-icon pulse-icon--arrow-right" aria-hidden="true"></i></a></div>
+    
+  </main>
+</div>
+<script>
+  // Docs only: links inside examples are there to look at and copy, so they don't go anywhere here.
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('.docs-live a[href], .docs-states a[href]');
+    if (a && !a.hasAttribute('data-pulse-open')) e.preventDefault();
+  });
+  // Docs only: the surface and theme switches, remembered between pages. Pulse itself needs no script for these.
+  (function () {
+    var root = document.documentElement;
+    function apply(set, value) {
+      root.setAttribute('data-' + set, value);
+      document.querySelectorAll('[data-docs-set="' + set + '"]').forEach(function (x) { x.setAttribute('aria-pressed', String(x.dataset.docsValue === value)); });
+    }
+    ['surface', 'theme'].forEach(function (set) { try { var v = localStorage.getItem('pulse-docs-' + set); if (v) apply(set, v); } catch (e) {} });
+    document.querySelectorAll('[data-docs-set]').forEach(function (b) {
+      b.addEventListener('click', function () { apply(b.dataset.docsSet, b.dataset.docsValue); try { localStorage.setItem('pulse-docs-' + b.dataset.docsSet, b.dataset.docsValue); } catch (e) {} });
+    });
+  })();
+</script>
+</body>
+</html>

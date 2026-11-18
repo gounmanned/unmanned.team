@@ -22,7 +22,7 @@
 }
 .pulse-btn--sm { --b-h: var(--control-height-sm); --b-px: var(--space-12); --b-fs: var(--type-label-sm-size); --b-lh: var(--type-label-sm-line-height); --pulse-icon-size: var(--size-icon-16); }
 .pulse-btn--lg { --b-h: var(--control-height-lg); --b-px: var(--space-24); --b-fs: var(--type-label-lg-size); --b-lh: var(--type-label-lg-line-height); --pulse-icon-size: var(--size-icon-20); }
-.pulse-btn--primary { --b-bg: var(--color-accent-default); --b-fg: var(--color-text-on-accent); --b-bg-h: var(--color-accent-hover); --b-bg-p: var(--color-accent-pressed); }
+.pulse-btn--primary { --b-bg: var(--color-accent-default); --b-fg: var(--color-text-on-brand); --b-bg-h: var(--color-accent-hover); --b-bg-p: var(--color-accent-pressed); }
 .pulse-btn--destructive { --b-bg: var(--color-status-danger); --b-fg: var(--color-text-on-accent); --b-bg-h: var(--color-status-danger-hover); --b-bg-p: var(--color-status-danger-pressed); }
 .pulse-btn--secondary { --b-bd: var(--color-accent-default); --b-fg: var(--color-text-accent); --b-bd-h: var(--color-accent-hover); --b-bd-p: var(--color-accent-pressed); --b-ov-h: transparent; --b-ov-p: transparent; --b-sh-h: inset 0 0 0 var(--border-width-1) var(--b-bd-h); --b-sh-p: inset 0 0 0 var(--border-width-1) var(--b-bd-p); }
 /* Secondary and neutral: hover and press change the border only, thickened by 1px drawn inside (no tint, no shadow, no layout shift). */
@@ -80,6 +80,7 @@
 .pulse-link:focus-visible, .pulse-link.is-focus { outline: var(--border-width-2) solid var(--color-border-focus); outline-offset: 2px; border-radius: var(--radius-sm); }
 .pulse-link--inline { display: inline; font: inherit; text-decoration: underline; }
 .pulse-link--inline { padding-inline-end: 0; }
+.pulse-link--xs { font-size: var(--type-label-xs-size); line-height: var(--type-label-xs-line-height); gap: var(--space-4); --pulse-icon-size: var(--size-icon-12); }
 .pulse-link--sm { font-size: var(--type-label-sm-size); line-height: var(--type-label-sm-line-height); }
 .pulse-link--lg { font-size: var(--type-label-lg-size); line-height: var(--type-label-lg-line-height); }
 /* Quiet: for navigation (header links, footer links). Gray at rest, pink on hover, never underlined. Keep the regular pink link for the one action. */
@@ -95,6 +96,45 @@
 .pulse-link[aria-expanded="true"] { color: var(--color-text-primary); }
 .pulse-link[aria-expanded="true"] > .pulse-icon:last-child, .pulse-link[aria-expanded="true"]:hover > .pulse-icon:last-child { transform: rotate(180deg); }
 
+/* ---------- Eyebrow ---------- */
+/* The small mono line above a headline. Write it in sentence case; CSS makes it caps. Tertiary gray by default,
+   --accent for pink, --dot adds the pink status dot (hero and closing band only). On a dark section it follows
+   data-theme="dark" like everything else. */
+.pulse-eyebrow { display: block; margin: 0; font: 400 var(--type-mono-eyebrow-size) / var(--type-mono-eyebrow-line-height) var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-text-tertiary); }
+.pulse-eyebrow--accent { color: var(--color-text-accent); }
+.pulse-eyebrow--dot { display: flex; align-items: center; gap: var(--space-12); }
+.pulse-eyebrow--dot::before { content: ""; flex: none; width: var(--space-8); height: var(--space-8); border-radius: 50%; background: var(--color-accent-default); animation: pulse-dot 2.2s infinite; }
+@keyframes pulse-dot { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-accent-default) 50%, transparent); } 70% { box-shadow: 0 0 0 8px transparent; } 100% { box-shadow: 0 0 0 0 transparent; } }
+
+/* ---------- Step number ---------- */
+/* A number in a pink ring, beside each step of a numbered how-to (the install pages). Put the number in the markup,
+   or leave it empty inside a list with pulse-steps to count automatically. Mark the list as <ol> so the order is read out. */
+.pulse-step-num { flex: none; display: inline-flex; align-items: center; justify-content: center; box-sizing: border-box; width: var(--space-24); height: var(--space-24);
+  border: var(--border-width-2) solid var(--color-accent-default); border-radius: 50%; color: var(--color-text-accent);
+  font: 400 var(--type-mono-label-size) / 1 var(--font-mono); font-variant-numeric: tabular-nums; }
+.pulse-steps { counter-reset: pulse-step; }
+.pulse-steps > * { counter-increment: pulse-step; }
+.pulse-step-num:empty::before { content: counter(pulse-step); }
+
+/* ---------- Code panel ---------- */
+/* A block of code with a head: file name, a language tag and a copy button (an icon button with a tooltip).
+   Syntax colors: wrap tokens in __fn, __kw, __str, __num, __key, __cmt (the --color-code-* tokens).
+   Copying is the page's job for now: the button is a normal pulse-btn. Long lines scroll sideways inside the panel. */
+.pulse-code { box-sizing: border-box; min-width: 0; border: var(--border-width-1) solid var(--color-border-default); border-radius: var(--radius-control); background: var(--color-surface-subtle); }
+.pulse-code__head { display: flex; align-items: center; gap: var(--space-8); min-height: var(--control-height-md); padding: var(--space-4) var(--space-8) var(--space-4) var(--space-16); box-sizing: border-box;
+  border-bottom: var(--border-width-1) solid var(--color-border-default); border-radius: var(--radius-control) var(--radius-control) 0 0; background: var(--color-surface-sunken); }
+.pulse-code__file { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 400 var(--type-mono-label-size) / var(--type-mono-label-line-height) var(--font-mono); color: var(--color-text-primary); }
+.pulse-code__lang { font: 400 var(--type-mono-caption-size) / var(--type-mono-caption-line-height) var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-text-accent); }
+.pulse-code__head > .pulse-btn { margin-inline-start: auto; }
+.pulse-code pre { margin: 0; padding: var(--space-16); overflow-x: auto; }
+.pulse-code code { font: 400 var(--type-mono-code-size) / var(--type-mono-code-line-height) var(--font-mono); color: var(--color-text-primary); white-space: pre; }
+.pulse-code__fn { color: var(--color-code-function); }
+.pulse-code__kw { color: var(--color-code-keyword); }
+.pulse-code__str { color: var(--color-code-string); }
+.pulse-code__num { color: var(--color-code-number); }
+.pulse-code__key { color: var(--color-code-key); }
+.pulse-code__cmt { color: var(--color-code-comment); font-style: italic; }
+
 /* ---------- Badge ---------- */
 .pulse-badge {
   --t: var(--color-text-secondary); --tint: var(--color-status-neutral-subtle); --solid: var(--color-status-neutral); --on: var(--color-text-on-accent); --mark: var(--color-status-neutral);
@@ -104,7 +144,12 @@
 }
 .pulse-badge::before { content: ""; width: var(--space-8); height: var(--space-8); border-radius: 50%; background: var(--mark); }
 .pulse-badge--nodot::before { display: none; }
-.pulse-badge--accent { --t: var(--color-text-accent); --tint: var(--color-accent-subtle); --solid: var(--color-accent-default); --mark: var(--color-indicator-accent); }
+/* Mono: JetBrains Mono caps, no dot, for codes and methods (GET, R0). On its own it is gray (Figma's Mono tone);
+   add a tone after it (--success, --accent, --danger...) to color it, and --outline or --solid as usual. */
+.pulse-badge--mono { --t: var(--color-text-secondary); --tint: var(--color-surface-subtle); --solid: var(--color-surface-contrast); --on: var(--color-text-on-contrast); --mark: var(--color-text-disabled);
+  font: 400 var(--type-mono-eyebrow-size) / var(--type-mono-eyebrow-line-height) var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; }
+.pulse-badge--mono::before { display: none; }
+.pulse-badge--accent { --t: var(--color-text-accent); --tint: var(--color-accent-subtle); --solid: var(--color-accent-default); --on: var(--color-text-on-brand); --mark: var(--color-indicator-accent); }
 .pulse-badge--success { --t: var(--color-text-success); --tint: var(--color-status-success-subtle); --solid: var(--color-status-success); --mark: var(--color-indicator-success); }
 .pulse-badge--danger { --t: var(--color-text-danger); --tint: var(--color-status-danger-subtle); --solid: var(--color-status-danger); --mark: var(--color-indicator-danger); }
 .pulse-badge--warning { --t: var(--color-text-warning); --tint: var(--color-status-warning-subtle); --solid: var(--color-status-warning); --on: var(--color-text-on-warning); --mark: var(--color-indicator-warning); }
@@ -141,7 +186,7 @@
 .pulse-check input:focus-visible, .pulse-radio input:focus-visible, .pulse-toggle input:focus-visible, .pulse-check input.is-focus, .pulse-radio input.is-focus, .pulse-toggle input.is-focus { outline: 0; box-shadow: var(--shadow-focus-ring); }
 .pulse-check input:checked, .pulse-check input:indeterminate { background-color: var(--color-accent-default); border-color: var(--color-accent-default); }
 .pulse-check input:checked::after, .pulse-check input:indeterminate::after {
-  content: ""; display: block; width: 100%; height: 100%; background: var(--color-text-on-accent);
+  content: ""; display: block; width: 100%; height: 100%; background: var(--color-text-on-brand);
   -webkit-mask: var(--pulse-i-check-bold) center / 14px no-repeat; mask: var(--pulse-i-check-bold) center / 14px no-repeat;
 }
 .pulse-check input:indeterminate::after { -webkit-mask-image: var(--pulse-i-minus-bold); mask-image: var(--pulse-i-minus-bold); }
@@ -177,6 +222,8 @@
 .pulse-textarea { min-height: 120px; padding: var(--space-12); resize: vertical; }
 .pulse-textarea--lg { min-height: 144px; padding: var(--space-16); font-size: var(--type-body-lg-size); line-height: var(--type-body-lg-line-height); }
 .pulse-select { appearance: none; -webkit-appearance: none; padding-right: var(--space-40); }
+/* A button that opens a branded listbox (Dropdown) looks like a select. */
+button.pulse-select { display: block; text-align: start; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .pulse-select-wrap { position: relative; display: block; }
 .pulse-select-wrap::after { content: ""; position: absolute; right: var(--space-12); top: 50%; width: var(--size-icon-16); height: var(--size-icon-16); transform: translateY(-50%); pointer-events: none;
   background: var(--color-text-secondary); -webkit-mask: var(--pulse-i-caret-down-regular) center / contain no-repeat; mask: var(--pulse-i-caret-down-regular) center / contain no-repeat; }
@@ -202,6 +249,8 @@
   background: var(--color-surface-raised); border-color: var(--color-border-strong); color: var(--color-text-primary); font-weight: 600; box-shadow: var(--shadow-elevation-controls-segment);
 }
 .pulse-segmented__item:focus-visible { outline: 0; box-shadow: var(--shadow-focus-ring); }
+/* Large: 16px labels at the same 40px height, to sit beside medium buttons (the install pages' OS switch). */
+.pulse-segmented--lg .pulse-segmented__item { padding: calc(var(--space-4) - var(--border-width-1)) var(--space-20); font-size: var(--type-label-md-size); line-height: var(--type-label-md-line-height); }
 
 /* ---------- Tabs ---------- */
 .pulse-tabs { display: flex; font-family: var(--font-sans); }
@@ -235,15 +284,17 @@
 
 /* ---------- Alert and Toast ---------- */
 .pulse-alert, .pulse-toast {
-  --tone: var(--color-indicator-info); --tint: var(--color-status-info-subtle); --solid: var(--color-status-info); --on: var(--color-text-on-accent);
+  --tone: var(--color-indicator-info); --icon: var(--color-text-info); --tint: var(--color-status-info-subtle); --solid: var(--color-status-info); --on: var(--color-text-on-accent);
   display: flex; align-items: flex-start; gap: var(--space-12); box-sizing: border-box; padding: var(--space-16); border-radius: var(--radius-medium); font-family: var(--font-sans);
 }
 .pulse-alert { padding: calc(var(--space-16) - var(--border-width-1)); background: var(--tint); border: var(--border-width-1) solid var(--tone); color: var(--color-text-primary); }
-.pulse-alert--success, .pulse-toast--success { --tone: var(--color-indicator-success); --tint: var(--color-status-success-subtle); --solid: var(--color-status-success); }
-.pulse-alert--danger, .pulse-toast--danger { --tone: var(--color-indicator-danger); --tint: var(--color-status-danger-subtle); --solid: var(--color-status-danger); }
-.pulse-alert--warning, .pulse-toast--warning { --tone: var(--color-indicator-warning); --tint: var(--color-status-warning-subtle); --solid: var(--color-status-warning); --on: var(--color-text-on-warning); }
+.pulse-alert--success, .pulse-toast--success { --tone: var(--color-indicator-success); --icon: var(--color-text-success); --tint: var(--color-status-success-subtle); --solid: var(--color-status-success); }
+.pulse-alert--danger, .pulse-toast--danger { --tone: var(--color-indicator-danger); --icon: var(--color-text-danger); --tint: var(--color-status-danger-subtle); --solid: var(--color-status-danger); }
+.pulse-alert--warning, .pulse-toast--warning { --tone: var(--color-indicator-warning); --icon: var(--color-text-warning); --tint: var(--color-status-warning-subtle); --solid: var(--color-status-warning); --on: var(--color-text-on-warning); }
 .pulse-alert > .pulse-icon, .pulse-toast > .pulse-icon { --pulse-icon-size: var(--size-icon-20); margin-top: var(--space-0); }
-.pulse-alert > .pulse-icon { color: var(--tone); }
+/* The icon is optional: leave it out and the text starts at the edge. In an alert it takes the tone's text color, which reads
+   better than the lighter border color (most of all for warning). */
+.pulse-alert > .pulse-icon { color: var(--icon); }
 .pulse-alert__body, .pulse-toast__body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--space-8); align-items: flex-start; }
 .pulse-alert__title, .pulse-toast__title { font: 500 var(--type-label-sm-size) / var(--type-label-sm-line-height) var(--font-sans); }
 .pulse-alert__text, .pulse-toast__text { font: 400 var(--type-body-sm-size) / var(--type-body-sm-line-height) var(--font-sans); color: var(--color-text-secondary); }
@@ -254,6 +305,12 @@
 .pulse-dismiss { appearance: none; border: 0; background: transparent; color: var(--color-text-tertiary); width: var(--control-height-sm); height: var(--control-height-sm); margin: calc(var(--space-4) * -1) calc(var(--space-4) * -1) 0 0; border-radius: var(--radius-control); cursor: pointer; display: grid; place-items: center; }
 .pulse-toast .pulse-dismiss { color: inherit; }
 .pulse-dismiss:hover { background: var(--color-interactive-hover); }
+/* Toaster: where Pulse.toast() stacks toasts, bottom right (bottom, full width on phones). */
+.pulse-toaster { position: fixed; z-index: 1100; right: var(--space-24); bottom: var(--space-24); display: flex; flex-direction: column; gap: var(--space-8);
+  width: min(400px, calc(100vw - 2 * var(--space-16))); pointer-events: none; }
+.pulse-toaster > .pulse-toast { pointer-events: auto; animation: pulse-toast-in .2s ease-out; }
+@keyframes pulse-toast-in { from { opacity: 0; transform: translateY(var(--space-8)); } }
+@media (max-width: 599px) { .pulse-toaster { right: var(--space-16); bottom: var(--space-16); } }
 
 /* ---------- Progress ---------- */
 .pulse-progress { display: flex; flex-direction: column; gap: var(--space-8); font-family: var(--font-sans); }
@@ -288,6 +345,16 @@
 .pulse-menu-item:focus-visible, .pulse-menu-item.is-focus { outline: 0; background-color: var(--color-interactive-hover); box-shadow: inset 0 0 0 var(--border-width-2) var(--color-border-focus); }
 .pulse-menu-item[aria-disabled="true"], .pulse-menu-item.is-disabled { color: var(--color-text-disabled); background-color: transparent; cursor: not-allowed; }
 .pulse-menu-item[aria-disabled="true"]:hover { background-color: transparent; }
+/* The check shows on the chosen option only, so every option can carry one. */
+.pulse-menu-item:not([aria-selected="true"]):not(.is-selected) > .pulse-menu-item__check { visibility: hidden; }
+.pulse-dropdown[hidden] { display: none; }
+/* Anchor: wrap a trigger and its dropdown to place the list under the trigger, lined up with its start (--end: its end). */
+.pulse-menu-anchor { position: relative; display: inline-block; }
+.pulse-menu-anchor > .pulse-dropdown { position: absolute; z-index: 50; top: calc(100% + var(--space-8)); left: 0; }
+.pulse-menu-anchor--end > .pulse-dropdown { left: auto; right: 0; }
+.pulse-select-wrap.pulse-menu-anchor { display: block; }
+.pulse-select-wrap.pulse-menu-anchor > .pulse-dropdown:not(.pulse-dropdown--nav) { width: 100%; top: calc(100% + var(--space-4)); }
+.pulse-dropdown[role="listbox"]:focus-visible { outline: 0; box-shadow: var(--shadow-elevation-default-md), var(--shadow-focus-ring); }
 /* Nav menu: links with a title and a line of description. Its own width (320px), lined up with the start of its trigger by the page.
    Hover is the gray background and a pink title; the current page is an ink, semibold title. __label groups items (also the phone menu). */
 .pulse-dropdown--nav { width: 320px; max-width: calc(100vw - 2 * var(--space-16)); }
@@ -415,6 +482,8 @@ html:has(dialog.pulse-drawer:modal) { overflow: hidden; }
 .pulse-tooltip-host > .pulse-tooltip--left::before { top: 0; bottom: 0; left: 100%; right: auto; width: var(--tip-gap); height: auto; }
 .pulse-tooltip-host > .pulse-tooltip--right::before { top: 0; bottom: 0; left: auto; right: 100%; width: var(--tip-gap); height: auto; }
 .pulse-tooltip-host:hover > .pulse-tooltip, .pulse-tooltip-host:focus-visible > .pulse-tooltip, .pulse-tooltip-host > :focus-visible ~ .pulse-tooltip, .pulse-tooltip-host > .pulse-tooltip.is-open { opacity: 1; visibility: visible; pointer-events: auto; transform: none; transition: opacity .15s ease, transform .15s ease, visibility 0s; }
+/* A disabled control shows no tooltip, even held open. */
+.pulse-tooltip-host:disabled > .pulse-tooltip, .pulse-tooltip-host[aria-disabled="true"] > .pulse-tooltip { display: none; }
 /* Esc (pulse.js) hides it until the pointer or focus leaves the host. */
 .pulse-tooltip-host.is-dismissed > .pulse-tooltip:not(.is-open) { opacity: 0; visibility: hidden; pointer-events: none; }
 
@@ -452,6 +521,8 @@ html:has(dialog.pulse-drawer:modal) { overflow: hidden; }
   .pulse-btn, .pulse-toggle input, .pulse-toggle input::before, .pulse-slider__input::-webkit-slider-thumb, .pulse-link > .pulse-icon:last-child { transition: none; }
   .pulse-tooltip-host > .pulse-tooltip { transform: none; transition: none; }
   dialog.pulse-drawer, dialog.pulse-drawer::backdrop { transition: none; }
+  .pulse-eyebrow--dot::before { animation: none; }
+  .pulse-toaster > .pulse-toast { animation: none; }
   .pulse-btn[aria-busy="true"]::before { animation-duration: 2.4s; }
   .pulse-progress--indeterminate .pulse-progress__fill { animation: none; width: 100%; opacity: .5; }
 }

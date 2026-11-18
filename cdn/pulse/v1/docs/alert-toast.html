@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en" data-theme="light" data-surface="app">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Alert and toast · Pulse docs</title>
+<meta name="description" content="Messages about something that happened. An alert sits in the page; a toast floats for a moment after an action.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../pulse-tokens.css">
+<link rel="stylesheet" href="../pulse-icons.css">
+<link rel="stylesheet" href="../pulse-components.css">
+<script src="../pulse.js" defer></script>
+<style>
+  /* Docs prose: plain elements only, in the reset layer so Pulse components inside examples always win. */
+  @layer reset {
+    body{margin:0;background:var(--color-surface-page);color:var(--color-text-primary);font:400 var(--type-body-md-size)/var(--type-body-md-line-height) var(--font-sans);}
+    a{color:inherit;}
+    .docs-main :not(pre)>code{font:400 0.875em/1 var(--font-mono);padding:2px 4px;border-radius:var(--radius-tag);background:var(--color-surface-sunken);color:var(--color-text-primary);}
+    .docs-main h2{margin:var(--space-48) 0 var(--space-12);font:600 var(--type-heading-card-size)/var(--type-heading-card-line-height) var(--font-sans);}
+    .docs-main h3{margin:var(--space-32) 0 var(--space-8);font:600 var(--type-body-md-size)/var(--type-body-md-line-height) var(--font-sans);}
+    .docs-main p,.docs-main li{color:var(--color-text-secondary);}
+    .docs-main p{margin:0 0 var(--space-16);}
+    .docs-main ul,.docs-main ol{margin:0 0 var(--space-16);padding-left:var(--space-24);}
+    .docs-main li{margin-bottom:var(--space-4);}
+    .docs-main strong{color:var(--color-text-primary);font-weight:600;}
+    .docs-main table{width:100%;border-collapse:collapse;font-size:var(--type-body-sm-size);line-height:var(--type-body-sm-line-height);}
+    .docs-main th,.docs-main td{text-align:left;vertical-align:top;padding:var(--space-8) var(--space-12) var(--space-8) 0;border-bottom:1px solid var(--color-border-default);}
+    .docs-main th{font-weight:600;color:var(--color-text-primary);}
+    .docs-main td{color:var(--color-text-secondary);}
+    .docs-main td:first-child{width:40%;}
+    .docs-main td code{overflow-wrap:anywhere;}
+  }
+  /* Docs prose: plain elements only, in the reset layer so Pulse components inside examples always win. */
+  .docs-top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:var(--space-16);min-height:56px;padding:0 var(--space-24);background:var(--color-surface-page);border-bottom:1px solid var(--color-border-default);}
+  .docs-brand{font-weight:600;text-decoration:none;}
+  .docs-brand span{font:400 var(--type-mono-label-size)/1 var(--font-mono);color:var(--color-text-tertiary);margin-left:var(--space-8);}
+  .docs-top nav{margin-left:auto;display:flex;align-items:center;gap:var(--space-20);flex-wrap:wrap;}
+  .docs-layout{display:grid;grid-template-columns:240px minmax(0,1fr);gap:var(--space-48);max-width:1200px;margin:0 auto;padding:0 var(--space-24);}
+  .docs-side{position:sticky;top:57px;align-self:start;max-height:calc(100vh - 57px);overflow-y:auto;padding:var(--space-32) 0;}
+  .docs-side .pulse-tabs__label{margin-top:var(--space-24);}
+  .docs-side .pulse-tabs__label:first-child{margin-top:0;}
+  .docs-main{min-width:0;max-width:800px;padding:var(--space-48) 0 var(--space-96);}
+  .docs-main h1{margin:var(--space-8) 0 var(--space-16);font:600 var(--type-heading-section-size)/var(--type-heading-section-line-height) var(--font-sans);letter-spacing:-0.01em;}
+  .docs-lede{margin:0 0 var(--space-16);font-size:var(--type-body-lede-size);line-height:var(--type-body-lede-line-height);color:var(--color-text-secondary);}
+  .docs-meta{display:flex;flex-wrap:wrap;gap:var(--space-8) var(--space-24);margin:0 0 var(--space-40);}
+  .docs-example{margin:var(--space-16) 0 var(--space-32);border:1px solid var(--color-border-default);border-radius:var(--radius-container);}
+  .docs-live{display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-16);padding:var(--space-32) var(--space-24);background:var(--color-surface-page);border-radius:var(--radius-container) var(--radius-container) 0 0;}
+  .docs-live--tall{min-height:280px;align-items:flex-start;}
+  .docs-variants{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:var(--space-16);margin:var(--space-16) 0 var(--space-32);}
+  .docs-variant{min-width:0;display:flex;flex-direction:column;border:1px solid var(--color-border-default);border-radius:var(--radius-container);}
+  .docs-live--compact{flex:1;justify-content:center;min-height:96px;padding:var(--space-24) var(--space-16);}
+  .docs-variant .docs-code{border:0;border-top:1px solid var(--color-border-default);border-radius:0 0 var(--radius-container) var(--radius-container);}
+  .docs-variant .docs-code .pulse-code__head{border-radius:0;}
+  .docs-variant .docs-code pre{padding:var(--space-12);}
+  .docs-example .docs-code{border:0;border-top:1px solid var(--color-border-default);border-radius:0 0 var(--radius-container) var(--radius-container);}
+  .docs-example .docs-code .pulse-code__head{border-radius:0;}
+  .docs-code pre{max-height:420px;overflow:auto;}
+  .docs-table{overflow-x:auto;margin:0 0 var(--space-24);}
+  .docs-swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:var(--space-8) var(--space-16);margin-bottom:var(--space-16);}
+  .docs-swatch{display:flex;align-items:center;gap:var(--space-8);min-width:0;}
+  .docs-swatch span{flex:none;width:32px;height:32px;border-radius:var(--radius-tag);border:1px solid var(--color-border-default);}
+  .docs-swatch code{overflow-wrap:anywhere;}
+  .docs-space{display:flex;flex-direction:column;gap:var(--space-8);}
+  .docs-space div{display:flex;align-items:center;gap:var(--space-12);}
+  .docs-space span{height:12px;background:var(--color-accent-subtle);box-shadow:inset 0 0 0 1px var(--color-accent-default);}
+  .docs-icons{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:var(--space-16);}
+  .docs-icon{display:flex;align-items:center;gap:var(--space-8);--pulse-icon-size:20px;}
+  .docs-icon code{font-size:12px !important;}
+  .docs-next{display:flex;justify-content:space-between;gap:var(--space-16);margin-top:var(--space-64);padding-top:var(--space-24);border-top:1px solid var(--color-border-default);}
+  .docs-menu{display:none;}
+  .docs-meta{align-items:center;}
+  .docs-meta .pulse-badge{white-space:normal;max-width:100%;}
+  .docs-states .pulse-drawer__body{color:var(--color-text-primary);}
+  .docs-states-note{margin:0 0 var(--space-24);font-size:var(--type-body-sm-size);line-height:var(--type-body-sm-line-height);color:var(--color-text-secondary);}
+  .docs-states-row{margin:0 0 var(--space-32);}
+  .docs-states-label{margin:0 0 var(--space-12);font:400 var(--type-mono-eyebrow-size)/var(--type-mono-eyebrow-line-height) var(--font-mono);letter-spacing:0.08em;text-transform:uppercase;color:var(--color-text-tertiary);}
+  .docs-states-items{display:flex;flex-wrap:wrap;align-items:flex-start;gap:var(--space-16) var(--space-24);}
+  .docs-states-items--stack{flex-direction:column;align-items:stretch;}
+  .docs-state{display:flex;flex-direction:column;align-items:flex-start;gap:var(--space-8);}
+  .docs-state-cap{font:400 var(--type-mono-caption-size)/var(--type-mono-caption-line-height) var(--font-mono);color:var(--color-text-tertiary);}
+  .docs-states .pulse-popover{max-width:260px;margin:var(--space-12);}
+  @media (max-width:900px){
+    .docs-layout{grid-template-columns:minmax(0,1fr);gap:0;padding:0 var(--space-16);}
+    .docs-side{display:none;}
+    .docs-menu{display:block;margin:var(--space-16) 0 0;border:1px solid var(--color-border-default);border-radius:var(--radius-control);}
+    .docs-menu summary{padding:var(--space-12) var(--space-16);cursor:pointer;font-weight:500;}
+    .docs-menu .docs-menu__list{padding:0 var(--space-16) var(--space-16);}
+    .docs-main{padding-top:var(--space-24);}
+    .docs-top{padding:0 var(--space-16);}
+    .docs-live{padding:var(--space-24) var(--space-16);}
+    .docs-live--compact{min-height:64px;padding:var(--space-16);}
+    .docs-variants{gap:var(--space-12);}
+  @media (max-width:560px){ .docs-top nav .docs-hide-sm{display:none;} .docs-top nav{gap:var(--space-8);} .docs-top{flex-wrap:wrap;padding-block:var(--space-8);position:static;} }
+</style>
+</head>
+<body>
+<header class="docs-top">
+  <a class="docs-brand" href="index.html">Pulse<span>v1 docs</span></a>
+  <nav aria-label="Pulse">
+    <a class="pulse-link pulse-link--quiet pulse-link--sm docs-hide-sm" href="../pulse-reference.md">AI reference</a>
+    <div class="pulse-segmented" role="group" aria-label="Surface"><button class="pulse-segmented__item" type="button" data-docs-set="surface" data-docs-value="web" aria-pressed="false">Web</button><button class="pulse-segmented__item" type="button" data-docs-set="surface" data-docs-value="app" aria-pressed="true">App</button></div>
+    <div class="pulse-segmented" role="group" aria-label="Theme"><button class="pulse-segmented__item" type="button" data-docs-set="theme" data-docs-value="light" aria-pressed="true">Light</button><button class="pulse-segmented__item" type="button" data-docs-set="theme" data-docs-value="dark" aria-pressed="false">Dark</button></div>
+  </nav>
+</header>
+<div class="docs-layout">
+  <aside class="docs-side"><p class="pulse-tabs__label">Start</p><nav class="pulse-tabs pulse-tabs--vertical" aria-label="Start"><a class="pulse-tab" href="index.html">Getting started</a><a class="pulse-tab" href="starter.html">Starter page</a><a class="pulse-tab" href="foundations.html">Foundations</a><a class="pulse-tab" href="patterns.html">Patterns</a><a class="pulse-tab" href="white-labeling.html">White labeling</a></nav><p class="pulse-tabs__label">Components</p><nav class="pulse-tabs pulse-tabs--vertical" aria-label="Components"><a class="pulse-tab" href="alert-toast.html" aria-current="page">Alert and toast</a><a class="pulse-tab" href="badge.html">Badge</a><a class="pulse-tab" href="button.html">Button</a><a class="pulse-tab" href="checkbox-radio-toggle.html">Checkbox, radio and toggle</a><a class="pulse-tab" href="chip.html">Chip</a><a class="pulse-tab" href="code-panel.html">Code panel</a><a class="pulse-tab" href="dialog.html">Dialog</a><a class="pulse-tab" href="drawer.html">Drawer</a><a class="pulse-tab" href="dropdown.html">Dropdown and nav menu</a><a class="pulse-tab" href="eyebrow.html">Eyebrow</a><a class="pulse-tab" href="fields.html">Fields</a><a class="pulse-tab" href="link.html">Link</a><a class="pulse-tab" href="popover.html">Popover</a><a class="pulse-tab" href="progress.html">Progress</a><a class="pulse-tab" href="segmented.html">Segmented control</a><a class="pulse-tab" href="slider.html">Slider</a><a class="pulse-tab" href="step-number.html">Step number</a><a class="pulse-tab" href="tabs.html">Tabs</a><a class="pulse-tab" href="tooltip.html">Tooltip</a></nav></aside>
+  <main class="docs-main">
+    <details class="docs-menu"><summary>All pages</summary><div class="docs-menu__list"><p class="pulse-tabs__label">Start</p><nav class="pulse-tabs pulse-tabs--vertical" aria-label="Start"><a class="pulse-tab" href="index.html">Getting started</a><a class="pulse-tab" href="starter.html">Starter page</a><a class="pulse-tab" href="foundations.html">Foundations</a><a class="pulse-tab" href="patterns.html">Patterns</a><a class="pulse-tab" href="white-labeling.html">White labeling</a></nav><p class="pulse-tabs__label">Components</p><nav class="pulse-tabs pulse-tabs--vertical" aria-label="Components"><a class="pulse-tab" href="alert-toast.html" aria-current="page">Alert and toast</a><a class="pulse-tab" href="badge.html">Badge</a><a class="pulse-tab" href="button.html">Button</a><a class="pulse-tab" href="checkbox-radio-toggle.html">Checkbox, radio and toggle</a><a class="pulse-tab" href="chip.html">Chip</a><a class="pulse-tab" href="code-panel.html">Code panel</a><a class="pulse-tab" href="dialog.html">Dialog</a><a class="pulse-tab" href="drawer.html">Drawer</a><a class="pulse-tab" href="dropdown.html">Dropdown and nav menu</a><a class="pulse-tab" href="eyebrow.html">Eyebrow</a><a class="pulse-tab" href="fields.html">Fields</a><a class="pulse-tab" href="link.html">Link</a><a class="pulse-tab" href="popover.html">Popover</a><a class="pulse-tab" href="progress.html">Progress</a><a class="pulse-tab" href="segmented.html">Segmented control</a><a class="pulse-tab" href="slider.html">Slider</a><a class="pulse-tab" href="step-number.html">Step number</a><a class="pulse-tab" href="tabs.html">Tabs</a><a class="pulse-tab" href="tooltip.html">Tooltip</a></nav></div></details>
+    <h1>Alert and toast</h1>
+    <p class="docs-lede">Messages about something that happened. An alert sits in the page; a toast floats for a moment after an action.</p>
+    <div class="docs-meta"><span class="pulse-badge pulse-badge--mono pulse-badge--outline">Figma: Alert, Toast</span><button class="pulse-btn pulse-btn--ghost pulse-btn--sm docs-states-open" type="button" data-pulse-open="states">See every state</button></div>
+    <h2>Alert</h2>
+<p>Tinted, with a border in its tone. Use it for something the reader should see while they are on this part of the page: a connection that worked, a warning that something will expire. An optional neutral button and a dismiss button.</p>
+<div class="docs-example"><div class="docs-live"><div class="pulse-alert pulse-alert--success" role="status">
+  <i class="pulse-icon pulse-icon--check-circle pulse-icon--fill" aria-hidden="true"></i>
+  <div class="pulse-alert__body">
+    <span class="pulse-alert__title">Workspace connected</span>
+    <span class="pulse-alert__text">Your 24-hour test is ready to start.</span>
+    <button class="pulse-btn pulse-btn--neutral pulse-btn--sm" type="button">View workspace</button>
+  </div>
+  <button class="pulse-dismiss" type="button" aria-label="Dismiss"><i class="pulse-icon pulse-icon--x" aria-hidden="true"></i></button>
+</div></div><div class="pulse-code docs-code"><div class="pulse-code__head"><span class="pulse-code__file">HTML</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-tooltip-host" type="button" data-pulse-copy aria-label="Copy the code"><i class="pulse-icon pulse-icon--copy" aria-hidden="true"></i><span class="pulse-tooltip pulse-tooltip--bottom pulse-tooltip--end" aria-hidden="true">Copy to clipboard</span></button></div><pre><code>&lt;<span class="pulse-code__kw">div</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-alert pulse-alert--success"</span> <span class="pulse-code__key">role</span>=<span class="pulse-code__str">"status"</span>&gt;
+  &lt;<span class="pulse-code__kw">i</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-icon pulse-icon--check-circle pulse-icon--fill"</span> <span class="pulse-code__key">aria-hidden</span>=<span class="pulse-code__str">"true"</span>&gt;&lt;/<span class="pulse-code__kw">i</span>&gt;
+  &lt;<span class="pulse-code__kw">div</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-alert__body"</span>&gt;
+    &lt;<span class="pulse-code__kw">span</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-alert__title"</span>&gt;Workspace connected&lt;/<span class="pulse-code__kw">span</span>&gt;
+    &lt;<span class="pulse-code__kw">span</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-alert__text"</span>&gt;Your 24-hour test is ready to start.&lt;/<span class="pulse-code__kw">span</span>&gt;
+    &lt;<span class="pulse-code__kw">button</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-btn pulse-btn--neutral pulse-btn--sm"</span> <span class="pulse-code__key">type</span>=<span class="pulse-code__str">"button"</span>&gt;View workspace&lt;/<span class="pulse-code__kw">button</span>&gt;
+  &lt;/<span class="pulse-code__kw">div</span>&gt;
+  &lt;<span class="pulse-code__kw">button</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-dismiss"</span> <span class="pulse-code__key">type</span>=<span class="pulse-code__str">"button"</span> <span class="pulse-code__key">aria-label</span>=<span class="pulse-code__str">"Dismiss"</span>&gt;&lt;<span class="pulse-code__kw">i</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-icon pulse-icon--x"</span> <span class="pulse-code__key">aria-hidden</span>=<span class="pulse-code__str">"true"</span>&gt;&lt;/<span class="pulse-code__kw">i</span>&gt;&lt;/<span class="pulse-code__kw">button</span>&gt;
+&lt;/<span class="pulse-code__kw">div</span>&gt;</code></pre></div></div>
+<div class="docs-variants"><div class="docs-variant"><div class="docs-live docs-live--compact"><div class="pulse-alert" role="status">
+  <i class="pulse-icon pulse-icon--info pulse-icon--fill" aria-hidden="true"></i>
+  <div class="pulse-alert__body"><span class="pulse-alert__title">A new report is available</span></div>
+</div></div><div class="pulse-code docs-code"><div class="pulse-code__head"><span class="pulse-code__file">Info</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-tooltip-host" type="button" data-pulse-copy aria-label="Copy the code"><i class="pulse-icon pulse-icon--copy" aria-hidden="true"></i><span class="pulse-tooltip pulse-tooltip--bottom pulse-tooltip--end" aria-hidden="true">Copy to clipboard</span></button></div><pre><code>&lt;<span class="pulse-code__kw">div</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-alert"</span> <span class="pulse-code__key">role</span>=<span class="pulse-code__str">"status"</span>&gt;
+  &lt;<span class="pulse-code__kw">i</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-icon pulse-icon--info pulse-icon--fill"</span> <span class="pulse-code__key">aria-hidden</span>=<span class="pulse-code__str">"true"</span>&gt;&lt;/<span class="pulse-code__kw">i</span>&gt;
+  &lt;<span class="pulse-code__kw">div</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-alert__body"</span>&gt;&lt;<span class="pulse-code__kw">span</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-alert__title"</span>&gt;A new report is available&lt;/<span class="pulse-code__kw">span</span>&gt;&lt;/<span class="pulse-code__kw">div</span>&gt;
+&lt;/<span class="pulse-code__kw">div</span>&gt;</code></pre></div></div><div class="docs-variant"><div class="docs-live docs-live--compact"><div class="pulse-alert pulse-alert--warning" role="status">
+  <i class="pulse-icon pulse-icon--warning pulse-icon--fill" aria-hidden="true"></i>
+  <div class="pulse-alert__body"><span class="pulse-alert__title">Access expires in 24 hours</span></div>
+</div></div><div class="pulse-code docs-code"><div class="pulse-code__head"><span class="pulse-code__file">Warning</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-tooltip-host" type="button" data-pulse-copy aria-label="Copy the code"><i class="pulse-icon pulse-icon--copy" aria-hidden="true"></i><span class="pulse-tooltip pulse-tooltip--bottom pulse-tooltip--end" aria-hidden="true">Copy to clipboard</span></button></div><pre><code>&lt;<span class="pulse-code__kw">div</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-alert pulse-alert--warning"</span> <span class="pulse-code__key">role</span>=<span class="pulse-code__str">"status"</span>&gt;
+  &lt;<span class="pulse-code__kw">i</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-icon pulse-icon--warning pulse-icon--fill"</span> <span class="pulse-code__key">aria-hidden</span>=<span class="pulse-code__str">"true"</span>&gt;&lt;/<span class="pulse-code__kw">i</span>&gt;
+  &lt;<span class="pulse-code__kw">div</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-alert__body"</span>&gt;&lt;<span class="pulse-code__kw">span</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-alert__title"</span>&gt;Access expires in 24 hours&lt;/<span class="pulse-code__kw">span</span>&gt;&lt;/<span class="pulse-code__kw">div</span>&gt;
+&lt;/<span class="pulse-code__kw">div</span>&gt;</code></pre></div></div><div class="docs-variant"><div class="docs-live docs-live--compact"><div class="pulse-alert pulse-alert--danger" role="alert">
+  <i class="pulse-icon pulse-icon--warning-octagon pulse-icon--fill" aria-hidden="true"></i>
+  <div class="pulse-alert__body">
+    <span class="pulse-alert__title">Connection failed</span>
+    <span class="pulse-alert__text">We couldn’t reach your identity provider. Try again.</span>
+  </div>
+</div></div><div class="pulse-code docs-code"><div class="pulse-code__head"><span class="pulse-code__file">Danger</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-tooltip-host" type="button" data-pulse-copy aria-label="Copy the code"><i class="pulse-icon pulse-icon--copy" aria-hidden="true"></i><span class="pulse-tooltip pulse-tooltip--bottom pulse-tooltip--end" aria-hidden="true">Copy to clipboard</span></button></div><pre><code>&lt;<span class="pulse-code__kw">div</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-alert pulse-alert--danger"</span> <span class="pulse-code__key">role</span>=<span class="pulse-code__str">"alert"</span>&gt;
+  &lt;<span class="pulse-code__kw">i</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-icon pulse-icon--warning-octagon pulse-icon--fill"</span> <span class="pulse-code__key">aria-hidden</span>=<span class="pulse-code__str">"true"</span>&gt;&lt;/<span class="pulse-code__kw">i</span>&gt;
+  &lt;<span class="pulse-code__kw">div</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-alert__body"</span>&gt;
+    &lt;<span class="pulse-code__kw">span</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-alert__title"</span>&gt;Connection failed&lt;/<span class="pulse-code__kw">span</span>&gt;
+    &lt;<span class="pulse-code__kw">span</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-alert__text"</span>&gt;We couldn’t reach your identity provider. Try again.&lt;/<span class="pulse-code__kw">span</span>&gt;
+  &lt;/<span class="pulse-code__kw">div</span>&gt;
+&lt;/<span class="pulse-code__kw">div</span>&gt;</code></pre></div></div><div class="docs-variant"><div class="docs-live docs-live--compact"><div class="pulse-alert pulse-alert--warning" role="status">
+  <div class="pulse-alert__body">
+    <span class="pulse-alert__title">Access expires in 24 hours</span>
+  </div>
+</div></div><div class="pulse-code docs-code"><div class="pulse-code__head"><span class="pulse-code__file">No icon</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-tooltip-host" type="button" data-pulse-copy aria-label="Copy the code"><i class="pulse-icon pulse-icon--copy" aria-hidden="true"></i><span class="pulse-tooltip pulse-tooltip--bottom pulse-tooltip--end" aria-hidden="true">Copy to clipboard</span></button></div><pre><code>&lt;<span class="pulse-code__kw">div</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-alert pulse-alert--warning"</span> <span class="pulse-code__key">role</span>=<span class="pulse-code__str">"status"</span>&gt;
+  &lt;<span class="pulse-code__kw">div</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-alert__body"</span>&gt;
+    &lt;<span class="pulse-code__kw">span</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-alert__title"</span>&gt;Access expires in 24 hours&lt;/<span class="pulse-code__kw">span</span>&gt;
+  &lt;/<span class="pulse-code__kw">div</span>&gt;
+&lt;/<span class="pulse-code__kw">div</span>&gt;</code></pre></div></div></div>
+<h2>Toast</h2>
+<p>Solid color, for confirming an action that just happened (“Report exported”). Its action is a text link. Don’t put toasts in your page’s HTML: pulse.js makes them. A button with <code>data-pulse-toast</code> shows one when clicked; from a script, call <code>Pulse.toast()</code>.</p>
+<div class="docs-variants"><div class="docs-variant"><div class="docs-live docs-live--compact"><button class="pulse-btn pulse-btn--secondary" type="button" data-pulse-toast="Report exported" data-pulse-toast-tone="success">Export report</button></div><div class="pulse-code docs-code"><div class="pulse-code__head"><span class="pulse-code__file">Success toast</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-tooltip-host" type="button" data-pulse-copy aria-label="Copy the code"><i class="pulse-icon pulse-icon--copy" aria-hidden="true"></i><span class="pulse-tooltip pulse-tooltip--bottom pulse-tooltip--end" aria-hidden="true">Copy to clipboard</span></button></div><pre><code>&lt;<span class="pulse-code__kw">button</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-btn pulse-btn--secondary"</span> <span class="pulse-code__key">type</span>=<span class="pulse-code__str">"button"</span> <span class="pulse-code__key">data-pulse-toast</span>=<span class="pulse-code__str">"Report exported"</span> <span class="pulse-code__key">data-pulse-toast-tone</span>=<span class="pulse-code__str">"success"</span>&gt;Export report&lt;/<span class="pulse-code__kw">button</span>&gt;</code></pre></div></div><div class="docs-variant"><div class="docs-live docs-live--compact"><button class="pulse-btn pulse-btn--secondary" type="button" data-pulse-toast="Export failed" data-pulse-toast-text="Try again in a minute." data-pulse-toast-tone="danger">Show an error</button></div><div class="pulse-code docs-code"><div class="pulse-code__head"><span class="pulse-code__file">Error toast</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-tooltip-host" type="button" data-pulse-copy aria-label="Copy the code"><i class="pulse-icon pulse-icon--copy" aria-hidden="true"></i><span class="pulse-tooltip pulse-tooltip--bottom pulse-tooltip--end" aria-hidden="true">Copy to clipboard</span></button></div><pre><code>&lt;<span class="pulse-code__kw">button</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-btn pulse-btn--secondary"</span> <span class="pulse-code__key">type</span>=<span class="pulse-code__str">"button"</span> <span class="pulse-code__key">data-pulse-toast</span>=<span class="pulse-code__str">"Export failed"</span> <span class="pulse-code__key">data-pulse-toast-text</span>=<span class="pulse-code__str">"Try again in a minute."</span> <span class="pulse-code__key">data-pulse-toast-tone</span>=<span class="pulse-code__str">"danger"</span>&gt;Show an error&lt;/<span class="pulse-code__kw">button</span>&gt;</code></pre></div></div></div>
+<div class="pulse-code docs-code"><div class="pulse-code__head"><span class="pulse-code__file">HTML</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-tooltip-host" type="button" data-pulse-copy aria-label="Copy the code"><i class="pulse-icon pulse-icon--copy" aria-hidden="true"></i><span class="pulse-tooltip pulse-tooltip--bottom pulse-tooltip--end" aria-hidden="true">Copy to clipboard</span></button></div><pre><code>&lt;<span class="pulse-code__kw">script</span>&gt;
+  Pulse.<span class="pulse-code__fn">toast</span>({
+    <span class="pulse-code__key">title</span>: <span class="pulse-code__str">'Report exported'</span>,
+    <span class="pulse-code__key">text</span>: <span class="pulse-code__str">'Your 24-hour test is ready to start.'</span>,  <span class="pulse-code__cmt">// optional</span>
+    <span class="pulse-code__key">tone</span>: <span class="pulse-code__str">'success'</span>,          <span class="pulse-code__cmt">// neutral (default), info, success, warning, danger</span>
+    <span class="pulse-code__key">action</span>: { <span class="pulse-code__key">label</span>: <span class="pulse-code__str">'View report'</span>, <span class="pulse-code__key">href</span>: <span class="pulse-code__str">'/reports/latest'</span> },  <span class="pulse-code__cmt">// optional; or onClick instead of href</span>
+    <span class="pulse-code__key">duration</span>: <span class="pulse-code__num">5000</span>,           <span class="pulse-code__cmt">// ms; 0 keeps it until dismissed</span>
+    <span class="pulse-code__key">icon</span>: <span class="pulse-code__kw">true</span>                <span class="pulse-code__cmt">// false for no icon</span>
+  });
+&lt;/<span class="pulse-code__kw">script</span>&gt;</code></pre></div>
+<p>Toasts stack in the bottom right (full width on phones), go away after five seconds, and wait while the pointer or focus is on them. This is what one looks like:</p>
+<div class="docs-example"><div class="docs-live"><div class="pulse-toast pulse-toast--neutral" role="status">
+  <i class="pulse-icon pulse-icon--info pulse-icon--fill" aria-hidden="true"></i>
+  <div class="pulse-toast__body">
+    <span class="pulse-toast__title">Report exported</span>
+    <a class="pulse-toast__cta" href="#">View report</a>
+  </div>
+  <button class="pulse-dismiss" type="button" aria-label="Dismiss"><i class="pulse-icon pulse-icon--x" aria-hidden="true"></i></button>
+</div></div><div class="pulse-code docs-code"><div class="pulse-code__head"><span class="pulse-code__file">HTML</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-tooltip-host" type="button" data-pulse-copy aria-label="Copy the code"><i class="pulse-icon pulse-icon--copy" aria-hidden="true"></i><span class="pulse-tooltip pulse-tooltip--bottom pulse-tooltip--end" aria-hidden="true">Copy to clipboard</span></button></div><pre><code>&lt;<span class="pulse-code__kw">div</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-toast pulse-toast--neutral"</span> <span class="pulse-code__key">role</span>=<span class="pulse-code__str">"status"</span>&gt;
+  &lt;<span class="pulse-code__kw">i</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-icon pulse-icon--info pulse-icon--fill"</span> <span class="pulse-code__key">aria-hidden</span>=<span class="pulse-code__str">"true"</span>&gt;&lt;/<span class="pulse-code__kw">i</span>&gt;
+  &lt;<span class="pulse-code__kw">div</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-toast__body"</span>&gt;
+    &lt;<span class="pulse-code__kw">span</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-toast__title"</span>&gt;Report exported&lt;/<span class="pulse-code__kw">span</span>&gt;
+    &lt;<span class="pulse-code__kw">a</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-toast__cta"</span> <span class="pulse-code__key">href</span>=<span class="pulse-code__str">"#"</span>&gt;View report&lt;/<span class="pulse-code__kw">a</span>&gt;
+  &lt;/<span class="pulse-code__kw">div</span>&gt;
+  &lt;<span class="pulse-code__kw">button</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-dismiss"</span> <span class="pulse-code__key">type</span>=<span class="pulse-code__str">"button"</span> <span class="pulse-code__key">aria-label</span>=<span class="pulse-code__str">"Dismiss"</span>&gt;&lt;<span class="pulse-code__kw">i</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-icon pulse-icon--x"</span> <span class="pulse-code__key">aria-hidden</span>=<span class="pulse-code__str">"true"</span>&gt;&lt;/<span class="pulse-code__kw">i</span>&gt;&lt;/<span class="pulse-code__kw">button</span>&gt;
+&lt;/<span class="pulse-code__kw">div</span>&gt;</code></pre></div></div>
+<h2>Icons</h2>
+<p>The icon is optional: leave the <code>&lt;i&gt;</code> out and the text starts at the edge (for <code>Pulse.toast()</code>, pass <code>icon: false</code>). Keep it when the message is a warning or an error, so the tone isn’t carried by color alone. In an alert the icon takes the tone’s text color, which is darker than the border.</p>
+<div class="docs-variants"><div class="docs-variant"><div class="docs-live docs-live--compact"><div class="pulse-toast pulse-toast--neutral" role="status">
+  <div class="pulse-toast__body"><span class="pulse-toast__title">Saved</span></div>
+  <button class="pulse-dismiss" type="button" aria-label="Dismiss"><i class="pulse-icon pulse-icon--x" aria-hidden="true"></i></button>
+</div></div><div class="pulse-code docs-code"><div class="pulse-code__head"><span class="pulse-code__file">Toast with no icon</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-tooltip-host" type="button" data-pulse-copy aria-label="Copy the code"><i class="pulse-icon pulse-icon--copy" aria-hidden="true"></i><span class="pulse-tooltip pulse-tooltip--bottom pulse-tooltip--end" aria-hidden="true">Copy to clipboard</span></button></div><pre><code>&lt;<span class="pulse-code__kw">div</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-toast pulse-toast--neutral"</span> <span class="pulse-code__key">role</span>=<span class="pulse-code__str">"status"</span>&gt;
+  &lt;<span class="pulse-code__kw">div</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-toast__body"</span>&gt;&lt;<span class="pulse-code__kw">span</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-toast__title"</span>&gt;Saved&lt;/<span class="pulse-code__kw">span</span>&gt;&lt;/<span class="pulse-code__kw">div</span>&gt;
+  &lt;<span class="pulse-code__kw">button</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-dismiss"</span> <span class="pulse-code__key">type</span>=<span class="pulse-code__str">"button"</span> <span class="pulse-code__key">aria-label</span>=<span class="pulse-code__str">"Dismiss"</span>&gt;&lt;<span class="pulse-code__kw">i</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-icon pulse-icon--x"</span> <span class="pulse-code__key">aria-hidden</span>=<span class="pulse-code__str">"true"</span>&gt;&lt;/<span class="pulse-code__kw">i</span>&gt;&lt;/<span class="pulse-code__kw">button</span>&gt;
+&lt;/<span class="pulse-code__kw">div</span>&gt;</code></pre></div></div></div>
+<h2>Options</h2>
+<div class="docs-table"><table><thead><tr><th>Class</th><th>What it does</th></tr></thead><tbody>
+<tr><td><code>pulse-alert--success</code>, <code>--warning</code>, <code>--danger</code></td><td>Tone. No tone class is info (blue).</td></tr>
+<tr><td><code>pulse-toast--neutral</code>, <code>--success</code>, <code>--warning</code>, <code>--danger</code></td><td>Tone. No tone class is info.</td></tr>
+<tr><td><code>__title</code>, <code>__text</code></td><td>The headline and an optional sentence.</td></tr>
+<tr><td><code>pulse-dismiss</code></td><td>The × button. pulse.js removes its alert or toast (it fires <code>pulse:dismiss</code> first; cancel that event to keep it).</td></tr>
+<tr><td><code>data-pulse-toast</code></td><td>On a button: shows a toast with that title. <code>data-pulse-toast-text</code> and <code>data-pulse-toast-tone</code> are optional.</td></tr>
+</tbody></table></div>
+<h2>Accessibility</h2>
+<ul>
+<li>Use the icon that matches the tone, and always say it in words too: color alone never carries the meaning.</li>
+<li><code>role="status"</code> for news, <code>role="alert"</code> only for errors that need attention now.</li>
+<li>The dismiss button needs <code>aria-label="Dismiss"</code>.</li>
+</ul>
+    <div class="docs-next"><a class="pulse-link pulse-link--sm" href="white-labeling.html">White labeling</a><a class="pulse-link pulse-link--sm" href="badge.html">Badge <i class="pulse-icon pulse-icon--arrow-right" aria-hidden="true"></i></a></div>
+    <dialog class="pulse-drawer pulse-drawer--lg docs-states" id="states" aria-labelledby="states-title"><div class="pulse-drawer__head"><h2 class="pulse-drawer__title" id="states-title">Alert and toast: every state</h2><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-drawer__close" type="button" aria-label="Close" data-pulse-close><i class="pulse-icon pulse-icon--x" aria-hidden="true"></i></button></div><div class="pulse-drawer__body"><p class="docs-states-note">Hover, focus and pressed are drawn here with demo classes (is-hover, is-focus, is-pressed) so they can be seen side by side. On a real page they come from the mouse and keyboard; don’t copy those classes. The Web, App, Light and Dark switches apply here too.</p><div class="docs-states-row"><p class="docs-states-label">Alert</p><div class="docs-states-items docs-states-items--stack"><div class="pulse-alert" style="width:100%"><i class="pulse-icon pulse-icon--info pulse-icon--fill" aria-hidden="true"></i><div class="pulse-alert__body"><span class="pulse-alert__title">Info</span><span class="pulse-alert__text">One sentence of detail.</span></div><button class="pulse-dismiss" type="button" aria-label="Dismiss"><i class="pulse-icon pulse-icon--x" aria-hidden="true"></i></button></div><div class="pulse-alert pulse-alert--success" style="width:100%"><i class="pulse-icon pulse-icon--check-circle pulse-icon--fill" aria-hidden="true"></i><div class="pulse-alert__body"><span class="pulse-alert__title">Success</span><span class="pulse-alert__text">One sentence of detail.</span></div><button class="pulse-dismiss" type="button" aria-label="Dismiss"><i class="pulse-icon pulse-icon--x" aria-hidden="true"></i></button></div><div class="pulse-alert pulse-alert--warning" style="width:100%"><i class="pulse-icon pulse-icon--warning pulse-icon--fill" aria-hidden="true"></i><div class="pulse-alert__body"><span class="pulse-alert__title">Warning</span><span class="pulse-alert__text">One sentence of detail.</span></div><button class="pulse-dismiss" type="button" aria-label="Dismiss"><i class="pulse-icon pulse-icon--x" aria-hidden="true"></i></button></div><div class="pulse-alert pulse-alert--danger" style="width:100%"><i class="pulse-icon pulse-icon--warning-octagon pulse-icon--fill" aria-hidden="true"></i><div class="pulse-alert__body"><span class="pulse-alert__title">Danger</span><span class="pulse-alert__text">One sentence of detail.</span></div><button class="pulse-dismiss" type="button" aria-label="Dismiss"><i class="pulse-icon pulse-icon--x" aria-hidden="true"></i></button></div></div></div>
+<div class="docs-states-row"><p class="docs-states-label">Toast</p><div class="docs-states-items docs-states-items--stack"><div class="pulse-toast pulse-toast--neutral" style="width:100%;max-width:400px"><i class="pulse-icon pulse-icon--info pulse-icon--fill" aria-hidden="true"></i><div class="pulse-toast__body"><span class="pulse-toast__title">Neutral</span><a class="pulse-toast__cta" href="#">View</a></div><button class="pulse-dismiss" type="button" aria-label="Dismiss"><i class="pulse-icon pulse-icon--x" aria-hidden="true"></i></button></div><div class="pulse-toast" style="width:100%;max-width:400px"><i class="pulse-icon pulse-icon--info pulse-icon--fill" aria-hidden="true"></i><div class="pulse-toast__body"><span class="pulse-toast__title">Info</span><a class="pulse-toast__cta" href="#">View</a></div><button class="pulse-dismiss" type="button" aria-label="Dismiss"><i class="pulse-icon pulse-icon--x" aria-hidden="true"></i></button></div><div class="pulse-toast pulse-toast--success" style="width:100%;max-width:400px"><i class="pulse-icon pulse-icon--check-circle pulse-icon--fill" aria-hidden="true"></i><div class="pulse-toast__body"><span class="pulse-toast__title">Success</span><a class="pulse-toast__cta" href="#">View</a></div><button class="pulse-dismiss" type="button" aria-label="Dismiss"><i class="pulse-icon pulse-icon--x" aria-hidden="true"></i></button></div><div class="pulse-toast pulse-toast--warning" style="width:100%;max-width:400px"><i class="pulse-icon pulse-icon--warning pulse-icon--fill" aria-hidden="true"></i><div class="pulse-toast__body"><span class="pulse-toast__title">Warning</span><a class="pulse-toast__cta" href="#">View</a></div><button class="pulse-dismiss" type="button" aria-label="Dismiss"><i class="pulse-icon pulse-icon--x" aria-hidden="true"></i></button></div><div class="pulse-toast pulse-toast--danger" style="width:100%;max-width:400px"><i class="pulse-icon pulse-icon--warning-octagon pulse-icon--fill" aria-hidden="true"></i><div class="pulse-toast__body"><span class="pulse-toast__title">Danger</span><a class="pulse-toast__cta" href="#">View</a></div><button class="pulse-dismiss" type="button" aria-label="Dismiss"><i class="pulse-icon pulse-icon--x" aria-hidden="true"></i></button></div></div></div>
+</div></dialog>
+  </main>
+</div>
+<script>
+  // Docs only: links inside examples are there to look at and copy, so they don't go anywhere here.
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('.docs-live a[href], .docs-states a[href]');
+    if (a && !a.hasAttribute('data-pulse-open')) e.preventDefault();
+  });
+  // Docs only: the surface and theme switches, remembered between pages. Pulse itself needs no script for these.
+  (function () {
+    var root = document.documentElement;
+    function apply(set, value) {
+      root.setAttribute('data-' + set, value);
+      document.querySelectorAll('[data-docs-set="' + set + '"]').forEach(function (x) { x.setAttribute('aria-pressed', String(x.dataset.docsValue === value)); });
+    }
+    ['surface', 'theme'].forEach(function (set) { try { var v = localStorage.getItem('pulse-docs-' + set); if (v) apply(set, v); } catch (e) {} });
+    document.querySelectorAll('[data-docs-set]').forEach(function (b) {
+      b.addEventListener('click', function () { apply(b.dataset.docsSet, b.dataset.docsValue); try { localStorage.setItem('pulse-docs-' + b.dataset.docsSet, b.dataset.docsValue); } catch (e) {} });
+    });
+  })();
+</script>
+</body>
+</html>

@@ -107,6 +107,10 @@
     padding: 6px 8px;
     list-style: none;
     contain: inline-size;
+    display: grid;
+    grid-template-columns: auto auto auto minmax(0, 1fr);
+    align-content: start;
+    column-gap: 16px;
     font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     font-size: 12px;
     line-height: 1.55;
@@ -115,8 +119,9 @@
       --row-bg: var(--surface);
       position: relative;
       display: grid;
-      grid-template-columns: auto minmax(0, 1fr);
-      gap: 16px;
+      grid-column: 1 / -1;
+      grid-template-columns: subgrid;
+      align-items: baseline;
       padding: 7px 16px;
       border-bottom: 1px solid var(--line);
       cursor: pointer;
@@ -145,7 +150,7 @@
       &.tail-new { animation: audit-tail-flash 2.4s ease-out; }
 
       &.expanded { padding-right: 60px; }
-      &.expanded span { white-space: pre-wrap; word-break: break-all; }
+      &.expanded .audit-message { white-space: pre-wrap; word-break: break-all; }
       &.expanded::after { content: 'less'; opacity: 1; background: none; }
     }
 
@@ -161,6 +166,17 @@
       text-overflow: ellipsis;
     }
 
+    .audit-session { color: var(--text-faint); }
+
+    .audit-group {
+      justify-self: start;
+      max-width: 24ch;
+      padding: 0 6px;
+      border-radius: 3px;
+      background: color-mix(in srgb, var(--text-faint) 10%, transparent);
+      font: 600 11px/1.7 system-ui, sans-serif;
+    }
+
     mark {
       padding: 0 1px;
       border-radius: 2px;
@@ -170,6 +186,7 @@
 
     li.audit-empty {
       display: block;
+      grid-column: 1 / -1;
       padding: 64px 16px;
       border: 0;
       font-family: system-ui, sans-serif;

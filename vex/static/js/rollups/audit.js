@@ -85,14 +85,17 @@ class AuditRollup {
             .map((part, i) => i % 2 ? `<mark>${Workspace.esc(part)}</mark>` : Workspace.esc(part))
             .join('');
 
-        this.results.innerHTML = logs.map(log => `<li>${this.line(log, highlight(log.message))}</li>`).join('');
+        this.results.innerHTML = logs.map(log => `<li>${this.line(log, highlight)}</li>`).join('');
     }
 
     // ── render ─────────────────────────────────────────────────────
 
-    line(log, message = Workspace.esc(log.message)) {
+    line(log, mark = Workspace.esc) {
         const time = AuditRollup.CLOCK.format(new Date(log.timestamp));
-        return `<time datetime="${log.timestamp}">${time}</time><span>${message}</span>`;
+        return `<time datetime="${log.timestamp}">${time}</time>`
+            + `<span class="audit-session">${mark(log.session)}</span>`
+            + `<span class="audit-group">${mark(log.group)}</span>`
+            + `<span class="audit-message">${mark(log.message)}</span>`;
     }
 
     empty(text) {

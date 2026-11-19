@@ -123,7 +123,7 @@ class ComplianceSidebar {
             row.status = status.checked;
             item.classList.toggle('met', row.status);
             this.tally();
-            this.save();
+            row.status ? this.save(row) : this.remove(row);
         });
 
         item.querySelectorAll('input[name]').forEach(input => {
@@ -132,7 +132,6 @@ class ComplianceSidebar {
                 if (!input.checkValidity()) return;
                 row[input.name] = input.value.trim();
                 this.link(item, row);
-                this.save();
             });
         });
 
@@ -217,7 +216,11 @@ class ComplianceSidebar {
         family.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
-    save() {
-        return this.api.compliance.put('cmmc', this.rows);
+    save(row) {
+        return this.api.compliance.put('cmmc', row.practice_id, row.owner, row.evidence);
+    }
+
+    remove(row) {
+        return this.api.compliance.remove('cmmc', row.practice_id);
     }
 }

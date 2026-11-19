@@ -151,7 +151,7 @@ class TenantScreen {
             if (ready('setup')) this.renderSetup(this.coverage);
             if (ready('events')) document.getElementById('events-count').textContent = this.events.toLocaleString();
 
-            this.renderTrend(all.filter(s => Table.SCOPES.threats(s) && this.inPeriod(s)));
+            this.renderTrend(all.filter(s => this.inPeriod(s)));
             this.mark();
             this.reveal();
         });
@@ -261,7 +261,7 @@ class TenantScreen {
 
         const hits = counts.map((v, i) => `
             <rect x="${x(i) - step / 2}" y="0" width="${step}" height="${H}" fill="transparent">
-                <title>${date(i).toLocaleDateString(undefined, yearly ? { month: 'long' } : { month: 'short', day: 'numeric' })}: ${v} SOC signal${v === 1 ? '' : 's'}</title>
+                <title>${date(i).toLocaleDateString(undefined, yearly ? { month: 'long' } : { month: 'short', day: 'numeric' })}: ${v} signal${v === 1 ? '' : 's'}</title>
             </rect>`).join('');
 
         // ── today marker ──

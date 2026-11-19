@@ -382,9 +382,9 @@ class CoverageRollup {
                         <li class="cov-item is-link" data-act="mailbox">
                             <span class="material-symbols-outlined cov-item-logo">alternate_email</span>
                             <span class="cov-item-name">SOC mailbox</span>
+                            <span class="material-symbols-outlined cov-conn-end cov-item-enter">arrow_forward</span>
                             <span class="cov-item-meta">Managed by your SOC</span>
                             <span class="material-symbols-outlined cov-conn-end">lock</span>
-                            <span class="material-symbols-outlined cov-conn-end cov-item-enter">arrow_forward</span>
                         </li>
                         ${conns.map(c => this._conn(c)).join('')}
                     </ul>

@@ -75,7 +75,6 @@
      width (4 columns on desktop, 2 on tablets and large phones, 1 on phones) */
   .tm-founder-row{position:relative;display:grid;grid-template-columns:repeat(4, minmax(0,1fr));gap:32px;align-items:start;}
   .tm-founder-copy{grid-column:2 / -1;max-width:649px;}
-  .tm-founder-glow{position:absolute;left:-155px;top:-149px;width:456px;height:531px;pointer-events:none;max-width:none;}
   .tm-founder .tm-photo{position:relative;border:1px solid var(--color-neutral-500);}
   .tm-founder-copy{position:relative;display:flex;flex-direction:column;gap:16px;}
   .tm-founder-copy .tm-role{color:var(--color-text-accent);}
@@ -121,7 +120,6 @@
     .tm-founder-copy{display:contents;}
     .tm-founder-copy > div{grid-column:2;}
     .tm-founder-copy .tm-bio,.tm-book{grid-column:1 / -1;max-width:649px;}
-    .tm-founder-glow{left:-150px;top:-200px;}
   }
   /* phones: the same tighter pass as the other pages */
   @media (max-width:700px){
@@ -197,7 +195,6 @@
   <section class="tm-founder" data-theme="dark" aria-labelledby="founder-name">
     <div class="tm-wrap">
       <div class="tm-founder-row">
-        <img class="tm-founder-glow" src="static/founder-glow.svg" width="456" height="531" alt="" aria-hidden="true">
         <div class="tm-photo"><img src="static/david.jpg" alt="David Hunt" style="width:120.25%;height:120.25%;left:-11.74%;top:-3.43%"></div>
         <div class="tm-founder-copy">
           <div><p class="tm-role">Founder &amp; CEO</p><h2 id="founder-name">David Hunt</h2></div>

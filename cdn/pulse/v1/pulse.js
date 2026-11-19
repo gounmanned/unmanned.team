@@ -7,12 +7,13 @@
    The browser's Popover API opens and closes it (click the trigger, Esc, click outside, focus returns to the trigger).
    This file places it next to the trigger, points the caret at the trigger, flips it to the other side when there is no
    room, and keeps aria-expanded in step. Browsers without the Popover API get a small fallback that does the same.
-   Content inside a shadow root: call Pulse.popover.attach(shadowRoot) once for that root.
+   Content inside a shadow root: call Pulse.attach(shadowRoot) once for that root (Pulse.popover.attach still works).
 
    Tooltip
      <button class="pulse-btn … pulse-tooltip-host" aria-label="Copy"><i class="pulse-icon pulse-icon--copy"></i>
        <span class="pulse-tooltip pulse-tooltip--bottom" aria-hidden="true">Copy to clipboard</span></button>
-   CSS shows it on hover and keyboard focus. This file only adds Esc: it hides the tooltip until the pointer or focus leaves.
+   CSS shows it on hover and keyboard focus. This file lifts it into the top layer while it shows (so a scrolling or clipped box
+   never cuts it off), flips it above or below when there's no room, and adds Esc: it hides the tooltip until the pointer or focus leaves.
 
    Drawer (and any native <dialog>)
      <button data-pulse-open="prices">…</button>
@@ -20,12 +21,19 @@
    The opener can be an <a href>, so it still goes somewhere without JS; with JS the link is cancelled.
    data-pulse-open opens the dialog with that id as a modal (or beside the page, still usable, when the dialog has data-modal="false").
    data-pulse-close inside it closes it; so does a click on the dimmed page. Esc and returning focus are the browser's.
+   On open, focus goes to the title (an autofocus element inside wins), so the close X isn't shown as selected.
 
    Copy
      <button class="pulse-btn … pulse-tooltip-host" data-pulse-copy aria-label="Copy">… <span class="pulse-tooltip" aria-hidden="true">Copy to clipboard</span></button>
    data-pulse-copy copies the code of the pulse-code panel the button sits in. data-pulse-copy="some-id" copies the text of that
    element instead (an input's value). The tooltip says "Copied" for a moment (data-pulse-copied="…" to change the word) and a
    screen reader hears it too.
+
+   Clear (search)
+     <div class="pulse-input-group">… <input class="pulse-input" type="search" placeholder="…"> <kbd class="pulse-input-group__key">/</kbd>
+       <button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-input-group__clear" type="button" data-pulse-clear aria-label="Clear search">…x icon…</button></div>
+   CSS shows the X only while the field has text (the field needs a placeholder). Clicking it empties the field, focuses it and
+   fires an input event, so lists refilter. Esc in a field with text clears it the same way (and doesn't close the drawer around it).
 
    Slider
      <input class="pulse-slider__input" type="range" …>   keeps the fill in step with the thumb. Any <output for="its-id"> or element
@@ -69,6 +77,9 @@
   var native = typeof HTMLElement !== 'undefined' && 'popover' in HTMLElement.prototype;
   var triggers = {};  // popover id -> the button that opened it
   var openList = [];  // popovers that are open now
+  // The real target and focused element, also inside (open) shadow roots, so behaviors work in web components.
+  function tgt(e) { var p = e.composedPath ? e.composedPath() : null; var t = p && p.length ? p[0] : e.target; return t && t.nodeType === 3 ? t.parentElement : t; }
+  function activeEl() { var a = document.activeElement; while (a && a.shadowRoot && a.shadowRoot.activeElement) a = a.shadowRoot.activeElement; return a; }
 
   function isPop(el) { return el && el.classList && el.classList.contains('pulse-popover') && el.hasAttribute('popover'); }
 
@@ -153,6 +164,21 @@
     return null;
   }
 
+  // Scroll lock: works for dialogs inside shadow roots too, where html:has() can't see them.
+  var locked = [];
+  function unlockIfClosed() {
+    locked = locked.filter(function (d) { return d.open; });
+    if (!locked.length) document.documentElement.classList.remove('pulse-scroll-lock');
+  }
+  function lockScroll(dlg) {
+    if (locked.indexOf(dlg) < 0) locked.push(dlg);
+    document.documentElement.classList.add('pulse-scroll-lock');
+    dlg.addEventListener('close', unlockIfClosed);
+  }
+  // Closing can come from anywhere (a close button, Esc, the page's own script), so check after every click and key too.
+  document.addEventListener('click', function () { if (locked.length) setTimeout(unlockIfClosed, 0); }, true);
+  document.addEventListener('keyup', function () { if (locked.length) setTimeout(unlockIfClosed, 0); }, true);
+
   function dialogClick(e) {
     var t = e.target; if (!t || !t.closest) return;
     var opener = t.closest('[data-pulse-open]');
@@ -162,8 +188,12 @@
       // An <a href> opener still works without JS (it goes to its link); with JS it opens the dialog instead.
       e.preventDefault();
       if (dlg.open) return;
+      // From an action in an open menu: close the menu first, so focus (and the return after closing) is the menu's button.
+      var mb = typeof openMenus !== 'undefined' && openMenus.filter(function (b) { var mm = menuOf(b); return mm && mm.contains(opener); })[0];
+      if (mb) { closeMenu(mb, true); opener = mb; }
       dlg._pulseOpener = opener;
-      if (dlg.getAttribute('data-modal') === 'false') dlg.show(); else dlg.showModal();
+      if (dlg.getAttribute('data-modal') === 'false') dlg.show(); else { dlg.showModal(); lockScroll(dlg); }
+      focusTitle(dlg);   // at once too, for browsers without the dialog toggle event
       return;
     }
     var dlgIn = t.closest('dialog');
@@ -176,8 +206,47 @@
     }
   }
 
+  // On open, focus the dialog's or drawer's title (tabindex -1, no ring) instead of its first button, so a close X never reads as
+  // selected; Tab goes to the X next. An element inside with autofocus wins (destructive dialogs keep Cancel). Closing a modal
+  // returns focus to the opener (the browser's own step). Runs for every open, however the page opened it, in shadow roots too.
+  // Looks inside the dialog and inside what is slotted into it (a web component that renders <dialog><slot></slot></dialog>).
+  function findIn(dlg, sel) {
+    var el = dlg.querySelector(sel); if (el) return el;
+    var slots = dlg.querySelectorAll('slot');
+    for (var i = 0; i < slots.length; i++) {
+      var els = slots[i].assignedElements ? slots[i].assignedElements({ flatten: true }) : [];
+      for (var j = 0; j < els.length; j++) { if (els[j].matches(sel)) return els[j]; var f = els[j].querySelector(sel); if (f) return f; }
+    }
+    return null;
+  }
+  function holds(dlg, el) {
+    if (dlg.contains(el)) return true;
+    var slots = dlg.querySelectorAll('slot');
+    for (var i = 0; i < slots.length; i++) {
+      var els = slots[i].assignedElements ? slots[i].assignedElements({ flatten: true }) : [];
+      for (var j = 0; j < els.length; j++) if (els[j] === el || els[j].contains(el)) return true;
+    }
+    return false;
+  }
+  function focusTitle(dlg) {
+    if (!dlg || !dlg.open || findIn(dlg, '[autofocus]')) return;
+    if (!dlg.classList.contains('pulse-drawer') && !dlg.classList.contains('pulse-dialog') && !findIn(dlg, '.pulse-dialog')) return;
+    var id = dlg.getAttribute('aria-labelledby'), rn = dlg.getRootNode(), title = null;
+    if (id) {
+      title = rn.getElementById ? rn.getElementById(id) : null;
+      if (!title && rn.host) { var hr = rn.host.getRootNode(); title = hr.getElementById ? hr.getElementById(id) : null; }   // the id is in the light DOM
+      if (title && !holds(dlg, title)) title = null;
+    }
+    title = title || findIn(dlg, '.pulse-drawer__title, .pulse-dialog__title');
+    if (!title) return;
+    if (!title.hasAttribute('tabindex')) title.setAttribute('tabindex', '-1');
+    title.focus({ preventScroll: true });
+  }
+  function dialogToggle(e) { var d = e.target; if (d && d.tagName === 'DIALOG' && e.newState === 'open') focusTitle(d); }
+
   function attach(root) {
     root.addEventListener('click', rememberTrigger, true);
+    root.addEventListener('toggle', dialogToggle, true);
     root.addEventListener('click', dialogClick);
     if (native) {
       // Hidden until placed. Opacity, not visibility, so autofocus inside the popover still works.
@@ -187,15 +256,86 @@
   }
   attach(document);
 
+  // Tooltip in the top layer: while it can show, the bubble becomes a manual popover placed from its host's rect, so a scrolling
+  // list or a clipped box never cuts it off. Same markup; CSS still decides when it shows (hover, keyboard focus, is-open, Esc).
+  // With no room on its side it flips (above <-> below). Without the Popover API it stays where CSS puts it.
+  var openTips = [], TIP_GAP = 8, EDGE = 8;
+  function tipOf(host) { for (var c = host.firstElementChild; c; c = c.nextElementSibling) if (c.classList.contains('pulse-tooltip')) return c; return null; }
+  function tipActive(host, tip) {
+    if (host.disabled || host.getAttribute('aria-disabled') === 'true') return false;
+    if (tip.classList.contains('is-open')) return true;
+    if (host.classList.contains('is-dismissed')) return false;
+    // A tooltip in the top layer doesn't count as hovering its host, so check the tooltip itself too.
+    return host.matches(':hover') || tip.matches(':hover') || host.matches(':focus-visible') || !!host.querySelector(':focus-visible');
+  }
+  function placeTip(host, tip) {
+    var r = host.getBoundingClientRect(), w = tip.offsetWidth, h = tip.offsetHeight, vw = innerWidth, vh = innerHeight;
+    var cl = tip.classList, side = cl.contains('pulse-tooltip--left') ? 'left' : cl.contains('pulse-tooltip--right') ? 'right' : cl.contains('pulse-tooltip--bottom') ? 'bottom' : 'top';
+    if (tip._pulseFlip) side = tip._pulseFlip;
+    var x, y, shift = 0;
+    if (side === 'top' || side === 'bottom') {
+      // Flip when there's no room on this side but there is on the other.
+      if (side === 'top' && r.top - h - TIP_GAP < EDGE && r.bottom + TIP_GAP + h <= vh - EDGE) side = 'bottom';
+      else if (side === 'bottom' && r.bottom + TIP_GAP + h > vh - EDGE && r.top - TIP_GAP - h >= EDGE) side = 'top';
+      y = side === 'top' ? r.top - h - TIP_GAP : r.bottom + TIP_GAP;
+      if (cl.contains('pulse-tooltip--start')) x = r.left - EDGE;
+      else if (cl.contains('pulse-tooltip--end')) x = r.right + EDGE - w;
+      else { x = r.left + r.width / 2 - w / 2; var cx = Math.min(Math.max(x, EDGE), vw - w - EDGE); shift = x - cx; x = cx; }   // keep it on screen; the caret stays on the host
+    } else {
+      x = side === 'left' ? r.left - w - TIP_GAP : r.right + TIP_GAP;
+      y = r.top + r.height / 2 - h / 2;
+    }
+    var wasBottom = cl.contains('pulse-tooltip--bottom'), wantBottom = side === 'bottom';
+    if ((side === 'top' || side === 'bottom') && wasBottom !== wantBottom) { cl.toggle('pulse-tooltip--bottom', wantBottom); tip._pulseFlipped = !tip._pulseFlipped; }
+    tip.style.setProperty('--tip-x', Math.round(x) + 'px'); tip.style.setProperty('--tip-y', Math.round(y) + 'px'); tip.style.setProperty('--tip-shift', Math.round(shift) + 'px');
+  }
+  function openTip(host, tip) {
+    if (!tip.matches(':popover-open')) {
+      if (!tip.hasAttribute('popover')) tip.setAttribute('popover', 'manual');
+      try { tip.showPopover(); } catch (e) { return; }
+      openTips.push({ host: host, tip: tip });
+    }
+    placeTip(host, tip);
+  }
+  function closeTip(entry) {
+    var tip = entry.tip;
+    if (tip._pulseFlipped) { tip.classList.toggle('pulse-tooltip--bottom'); tip._pulseFlipped = false; }
+    try { tip.hidePopover(); } catch (e) {}
+    tip.removeAttribute('popover'); ['--tip-x', '--tip-y', '--tip-shift'].forEach(function (k) { tip.style.removeProperty(k); });
+    openTips = openTips.filter(function (o) { return o !== entry; });
+  }
+  function syncTip(host) {
+    var tip = host && tipOf(host); if (!tip || !native) return;
+    host.classList.toggle('is-tip-hover', tip.matches(':hover'));   // keeps the CSS showing it while the pointer is on it
+    if (tipActive(host, tip)) { clearTimeout(tip._pulseHide); openTip(host, tip); return; }
+    clearTimeout(tip._pulseHide);
+    tip._pulseHide = setTimeout(function () {   // after the fade-out
+      var entry = openTips.filter(function (o) { return o.tip === tip; })[0];
+      if (entry && !tipActive(host, tip)) closeTip(entry);
+    }, 160);
+  }
+  function tipEvent(e) {
+    var t = tgt(e), host = t && t.closest && t.closest('.pulse-tooltip-host'); if (!host) return;
+    if (e.type === 'pointerover' && t.closest('.pulse-tooltip')) host.classList.add('is-tip-hover');   // at once, before the CSS can hide it
+    setTimeout(function () { syncTip(host); }, 0);
+  }
+  if (native) {
+    ['pointerover', 'pointerout', 'focusin', 'focusout'].forEach(function (ev) { document.addEventListener(ev, tipEvent, true); });
+    var replaceTips = function () { openTips.forEach(function (o) { if (o.tip.matches(':popover-open')) placeTip(o.host, o.tip); }); };
+    window.addEventListener('scroll', replaceTips, true); window.addEventListener('resize', replaceTips);
+  }
+
   // Tooltip: Esc hides the ones showing; each comes back after the pointer and focus have left its host.
   function tipHosts(root) { return root.querySelectorAll ? root.querySelectorAll('.pulse-tooltip-host:hover, .pulse-tooltip-host:focus-within') : []; }
   function dismissTip(host) {
     if (host.classList.contains('is-dismissed')) return;
     host.classList.add('is-dismissed');
+    syncTip(host);
     var check = function () {
       setTimeout(function () {
         if (host.matches(':hover') || host.matches(':focus-within')) return;
         host.classList.remove('is-dismissed');
+        syncTip(host);
         host.removeEventListener('mouseleave', check); host.removeEventListener('focusout', check);
       }, 0);
     };
@@ -236,7 +376,10 @@
 
   window.Pulse = window.Pulse || {};
   window.Pulse.popover = { attach: attach, place: place };
-  window.Pulse.attach = attach;  // same call under a general name: popovers, drawers and dialogs inside a shadow root
+  window.Pulse.tooltip = { sync: syncTip };
+  // Pulse.attach(shadowRoot): once per shadow root. Wires popovers, dialogs and drawers inside it and sets up its tabs, menus
+  // and sliders (clicks, keys and copy already work there through the page-level listeners).
+  window.Pulse.attach = function (root) { attach(root); if (root && root !== document) { initAll(root); syncAll(root); } };
 
   // Copy: one polite live region per document, so "Copied" is read out.
   var live = null;
@@ -253,7 +396,7 @@
     });
   }
   document.addEventListener('click', function (e) {
-    var btn = e.target && e.target.closest && e.target.closest('[data-pulse-copy]');
+    var t0 = tgt(e), btn = t0 && t0.closest && t0.closest('[data-pulse-copy]');
     if (!btn || btn.disabled) return;
     var id = btn.getAttribute('data-pulse-copy'), src = null, text = '';
     if (id) { var rn = btn.getRootNode(); src = rn.getElementById ? rn.getElementById(id) : document.getElementById(id); text = src ? ('value' in src && src.value !== undefined && src.tagName !== 'OUTPUT' ? src.value : src.textContent) : ''; }
@@ -264,12 +407,34 @@
       say(word);
       if (tip) {
         if (tip._pulseWord === undefined) tip._pulseWord = tip.textContent;
-        tip.textContent = word; tip.classList.add('is-open');
+        tip.textContent = word; tip.classList.add('is-open'); syncTip(btn);
         clearTimeout(tip._pulseTimer);
-        tip._pulseTimer = setTimeout(function () { tip.classList.remove('is-open'); tip.textContent = tip._pulseWord; }, 1600);
+        tip._pulseTimer = setTimeout(function () { tip.classList.remove('is-open'); tip.textContent = tip._pulseWord; syncTip(btn); }, 1600);
       }
     }, function () {});
   });
+
+  // Clear: empty the input group's field, keep focus there, and let the page's own input listener refilter.
+  function clearField(input) {
+    input.value = '';
+    input.dispatchEvent(new Event('input', { bubbles: true, composed: true }));
+    input.focus();
+  }
+  document.addEventListener('click', function (e) {
+    var t0 = tgt(e), btn = t0 && t0.closest && t0.closest('[data-pulse-clear]');
+    if (!btn || btn.disabled) return;
+    var group = btn.closest('.pulse-input-group'), input = group && group.querySelector('input, textarea');
+    if (input) { e.preventDefault(); clearField(input); }
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    var input = tgt(e);
+    if (!input || !input.matches || !input.matches('.pulse-input-group input, .pulse-input-group textarea') || !input.value) return;
+    var group = input.closest('.pulse-input-group');
+    if (!group.querySelector('[data-pulse-clear]')) return;
+    e.preventDefault(); e.stopPropagation();
+    clearField(input);
+  }, true);
 
   // Slider: keep the fill (--v) and any formatted outputs in step with the value.
   window.Pulse.formats = window.Pulse.formats || {};
@@ -300,8 +465,8 @@
     });
     if (first) input.setAttribute('aria-valuetext', first.textContent);
   }
-  document.addEventListener('input', function (e) { if (e.target && e.target.classList && e.target.classList.contains('pulse-slider__input')) syncSlider(e.target); });
-  function syncAll() { [].forEach.call(document.querySelectorAll('.pulse-slider__input'), syncSlider); }
+  document.addEventListener('input', function (e) { var t = tgt(e); if (t && t.classList && t.classList.contains('pulse-slider__input')) syncSlider(t); });
+  function syncAll(root) { [].forEach.call((root && root.querySelectorAll ? root : document).querySelectorAll('.pulse-slider__input'), syncSlider); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', syncAll); else syncAll();
 
   function byId(from, id) { var rn = from.getRootNode(); return id ? (rn.getElementById ? rn.getElementById(id) : document.getElementById(id)) : null; }
@@ -321,19 +486,19 @@
   }
   function isPulseTab(t) { var l = t && t.closest && t.closest('[role="tablist"]'); return l && l.classList.contains('pulse-tabs') ? l : null; }
   document.addEventListener('click', function (e) {
-    var tab = e.target.closest && e.target.closest('[role="tab"]');
+    var t = tgt(e), tab = t && t.closest && t.closest('[role="tab"]');
     if (tab && isPulseTab(tab) && tab.getAttribute('aria-disabled') !== 'true') selectTab(tab, false);
   });
   document.addEventListener('keydown', function (e) {
-    var tab = e.target.closest && e.target.closest('[role="tab"]'), list = isPulseTab(tab);
+    var t = tgt(e), tab = t && t.closest && t.closest('[role="tab"]'), list = isPulseTab(tab);
     if (!list) return;
     var tabs = tabsOf(list), i = tabs.indexOf(tab), vertical = list.getAttribute('aria-orientation') === 'vertical';
     var next = { ArrowRight: !vertical && 1, ArrowLeft: !vertical && -1, ArrowDown: vertical && 1, ArrowUp: vertical && -1 }[e.key];
     var to = next ? tabs[(i + next + tabs.length) % tabs.length] : e.key === 'Home' ? tabs[0] : e.key === 'End' ? tabs[tabs.length - 1] : null;
     if (to) { e.preventDefault(); selectTab(to, true); }
   });
-  function initTabs() {
-    [].forEach.call(document.querySelectorAll('.pulse-tabs[role="tablist"]'), function (list) {
+  function initTabs(root) {
+    [].forEach.call((root || document).querySelectorAll('.pulse-tabs[role="tablist"]'), function (list) {
       var all = tabsOf(list); if (!all.length) return;
       var sel = all.filter(function (t) { return t.getAttribute('aria-selected') === 'true'; })[0] || all[0];
       [].forEach.call(list.querySelectorAll('[role="tab"]'), function (t) {
@@ -357,12 +522,15 @@
     openMenus.slice().forEach(function (b) { if (b !== btn) closeMenu(b, false); });
     m.hidden = false; btn.setAttribute('aria-expanded', 'true');
     if (openMenus.indexOf(btn) < 0) openMenus.push(btn);
+    var items = menuItems(m);
+    if (items.length) items[0].focus();
     if (m.getAttribute('role') === 'listbox') {
       if (!m.hasAttribute('tabindex')) m.tabIndex = -1;
       var opts = options(m); setActive(m, opts.filter(function (o) { return o.getAttribute('aria-selected') === 'true'; })[0] || opts[0]);
       m.focus();
     }
   }
+  function menuItems(m) { return [].filter.call(m.querySelectorAll('[role="menuitem"]'), function (i) { return !i.disabled && i.getAttribute('aria-disabled') !== 'true' && !i.closest('[hidden]'); }); }
   function closeMenu(btn, focusBack) {
     var m = menuOf(btn); if (m) { m.hidden = true; if (m.getAttribute('role') === 'listbox') setActive(m, null); }
     btn.setAttribute('aria-expanded', 'false');
@@ -378,18 +546,27 @@
     if (btn) closeMenu(btn, true);
   }
   document.addEventListener('click', function (e) {
-    var t = e.target; if (!t.closest) return;
+    var t = tgt(e); if (!t || !t.closest) return;
     var btn = t.closest('[data-pulse-menu]');
     if (btn) { e.preventDefault(); btn.getAttribute('aria-expanded') === 'true' ? closeMenu(btn, false) : openMenu(btn); return; }
     var opt = t.closest('[role="option"]'), lb = opt && opt.closest('[role="listbox"]');
     if (opt && lb && openMenus.some(function (b) { return menuOf(b) === lb; }) && opt.getAttribute('aria-disabled') !== 'true') { choose(lb, opt); return; }
+    // An action in a menu closes the menu and puts focus back on its button (so a dialog it opens returns focus there).
+    var mi = t.closest('[role="menuitem"]'), owner = mi && openMenus.filter(function (b) { var mm = menuOf(b); return mm && mm.contains(mi); })[0];
+    if (owner && !mi.disabled && mi.getAttribute('aria-disabled') !== 'true') { closeMenu(owner, true); return; }
     openMenus.slice().forEach(function (b) { var m = menuOf(b); if (!(m && m.contains(t))) closeMenu(b, false); });
   });
   document.addEventListener('keydown', function (e) {
     if (!openMenus.length) return;
     var btn = openMenus[openMenus.length - 1], m = menuOf(btn);
     if (e.key === 'Escape') { e.preventDefault(); closeMenu(btn, true); return; }
-    if (!m || m.getAttribute('role') !== 'listbox' || document.activeElement !== m) return;
+    var mi = m ? menuItems(m) : [], at = mi.indexOf(activeEl());
+    if (at >= 0 && /^(ArrowDown|ArrowUp|Home|End)$/.test(e.key)) {
+      e.preventDefault();
+      var to = e.key === 'ArrowDown' ? mi[(at + 1) % mi.length] : e.key === 'ArrowUp' ? mi[(at - 1 + mi.length) % mi.length] : e.key === 'Home' ? mi[0] : mi[mi.length - 1];
+      to.focus(); return;
+    }
+    if (!m || m.getAttribute('role') !== 'listbox' || activeEl() !== m) return;
     var opts = options(m), cur = m.querySelector('[role="option"].is-focus'), i = opts.indexOf(cur);
     if (e.key === 'ArrowDown') { e.preventDefault(); setActive(m, opts[Math.min(i + 1, opts.length - 1)]); }
     else if (e.key === 'ArrowUp') { e.preventDefault(); setActive(m, opts[Math.max(i - 1, 0)]); }
@@ -402,11 +579,11 @@
     openMenus.slice().forEach(function (b) {
       var m = menuOf(b), to = e.relatedTarget;
       if (!to) return;  // clicks on nothing are handled by the click listener
-      if (to !== b && !(m && m.contains(to)) && (b.contains(e.target) || (m && m.contains(e.target)))) closeMenu(b, false);
+      var from = tgt(e); if (to !== b && !(m && m.contains(to)) && (b.contains(from) || (m && m.contains(from)))) closeMenu(b, false);
     });
   });
-  function initMenus() {
-    [].forEach.call(document.querySelectorAll('[data-pulse-menu]'), function (b) {
+  function initMenus(root) {
+    [].forEach.call((root || document).querySelectorAll('[data-pulse-menu]'), function (b) {
       var m = menuOf(b); if (!b.hasAttribute('aria-expanded')) b.setAttribute('aria-expanded', 'false');
       if (m && b.getAttribute('aria-expanded') !== 'true') m.hidden = true;
       if (m && m.getAttribute('role') === 'listbox' && !b.hasAttribute('aria-haspopup')) b.setAttribute('aria-haspopup', 'listbox');
@@ -420,7 +597,11 @@
   function toast(o) {
     o = typeof o === 'string' ? { title: o } : (o || {});
     var tone = o.tone || 'neutral';
-    if (!toaster || !toaster.isConnected) { toaster = el('div', 'pulse-toaster'); document.body.appendChild(toaster); }
+    if (!toaster || !toaster.isConnected) {
+      toaster = el('div', 'pulse-toaster');
+      if (native) toaster.setAttribute('popover', 'manual');   // top layer: above open dialogs and drawers
+      document.body.appendChild(toaster);
+    }
     var t = el('div', 'pulse-toast' + (tone === 'info' ? '' : ' pulse-toast--' + tone));
     t.setAttribute('role', tone === 'danger' ? 'alert' : 'status');
     if (o.icon !== false) { var icon = el('i', 'pulse-icon pulse-icon--' + ICON[tone] + ' pulse-icon--fill'); icon.setAttribute('aria-hidden', 'true'); t.appendChild(icon); }
@@ -436,23 +617,38 @@
     var x = el('button', 'pulse-dismiss'); x.type = 'button'; x.setAttribute('aria-label', 'Dismiss');
     var xi = el('i', 'pulse-icon pulse-icon--x'); xi.setAttribute('aria-hidden', 'true'); x.appendChild(xi); t.appendChild(x);
     toaster.appendChild(t);
+    raiseToaster();
     var ms = o.duration == null ? 5000 : o.duration, timer = null;
-    function start() { if (ms > 0) timer = setTimeout(function () { t.remove(); }, ms); }
+    function start() { if (ms > 0) timer = setTimeout(function () { t.remove(); tidy(); }, ms); }
     function stop() { clearTimeout(timer); }
     t.addEventListener('mouseenter', stop); t.addEventListener('mouseleave', start);
     t.addEventListener('focusin', stop); t.addEventListener('focusout', start);
     start();
     return t;
   }
+  // A modal dialog makes everything outside it inert, popovers included, so the toaster moves into the top open modal
+  // (and back to <body> when none is open). Shown again so it sits above anything opened since.
+  function topModal() { var all = [].filter.call(document.querySelectorAll('dialog[open]'), function (d) { try { return d.matches(':modal'); } catch (err) { return false; } }); return all[all.length - 1] || null; }
+  function raiseToaster() {
+    if (!toaster) return;
+    var home = topModal() || document.body;
+    if (toaster.parentNode !== home) {
+      if (native) { try { toaster.hidePopover(); } catch (err) {} }
+      home.appendChild(toaster);
+      if (home !== document.body) home.addEventListener('close', function back() { home.removeEventListener('close', back); if (toaster.children.length) setTimeout(raiseToaster, 0); else { toaster.remove(); toaster = null; } });
+    }
+    if (native) { try { if (toaster.matches(':popover-open')) toaster.hidePopover(); toaster.showPopover(); } catch (err) {} }
+  }
+  function tidy() { if (toaster && native && !toaster.children.length) { try { toaster.hidePopover(); } catch (err) {} } }
   window.Pulse.toast = toast;
   document.addEventListener('click', function (e) {
-    var t = e.target; if (!t.closest) return;
+    var t = tgt(e); if (!t || !t.closest) return;
     var trig = t.closest('[data-pulse-toast]');
     if (trig) { toast({ title: trig.getAttribute('data-pulse-toast'), text: trig.getAttribute('data-pulse-toast-text'), tone: trig.getAttribute('data-pulse-toast-tone') || undefined }); return; }
     var x = t.closest('.pulse-dismiss'), box = x && x.closest('.pulse-alert, .pulse-toast');
-    if (box && box.dispatchEvent(new CustomEvent('pulse:dismiss', { bubbles: true, cancelable: true }))) box.remove();
+    if (box && box.dispatchEvent(new CustomEvent('pulse:dismiss', { bubbles: true, cancelable: true }))) { box.remove(); tidy(); }
   });
 
-  function initAll() { initTabs(); initMenus(); }
+  function initAll(root) { root = root && root.querySelectorAll ? root : document; initTabs(root); initMenus(root); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initAll); else initAll();
 })();

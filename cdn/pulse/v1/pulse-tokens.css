@@ -3,7 +3,9 @@
    Variables only: loading this file changes nothing on a page by itself.
    Theme:    <html data-theme="light|dark">   (default light)
    Surface:  <html data-surface="web|app">    (default web)
-   Brand:    <html data-brand="name">         (default VEX; a brand.css made by the brand builder sets the others)
+   Brand:    <html data-brand="name">         (app only; default VEX; a brand.css made by the brand builder sets the others)
+   Color has four sets, as in Figma's Color modes: Web Light, Web Dark, App Light, App Dark. The web reads pink directly and is
+   never white-labeled; the app reads the Brand block, so a brand.css only changes the app.
 */
 
 /* Layer order, lowest priority first. A site that puts its base element rules (a { color: inherit }, button resets) in
@@ -56,7 +58,9 @@
   --color-amber-100: #ffedc3;
   --color-amber-400: #faca4b;
   --color-amber-500: #f7b828;
+  --color-amber-550: #d97706;   /* warning marks: icons, dots, borders (3.2:1 on white) */
   --color-amber-600: #92600b;
+  --color-amber-650: #b45309;   /* warning text (5.0:1 on white) */
   --color-amber-700: #754b10;
   --color-blue-50: #eff6ff;
   --color-blue-100: #dbe9fe;
@@ -64,6 +68,9 @@
   --color-blue-500: #407bd0;
   --color-blue-600: #3366bb;
   --color-blue-700: #284e99;
+  /* Focus blue: its own family, so focus never reads as the info status (blue-600) or the brand. */
+  --color-cobalt-400: #60a5fa;
+  --color-cobalt-600: #2563eb;
   --color-purple-400: #b594f2;
   --color-purple-600: #7a3fc4;
   --color-alpha-black-5: rgb(11 12 13 / 0.05);
@@ -72,11 +79,11 @@
   --color-alpha-black-50: rgb(11 12 13 / 0.5);
   --color-alpha-white-8: rgb(255 255 255 / 0.08);
   --color-alpha-white-20: rgb(255 255 255 / 0.2);
-  --color-alpha-accent-5: rgb(209 1 118 / 0.05);
-  --color-alpha-accent-8: rgb(209 1 118 / 0.08);
-  --color-alpha-accent-15: rgb(209 1 118 / 0.15);
-  --color-alpha-accent-25: rgb(209 1 118 / 0.25);
-  --color-alpha-accent-50: rgb(209 1 118 / 0.5);
+  --color-alpha-accent-5: color-mix(in srgb, var(--color-brand-600) 5%, transparent);
+  --color-alpha-accent-8: color-mix(in srgb, var(--color-brand-600) 8%, transparent);
+  --color-alpha-accent-15: color-mix(in srgb, var(--color-brand-600) 15%, transparent);
+  --color-alpha-accent-25: color-mix(in srgb, var(--color-brand-600) 25%, transparent);
+  --color-alpha-accent-50: color-mix(in srgb, var(--color-brand-600) 50%, transparent);
   --color-alpha-green-12: rgb(84 203 153 / 0.12);
   --color-alpha-red-12: rgb(251 130 100 / 0.12);
   --color-alpha-amber-12: rgb(250 202 75 / 0.12);
@@ -86,10 +93,11 @@
   --font-mono: 'JetBrains Mono', ui-monospace, monospace;
 }
 
-/* Brand: the colors and fonts a white-label brand may change, and nothing else. VEX is the default brand.
-   The accent roles below (buttons, links, focus, selected states) read these, never a named color, so a brand only has to
-   set this one block. A brand's file sets the same names on :root[data-brand="name"], with data-brand on <html>.
-   Status colors, neutrals, code colors, sizes and spacing are not brandable. */
+/* Brand (app only): the colors, fonts and logos a white-label brand may change, and nothing else. VEX is the default brand.
+   The App color sets read these, never a named color, so a brand only has to set this one block. A brand's file sets the
+   same names on :root[data-brand="name"], with data-brand on <html>. The website never reads them.
+   Action: the main button's color in light and dark. VEX's is ink (so color is left to mean status); a client may use its
+   own brand color. Status colors, neutrals, code colors, focus, sizes and spacing are not brandable. */
 :root {
   --color-brand-50: var(--color-pink-50);
   --color-brand-100: var(--color-pink-100);
@@ -103,10 +111,42 @@
   --color-brand-900: var(--color-pink-900);
   --color-brand-950: var(--color-pink-950);
   --color-brand-on: var(--color-neutral-0);     /* text and icons on a brand-color fill: white or black, whichever reads */
+  --color-brand-action: var(--color-neutral-900);
+  --color-brand-action-hover: var(--color-neutral-650);     /* a dark button lightens clearly on hover */
+  --color-brand-action-pressed: var(--color-neutral-750);   /* and pressed sits between rest and hover */
+  --color-brand-on-action: var(--color-neutral-0);
+  --color-brand-action-dark: var(--color-neutral-0);
+  --color-brand-action-dark-hover: var(--color-neutral-200);
+  --color-brand-action-dark-pressed: var(--color-neutral-100);
+  --color-brand-on-action-dark: var(--color-neutral-900);
   --font-brand-sans: 'Inter', system-ui, sans-serif;
   --font-brand-mono: 'JetBrains Mono', ui-monospace, monospace;
   --font-sans: var(--font-brand-sans);
   --font-mono: var(--font-brand-mono);
+  /* Logos for the app header (absolute URLs; a brand sets its own). --brand-logo-wide is optional (none = mark and name). */
+  --brand-mark: url("https://cdn.unmanned.team/img/logo.png");
+  --brand-mark-dark: var(--brand-mark);
+  --brand-logo-wide: none;
+  /* The lockup in the app header. VEX's own: the pink dot and the name in 18px semibold (the website's lockup, toned down to sit
+     beside the app). A client brand (data-brand on <html>) shows its mark and the name in 16px semibold; its brand.css can change these. */
+  --brand-dot-display: inline-block;
+  --brand-mark-display: none;
+  --brand-lockup-gap: var(--space-4);
+  --brand-name-size: var(--type-label-lg-size);
+  --brand-name-line-height: var(--space-24);
+  --brand-name-weight: 600;
+  --brand-name-tracking: 0.01em;
+}
+
+/* A client brand: its mark and name instead of VEX's dot lockup. */
+:root[data-brand] {
+  --brand-dot-display: none;
+  --brand-mark-display: inline-block;
+  --brand-lockup-gap: var(--space-8);
+  --brand-name-size: var(--type-label-md-size);
+  --brand-name-line-height: var(--type-label-md-line-height);
+  --brand-name-weight: 600;
+  --brand-name-tracking: normal;
 }
 
 /* Dimension: spacing, radius, borders, sizes */
@@ -143,9 +183,13 @@
   --size-icon-20: 20px;
   --size-icon-24: 24px;
   --size-icon-32: 32px;
+  /* Row heights for lists and tables (the header row matches). Density comes from rows, not smaller text. */
+  --size-row-compact: 40px;
+  --size-row-default: 48px;
+  --size-row-spacious: 56px;
 }
 
-/* Color, light */
+/* Color: Web Light (the default) */
 :root,
 [data-theme="light"] {
   color-scheme: light;
@@ -166,14 +210,15 @@
   --color-text-placeholder: var(--color-neutral-450);
   --color-text-disabled: var(--color-neutral-400);
   --color-text-on-accent: var(--color-neutral-0);
-  --color-text-on-brand: var(--color-brand-on);
+  --color-text-on-brand: var(--color-neutral-0);
+  --brand-mark-current: var(--brand-mark);
   --color-text-on-contrast: var(--color-neutral-0);
   --color-text-on-warning: var(--color-neutral-900);
-  --color-text-accent: var(--color-brand-600);
-  --color-text-accent-hover: var(--color-brand-700);
+  --color-text-accent: var(--color-pink-600);
+  --color-text-accent-hover: var(--color-pink-700);
   --color-text-success: var(--color-green-600);
   --color-text-danger: var(--color-red-600);
-  --color-text-warning: var(--color-amber-600);
+  --color-text-warning: var(--color-amber-650);
   --color-text-info: var(--color-blue-600);
   /* Code: syntax colors for code samples. */
   --color-code-function: var(--color-blue-600);
@@ -182,19 +227,22 @@
   --color-code-number: var(--color-amber-600);
   --color-code-key: var(--color-purple-600);
   --color-code-comment: var(--color-neutral-500);
+  --color-surface-code: var(--color-surface-subtle);        /* behind code and its head */
+  --color-surface-code-head: var(--color-surface-sunken);
   --color-border-page: var(--color-neutral-0);
   --color-border-subtle: var(--color-neutral-100);
   --color-border-default: var(--color-neutral-200);
   --color-border-mid: var(--color-neutral-300);
   --color-border-strong: var(--color-neutral-400);
   --color-border-hard: var(--color-neutral-600);
-  --color-border-focus: var(--color-brand-600);
+  --color-border-focus: var(--color-cobalt-600);
+  --color-border-field-focus: var(--color-border-focus);   /* a text field with focus: blue on the web */
   --shadow-focus-ring: 0px 0px 0px 1px var(--color-surface-page), 0px 0px 0px 3px var(--color-border-focus);
-  --color-accent-default: var(--color-brand-500);
-  --color-accent-hover: var(--color-brand-700);
-  --color-accent-pressed: var(--color-brand-800);
-  --color-accent-subtle: var(--color-brand-50);
-  --color-accent-subtle-hover: var(--color-brand-100);
+  --color-accent-default: var(--color-pink-500);
+  --color-accent-hover: var(--color-pink-700);
+  --color-accent-pressed: var(--color-pink-800);
+  --color-accent-subtle: var(--color-pink-50);
+  --color-accent-subtle-hover: var(--color-pink-100);
   --color-interactive-hover: var(--color-alpha-black-5);
   --color-interactive-pressed: var(--color-alpha-black-8);
   --color-status-neutral: var(--color-neutral-500);
@@ -209,16 +257,27 @@
   --color-status-warning-subtle: var(--color-amber-50);
   --color-status-info: var(--color-blue-600);
   --color-status-info-subtle: var(--color-blue-50);
-  --color-indicator-accent: var(--color-brand-500);
+  --color-indicator-accent: var(--color-pink-500);
+  /* Action and selection: the main button and selected items. On the web both are the accent. */
+  --color-action: var(--color-accent-default);
+  --color-action-hover: var(--color-accent-hover);
+  --color-action-pressed: var(--color-accent-pressed);
+  --color-text-on-action: var(--color-text-on-accent);
+  --color-text-action: var(--color-text-accent);
+  --color-text-action-hover: var(--color-text-accent-hover);
+  --color-selected: var(--color-action);
+  --color-selected-subtle: var(--color-accent-subtle);
+  --color-text-selected: var(--color-text-accent);
+  --color-text-on-selected: var(--color-text-on-action);
   --color-indicator-success: var(--color-green-600);
   --color-indicator-danger: var(--color-red-500);
-  --color-indicator-warning: var(--color-amber-500);
+  --color-indicator-warning: var(--color-amber-550);
   --color-indicator-info: var(--color-blue-600);
   --color-shadow-offset: var(--color-alpha-black-15);
   --color-shadow-offset-accent: color-mix(in srgb, var(--color-brand-600) 25%, transparent);
 }
 
-/* Color, dark */
+/* Color: Web Dark */
 [data-theme="dark"] {
   color-scheme: dark;
   --color-surface-page: var(--color-neutral-900);
@@ -238,11 +297,12 @@
   --color-text-placeholder: var(--color-neutral-375);
   --color-text-disabled: var(--color-neutral-500);
   --color-text-on-accent: var(--color-neutral-0);
-  --color-text-on-brand: var(--color-brand-on);
+  --color-text-on-brand: var(--color-neutral-0);
+  --brand-mark-current: var(--brand-mark-dark);
   --color-text-on-contrast: var(--color-neutral-900);
   --color-text-on-warning: var(--color-neutral-900);
-  --color-text-accent: var(--color-brand-400);
-  --color-text-accent-hover: var(--color-brand-300);
+  --color-text-accent: var(--color-pink-400);
+  --color-text-accent-hover: var(--color-pink-300);
   --color-text-success: var(--color-green-400);
   --color-text-danger: var(--color-red-400);
   --color-text-warning: var(--color-amber-400);
@@ -253,19 +313,22 @@
   --color-code-number: var(--color-amber-400);
   --color-code-key: var(--color-purple-400);
   --color-code-comment: var(--color-neutral-350);
+  --color-surface-code: var(--color-surface-subtle);        /* behind code and its head */
+  --color-surface-code-head: var(--color-surface-sunken);
   --color-border-page: var(--color-neutral-900);
   --color-border-subtle: var(--color-alpha-white-8);
   --color-border-default: var(--color-neutral-600);
   --color-border-mid: var(--color-neutral-500);
   --color-border-strong: var(--color-neutral-400);
   --color-border-hard: var(--color-neutral-300);
-  --color-border-focus: var(--color-brand-400);
+  --color-border-focus: var(--color-cobalt-400);
+  --color-border-field-focus: var(--color-border-focus);   /* a text field with focus: blue on the web */
   --shadow-focus-ring: 0px 0px 0px 1px var(--color-surface-page), 0px 0px 0px 3px var(--color-border-focus);
-  --color-accent-default: var(--color-brand-500);
-  --color-accent-hover: var(--color-brand-600);
-  --color-accent-pressed: var(--color-brand-700);
-  --color-accent-subtle: var(--color-brand-950);
-  --color-accent-subtle-hover: var(--color-brand-900);
+  --color-accent-default: var(--color-pink-500);
+  --color-accent-hover: var(--color-pink-600);
+  --color-accent-pressed: var(--color-pink-700);
+  --color-accent-subtle: var(--color-pink-950);
+  --color-accent-subtle-hover: var(--color-pink-900);
   --color-interactive-hover: var(--color-alpha-white-8);
   --color-interactive-pressed: var(--color-alpha-white-20);
   --color-status-neutral: var(--color-neutral-400);
@@ -280,7 +343,17 @@
   --color-status-warning-subtle: var(--color-alpha-amber-12);
   --color-status-info: var(--color-blue-600);
   --color-status-info-subtle: var(--color-alpha-blue-12);
-  --color-indicator-accent: var(--color-brand-400);
+  --color-indicator-accent: var(--color-pink-400);
+  --color-action: var(--color-accent-default);
+  --color-action-hover: var(--color-accent-hover);
+  --color-action-pressed: var(--color-accent-pressed);
+  --color-text-on-action: var(--color-text-on-accent);
+  --color-text-action: var(--color-text-accent);
+  --color-text-action-hover: var(--color-text-accent-hover);
+  --color-selected: var(--color-action);
+  --color-selected-subtle: var(--color-accent-subtle);
+  --color-text-selected: var(--color-text-accent);
+  --color-text-on-selected: var(--color-text-on-action);
   --color-indicator-success: var(--color-green-400);
   --color-indicator-danger: var(--color-red-400);
   --color-indicator-warning: var(--color-amber-400);
@@ -302,6 +375,71 @@
   --control-height-sm: var(--size-control-sm);
   --control-height-md: var(--size-control-md);
   --control-height-lg: var(--size-control-lg);
+}
+
+/* Color: App Light and App Dark (VEX and other apps). Only what differs from the web. Optimised for a security app:
+   - The accent roles read the brand (white labeling happens only here).
+   - The main action is the brand's action color (ink for VEX), so color is left to mean status.
+   - Selected items use a quiet neutral fill with the action color as the edge.
+   - Secondary and ghost buttons follow the action color too (text-action); links keep the accent.
+   - Code sits on one light gray (surface-code), not the web's darker head.
+   - Secondary and tertiary text are lighter in Light: secondary 5.2:1, tertiary 4.5:1 (on white only; on gray use secondary).
+   Both sets list the same names, so a dark app (or a dark section in a light app, and the reverse) gets its own values. */
+[data-surface="app"],
+[data-surface="app"] [data-theme="light"] {
+  --color-text-secondary: var(--color-neutral-500);
+  --color-text-tertiary: var(--color-neutral-450);
+  --color-text-on-brand: var(--color-brand-on);
+  --color-text-accent: var(--color-brand-600);
+  --color-text-accent-hover: var(--color-brand-700);
+  --color-accent-default: var(--color-brand-500);
+  --color-accent-hover: var(--color-brand-700);
+  --color-accent-pressed: var(--color-brand-800);
+  --color-accent-subtle: var(--color-brand-50);
+  --color-accent-subtle-hover: var(--color-brand-100);
+  --color-indicator-accent: var(--color-brand-500);
+  --color-action: var(--color-brand-action);
+  --color-action-hover: var(--color-brand-action-hover);
+  --color-action-pressed: var(--color-brand-action-pressed);
+  --color-text-on-action: var(--color-brand-on-action);
+  --color-text-action: var(--color-action);
+  --color-text-action-hover: var(--color-action-hover);
+  --color-selected: var(--color-action);
+  --color-selected-subtle: var(--color-surface-sunken);
+  --color-text-selected: var(--color-text-primary);
+  --color-text-on-selected: var(--color-text-on-action);
+  --color-surface-code: var(--color-surface-subtle);        /* lighter in apps: one quiet gray, the head set off by its line */
+  --color-surface-code-head: var(--color-surface-subtle);
+  --color-border-field-focus: var(--color-border-hard);   /* quieter in apps: the caret shows where you are; blue stays for keyboard focus */
+  --color-indicator-success: var(--color-green-500);   /* a brighter mark (4.0:1, passes 3:1): a 6 to 8px dot in 600 reads near black */
+}
+[data-surface="app"][data-theme="dark"],
+[data-surface="app"] [data-theme="dark"] {
+  --color-text-secondary: var(--color-neutral-300);
+  --color-text-tertiary: var(--color-neutral-350);
+  --color-text-on-brand: var(--color-brand-on);
+  --color-text-accent: var(--color-brand-400);
+  --color-text-accent-hover: var(--color-brand-300);
+  --color-accent-default: var(--color-brand-500);
+  --color-accent-hover: var(--color-brand-600);
+  --color-accent-pressed: var(--color-brand-700);
+  --color-accent-subtle: var(--color-brand-950);
+  --color-accent-subtle-hover: var(--color-brand-900);
+  --color-indicator-accent: var(--color-brand-400);
+  --color-action: var(--color-brand-action-dark);
+  --color-action-hover: var(--color-brand-action-dark-hover);
+  --color-action-pressed: var(--color-brand-action-dark-pressed);
+  --color-text-on-action: var(--color-brand-on-action-dark);
+  --color-text-action: var(--color-action);
+  --color-text-action-hover: var(--color-action-hover);
+  --color-selected: var(--color-action);
+  --color-selected-subtle: var(--color-surface-sunken);
+  --color-text-selected: var(--color-text-primary);
+  --color-text-on-selected: var(--color-text-on-action);
+  --color-surface-code: var(--color-surface-subtle);
+  --color-surface-code-head: var(--color-surface-subtle);
+  --color-border-field-focus: var(--color-border-hard);   /* quieter in apps: the caret shows where you are; blue stays for keyboard focus */
+  --color-indicator-success: var(--color-green-400);
 }
 
 /* Surface: app */
@@ -351,6 +489,7 @@
   --type-body-md-line-height: 24px;
   --type-body-sm-size: 14px;
   --type-body-sm-line-height: 20px;
+  --type-body-sm-relaxed-line-height: 22px;   /* reading text in a thread (messages): a little more air than lists and controls */
   --type-body-xs-size: 12px;
   --type-body-xs-line-height: 16px;
   --type-label-lg-size: 18px;

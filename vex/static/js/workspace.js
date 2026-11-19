@@ -31,6 +31,7 @@ class Api {
         this.file = new FileApi(state);
         this.sources = new SourceApi(state);
         this.settings = new SettingsApi(state);
+        this.compliance = new ComplianceApi(state);
     }
 
     reset(){
@@ -41,6 +42,7 @@ class Api {
         this.file.set("account", this.state.account());
         this.sources.set("account", this.state.account());
         this.settings.set("account", this.state.account());
+        this.compliance.set("account", this.state.account());
     }
 }
 
@@ -63,6 +65,7 @@ class Workspace {
                 this.sidebars = {
                     signal: new SignalSidebar(state),
                     backup: new BackupSidebar(state),
+                    compliance: new ComplianceSidebar(state),
                 }
 
                 this.tenant = new TenantScreen(state);

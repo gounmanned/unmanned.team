@@ -160,6 +160,14 @@ class FileApi extends Gateway {
     }
 }
 
+class ComplianceApi extends Gateway {
+    constructor(){
+        super();
+    }
+
+    async get(framework) {return this.call("GET", `compliance/${framework}`); }
+}
+
 class Auth {
     static async init(code) {
         const backend = "us.unmanned.team";

@@ -19,6 +19,7 @@
       <link rel="stylesheet" href="static/css/coverage.css?v=${v}">
       <link rel="stylesheet" href="static/css/backups.css?v=${v}">
       <link rel="stylesheet" href="static/css/audit.css?v=${v}">
+      <link rel="stylesheet" href="static/css/compliance.css?v=${v}">
       <link rel="stylesheet" href="static/css/signal.css?v=${v}">
     `);
   </script>
@@ -103,6 +104,8 @@
       <button type="button" class="settings-btn" popovertarget="settings-menu" aria-label="Settings" title="Settings">
         <span class="material-symbols-outlined">settings</span>
       </button>
+
+      <a id="open-compliance-sidebar"></a>
       <a id="open-backup-sidebar">Recovery</a>
       <a id="open-signal-sidebar" class="cta">+ Add Signal</a>
     </footer>
@@ -147,13 +150,6 @@
       </label>
       <label class="setting">
         <span class="setting-text">
-          <span class="setting-name">Push notifications</span>
-          <span class="setting-desc">Show a note when a major service goes down.</span>
-        </span>
-        <input type="checkbox" role="switch" name="R5" checked>
-      </label>
-      <label class="setting">
-        <span class="setting-text">
           <span class="setting-name">Endpoint actions</span>
           <span class="setting-desc">Allow dots to execute recurring actions.</span>
         </span>
@@ -172,9 +168,7 @@
       </div>
 
       <span class="managed-divider"></span>
-
       <h2 class="managed-greeting">Welcome back</h2>
-
       <div class="managed-totals" id="managed-totals"></div>
     </header>
 
@@ -300,6 +294,32 @@
       <ul id="file-list" class="hacker-list"></ul>
     </div>
   </site-sidebar>
+
+  <site-sidebar id="compliance-sidebar">
+    <header class="compliance-banner">
+      <div class="compliance-banner-text">
+        <span class="compliance-label">
+          <span class="material-symbols-outlined">verified_user</span>CMMC Level 2
+        </span>
+        <div class="compliance-stats">
+          <span class="stat"><b id="compliance-score">—</b>Ready</span>
+          <span class="stat"><b id="compliance-met">—</b>Met</span>
+          <span class="stat"><b id="compliance-open">—</b>Open</span>
+          <span class="stat"><b id="compliance-families">—</b>Families</span>
+        </div>
+      </div>
+      <nav class="segmented" id="compliance-filter" aria-label="Filter objectives">
+        <button type="button" data-filter="all" aria-pressed="true">All</button>
+        <button type="button" data-filter="open" aria-pressed="false">Open</button>
+        <button type="button" data-filter="met" aria-pressed="false">Met</button>
+      </nav>
+    </header>
+    <div class="compliance-strip" id="compliance-bar"></div>
+
+    <div class="container" id="compliance-wrap">
+      <div class="compliance-list" id="compliance-list" data-filter="all"></div>
+    </div>
+  </site-sidebar>
 </body>
 
 <script src="https://cdn.unmanned.team/js/components.js"></script>
@@ -313,6 +333,7 @@
     <script src="static/js/tenant.js?v=${v}"><\/script>
     <script src="static/js/sidebars/signal.js?v=${v}"><\/script>
     <script src="static/js/sidebars/backup.js?v=${v}"><\/script>
+    <script src="static/js/sidebars/compliance.js?v=${v}"><\/script>
     <script src="static/js/rollups/managed.js?v=${v}"><\/script>
     <script src="static/js/rollups/coverage.js?v=${v}"><\/script>
     <script src="static/js/rollups/audit.js?v=${v}"><\/script>

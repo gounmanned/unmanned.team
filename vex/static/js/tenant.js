@@ -313,7 +313,7 @@ class Ekg {
             <g class="ekg-axis">
                 <text class="ekg-from" text-anchor="start"/>
                 <text class="ekg-next" text-anchor="end"/>
-                <text class="ekg-now" text-anchor="middle">now</text>
+                <text class="ekg-now" text-anchor="middle">testing</text>
             </g>
             <path class="ekg-trace"/>
             <line class="ekg-scan" y1="0"/>

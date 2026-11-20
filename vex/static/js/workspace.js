@@ -70,13 +70,11 @@ class Workspace {
 
                 this.tenant = new TenantScreen(state);
                 this.listen();
-
-                setInterval(() => this.reload(), 60000);
-                document.addEventListener('page:reload', () => this.reload());
-                document.addEventListener('page:reset', () => this.reset(state));
-
                 this.open('managed');
                 this.reveal();
+
+                document.addEventListener('page:reload', () => this.reload());
+                document.addEventListener('page:reset', () => this.reset(state));
             })
             .catch(err => {
                 console.error(err);

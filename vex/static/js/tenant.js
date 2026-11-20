@@ -15,10 +15,10 @@ class TenantScreen {
         this.pending = new Set(Object.keys(TenantScreen.PENDING));
         this.revealed = false;
         this.coverage = { assets: 0, dots: 0 };
-        this.events = 0;
+        this.ekg = new Ekg(this.api, () => this.reload());   // the sweep's minute is the screen's refresh clock
 
         this.screen = document.getElementById('tenant-screen');
-        this.period = document.getElementById('trend-period');
+        this.period = document.getElementById('period');
 
         const now = new Date();
         this.period.children[0].textContent = now.toLocaleString(undefined, { month: 'long' });
@@ -33,7 +33,6 @@ class TenantScreen {
         });
 
         this.listen();
-        new ResizeObserver(() => this.schedule()).observe(document.getElementById('trend-svg'));
     }
 
     // ── data ───────────────────────────────────────────────────────
@@ -45,11 +44,11 @@ class TenantScreen {
     async reload() {
         if (!this.state.account()) return;
 
+        if (!this.ekg.running) this.ekg.start(this.settle('events'));
         await Promise.all([
             this.api.signals.list('status=O', new CustomEvent('signal:account')).then(this.settle('queue')),
             this.loadHistory().then(this.settle('history')),
             this.countAssets().then(this.settle('setup', c => this.coverage = c)),
-            this.countEvents().then(this.settle('events', n => this.events = n)),
         ]);
     }
 
@@ -70,6 +69,7 @@ class TenantScreen {
 
     reset() {
         this.api.reset();
+        this.ekg.stop();
         this.run++;
         this.pending = new Set(Object.keys(TenantScreen.PENDING));
         this.revealed = false;
@@ -149,9 +149,7 @@ class TenantScreen {
             }
 
             if (ready('setup')) this.renderSetup(this.coverage);
-            if (ready('events')) document.getElementById('events-count').textContent = this.events.toLocaleString();
 
-            this.renderTrend(all.filter(s => this.inPeriod(s)));
             this.mark();
             this.reveal();
         });
@@ -161,7 +159,6 @@ class TenantScreen {
         Object.entries(TenantScreen.PENDING).forEach(([part, selector]) => {
             document.querySelectorAll(selector).forEach(el => el.classList.toggle('is-pending', this.pending.has(part)));
         });
-        this.screen.querySelector('.trend-chart').classList.toggle('is-dim', this.pending.has('history'));
     }
 
     skeleton() {
@@ -226,83 +223,6 @@ class TenantScreen {
         }).join('');
     }
 
-    renderTrend(signals) {
-        const now = new Date();
-        const yearly = !this.monthly;
-        const size = yearly ? 12 : new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
-        const bucket = d => yearly ? d.getMonth() : d.getDate() - 1;
-        const date = i => yearly ? new Date(now.getFullYear(), i) : new Date(now.getFullYear(), now.getMonth(), i + 1);
-
-        const counts = new Array(size).fill(0);
-        signals.forEach(s => counts[bucket(new Date(Workspace.time(s.created)))]++);
-
-        const svg = document.getElementById('trend-svg');
-        const W = svg.clientWidth, H = svg.clientHeight;
-        const key = [W, H, bucket(now), counts].join('|');
-        if (!W || !H || key === this.trendKey) return;
-        this.trendKey = key;
-
-        const pad = { t: 6, r: 0, b: 14, l: 0 };
-        const max = Math.max(1, ...counts);
-        const step = (W - pad.l - pad.r) / (size - 1);
-        const x = i => pad.l + i * step;
-        const y = v => pad.t + (1 - v / max) * (H - pad.t - pad.b);
-        const base = y(0);
-        const pts = counts.slice(0, bucket(now) + 1).map((v, i) => [x(i), y(v)]);
-        const line = pts.map(([px, py], i) => `${i ? 'L' : 'M'}${px.toFixed(1)},${py.toFixed(1)}`).join(' ');
-        const [lx, ly] = pts.at(-1);
-        const area = `${line} L${lx.toFixed(1)},${base} L${pts[0][0].toFixed(1)},${base} Z`;
-
-        const ticks = counts.map((_, i) => {
-            const anchor = i === 0 ? 'start' : i === size - 1 ? 'end' : 'middle';
-            const text = yearly ? date(i).toLocaleDateString(undefined, { month: 'short' }) : i + 1;
-            return `<text x="${x(i)}" y="${H - 4}" text-anchor="${anchor}">${text}</text>`;
-        }).join('');
-
-        const hits = counts.map((v, i) => `
-            <rect x="${x(i) - step / 2}" y="0" width="${step}" height="${H}" fill="transparent">
-                <title>${date(i).toLocaleDateString(undefined, yearly ? { month: 'long' } : { month: 'short', day: 'numeric' })}: ${v} signal${v === 1 ? '' : 's'}</title>
-            </rect>`).join('');
-
-        // ── today marker ──
-        const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
-        const spin = still ? '' :
-            `<animateTransform attributeName="transform" type="rotate"
-            from="0 ${lx} ${ly}" to="-360 ${lx} ${ly}" dur="12s" repeatCount="indefinite"/>`;
-
-        const waves = [0, 1]
-            .map(i => `<circle class="trend-wave" cx="${lx}" cy="${ly}" r="22" style="animation-delay:${-i * 2.5}s"/>`).join('');
-
-        svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
-        svg.innerHTML = `
-            <defs>
-            <linearGradient id="trend-fill" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" style="stop-color:var(--brand);stop-opacity:.18"/>
-                <stop offset="100%" style="stop-color:var(--brand);stop-opacity:0"/>
-            </linearGradient>
-            </defs>
-
-            <line class="trend-baseline" x1="${pad.l}" x2="${lx}" y1="${base}" y2="${base}"/>
-            <line class="trend-future" x1="${lx}" x2="${W - pad.r}" y1="${base}" y2="${base}"/>
-            <path d="${area}" fill="url(#trend-fill)"/>
-            <path class="trend-line" d="${line}"/>
-            <line class="trend-now" x1="${lx}" x2="${lx}" y1="${ly}" y2="${base}"/>
-
-            <g class="trend-radar">
-            ${waves}
-            <circle class="trend-halo" cx="${lx}" cy="${ly}" r="11"/>
-            <g>
-                <circle class="trend-reticle" cx="${lx}" cy="${ly}" r="6.5"/>
-                ${spin}
-            </g>
-            <circle class="trend-today-pulse" cx="${lx}" cy="${ly}" r="3"/>
-            <circle class="trend-today" cx="${lx}" cy="${ly}" r="3"/>
-            </g>
-            <g class="trend-axis">${ticks}</g>
-            ${hits}
-        `;
-    }
-
     // ── setup ──────────────────────────────────────────────────────
 
     async countAssets() {
@@ -318,15 +238,6 @@ class TenantScreen {
         seg.dataset.state = assets ? 'ok' : 'empty';
         seg.querySelector('.setup-chip-count').textContent = assets.toLocaleString();
         seg.querySelector('.setup-chip-pct').textContent = assets ? `(${Math.round(dots / assets * 100)}%)` : '';
-    }
-
-    // ── audit ──────────────────────────────────────────────────────
-
-    async countEvents() {
-        const end = new Date();
-        const start = new Date(end - 60000);
-        const logs = await this.api.audit.get(start.toISOString(), end.toISOString()) ?? [];
-        return logs.length;
     }
 
     // ── events ─────────────────────────────────────────────────────
@@ -376,5 +287,163 @@ class TenantScreen {
         settings.addEventListener('change', ({ target }) => {
             target.checked ? this.api.settings.enable(target.name) : this.api.settings.disable(target.name);
         });
+    }
+}
+// ── ekg: live sweep of real-time audit events, one wall-clock minute per pass ──
+
+class Ekg {
+    static WINDOW = 60;              // seconds per sweep, one slot per second
+    static PAD = { t: 8, b: 16 };    // room above for spikes, below for the clock axis
+    static POLL = 2000;
+    static MINUTE = new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2-digit' });
+
+    constructor(api, onMinute) {
+        this.api = api;
+        this.onMinute = onMinute;
+        this.run = 0;
+        this.timer = null;
+        this.events = [];
+        this.size = { W: 0, H: 0 };
+        this.still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        this.counter = document.getElementById('events-count');
+        this.svg = document.getElementById('ekg-svg');
+        this.svg.innerHTML = `
+            <line class="ekg-ahead"/>
+            <g class="ekg-axis">
+                <text class="ekg-from" text-anchor="start"/>
+                <text class="ekg-next" text-anchor="end"/>
+                <text class="ekg-now" text-anchor="middle">now</text>
+            </g>
+            <path class="ekg-trace"/>
+            <line class="ekg-scan" y1="0"/>
+            <circle class="ekg-halo" r="3"/>
+            <circle class="ekg-head" r="3"/>
+        `;
+        this.trace = this.svg.querySelector('.ekg-trace');
+        this.ahead = this.svg.querySelector('.ekg-ahead');
+        [this.fromLabel, this.nextLabel, this.nowLabel] = this.svg.querySelectorAll('.ekg-axis text');
+        this.scan = this.svg.querySelector('.ekg-scan');
+        this.dots = this.svg.querySelectorAll('circle');
+
+        new ResizeObserver(() => this.resize()).observe(this.svg);
+    }
+
+    start(ready) {
+        this.stop();
+        this.ready = ready;
+        this.primed = false;
+        this.minute = null;
+        this.count = null;
+        this.from = new Date(Date.now() - Ekg.WINDOW * 1000);
+
+        this.poll();
+        this.timer = setInterval(() => this.poll(), Ekg.POLL);
+        if (!this.still) this.loop();
+    }
+
+    stop() {
+        this.run++;
+        clearInterval(this.timer);
+        this.timer = null;
+        cancelAnimationFrame(this.frame);
+    }
+
+    get running() {
+        return this.timer !== null;
+    }
+
+    loop = () => {
+        this.render();
+        this.frame = requestAnimationFrame(this.loop);
+    };
+
+    async poll() {
+        const run = this.run;
+        const start = this.from;
+        const end = this.from = new Date();
+
+        const logs = await this.api.audit.get(start.toISOString(), end.toISOString()) ?? [];
+        if (run !== this.run) return;
+
+        // a restart keeps the old trace on screen until this first fetch replaces it in one go
+        const times = logs.map(log => Date.parse(log.timestamp));
+        if (this.primed) this.events.push(...times);
+        else {
+            this.events = times;
+            this.primed = true;
+            this.ready();
+        }
+        this.render();
+    }
+
+    resize() {
+        const W = this.svg.clientWidth, H = this.svg.clientHeight;
+        const base = H - Ekg.PAD.b;
+        this.size = { W, H, base };
+        this.svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+
+        Object.entries({ x2: W, y1: base, y2: base }).forEach(([k, v]) => this.ahead.setAttribute(k, v));
+        this.scan.setAttribute('y2', base);
+        [this.fromLabel, this.nextLabel, this.nowLabel].forEach(t => t.setAttribute('y', H - 3));
+        this.nextLabel.setAttribute('x', W);
+        this.render();
+    }
+
+    render(now = Date.now()) {
+        const { WINDOW, PAD } = Ekg;
+        this.events = this.events.filter(t => t >= now - WINDOW * 1000);
+
+        if (this.primed && this.events.length !== this.count) {
+            this.count = this.events.length;
+            this.counter.textContent = this.count.toLocaleString();
+        }
+
+        const { W, base } = this.size;
+        if (!W) return;
+
+        // only this minute is drawn: anything from the previous minute stays out of the sweep
+        const minute = Math.floor(now / 60000) * 60000;
+        if (this.minute && minute !== this.minute) this.onMinute();   // sweep wrapped: new minute
+
+        const slots = new Array(WINDOW).fill(0);
+        this.events.filter(t => t >= minute).forEach(t => slots[Math.floor((t - minute) / 1000)]++);
+
+        const head = (now - minute) / 1000;
+        const w = W / WINDOW;
+        const amp = base - PAD.t;
+        const max = Math.max(3, ...slots);
+        const pt = (x, y) => `${x.toFixed(1)},${y.toFixed(1)}`;
+
+        // one complex per active second: flat → spike → recoil → settle
+        let d = `M0,${base}`;
+        for (let i = 0; i < Math.floor(head); i++) {
+            const x = i * w, c = slots[i];
+            if (!c) { d += ` L${pt(x + w, base)}`; continue; }
+            const h = amp * Math.max(0.3, c / max);
+            d += ` L${pt(x + w * .3, base)} L${pt(x + w * .45, base - h)}`
+                + ` L${pt(x + w * .6, base + Math.min(h * .4, 5))} L${pt(x + w * .75, base)} L${pt(x + w, base)}`;
+        }
+
+        const hx = head * w;
+        this.trace.setAttribute('d', `${d} L${pt(hx, base)}`);
+        this.ahead.setAttribute('x1', hx);
+        this.scan.setAttribute('x1', hx);
+        this.scan.setAttribute('x2', hx);
+        this.dots.forEach(c => { c.setAttribute('cx', hx); c.setAttribute('cy', base); });
+        this.label(minute, hx, W);
+    }
+
+    label(minute, hx, W) {
+        if (minute !== this.minute) {
+            this.minute = minute;
+            this.fromLabel.textContent = Ekg.MINUTE.format(minute);
+            this.nextLabel.textContent = `${Ekg.MINUTE.format(minute + 60000)} →`;
+        }
+
+        const room = 44;
+        this.nowLabel.setAttribute('x', Math.min(Math.max(hx, room / 2), W - room / 2));
+        this.fromLabel.classList.toggle('hidden', hx < room + 24);
+        this.nextLabel.classList.toggle('hidden', hx > W - room - 40);
     }
 }

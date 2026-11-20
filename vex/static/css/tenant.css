@@ -230,7 +230,6 @@
 /* ── pulse: pinned full-width SOC strip with the live EKG ────────── */
 
 .pulse {
-  --radar: var(--brand);
   position: relative;
   z-index: 1;
   margin: -16px -20px 0;
@@ -238,8 +237,6 @@
   border-bottom: 1px solid transparent;
   transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
 }
-
-#tenant-screen.critical .pulse { --radar: var(--critical); }
 
 #tenant-screen.scrolled .pulse {
   background: var(--surface-alt);
@@ -312,7 +309,7 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  color: var(--radar);
+  color: var(--brand);
   background: currentColor;
   animation: live-ping 1.8s ease-out infinite;
 }
@@ -487,7 +484,6 @@
   overflow: visible;
 }
 
-/* the rest of the minute, still to come */
 #ekg-svg .ekg-ahead {
   stroke: color-mix(in srgb, var(--text-faint) 60%, transparent);
   stroke-width: 1;
@@ -502,7 +498,7 @@
   transition: opacity 0.2s;
 }
 
-#ekg-svg .ekg-axis .ekg-now { font-weight: 700; fill: var(--radar); }
+#ekg-svg .ekg-axis .ekg-now { font-weight: 700; fill: var(--brand); }
 #ekg-svg .ekg-axis .ekg-next { font-weight: 600; fill: var(--text-body); }
 #ekg-svg .ekg-axis .hidden { opacity: 0; }
 
@@ -513,18 +509,18 @@
 
 #ekg-svg .ekg-trace {
   fill: none;
-  stroke: var(--radar);
+  stroke: var(--brand);
   stroke-width: 1.5;
   stroke-linejoin: round;
   stroke-linecap: round;
-  filter: drop-shadow(0 0 2.5px color-mix(in srgb, var(--radar) 50%, transparent));
+  filter: drop-shadow(0 0 2.5px color-mix(in srgb, var(--brand) 50%, transparent));
 }
 
-#ekg-svg .ekg-scan { stroke: var(--radar); stroke-opacity: 0.3; stroke-width: 1; }
-#ekg-svg .ekg-head { fill: var(--radar); stroke: var(--surface); stroke-width: 1.5; }
+#ekg-svg .ekg-scan { stroke: var(--brand); stroke-opacity: 0.3; stroke-width: 1; }
+#ekg-svg .ekg-head { fill: var(--brand); stroke: var(--surface); stroke-width: 1.5; }
 
 #ekg-svg .ekg-halo {
-  fill: var(--radar);
+  fill: var(--brand);
   transform-box: fill-box;
   transform-origin: center;
   animation: ekg-pulse 1.4s ease-out infinite;

@@ -292,8 +292,8 @@ class TenantScreen {
 // ── ekg: live sweep of real-time audit events, one wall-clock minute per pass ──
 
 class Ekg {
-    static WINDOW = 60;              // seconds per sweep, one slot per second
-    static PAD = { t: 8, b: 16 };    // room above for spikes, below for the clock axis
+    static WINDOW = 60;
+    static PAD = { t: 8, b: 16 };
     static POLL = 2000;
     static MINUTE = new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2-digit' });
 
@@ -335,7 +335,7 @@ class Ekg {
         this.primed = false;
         this.minute = null;
         this.count = null;
-        this.from = new Date(Date.now() - Ekg.WINDOW * 1000);
+        this.from = new Date(Math.floor(Date.now() / 60000) * 60000);   // only this minute matters
 
         this.poll();
         this.timer = setInterval(() => this.poll(), Ekg.POLL);
@@ -366,7 +366,6 @@ class Ekg {
         const logs = await this.api.audit.get(start.toISOString(), end.toISOString()) ?? [];
         if (run !== this.run) return;
 
-        // a restart keeps the old trace on screen until this first fetch replaces it in one go
         const times = logs.map(log => Date.parse(log.timestamp));
         if (this.primed) this.events.push(...times);
         else {
@@ -392,32 +391,37 @@ class Ekg {
 
     render(now = Date.now()) {
         const { WINDOW, PAD } = Ekg;
-        this.events = this.events.filter(t => t >= now - WINDOW * 1000);
+        const minute = Math.floor(now / 60000) * 60000;
 
-        if (this.primed && this.events.length !== this.count) {
-            this.count = this.events.length;
-            this.counter.textContent = this.count.toLocaleString();
+        if (minute !== this.minute) {
+            if (this.minute) this.onMinute();
+            this.minute = minute;
+            this.fromLabel.textContent = Ekg.MINUTE.format(minute);
+            this.nextLabel.textContent = `${Ekg.MINUTE.format(minute + 60000)} →`;
+        }
+
+        this.events = this.events.filter(t => t >= minute);
+        const slots = new Array(WINDOW).fill(0);
+        this.events.filter(t => t < minute + 60000).forEach(t => slots[Math.floor((t - minute) / 1000)]++);
+
+        const head = (now - minute) / 1000;
+        const drawn = Math.floor(head);
+        const count = slots.slice(0, drawn).reduce((a, b) => a + b, 0);
+        if (this.primed && count !== this.count) {
+            this.count = count;
+            this.counter.textContent = count.toLocaleString();
         }
 
         const { W, base } = this.size;
         if (!W) return;
 
-        // only this minute is drawn: anything from the previous minute stays out of the sweep
-        const minute = Math.floor(now / 60000) * 60000;
-        if (this.minute && minute !== this.minute) this.onMinute();   // sweep wrapped: new minute
-
-        const slots = new Array(WINDOW).fill(0);
-        this.events.filter(t => t >= minute).forEach(t => slots[Math.floor((t - minute) / 1000)]++);
-
-        const head = (now - minute) / 1000;
         const w = W / WINDOW;
         const amp = base - PAD.t;
         const max = Math.max(3, ...slots);
         const pt = (x, y) => `${x.toFixed(1)},${y.toFixed(1)}`;
 
-        // one complex per active second: flat → spike → recoil → settle
         let d = `M0,${base}`;
-        for (let i = 0; i < Math.floor(head); i++) {
+        for (let i = 0; i < drawn; i++) {
             const x = i * w, c = slots[i];
             if (!c) { d += ` L${pt(x + w, base)}`; continue; }
             const h = amp * Math.max(0.3, c / max);
@@ -431,17 +435,11 @@ class Ekg {
         this.scan.setAttribute('x1', hx);
         this.scan.setAttribute('x2', hx);
         this.dots.forEach(c => { c.setAttribute('cx', hx); c.setAttribute('cy', base); });
-        this.label(minute, hx, W);
+        this.place(hx, W);
     }
 
-    label(minute, hx, W) {
-        if (minute !== this.minute) {
-            this.minute = minute;
-            this.fromLabel.textContent = Ekg.MINUTE.format(minute);
-            this.nextLabel.textContent = `${Ekg.MINUTE.format(minute + 60000)} →`;
-        }
-
-        const room = 44;
+    place(hx, W) {
+        const room = 44;   // keep "now" from colliding with the end labels
         this.nowLabel.setAttribute('x', Math.min(Math.max(hx, room / 2), W - room / 2));
         this.fromLabel.classList.toggle('hidden', hx < room + 24);
         this.nextLabel.classList.toggle('hidden', hx > W - room - 40);

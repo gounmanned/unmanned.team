@@ -1,3 +1,4 @@
+
 class TenantScreen {
     static PENDING = {
         queue: '#queue-count, #recs-count, #queue-summary',
@@ -289,6 +290,7 @@ class TenantScreen {
         });
     }
 }
+
 // ── ekg: live sweep of real-time audit events, one wall-clock minute per pass ──
 
 class Ekg {
@@ -419,22 +421,26 @@ class Ekg {
         const amp = base - PAD.t;
         const max = Math.max(3, ...slots);
         const pt = (x, y) => `${x.toFixed(1)},${y.toFixed(1)}`;
+        const idle = t => base - 2.5 * Math.sin(t * 2.1) - 1.2 * Math.sin(t * 4.3);
 
-        let d = `M0,${base}`;
+        let d = `M0,${idle(0).toFixed(1)}`;
         for (let i = 0; i < drawn; i++) {
             const x = i * w, c = slots[i];
-            if (!c) { d += ` L${pt(x + w, base)}`; continue; }
+            if (!c) { d += ` L${pt(x + w, idle(i + 1))}`; continue; }
             const h = amp * Math.max(0.3, c / max);
-            d += ` L${pt(x + w * .3, base)} L${pt(x + w * .45, base - h)}`
-                + ` L${pt(x + w * .6, base + Math.min(h * .4, 5))} L${pt(x + w * .75, base)} L${pt(x + w, base)}`;
+            const y = idle(i);
+            d += ` L${pt(x + w * .3, y)} L${pt(x + w * .45, y - h)}`
+                + ` L${pt(x + w * .6, y + Math.min(h * .4, 5))} L${pt(x + w * .75, y)}`
+                + ` L${pt(x + w, idle(i + 1))}`;
         }
 
         const hx = head * w;
-        this.trace.setAttribute('d', `${d} L${pt(hx, base)}`);
+        const hy = idle(head);
+        this.trace.setAttribute('d', `${d} L${pt(hx, hy)}`);
         this.ahead.setAttribute('x1', hx);
         this.scan.setAttribute('x1', hx);
         this.scan.setAttribute('x2', hx);
-        this.dots.forEach(c => { c.setAttribute('cx', hx); c.setAttribute('cy', base); });
+        this.dots.forEach(c => { c.setAttribute('cx', hx); c.setAttribute('cy', hy); });
         this.place(hx, W);
     }
 

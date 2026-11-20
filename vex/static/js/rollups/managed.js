@@ -227,7 +227,7 @@ class ManagedRollup {
             : `
                 <li class="acct-clear" data-flip="clear">
                     <span class="material-symbols-outlined">verified_user</span>
-                    <h3>Nothing needs you</h3>
+                    <h3>Nothing urgent</h3>
                     <p>Every account is clear of active security threats.</p>
                 </li>`;
 

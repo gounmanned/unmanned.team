@@ -73,7 +73,7 @@ class Table {
         return `
             <li class="queue-empty">
                 <span class="material-symbols-outlined">verified_user</span>
-                <h3>Nothing needs you</h3>
+                <h3>Nothing urgent</h3>
                 <p>Work on the ${recs.toLocaleString()} recommendation${recs === 1 ? '' : 's'} while you wait.</p>
             </li>`;
     }

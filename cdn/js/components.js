@@ -313,7 +313,7 @@ class SiteModal extends HTMLElement {
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%) scale(0.95);
-        width: 40%;
+        width: 35%;
         max-height: 90vh;
         flex-direction: column;
         background-color: var(--surface);
@@ -383,7 +383,7 @@ class SiteSidebar extends HTMLElement {
         position: fixed;
         bottom: 0;
         right: 0;
-        width: var(--sidebar-width, 40%);
+        width: var(--sidebar-width, 35%);
         height: 100vh;
         display: flex;
         justify-content: center;

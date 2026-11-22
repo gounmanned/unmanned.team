@@ -66,6 +66,7 @@ class Workspace {
                     signal: new SignalSidebar(state),
                     backup: new BackupSidebar(state),
                     compliance: new ComplianceSidebar(state),
+                    settings: new SettingsSidebar(state),
                 }
 
                 this.tenant = new TenantScreen(state);

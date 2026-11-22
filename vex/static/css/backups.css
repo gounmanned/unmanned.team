@@ -1,5 +1,4 @@
 #backup-sidebar {
-  --sidebar-width: 50%;
   display: flex;
   flex-direction: column;
   height: 100%;

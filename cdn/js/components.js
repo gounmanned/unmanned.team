@@ -383,7 +383,7 @@ class SiteSidebar extends HTMLElement {
         position: fixed;
         bottom: 0;
         right: 0;
-        width: var(--sidebar-width, 35%);
+        width: var(--sidebar-width, 40%);
         height: 100vh;
         display: flex;
         justify-content: center;

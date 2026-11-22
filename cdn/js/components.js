@@ -379,9 +379,6 @@ class SiteSidebar extends HTMLElement {
 
     this.shadowRoot.innerHTML = `
       <style>
-      :host { --from: 100%; }
-      :host([side="left"]) { --from: -100%; }
-
       .sidebar {
         position: fixed;
         bottom: 0;
@@ -395,11 +392,9 @@ class SiteSidebar extends HTMLElement {
         box-shadow: 0 0 5px rgba(224, 18, 128, 0.5), 0 0 40px rgba(224, 18, 128, 0.2);
         z-index: 1001;
         visibility: hidden;
-        transform: translateX(var(--from));
+        transform: translateX(100%);
         transition: transform 0.26s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0.26s;
       }
-
-      :host([side="left"]) .sidebar { left: 0; right: auto; }
 
       .sidebar.open {
         visibility: visible;

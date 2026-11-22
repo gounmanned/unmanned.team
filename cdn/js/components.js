@@ -369,13 +369,24 @@ class SiteSidebar extends HTMLElement {
   connectedCallback() {
     window.addEventListener('overlay-click', () => this.hide());
 
+    document.addEventListener('pointerdown', e => {
+      if (!e.composedPath().includes(this)) this.hide();
+    });
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') this.hide();
+    });
+
     this.shadowRoot.innerHTML = `
       <style>
+      :host { --from: 100%; }
+      :host([side="left"]) { --from: -100%; }
+
       .sidebar {
         position: fixed;
         bottom: 0;
         right: 0;
-        width: 50%;
+        width: var(--sidebar-width, 50%);
         height: 100vh;
         display: flex;
         justify-content: center;
@@ -383,10 +394,15 @@ class SiteSidebar extends HTMLElement {
         background-color: var(--surface);
         box-shadow: 0 0 5px rgba(224, 18, 128, 0.5), 0 0 40px rgba(224, 18, 128, 0.2);
         z-index: 1001;
-        transform: translateX(100%);
+        visibility: hidden;
+        transform: translateX(var(--from));
+        transition: transform 0.26s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0.26s;
       }
 
+      :host([side="left"]) .sidebar { left: 0; right: auto; }
+
       .sidebar.open {
+        visibility: visible;
         transform: translateX(0);
       }
 
@@ -408,7 +424,7 @@ class SiteSidebar extends HTMLElement {
       }
       </style>
 
-      <div class="sidebar" role="dialog" aria-modal="true">
+      <div class="sidebar" role="dialog">
         <slot></slot>
       </div>
     `;
@@ -416,14 +432,8 @@ class SiteSidebar extends HTMLElement {
     this._sidebar = this.shadowRoot.querySelector('.sidebar');
   }
 
-  show() {
-    this._sidebar.classList.add('open');
-    this.dispatchEvent(new CustomEvent('window-click', { bubbles: true, composed: true }));
-  }
-
-  hide() {
-    this._sidebar.classList.remove('open');
-  }
+  show() { this._sidebar.classList.add('open'); }
+  hide() { this._sidebar.classList.remove('open'); }
 }
 
 class SiteRollup extends HTMLElement {

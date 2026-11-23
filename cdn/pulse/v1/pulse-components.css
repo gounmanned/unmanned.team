@@ -6,6 +6,11 @@
 
 @layer pulse-components {
 
+/* The hidden attribute always wins, even on components that set display. */
+[class*="pulse-"][hidden] { display: none !important; }
+/* Text for screen readers only (a table head with no visible text, "Loading" beside a skeleton, a hidden heading). */
+.pulse-visually-hidden { position: absolute !important; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+
 /* ---------- Button ---------- */
 .pulse-btn {
   --b-h: var(--control-height-md); --b-px: var(--space-16);
@@ -22,13 +27,15 @@
 }
 .pulse-btn--sm { --b-h: var(--control-height-sm); --b-px: var(--space-12); --b-fs: var(--type-label-sm-size); --b-lh: var(--type-label-sm-line-height); --pulse-icon-size: var(--size-icon-16); }
 .pulse-btn--lg { --b-h: var(--control-height-lg); --b-px: var(--space-24); --b-fs: var(--type-label-lg-size); --b-lh: var(--type-label-lg-line-height); --pulse-icon-size: var(--size-icon-20); }
-.pulse-btn--primary { --b-bg: var(--color-accent-default); --b-fg: var(--color-text-on-brand); --b-bg-h: var(--color-accent-hover); --b-bg-p: var(--color-accent-pressed); }
+/* The main action uses the action color: the brand on the website and for client brands, ink in VEX's own app look. */
+.pulse-btn--primary { --b-bg: var(--color-action); --b-fg: var(--color-text-on-action); --b-bg-h: var(--color-action-hover); --b-bg-p: var(--color-action-pressed); }
 .pulse-btn--destructive { --b-bg: var(--color-status-danger); --b-fg: var(--color-text-on-accent); --b-bg-h: var(--color-status-danger-hover); --b-bg-p: var(--color-status-danger-pressed); }
-.pulse-btn--secondary { --b-bd: var(--color-accent-default); --b-fg: var(--color-text-accent); --b-bd-h: var(--color-accent-hover); --b-bd-p: var(--color-accent-pressed); --b-ov-h: transparent; --b-ov-p: transparent; --b-sh-h: inset 0 0 0 var(--border-width-1) var(--b-bd-h); --b-sh-p: inset 0 0 0 var(--border-width-1) var(--b-bd-p); }
-/* Secondary and neutral: hover and press change the border only, thickened by 1px drawn inside (no tint, no shadow, no layout shift). */
-.pulse-btn--neutral { --b-bd: var(--color-text-secondary); --b-fg: var(--color-text-primary); --b-bd-h: var(--color-accent-hover); --b-bd-p: var(--color-accent-pressed); --b-ov-h: transparent; --b-ov-p: transparent; --b-sh-h: inset 0 0 0 var(--border-width-1) var(--b-bd-h); --b-sh-p: inset 0 0 0 var(--border-width-1) var(--b-bd-p); }
-.pulse-btn--secondary:hover:not(:disabled):not([aria-busy="true"]), .pulse-btn--secondary.is-hover, .pulse-btn--secondary:active:not(:disabled):not([aria-busy="true"]), .pulse-btn--secondary.is-pressed { color: var(--color-text-accent-hover); }
-.pulse-btn--ghost { --b-sh-h: none; --b-sh-p: none; --b-fg: var(--color-text-accent); --b-ov-h: var(--color-interactive-hover); --b-ov-p: var(--color-interactive-pressed); }
+.pulse-btn--secondary { --b-bd: var(--color-action); --b-fg: var(--color-text-action); --b-bd-h: var(--color-action-hover); --b-bd-p: var(--color-action-pressed); --b-ov-h: transparent; --b-ov-p: transparent; --b-sh-h: inset 0 0 0 var(--border-width-1) var(--b-bd-h); --b-sh-p: inset 0 0 0 var(--border-width-1) var(--b-bd-p); }
+/* Secondary and neutral: hover and press change the border only, thickened by 1px drawn inside (no tint, no shadow, no layout shift).
+   Secondary and ghost follow the action color (pink on the web, ink in VEX's app, a client's action color). */
+.pulse-btn--neutral { --b-bd: var(--color-text-secondary); --b-fg: var(--color-text-primary); --b-bd-h: var(--color-action-hover); --b-bd-p: var(--color-action-pressed); --b-ov-h: transparent; --b-ov-p: transparent; --b-sh-h: inset 0 0 0 var(--border-width-1) var(--b-bd-h); --b-sh-p: inset 0 0 0 var(--border-width-1) var(--b-bd-p); }
+.pulse-btn--secondary:hover:not(:disabled):not([aria-busy="true"]), .pulse-btn--secondary.is-hover, .pulse-btn--secondary:active:not(:disabled):not([aria-busy="true"]), .pulse-btn--secondary.is-pressed { color: var(--color-text-action-hover); }
+.pulse-btn--ghost { --b-sh-h: none; --b-sh-p: none; --b-fg: var(--color-text-action); --b-ov-h: var(--color-interactive-hover); --b-ov-p: var(--color-interactive-pressed); }
 .pulse-btn--ghost-neutral { --b-sh-h: none; --b-sh-p: none; --b-fg: var(--color-text-secondary); --b-ov-h: var(--color-interactive-hover); --b-ov-p: var(--color-interactive-pressed); }
 .pulse-btn--ghost-neutral:hover:not(:disabled), .pulse-btn--ghost-neutral.is-hover { --b-fg: var(--color-text-primary); }
 .pulse-btn--surface { background-color: var(--color-surface-page); }
@@ -59,8 +66,8 @@
 .pulse-btn[aria-busy="true"] { cursor: progress; pointer-events: none; }
 .pulse-btn[aria-busy="true"]::before {
   content: ""; width: var(--pulse-icon-size); height: var(--pulse-icon-size); flex: none; box-sizing: border-box;
-  border: var(--border-width-2) solid currentColor; border-right-color: transparent; border-radius: 50%;
-  animation: pulse-spin .8s linear infinite;
+  border: var(--border-width-2) solid color-mix(in srgb, currentColor 20%, transparent); border-top-color: currentColor; border-radius: 50%;
+  animation: pulse-spin .8s linear infinite;   /* the Spinner's ring (pulse-spinner--sm), in the button's text color */
 }
 .pulse-btn--icon[aria-busy="true"] > :not(.pulse-btn__sr) { display: none; }
 @keyframes pulse-spin { to { transform: rotate(360deg); } }
@@ -120,9 +127,9 @@
 /* A block of code with a head: file name, a language tag and a copy button (an icon button with a tooltip).
    Syntax colors: wrap tokens in __fn, __kw, __str, __num, __key, __cmt (the --color-code-* tokens).
    Copying is the page's job for now: the button is a normal pulse-btn. Long lines scroll sideways inside the panel. */
-.pulse-code { box-sizing: border-box; min-width: 0; border: var(--border-width-1) solid var(--color-border-default); border-radius: var(--radius-control); background: var(--color-surface-subtle); }
+.pulse-code { box-sizing: border-box; min-width: 0; border: var(--border-width-1) solid var(--color-border-default); border-radius: var(--radius-control); background: var(--color-surface-code); }
 .pulse-code__head { display: flex; align-items: center; gap: var(--space-8); min-height: var(--control-height-md); padding: var(--space-4) var(--space-8) var(--space-4) var(--space-16); box-sizing: border-box;
-  border-bottom: var(--border-width-1) solid var(--color-border-default); border-radius: var(--radius-control) var(--radius-control) 0 0; background: var(--color-surface-sunken); }
+  border-bottom: var(--border-width-1) solid var(--color-border-default); border-radius: var(--radius-control) var(--radius-control) 0 0; background: var(--color-surface-code-head); }
 .pulse-code__file { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 400 var(--type-mono-label-size) / var(--type-mono-label-line-height) var(--font-mono); color: var(--color-text-primary); }
 .pulse-code__lang { font: 400 var(--type-mono-caption-size) / var(--type-mono-caption-line-height) var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-text-accent); }
 .pulse-code__head > .pulse-btn { margin-inline-start: auto; }
@@ -134,6 +141,9 @@
 .pulse-code__num { color: var(--color-code-number); }
 .pulse-code__key { color: var(--color-code-key); }
 .pulse-code__cmt { color: var(--color-code-comment); font-style: italic; }
+/* Small (--sm): JSON or a command inside a thread or a panel. The head is optional on any code panel. */
+.pulse-code--sm pre { max-height: 320px; padding: var(--space-12); overflow: auto; }
+.pulse-code--sm code { font-size: var(--type-mono-code-sm-size); line-height: var(--type-mono-code-sm-line-height); }
 
 /* ---------- Badge ---------- */
 .pulse-badge {
@@ -144,6 +154,8 @@
 }
 .pulse-badge::before { content: ""; width: var(--space-8); height: var(--space-8); border-radius: 50%; background: var(--mark); }
 .pulse-badge--nodot::before { display: none; }
+/* Small: 20px tall, to sit in a 20px line (a log row, a dense table cell) without making it taller. */
+.pulse-badge--sm { padding-block: calc((var(--space-4) / 2) - var(--border-width-1)); padding-inline: calc(var(--space-4) + var(--border-width-1)); }
 /* Mono: JetBrains Mono caps, no dot, for codes and methods (GET, R0). On its own it is gray (Figma's Mono tone);
    add a tone after it (--success, --accent, --danger...) to color it, and --outline or --solid as usual. */
 .pulse-badge--mono { --t: var(--color-text-secondary); --tint: var(--color-surface-subtle); --solid: var(--color-surface-contrast); --on: var(--color-text-on-contrast); --mark: var(--color-text-disabled);
@@ -159,16 +171,21 @@
 .pulse-badge--outline { background: transparent; border-color: var(--mark); }
 
 /* ---------- Chip ---------- */
+/* Inactive chips are quiet (secondary text, default border) so the selected ones stand out; same weight in both states, so nothing
+   changes width. Secondary, not tertiary: the hover tint would take tertiary under 4.5:1. */
 .pulse-chip {
   display: inline-flex; align-items: center; gap: var(--space-8); box-sizing: border-box; padding: var(--space-4) var(--space-12);
-  border: var(--border-width-1) solid var(--color-border-mid); border-radius: var(--radius-pill);
+  border: var(--border-width-1) solid var(--color-border-default); border-radius: var(--radius-pill);
   background-color: var(--color-surface-raised); background-image: linear-gradient(var(--c-ov, transparent), var(--c-ov, transparent));
-  color: var(--color-text-primary); font: 500 var(--type-label-sm-size) / var(--type-label-sm-line-height) var(--font-sans); cursor: pointer; white-space: nowrap;
+  color: var(--color-text-secondary); font: 500 var(--type-label-sm-size) / var(--type-label-sm-line-height) var(--font-sans); cursor: pointer; white-space: nowrap;
 }
-.pulse-chip:hover:not(:disabled), .pulse-chip.is-hover { --c-ov: var(--color-interactive-hover); border-color: var(--color-border-strong); }
-.pulse-chip:active:not(:disabled), .pulse-chip.is-pressed { --c-ov: var(--color-interactive-pressed); border-color: var(--color-border-strong); }
+.pulse-chip:hover:not(:disabled), .pulse-chip.is-hover { --c-ov: var(--color-interactive-hover); border-color: var(--color-border-mid); color: var(--color-text-primary); }
+.pulse-chip:active:not(:disabled), .pulse-chip.is-pressed { --c-ov: var(--color-interactive-pressed); border-color: var(--color-border-mid); color: var(--color-text-primary); }
 .pulse-chip:focus-visible, .pulse-chip.is-focus { outline: 0; box-shadow: var(--shadow-focus-ring); }
-.pulse-chip[aria-pressed="true"], .pulse-chip.is-selected { background-color: var(--color-accent-subtle); border-color: var(--color-accent-default); color: var(--color-text-accent); }
+/* Selected items use the selection roles: the brand on the website; a neutral fill with an ink or brand edge in apps. */
+.pulse-chip[aria-pressed="true"], .pulse-chip.is-selected { background-color: var(--color-selected-subtle); border-color: var(--color-selected); color: var(--color-text-selected); }
+/* A selected chip keeps its edge and text on hover and press. */
+.pulse-chip[aria-pressed="true"]:hover, .pulse-chip[aria-pressed="true"]:active, .pulse-chip.is-selected.is-hover, .pulse-chip.is-selected.is-pressed { border-color: var(--color-selected); color: var(--color-text-selected); }
 .pulse-chip:disabled { background-color: var(--color-surface-disabled); border-color: var(--color-border-subtle); color: var(--color-text-disabled); cursor: not-allowed; }
 .pulse-chip__x { --pulse-icon-size: var(--size-icon-16); }
 
@@ -184,13 +201,13 @@
 .pulse-check:hover input, .pulse-radio:hover input, .pulse-check input.is-hover, .pulse-radio input.is-hover { --c-ov: var(--color-interactive-hover); }
 .pulse-check input:active, .pulse-radio input:active, .pulse-check input.is-pressed, .pulse-radio input.is-pressed { --c-ov: var(--color-interactive-pressed); }
 .pulse-check input:focus-visible, .pulse-radio input:focus-visible, .pulse-toggle input:focus-visible, .pulse-check input.is-focus, .pulse-radio input.is-focus, .pulse-toggle input.is-focus { outline: 0; box-shadow: var(--shadow-focus-ring); }
-.pulse-check input:checked, .pulse-check input:indeterminate { background-color: var(--color-accent-default); border-color: var(--color-accent-default); }
+.pulse-check input:checked, .pulse-check input:indeterminate { background-color: var(--color-selected); border-color: var(--color-selected); }
 .pulse-check input:checked::after, .pulse-check input:indeterminate::after {
-  content: ""; display: block; width: 100%; height: 100%; background: var(--color-text-on-brand);
+  content: ""; display: block; width: 100%; height: 100%; background: var(--color-text-on-selected);
   -webkit-mask: var(--pulse-i-check-bold) center / 14px no-repeat; mask: var(--pulse-i-check-bold) center / 14px no-repeat;
 }
 .pulse-check input:indeterminate::after { -webkit-mask-image: var(--pulse-i-minus-bold); mask-image: var(--pulse-i-minus-bold); }
-.pulse-radio input:checked { border-color: var(--color-accent-default); background-image: radial-gradient(circle, var(--color-accent-default) 0 4px, transparent 5px); }
+.pulse-radio input:checked { border-color: var(--color-selected); background-image: radial-gradient(circle, var(--color-selected) 0 4px, transparent 5px); }
 .pulse-toggle { font-weight: 500; font-size: var(--type-label-sm-size); line-height: var(--type-label-sm-line-height); }
 /* Track 46 x 24, knob 20, travel 22 (as in Figma) */
 .pulse-toggle input { width: 46px; height: var(--space-24); border-radius: var(--radius-pill); background: var(--color-surface-control-off); position: relative; transition: background-color .15s ease; }
@@ -198,10 +215,29 @@
   content: ""; position: absolute; top: 2px; left: 2px; width: var(--space-20); height: var(--space-20); border-radius: 50%;
   background: var(--color-surface-page); transition: transform .15s ease;
 }
-.pulse-toggle input:checked { background: var(--color-accent-default); }
+.pulse-toggle input:checked { background: var(--color-selected); }
 .pulse-toggle input:checked::before { transform: translateX(22px); background: var(--color-surface-raised); }
 .pulse-check input:disabled, .pulse-radio input:disabled { background-color: var(--color-surface-disabled); border-color: var(--color-border-default); }
 .pulse-toggle input:disabled { background: var(--color-surface-disabled); }
+/* Toggle row (settings): name and an optional description, the switch at the end. The whole row is the label. */
+.pulse-toggle--row { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-16); width: 100%; box-sizing: border-box; }
+.pulse-toggle--row input { order: 2; margin-top: calc((var(--type-label-sm-line-height) - var(--space-24)) / 2); }
+.pulse-toggle__text { display: flex; flex-direction: column; gap: var(--space-4); min-width: 0; }
+/* Descriptions read quieter than their title by color (tertiary), not by a lighter weight, which goes thin at 12 to 14px. */
+.pulse-toggle__desc { font: 400 var(--type-body-sm-size) / var(--type-body-sm-line-height) var(--font-sans); color: var(--color-text-tertiary); }
+/* Small (--sm): track 32 x 18, knob 14, travel 14, for dense settings. In a toggle row it is small at every width (the whole row is
+   the tap target) with a 12px description; on its own it is small from tablet up and the default size on phones. */
+.pulse-toggle--row.pulse-toggle--sm input { width: var(--space-32); height: 18px; margin-top: 1px; }
+.pulse-toggle--row.pulse-toggle--sm input::before { width: 14px; height: 14px; }
+.pulse-toggle--row.pulse-toggle--sm input:checked::before { transform: translateX(14px); }
+.pulse-toggle--sm .pulse-toggle__desc { font-size: var(--type-body-xs-size); line-height: var(--type-body-xs-line-height); }
+.pulse-toggle--sm .pulse-toggle__text { gap: 2px; }
+@media (min-width: 768px) {
+  .pulse-toggle--sm input { width: var(--space-32); height: 18px; }
+  .pulse-toggle--sm input::before { width: 14px; height: 14px; }
+  .pulse-toggle--sm input:checked::before { transform: translateX(14px); }
+  .pulse-toggle--row.pulse-toggle--sm input { margin-top: 1px; }
+}
 .pulse-check:has(input:disabled), .pulse-radio:has(input:disabled), .pulse-toggle:has(input:disabled) { color: var(--color-text-disabled); cursor: not-allowed; }
 
 /* ---------- Fields ---------- */
@@ -219,6 +255,13 @@
 .pulse-select:has(option[value=""]:checked) { color: var(--color-text-placeholder); }
 .pulse-select option { color: var(--color-text-primary); }
 .pulse-input--lg, .pulse-select--lg { min-height: var(--control-height-lg); font-size: var(--type-body-lg-size); line-height: var(--type-body-lg-line-height); }
+/* Small (--sm): 32px. 14px text from tablet up; phones keep 16px, because iOS Safari zooms into a field with smaller text. */
+.pulse-input--sm, .pulse-select--sm { min-height: var(--control-height-sm); padding-block: calc((var(--control-height-sm) - var(--type-body-md-line-height)) / 2 - var(--border-width-1)); }
+.pulse-select--sm { padding-right: var(--space-32); }
+.pulse-select-wrap:has(.pulse-select--sm)::after { right: var(--space-8); }
+@media (min-width: 768px) {
+  .pulse-input--sm, .pulse-select--sm { padding-block: calc((var(--control-height-sm) - var(--type-body-sm-line-height)) / 2 - var(--border-width-1)); font-size: var(--type-body-sm-size); line-height: var(--type-body-sm-line-height); }
+}
 .pulse-textarea { min-height: 120px; padding: var(--space-12); resize: vertical; }
 .pulse-textarea--lg { min-height: 144px; padding: var(--space-16); font-size: var(--type-body-lg-size); line-height: var(--type-body-lg-line-height); }
 .pulse-select { appearance: none; -webkit-appearance: none; padding-right: var(--space-40); }
@@ -232,16 +275,68 @@ button.pulse-select { display: block; text-align: start; cursor: pointer; white-
    invite row). Hover tints, focus still shows the ring, error still shows its border. */
 .pulse-input--ghost, .pulse-select--ghost, .pulse-textarea--ghost { border-color: transparent; border-radius: 0; background-color: transparent; }
 .pulse-input--ghost:hover, .pulse-select--ghost:hover, .pulse-textarea--ghost:hover { border-color: transparent; background-color: var(--color-interactive-hover); }
-.pulse-input:focus, .pulse-select:focus, .pulse-textarea:focus, .pulse-input.is-focus, .pulse-select.is-focus, .pulse-textarea.is-focus { outline: 0; border-color: var(--color-border-focus); box-shadow: 0 0 0 var(--border-width-1) var(--color-border-focus); }
+/* A text field with focus: a 2px border (the border plus a 1px ring, so the text never moves) in the field-focus color: blue on the
+   web, the dark hover gray in apps (the caret shows where you are). Other controls keep the blue keyboard ring. */
+.pulse-input:focus, .pulse-select:focus, .pulse-textarea:focus, .pulse-input.is-focus, .pulse-select.is-focus, .pulse-textarea.is-focus { outline: 0; border-color: var(--color-border-field-focus); box-shadow: 0 0 0 var(--border-width-1) var(--color-border-field-focus); }
 .pulse-field--error .pulse-input, .pulse-field--error .pulse-select, .pulse-field--error .pulse-textarea { border-color: var(--color-indicator-danger); }
 .pulse-input:disabled, .pulse-select:disabled, .pulse-textarea:disabled { background-color: var(--color-surface-disabled); border-color: var(--color-border-default); color: var(--color-text-disabled); cursor: not-allowed; }
 .pulse-field__help { font: 400 var(--type-body-sm-size) / var(--type-body-sm-line-height) var(--font-sans); color: var(--color-text-secondary); }
 .pulse-field--error .pulse-field__help { color: var(--color-text-danger); }
 
+/* Input group: a field box holding a ghost field with icons, a key hint or buttons inside it. The box shows hover and focus;
+   the field inside has no box of its own. Search: a magnifying-glass icon, <input type="search">, an optional key hint (kbd).
+   Copy: --readonly with a readonly input and a copy button (data-pulse-copy="the input's id"). Reply box: --multiline with a
+   textarea that grows and a send button at the end. --sm is 32px. */
+.pulse-input-group { display: flex; align-items: center; gap: var(--space-8); box-sizing: border-box; min-height: var(--control-height-md); padding: 0 var(--space-4) 0 var(--space-12);
+  border: var(--border-width-1) solid var(--color-border-strong); border-radius: var(--radius-control); background-color: var(--color-surface-raised); color: var(--color-text-secondary); font-family: var(--font-sans); }
+.pulse-input-group:hover { border-color: var(--color-border-hard); }
+.pulse-input-group:focus-within { border-color: var(--color-border-field-focus); box-shadow: 0 0 0 var(--border-width-1) var(--color-border-field-focus); }
+.pulse-input-group > .pulse-icon, .pulse-input-group > .pulse-btn { flex: none; }
+/* A button inside a field takes the control radius, not the pill: an inner shape follows its container. */
+.pulse-input-group > .pulse-btn { border-radius: var(--radius-control); }
+.pulse-input-group > .pulse-input, .pulse-input-group > .pulse-input:hover, .pulse-input-group > .pulse-input:focus,
+.pulse-input-group > .pulse-textarea, .pulse-input-group > .pulse-textarea:hover, .pulse-input-group > .pulse-textarea:focus {
+  flex: 1 1 auto; min-width: 0; min-height: 0; height: calc(var(--control-height-md) - 2 * var(--border-width-1)); padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; outline: 0; }
+.pulse-input-group > .pulse-input::-webkit-search-cancel-button { display: none; }
+.pulse-input-group__key { flex: none; box-sizing: border-box; min-width: var(--space-20); padding: 0 var(--space-4); border: var(--border-width-1) solid var(--color-border-default); border-radius: var(--radius-tag);
+  font: 400 var(--type-mono-label-size) / var(--type-mono-label-line-height) var(--font-mono); color: var(--color-text-tertiary); text-align: center; }
+.pulse-input-group:focus-within .pulse-input-group__key { display: none; }
+/* Clear: an X that shows only while the field has text (the field needs a placeholder), in the key hint's place. 24px, so it
+   fits the small group too. pulse.js empties the field on click and on Esc. */
+.pulse-input-group__clear.pulse-btn { --b-h: var(--space-24); --pulse-icon-size: var(--size-icon-16); }
+.pulse-input-group:has(> .pulse-input:placeholder-shown) > .pulse-input-group__clear { display: none; }
+.pulse-input-group:has(> .pulse-input:not(:placeholder-shown)) > .pulse-input-group__key { display: none; }
+.pulse-input-group--sm { min-height: var(--control-height-sm); }
+.pulse-input-group--sm > .pulse-input, .pulse-input-group--sm > .pulse-input:hover, .pulse-input-group--sm > .pulse-input:focus { height: calc(var(--control-height-sm) - 2 * var(--border-width-1)); }
+@media (min-width: 768px) {
+  .pulse-input-group--sm > .pulse-input { font-size: var(--type-body-sm-size); line-height: var(--type-body-sm-line-height); }
+}
+.pulse-input-group--readonly { border-color: var(--color-border-default); background-color: var(--color-surface-subtle); }
+.pulse-input-group--readonly:hover { border-color: var(--color-border-default); }
+.pulse-input-group--readonly > .pulse-input { font: 400 var(--type-mono-label-size) / var(--type-mono-label-line-height) var(--font-mono); color: var(--color-text-primary); text-overflow: ellipsis; }
+.pulse-input-group--multiline { align-items: flex-end; padding: var(--space-4) var(--space-4) var(--space-4) var(--space-12); }
+.pulse-input-group--multiline > .pulse-textarea, .pulse-input-group--multiline > .pulse-textarea:hover, .pulse-input-group--multiline > .pulse-textarea:focus {
+  height: auto; min-height: var(--control-height-sm); max-height: 200px; padding: var(--space-4) 0; resize: none; font-size: var(--type-body-sm-size); line-height: var(--type-body-sm-line-height); field-sizing: content; }
+/* Composer (with --multiline): a reply box that starts two lines tall and grows, like a chat box, so it doesn't read as a search
+   field. Medium corners (8px in apps, the web's 2px, square for a square brand); the send button sits 8px in, its 4px corners
+   following the box (8 minus the gap, rounded up to the control radius). */
+.pulse-input-group--composer { border-radius: var(--radius-medium); padding: var(--space-8) var(--space-8) var(--space-8) var(--space-16); }
+/* At rest and empty it reads as inactive (Slack, Linear): a subtle fill and no line, the placeholder a step darker so it still
+   passes 4.5:1 on the fill. Clicked into, or holding text, it is an ordinary field: white with its line (the focus line when focused). */
+.pulse-input-group--composer:not(:focus-within):has(> .pulse-textarea:placeholder-shown) { border-color: transparent; background-color: var(--color-surface-subtle); }
+.pulse-input-group--composer:not(:focus-within):has(> .pulse-textarea:placeholder-shown) > .pulse-textarea::placeholder { color: var(--color-text-secondary); }
+.pulse-input-group--composer > .pulse-textarea, .pulse-input-group--composer > .pulse-textarea:hover, .pulse-input-group--composer > .pulse-textarea:focus {
+  min-height: calc(2 * var(--type-body-sm-line-height) + var(--space-8)); }
+/* Ghost: a quiet search that fills its band (a toolbar, a panel head). No box: hover tints the band, focus draws the ring inside it. */
+.pulse-input-group--ghost { width: 100%; border-color: transparent; border-radius: 0; background-color: transparent; }
+.pulse-input-group--ghost:hover { border-color: transparent; background-color: var(--color-interactive-hover); }
+.pulse-input-group--ghost:focus-within { border-color: transparent; box-shadow: inset 0 0 0 var(--border-width-2) var(--color-border-field-focus); }
+
 /* ---------- Segmented control ---------- */
-.pulse-segmented { display: inline-flex; gap: var(--space-4); padding: var(--space-4); box-sizing: border-box; border-radius: var(--radius-control); background: var(--color-surface-track); }
+/* Shaped like buttons: square-ish on the web, a pill in apps. */
+.pulse-segmented { display: inline-flex; gap: var(--space-4); padding: var(--space-4); box-sizing: border-box; border-radius: var(--radius-button); background: var(--color-surface-track); }
 .pulse-segmented__item {
-  appearance: none; border: var(--border-width-1) solid transparent; border-radius: var(--radius-control); background: transparent; color: var(--color-text-secondary);
+  appearance: none; border: var(--border-width-1) solid transparent; border-radius: var(--radius-button); background: transparent; color: var(--color-text-secondary);
   min-height: var(--control-height-sm); padding: var(--space-4) var(--space-16); font: 400 var(--type-label-sm-size) / var(--type-label-sm-line-height) var(--font-sans); cursor: pointer;
 }
 .pulse-segmented__item:hover { color: var(--color-text-primary); }
@@ -250,6 +345,8 @@ button.pulse-select { display: block; text-align: start; cursor: pointer; white-
 }
 .pulse-segmented__item:focus-visible { outline: 0; box-shadow: var(--shadow-focus-ring); }
 /* Large: 16px labels at the same 40px height, to sit beside medium buttons (the install pages' OS switch). */
+/* Small: 32px tall like small buttons. The track keeps its 4px inset (2px hid the track), so the segments are 24px. */
+.pulse-segmented--sm .pulse-segmented__item { min-height: var(--space-24); padding: 0 var(--space-12); font-size: var(--type-label-sm-size); line-height: var(--type-label-sm-line-height); }
 .pulse-segmented--lg .pulse-segmented__item { padding: calc(var(--space-4) - var(--border-width-1)) var(--space-20); font-size: var(--type-label-md-size); line-height: var(--type-label-md-line-height); }
 
 /* ---------- Tabs ---------- */
@@ -271,11 +368,11 @@ button.pulse-select { display: block; text-align: start; cursor: pointer; white-
 }
 .pulse-tab:hover, .pulse-tab.is-hover { color: var(--color-text-primary); }
 /* The current item is aria-selected="true" (tabs) or any aria-current value except "false" (links: "page", "location", "true"). */
-.pulse-tab[aria-selected="true"], .pulse-tab[aria-current]:not([aria-current="false"]) { color: var(--color-text-primary); font-weight: 500; border-bottom-color: var(--color-accent-default); }
+.pulse-tab[aria-selected="true"], .pulse-tab[aria-current]:not([aria-current="false"]) { color: var(--color-text-primary); font-weight: 500; border-bottom-color: var(--color-selected); }
 .pulse-tab:focus-visible { outline: 0; box-shadow: var(--shadow-focus-ring); }
 .pulse-tabs--vertical .pulse-tab { display: flex; justify-content: space-between; align-items: center; gap: var(--space-12); border-bottom: 0; border-left: var(--border-width-1) solid var(--color-border-default); padding: var(--space-12) 0 var(--space-12) var(--space-16); font-weight: 500; color: var(--color-text-secondary); }
 .pulse-tabs--vertical .pulse-tab:hover, .pulse-tabs--vertical .pulse-tab.is-hover { color: var(--color-text-accent); }
-.pulse-tabs--vertical .pulse-tab[aria-selected="true"], .pulse-tabs--vertical .pulse-tab[aria-current]:not([aria-current="false"]) { border-left: var(--border-width-2) solid var(--color-accent-default); padding-left: calc(var(--space-16) - 1px); color: var(--color-text-primary); font-weight: 600; }
+.pulse-tabs--vertical .pulse-tab[aria-selected="true"], .pulse-tabs--vertical .pulse-tab[aria-current]:not([aria-current="false"]) { border-left: var(--border-width-2) solid var(--color-selected); padding-left: calc(var(--space-16) - 1px); color: var(--color-text-primary); font-weight: 600; }
 /* Sub-items: indented, lighter and closer together. The current one keeps the pink bar on the same line as its parents'. */
 .pulse-tabs__sub .pulse-tab { padding: var(--space-4) 0 var(--space-4) calc(var(--space-16) + var(--space-12)); font-weight: 400; color: var(--color-text-tertiary); }
 .pulse-tabs__sub .pulse-tab[aria-selected="true"], .pulse-tabs__sub .pulse-tab[aria-current]:not([aria-current="false"]) { padding-left: calc(var(--space-16) + var(--space-12) - 1px); font-weight: 500; }
@@ -284,17 +381,17 @@ button.pulse-select { display: block; text-align: start; cursor: pointer; white-
 
 /* ---------- Alert and Toast ---------- */
 .pulse-alert, .pulse-toast {
-  --tone: var(--color-indicator-info); --icon: var(--color-text-info); --tint: var(--color-status-info-subtle); --solid: var(--color-status-info); --on: var(--color-text-on-accent);
+  --tone: var(--color-indicator-info); --tint: var(--color-status-info-subtle); --solid: var(--color-status-info); --on: var(--color-text-on-accent);
   display: flex; align-items: flex-start; gap: var(--space-12); box-sizing: border-box; padding: var(--space-16); border-radius: var(--radius-medium); font-family: var(--font-sans);
 }
 .pulse-alert { padding: calc(var(--space-16) - var(--border-width-1)); background: var(--tint); border: var(--border-width-1) solid var(--tone); color: var(--color-text-primary); }
-.pulse-alert--success, .pulse-toast--success { --tone: var(--color-indicator-success); --icon: var(--color-text-success); --tint: var(--color-status-success-subtle); --solid: var(--color-status-success); }
-.pulse-alert--danger, .pulse-toast--danger { --tone: var(--color-indicator-danger); --icon: var(--color-text-danger); --tint: var(--color-status-danger-subtle); --solid: var(--color-status-danger); }
-.pulse-alert--warning, .pulse-toast--warning { --tone: var(--color-indicator-warning); --icon: var(--color-text-warning); --tint: var(--color-status-warning-subtle); --solid: var(--color-status-warning); --on: var(--color-text-on-warning); }
+.pulse-alert--success, .pulse-toast--success { --tone: var(--color-indicator-success); --tint: var(--color-status-success-subtle); --solid: var(--color-status-success); }
+.pulse-alert--danger, .pulse-toast--danger { --tone: var(--color-indicator-danger); --tint: var(--color-status-danger-subtle); --solid: var(--color-status-danger); }
+.pulse-alert--warning, .pulse-toast--warning { --tone: var(--color-indicator-warning); --tint: var(--color-status-warning-subtle); --solid: var(--color-status-warning); --on: var(--color-text-on-warning); }
 .pulse-alert > .pulse-icon, .pulse-toast > .pulse-icon { --pulse-icon-size: var(--size-icon-20); margin-top: var(--space-0); }
-/* The icon is optional: leave it out and the text starts at the edge. In an alert it takes the tone's text color, which reads
-   better than the lighter border color (most of all for warning). */
-.pulse-alert > .pulse-icon { color: var(--icon); }
+/* The icon is optional: leave it out and the text starts at the edge. Icons are marks, so they use the indicator color (3:1),
+   the same as the border; text uses text colors (4.5:1). */
+.pulse-alert > .pulse-icon { color: var(--tone); }
 .pulse-alert__body, .pulse-toast__body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--space-8); align-items: flex-start; }
 .pulse-alert__title, .pulse-toast__title { font: 500 var(--type-label-sm-size) / var(--type-label-sm-line-height) var(--font-sans); }
 .pulse-alert__text, .pulse-toast__text { font: 400 var(--type-body-sm-size) / var(--type-body-sm-line-height) var(--font-sans); color: var(--color-text-secondary); }
@@ -305,12 +402,14 @@ button.pulse-select { display: block; text-align: start; cursor: pointer; white-
 .pulse-dismiss { appearance: none; border: 0; background: transparent; color: var(--color-text-tertiary); width: var(--control-height-sm); height: var(--control-height-sm); margin: calc(var(--space-4) * -1) calc(var(--space-4) * -1) 0 0; border-radius: var(--radius-control); cursor: pointer; display: grid; place-items: center; }
 .pulse-toast .pulse-dismiss { color: inherit; }
 .pulse-dismiss:hover { background: var(--color-interactive-hover); }
-/* Toaster: where Pulse.toast() stacks toasts, bottom right (bottom, full width on phones). */
-.pulse-toaster { position: fixed; z-index: 1100; right: var(--space-24); bottom: var(--space-24); display: flex; flex-direction: column; gap: var(--space-8);
-  width: min(400px, calc(100vw - 2 * var(--space-16))); pointer-events: none; }
+/* Toaster: where Pulse.toast() stacks toasts, bottom right (bottom, full width on phones). pulse.js makes it a manual popover,
+   so it sits in the top layer, above open dialogs and drawers. */
+.pulse-toaster { position: fixed; z-index: 1100; inset: auto var(--space-24) var(--space-24) auto; margin: 0; padding: 0; border: 0; background: transparent; overflow: visible;
+  display: flex; flex-direction: column; gap: var(--space-8); width: min(400px, calc(100vw - 2 * var(--space-16))); pointer-events: none; }
+.pulse-toaster[popover]:not(:popover-open) { display: none; }
 .pulse-toaster > .pulse-toast { pointer-events: auto; animation: pulse-toast-in .2s ease-out; }
 @keyframes pulse-toast-in { from { opacity: 0; transform: translateY(var(--space-8)); } }
-@media (max-width: 599px) { .pulse-toaster { right: var(--space-16); bottom: var(--space-16); } }
+@media (max-width: 599px) { .pulse-toaster { inset: auto var(--space-16) var(--space-16) auto; } }
 
 /* ---------- Progress ---------- */
 .pulse-progress { display: flex; flex-direction: column; gap: var(--space-8); font-family: var(--font-sans); }
@@ -320,6 +419,11 @@ button.pulse-select { display: block; text-align: start; cursor: pointer; white-
 .pulse-progress__fill { --fill: var(--color-indicator-accent); height: 100%; width: var(--p, 0%); background: var(--fill); }
 .pulse-progress--success .pulse-progress__fill { --fill: var(--color-indicator-success); }
 .pulse-progress--danger .pulse-progress__fill { --fill: var(--color-indicator-danger); }
+/* Neutral: an amount with no good or bad meaning (coverage, usage). The same gray as a neutral status mark. */
+.pulse-progress--neutral .pulse-progress__fill { --fill: var(--color-status-neutral); }
+/* Small: a 4px bar, 4px under its label, for tables and lists. The head is optional; a cell can carry its own label instead. */
+.pulse-progress--sm { gap: var(--space-4); }
+.pulse-progress--sm .pulse-progress__track { height: var(--space-4); }
 .pulse-progress--indeterminate .pulse-progress__fill { width: 30%; animation: pulse-slide 1.2s linear infinite; }
 @keyframes pulse-slide { from { transform: translateX(-100%); } to { transform: translateX(340%); } }
 
@@ -377,6 +481,8 @@ dialog.pulse-dialog:not([open]) { display: none; }
 dialog.pulse-dialog::backdrop { background-color: var(--color-surface-overlay); }
 .pulse-dialog__head { display: flex; align-items: flex-start; gap: var(--space-16); }
 .pulse-dialog__copy { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: var(--space-12); }
+/* pulse.js focuses the title when a dialog or drawer opens (tabindex -1): no ring, it isn't a control. */
+.pulse-dialog__title:focus, .pulse-drawer__title:focus { outline: 0; }
 .pulse-dialog__title { margin: 0; font: 600 var(--type-heading-card-size) / var(--type-heading-card-line-height) var(--font-sans); color: var(--color-text-primary); }
 .pulse-dialog__body { margin: 0; font: 400 var(--type-body-md-size) / var(--type-body-md-line-height) var(--font-sans); color: var(--color-text-secondary); }
 .pulse-dialog__close { flex: none; }
@@ -395,6 +501,8 @@ dialog.pulse-dialog::backdrop { background-color: var(--color-surface-overlay); 
   border: 0; border-inline-start: var(--border-width-1) solid var(--color-border-default); border-radius: 0;
   background-color: var(--color-surface-raised); color: var(--color-text-primary); box-shadow: var(--shadow-elevation-default-lg); font-family: var(--font-sans); }
 .pulse-drawer--lg { width: min(640px, 100%); }
+/* Extra large: half the window, 640 to 800px (720 at 1440), for wide content such as threads with code. */
+.pulse-drawer--xl { width: min(clamp(640px, 50vw, 800px), 100%); }
 /* z-index only matters when the page stays usable (data-modal="false"): a modal drawer is already above everything. */
 dialog.pulse-drawer { position: fixed; inset: 0 0 0 auto; z-index: 1000; height: 100%; max-width: 100%; max-height: none; transform: translateX(100%);
   transition: transform .3s cubic-bezier(.2,.8,.2,1), display .3s allow-discrete, overlay .3s allow-discrete; }
@@ -403,16 +511,43 @@ dialog.pulse-drawer[open] { transform: none; }
 @starting-style { dialog.pulse-drawer[open] { transform: translateX(100%); } }
 dialog.pulse-drawer::backdrop { background-color: var(--color-surface-overlay); opacity: 0; transition: opacity .3s ease, display .3s allow-discrete, overlay .3s allow-discrete; }
 dialog.pulse-drawer[open]::backdrop { opacity: 1; }
+/* Leaving: ease-in (an accelerate curve, as Material's exits), a little shorter, so the drawer is seen going instead of snapping
+   away. Every drawer type, and the dimmed page with it. Start heavy work a couple of frames after close(), or it can skip this. */
+dialog.pulse-drawer:not([open]) { transition: transform .28s cubic-bezier(.4,0,1,1), display .28s allow-discrete, overlay .28s allow-discrete; }
+dialog.pulse-drawer:not([open])::backdrop { transition: opacity .28s cubic-bezier(.4,0,1,1), display .28s allow-discrete, overlay .28s allow-discrete; }
 @starting-style { dialog.pulse-drawer[open]::backdrop { opacity: 0; } }
-/* The page behind a modal drawer doesn't scroll. */
-html:has(dialog.pulse-drawer:modal) { overflow: hidden; }
-.pulse-drawer__head { flex: none; display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-16); padding: var(--space-24) var(--space-24) var(--space-20); border-bottom: var(--border-width-1) solid var(--color-border-default); }
-.pulse-drawer__title { margin: 0; font: 600 var(--type-heading-card-size) / var(--type-heading-card-line-height) var(--font-sans); color: var(--color-text-primary); }
-.pulse-drawer__close { flex: none; margin: calc(-1 * var(--space-4)) calc(-1 * var(--space-8)) 0 0; }
+/* The page behind a modal drawer doesn't scroll. pulse.js also sets .pulse-scroll-lock on <html>, for drawers inside a shadow root. */
+html:has(dialog.pulse-drawer:modal), html.pulse-scroll-lock { overflow: hidden; }
+/* Screen: a panel that rises from the bottom, full width, and stops a little short of the top, so it reads as a screen.
+   Square corners (rounded tops are for a sheet that stops well short of the top). Same parts and behavior as the drawer. */
+dialog.pulse-drawer.pulse-drawer--screen { inset: auto 0 0 0; width: 100%; height: calc(100% - var(--space-32)); border-inline-start: 0;
+  border-top: var(--border-width-1) solid var(--color-border-default); transform: translateY(100%); }
+dialog.pulse-drawer.pulse-drawer--screen[open] { transform: none; }
+@starting-style { dialog.pulse-drawer.pulse-drawer--screen[open] { transform: translateY(100%); } }
+/* Inset: a drawer inside a panel (position the panel relative), next to a list that stays usable. Not a dialog. */
+.pulse-drawer--inset { position: absolute; inset: 0 0 0 auto; z-index: 2; height: auto; }
+/* Push: the panel makes room (the page sets a margin the drawer's width on what it pushes), so nothing floats: a border, no shadow.
+   Phones keep the full-width drawer. */
+.pulse-drawer--push { box-shadow: none; }
+.pulse-drawer__head { --pulse-drawer-title-size: var(--type-heading-card-size); --pulse-drawer-title-lh: var(--type-heading-card-line-height);
+  flex: none; display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-16); padding: var(--space-24) var(--space-24) var(--space-20); border-bottom: var(--border-width-1) solid var(--color-border-default); }
+/* In apps the title is a step smaller (18/28), for working panels; the website keeps the card heading (24). */
+[data-surface="app"] .pulse-drawer__head { --pulse-drawer-title-size: var(--type-label-lg-size); --pulse-drawer-title-lh: var(--type-label-lg-line-height); }
+/* Icon (optional): before the heading, centered on the title's first line. */
+.pulse-drawer__icon { flex: none; display: flex; align-items: center; height: var(--pulse-drawer-title-lh); --pulse-icon-size: var(--size-icon-20); color: var(--color-text-secondary); }
+.pulse-drawer__heading { flex: 1 1 0%; min-width: 0; display: flex; flex-direction: column; gap: var(--space-4); }
+.pulse-drawer__desc { margin: 0; font: 400 var(--type-body-sm-size) / var(--type-body-sm-line-height) var(--font-sans); color: var(--color-text-secondary); }
+/* End area: stats, buttons or a badge before the close X. Under 600px it moves to its own line under the heading. */
+.pulse-drawer__end { flex: none; display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-8); min-height: var(--control-height-sm);
+  margin-block-start: calc((var(--pulse-drawer-title-lh) - var(--control-height-sm)) / 2); }
+.pulse-drawer__title { margin: 0; font: 600 var(--pulse-drawer-title-size) / var(--pulse-drawer-title-lh) var(--font-sans); color: var(--color-text-primary); }
+/* The close button and the end area's controls (32px) are centered on the title's first line. */
+.pulse-drawer__close { flex: none; margin: calc((var(--pulse-drawer-title-lh) - var(--control-height-sm)) / 2) calc(-1 * var(--space-8)) 0 0; }
 .pulse-drawer__body { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: var(--space-24); font: 400 var(--type-body-md-size) / var(--type-body-md-line-height) var(--font-sans); color: var(--color-text-secondary); }
 .pulse-drawer__foot { flex: none; padding: var(--space-16) var(--space-24); border-top: var(--border-width-1) solid var(--color-border-default); }
 @media (max-width: 599px) {
-  .pulse-drawer__head { padding: var(--space-20) var(--space-16) var(--space-16); }
+  .pulse-drawer__head { padding: var(--space-20) var(--space-16) var(--space-16); flex-wrap: wrap; row-gap: var(--space-12); }
+  .pulse-drawer__end { order: 3; flex-basis: 100%; margin-block-start: 0; }
   .pulse-drawer__body { padding: var(--space-16); }
   .pulse-drawer__foot { padding: var(--space-16); }
 }
@@ -481,7 +616,16 @@ html:has(dialog.pulse-drawer:modal) { overflow: hidden; }
 .pulse-tooltip-host > .pulse-tooltip--bottom::before { top: auto; bottom: 100%; }
 .pulse-tooltip-host > .pulse-tooltip--left::before { top: 0; bottom: 0; left: 100%; right: auto; width: var(--tip-gap); height: auto; }
 .pulse-tooltip-host > .pulse-tooltip--right::before { top: 0; bottom: 0; left: auto; right: 100%; width: var(--tip-gap); height: auto; }
-.pulse-tooltip-host:hover > .pulse-tooltip, .pulse-tooltip-host:focus-visible > .pulse-tooltip, .pulse-tooltip-host > :focus-visible ~ .pulse-tooltip, .pulse-tooltip-host > .pulse-tooltip.is-open { opacity: 1; visibility: visible; pointer-events: auto; transform: none; transition: opacity .15s ease, transform .15s ease, visibility 0s; }
+.pulse-tooltip-host:hover > .pulse-tooltip, .pulse-tooltip-host.is-tip-hover > .pulse-tooltip, .pulse-tooltip-host:focus-visible > .pulse-tooltip, .pulse-tooltip-host > :focus-visible ~ .pulse-tooltip, .pulse-tooltip-host > .pulse-tooltip.is-open { opacity: 1; visibility: visible; pointer-events: auto; transform: none; transition: opacity .15s ease, transform .15s ease, visibility 0s; }
+/* In the top layer (pulse.js, while it shows): placed from the host's rect, so no scrolling or clipped box cuts it off. */
+.pulse-tooltip-host > .pulse-tooltip:popover-open { position: fixed; inset: auto; left: var(--tip-x, 0px); top: var(--tip-y, 0px); right: auto; bottom: auto; margin: 0; border: 0; overflow: visible; translate: none; }
+.pulse-tooltip-host > .pulse-tooltip:popover-open::after { margin-left: var(--tip-shift, 0px); }
+/* Row actions (a list row's trail, a table's row actions, anything marked pulse-row-actions): the tooltip closes as soon as the pointer leaves its icon, and the pointer
+   passes through it, so moving up, down or along a row of icons is never blocked. A deliberate, narrow exception to WCAG 1.4.13
+   (hoverable): these labels are a few words and repeat the icon's aria-label; everywhere else tooltips stay hoverable. */
+:is(.pulse-list-row__trail, .pulse-table__reveal, .pulse-row-actions) .pulse-tooltip-host > .pulse-tooltip { pointer-events: none !important; transition: none; }
+:is(.pulse-list-row__trail, .pulse-table__reveal, .pulse-row-actions) .pulse-tooltip-host > .pulse-tooltip::before { display: none; }
+/* pulse-row-actions: put it on any row's action area that isn't one of those two (a page's own rows, an always-visible table cell). */
 /* A disabled control shows no tooltip, even held open. */
 .pulse-tooltip-host:disabled > .pulse-tooltip, .pulse-tooltip-host[aria-disabled="true"] > .pulse-tooltip { display: none; }
 /* Esc (pulse.js) hides it until the pointer or focus leaves the host. */
@@ -513,14 +657,279 @@ html:has(dialog.pulse-drawer:modal) { overflow: hidden; }
 .pulse-popover--no-caret::before { display: none; }
 .pulse-popover__content { display: flex; flex-direction: column; gap: var(--space-8); }
 .pulse-popover__title { margin: 0; padding-inline-end: var(--space-24); font: 600 var(--type-body-md-size) / var(--type-body-md-line-height) var(--font-sans); color: var(--color-text-primary); }
-.pulse-popover__body { margin: 0; padding-inline-end: var(--space-24); font: 400 var(--type-body-sm-size) / var(--type-body-sm-line-height) var(--font-sans); color: var(--color-text-secondary); }
+.pulse-popover__body { margin: 0; padding-inline-end: var(--space-24); font: 400 var(--type-body-sm-size) / var(--type-body-sm-line-height) var(--font-sans); color: var(--color-text-tertiary); }
 .pulse-popover__actions { display: flex; flex-wrap: wrap; gap: var(--space-8); padding-top: var(--space-4); }
 .pulse-popover__close { position: absolute; top: calc(var(--space-12) - var(--border-width-1)); inset-inline-end: calc(var(--space-8) - var(--border-width-1)); }
 
+/* ---------- List ---------- */
+/* Rows with an optional leading mark, a title and a meta line, and trailing actions. Heights come from the row tokens:
+   default 48, --compact 40, --spacious 56. A row that is itself the control is an <a> or <button class="pulse-list-row">;
+   the current one has aria-current (or aria-selected in a listbox). __trail--reveal shows its actions on hover and focus only. */
+.pulse-list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; font-family: var(--font-sans); --row-h: var(--size-row-default); }
+.pulse-list--compact { --row-h: var(--size-row-compact); }
+.pulse-list--spacious { --row-h: var(--size-row-spacious); }
+.pulse-list-row { display: flex; align-items: center; gap: var(--space-12); box-sizing: border-box; width: 100%; min-height: var(--row-h, var(--size-row-default)); margin: 0; padding: var(--space-4) var(--space-12);
+  border: 0; border-bottom: var(--border-width-1) solid var(--color-border-subtle); background: transparent; color: var(--color-text-primary);
+  font: 400 var(--type-body-sm-size) / var(--type-body-sm-line-height) var(--font-sans); font-variant-numeric: tabular-nums; text-align: start; text-decoration: none; }
+.pulse-list-row__lead { flex: none; display: inline-flex; align-items: center; }
+.pulse-list-row__main { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; }
+.pulse-list-row__title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 500; }
+.pulse-list-row__meta { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--type-body-xs-size); line-height: var(--type-body-xs-line-height); color: var(--color-text-tertiary); }
+.pulse-list-row__trail { flex: none; display: flex; align-items: center; gap: var(--space-8); color: var(--color-text-secondary); }
+a.pulse-list-row, button.pulse-list-row { cursor: pointer; }
+a.pulse-list-row:hover, button.pulse-list-row:hover, .pulse-list-row.is-hover { background-color: var(--color-interactive-hover); }
+a.pulse-list-row:focus-visible, button.pulse-list-row:focus-visible, .pulse-list-row.is-focus { outline: 0; box-shadow: inset 0 0 0 var(--border-width-2) var(--color-border-focus); }
+.pulse-list-row[aria-current]:not([aria-current="false"]), .pulse-list-row[aria-selected="true"], .pulse-list-row.is-selected {
+  background-color: var(--color-selected-subtle); box-shadow: inset var(--border-width-2) 0 0 var(--color-selected); }
+.pulse-list-row__trail--reveal { opacity: 0; }
+.pulse-list-row:hover .pulse-list-row__trail--reveal, .pulse-list-row:focus-within .pulse-list-row__trail--reveal, .pulse-list-row.is-hover .pulse-list-row__trail--reveal { opacity: 1; }
+@media (hover: none) { .pulse-list-row__trail--reveal { opacity: 1; } }
+/* Plain: no lines between rows (a short list in a panel); hover and selection still show the row. */
+.pulse-list--plain .pulse-list-row { border-bottom: 0; }
+/* Compact rows are one line: the meta sits after the title and truncates first, then the title. On phones it may wrap under
+   the title and the row grows. Two-line rows use the default size. */
+.pulse-list--compact .pulse-list-row__main { flex-direction: row; align-items: baseline; column-gap: var(--space-8); }
+.pulse-list--compact .pulse-list-row__title { flex: 0 1 auto; min-width: 0; }
+.pulse-list--compact .pulse-list-row__meta { flex: 0 1000 auto; min-width: 0; }
+@media (max-width: 767px) { .pulse-list--compact .pulse-list-row__main { flex-wrap: wrap; } }
+
+/* ---------- Data table ---------- */
+/* Rows from the same tokens as lists (header row matches). Numbers use tabular figures; __num right-aligns a column.
+   Sorting: the head cell has aria-sort and a <button class="pulse-table__sort"> with an arrow-down icon (turned for ascending).
+   Selected row: aria-selected="true". .is-condensed hides cells marked data-optional (when a drawer takes the width). */
+.pulse-table { --row-h: var(--size-row-default); width: 100%; border-collapse: collapse; color: var(--color-text-primary);
+  font: 400 var(--type-body-sm-size) / var(--type-body-sm-line-height) var(--font-sans); font-variant-numeric: tabular-nums; }
+.pulse-table--compact { --row-h: var(--size-row-compact); }
+.pulse-table--spacious { --row-h: var(--size-row-spacious); }
+.pulse-table th, .pulse-table td { box-sizing: border-box; height: var(--row-h); padding: 0 var(--space-12); border-bottom: var(--border-width-1) solid var(--color-border-subtle); text-align: start; vertical-align: middle; }
+.pulse-table th { font: 500 var(--type-label-xs-size) / var(--type-label-xs-line-height) var(--font-sans); color: var(--color-text-secondary); white-space: nowrap; border-bottom-color: var(--color-border-default); }
+.pulse-table .pulse-table__num { text-align: end; }
+.pulse-table__sort { display: inline-flex; align-items: center; gap: var(--space-4); margin: 0; padding: 0; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; --pulse-icon-size: var(--size-icon-12); }
+.pulse-table__sort > .pulse-icon { opacity: 0; transition: transform .15s ease; }
+.pulse-table__sort:hover { color: var(--color-text-primary); }
+.pulse-table__sort:hover > .pulse-icon, th[aria-sort="ascending"] .pulse-table__sort > .pulse-icon, th[aria-sort="descending"] .pulse-table__sort > .pulse-icon { opacity: 1; }
+th[aria-sort="ascending"] .pulse-table__sort > .pulse-icon { transform: rotate(180deg); }
+th[aria-sort="ascending"], th[aria-sort="descending"] { color: var(--color-text-primary); }
+.pulse-table__sort:focus-visible { outline: 0; border-radius: var(--radius-tag); box-shadow: var(--shadow-focus-ring); }
+.pulse-table--interactive tbody tr { cursor: pointer; }
+.pulse-table--interactive tbody tr:hover td { background-color: var(--color-interactive-hover); }
+.pulse-table tr[aria-selected="true"] td { background-color: var(--color-selected-subtle); }
+.pulse-table tr[aria-selected="true"] td:first-child { box-shadow: inset var(--border-width-2) 0 0 var(--color-selected); }
+.pulse-table.is-condensed [data-optional] { display: none; }
+/* Headless: aligned columns with no visible header row (a list of accounts, like a mail inbox). Keep the <thead>: screen readers
+   still read it. Give the name column a fixed width with <col> so the values line up across tables. */
+.pulse-table--headless thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+/* Row actions in their own last cell: shown on hover and focus, always on touch screens. */
+.pulse-table__reveal { opacity: 0; }
+.pulse-table tr:hover .pulse-table__reveal, .pulse-table tr:focus-within .pulse-table__reveal, .pulse-table tr.is-hover .pulse-table__reveal { opacity: 1; }
+@media (hover: none) { .pulse-table__reveal { opacity: 1; } }
+
+/* ---------- Empty state ---------- */
+/* An icon, a title, a line and optional actions, centered. --clear is the all-clear (shield-check in the success color). */
+.pulse-empty { display: flex; flex-direction: column; align-items: center; gap: var(--space-8); box-sizing: border-box; padding: var(--space-48) var(--space-24); text-align: center; font-family: var(--font-sans); }
+.pulse-empty__icon { --pulse-icon-size: var(--size-icon-32); color: var(--color-text-tertiary); margin-bottom: var(--space-4); }
+.pulse-empty--clear .pulse-empty__icon { color: var(--color-indicator-success); }
+.pulse-empty__title { margin: 0; font: 600 var(--type-body-md-size) / var(--type-body-md-line-height) var(--font-sans); color: var(--color-text-primary); }
+.pulse-empty__text { margin: 0; max-width: 40ch; font: 400 var(--type-body-sm-size) / var(--type-body-sm-line-height) var(--font-sans); color: var(--color-text-secondary); }
+.pulse-empty__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-8); margin-top: var(--space-8); }
+
+/* ---------- Skeleton ---------- */
+/* Gray placeholders while content loads. Put aria-busy="true" on the region and a hidden "Loading" for screen readers. */
+.pulse-skeleton { display: block; box-sizing: border-box; height: var(--space-12); border-radius: var(--radius-tag);
+  background: var(--color-surface-sunken) linear-gradient(90deg, transparent, color-mix(in srgb, var(--color-surface-raised) 60%, transparent), transparent) 0 0 / 200% 100% no-repeat;
+  animation: pulse-shimmer 1.4s ease-in-out infinite; }
+.pulse-skeleton--title { height: var(--space-16); }
+.pulse-skeleton--circle { width: var(--space-24); height: var(--space-24); border-radius: 50%; flex: none; }
+.pulse-skeleton--mark { width: var(--space-32); height: var(--space-32); border-radius: var(--radius-control); flex: none; }
+.pulse-skeleton-row { display: flex; align-items: center; gap: var(--space-12); box-sizing: border-box; min-height: var(--row-h, var(--size-row-default)); padding: var(--space-4) var(--space-12); border-bottom: var(--border-width-1) solid var(--color-border-subtle); }
+.pulse-skeleton-row > .pulse-skeleton:not(.pulse-skeleton--circle):not(.pulse-skeleton--mark) { flex: 1 1 auto; max-width: 60%; }
+@keyframes pulse-shimmer { from { background-position: 150% 0; } to { background-position: -50% 0; } }
+
+/* ---------- Spinner ---------- */
+/* A ring for work in progress: --sm 16 (inline), default 20, --lg 32 (page or cover). Give it role="status" and an
+   aria-label. __cover dims and covers its positioned parent; as a manual popover it covers the page, above open panels. */
+.pulse-spinner { --s: var(--size-icon-20); display: inline-block; flex: none; box-sizing: border-box; width: var(--s); height: var(--s); border: var(--border-width-2) solid color-mix(in srgb, currentColor 20%, transparent);
+  border-top-color: currentColor; border-radius: 50%; color: var(--color-text-secondary); animation: pulse-spin .8s linear infinite; }
+.pulse-spinner--sm { --s: var(--size-icon-16); }
+.pulse-spinner--lg { --s: var(--size-icon-32); border-width: 3px; }
+.pulse-spinner-cover { position: absolute; inset: 0; z-index: 5; display: grid; place-items: center; margin: 0; padding: 0; border: 0; background-color: color-mix(in srgb, var(--color-surface-page) 70%, transparent); }
+.pulse-spinner-cover[popover] { position: fixed; width: 100%; height: 100%; }
+.pulse-spinner-cover[popover]:not(:popover-open) { display: none; }
+
+/* ---------- Avatar ---------- */
+/* A mark for an account (32px rounded square: two letters or an image such as a favicon) or a person (--circle, often --sm 24px).
+   Letters are uppercase by CSS. Images get an alt (or alt="" beside a visible name). */
+.pulse-avatar { --a: var(--space-32); display: inline-grid; place-items: center; flex: none; box-sizing: border-box; width: var(--a); height: var(--a); overflow: hidden;
+  border-radius: var(--radius-control); background-color: var(--color-surface-sunken); color: var(--color-text-secondary);
+  font: 600 var(--type-label-xs-size) / 1 var(--font-sans); text-transform: uppercase; letter-spacing: 0.02em; }
+.pulse-avatar > img { width: 100%; height: 100%; object-fit: cover; }
+.pulse-avatar--sm { --a: var(--space-24); }
+.pulse-avatar--circle { border-radius: 50%; }
+/* Outline: no fill and a subtle line, for a logo that brings its own color (a source's favicon). */
+.pulse-avatar--outline { background-color: transparent; border: var(--border-width-1) solid var(--color-border-subtle); }
+.pulse-avatar-group { display: inline-flex; align-items: center; }
+.pulse-avatar-group > .pulse-avatar { box-shadow: 0 0 0 var(--border-width-2) var(--color-surface-page); }
+.pulse-avatar-group > .pulse-avatar + .pulse-avatar { margin-inline-start: calc(-1 * var(--space-8)); }
+.pulse-avatar--more { background-color: var(--color-surface-raised); border: var(--border-width-1) solid var(--color-border-default); color: var(--color-text-secondary); text-transform: none; }
+
+/* ---------- Action menu ---------- */
+/* The same dropdown surface as the listbox, holding role="menu" and <button class="pulse-menu-item" role="menuitem">.
+   Opened by any button with data-pulse-menu and aria-haspopup="menu" (a ⋯ icon button is the overflow menu). A destructive
+   item is --danger, sits last after a divider, and opens a destructive dialog to confirm (data-pulse-open). */
+.pulse-dropdown--menu { width: max-content; min-width: 200px; max-width: min(320px, calc(100vw - 2 * var(--space-16))); }
+.pulse-dropdown--menu [role="menu"] { display: flex; flex-direction: column; gap: 2px; }
+button.pulse-menu-item { width: 100%; }
+.pulse-menu-item--danger { color: var(--color-text-danger); }
+.pulse-dropdown__divider { height: 0; margin: var(--space-4) 0; border: 0; border-top: var(--border-width-1) solid var(--color-border-subtle); }
+
+/* ---------- App header ---------- */
+/* The bar across the top of an app: the brand (mark and name, or a wide logo), navigation and actions. The brand mark and wide
+   logo come from the brand's tokens (--brand-mark, --brand-mark-dark, --brand-logo-wide), so a client brand changes them with
+   no script. Put the product name in __name (and as the mark's aria-label when the name is hidden). */
+.pulse-app-header { position: sticky; top: 0; z-index: 20; display: flex; align-items: center; gap: var(--space-16); box-sizing: border-box; height: calc(var(--space-48) + var(--space-4));
+  padding: 0 var(--space-16); border-bottom: var(--border-width-1) solid var(--color-border-default); background-color: var(--color-surface-page); color: var(--color-text-primary); font-family: var(--font-sans); }
+.pulse-app-header__brand { display: inline-flex; align-items: center; gap: var(--space-8); flex: none; color: inherit; text-decoration: none; }
+.pulse-brand-mark { display: inline-block; flex: none; width: var(--space-24); height: var(--space-24); background: var(--brand-mark-current) center / contain no-repeat; }
+.pulse-brand-wide { display: inline-block; flex: none; width: var(--brand-logo-wide-width, 120px); height: var(--space-24); background: var(--brand-logo-wide) left center / contain no-repeat; }
+/* Under 768px the wide logo shows the brand's square mark instead (every brand has one). */
+@media (max-width: 767px) { .pulse-brand-wide { width: var(--space-24); background-image: var(--brand-mark-current); } }
+.pulse-app-header__name { font: var(--brand-name-weight, 600) var(--brand-name-size, var(--type-label-md-size)) / var(--brand-name-line-height, var(--type-label-md-line-height)) var(--font-sans);
+  letter-spacing: var(--brand-name-tracking, normal); white-space: nowrap; }
+/* VEX's own lockup, as on the website: a pink dot (it pulses twice) and the name in 20px heavy. A client brand shows its mark
+   and name (or wide logo) instead. Put both in the markup; the brand's tokens pick which shows, so it works in a shadow root too. */
+.pulse-app-header__brand { gap: var(--brand-lockup-gap, var(--space-8)); }
+.pulse-brand-dot { display: var(--brand-dot-display, none); flex: none; width: 10px; height: 10px; border-radius: 50%; background-color: var(--color-accent-default);
+  --dot: var(--color-accent-default); animation: pulse-ping 2.2s ease-out 2; }
+.pulse-app-header__brand > .pulse-brand-mark { display: var(--brand-mark-display, inline-block); }
+.pulse-app-header__nav { display: flex; align-items: center; gap: var(--space-4); min-width: 0; }
+.pulse-app-header__actions { display: flex; align-items: center; gap: var(--space-8); margin-inline-start: auto; }
+
+/* ---------- Stat and status dot ---------- */
+/* A number over its label (data in the sans, tabular figures). __dot puts a status dot before the number. */
+.pulse-stat { display: inline-flex; flex-direction: column; gap: 2px; font-family: var(--font-sans); font-variant-numeric: tabular-nums; }
+.pulse-stat__value { display: inline-flex; align-items: center; gap: var(--space-8); font: 600 var(--type-heading-card-size) / var(--type-heading-card-line-height) var(--font-sans); color: var(--color-text-primary); }
+.pulse-stat__label { font: 400 var(--type-body-xs-size) / var(--type-body-xs-line-height) var(--font-sans); color: var(--color-text-secondary); }
+.pulse-stat--sm .pulse-stat__value { font-size: var(--type-body-md-size); line-height: var(--type-body-md-line-height); }
+/* A stat that opens its own detail is a <button> or <a class="pulse-stat">: a hover fill, the focus ring and a caret after the
+   number. Only for that; a stat that just reports stays plain. */
+button.pulse-stat, a.pulse-stat { margin: calc(-1 * var(--space-8)) calc(-1 * var(--space-12)); padding: var(--space-8) var(--space-12); border: 0; border-radius: var(--radius-control);
+  background: transparent; color: inherit; text-align: start; text-decoration: none; cursor: pointer; }
+button.pulse-stat:hover, a.pulse-stat:hover, .pulse-stat.is-hover { background-color: var(--color-interactive-hover); }
+button.pulse-stat:active, a.pulse-stat:active, .pulse-stat.is-pressed { background-color: var(--color-interactive-pressed); }
+button.pulse-stat:focus-visible, a.pulse-stat:focus-visible, .pulse-stat.is-focus { outline: 0; box-shadow: var(--shadow-focus-ring); }
+button.pulse-stat .pulse-stat__value::after, a.pulse-stat .pulse-stat__value::after { content: ""; flex: none; width: var(--size-icon-16); height: var(--size-icon-16); margin-inline-start: calc(-1 * var(--space-4));
+  background-color: var(--color-text-tertiary); -webkit-mask: var(--pulse-i-caret-right-regular) center / contain no-repeat; mask: var(--pulse-i-caret-right-regular) center / contain no-repeat; }
+/* Inline stats: one line for a panel head ("6 assets · 4 Dots"). Number over label stays for KPI rows. */
+.pulse-stat-line { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-4) var(--space-8); margin: 0; padding: 0; list-style: none;
+  font: 400 var(--type-body-sm-size) / var(--type-body-sm-line-height) var(--font-sans); font-variant-numeric: tabular-nums; color: var(--color-text-secondary); }
+.pulse-stat-line > * + *::before { content: "·"; margin-inline-end: var(--space-8); color: var(--color-text-tertiary); }
+.pulse-stat-line strong { font-weight: 600; color: var(--color-text-primary); }
+/* Status dot: a tone (--success, --warning, --danger, --info, --accent; none is neutral), --live for a ping, --idle and --none hollow.
+   It is a mark: pair it with a word, or an aria-label on role="img". */
+.pulse-status-dot { --dot: var(--color-status-neutral); display: inline-block; flex: none; box-sizing: border-box; width: var(--space-8); height: var(--space-8); border-radius: 50%; background-color: var(--dot); }
+.pulse-status-dot--success { --dot: var(--color-indicator-success); }
+.pulse-status-dot--warning { --dot: var(--color-indicator-warning); }
+.pulse-status-dot--danger { --dot: var(--color-indicator-danger); }
+.pulse-status-dot--info { --dot: var(--color-indicator-info); }
+.pulse-status-dot--accent { --dot: var(--color-indicator-accent); }
+.pulse-status-dot--idle { background-color: transparent; border: var(--border-width-2) solid var(--dot); }
+.pulse-status-dot--none { background-color: transparent; border: var(--border-width-1-5) solid var(--color-border-mid); }
+.pulse-status-dot--live { animation: pulse-ping 2s ease-out infinite; }
+@keyframes pulse-ping { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--dot) 55%, transparent); } 70% { box-shadow: 0 0 0 6px transparent; } 100% { box-shadow: 0 0 0 0 transparent; } }
+
+/* ---------- Chip count ---------- */
+.pulse-chip__count { font: 500 var(--type-label-xs-size) / var(--type-label-xs-line-height) var(--font-sans); font-variant-numeric: tabular-nums; color: var(--color-text-secondary); }
+.pulse-chip[aria-pressed="true"] .pulse-chip__count, .pulse-chip.is-selected .pulse-chip__count { color: inherit; }
+
+/* ---------- Disclosure ---------- */
+/* A fold: native <details class="pulse-disclosure"> with <summary class="pulse-disclosure__summary">. The caret turns when open. */
+.pulse-disclosure { font-family: var(--font-sans); }
+.pulse-disclosure__summary { display: flex; align-items: center; gap: var(--space-8); padding: var(--space-8) 0; list-style: none; cursor: pointer;
+  font: 500 var(--type-label-sm-size) / var(--type-label-sm-line-height) var(--font-sans); color: var(--color-text-primary); }
+.pulse-disclosure__summary::-webkit-details-marker { display: none; }
+.pulse-disclosure__summary::before { content: ""; flex: none; width: var(--size-icon-16); height: var(--size-icon-16); background-color: currentColor;
+  -webkit-mask: var(--pulse-i-caret-down-regular) center / contain no-repeat; mask: var(--pulse-i-caret-down-regular) center / contain no-repeat; transform: rotate(-90deg); transition: transform .15s ease; }
+.pulse-disclosure[open] > .pulse-disclosure__summary::before { transform: none; }
+.pulse-disclosure__summary:focus-visible { outline: 0; border-radius: var(--radius-tag); box-shadow: var(--shadow-focus-ring); }
+.pulse-disclosure__body { padding: var(--space-4) 0 var(--space-8) var(--space-24); }
+/* Section: for a section or panel head that folds (not a fold inside content). The caret goes after the title, points down and
+   turns up when open; the content is full width, lined up with the title. Works the same on each disclosure in an accordion. */
+.pulse-disclosure--section > .pulse-disclosure__summary { justify-content: space-between; }
+.pulse-disclosure--section > .pulse-disclosure__summary::before { order: 2; transform: none; }
+.pulse-disclosure--section[open] > .pulse-disclosure__summary::before { transform: rotate(180deg); }
+.pulse-disclosure--section > .pulse-disclosure__body { padding-inline-start: 0; }
+/* Accordion: a stack of disclosures with a line between them. The same name on each keeps one open at a time (the browser does it). */
+.pulse-accordion { border-top: var(--border-width-1) solid var(--color-border-default); }
+.pulse-accordion > .pulse-disclosure { border-bottom: var(--border-width-1) solid var(--color-border-default); }
+.pulse-accordion > .pulse-disclosure > .pulse-disclosure__summary { padding: var(--space-12) 0; }
+
+/* ---------- Conversation ---------- */
+/* Messages in a thread: an avatar, a head (sender, an optional badge, time), the body. Inside .pulse-timeline a line joins them. */
+.pulse-timeline { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; }
+.pulse-message { position: relative; display: grid; grid-template-columns: var(--space-32) minmax(0, 1fr); column-gap: var(--space-12); row-gap: var(--space-4); padding-bottom: var(--space-20); font-family: var(--font-sans); }
+.pulse-message > .pulse-avatar { grid-row: 1 / span 2; }
+.pulse-timeline > .pulse-message:not(:last-child)::before { content: ""; position: absolute; left: calc(var(--space-32) / 2); top: calc(var(--space-32) + var(--space-4)); bottom: var(--space-4); width: var(--border-width-1); background-color: var(--color-border-default); }
+.pulse-message__head { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-4) var(--space-8); min-height: var(--space-32); align-content: center; }
+.pulse-message__sender { font: 600 var(--type-label-sm-size) / var(--type-label-sm-line-height) var(--font-sans); color: var(--color-text-primary); }
+.pulse-message__time { font: 400 var(--type-body-xs-size) / var(--type-body-xs-line-height) var(--font-sans); font-variant-numeric: tabular-nums; color: var(--color-text-tertiary); }
+.pulse-message__body { grid-column: 2; min-width: 0; font: 400 var(--type-body-sm-size) / var(--type-body-sm-relaxed-line-height) var(--font-sans); color: var(--color-text-primary); overflow-wrap: anywhere; }
+.pulse-message__body > :first-child { margin-top: 0; }
+.pulse-message__body > :last-child { margin-bottom: 0; }
+/* Reply actions: buttons that answer inside a conversation use the control radius, not the pill, so they read as replies. */
+.pulse-btn--reply { border-radius: var(--radius-control); }
+/* Buttons inside a contained area go more square: row actions (list row trail, table row actions, pulse-row-actions) take the control radius too. */
+:is(.pulse-list-row__trail, .pulse-table__reveal, .pulse-row-actions) .pulse-btn { border-radius: var(--radius-control); }
+/* ---------- Breadcrumb ---------- */
+.pulse-breadcrumb ol { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4); margin: 0; padding: 0; list-style: none; font: 400 var(--type-body-sm-size) / var(--type-body-sm-line-height) var(--font-sans); color: var(--color-text-secondary); }
+.pulse-breadcrumb li { display: inline-flex; align-items: center; gap: var(--space-4); min-width: 0; }
+.pulse-breadcrumb li + li::before { content: "/"; color: var(--color-text-tertiary); }
+.pulse-breadcrumb [aria-current]:not([aria-current="false"]) { color: var(--color-text-primary); font-weight: 500; }
+
+/* ---------- Log list ---------- */
+/* Mono rows (time and text); each row is a <details> that opens to the full text. .is-new flashes a row that just arrived. */
+.pulse-log { margin: 0; padding: 0; list-style: none; font: 400 var(--type-mono-code-sm-size) / var(--type-mono-code-sm-line-height) var(--font-mono); color: var(--color-text-primary); }
+.pulse-log__row { border-bottom: var(--border-width-1) solid var(--color-border-subtle); }
+.pulse-log__row > summary { display: flex; gap: var(--space-12); padding: var(--space-4) var(--space-8); list-style: none; cursor: pointer; }
+.pulse-log__row > summary::-webkit-details-marker { display: none; }
+/* A caret before the time: a cue that the row opens (the whole row is the control). Right when closed, down when open. */
+.pulse-log__row > summary::before { content: ""; flex: none; align-self: flex-start; width: var(--size-icon-12); height: var(--size-icon-12); margin-block-start: calc((var(--type-mono-code-sm-line-height) - var(--size-icon-12)) / 2); margin-inline-end: calc(-1 * var(--space-4));
+  background-color: var(--color-text-tertiary); -webkit-mask: var(--pulse-i-caret-right-regular) center / contain no-repeat; mask: var(--pulse-i-caret-right-regular) center / contain no-repeat; transition: transform .15s ease; }
+.pulse-log__row > summary:hover::before { background-color: var(--color-text-secondary); }
+.pulse-log__row[open] > summary::before { transform: rotate(90deg); }
+.pulse-log__row > summary:hover { background-color: var(--color-interactive-hover); }
+.pulse-log__row > summary:focus-visible { outline: 0; box-shadow: inset 0 0 0 var(--border-width-2) var(--color-border-focus); }
+.pulse-log__time { flex: none; color: var(--color-text-tertiary); font-variant-numeric: tabular-nums; }
+/* Columns (optional): up to three __col cells between the time and the text (session, group, source). From tablet up the log is
+   one grid and every row a subgrid, so each column is as wide as its longest value (full IDs and emails show) and lines up across
+   rows; --pulse-log-col-max caps a column (40ch by default) and cuts longer values with an ellipsis. On phones the time and the
+   columns share a line and the text goes under. */
+.pulse-log__col { flex: none; min-width: 0; max-width: var(--pulse-log-col-max, 40ch); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--color-text-secondary); }
+.pulse-log__col > .pulse-badge { vertical-align: top; }
+@media (min-width: 768px) {
+  .pulse-log:has(.pulse-log__col) { display: grid; grid-template-columns: auto auto auto 1fr; }
+  .pulse-log:has(.pulse-log__col:nth-child(3)) { grid-template-columns: auto auto auto auto 1fr; }
+  .pulse-log:has(.pulse-log__col:nth-child(4)) { grid-template-columns: auto auto auto auto auto 1fr; }
+  .pulse-log:has(.pulse-log__col) > *, .pulse-log:has(.pulse-log__col) .pulse-log__row, .pulse-log:has(.pulse-log__col) .pulse-log__row > summary {
+    display: grid; grid-column: 1 / -1; grid-template-columns: subgrid; align-items: start; }
+  .pulse-log:has(.pulse-log__col) .pulse-log__row > summary { column-gap: var(--space-12); }
+  .pulse-log:has(.pulse-log__col) .pulse-log__row::details-content, .pulse-log:has(.pulse-log__col) .pulse-log__full { grid-column: 1 / -1; }
+}
+@media (max-width: 767px) {
+  .pulse-log__row > summary:has(.pulse-log__col) { flex-wrap: wrap; row-gap: 0; }
+  .pulse-log__row > summary:has(.pulse-log__col) > .pulse-log__text { flex-basis: 100%; }
+}
+.pulse-log__text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pulse-log__full { margin: 0; padding: var(--space-8) var(--space-8) var(--space-12); white-space: pre-wrap; overflow-wrap: anywhere; color: var(--color-text-secondary); }
+.pulse-log__row.is-new { animation: pulse-flash 1.6s ease-out; }
+@keyframes pulse-flash { from { background-color: var(--color-surface-highlight); } to { background-color: transparent; } }
+
 @media (prefers-reduced-motion: reduce) {
+  .pulse-skeleton, .pulse-status-dot--live, .pulse-log__row.is-new, .pulse-brand-dot { animation: none; }
+  .pulse-spinner { animation-duration: 2.4s; }
+  .pulse-disclosure__summary::before, .pulse-table__sort > .pulse-icon, .pulse-log__row > summary::before { transition: none; }
   .pulse-btn, .pulse-toggle input, .pulse-toggle input::before, .pulse-slider__input::-webkit-slider-thumb, .pulse-link > .pulse-icon:last-child { transition: none; }
   .pulse-tooltip-host > .pulse-tooltip { transform: none; transition: none; }
-  dialog.pulse-drawer, dialog.pulse-drawer::backdrop { transition: none; }
+  dialog.pulse-drawer, dialog.pulse-drawer::backdrop, dialog.pulse-drawer:not([open]), dialog.pulse-drawer:not([open])::backdrop { transition: none; }
   .pulse-eyebrow--dot::before { animation: none; }
   .pulse-toaster > .pulse-toast { animation: none; }
   .pulse-btn[aria-busy="true"]::before { animation-duration: 2.4s; }

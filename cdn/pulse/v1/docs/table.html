@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en" data-theme="light" data-surface="app">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Data table · Pulse docs</title>
+<meta name="description" content="A table for comparing rows: sortable columns, a selected row, and the same row heights as lists.">
+<link rel="stylesheet" href="../pulse-fonts.css">
+<link rel="stylesheet" href="../pulse-tokens.css">
+<link rel="stylesheet" href="../pulse-icons.css">
+<link rel="stylesheet" href="../pulse-components.css">
+<script src="../pulse.js" defer></script>
+<style>
+  /* Docs prose: plain elements only, in the reset layer so Pulse components inside examples always win. */
+  @layer reset {
+    body{margin:0;background:var(--color-surface-page);color:var(--color-text-primary);font:400 var(--type-body-md-size)/var(--type-body-md-line-height) var(--font-sans);}
+    a{color:inherit;}
+    .docs-main :not(pre)>code{font:400 0.875em/1 var(--font-mono);padding:2px 4px;border-radius:var(--radius-tag);background:var(--color-surface-sunken);color:var(--color-text-primary);}
+    .docs-main h2{margin:var(--space-48) 0 var(--space-12);font:600 var(--type-heading-card-size)/var(--type-heading-card-line-height) var(--font-sans);}
+    .docs-main h3{margin:var(--space-32) 0 var(--space-8);font:600 var(--type-body-md-size)/var(--type-body-md-line-height) var(--font-sans);}
+    .docs-main p,.docs-main li{color:var(--color-text-secondary);}
+    .docs-main p{margin:0 0 var(--space-16);}
+    .docs-main ul,.docs-main ol{margin:0 0 var(--space-16);padding-left:var(--space-24);}
+    .docs-main li{margin-bottom:var(--space-4);}
+    .docs-main strong{color:var(--color-text-primary);font-weight:600;}
+    .docs-main table{width:100%;border-collapse:collapse;font-size:var(--type-body-sm-size);line-height:var(--type-body-sm-line-height);}
+    .docs-main th,.docs-main td{text-align:left;vertical-align:top;padding:var(--space-8) var(--space-12) var(--space-8) 0;border-bottom:1px solid var(--color-border-default);}
+    .docs-main th{font-weight:600;color:var(--color-text-primary);}
+    .docs-main td{color:var(--color-text-secondary);}
+    .docs-main td:first-child{width:40%;}
+    .docs-main td code{overflow-wrap:anywhere;}
+  }
+  /* Docs prose: plain elements only, in the reset layer so Pulse components inside examples always win. */
+  .docs-top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:var(--space-16);min-height:56px;padding:0 var(--space-24);background:var(--color-surface-page);border-bottom:1px solid var(--color-border-default);}
+  .docs-brand{font-weight:600;text-decoration:none;}
+  .docs-brand span{font:400 var(--type-mono-label-size)/1 var(--font-mono);color:var(--color-text-tertiary);margin-left:var(--space-8);}
+  .docs-top nav{margin-left:auto;display:flex;align-items:center;gap:var(--space-20);flex-wrap:wrap;}
+  .docs-layout{display:grid;grid-template-columns:240px minmax(0,1fr);gap:var(--space-48);max-width:1200px;margin:0 auto;padding:0 var(--space-24);}
+  .docs-side{position:sticky;top:57px;align-self:start;max-height:calc(100vh - 57px);overflow-y:auto;padding:var(--space-32) 0;}
+  .docs-side .pulse-tabs__label{margin-top:var(--space-24);}
+  .docs-side .pulse-tabs__label:first-child{margin-top:0;}
+  .docs-main{min-width:0;max-width:800px;padding:var(--space-48) 0 var(--space-96);}
+  .docs-main h1{margin:var(--space-8) 0 var(--space-16);font:600 var(--type-heading-section-size)/var(--type-heading-section-line-height) var(--font-sans);letter-spacing:-0.01em;}
+  .docs-lede{margin:0 0 var(--space-16);font-size:var(--type-body-lede-size);line-height:var(--type-body-lede-line-height);color:var(--color-text-secondary);}
+  .docs-meta{display:flex;flex-wrap:wrap;gap:var(--space-8) var(--space-24);margin:0 0 var(--space-40);}
+  .docs-example{margin:var(--space-16) 0 var(--space-32);border:1px solid var(--color-border-default);border-radius:var(--radius-container);}
+  .docs-live{display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-16);padding:var(--space-32) var(--space-24);background:var(--color-surface-page);border-radius:var(--radius-container) var(--radius-container) 0 0;}
+  .docs-live--tall{min-height:280px;align-items:flex-start;}
+  .docs-variants{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:var(--space-16);margin:var(--space-16) 0 var(--space-32);}
+  .docs-variant{min-width:0;display:flex;flex-direction:column;border:1px solid var(--color-border-default);border-radius:var(--radius-container);}
+  .docs-live--compact{flex:1;justify-content:center;min-height:96px;padding:var(--space-24) var(--space-16);}
+  .docs-variant .docs-code{border:0;border-top:1px solid var(--color-border-default);border-radius:0 0 var(--radius-container) var(--radius-container);}
+  .docs-variant .docs-code .pulse-code__head{border-radius:0;}
+  .docs-variant .docs-code pre{padding:var(--space-12);}
+  .docs-example .docs-code{border:0;border-top:1px solid var(--color-border-default);border-radius:0 0 var(--radius-container) var(--radius-container);}
+  .docs-example .docs-code .pulse-code__head{border-radius:0;}
+  .docs-code pre{max-height:420px;overflow:auto;}
+  .docs-table{overflow-x:auto;margin:0 0 var(--space-24);}
+  .docs-swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:var(--space-8) var(--space-16);margin-bottom:var(--space-16);}
+  .docs-swatch{display:flex;align-items:center;gap:var(--space-8);min-width:0;}
+  .docs-swatch span{flex:none;width:32px;height:32px;border-radius:var(--radius-tag);border:1px solid var(--color-border-default);}
+  .docs-swatch code{overflow-wrap:anywhere;}
+  .docs-space{display:flex;flex-direction:column;gap:var(--space-8);}
+  .docs-space div{display:flex;align-items:center;gap:var(--space-12);}
+  .docs-space span{height:12px;background:var(--color-accent-subtle);box-shadow:inset 0 0 0 1px var(--color-accent-default);}
+  .docs-icons{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:var(--space-16);}
+  .docs-icon{display:flex;align-items:center;gap:var(--space-8);--pulse-icon-size:20px;}
+  .docs-icon code{font-size:12px !important;}
+  .docs-next{display:flex;justify-content:space-between;gap:var(--space-16);margin-top:var(--space-64);padding-top:var(--space-24);border-top:1px solid var(--color-border-default);}
+  .docs-menu{display:none;}
+  .docs-meta{align-items:center;}
+  .docs-meta .pulse-badge{white-space:normal;max-width:100%;}
+  .docs-states .pulse-drawer__body{color:var(--color-text-primary);}
+  .docs-states-note{margin:0 0 var(--space-24);font-size:var(--type-body-sm-size);line-height:var(--type-body-sm-line-height);color:var(--color-text-secondary);}
+  .docs-states-row{margin:0 0 var(--space-32);}
+  .docs-states-label{margin:0 0 var(--space-12);font:400 var(--type-mono-eyebrow-size)/var(--type-mono-eyebrow-line-height) var(--font-mono);letter-spacing:0.08em;text-transform:uppercase;color:var(--color-text-tertiary);}
+  .docs-states-items{display:flex;flex-wrap:wrap;align-items:flex-start;gap:var(--space-16) var(--space-24);}
+  .docs-states-items--stack{flex-direction:column;align-items:stretch;}
+  .docs-state{display:flex;flex-direction:column;align-items:flex-start;gap:var(--space-8);}
+  .docs-state-cap{font:400 var(--type-mono-caption-size)/var(--type-mono-caption-line-height) var(--font-mono);color:var(--color-text-tertiary);}
+  .docs-states .pulse-popover{max-width:260px;margin:var(--space-12);}
+  @media (max-width:900px){
+    .docs-layout{grid-template-columns:minmax(0,1fr);gap:0;padding:0 var(--space-16);}
+    .docs-side{display:none;}
+    .docs-menu{display:block;margin:var(--space-16) 0 0;border:1px solid var(--color-border-default);border-radius:var(--radius-control);}
+    .docs-menu summary{padding:var(--space-12) var(--space-16);cursor:pointer;font-weight:500;}
+    .docs-menu .docs-menu__list{padding:0 var(--space-16) var(--space-16);}
+    .docs-main{padding-top:var(--space-24);}
+    .docs-top{padding:0 var(--space-16);}
+    .docs-live{padding:var(--space-24) var(--space-16);}
+    .docs-live--compact{min-height:64px;padding:var(--space-16);}
+    .docs-variants{gap:var(--space-12);}
+  @media (max-width:560px){ .docs-top nav .docs-hide-sm{display:none;} .docs-top nav{gap:var(--space-8);} .docs-top{flex-wrap:wrap;padding-block:var(--space-8);position:static;} }
+</style>
+</head>
+<body>
+<header class="docs-top">
+  <a class="docs-brand" href="index.html">Pulse<span>v1 docs</span></a>
+  <nav aria-label="Pulse">
+    <a class="pulse-link pulse-link--quiet pulse-link--sm docs-hide-sm" href="../pulse-reference.md">AI reference</a>
+    <div class="pulse-segmented" role="group" aria-label="Surface"><button class="pulse-segmented__item" type="button" data-docs-set="surface" data-docs-value="web" aria-pressed="false">Web</button><button class="pulse-segmented__item" type="button" data-docs-set="surface" data-docs-value="app" aria-pressed="true">App</button></div>
+    <div class="pulse-segmented" role="group" aria-label="Theme"><button class="pulse-segmented__item" type="button" data-docs-set="theme" data-docs-value="light" aria-pressed="true">Light</button><button class="pulse-segmented__item" type="button" data-docs-set="theme" data-docs-value="dark" aria-pressed="false">Dark</button></div>
+  </nav>
+</header>
+<div class="docs-layout">
+  <aside class="docs-side"><p class="pulse-tabs__label">Start</p><nav class="pulse-tabs pulse-tabs--vertical" aria-label="Start"><a class="pulse-tab" href="index.html">Getting started</a><a class="pulse-tab" href="starter.html">Starter page</a><a class="pulse-tab" href="foundations.html">Foundations</a><a class="pulse-tab" href="patterns.html">Patterns</a><a class="pulse-tab" href="white-labeling.html">White labeling</a></nav><p class="pulse-tabs__label">Components</p><nav class="pulse-tabs pulse-tabs--vertical" aria-label="Components"><a class="pulse-tab" href="alert-toast.html">Alert and toast</a><a class="pulse-tab" href="app-header.html">App header</a><a class="pulse-tab" href="avatar.html">Avatar</a><a class="pulse-tab" href="badge.html">Badge</a><a class="pulse-tab" href="breadcrumb.html">Breadcrumb</a><a class="pulse-tab" href="button.html">Button</a><a class="pulse-tab" href="checkbox-radio-toggle.html">Checkbox, radio and toggle</a><a class="pulse-tab" href="chip.html">Chip</a><a class="pulse-tab" href="code-panel.html">Code panel</a><a class="pulse-tab" href="table.html" aria-current="page">Data table</a><a class="pulse-tab" href="dialog.html">Dialog</a><a class="pulse-tab" href="disclosure.html">Disclosure and accordion</a><a class="pulse-tab" href="drawer.html">Drawer</a><a class="pulse-tab" href="dropdown.html">Menu and dropdown</a><a class="pulse-tab" href="empty-state.html">Empty state</a><a class="pulse-tab" href="eyebrow.html">Eyebrow</a><a class="pulse-tab" href="fields.html">Fields</a><a class="pulse-tab" href="link.html">Link</a><a class="pulse-tab" href="list.html">List</a><a class="pulse-tab" href="log.html">Log list</a><a class="pulse-tab" href="conversation.html">Message</a><a class="pulse-tab" href="popover.html">Popover</a><a class="pulse-tab" href="progress.html">Progress</a><a class="pulse-tab" href="segmented.html">Segmented control</a><a class="pulse-tab" href="loading.html">Skeleton and spinner</a><a class="pulse-tab" href="slider.html">Slider</a><a class="pulse-tab" href="stat.html">Stat and status dot</a><a class="pulse-tab" href="step-number.html">Step number</a><a class="pulse-tab" href="tabs.html">Tabs</a><a class="pulse-tab" href="tooltip.html">Tooltip</a></nav></aside>
+  <main class="docs-main">
+    <details class="docs-menu"><summary>All pages</summary><div class="docs-menu__list"><p class="pulse-tabs__label">Start</p><nav class="pulse-tabs pulse-tabs--vertical" aria-label="Start"><a class="pulse-tab" href="index.html">Getting started</a><a class="pulse-tab" href="starter.html">Starter page</a><a class="pulse-tab" href="foundations.html">Foundations</a><a class="pulse-tab" href="patterns.html">Patterns</a><a class="pulse-tab" href="white-labeling.html">White labeling</a></nav><p class="pulse-tabs__label">Components</p><nav class="pulse-tabs pulse-tabs--vertical" aria-label="Components"><a class="pulse-tab" href="alert-toast.html">Alert and toast</a><a class="pulse-tab" href="app-header.html">App header</a><a class="pulse-tab" href="avatar.html">Avatar</a><a class="pulse-tab" href="badge.html">Badge</a><a class="pulse-tab" href="breadcrumb.html">Breadcrumb</a><a class="pulse-tab" href="button.html">Button</a><a class="pulse-tab" href="checkbox-radio-toggle.html">Checkbox, radio and toggle</a><a class="pulse-tab" href="chip.html">Chip</a><a class="pulse-tab" href="code-panel.html">Code panel</a><a class="pulse-tab" href="table.html" aria-current="page">Data table</a><a class="pulse-tab" href="dialog.html">Dialog</a><a class="pulse-tab" href="disclosure.html">Disclosure and accordion</a><a class="pulse-tab" href="drawer.html">Drawer</a><a class="pulse-tab" href="dropdown.html">Menu and dropdown</a><a class="pulse-tab" href="empty-state.html">Empty state</a><a class="pulse-tab" href="eyebrow.html">Eyebrow</a><a class="pulse-tab" href="fields.html">Fields</a><a class="pulse-tab" href="link.html">Link</a><a class="pulse-tab" href="list.html">List</a><a class="pulse-tab" href="log.html">Log list</a><a class="pulse-tab" href="conversation.html">Message</a><a class="pulse-tab" href="popover.html">Popover</a><a class="pulse-tab" href="progress.html">Progress</a><a class="pulse-tab" href="segmented.html">Segmented control</a><a class="pulse-tab" href="loading.html">Skeleton and spinner</a><a class="pulse-tab" href="slider.html">Slider</a><a class="pulse-tab" href="stat.html">Stat and status dot</a><a class="pulse-tab" href="step-number.html">Step number</a><a class="pulse-tab" href="tabs.html">Tabs</a><a class="pulse-tab" href="tooltip.html">Tooltip</a></nav></div></details>
+    <h1>Data table</h1>
+    <p class="docs-lede">A table for comparing rows: sortable columns, a selected row, and the same row heights as lists.</p>
+    <div class="docs-meta"><span class="pulse-badge pulse-badge--mono pulse-badge--outline">Figma: Data table</span><button class="pulse-btn pulse-btn--ghost pulse-btn--sm docs-states-open" type="button" data-pulse-open="states">See every state</button></div>
+    <div class="docs-example"><div class="docs-live"><table class="pulse-table pulse-table--compact pulse-table--interactive">
+  <thead><tr>
+    <th scope="col" aria-sort="descending"><button class="pulse-table__sort" type="button">Account <i class="pulse-icon pulse-icon--arrow-down" aria-hidden="true"></i></button></th>
+    <th scope="col" data-optional>Owner</th>
+    <th scope="col" class="pulse-table__num"><button class="pulse-table__sort" type="button">Assets <i class="pulse-icon pulse-icon--arrow-down" aria-hidden="true"></i></button></th>
+  </tr></thead>
+  <tbody>
+    <tr aria-selected="true"><td>Acme Corp</td><td data-optional>Kim Moore</td><td class="pulse-table__num">42</td></tr>
+    <tr><td>Northwind</td><td data-optional>Ana Ruiz</td><td class="pulse-table__num">18</td></tr>
+    <tr><td>Contoso</td><td data-optional>Sam Lee</td><td class="pulse-table__num">7</td></tr>
+  </tbody>
+</table></div><div class="pulse-code docs-code"><div class="pulse-code__head"><span class="pulse-code__file">HTML</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-tooltip-host" type="button" data-pulse-copy aria-label="Copy the code"><i class="pulse-icon pulse-icon--copy" aria-hidden="true"></i><span class="pulse-tooltip pulse-tooltip--bottom pulse-tooltip--end" aria-hidden="true">Copy to clipboard</span></button></div><pre><code>&lt;<span class="pulse-code__kw">table</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-table pulse-table--compact pulse-table--interactive"</span>&gt;
+  &lt;<span class="pulse-code__kw">thead</span>&gt;&lt;<span class="pulse-code__kw">tr</span>&gt;
+    &lt;<span class="pulse-code__kw">th</span> <span class="pulse-code__key">scope</span>=<span class="pulse-code__str">"col"</span> <span class="pulse-code__key">aria-sort</span>=<span class="pulse-code__str">"descending"</span>&gt;&lt;<span class="pulse-code__kw">button</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-table__sort"</span> <span class="pulse-code__key">type</span>=<span class="pulse-code__str">"button"</span>&gt;Account &lt;<span class="pulse-code__kw">i</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-icon pulse-icon--arrow-down"</span> <span class="pulse-code__key">aria-hidden</span>=<span class="pulse-code__str">"true"</span>&gt;&lt;/<span class="pulse-code__kw">i</span>&gt;&lt;/<span class="pulse-code__kw">button</span>&gt;&lt;/<span class="pulse-code__kw">th</span>&gt;
+    &lt;<span class="pulse-code__kw">th</span> <span class="pulse-code__key">scope</span>=<span class="pulse-code__str">"col"</span> <span class="pulse-code__key">data-optional</span>&gt;Owner&lt;/<span class="pulse-code__kw">th</span>&gt;
+    &lt;<span class="pulse-code__kw">th</span> <span class="pulse-code__key">scope</span>=<span class="pulse-code__str">"col"</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-table__num"</span>&gt;&lt;<span class="pulse-code__kw">button</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-table__sort"</span> <span class="pulse-code__key">type</span>=<span class="pulse-code__str">"button"</span>&gt;Assets &lt;<span class="pulse-code__kw">i</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-icon pulse-icon--arrow-down"</span> <span class="pulse-code__key">aria-hidden</span>=<span class="pulse-code__str">"true"</span>&gt;&lt;/<span class="pulse-code__kw">i</span>&gt;&lt;/<span class="pulse-code__kw">button</span>&gt;&lt;/<span class="pulse-code__kw">th</span>&gt;
+  &lt;/<span class="pulse-code__kw">tr</span>&gt;&lt;/<span class="pulse-code__kw">thead</span>&gt;
+  &lt;<span class="pulse-code__kw">tbody</span>&gt;
+    &lt;<span class="pulse-code__kw">tr</span> <span class="pulse-code__key">aria-selected</span>=<span class="pulse-code__str">"true"</span>&gt;&lt;<span class="pulse-code__kw">td</span>&gt;Acme Corp&lt;/<span class="pulse-code__kw">td</span>&gt;&lt;<span class="pulse-code__kw">td</span> <span class="pulse-code__key">data-optional</span>&gt;Kim Moore&lt;/<span class="pulse-code__kw">td</span>&gt;&lt;<span class="pulse-code__kw">td</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-table__num"</span>&gt;42&lt;/<span class="pulse-code__kw">td</span>&gt;&lt;/<span class="pulse-code__kw">tr</span>&gt;
+    &lt;<span class="pulse-code__kw">tr</span>&gt;&lt;<span class="pulse-code__kw">td</span>&gt;Northwind&lt;/<span class="pulse-code__kw">td</span>&gt;&lt;<span class="pulse-code__kw">td</span> <span class="pulse-code__key">data-optional</span>&gt;Ana Ruiz&lt;/<span class="pulse-code__kw">td</span>&gt;&lt;<span class="pulse-code__kw">td</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-table__num"</span>&gt;18&lt;/<span class="pulse-code__kw">td</span>&gt;&lt;/<span class="pulse-code__kw">tr</span>&gt;
+    &lt;<span class="pulse-code__kw">tr</span>&gt;&lt;<span class="pulse-code__kw">td</span>&gt;Contoso&lt;/<span class="pulse-code__kw">td</span>&gt;&lt;<span class="pulse-code__kw">td</span> <span class="pulse-code__key">data-optional</span>&gt;Sam Lee&lt;/<span class="pulse-code__kw">td</span>&gt;&lt;<span class="pulse-code__kw">td</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-table__num"</span>&gt;7&lt;/<span class="pulse-code__kw">td</span>&gt;&lt;/<span class="pulse-code__kw">tr</span>&gt;
+  &lt;/<span class="pulse-code__kw">tbody</span>&gt;
+&lt;/<span class="pulse-code__kw">table</span>&gt;</code></pre></div></div>
+<h2>Sorting</h2>
+<p>A sortable head cell holds a <code>&lt;button class="pulse-table__sort"&gt;</code> with an <code>arrow-down</code> icon, and the cell carries <code>aria-sort="ascending"</code> or <code>"descending"</code> (the icon turns for ascending and shows on hover otherwise). Sorting the rows is the page’s script.</p>
+<h2>Options</h2>
+<div class="docs-table"><table><thead><tr><th>Option</th><th>What it does</th></tr></thead><tbody>
+<tr><td><code>pulse-table--compact</code>, <code>--spacious</code></td><td>Row heights 40 and 56 (48 by default). The header row matches.</td></tr>
+<tr><td><code>pulse-table--interactive</code></td><td>Rows highlight on hover, for tables where a row opens something.</td></tr>
+<tr><td><code>aria-selected="true"</code> on a row</td><td>The selected row: quiet fill and an edge in the selection color.</td></tr>
+<tr><td><code>pulse-table__num</code></td><td>Right-aligns a number column (head and cells).</td></tr>
+<tr><td><code>pulse-table--headless</code></td><td>Hides the header row from sight, not from screen readers.</td></tr>
+<tr><td><code>pulse-table__reveal</code></td><td>Wraps row actions that show on hover and focus.</td></tr>
+<tr><td><code>data-optional</code> on cells, <code>is-condensed</code> on the table</td><td>Hides those columns, for when a drawer takes half the width.</td></tr>
+</tbody></table></div>
+<h2>Without a header row</h2>
+<p><code>pulse-table--headless</code> keeps aligned columns with no visible head, like a mail inbox: for a list of accounts where each value says what it is (“43 assets”, “21% covered”). Keep the <code>&lt;thead&gt;</code>; screen readers still read it, and removing the class shows it again. Give the name column a fixed width with <code>&lt;col&gt;</code> so values line up across tables. Row actions go in their own last cell inside <code>pulse-table__reveal</code>: shown on hover and focus, always on touch screens. Their tooltips close as soon as the pointer leaves the icon (see <a href="tooltip.html">Tooltip</a>).</p>
+<div class="docs-example"><div class="docs-live"><table class="pulse-table pulse-table--compact pulse-table--interactive pulse-table--headless" style="max-width: 640px">
+  <colgroup><col style="width: 45%"><col><col></colgroup>
+  <thead><tr><th scope="col">Account</th><th scope="col">Coverage</th><th scope="col"><span class="pulse-visually-hidden">Actions</span></th></tr></thead>
+  <tbody>
+    <tr><td>Acme Corp <span class="pulse-badge pulse-badge--danger">High</span></td><td>21% covered</td>
+      <td class="pulse-table__num"><span class="pulse-table__reveal"><a class="pulse-btn pulse-btn--ghost-neutral pulse-btn--sm" href="#">Enter</a></span></td></tr>
+    <tr><td>Northwind</td><td>88% covered</td>
+      <td class="pulse-table__num"><span class="pulse-table__reveal"><a class="pulse-btn pulse-btn--ghost-neutral pulse-btn--sm" href="#">Enter</a></span></td></tr>
+  </tbody>
+</table></div><div class="pulse-code docs-code"><div class="pulse-code__head"><span class="pulse-code__file">HTML</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-tooltip-host" type="button" data-pulse-copy aria-label="Copy the code"><i class="pulse-icon pulse-icon--copy" aria-hidden="true"></i><span class="pulse-tooltip pulse-tooltip--bottom pulse-tooltip--end" aria-hidden="true">Copy to clipboard</span></button></div><pre><code>&lt;<span class="pulse-code__kw">table</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-table pulse-table--compact pulse-table--interactive pulse-table--headless"</span> <span class="pulse-code__key">style</span>=<span class="pulse-code__str">"max-width: 640px"</span>&gt;
+  &lt;<span class="pulse-code__kw">colgroup</span>&gt;&lt;<span class="pulse-code__kw">col</span> <span class="pulse-code__key">style</span>=<span class="pulse-code__str">"width: 45%"</span>&gt;&lt;<span class="pulse-code__kw">col</span>&gt;&lt;<span class="pulse-code__kw">col</span>&gt;&lt;/<span class="pulse-code__kw">colgroup</span>&gt;
+  &lt;<span class="pulse-code__kw">thead</span>&gt;&lt;<span class="pulse-code__kw">tr</span>&gt;&lt;<span class="pulse-code__kw">th</span> <span class="pulse-code__key">scope</span>=<span class="pulse-code__str">"col"</span>&gt;Account&lt;/<span class="pulse-code__kw">th</span>&gt;&lt;<span class="pulse-code__kw">th</span> <span class="pulse-code__key">scope</span>=<span class="pulse-code__str">"col"</span>&gt;Coverage&lt;/<span class="pulse-code__kw">th</span>&gt;&lt;<span class="pulse-code__kw">th</span> <span class="pulse-code__key">scope</span>=<span class="pulse-code__str">"col"</span>&gt;&lt;<span class="pulse-code__kw">span</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-visually-hidden"</span>&gt;Actions&lt;/<span class="pulse-code__kw">span</span>&gt;&lt;/<span class="pulse-code__kw">th</span>&gt;&lt;/<span class="pulse-code__kw">tr</span>&gt;&lt;/<span class="pulse-code__kw">thead</span>&gt;
+  &lt;<span class="pulse-code__kw">tbody</span>&gt;
+    &lt;<span class="pulse-code__kw">tr</span>&gt;&lt;<span class="pulse-code__kw">td</span>&gt;Acme Corp &lt;<span class="pulse-code__kw">span</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-badge pulse-badge--danger"</span>&gt;High&lt;/<span class="pulse-code__kw">span</span>&gt;&lt;/<span class="pulse-code__kw">td</span>&gt;&lt;<span class="pulse-code__kw">td</span>&gt;21% covered&lt;/<span class="pulse-code__kw">td</span>&gt;
+      &lt;<span class="pulse-code__kw">td</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-table__num"</span>&gt;&lt;<span class="pulse-code__kw">span</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-table__reveal"</span>&gt;&lt;<span class="pulse-code__kw">a</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-btn pulse-btn--ghost-neutral pulse-btn--sm"</span> <span class="pulse-code__key">href</span>=<span class="pulse-code__str">"#"</span>&gt;Enter&lt;/<span class="pulse-code__kw">a</span>&gt;&lt;/<span class="pulse-code__kw">span</span>&gt;&lt;/<span class="pulse-code__kw">td</span>&gt;&lt;/<span class="pulse-code__kw">tr</span>&gt;
+    &lt;<span class="pulse-code__kw">tr</span>&gt;&lt;<span class="pulse-code__kw">td</span>&gt;Northwind&lt;/<span class="pulse-code__kw">td</span>&gt;&lt;<span class="pulse-code__kw">td</span>&gt;88% covered&lt;/<span class="pulse-code__kw">td</span>&gt;
+      &lt;<span class="pulse-code__kw">td</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-table__num"</span>&gt;&lt;<span class="pulse-code__kw">span</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-table__reveal"</span>&gt;&lt;<span class="pulse-code__kw">a</span> <span class="pulse-code__key">class</span>=<span class="pulse-code__str">"pulse-btn pulse-btn--ghost-neutral pulse-btn--sm"</span> <span class="pulse-code__key">href</span>=<span class="pulse-code__str">"#"</span>&gt;Enter&lt;/<span class="pulse-code__kw">a</span>&gt;&lt;/<span class="pulse-code__kw">span</span>&gt;&lt;/<span class="pulse-code__kw">td</span>&gt;&lt;/<span class="pulse-code__kw">tr</span>&gt;
+  &lt;/<span class="pulse-code__kw">tbody</span>&gt;
+&lt;/<span class="pulse-code__kw">table</span>&gt;</code></pre></div></div>
+<h2>Accessibility</h2>
+<ul><li>Use real <code>&lt;th scope="col"&gt;</code> heads. Clickable rows also need a link or button inside for keyboard users.</li>
+<li>Numbers use tabular figures in the sans, so columns line up.</li></ul>
+    <div class="docs-next"><a class="pulse-link pulse-link--sm" href="code-panel.html">Code panel</a><a class="pulse-link pulse-link--sm" href="dialog.html">Dialog <i class="pulse-icon pulse-icon--arrow-right" aria-hidden="true"></i></a></div>
+    <dialog class="pulse-drawer pulse-drawer--lg docs-states" id="states" aria-labelledby="states-title"><div class="pulse-drawer__head"><h2 class="pulse-drawer__title" id="states-title">Data table: every state</h2><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-drawer__close" type="button" aria-label="Close" data-pulse-close><i class="pulse-icon pulse-icon--x" aria-hidden="true"></i></button></div><div class="pulse-drawer__body"><p class="docs-states-note">Hover, focus and pressed are drawn here with demo classes (is-hover, is-focus, is-pressed) so they can be seen side by side. On a real page they come from the mouse and keyboard; don’t copy those classes. The Web, App, Light and Dark switches apply here too.</p><div class="docs-states-row"><p class="docs-states-label">Table</p><div class="docs-states-items docs-states-items--stack"><table class="pulse-table pulse-table--compact pulse-table--interactive"><thead><tr><th scope="col" aria-sort="descending"><button class="pulse-table__sort" type="button">Sorted <i class="pulse-icon pulse-icon--arrow-down" aria-hidden="true"></i></button></th><th scope="col"><button class="pulse-table__sort" type="button">Sortable <i class="pulse-icon pulse-icon--arrow-down" aria-hidden="true"></i></button></th><th scope="col" class="pulse-table__num">Number</th></tr></thead><tbody><tr aria-selected="true"><td>Selected row</td><td>Kim Moore</td><td class="pulse-table__num">42</td></tr><tr><td>Rest</td><td>Ana Ruiz</td><td class="pulse-table__num">1,204</td></tr></tbody></table></div></div>
+</div></dialog>
+  </main>
+</div>
+<script>
+  // Docs only: links inside examples are there to look at and copy, so they don't go anywhere here.
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('.docs-live a[href], .docs-states a[href]');
+    if (a && !a.hasAttribute('data-pulse-open')) e.preventDefault();
+  });
+  // Docs only: the surface and theme switches, remembered between pages. Pulse itself needs no script for these.
+  (function () {
+    var root = document.documentElement;
+    function apply(set, value) {
+      root.setAttribute('data-' + set, value);
+      document.querySelectorAll('[data-docs-set="' + set + '"]').forEach(function (x) { x.setAttribute('aria-pressed', String(x.dataset.docsValue === value)); });
+    }
+    ['surface', 'theme'].forEach(function (set) { try { var v = localStorage.getItem('pulse-docs-' + set); if (v) apply(set, v); } catch (e) {} });
+    document.querySelectorAll('[data-docs-set]').forEach(function (b) {
+      b.addEventListener('click', function () { apply(b.dataset.docsSet, b.dataset.docsValue); try { localStorage.setItem('pulse-docs-' + b.dataset.docsSet, b.dataset.docsValue); } catch (e) {} });
+    });
+  })();
+</script>
+</body>
+</html>

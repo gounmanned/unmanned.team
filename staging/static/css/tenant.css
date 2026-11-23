@@ -1,0 +1,364 @@
+/* The main screen on Pulse. Components (buttons, eyebrow, segmented control, chips,
+   badges, popover, toggles, icons) are Pulse's; this file is only layout and the pieces Pulse doesn't have yet (marked GAP),
+   in Pulse tokens. VEX's sizes are rounded to Pulse's type scale (smallest 12px). */
+
+/* ── layout: slim overview on top, stacked lanes below ─────────────── */
+
+:root {
+  --header-h: calc(52px + var(--space-20));
+  --footer-h: 48px;
+}
+
+#tenant-screen {
+  position: fixed;
+  inset: var(--header-h) 0 var(--footer-h);
+  margin: var(--space-8);
+  padding: var(--space-16) var(--space-24) 0;   /* 8 + 24 = 32, the header's inset: content lines up with the mark (2026-11-23) */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.work {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--space-20) var(--space-4) var(--space-24) 0;
+}
+
+/* ── lane headers ───────────────────────────────────────────────── */
+
+.lane-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-24);
+  margin-bottom: var(--space-12);
+  border-bottom: var(--border-width-1) solid var(--color-border-default);
+}
+
+.lane-title { padding-bottom: var(--space-12); }
+
+.lane-title h1,
+.lane-title h2 {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-8);
+  margin: 0;
+  color: var(--color-text-primary);
+}
+
+/* Section heads are peers (Chad, 2026-11-23): Waiting on you, Recommendations and Resolved share one size and Pulse's
+   semibold, as the accounts screen's groups do; order and the colored count carry the priority. */
+.lane-title h1,
+.lane-title h2 { font-size: var(--type-label-lg-size); line-height: var(--type-label-lg-line-height); font-weight: 600; }
+
+.lane-title p {
+  margin: var(--space-4) 0 0;
+  font-size: var(--type-body-xs-size);
+  line-height: var(--type-body-xs-line-height);
+  color: var(--color-text-tertiary);   /* Chad 2026-11-18: descriptions under headings one step quieter (4.5:1, on white only) */
+}
+
+.lane-title p .alert { font-weight: 600; color: var(--color-text-danger); }
+
+.lane-count {
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-accent);
+}
+
+#tenant-screen.critical #queue-count { color: var(--color-text-danger); }
+
+.lane-head-quiet { margin-top: var(--space-32); }
+.lane-head-quiet .lane-count { color: var(--color-text-tertiary); }
+
+/* ── signal rows: Pulse list rows (compact). VEX's own pieces only. ── */
+
+.q-item, .h-item { cursor: pointer; outline: none; border-radius: var(--radius-control); }
+.q-item:hover, .h-item:hover { background: var(--color-interactive-hover); }
+.q-item:focus-visible, .h-item:focus-visible { box-shadow: var(--shadow-focus-ring); }
+/* Source logos sit inside Pulse's outlined avatar, inset from the line (Chad, 2026-11-23: one treatment, as production). */
+.pulse-avatar > .q-avatar { width: 70%; height: 70%; object-fit: contain; }
+
+.q-due { white-space: nowrap; font-size: var(--type-body-xs-size); font-weight: 600; font-variant-numeric: tabular-nums; color: var(--color-text-primary); }
+.q-due.soon    { color: var(--color-text-warning); }
+.q-due.overdue { color: var(--color-text-danger); }
+.q-due.none    { font-weight: 500; color: var(--color-text-tertiary); }
+
+/* Pulse's empty state, unframed (Chad, 2026-11-19: a dashed border reads as a drop or add zone). */
+.queue-empty { list-style: none; }
+/* All clear: one quiet line, as on the accounts screen (.acct-none). */
+.queue-clear {
+  display: flex; align-items: center; gap: var(--space-8); padding: var(--space-8) 0;
+  font-size: var(--type-body-sm-size); line-height: var(--type-body-sm-line-height); color: var(--color-text-secondary);
+  .pulse-icon { flex: none; color: var(--color-indicator-success); }
+}
+/* The all-clear line on both screens (Chad, 2026-11-23): the statement in primary text, the hint quieter. */
+.all-clear__title { font-weight: 500; color: var(--color-text-primary); }
+.all-clear__hint { color: var(--color-text-tertiary); }
+
+.queue-none { padding: var(--space-16) var(--space-12); font-size: var(--type-body-sm-size); color: var(--color-text-tertiary); list-style: none; }
+
+/* ── overview strip ─────────────────────────────────────────────── */
+
+.soc {
+  position: relative;
+  z-index: 1;
+  margin: calc(-1 * var(--space-16)) calc(-1 * var(--space-20)) 0;
+  padding: var(--space-16) var(--space-20) var(--space-12);
+  border-bottom: var(--border-width-1) solid transparent;
+  transition: background-color 0.2s, border-color 0.2s, box-shadow 0.2s;
+}
+
+#tenant-screen.scrolled .soc {
+  background: var(--color-surface-subtle);
+  border-bottom-color: var(--color-border-default);
+  box-shadow: var(--shadow-elevation-default-sm);
+}
+
+.soc-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-24);
+  margin-bottom: var(--space-12);
+}
+
+.soc-title .pulse-eyebrow { margin: 0 0 var(--space-4); }
+
+/* Stats are Pulse stats (small). VEX lays them out in a row and makes the live one a button. */
+.soc-stats { display: flex; align-items: flex-end; flex-wrap: wrap; gap: var(--space-8) var(--space-32); }
+
+.stat-divider { align-self: stretch; width: var(--border-width-1); margin: var(--space-4) calc(-1 * var(--space-12)); background: var(--color-border-default); }
+
+#tenant-screen.critical .stat-live .pulse-status-dot { --dot: var(--color-indicator-danger); }
+
+/* ── folds: Pulse section disclosures; VEX keeps the lane head's spacing and rule. ── */
+
+.fold > .pulse-disclosure__summary { align-items: flex-end; padding: 0; }
+.fold > .pulse-disclosure__summary::before { margin-bottom: var(--space-12); color: var(--color-text-tertiary); }
+.fold > .pulse-disclosure__summary:hover::before { color: var(--color-text-primary); }
+.fold > .pulse-disclosure__body { padding: 0; }
+
+.outcomes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-8);
+  margin: 0 0 var(--space-12);
+}
+
+
+
+.h-outcome { --pulse-icon-size: var(--size-icon-16); color: var(--color-text-tertiary); }
+/* Filled status icons in indicator colors. Autoclosed pink: VEX acted. By you ink. Accepted risk amber. */
+.h-outcome[data-status="CV"] { color: var(--color-indicator-accent); }
+.h-outcome[data-status="CH"] { color: var(--color-text-primary); }
+.h-outcome[data-status="CR"] { color: var(--color-indicator-warning); }
+.h-item .pulse-list-row__meta em { font-style: normal; font-weight: 600; color: var(--color-text-danger); }
+.h-item time { white-space: nowrap; font-size: var(--type-body-xs-size); font-variant-numeric: tabular-nums; color: var(--color-text-tertiary); }
+
+.history-more {
+  padding: var(--space-12) 0;
+  font-size: var(--type-body-xs-size);
+  text-align: center;
+  color: var(--color-text-tertiary);
+}
+
+/* ── ekg: David's live sweep of real-time events, one wall-clock minute per pass (VEX's own drawing; Pulse has no
+   charts). His design, in Pulse tokens: the trace and its head in the accent, quiet gray for the time ahead. ── */
+
+.ekg { height: 52px; }
+
+#ekg-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+#ekg-svg .ekg-ahead {
+  stroke: var(--color-border-mid);
+  stroke-width: 1;
+  stroke-dasharray: 1 4;
+  stroke-linecap: round;
+}
+
+#ekg-svg .ekg-axis text {
+  font-family: var(--font-sans);
+  font-size: 10px; /* GAP: chart labels are under Pulse's smallest size */
+  font-variant-numeric: tabular-nums;
+  fill: var(--color-text-tertiary);
+  transition: opacity 0.2s;
+}
+
+#ekg-svg .ekg-axis .ekg-now { font-weight: 700; fill: var(--color-text-accent); }
+#ekg-svg .ekg-axis .ekg-next { font-weight: 600; fill: var(--color-text-primary); }
+#ekg-svg .ekg-axis .hidden { opacity: 0; }
+
+#ekg-svg .ekg-trace {
+  fill: none;
+  stroke: var(--color-accent-default);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 2.5px color-mix(in srgb, var(--color-accent-default) 50%, transparent));
+}
+
+#ekg-svg .ekg-scan { stroke: var(--color-accent-default); stroke-opacity: 0.3; stroke-width: 1; }
+#ekg-svg .ekg-head { fill: var(--color-accent-default); stroke: var(--color-surface-page); stroke-width: 1.5; }
+
+#ekg-svg .ekg-halo {
+  fill: var(--color-accent-default);
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: ekg-pulse 1.4s ease-out infinite;
+}
+
+@keyframes ekg-pulse {
+  from { transform: scale(1);   opacity: 0.5; }
+  to   { transform: scale(3.5); opacity: 0; }
+}
+
+/* Signal verdict in the queue: the word in its color (Chad, 2026-11-19). */
+.q-verdict { white-space: nowrap; font-size: var(--type-body-xs-size); font-weight: 600; color: var(--color-text-secondary); }
+.q-verdict[data-risk="high"] { color: var(--color-text-danger); }
+.q-verdict[data-risk="medium"] { color: var(--color-text-warning); }
+
+/* ── header: assets monitored, a small button that opens Coverage ───── */
+
+.setup-chip { gap: var(--space-8); }
+
+.setup-seg {
+  --state: var(--color-indicator-success);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.setup-seg[data-state="empty"] { --state: var(--color-accent-default); }
+
+.setup-chip-dot {
+  position: relative;
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: var(--state);
+}
+
+.setup-seg[data-state="empty"] .setup-chip-dot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-full);
+  background: var(--state);
+  animation: setup-ping 1.8s ease-out infinite;
+}
+
+/* A button label, so plain sans (Chad, 2026-11-18: mono caps read off here). */
+.setup-chip-noun {
+  font-family: var(--font-sans);
+  font-size: var(--type-body-xs-size);
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+
+.setup-chip-count {
+  font-size: var(--type-label-sm-size);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-primary);
+}
+
+.setup-chip-pct {
+  font-size: var(--type-body-xs-size);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-tertiary);
+}
+
+.setup-chip-pct:empty { display: none; }
+
+.setup-seg[data-state="empty"] .setup-chip-count { color: var(--color-text-tertiary); }
+.setup-seg[data-state="loading"] { --state: var(--color-border-default); }
+
+@keyframes setup-ping {
+  from { transform: scale(1); opacity: 0.6; }
+  to   { transform: scale(3); opacity: 0; }
+}
+
+/* ── footer ─────────────────────────────────────────────────────── */
+
+.links {
+  position: fixed;
+  inset: auto 0 0;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--space-8);
+  height: var(--footer-h);
+  padding: 0 var(--space-12);
+  border-top: var(--border-width-1) solid var(--color-border-default);
+  background: var(--color-surface-page);
+  box-sizing: border-box;
+}
+
+/* Settings moved to its own side panel (David, 2026-11-22): its styles are in settings.css. */
+
+/* ── loading: inline placeholders inside text (GAP: Pulse's skeleton is block-only) ── */
+
+.shimmer,
+:is(#tenant-screen, .setup-chip) .is-pending {
+  background: linear-gradient(90deg,
+    var(--color-surface-sunken) 25%,
+    var(--color-surface-subtle) 50%,
+    var(--color-surface-sunken) 75%);
+  background-size: 300% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+}
+
+.shimmer {
+  display: inline-block;
+  height: 8px;
+  border-radius: var(--radius-sm);
+}
+
+:is(#tenant-screen, .setup-chip) .is-pending {
+  color: transparent;
+  border-radius: var(--radius-sm);
+  user-select: none;
+}
+
+#queue-summary.is-pending { width: fit-content; }
+
+.pulse-stat__value, .lane-count, #queue-summary, .setup-chip-count { transition: color 0.3s ease-out; }
+
+.q-ghost { list-style: none; pointer-events: none; animation: tenant-fade 0.3s ease 0.15s both; }
+
+@keyframes shimmer { from { background-position: 100% 0; } to { background-position: 0 0; } }
+@keyframes tenant-fade { from { opacity: 0; } }
+
+/* ── phones ─────────────────────────────────────────────────────── */
+
+@media (max-width: 700px) {
+  #tenant-screen { margin: var(--space-8) 0; padding: var(--space-12) var(--space-16) 0; }
+  .soc { margin: calc(-1 * var(--space-12)) calc(-1 * var(--space-16)) 0; padding: var(--space-12) var(--space-16); }
+  .soc-head { flex-wrap: wrap; align-items: flex-start; }
+  .stat-divider { display: none; }
+
+  /* Overview on phones (2026-11-18): it took 30–36% of the screen when the stats wrapped. Eyebrow and period switch share
+     a row; the four stats sit in one row, number over label (the usual compact KPI layout). */
+  .soc-head { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: var(--space-8) var(--space-12); }
+  .soc-title { display: contents; }
+  .soc-title .pulse-eyebrow { margin: 0; }
+  .soc-head > .pulse-segmented { grid-column: 2; grid-row: 1; justify-self: end; }
+  .soc-stats { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(4, auto); justify-content: space-between; gap: var(--space-8); }
+  .soc-stats .pulse-stat, .soc-title .pulse-eyebrow { white-space: nowrap; }
+}
+
+/* ── reduced motion ─────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .setup-chip-dot::after { animation: none !important; }
+  #ekg-svg .ekg-halo { animation: none !important; }
+  .shimmer, .is-pending, .q-ghost { animation: none !important; }
+}

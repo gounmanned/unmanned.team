@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" data-surface="app">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style id="auth-gate">
+    html { visibility: hidden; }
+  </style>
+  <link rel="apple-touch-icon" href="https://cdn.unmanned.team/img/logo.png">
+  <link rel="icon" type="image/png" href="https://cdn.unmanned.team/img/logo.png">
+  <script>const v = Date.now();</script>
+  <!-- Pulse, our design system, from the CDN: fonts, tokens, icons, components and behaviors. VEX's own styles load after it. -->
+  <link rel="stylesheet" href="https://cdn.unmanned.team/pulse/v1/pulse-fonts.css">
+  <link rel="stylesheet" href="https://cdn.unmanned.team/pulse/v1/pulse-tokens.css">
+  <link rel="stylesheet" href="https://cdn.unmanned.team/pulse/v1/pulse-icons.css">
+  <link rel="stylesheet" href="https://cdn.unmanned.team/pulse/v1/pulse-components.css">
+  <script src="https://cdn.unmanned.team/pulse/v1/pulse.js" defer></script>
+  <script>
+    document.write(`
+      <link rel="stylesheet" href="static/css/pulse-bridge.css?v=${v}">
+      <link rel="stylesheet" href="static/system/markdown.css?v=${v}">
+      <link rel="stylesheet" href="static/css/managed.css?v=${v}">
+      <link rel="stylesheet" href="static/css/tenant.css?v=${v}">
+      <link rel="stylesheet" href="static/css/coverage.css?v=${v}">
+      <link rel="stylesheet" href="static/css/backups.css?v=${v}">
+      <link rel="stylesheet" href="static/css/audit.css?v=${v}">
+      <link rel="stylesheet" href="static/css/compliance.css?v=${v}">
+      <link rel="stylesheet" href="static/css/signal.css?v=${v}">
+      <link rel="stylesheet" href="static/css/settings.css?v=${v}">
+    `);
+  </script>
+  <title>VEX</title>
+</head>
+<body>
+
+  <site-spinner></site-spinner>
+  <site-overlay></site-overlay>
+
+  <site-header>
+    <!-- Main screen on Pulse (buttons, eyebrow, segmented control, chips, popover, toggles, icons). -->
+    <button slot="account-switcher" id="open-managed-rollup" type="button" aria-label="Switch account">
+      <i class="pulse-icon pulse-icon--caret-down" aria-hidden="true"></i>
+    </button>
+
+    <!-- Opens Coverage, so it's a button (Chad, 2026-11-19): a small ghost-neutral button with a status dot, count and label. -->
+    <button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--sm setup-chip" id="open-coverage-rollup" type="button" title="Assets your SOC monitors">
+      <span class="setup-seg" data-state="empty">
+        <span class="setup-chip-dot"></span>
+        <span class="setup-chip-count">0</span>
+        <span class="setup-chip-pct" title="Assets with a Dot installed"></span>
+        <span class="setup-chip-noun">Assets monitored</span>
+      </span>
+      <i class="pulse-icon pulse-icon--caret-down" aria-hidden="true"></i>
+    </button>
+  </site-header>
+
+  <main class="container loading" id="tenant-screen">
+    <section class="soc" id="overview">
+      <header class="soc-head">
+        <div class="soc-title">
+          <p class="pulse-eyebrow">Managed SOC</p>
+          <!-- Pulse stats (number over label), small. The live one is a button that opens the audit log. -->
+          <div class="soc-stats">
+            <div class="pulse-stat pulse-stat--sm"><span class="pulse-stat__value" id="kpi-mttr">—</span><span class="pulse-stat__label">MTTR</span></div>
+            <div class="pulse-stat pulse-stat--sm"><span class="pulse-stat__value" id="kpi-autoclosed">—</span><span class="pulse-stat__label">Autoclosed</span></div>
+            <div class="pulse-stat pulse-stat--sm"><span class="pulse-stat__value" id="kpi-sla">—</span><span class="pulse-stat__label">Within SLA</span></div>
+            <span class="stat-divider"></span>
+            <!-- Pulse interactive stat: it opens the audit log (Pulse adds the hover, focus and caret). -->
+            <button type="button" class="pulse-stat pulse-stat--sm stat-live" id="open-audit-rollup" title="Audit events so far this minute.">
+              <span class="pulse-stat__value"><span class="pulse-status-dot pulse-status-dot--accent pulse-status-dot--live" aria-hidden="true"></span><span id="events-count">—</span></span>
+              <span class="pulse-stat__label">Real-time events</span>
+            </button>
+          </div>
+        </div>
+        <div class="pulse-segmented pulse-segmented--sm" id="period" role="group" aria-label="Period">
+          <button class="pulse-segmented__item" type="button" data-period="month" aria-pressed="true"></button>
+          <button class="pulse-segmented__item" type="button" data-period="year" aria-pressed="false"></button>
+        </div>
+      </header>
+      <div class="ekg" id="ekg">
+        <svg id="ekg-svg" aria-hidden="true"></svg>
+      </div>
+    </section>
+
+    <section class="work" id="signal-section">
+      <header class="lane-head">
+        <div class="lane-title">
+          <h1>Waiting on you <span class="lane-count" id="queue-count">0</span></h1>
+          <p id="queue-summary"></p>
+        </div>
+      </header>
+      <ol class="pulse-list pulse-list--compact pulse-list--plain queue" id="queue-list"></ol>
+
+      <!-- Pulse section disclosures (caret after the title, content full width). Recommendations open by default and
+           remembered per browser (Chad, 2026-11-18: a long list kept Resolved out of reach). -->
+      <details class="pulse-disclosure pulse-disclosure--section fold" id="recs-fold" data-fold-key="vex-fold-recs" open>
+        <summary class="pulse-disclosure__summary lane-head lane-head-quiet">
+          <div class="lane-title">
+            <h2>Recommendations <span class="lane-count" id="recs-count">0</span></h2>
+            <p>Optional hardening we suggest. Act on these when you have time.</p>
+          </div>
+        </summary>
+        <div class="pulse-disclosure__body"><ol class="pulse-list pulse-list--compact pulse-list--plain queue recs" id="recs-list"></ol></div>
+      </details>
+
+      <details class="pulse-disclosure pulse-disclosure--section fold resolved">
+        <summary class="pulse-disclosure__summary lane-head lane-head-quiet">
+          <div class="lane-title">
+            <h2>Resolved <span class="lane-count" id="resolved-count">0</span></h2>
+            <p>Everything closed this period, by us or by you.</p>
+          </div>
+        </summary>
+        <div class="pulse-disclosure__body">
+          <div class="outcomes" id="outcomes" role="group" aria-label="Filter by outcome"></div>
+          <ol class="pulse-list pulse-list--compact pulse-list--plain history" id="history"></ol>
+        </div>
+      </details>
+    </section>
+
+    <footer class="links">
+      <a id="open-compliance-sidebar"></a>   <!-- master: the Compliance sidebar's trigger (empty there too) -->
+      <!-- David's three footer links (2026-11-22), as Pulse buttons: each opens a side panel here. His wording. -->
+      <button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--sm" id="open-settings-sidebar" type="button"><i class="pulse-icon pulse-icon--sliders-horizontal" aria-hidden="true"></i>Tune Autopilot</button>
+      <button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--sm" id="open-backup-sidebar" type="button"><i class="pulse-icon pulse-icon--database" aria-hidden="true"></i>Disaster Recovery</button>
+      <button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--sm" id="open-signal-sidebar" type="button"><i class="pulse-icon pulse-icon--plus" aria-hidden="true"></i>Add Signal</button>
+    </footer>
+  </main>
+
+  <!-- Managed -->
+
+  <site-rollup id="managed-screen">
+    <!-- Pulse drawer head: heading, an end area (inline stats) and the close X. VEX's brand line leads it. -->
+    <header class="pulse-drawer__head panel-head managed-head">
+      <!-- Pulse's brand lockup, as in the app header: VEX's dot and name, or a client's mark and name (brand tokens). -->
+      <div class="managed-brand">
+        <span class="pulse-brand-dot" aria-hidden="true"></span>
+        <span class="pulse-brand-mark" role="img" aria-label="VEX"></span>
+        <span class="managed-brand__name">VEX</span>
+      </div>
+      <div class="pulse-drawer__heading"><h2 class="pulse-drawer__title">Accounts</h2></div>
+      <div class="pulse-drawer__end"><ul class="pulse-stat-line" id="managed-totals"></ul></div>
+    </header>
+
+    <div class="managed-body">
+      <div class="managed-main">
+        <!-- Pulse input group: search with a key hint. -->
+        <div class="managed-search">
+          <div class="pulse-input-group pulse-input-group--ghost">
+            <i class="pulse-icon pulse-icon--magnifying-glass" aria-hidden="true"></i>
+            <input class="pulse-input" id="managed-search" type="search" placeholder="Find or create an account" aria-label="Find or create an account" spellcheck="false" autocomplete="off">
+            <kbd class="pulse-input-group__key">/</kbd>
+            <button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-input-group__clear" type="button" data-pulse-clear aria-label="Clear search"><i class="pulse-icon pulse-icon--x" aria-hidden="true"></i></button>
+          </div>
+        </div>
+        <div class="managed-lanes" id="managed-accounts"></div>
+      </div>
+
+      <aside class="managed-detail" id="managed-detail" hidden></aside>
+    </div>
+  </site-rollup>
+
+  <!-- Every destructive action confirms here first (Pulse destructive dialog, Cancel focused). Filled by Workspace.confirmDestructive(). -->
+  <dialog class="pulse-dialog" id="confirm-destructive" aria-labelledby="confirm-destructive-title" aria-describedby="confirm-destructive-body">
+    <div class="pulse-dialog__head">
+      <div class="pulse-dialog__copy">
+        <h2 class="pulse-dialog__title" id="confirm-destructive-title"></h2>
+        <p class="pulse-dialog__body" id="confirm-destructive-body"></p>
+      </div>
+      <button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-dialog__close" type="button" aria-label="Close" data-pulse-close>
+        <i class="pulse-icon pulse-icon--x" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div class="pulse-dialog__resource" data-resource></div>
+    <div class="pulse-dialog__actions">
+      <button class="pulse-btn pulse-btn--secondary" type="button" data-pulse-close autofocus>Cancel</button>
+      <button class="pulse-btn pulse-btn--destructive" type="button" data-confirm data-pulse-close></button>
+    </div>
+  </dialog>
+
+  <!-- Rollups -->
+
+  <site-rollup id="coverage-screen">
+    <!-- Coverage panel on Pulse. -->
+    <header class="pulse-drawer__head panel-head cov-head">
+      <span class="pulse-drawer__icon"><i class="pulse-icon pulse-icon--graph" aria-hidden="true"></i></span>
+      <div class="pulse-drawer__heading">
+        <h2 class="pulse-drawer__title">Coverage</h2>
+        <p class="pulse-drawer__desc">Every identity we know about.</p>
+      </div>
+      <div class="pulse-drawer__end"><ul class="pulse-stat-line" id="cov-stats"></ul></div>
+      <button type="button" class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-drawer__close" data-pulse-close aria-label="Close"><i class="pulse-icon pulse-icon--x" aria-hidden="true"></i></button>
+    </header>
+
+    <div class="cov-toolbar">
+      <div class="pulse-input-group pulse-input-group--ghost cov-search">
+        <i class="pulse-icon pulse-icon--magnifying-glass" aria-hidden="true"></i>
+        <input class="pulse-input" id="cov-search" type="search" placeholder="Filter assets" aria-label="Filter assets" spellcheck="false" autocomplete="off">
+        <button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-input-group__clear" type="button" data-pulse-clear aria-label="Clear search"><i class="pulse-icon pulse-icon--x" aria-hidden="true"></i></button>
+      </div>
+      <button type="button" class="pulse-btn pulse-btn--neutral cov-sources-btn" id="cov-sources-btn" data-catalog></button>
+    </div>
+
+    <div class="cov-body" id="cov-body"></div>
+    <aside class="pulse-drawer pulse-drawer--inset pulse-drawer--push pulse-drawer--xl cov-drawer" id="cov-drawer" hidden></aside><!-- Pulse inset drawer (Chad, 2026-11-19) -->
+  </site-rollup>
+
+  <site-rollup id="audit-screen">
+    <!-- Audit log on Pulse. -->
+    <header class="pulse-drawer__head panel-head audit-banner">
+      <span class="pulse-drawer__icon"><i class="pulse-icon pulse-icon--scroll" aria-hidden="true"></i></span>
+      <div class="pulse-drawer__heading">
+        <h2 class="pulse-drawer__title">Audit log</h2>
+        <p class="pulse-drawer__desc">Search every event collected from your sources and Dots.</p>
+      </div>
+      <button type="button" class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-drawer__close" data-pulse-close aria-label="Close"><i class="pulse-icon pulse-icon--x" aria-hidden="true"></i></button>
+    </header>
+
+    <form class="audit-search" id="audit-search" role="search" autocomplete="off">
+      <div class="pulse-input-group pulse-input-group--ghost">
+        <i class="pulse-icon pulse-icon--magnifying-glass" aria-hidden="true"></i>
+        <input class="pulse-input" type="search" id="audit-search-input" placeholder="Search by keyword" aria-label="Search by keyword" enterkeyhint="search" spellcheck="false">
+        <button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-input-group__clear" type="button" data-pulse-clear aria-label="Clear search"><i class="pulse-icon pulse-icon--x" aria-hidden="true"></i></button>
+        <span class="pulse-badge pulse-badge--success audit-tailing pulse-tooltip-host" tabindex="0" aria-describedby="audit-live-tip">Live<span class="pulse-tooltip pulse-tooltip--bottom pulse-tooltip--end" id="audit-live-tip" role="tooltip">Showing new events as they arrive</span></span>
+      </div>
+    </form>
+
+    <ul class="pulse-log audit-results" id="audit-results"></ul>
+  </site-rollup>
+
+  <!--Sidebars-->
+
+  <site-sidebar id="signal-sidebar" modal="false">
+    <!-- Signal sidebar on Pulse (badges, buttons, textarea, fields, icons). -->
+    <header class="pulse-drawer__head panel-head signal-banner">
+        <span class="pulse-drawer__icon"><i class="pulse-icon" id="signal-icon" aria-hidden="true"></i></span>
+        <div class="pulse-drawer__heading"><h2 class="pulse-drawer__title" id="signal-label"></h2></div>
+        <div class="pulse-drawer__end">
+            <span class="pulse-badge pulse-badge--nodot" id="signal-threat" hidden></span>
+        <!-- Pulse action menu (overflow): Delete sits last, in red, and confirms with the destructive dialog. Close X at the end. -->
+        <div class="pulse-menu-anchor pulse-menu-anchor--end signal-more-wrap">
+            <button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm" type="button" data-pulse-menu aria-haspopup="menu" aria-controls="signal-more" aria-label="More actions">
+                <i class="pulse-icon pulse-icon--dots-three pulse-icon--bold" aria-hidden="true"></i>
+            </button>
+            <div class="pulse-dropdown pulse-dropdown--menu" id="signal-more" hidden>
+                <div role="menu" aria-label="Signal actions">
+                    <button class="pulse-menu-item pulse-menu-item--danger" type="button" role="menuitem" id="signal-delete"><i class="pulse-icon pulse-icon--trash" aria-hidden="true"></i><span class="pulse-menu-item__label">Delete signal</span></button>
+                </div>
+            </div>
+        </div>
+        </div>
+        <button type="button" class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-drawer__close" data-pulse-close aria-label="Close"><i class="pulse-icon pulse-icon--x" aria-hidden="true"></i></button>
+    </header>
+
+    <div class="thread">
+        <!-- Pulse messages on a timeline. The analyst's turn is the last message, so the line joins it too (Chad, 2026-11-23). -->
+        <ol class="pulse-timeline updates" id="updates">
+            <li class="pulse-message next-turn" id="next-turn">
+                <span class="pulse-avatar pulse-avatar--circle pulse-avatar--outline"><img class="avatar is-analyst" id="next-turn-avatar" alt=""></span>
+                <div class="pulse-message__head"><span class="pulse-message__sender" id="next-turn-sender">vex</span><span class="pulse-badge pulse-badge--accent pulse-badge--nodot">AI analyst</span></div>
+                <div class="pulse-message__body">
+                    <p class="prompt" id="next-turn-prompt"></p>
+                    <div class="pulse-actions choices" id="next-turn-choices"></div>
+                    <p class="closes" id="next-turn-closes"></p>
+                </div>
+            </li>
+        </ol>
+    </div>
+
+    <form class="composer" id="reply-form">
+        <!-- Pulse reply box, composer size: starts at two lines and grows; the send button sits inside. -->
+        <div class="pulse-input-group pulse-input-group--multiline pulse-input-group--composer composer-box">
+            <textarea class="pulse-textarea composer-input" id="response" rows="1" aria-label="Message"></textarea>
+            <button type="button" class="pulse-btn pulse-btn--primary pulse-btn--icon pulse-btn--sm send-btn" id="signal-save" aria-label="Send">
+                <i class="pulse-icon pulse-icon--paper-plane-right pulse-icon--fill" aria-hidden="true"></i>
+            </button>
+        </div>
+
+        <div class="fields">
+            <div class="pulse-field field">
+                <label class="pulse-field__label" for="signal-asset">Asset</label>
+                <input class="pulse-input pulse-input--sm" type="text" id="signal-asset" placeholder="laptop-428936" required />
+            </div>
+            <div class="pulse-field field">
+                <label class="pulse-field__label" for="signal-source">Source</label>
+                <input class="pulse-input pulse-input--sm" type="text" id="signal-source" placeholder="vex" value="vex" />
+            </div>
+            <div class="pulse-field field">
+                <label class="pulse-field__label" for="signal-due">Due</label>
+                <input class="pulse-input pulse-input--sm" type="datetime-local" id="signal-due" />
+            </div>
+        </div>
+    </form>
+  </site-sidebar>
+
+  <site-sidebar id="backup-sidebar">
+    <!-- Recovery on Pulse. -->
+    <header class="pulse-drawer__head panel-head backups-banner">
+      <span class="pulse-drawer__icon"><i class="pulse-icon pulse-icon--arrow-counter-clockwise" aria-hidden="true"></i></span>
+      <div class="pulse-drawer__heading">
+        <h2 class="pulse-drawer__title">Disaster recovery</h2>
+        <p class="pulse-drawer__desc">Regular snapshots of your cloud systems.</p>
+      </div>
+      <button type="button" class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-drawer__close" data-pulse-close aria-label="Close"><i class="pulse-icon pulse-icon--x" aria-hidden="true"></i></button>
+    </header>
+
+    <nav class="pulse-breadcrumb file-breadcrumb" id="file-breadcrumb" aria-label="Breadcrumb"></nav>
+
+    <div class="container" id="file-list-wrap">
+      <ul id="file-list" class="pulse-list pulse-list--compact hacker-list"></ul>
+      <div class="pulse-empty file-empty">
+        <i class="pulse-icon pulse-icon--folder pulse-empty__icon" aria-hidden="true"></i>
+        <p class="pulse-empty__title">This folder is empty</p>
+      </div>
+    </div>
+  </site-sidebar>
+
+  <!-- David's settings panel (2026-11-22), on Pulse: the drawer head and Pulse toggle rows. His wording. -->
+  <site-sidebar id="settings-sidebar" size="standard">
+    <header class="pulse-drawer__head panel-head settings-banner">
+      <span class="pulse-drawer__icon"><i class="pulse-icon pulse-icon--sliders-horizontal" aria-hidden="true"></i></span>
+      <div class="pulse-drawer__heading">
+        <h2 class="pulse-drawer__title">Artificial Intelligence</h2>
+        <p class="pulse-drawer__desc">Turn off anything you want to do yourself.</p>
+      </div>
+      <button type="button" class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-drawer__close" data-pulse-close aria-label="Close"><i class="pulse-icon pulse-icon--x" aria-hidden="true"></i></button>
+    </header>
+
+    <div class="container">
+      <fieldset class="settings-list" id="settings-toggles">
+        <label class="pulse-toggle pulse-toggle--row pulse-toggle--sm setting">
+          <span class="pulse-toggle__text">
+            <span>Recommendations</span>
+            <span class="pulse-toggle__desc">Suggest next steps for every signal.</span>
+          </span>
+          <input type="checkbox" role="switch" name="R4" checked>
+        </label>
+        <label class="pulse-toggle pulse-toggle--row pulse-toggle--sm setting">
+          <span class="pulse-toggle__text">
+            <span>Investigations</span>
+            <span class="pulse-toggle__desc">Analyze each signal against historical data.</span>
+          </span>
+          <input type="checkbox" role="switch" name="R3" checked>
+        </label>
+        <label class="pulse-toggle pulse-toggle--row pulse-toggle--sm setting">
+          <span class="pulse-toggle__text">
+            <span>Lock assets</span>
+            <span class="pulse-toggle__desc">Disable a user account if 95% confident.</span>
+          </span>
+          <input type="checkbox" role="switch" name="R1" checked>
+        </label>
+        <label class="pulse-toggle pulse-toggle--row pulse-toggle--sm setting">
+          <span class="pulse-toggle__text">
+            <span>Unlock assets</span>
+            <span class="pulse-toggle__desc">Enable a user account if the threat has passed.</span>
+          </span>
+          <input type="checkbox" role="switch" name="R2" checked>
+        </label>
+        <label class="pulse-toggle pulse-toggle--row pulse-toggle--sm setting">
+          <span class="pulse-toggle__text">
+            <span>Endpoint actions</span>
+            <span class="pulse-toggle__desc">Allow dots to run hardening actions.</span>
+          </span>
+          <input type="checkbox" role="switch" name="R6" checked>
+        </label>
+        <label class="pulse-toggle pulse-toggle--row pulse-toggle--sm setting">
+          <span class="pulse-toggle__text">
+            <span>Penetration testing</span>
+            <span class="pulse-toggle__desc">Web app testing across all domains.</span>
+          </span>
+          <input type="checkbox" role="switch" name="R7" checked>
+        </label>
+      </fieldset>
+    </div>
+  </site-sidebar>
+
+  <site-sidebar id="compliance-sidebar">
+    <header class="compliance-banner">
+      <div class="compliance-banner-text">
+        <span class="compliance-label">
+          <span class="material-symbols-outlined">verified_user</span>CMMC Level 2
+        </span>
+        <div class="compliance-stats">
+          <span class="stat"><b id="compliance-score">—</b>Ready</span>
+          <span class="stat"><b id="compliance-met">—</b>Met</span>
+          <span class="stat"><b id="compliance-open">—</b>Open</span>
+          <span class="stat"><b id="compliance-families">—</b>Families</span>
+        </div>
+      </div>
+      <nav class="segmented" id="compliance-filter" aria-label="Filter objectives">
+        <button type="button" data-filter="all" aria-pressed="true">All</button>
+        <button type="button" data-filter="open" aria-pressed="false">Open</button>
+        <button type="button" data-filter="met" aria-pressed="false">Met</button>
+      </nav>
+    </header>
+    <div class="compliance-strip" id="compliance-bar"></div>
+
+    <div class="container" id="compliance-wrap">
+      <div class="compliance-list" id="compliance-list" data-filter="all"></div>
+    </div>
+  </site-sidebar>
+</body>
+
+<script>document.write(`<script src="static/js/shell/components.js?v=${v}"><\/script>`);</script><!-- the VEX shell on Pulse (static/js/shell) -->
+<script src="https://cdn.unmanned.team/js/cognito.js"></script>
+<script>
+  document.write(`
+    <script src="static/system/markdown.js?v=${v}"><\/script>
+    <script src="static/js/api.js?v=${v}"><\/script>
+    <script src="static/js/workspace.js?v=${v}"><\/script>
+    <script src="static/js/table.js?v=${v}"><\/script>
+    <script src="static/js/tenant.js?v=${v}"><\/script>
+    <script src="static/js/sidebars/signal.js?v=${v}"><\/script>
+    <script src="static/js/sidebars/backup.js?v=${v}"><\/script>
+    <script src="static/js/sidebars/compliance.js?v=${v}"><\/script>
+    <script src="static/js/sidebars/settings.js?v=${v}"><\/script>
+    <script src="static/js/rollups/managed.js?v=${v}"><\/script>
+    <script src="static/js/rollups/coverage.js?v=${v}"><\/script>
+    <script src="static/js/rollups/audit.js?v=${v}"><\/script>
+  `);
+</script>
+
+<script>
+  // Folds with data-fold-key remember open/closed per browser.
+  document.querySelectorAll('details[data-fold-key]').forEach(d => {
+    try { const v = localStorage.getItem(d.dataset.foldKey); if (v !== null) d.open = v === 'open'; } catch (e) {}
+    d.addEventListener('toggle', () => { try { localStorage.setItem(d.dataset.foldKey, d.open ? 'open' : 'closed'); } catch (e) {} });
+  });
+
+  window.onload = async() => {
+    const workspace = new Workspace();
+    await workspace.render(Cognito.code());
+  }
+</script>
+</html>

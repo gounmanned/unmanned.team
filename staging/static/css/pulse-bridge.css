@@ -1,0 +1,16 @@
+/* The page base on Pulse tokens, the one VEX-only rule the panel heads need, and plain section labels in the app. */
+body {
+  background: var(--color-surface-page);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+}
+
+/* Panel heads are Pulse's drawer head with its icon slot (2026-11-19). VEX only colors the signal's icon by risk. */
+.signal-banner > .pulse-drawer__icon { color: var(--risk, var(--color-text-secondary)); }
+
+/* Section labels (Chad, 2026-11-23): apps don't use eyebrows, so in VEX Pulse's eyebrow reads as a plain label, sentence case
+   in the sans. Stand-in until Pulse decides how its eyebrow looks on the app surface. */
+[data-surface="app"] .pulse-eyebrow {
+  font: 600 var(--type-label-sm-size) / var(--type-label-sm-line-height) var(--font-sans);
+  letter-spacing: normal; text-transform: none; color: var(--color-text-secondary);
+}

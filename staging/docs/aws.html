@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AWS</title>
+    <link rel="icon" href="https://cdn.unmanned.team/img/logo.png" type="image/png" />
+    <link rel="apple-touch-icon" href="https://cdn.unmanned.team/img/logo.png" />
+    <link rel="stylesheet" href="https://cdn.unmanned.team/css/global.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <style>
+        body {
+            margin: 0;
+            padding: 2rem;
+            background-color: #f8fafc;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 3rem 4rem;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--brand);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        h2 {
+            font-size: 1.3rem;
+            color: var(--brand);
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        p {
+            line-height: 1.6;
+        }
+
+        ul,
+        ol {
+            margin: 1rem 0 1rem 1.5rem;
+            padding-left: 1.5rem;
+        }
+
+        ul {
+            list-style-type: disc;
+        }
+
+        ol {
+            list-style-type: decimal;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        ol li::marker {
+            font-weight: bold;
+            color: var(--brand);
+        }
+
+        ul li::marker {
+            color: var(--brand);
+        }
+
+        pre {
+            background: #f3f3f3;
+            padding: 1rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+
+        code {
+            background: #f3f3f3;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        a {
+            color: var(--brand);
+            text-decoration: none;
+        }
+
+        .note {
+            background: #eff6ff;
+            border-left: 3px solid var(--brand, #2563eb);
+            padding: 0.75rem 1rem;
+            border-radius: 0 6px 6px 0;
+            margin: 1.25rem 0;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .container {
+                padding: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Amazon Web Services</h1>
+        <p>This guide walks you through deploying a read-only IAM role in your AWS account using CloudFormation. This role allows the app to securely connect to your AWS environment to monitor security findings, inventory resources, and perform other read-only operations.</p>
+
+        <h2>Step 1: Download the CloudFormation Template</h2>
+        <p>Copy the template below. You will upload it to CloudFormation in the next step.</p>
+
+        <pre>
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Read-Only Cross-Account Access Role
+
+Parameters:
+  VexAccountId:
+    Type: String
+    Default: 418606469629
+
+Resources:
+  Vex:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: Vex
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: !Sub 'arn:aws:iam::${VexAccountId}:root'
+            Action: sts:AssumeRole
+            Condition:
+              StringEquals:
+                sts:ExternalId: !Sub '${AWS::AccountId}'
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/SecurityAudit
+        - arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess
+
+Outputs:
+  RoleArn:
+    Value: !GetAtt Vex.Arn
+</pre>
+
+        <h2>Step 2: Open CloudFormation</h2>
+        <ol>
+            <li>Log into the <a href="https://console.aws.amazon.com/cloudformation" target="_blank">AWS CloudFormation Console</a>.</li>
+            <li>Make sure you are in the correct AWS region (top-right corner). Any region works — IAM roles are global.</li>
+            <li>Click <strong>"Create stack"</strong> and select <strong>"With new resources (standard)"</strong>.</li>
+        </ol>
+
+        <h2>Step 3: Upload the Template</h2>
+        <ol>
+            <li>Under <strong>Specify template</strong>, select <strong>"Upload a template file"</strong>.</li>
+            <li>Save the template you copied in Step 1 as a file named <code>vex.yml</code> on your computer.
+                <div class="note">
+                    <strong>Optional (recommended for added security):</strong> By default, the template uses your AWS account ID as the <code>ExternalId</code>. To use a randomly generated secret instead, generate a UUID (or another random secret) and replace <code>!Sub '${AWS::AccountId}'</code> in the <code>sts:ExternalId</code> line of <code>vex.yml</code> with your value in quotes, e.g. <code>sts:ExternalId: 'your-generated-uuid'</code>. Save the file, and keep this value handy: you will enter it in the <code>"account"</code> field in Step 6.
+                </div>
+            </li>
+            <li>Click <strong>"Choose file"</strong> and select <code>vex.yml</code>.</li>
+            <li>Click <strong>"Next"</strong>.</li>
+        </ol>
+
+        <h2>Step 4: Configure the Stack</h2>
+        <ol>
+            <li>Set the <strong>Stack name</strong> to <code>Vex</code>.</li>
+            <li>Click <strong>"Next"</strong>.</li>
+            <li>On the <strong>Configure stack options</strong> page, make no changes, but scroll to the bottom and check the box acknowledging that CloudFormation may create IAM resources.</li>
+            <li>Click <strong>"Next"</strong>.</li>
+            <li>On the Review page, click <strong>"Submit"</strong>.</li>
+        </ol>
+
+        <h2>Step 5: Retrieve the Outputs</h2>
+        <ol>
+            <li>Wait for the stack status to show <strong>CREATE_COMPLETE</strong> (usually under one minute).</li>
+            <li>Click the stack name <code>Vex</code> to open it.</li>
+            <li>Click the <strong>"Outputs"</strong> tab.</li>
+            <li>You will see:
+                <ul>
+                    <li><strong>RoleArn</strong> — e.g. <code>arn:aws:iam::123456789012:role/Vex</code></li>
+                </ul>
+            </li>
+        </ol>
+
+        <h2>Step 6: Connect to Vex</h2>
+        <ol>
+            <li>Log into your <a href="https://vex.umanned.team" target="_blank">Vex dashboard</a>.</li>
+            <li>Go to <strong>Sources &gt; AWS</strong>.</li>
+            <li>Paste both values in the following format and click <strong>Save</strong>:</li>
+        </ol>
+        <pre>{"account":"&lt;YOUR-EXTERNAL-ID&gt;", "role":"&lt;RoleArn&gt;", "region":"&lt;YOUR-AWS-REGION&gt;"}</pre>
+        <div class="note">
+            For <code>account</code>, use your AWS account ID, or, if you generated your own <code>ExternalId</code> in Step 3, use that value instead. It must match the value in the role's trust policy.
+        </div>
+    </div>
+</body>
+</html>

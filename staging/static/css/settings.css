@@ -1,0 +1,23 @@
+/* David's settings panel (2026-11-22) on Pulse: the head and the toggle rows are Pulse's; this is only the list's spacing. */
+#settings-sidebar {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  .container { flex: 1; min-height: 0; padding: var(--space-8) var(--space-24) var(--space-24); overflow-y: auto; }
+
+  .settings-list {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-width: 0;
+    transition: opacity 0.15s;
+
+    &:disabled { opacity: 0.5; }
+  }
+
+  .setting { padding: var(--space-12) 0; }
+  .setting + .setting { border-top: var(--border-width-1) solid var(--color-border-subtle); }
+}

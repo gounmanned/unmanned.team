@@ -18,17 +18,26 @@ const Markdown = {
 
         const flush = () => {
             if (!group) return;
-            const { tag, items } = group;
+            const { tag, items, start } = group;
+            const open = tag === "ol" && start > 1 ? `<ol start="${start}">` : `<${tag}>`;
             const inner = tag === "ul" || tag === "ol"
                 ? items.map((i) => `<li>${Markdown.inline(i)}</li>`).join("")
                 : items.map(Markdown.inline).join("<br>");
-            out.push(`<${tag}>${inner}</${tag}>`);
+            out.push(`${open}${inner}</${tag}>`);
             group = null;
         };
 
-        const add = (tag, text) => {
-            if (group?.tag !== tag) { flush(); group = { tag, items: [] }; }
+        const add = (tag, text, start) => {
+            if (group?.tag !== tag) { flush(); group = { tag, items: [], start }; }
             group.items.push(text);
+        };
+
+        // A blank line between list items ("loose" list) keeps the list going, so numbered steps don't all read 1.
+        const list = { ul: /^\s*[-*+]\s+/, ol: /^\s*\d+[.)]\s+/ };
+        const continues = (i) => {
+            if (!list[group?.tag]) return false;
+            while (i < lines.length && !lines[i].trim()) i++;
+            return i < lines.length && list[group.tag].test(lines[i]);
         };
 
         for (let i = 0; i < lines.length; i++) {
@@ -39,14 +48,17 @@ const Markdown = {
                 const code = [];
                 while (++i < lines.length && !lines[i].startsWith("```")) code.push(lines[i]);
                 out.push(`<pre><code>${code.join("\n")}</code></pre>`);
+            } else if (/^\s*([-*_])(\s*\1){2,}\s*$/.test(line)) {   // --- or *** or ___: a divider
+                flush();
+                out.push("<hr>");
             } else if ((m = line.match(/^(#{1,4})\s+(.*)/))) {
                 flush();
                 out.push(`<h${m[1].length}>${Markdown.inline(m[2])}</h${m[1].length}>`);
             } else if ((m = line.match(/^\s*[-*+]\s+(.*)/))) add("ul", m[1]);
-            else if ((m = line.match(/^\s*\d+[.)]\s+(.*)/))) add("ol", m[1]);
+            else if ((m = line.match(/^\s*(\d+)[.)]\s+(.*)/))) add("ol", m[2], Number(m[1]));
             else if ((m = line.match(/^&#62;\s?(.*)/))) add("blockquote", m[1]);
             else if (line.trim()) add("p", line);
-            else flush();
+            else if (!continues(i + 1)) flush();
         }
         flush();
         return out.join("");

@@ -22,6 +22,17 @@
    data-pulse-open opens the dialog with that id as a modal (or beside the page, still usable, when the dialog has data-modal="false").
    data-pulse-close inside it closes it; so does a click on the dimmed page. Esc and returning focus are the browser's.
    On open, focus goes to the title (an autofocus element inside wins), so the close X isn't shown as selected.
+   Esc also closes a dialog or drawer opened beside the page (data-modal="false", or the page's own dialog.show()), unless a modal is
+   open or something inside used the key; focus goes back to the opener.
+
+   Confirm
+     Pulse.confirm({ title, body, resource, action: 'Delete' }).then(function (ok) { if (ok) … });
+   Builds and opens the destructive dialog; true on the destructive button, false on Cancel, Esc, the X or the dimmed page.
+
+   Loading
+     Pulse.loading(function () { return fetch(…); }, { delay: 200 }).then(function (result) { … });
+   The page-wide cover while a task runs (at least delay ms; overlapping tasks share one cover; above open panels).
+     var c = Pulse.cover(box); … c.remove();     a cover over one box. The inline spinner is markup: <span class="pulse-spinner pulse-spinner--sm" role="status" aria-label="Loading"></span>
 
    Copy
      <button class="pulse-btn … pulse-tooltip-host" data-pulse-copy aria-label="Copy">… <span class="pulse-tooltip" aria-hidden="true">Copy to clipboard</span></button>
@@ -242,10 +253,29 @@
     if (!title.hasAttribute('tabindex')) title.setAttribute('tabindex', '-1');
     title.focus({ preventScroll: true });
   }
-  function dialogToggle(e) { var d = e.target; if (d && d.tagName === 'DIALOG' && e.newState === 'open') focusTitle(d); }
+  // Every Pulse dialog and drawer that is open, in opening order, whatever opened it (data-pulse-open or the page's own show()),
+  // in shadow roots too: Esc for panels beside the page and the loading cover use it. The opener is remembered for focus return.
+  var openDialogs = [];
+  function isPulseDialog(d) { return d.classList.contains('pulse-drawer') || d.classList.contains('pulse-dialog') || !!d.querySelector('.pulse-dialog'); }
+  function dialogBefore(e) {
+    var d = e.target;
+    if (d && d.tagName === 'DIALOG' && e.newState === 'open' && !d._pulseOpener) { var a = activeEl(); if (a && a !== document.body) d._pulseOpener = a; }
+  }
+  function dialogToggle(e) {
+    var d = e.target; if (!d || d.tagName !== 'DIALOG') return;
+    if (e.newState === 'open') {
+      focusTitle(d);
+      if (openDialogs.indexOf(d) < 0) openDialogs.push(d);
+      raiseCover();   // a panel opened while the page is loading: keep the cover on top
+    } else {
+      openDialogs = openDialogs.filter(function (x) { return x !== d; });
+      d._pulseOpener = null;
+    }
+  }
 
   function attach(root) {
     root.addEventListener('click', rememberTrigger, true);
+    root.addEventListener('beforetoggle', dialogBefore, true);
     root.addEventListener('toggle', dialogToggle, true);
     root.addEventListener('click', dialogClick);
     if (native) {
@@ -648,6 +678,104 @@
     var x = t.closest('.pulse-dismiss'), box = x && x.closest('.pulse-alert, .pulse-toast');
     if (box && box.dispatchEvent(new CustomEvent('pulse:dismiss', { bubbles: true, cancelable: true }))) { box.remove(); tidy(); }
   });
+
+  // Esc for a dialog or drawer opened beside the page (data-modal="false" or the page's own show()): the browser only gives Esc to
+  // modal dialogs. Closes the most recent one, unless a modal dialog is open, a popover or menu took the key, or something inside
+  // already handled it; focus goes back to whatever opened it.
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape' || e.defaultPrevented) return;
+    openDialogs = openDialogs.filter(function (d) { return d.open; });
+    if (document.querySelector('dialog:modal') || openDialogs.some(function (d) { return d.matches(':modal'); })) return;
+    var roots = [document].concat(openDialogs.map(function (d) { return d.getRootNode(); }));
+    if (roots.some(function (r) { return r.querySelector && r.querySelector('.pulse-popover:popover-open, .pulse-popover.is-open'); })) return;
+    var panels = openDialogs.filter(isPulseDialog), d = panels[panels.length - 1];
+    if (!d) return;
+    e.preventDefault();
+    var o = d._pulseOpener;
+    d.close();
+    if (o && o.isConnected && o.focus) o.focus();
+  });
+
+  // Pulse.confirm({ title, body, resource, action, cancel }): the destructive dialog, built by Pulse (no markup needed). Resolves
+  // true on the destructive button, false on Cancel, Esc, the X or a click on the dimmed page. Cancel has focus on open; focus
+  // returns to what opened it. Text goes in as text, never HTML.
+  var confirmSeq = 0;
+  function confirmDialog(opts) {
+    opts = opts || {};
+    return new Promise(function (resolve) {
+      var n = ++confirmSeq, d = document.createElement('dialog'), ok = false;
+      d.className = 'pulse-dialog';
+      d.setAttribute('aria-labelledby', 'pulse-confirm-title-' + n);
+      d.setAttribute('aria-describedby', 'pulse-confirm-body-' + n);
+      d.innerHTML =
+        '<div class="pulse-dialog__head"><div class="pulse-dialog__copy">' +
+          '<h2 class="pulse-dialog__title" id="pulse-confirm-title-' + n + '"></h2><p class="pulse-dialog__body" id="pulse-confirm-body-' + n + '"></p></div>' +
+          '<button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-dialog__close" type="button" aria-label="Close" data-x>' +
+          '<i class="pulse-icon pulse-icon--x" aria-hidden="true"></i></button></div>' +
+        '<div class="pulse-dialog__resource" hidden></div>' +
+        '<div class="pulse-dialog__actions"><button class="pulse-btn pulse-btn--secondary" type="button" data-no autofocus></button>' +
+          '<button class="pulse-btn pulse-btn--destructive" type="button" data-yes></button></div>';
+      d.querySelector('.pulse-dialog__title').textContent = opts.title || 'Are you sure?';
+      var body = d.querySelector('.pulse-dialog__body');
+      if (opts.body) body.textContent = opts.body; else { body.remove(); d.removeAttribute('aria-describedby'); }
+      var res = d.querySelector('.pulse-dialog__resource');
+      if (opts.resource) { res.textContent = opts.resource; res.hidden = false; }
+      d.querySelector('[data-no]').textContent = opts.cancel || 'Cancel';
+      d.querySelector('[data-yes]').textContent = opts.action || 'Delete';
+      d.addEventListener('click', function (e) {
+        var t = e.target;
+        if (t.closest('[data-yes]')) { ok = true; d.close(); }
+        else if (t.closest('[data-no], [data-x]') || t === d) d.close();
+      });
+      d.addEventListener('close', function () { d.remove(); resolve(ok); }, { once: true });
+      document.body.appendChild(d);
+      d.showModal();
+    });
+  }
+  window.Pulse.confirm = confirmDialog;
+
+  // Pulse.loading(task, { delay }): the page-wide cover (a large spinner over a dim page, in the top layer, above open panels)
+  // while an async task runs. task is a function returning a promise, or a promise. The cover stays at least delay ms (200 by
+  // default, so it doesn't flash) and overlapping tasks share it: it goes when the last one ends. Returns the task's result (or
+  // its error). Pulse.cover(element): the same over one box; returns the cover, whose remove() takes it away.
+  var pageCover = null, coverCount = 0;
+  function raiseCover() {
+    if (!pageCover || !coverCount || !native) return;
+    try { if (pageCover.matches(':popover-open')) pageCover.hidePopover(); pageCover.showPopover(); } catch (err) {}
+  }
+  function loading(task, opts) {
+    var delay = opts && opts.delay != null ? opts.delay : 200;
+    if (!pageCover) {
+      pageCover = document.createElement('div');
+      pageCover.className = 'pulse-spinner-cover';
+      if (native) pageCover.setAttribute('popover', 'manual'); else pageCover.style.cssText = 'position:fixed;inset:0;z-index:2000';
+      pageCover.innerHTML = '<span class="pulse-spinner pulse-spinner--lg" role="status" aria-label="Loading"></span>';
+    }
+    if (!pageCover.isConnected) document.body.appendChild(pageCover);
+    coverCount++;
+    if (native) raiseCover(); else pageCover.hidden = false;
+    var work;
+    try { work = Promise.resolve(typeof task === 'function' ? task() : task); } catch (err) { work = Promise.reject(err); }
+    var wait = new Promise(function (r) { setTimeout(r, delay); });
+    function done() {
+      if (--coverCount > 0) return;
+      coverCount = 0;
+      if (native) { try { pageCover.hidePopover(); } catch (err) {} } else pageCover.hidden = true;
+    }
+    return Promise.all([work, wait]).then(function (r) { done(); return r[0]; }, function (err) { return wait.then(function () { done(); throw err; }); });
+  }
+  function cover(el) {
+    var c = document.createElement('div'), moved = false;
+    c.className = 'pulse-spinner-cover';
+    c.innerHTML = '<span class="pulse-spinner" role="status" aria-label="Loading"></span>';
+    if (getComputedStyle(el).position === 'static') { el.style.position = 'relative'; moved = true; }
+    el.appendChild(c);
+    var rm = c.remove.bind(c);
+    c.remove = function () { rm(); if (moved) el.style.position = ''; };
+    return c;
+  }
+  window.Pulse.loading = loading;
+  window.Pulse.cover = cover;
 
   function initAll(root) { root = root && root.querySelectorAll ? root : document; initTabs(root); initMenus(root); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initAll); else initAll();

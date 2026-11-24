@@ -1117,6 +1117,25 @@ Figma component: Dialog.
 
 It’s a native `<dialog>`. A button with `data-pulse-open="its-id"` opens it; anything inside with `data-pulse-close` closes it, and so does Esc. Focus moves into the dialog and goes back to the button afterwards.
 
+### Confirm from a script
+
+`Pulse.confirm()` builds this same destructive dialog, opens it and waits: it resolves `true` on the destructive button, `false` on Cancel, Esc, the X or a click on the dimmed page. Cancel has focus when it opens, and focus goes back to whatever opened it. Text goes in as text, never HTML. Use it for every destructive action, so nothing deletes in one click.
+
+```html
+<script>
+  // No markup needed: Pulse builds the destructive dialog, opens it and removes it after.
+  deleteButton.addEventListener('click', async () => {
+    const ok = await Pulse.confirm({
+      title: 'Delete this device?',
+      body: 'VEX stops watching it. You can’t undo it.',
+      resource: 'HR-laptop-428936',      // optional: the thing being deleted
+      action: 'Delete device'            // the destructive button's label ('Delete' by default)
+    });
+    if (ok) removeDevice();
+  });
+</script>
+```
+
 ### Parts
 
 | Class | What it is |
@@ -1238,7 +1257,7 @@ When the drawer is a step on the way somewhere (pricing before checkout), make t
 | `pulse-drawer--inset` | A drawer inside a panel (on a plain `<div>`, inside a positioned parent), next to a list that stays usable. |
 | `pulse-drawer--push` | With `--inset`: the panel makes room instead of being covered (give what it pushes a margin the drawer’s width), so the drawer is flat: a border, no shadow. Phones keep the full-width drawer. |
 | `pulse-drawer__foot` | Optional footer that stays put while the body scrolls. Put `pulse-actions--end` inside: Cancel, then the main action. |
-| `data-modal="false"` | Opens it beside the page, which stays usable (no dimming). Only its close button or Esc closes it. |
+| `data-modal="false"` | Opens it beside the page, which stays usable (no dimming). Only its close button or Esc closes it. pulse.js gives it Esc (the browser only does for modals), also when your own script opens it with `dialog.show()`, and returns focus to the opener; not while a modal or a menu inside has the key. |
 | `data-theme="dark"` | A dark drawer on a light page. |
 
 ### A head with more
@@ -2143,13 +2162,30 @@ Large (32):
 
 ### Covering an area
 
-`pulse-spinner-cover` dims and covers its positioned parent. For the whole page, above open panels, make the cover a manual popover (`popover="manual"`) and show it from your script.
+`pulse-spinner-cover` dims and covers its positioned parent. For the whole page, use `Pulse.loading()` (below): it keeps the cover above open panels for you.
 
 ```html
 <div style="position: relative; width: 100%; max-width: 360px; height: 120px; border: 1px solid var(--color-border-default)">
   <p style="margin: 16px">Content being refreshed</p>
   <div class="pulse-spinner-cover"><span class="pulse-spinner pulse-spinner--lg" role="status" aria-label="Refreshing"></span></div>
 </div>
+```
+
+### From a script
+
+`Pulse.loading(task, { delay })` shows the page-wide cover while a task runs and returns its result. It stays at least `delay` ms (200 by default) so it doesn’t flash, overlapping tasks share one cover that goes when the last one ends, and it stays above dialogs and drawers opened meanwhile. `Pulse.cover(box)` covers one box and returns the cover to remove. The small inline spinner is just markup. There is no “done” check: a page cover just goes away (the content is the confirmation), and confirmations go in a toast.
+
+```html
+<script>
+  // The page-wide cover while a task runs. Shows for at least 200ms, shares one cover with overlapping tasks,
+  // stays above open dialogs and drawers, and returns (or throws) what the task does.
+  const accounts = await Pulse.loading(() => api.accounts(), { delay: 200 });
+
+  // A cover over one box (it is made relative if it isn't positioned). Remove it when the box is ready.
+  const cover = Pulse.cover(document.querySelector('#coverage'));
+  await refreshCoverage();
+  cover.remove();
+</script>
 ```
 
 ### Accessibility

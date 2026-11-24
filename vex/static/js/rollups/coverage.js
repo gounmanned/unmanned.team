@@ -431,7 +431,7 @@ class CoverageRollup {
                 ${this._logo(vendor, 'cov-connect-logo')}
                 <div class="cov-field-head">
                     <label for="cov-cred">Credentials</label>
-                    <a href="docs/${vendor}.html" target="_blank">Setup guide<span class="material-symbols-outlined">arrow_outward</span></a>
+                    <a href="https://unmanned.team/docs/${vendor}" target="_blank" rel="noopener">Setup guide<span class="material-symbols-outlined">arrow_outward</span></a>
                 </div>
                 <textarea id="cov-cred" data-cred rows="5" spellcheck="false" ${disabled}
                           placeholder="Paste the JSON from the setup guide">${Workspace.esc(this.draft)}</textarea>

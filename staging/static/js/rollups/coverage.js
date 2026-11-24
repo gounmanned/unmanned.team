@@ -446,7 +446,7 @@ class CoverageRollup {
                 <div class="pulse-field${this.error ? ' pulse-field--error' : ''}">
                     <div class="cov-field-head">
                         <label class="pulse-field__label" for="cov-cred">Credentials</label>
-                        <a class="pulse-link pulse-link--xs" href="docs/${vendor}.html" target="_blank" rel="noopener">Setup guide <i class="pulse-icon pulse-icon--arrow-square-out" aria-hidden="true"></i></a>
+                        <a class="pulse-link pulse-link--xs" href="https://unmanned.team/docs/${vendor}" target="_blank" rel="noopener">Setup guide <i class="pulse-icon pulse-icon--arrow-square-out" aria-hidden="true"></i></a>
                     </div>
                     <textarea class="pulse-textarea cov-cred" id="cov-cred" data-cred rows="5" spellcheck="false" ${disabled}
                               placeholder="Paste the JSON from the setup guide" aria-describedby="cov-cred-help"${this.error ? ' aria-invalid="true"' : ''}>${Workspace.esc(this.draft)}</textarea>

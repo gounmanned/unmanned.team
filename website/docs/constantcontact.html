@@ -25,13 +25,13 @@
   ol.steps > li::marker{font-weight:700;}
   .alt{display:block;margin-top:6px;color:var(--color-text-secondary);}
   .alt em{font-style:normal;font-weight:500;color:var(--color-text-primary);}
-  code{overflow-wrap:anywhere;font:14px/1 var(--font-mono);background:var(--color-surface-subtle);border:1px solid var(--color-border-subtle);border-radius:4px;padding:1px 5px;}
+  code{overflow-wrap:anywhere;font:13px/1 var(--font-mono);background:var(--color-surface-subtle);border:1px solid var(--color-border-subtle);border-radius:4px;padding:1px 5px;}
   pre{margin:12px 0;padding:16px;overflow-x:auto;background:var(--color-surface-subtle);border:1px solid var(--color-border-subtle);border-radius:8px;}
-  pre code{background:none;border:0;padding:0;font-size:14px;line-height:22px;}
+  pre code{background:none;border:0;padding:0;font-size:13px;line-height:22px;}
   pre.paste{display:flex;align-items:flex-start;gap:16px;overflow:visible;}
   pre.paste > :first-child{flex:1;min-width:0;white-space:pre-wrap;overflow-wrap:anywhere;}
   .copy{position:relative;flex:none;display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;margin:-6px -6px -6px 0;
-    padding:0;color:var(--color-text-primary);background:none;border:0;border-radius:4px;cursor:pointer;}
+    padding:0;color:var(--color-text-tertiary);background:none;border:0;border-radius:4px;cursor:pointer;}
   .copy::before{content:"";width:18px;height:18px;background:currentColor;
     -webkit-mask:url(../static/icon-copy.svg) center/contain no-repeat;mask:url(../static/icon-copy.svg) center/contain no-repeat;}
   .copy.is-copied::before{-webkit-mask-image:url(../static/icon-check.svg);mask-image:url(../static/icon-check.svg);}
@@ -68,7 +68,7 @@
 <pre class="paste"><code>https://authz.constantcontact.com/oauth2/default/v1/authorize?client_id={client_id}&amp;redirect_uri=https://localhost&amp;response_type=code&amp;scope=account_read contact_data campaign_data offline_access&amp;state={state}</code></pre></li>
     <li>The browser goes to <code>https://localhost/?code=…</code> (the page won’t load). Copy the <code>code</code> value. It expires in 5 minutes and works once.</li>
     <li>Run in Terminal, with your values in place of the braces:
-<pre class="paste"><code>curl -X POST "https://authz.constantcontact.com/oauth2/default/v1/token" \
+<pre class="paste"><code>curl -X POST https://authz.constantcontact.com/oauth2/default/v1/token \
   -u "{client_id}:{client_secret}" \
   -H "Content-Type: application/x-www-form-urlencoded" \
   -d "grant_type=authorization_code" \

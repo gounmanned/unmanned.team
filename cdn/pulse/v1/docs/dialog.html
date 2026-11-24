@@ -147,6 +147,20 @@
 &lt;/<span class="pulse-code__kw">dialog</span>&gt;</code></pre></div></div>
 <h2>How it works</h2>
 <p>It’s a native <code>&lt;dialog&gt;</code>. A button with <code>data-pulse-open="its-id"</code> opens it; anything inside with <code>data-pulse-close</code> closes it, and so does Esc. Focus moves into the dialog and goes back to the button afterwards.</p>
+<h2>Confirm from a script</h2>
+<p><code>Pulse.confirm()</code> builds this same destructive dialog, opens it and waits: it resolves <code>true</code> on the destructive button, <code>false</code> on Cancel, Esc, the X or a click on the dimmed page. Cancel has focus when it opens, and focus goes back to whatever opened it. Text goes in as text, never HTML. Use it for every destructive action, so nothing deletes in one click.</p>
+<div class="pulse-code docs-code"><div class="pulse-code__head"><span class="pulse-code__file">HTML</span><button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-tooltip-host" type="button" data-pulse-copy aria-label="Copy the code"><i class="pulse-icon pulse-icon--copy" aria-hidden="true"></i><span class="pulse-tooltip pulse-tooltip--bottom pulse-tooltip--end" aria-hidden="true">Copy to clipboard</span></button></div><pre><code>&lt;<span class="pulse-code__kw">script</span>&gt;
+  <span class="pulse-code__cmt">// No markup needed: Pulse builds the destructive dialog, opens it and removes it after.</span>
+  deleteButton.<span class="pulse-code__fn">addEventListener</span>(<span class="pulse-code__str">'click'</span>, <span class="pulse-code__fn">async</span> () =&gt; {
+    <span class="pulse-code__kw">const</span> ok = await Pulse.<span class="pulse-code__fn">confirm</span>({
+      <span class="pulse-code__key">title</span>: <span class="pulse-code__str">'Delete this device?'</span>,
+      <span class="pulse-code__key">body</span>: <span class="pulse-code__str">'VEX stops watching it. You can’t undo it.'</span>,
+      <span class="pulse-code__key">resource</span>: <span class="pulse-code__str">'HR-laptop-428936'</span>,      <span class="pulse-code__cmt">// optional: the thing being deleted</span>
+      <span class="pulse-code__key">action</span>: <span class="pulse-code__str">'Delete device'</span>            <span class="pulse-code__cmt">// the destructive button's label ('Delete' by default)</span>
+    });
+    <span class="pulse-code__kw">if</span> (ok) <span class="pulse-code__fn">removeDevice</span>();
+  });
+&lt;/<span class="pulse-code__kw">script</span>&gt;</code></pre></div>
 <h2>Parts</h2>
 <div class="docs-table"><table><thead><tr><th>Class</th><th>What it is</th></tr></thead><tbody>
 <tr><td><code>pulse-dialog__title</code>, <code>__body</code></td><td>The question and one or two sentences.</td></tr>

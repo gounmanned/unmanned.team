@@ -160,7 +160,7 @@
 <tr><td><code>pulse-drawer--inset</code></td><td>A drawer inside a panel (on a plain <code>&lt;div&gt;</code>, inside a positioned parent), next to a list that stays usable.</td></tr>
 <tr><td><code>pulse-drawer--push</code></td><td>With <code>--inset</code>: the panel makes room instead of being covered (give what it pushes a margin the drawer’s width), so the drawer is flat: a border, no shadow. Phones keep the full-width drawer.</td></tr>
 <tr><td><code>pulse-drawer__foot</code></td><td>Optional footer that stays put while the body scrolls. Put <code>pulse-actions--end</code> inside: Cancel, then the main action.</td></tr>
-<tr><td><code>data-modal="false"</code></td><td>Opens it beside the page, which stays usable (no dimming). Only its close button or Esc closes it.</td></tr>
+<tr><td><code>data-modal="false"</code></td><td>Opens it beside the page, which stays usable (no dimming). Only its close button or Esc closes it. pulse.js gives it Esc (the browser only does for modals), also when your own script opens it with <code>dialog.show()</code>, and returns focus to the opener; not while a modal or a menu inside has the key.</td></tr>
 <tr><td><code>data-theme="dark"</code></td><td>A dark drawer on a light page.</td></tr>
 </tbody></table></div>
 <h2>A head with more</h2>

@@ -906,7 +906,7 @@ button.pulse-stat .pulse-stat__value::after, a.pulse-stat .pulse-stat__value::af
 .pulse-log__col { flex: none; min-width: 0; max-width: var(--pulse-log-col-max, 40ch); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--color-text-secondary); }
 .pulse-log__col > .pulse-badge { vertical-align: top; }
 @media (min-width: 768px) {
-  .pulse-log:has(.pulse-log__col) { display: grid; grid-template-columns: auto auto auto 1fr; }
+  .pulse-log:has(.pulse-log__col) { display: grid; grid-template-columns: auto auto auto 1fr; align-content: start; }
   .pulse-log:has(.pulse-log__col:nth-child(3)) { grid-template-columns: auto auto auto auto 1fr; }
   .pulse-log:has(.pulse-log__col:nth-child(4)) { grid-template-columns: auto auto auto auto auto 1fr; }
   .pulse-log:has(.pulse-log__col) > *, .pulse-log:has(.pulse-log__col) .pulse-log__row, .pulse-log:has(.pulse-log__col) .pulse-log__row > summary {

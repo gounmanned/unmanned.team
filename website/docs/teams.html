@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Microsoft Teams setup</title>
+<meta name="description" content="Create a Microsoft Teams workflow webhook.">
+<link rel="stylesheet" href="https://cdn.unmanned.team/pulse/v1/pulse-fonts.css">
+<link rel="stylesheet" href="https://cdn.unmanned.team/pulse/v1/pulse-tokens.css">
+<style>
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--color-surface-page);color:var(--color-text-primary);font:16px/1.6 var(--font-sans);-webkit-text-size-adjust:100%;}
+  h1,h2{text-wrap:balance;} p,li{text-wrap:pretty;}
+  .doc{max-width:720px;margin:0 auto;padding:56px 24px 40px;}
+  @media (max-width:700px){.doc{padding:32px 16px 32px;}}
+  h1{margin:0 0 8px;font-size:32px;line-height:40px;font-weight:600;letter-spacing:-0.01em;}
+  .lede{margin:0 0 24px;color:var(--color-text-secondary);}
+  .requires{margin:0 0 32px;padding:12px 16px;background:var(--color-surface-band);border:1px solid var(--color-border-default);border-radius:8px;
+    font-size:14px;line-height:22px;color:var(--color-text-secondary);}
+  .requires strong{color:var(--color-text-primary);}
+  a{color:var(--color-text-primary);text-decoration:underline;text-underline-offset:2px;}
+  a:hover{text-decoration-thickness:2px;}
+  ol.steps{margin:0;padding:0 0 0 24px;}
+  ol.steps > li{padding:0 0 16px 4px;}
+  ol.steps > li::marker{font-weight:700;}
+  .alt{display:block;margin-top:6px;color:var(--color-text-secondary);}
+  .alt em{font-style:normal;font-weight:500;color:var(--color-text-primary);}
+  code{overflow-wrap:anywhere;font:14px/1 var(--font-mono);background:var(--color-surface-subtle);border:1px solid var(--color-border-subtle);border-radius:4px;padding:1px 5px;}
+  pre{margin:12px 0;padding:16px;overflow-x:auto;background:var(--color-surface-subtle);border:1px solid var(--color-border-subtle);border-radius:8px;}
+  pre code{background:none;border:0;padding:0;font-size:14px;line-height:22px;}
+  table{width:100%;margin:12px 0 0;border-collapse:collapse;font-size:15px;}
+  th,td{overflow-wrap:anywhere;text-align:left;vertical-align:top;padding:8px 12px 8px 0;border-bottom:1px solid var(--color-border-default);}
+  th{font-weight:600;}
+  td:first-child{white-space:nowrap;}
+  .foot{max-width:720px;margin:0 auto;padding:0 24px 32px;font-size:12px;color:var(--color-text-tertiary);}
+  .foot p{margin:0;padding-top:24px;border-top:1px solid var(--color-border-default);}   /* the rule lines up with the text column */
+  @media (max-width:700px){.foot{padding:0 16px 24px;}}
+</style>
+</head>
+<body>
+<main class="doc">
+  <h1>Microsoft Teams</h1>
+  <p class="lede">Creates a Teams workflow webhook, so new signals post to a channel you choose.</p>
+
+  <ol class="steps">
+    <li>Teams → the channel → <strong>More options (⋯)</strong> → <strong>Workflows</strong>.</li>
+    <li>Template: <strong>Send webhook alerts to a channel</strong> → confirm the channel → <strong>Create flow</strong> (or <strong>Add workflow</strong>).</li>
+    <li>Copy the webhook URL (like <code>https://xxxxx.xx.logic.azure.com:443/workflows/…</code>).</li>
+    <li>Fill in:
+<pre><code>{
+  "webhook": ""
+}</code></pre>
+      <table>
+        <thead><tr><th>Field</th><th>Where to find it</th></tr></thead>
+        <tbody>
+          <tr><td><code>webhook</code></td><td>The URL from step 3</td></tr>
+        </tbody>
+      </table>
+    </li>
+  </ol>
+</main>
+<footer class="foot"><p>© 2026 Unmanned, Inc.</p></footer>
+</body>
+</html>

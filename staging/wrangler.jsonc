@@ -1,0 +1,9 @@
+{
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "vex-staging",
+  "compatibility_date": "2026-11-01",
+  "assets": { "directory": "." },
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [{ "pattern": "staging.unmanned.team", "custom_domain": true }]
+}

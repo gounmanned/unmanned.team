@@ -29,10 +29,12 @@
   pre{margin:12px 0;padding:16px;overflow-x:auto;background:var(--color-surface-subtle);border:1px solid var(--color-border-subtle);border-radius:8px;}
   pre code{background:none;border:0;padding:0;font-size:14px;line-height:22px;}
   pre.paste{position:relative;padding-right:80px;}
+  pre.wrap code{white-space:pre-wrap;overflow-wrap:anywhere;}
   .copy{position:absolute;top:8px;right:8px;padding:4px 10px;font:500 13px/18px var(--font-sans);color:var(--color-text-primary);
     background:var(--color-surface-page);border:1px solid var(--color-border-default);border-radius:4px;cursor:pointer;}
   .copy:hover{background:var(--color-surface-band);}
   .copy:focus-visible{outline:2px solid var(--color-text-primary);outline-offset:2px;}
+  .copy--inline{position:static;margin-left:8px;padding:1px 8px;font-size:12px;vertical-align:1px;}
   table{width:100%;margin:12px 0 0;border-collapse:collapse;font-size:15px;}
   th,td{overflow-wrap:anywhere;text-align:left;vertical-align:top;padding:8px 12px 8px 0;border-bottom:1px solid var(--color-border-default);}
   th{font-weight:600;}
@@ -54,10 +56,10 @@
     <li><strong>Edit</strong> next to the app → copy the <strong>API Key</strong>.</li>
     <li><strong>Generate Client Secret</strong> → copy it (shown once). Keep the Redirect URI <code>https://localhost</code> → <strong>Save</strong>.</li>
     <li>Open this URL in a browser, with your API key in place of <code>{client_id}</code> and any random text in place of <code>{state}</code>. Sign in and allow access.
-<pre><code>https://authz.constantcontact.com/oauth2/default/v1/authorize?client_id={client_id}&amp;redirect_uri=https://localhost&amp;response_type=code&amp;scope=account_read contact_data campaign_data offline_access&amp;state={state}</code></pre></li>
+<pre class="paste wrap"><code>https://authz.constantcontact.com/oauth2/default/v1/authorize?client_id={client_id}&amp;redirect_uri=https://localhost&amp;response_type=code&amp;scope=account_read contact_data campaign_data offline_access&amp;state={state}</code></pre></li>
     <li>The browser goes to <code>https://localhost/?code=…</code> (the page won’t load). Copy the <code>code</code> value. It expires in 5 minutes and works once.</li>
     <li>Run in Terminal, with your values in place of the braces:
-<pre><code>curl -X POST "https://authz.constantcontact.com/oauth2/default/v1/token" \
+<pre class="paste"><code>curl -X POST "https://authz.constantcontact.com/oauth2/default/v1/token" \
   -u "{client_id}:{client_secret}" \
   -H "Content-Type: application/x-www-form-urlencoded" \
   -d "grant_type=authorization_code" \

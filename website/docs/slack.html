@@ -115,6 +115,11 @@
             padding: 2rem;
             }
         }
+        code, li { overflow-wrap: anywhere; }
+        pre.paste { position: relative; padding-right: 80px; overflow-x: auto; }
+        .copy { position: absolute; top: 8px; right: 8px; padding: 4px 10px; font: 500 13px/18px var(--font-sans); color: var(--text-body);
+            background: var(--surface); border: 1px solid var(--line); border-radius: 4px; cursor: pointer; }
+        .copy:hover { background: var(--surface-alt); }
     </style>
 </head>
 
@@ -135,14 +140,15 @@
             <li>Find your Slack <strong>team ID</strong>: open Slack in a web browser and check the address bar. It reads something like <code>app.slack.com/client/T0123ABCD/…</code> — the part starting with <code>T</code> is your team ID.</li>
             <li>In VEX, add Slack using this JSON:</li>
         </ol>
-        <pre>
+        <pre class="paste">
 {
-    "teamID": "<YOUR TEAM ID>"
+    "teamID": "&lt;YOUR TEAM ID&gt;"
 }
         </pre>
         <ol start="3">
             <li>Connect.</li>
         </ol>
     </div>
+<script src="copy.js" defer></script>
 </body>
 </html>

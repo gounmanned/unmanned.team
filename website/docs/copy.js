@@ -1,13 +1,14 @@
-// Adds a Copy button to each block the reader pastes back into the app (pre.paste).
-document.querySelectorAll('pre.paste').forEach((pre) => {
+// Adds a Copy button to everything the reader pastes somewhere else (.paste): inside a block, or after an inline value.
+document.querySelectorAll('.paste').forEach((el) => {
+  const text = (el.querySelector('code') || el).textContent.trim();
   const button = document.createElement('button');
   button.type = 'button';
-  button.className = 'copy';
+  button.className = el.tagName === 'PRE' ? 'copy' : 'copy copy--inline';
   button.textContent = 'Copy';
   button.setAttribute('aria-live', 'polite');
   button.addEventListener('click', async () => {
     try {
-      await navigator.clipboard.writeText(pre.querySelector('code').textContent);
+      await navigator.clipboard.writeText(text);
       button.textContent = 'Copied';
     } catch {
       button.textContent = 'Select and copy';
@@ -15,5 +16,6 @@ document.querySelectorAll('pre.paste').forEach((pre) => {
     clearTimeout(button.reset);
     button.reset = setTimeout(() => { button.textContent = 'Copy'; }, 2000);
   });
-  pre.appendChild(button);
+  if (el.tagName === 'PRE') el.appendChild(button);
+  else el.after(button);
 });

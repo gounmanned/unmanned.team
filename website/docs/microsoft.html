@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Microsoft 365 setup</title>
+<meta name="description" content="Create a Microsoft 365 app registration with Graph permissions.">
+<link rel="stylesheet" href="https://cdn.unmanned.team/pulse/v1/pulse-fonts.css">
+<link rel="stylesheet" href="https://cdn.unmanned.team/pulse/v1/pulse-tokens.css">
+<style>
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--color-surface-page);color:var(--color-text-primary);font:16px/1.6 var(--font-sans);-webkit-text-size-adjust:100%;}
+  h1,h2{text-wrap:balance;} p,li{text-wrap:pretty;}
+  .doc{max-width:720px;margin:0 auto;padding:56px 24px 40px;}
+  @media (max-width:700px){.doc{padding:32px 16px 32px;}}
+  h1{margin:0 0 8px;font-size:32px;line-height:40px;font-weight:600;letter-spacing:-0.01em;}
+  .lede{margin:0 0 24px;color:var(--color-text-secondary);}
+  .requires{margin:0 0 32px;padding:12px 16px;background:var(--color-surface-band);border:1px solid var(--color-border-default);border-radius:8px;
+    font-size:14px;line-height:22px;color:var(--color-text-secondary);}
+  .requires strong{color:var(--color-text-primary);}
+  a{color:var(--color-text-primary);text-decoration:underline;text-underline-offset:2px;}
+  a:hover{text-decoration-thickness:2px;}
+  ol.steps{margin:0;padding:0 0 0 24px;}
+  ol.steps > li{padding:0 0 16px 4px;}
+  ol.steps > li::marker{font-weight:700;}
+  .alt{display:block;margin-top:6px;color:var(--color-text-secondary);}
+  .alt em{font-style:normal;font-weight:500;color:var(--color-text-primary);}
+  code{overflow-wrap:anywhere;font:13px/1 var(--font-mono);background:var(--color-surface-subtle);border:1px solid var(--color-border-subtle);border-radius:4px;padding:1px 5px;}
+  pre{margin:12px 0;padding:16px;overflow-x:auto;background:var(--color-surface-subtle);border:1px solid var(--color-border-subtle);border-radius:8px;}
+  pre code{background:none;border:0;padding:0;font-size:13px;line-height:22px;}
+  pre.paste{display:flex;align-items:flex-start;gap:16px;overflow:visible;}
+  pre.paste > :first-child{flex:1;min-width:0;white-space:pre-wrap;overflow-wrap:anywhere;}
+  .copy{position:relative;flex:none;display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;margin:-6px -6px -6px 0;
+    padding:0;color:var(--color-text-tertiary);background:none;border:0;border-radius:4px;cursor:pointer;}
+  .copy::before{content:"";width:18px;height:18px;background:currentColor;
+    -webkit-mask:url(../static/icon-copy.svg) center/contain no-repeat;mask:url(../static/icon-copy.svg) center/contain no-repeat;}
+  .copy.is-copied::before{-webkit-mask-image:url(../static/icon-check.svg);mask-image:url(../static/icon-check.svg);}
+  .copy:hover{background:var(--color-surface-band);}
+  .copy:focus-visible{outline:2px solid currentColor;outline-offset:2px;}
+  .copy::after{content:attr(data-tip);position:absolute;top:calc(100% + 6px);right:0;z-index:1;padding:4px 8px;font:500 12px/16px var(--font-sans);white-space:nowrap;
+    color:var(--color-text-on-contrast);background:var(--color-text-primary);border-radius:4px;opacity:0;pointer-events:none;transition:opacity .15s;}
+  .copy:hover::after,.copy:focus-visible::after,.copy.is-copied::after{opacity:1;}
+  .copy--inline{width:24px;height:24px;margin:0 0 0 4px;vertical-align:middle;}
+  .copy--inline::before{width:16px;height:16px;}
+  .visually-hidden{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
+  @media (prefers-reduced-motion:reduce){.copy::after{transition:none;}}
+  table{width:100%;margin:12px 0 0;border-collapse:collapse;font-size:15px;}
+  th,td{overflow-wrap:anywhere;text-align:left;vertical-align:top;padding:8px 12px 8px 0;border-bottom:1px solid var(--color-border-default);}
+  th{font-weight:600;}
+  td:first-child{white-space:nowrap;}
+  .foot{max-width:720px;margin:0 auto;padding:0 24px 32px;font-size:12px;color:var(--color-text-tertiary);}
+  .foot p{margin:0;padding-top:24px;border-top:1px solid var(--color-border-default);}   /* the rule lines up with the text column */
+  @media (max-width:700px){.foot{padding:0 16px 24px;}}
+</style>
+</head>
+<body>
+<main class="doc">
+  <h1>Microsoft 365</h1>
+  <p class="lede">Creates an app registration with Microsoft Graph application permissions, to monitor and respond to security events across Microsoft 365.</p>
+  <p class="requires"><strong>Requires:</strong> an admin who can grant admin consent (Global Administrator or Privileged Role Administrator).</p>
+
+  <ol class="steps">
+    <li><a href="https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationsListBlade" target="_blank" rel="noopener">Azure Portal → App registrations</a> → <strong>New registration</strong>.</li>
+    <li>Name: <code>Security monitor</code>. Supported account types: <strong>Single tenant only</strong>. Leave <strong>Redirect URI</strong> blank → <strong>Register</strong>.</li>
+    <li><strong>Certificates &amp; secrets</strong> → <strong>Client secrets</strong> → <strong>New client secret</strong> → Description: <code>Security monitor</code>, Expires: <strong>24 months</strong> → <strong>Add</strong>. Copy the <strong>Value</strong> (shown once).</li>
+    <li><strong>API permissions</strong> → <strong>Add a permission</strong> → <strong>Microsoft Graph</strong> → <strong>Application permissions</strong>.</li>
+    <li>Add each of these → <strong>Add permissions</strong>:
+<pre><code>User.Read.All
+Group.Read.All
+Device.Read.All
+ServiceMessage.Read.All
+AuditLog.Read.All
+Organization.Read.All
+SecurityAlert.ReadWrite.All
+Sites.Read.All
+Files.Read.All
+Policy.Read.All
+User.EnableDisableAccount.All
+User.RevokeSessions.All
+MailboxSettings.Read</code></pre></li>
+    <li><strong>Grant admin consent for</strong> <em>your organization</em> → <strong>Yes</strong>.</li>
+    <li>Fill in:
+<pre class="paste"><code>{
+  "tenant_id": "",
+  "client_id": "",
+  "client_secret": ""
+}</code></pre>
+      <table>
+        <thead><tr><th>Field</th><th>Where to find it</th></tr></thead>
+        <tbody>
+          <tr><td><code>tenant_id</code></td><td><strong>Overview</strong> → <strong>Directory (tenant) ID</strong></td></tr>
+          <tr><td><code>client_id</code></td><td><strong>Overview</strong> → <strong>Application (client) ID</strong></td></tr>
+          <tr><td><code>client_secret</code></td><td>The secret’s Value from step 3</td></tr>
+        </tbody>
+      </table>
+    </li>
+  </ol>
+</main>
+<footer class="foot"><p>© 2026 Unmanned, Inc.</p></footer>
+<script src="copy.js" defer></script>
+</body>
+</html>

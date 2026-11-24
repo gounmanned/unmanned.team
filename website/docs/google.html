@@ -28,13 +28,22 @@
   code{overflow-wrap:anywhere;font:14px/1 var(--font-mono);background:var(--color-surface-subtle);border:1px solid var(--color-border-subtle);border-radius:4px;padding:1px 5px;}
   pre{margin:12px 0;padding:16px;overflow-x:auto;background:var(--color-surface-subtle);border:1px solid var(--color-border-subtle);border-radius:8px;}
   pre code{background:none;border:0;padding:0;font-size:14px;line-height:22px;}
-  pre.paste{position:relative;padding-right:80px;}
-  pre.wrap code{white-space:pre-wrap;overflow-wrap:anywhere;}
-  .copy{position:absolute;top:8px;right:8px;padding:4px 10px;font:500 13px/18px var(--font-sans);color:var(--color-text-primary);
-    background:var(--color-surface-page);border:1px solid var(--color-border-default);border-radius:4px;cursor:pointer;}
+  pre.paste{display:flex;align-items:flex-start;gap:16px;overflow:visible;}
+  pre.paste > :first-child{flex:1;min-width:0;white-space:pre-wrap;overflow-wrap:anywhere;}
+  .copy{position:relative;flex:none;display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;margin:-6px -6px -6px 0;
+    padding:0;color:var(--color-text-primary);background:none;border:0;border-radius:4px;cursor:pointer;}
+  .copy::before{content:"";width:18px;height:18px;background:currentColor;
+    -webkit-mask:url(../static/icon-copy.svg) center/contain no-repeat;mask:url(../static/icon-copy.svg) center/contain no-repeat;}
+  .copy.is-copied::before{-webkit-mask-image:url(../static/icon-check.svg);mask-image:url(../static/icon-check.svg);}
   .copy:hover{background:var(--color-surface-band);}
-  .copy:focus-visible{outline:2px solid var(--color-text-primary);outline-offset:2px;}
-  .copy--inline{position:static;margin-left:8px;padding:1px 8px;font-size:12px;vertical-align:1px;}
+  .copy:focus-visible{outline:2px solid currentColor;outline-offset:2px;}
+  .copy::after{content:attr(data-tip);position:absolute;top:calc(100% + 6px);right:0;z-index:1;padding:4px 8px;font:500 12px/16px var(--font-sans);white-space:nowrap;
+    color:var(--color-text-on-contrast);background:var(--color-text-primary);border-radius:4px;opacity:0;pointer-events:none;transition:opacity .15s;}
+  .copy:hover::after,.copy:focus-visible::after,.copy.is-copied::after{opacity:1;}
+  .copy--inline{width:24px;height:24px;margin:0 0 0 4px;vertical-align:middle;}
+  .copy--inline::before{width:16px;height:16px;}
+  .visually-hidden{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
+  @media (prefers-reduced-motion:reduce){.copy::after{transition:none;}}
   table{width:100%;margin:12px 0 0;border-collapse:collapse;font-size:15px;}
   th,td{overflow-wrap:anywhere;text-align:left;vertical-align:top;padding:8px 12px 8px 0;border-bottom:1px solid var(--color-border-default);}
   th{font-weight:600;}
@@ -54,7 +63,7 @@
     <li><a href="https://admin.google.com/ac/owl/domainwidedelegation" target="_blank" rel="noopener">Admin console → Security → API controls → Domain-wide delegation</a> → <strong>Add new</strong>.</li>
     <li>Client ID: <code class="paste">109138343248974999069</code></li>
     <li>OAuth scopes:
-<pre class="paste wrap"><code>https://www.googleapis.com/auth/apps.alerts,https://www.googleapis.com/auth/drive.readonly,https://www.googleapis.com/auth/admin.directory.device.chromeos.readonly,https://www.googleapis.com/auth/admin.directory.user,https://www.googleapis.com/auth/admin.directory.user.security,https://www.googleapis.com/auth/gmail.metadata</code></pre>
+<pre class="paste"><code>https://www.googleapis.com/auth/apps.alerts,https://www.googleapis.com/auth/drive.readonly,https://www.googleapis.com/auth/admin.directory.device.chromeos.readonly,https://www.googleapis.com/auth/admin.directory.user,https://www.googleapis.com/auth/admin.directory.user.security,https://www.googleapis.com/auth/gmail.metadata</code></pre>
       Then <strong>Authorize</strong>.</li>
     
     <li><strong>Directory</strong> → <strong>Users</strong> → open any user with the <strong>Super Admin</strong> role.</li>

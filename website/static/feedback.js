@@ -66,6 +66,7 @@
   const scrim = document.createElement('div');
   scrim.className = 'fb-scrim';
   const panel = document.createElement('form');
+  panel.method = 'post';   // the submit handler sends the feedback; the browser never submits this form itself
   panel.className = 'pulse-popover pulse-popover--top fb-panel';
   panel.tabIndex = -1;
   panel.noValidate = true;

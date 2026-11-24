@@ -1,7 +1,3 @@
-// VEX staging: serves staging/ (a copy of vex/ for testing changes before
-// they reach vex/) as static assets at https://staging.unmanned.team.
-// No Worker code. wrangler owns the custom domain; the first deploy creates
-// its DNS record and certificate. Cloudflare Git build: root dir staging/.
 {
   "$schema": "../node_modules/wrangler/config-schema.json",
   "name": "vex-staging",

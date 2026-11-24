@@ -1,0 +1,50 @@
+/* The audit log on Pulse. Ghost input, badge and icons are Pulse's; this file is layout and
+   the pieces Pulse doesn't have yet (marked GAP), in Pulse tokens only. */
+
+#audit-screen {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  color: var(--color-text-primary);
+
+  /* ── Search: a Pulse input group in a band under the banner ── */
+
+  .audit-search {
+    flex-shrink: 0;
+    margin: 0;
+    border-bottom: var(--border-width-1) solid var(--color-border-default);
+    background: var(--color-surface-raised);
+    .pulse-input-group { min-height: 48px; padding-inline: var(--space-24) var(--space-12); }   /* ghost, fills the band */
+  }
+
+  .audit-tailing { display: none; flex-shrink: 0; }
+  &.tailing .audit-tailing { display: inline-flex; }
+
+  /* ── Results: a Pulse log with two columns (session 12ch, group 22ch). VEX places it and styles its own empty line. ── */
+
+  .audit-results {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    margin: 0;
+    padding: var(--space-4) var(--space-8);
+
+
+    mark { padding: 0 1px; border-radius: var(--radius-sm); background: var(--color-surface-highlight); color: inherit; }
+
+    li.audit-empty {
+      padding: var(--space-64) var(--space-16);
+      font: 500 var(--type-mono-eyebrow-size) / var(--type-mono-eyebrow-line-height) var(--font-mono);
+      letter-spacing: 0.1em;
+      text-align: center;
+      text-transform: uppercase;
+      color: var(--color-text-tertiary);
+    }
+  }
+
+  @media (max-width: 700px) {
+    .audit-search .pulse-input-group { padding-inline: var(--space-16) var(--space-12); }
+  }
+}
+

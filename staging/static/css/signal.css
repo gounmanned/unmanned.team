@@ -1,0 +1,75 @@
+/* The signal sidebar on Pulse. Badges, buttons, textarea, fields and icons are Pulse's;
+   this file is layout and the pieces Pulse doesn't have yet (marked GAP), in Pulse tokens only. */
+
+#signal-sidebar {
+  --risk: var(--color-text-tertiary);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--color-surface-raised);
+
+  /* The risk color draws the header icon (a mark), so indicator tokens. */
+  &[data-risk="low"]    { --risk: var(--color-indicator-success); }
+  &[data-risk="medium"] { --risk: var(--color-indicator-warning); }
+  &[data-risk="high"]   { --risk: var(--color-indicator-danger); }
+
+  /* ── Header: plain surface, risk carried by the icon and badge ────── */
+
+
+
+  /* ── Thread: Pulse messages on a timeline. VEX's spacing and first-message treatment only. ── */
+
+  .thread { flex: 1; min-height: 0; overflow-y: auto; }
+  .avatar { width: 70%; height: 70%; object-fit: contain; }   /* source logos inset in Pulse's outlined avatar (Chad, 2026-11-23) */
+  .avatar.is-analyst { width: 80%; height: 80%; object-fit: contain; }   /* the analyst's mark sits smaller in its circle (Chad, 2026-11-19) */
+
+  .updates { padding: var(--space-12) var(--space-20) var(--space-4); }
+  /* The signal itself (the first message) reads as the subject. */
+  .updates > .pulse-message:first-child {
+    margin: 0 calc(-1 * var(--space-20)) var(--space-12); padding: var(--space-8) var(--space-20) var(--space-20);
+    border-bottom: var(--border-width-1) solid var(--color-border-default);
+  }
+  .updates > .pulse-message:first-child::before { display: none; }
+  .thinking { color: var(--color-text-tertiary); }
+
+  /* ── The AI analyst's turn: your call (reply buttons) ── */
+
+  .next-turn { padding-bottom: var(--space-20); }
+  /* While the analyst is busy its turn is hidden: the message before it ends the line. */
+  &.is-busy .updates > .pulse-message:nth-last-child(2)::before { display: none; }
+  .prompt { margin: 0 0 var(--space-12); }
+  .closes { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4); margin: var(--space-12) 0 0; font-size: var(--type-body-xs-size); color: var(--color-text-secondary); }
+  .closes span { margin-right: var(--space-4); }
+  .closes span:empty { display: none; }
+
+  &.is-busy .next-turn { display: none; }
+
+  /* ── Composer: Pulse's reply box ── */
+
+  .composer { flex-shrink: 0; display: flex; flex-direction: column; gap: var(--space-16); margin: 0; padding: var(--space-8) var(--space-12) var(--space-12); }
+  .fields { display: none; }
+  .composer-box:has(.composer-input:placeholder-shown) .send-btn { opacity: 0.35; }
+
+  /* ── New signal ───────────────────────────────────────────────────── */
+
+  &.is-new {
+    .thread, .signal-more-wrap { display: none; }
+    .composer { flex: 1; min-height: 0; padding: var(--space-20); }
+    .composer-box { flex: 1; align-items: stretch; }
+    .composer-input { min-height: 160px; }
+    .fields { display: flex; flex-wrap: wrap; gap: var(--space-12) var(--space-8); min-width: 0; }
+    .field { flex: 1 1 120px; min-width: 0; }
+    .field:has(input[type="datetime-local"]) { flex-basis: 200px; }
+  }
+
+  @media (max-width: 599px) {
+    .updates { padding-inline: var(--space-16); }
+    &.is-new .composer { padding: var(--space-16); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition: none !important; }
+  }
+}
+
+

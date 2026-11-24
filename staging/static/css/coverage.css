@@ -1,0 +1,336 @@
+/* The coverage panel on Pulse. Buttons, chips, ghost input, textarea, field, link, eyebrows,
+   toast markup and icons are Pulse's; this file is layout and the pieces Pulse doesn't have yet (marked GAP), in Pulse tokens. */
+
+#coverage-screen {
+  --live: var(--color-text-success);
+  --idle: var(--color-text-warning);
+  --bad: var(--color-text-danger);
+  --pending: var(--color-text-warning);
+  --hollow: var(--color-border-strong);
+  --drawer-w: min(clamp(640px, 50vw, 800px), 100%);   /* = pulse-drawer--xl, so the table makes room for the drawer */
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  color: var(--color-text-primary);
+
+  /* ── Toolbar ──────────────────────────────────────────────────── */
+
+  .cov-toolbar {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--space-12);
+    padding: 0 var(--space-24) 0 0;
+    border-bottom: var(--border-width-1) solid var(--color-border-default);
+  }
+
+  /* A Pulse ghost search that fills the toolbar band; the Sources button sits at its end. */
+  .cov-toolbar .pulse-input-group { min-height: 56px; padding-inline: var(--space-24) var(--space-12); }
+
+  .cov-search { flex: 1; }   /* a Pulse input group */
+
+  .cov-sources-btn {
+    &.is-active { background-color: var(--color-surface-subtle); }
+    .pulse-avatar-group { margin-inline-start: calc(-1 * var(--space-4)); }
+    .pulse-avatar img { padding: 3px; box-sizing: border-box; background: var(--color-surface-raised); object-fit: contain; }
+  }
+
+  /* ── Body ─────────────────────────────────────────────────────── */
+
+  .cov-body {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: var(--space-4) var(--space-24) var(--space-32);
+    transition: padding-right 0.2s ease;
+  }
+
+  /* Push, not overlay (Chad, 2026-11-19): with the drawer open, the panel's head, toolbar and list make room and stay in view, the
+     drawer is the right-hand column (Material's standard side sheet). Pulse's --push drops the shadow; the page sets the margin. */
+  &.drawer-open > :is(.cov-head, .cov-toolbar, .cov-body) { margin-right: var(--drawer-w); }
+  .cov-head, .cov-toolbar, .cov-body { transition: margin-right 0.18s ease-out; }
+
+  [hidden] { display: none !important; }
+
+  .cov-chip-logo { width: 14px; height: 14px; margin-right: var(--space-4); object-fit: contain; }
+
+  /* ── Table: a Pulse data table (compact, interactive, condensed while the drawer is open). VEX's pieces only. ── */
+
+  .cov-table { table-layout: auto; }
+  .cov-dot-col { width: 16px; padding-inline-end: 0; }
+  .cov-name { padding: 0; border: 0; background: none; font: inherit; font-weight: 500; color: inherit; text-align: start; cursor: pointer; }
+  .cov-name:focus-visible { outline: 0; border-radius: var(--radius-tag); box-shadow: var(--shadow-focus-ring); }
+  .cov-count { margin-left: var(--space-8); font-size: var(--type-body-xs-size); color: var(--color-text-tertiary); }
+  .cov-row.is-none .cov-name { color: var(--color-text-tertiary); }
+  .cov-col-source { font-size: var(--type-body-xs-size); color: var(--color-text-secondary); white-space: nowrap; }
+  .cov-col-extra { font-size: var(--type-body-xs-size); color: var(--color-text-tertiary); white-space: nowrap; }
+  .cov-score { font-size: var(--type-body-xs-size); color: var(--color-text-tertiary); }
+  .cov-score.is-ok { color: var(--color-text-success); }
+  .cov-score.is-bad { color: var(--color-text-danger); }
+
+  .cov-no-match { display: none; margin: 0; padding: var(--space-40) 0; text-align: center; font-size: var(--type-body-sm-size); color: var(--color-text-tertiary); }
+  .cov-body.no-match .cov-no-match { display: block; }
+
+  .cov-empty { padding-block: var(--space-96); }   /* a Pulse empty state, given room in the panel */
+
+  /* ── Drawer: Pulse's inset push drawer ── */
+
+  /* Pulse's inset drawer (panel, position, XL width); VEX adds only its slide-in and the drop target. */
+  .cov-drawer {
+    z-index: 5;
+    animation: cov-drawer-in 0.18s ease-out;
+
+    &.is-dropping {
+      outline: 2px dashed var(--color-selected, var(--color-accent-default));
+      outline-offset: -10px;
+      background: var(--color-selected-subtle, var(--color-accent-subtle));
+    }
+  }
+
+  /* Head and body follow Pulse's drawer parts (same padding, rule and title type). */
+  .cov-drawer-head > .cov-icon-btn:first-child { margin-left: calc(-1 * var(--space-8)); }
+
+  .cov-head-divider { align-self: center; width: var(--border-width-1); height: 20px; margin: 0 var(--space-4); background: var(--color-border-default); }
+
+  .cov-drawer-body {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: var(--space-20) var(--space-24);
+
+    &.is-centered { display: flex; align-items: center; justify-content: center; }
+  }
+
+  .cov-icon-btn.is-danger:hover { color: var(--color-text-danger); }
+
+  /* ── Drawer: a person's devices (Pulse chips) ─────────────────── */
+
+  .cov-devices {
+    flex-shrink: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-8);
+    padding: var(--space-12) var(--space-24);
+    border-bottom: var(--border-width-1) solid var(--color-border-default);
+  }
+
+  .cov-device {
+    .cov-dot { flex-shrink: 0; }
+    code { display: inline-block; max-width: 14ch; overflow: hidden; text-overflow: ellipsis; font: 500 var(--type-mono-label-size) var(--font-mono); }
+    small { font-size: var(--type-body-xs-size); font-weight: 500; color: var(--color-text-tertiary); }
+  }
+
+  /* ── Drawer: runs, one row each ───────────────────────────────── */
+
+  .cov-runs-head {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-8);
+    margin: 0 0 var(--space-8);
+
+    span { letter-spacing: 0; text-transform: none; font-variant-numeric: tabular-nums; }
+  }
+
+  .cov-runs { margin: 0 calc(-1 * var(--space-8)); padding: 0; list-style: none; }
+
+  .cov-run-head {
+    display: flex;
+    align-items: center;
+    gap: var(--space-8);
+    min-height: 40px;
+    padding: 0 var(--space-4) 0 var(--space-8);
+    border-radius: var(--radius-control);
+    font-size: var(--type-body-sm-size);
+    cursor: pointer;
+    transition: background-color 0.15s;
+
+    &:hover, .is-open > & { background: var(--color-interactive-hover); }
+
+    .cov-icon-btn { opacity: 0; }
+    &:hover .cov-icon-btn, .cov-icon-btn:focus-visible { opacity: 1; }
+    @media (hover: none) { .cov-icon-btn { opacity: 1; } }
+  }
+
+  .cov-run-status {
+    --pulse-icon-size: var(--size-icon-16);
+
+    &.is-ok { color: var(--color-indicator-success); }   /* run icons are marks: indicator tokens */
+    &.is-bad { color: var(--color-indicator-danger); }
+    &.is-pending { color: var(--color-indicator-warning); }
+  }
+
+  .cov-run-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .is-open .cov-run-name { font-weight: 600; }
+
+  .cov-run-time { margin-left: auto; font-family: var(--font-sans); font-size: var(--type-body-xs-size); font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--color-text-tertiary); }
+
+  .cov-output {
+    max-height: 320px;
+    margin: 0;
+    padding: var(--space-8) var(--space-8) var(--space-12) 32px;
+    overflow: auto;
+    font: 400 var(--type-mono-code-sm-size) / var(--type-mono-code-sm-line-height) var(--font-mono);
+    white-space: pre-wrap;
+    word-break: break-word;
+    color: var(--color-text-secondary);
+  }
+
+  .cov-quiet { margin: var(--space-48) 0; text-align: center; font-size: var(--type-body-sm-size); color: var(--color-text-tertiary); }
+
+  .cov-install {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: var(--space-40);
+    text-align: center;
+
+    h4 { margin: var(--space-16) 0 0; font-size: var(--type-label-lg-size); font-weight: 600; }
+    p { margin: var(--space-4) 0 0; max-width: 340px; font-size: var(--type-body-sm-size); line-height: var(--type-body-sm-line-height); color: var(--color-text-secondary); }
+    .pulse-btn { margin-top: var(--space-20); }
+  }
+
+  .cov-install-mark {
+    width: 24px;
+    height: 24px;
+    border-radius: var(--radius-full);
+    box-shadow: inset 0 0 0 2.5px var(--hollow), 0 0 0 8px var(--color-surface-subtle);
+  }
+
+  /* ── Drawer: sources, one flat list ───────────────────────────── */
+
+  .cov-catalog { display: flex; flex-direction: column; gap: var(--space-24); }
+
+  .cov-section-head {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-8);
+    margin: 0 0 var(--space-4);
+
+    span { letter-spacing: 0; font-variant-numeric: tabular-nums; }
+  }
+
+  .cov-list { margin: 0 calc(-1 * var(--space-8)); padding: 0; list-style: none; }
+
+  .cov-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: var(--space-12);
+    min-height: 48px;
+    padding: 0 var(--space-4) 0 var(--space-8);
+    border-radius: var(--radius-control);
+    font-size: var(--type-body-sm-size);
+    transition: background-color 0.15s;
+
+    & + &::before {
+      content: '';
+      position: absolute; top: -1px; left: 40px; right: var(--space-8);
+      height: var(--border-width-1);
+      background: var(--color-border-subtle);
+    }
+
+    &:hover { background: var(--color-interactive-hover); }
+    &:hover::before, &:hover + &::before { opacity: 0; }
+    &.is-link { cursor: pointer; }
+  }
+
+  .cov-item-logo { flex-shrink: 0; width: 20px; height: 20px; object-fit: contain; }
+  i.cov-item-logo { --pulse-icon-size: var(--size-icon-20); color: var(--color-text-tertiary); }
+
+  .cov-item-name { flex-shrink: 0; font-weight: 600; white-space: nowrap; }
+  .cov-item-meta { min-width: 0; margin-left: auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--type-body-xs-size); color: var(--color-text-tertiary); }
+  .cov-item-enter { margin-left: auto; transition: color 0.15s, transform 0.15s; }
+  .cov-item-enter + .cov-item-meta { margin-left: 0; }
+  .cov-item:hover .cov-item-enter { color: var(--color-text-primary); transform: translateX(2px); }
+
+  /* The row is the control; this is its cue, in Pulse link style. */
+  .cov-item-go {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-4);
+    margin-left: auto;
+    padding-right: var(--space-4);
+    font-size: var(--type-label-sm-size);
+    font-weight: 500;
+    color: var(--color-text-accent);
+    opacity: 0;
+    transition: opacity 0.15s;
+
+    .pulse-icon { --pulse-icon-size: var(--size-icon-16); }
+    .cov-item:hover & { opacity: 1; }
+    @media (hover: none) { opacity: 1; }
+  }
+
+  .cov-conn-end {
+    --pulse-icon-size: var(--size-icon-16);
+    display: grid;
+    place-items: center;
+    width: 32px;
+    color: var(--color-text-tertiary);
+  }
+
+  .cov-conn-action { opacity: 0; }
+  .cov-item:hover .cov-conn-action, .cov-conn-action:focus-visible { opacity: 1; }
+  @media (hover: none) { .cov-conn-action { opacity: 1; } }
+
+  /* ── Drawer: alert mailbox ────────────────────────────────────── */
+
+  .cov-mailbox {
+    > p { margin: 0; font-size: var(--type-body-sm-size); line-height: var(--type-body-sm-line-height); color: var(--color-text-secondary); }
+
+    h4 { margin: var(--space-32) 0 var(--space-12); }
+
+    ul { display: grid; gap: var(--space-12); margin: 0; padding: 0; list-style: none; }
+
+    li {
+      display: flex;
+      align-items: center;
+      gap: var(--space-8);
+      font-size: var(--type-body-sm-size);
+
+      .pulse-icon { color: var(--color-text-tertiary); }
+    }
+
+    li code { font: var(--type-mono-label-size) var(--font-mono); }
+  }
+
+  .cov-address { margin-top: var(--space-20); }   /* a Pulse copy input group */
+
+
+  /* ── Drawer: connect form ─────────────────────────────────────── */
+
+  .cov-connect {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-20);
+
+    .pulse-btn { align-self: flex-start; }
+  }
+
+  .cov-connect-logo { width: 36px; height: 36px; object-fit: contain; }
+  i.cov-connect-logo { --pulse-icon-size: 36px; color: var(--color-text-tertiary); }
+
+  .cov-field-head { display: flex; justify-content: space-between; align-items: baseline; gap: var(--space-12); }
+
+  .cov-cred { font: 400 var(--type-mono-code-sm-size) / var(--type-mono-code-sm-line-height) var(--font-mono); resize: none; }
+  .cov-cred::placeholder { font-family: var(--font-sans); }
+
+  /* ── Phones ───────────────────────────────────────────────────── */
+
+  @media (max-width: 700px) {
+    --drawer-w: 100%;
+    .cov-toolbar { padding-right: var(--space-16); }
+    .cov-toolbar .pulse-input-group { padding-left: var(--space-16); }
+    .cov-body { padding-inline: var(--space-16); }
+    .cov-table [data-optional] { display: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+}
+
+@keyframes cov-drawer-in { from { opacity: 0; transform: translateX(16px); } }

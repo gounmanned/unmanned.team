@@ -1,0 +1,38 @@
+/* Recovery on Pulse tokens. Pieces Pulse doesn't have yet are marked GAP. */
+
+#backup-sidebar {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--color-surface-raised);
+
+  /* ── Breadcrumb: Pulse's, with the band's padding ── */
+  .file-breadcrumb { flex-shrink: 0; padding: var(--space-12) var(--space-20) var(--space-4); }
+
+  .container {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    padding: 0;
+  }
+
+  /* Files and folders: Pulse list rows (compact). */
+  .hacker-list { height: 100%; overflow-y: auto; padding: var(--space-4) var(--space-12) var(--space-20); }
+  .entry { cursor: pointer; }
+  .file-icon { --pulse-icon-size: var(--size-icon-20); color: var(--color-text-tertiary); }
+  .entry-chevron { --pulse-icon-size: var(--size-icon-16); color: var(--color-text-tertiary); opacity: 0; transition: opacity 0.15s, transform 0.15s; }
+  .entry:hover .entry-chevron, .entry:focus-visible .entry-chevron { opacity: 1; transform: translateX(2px); }
+  @media (hover: none) { .entry-chevron { opacity: 1; } }
+
+  /* Empty folder: a Pulse empty state, shown when the list has nothing. */
+  .file-empty { display: none; }
+  #file-list-wrap.empty { > .hacker-list { display: none; } > .file-empty { display: flex; } }
+
+  @media (max-width: 599px) {
+    .file-breadcrumb { padding-inline: var(--space-16); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition: none !important; }
+  }
+}

@@ -1,0 +1,36 @@
+/* Markdown in Pulse tokens. Links read as Pulse links (accent text), code in the mono font. */
+.markdown {
+  overflow-wrap: break-word;
+
+  > :first-child { margin-top: 0; }
+  > :last-child  { margin-bottom: 0; }
+
+  :is(p, ul, ol, pre, blockquote) { margin: 0 0 var(--space-8); }
+  :is(h1, h2, h3, h4) { margin: var(--space-12) 0 var(--space-4); font-size: 1em; font-weight: 700; color: var(--color-text-primary); }
+  /* The analyst often writes "### **Title**": bold inside a heading stays the heading's weight (it was stacking to 900). */
+  :is(h1, h2, h3, h4) :is(strong, b) { font-weight: inherit; }
+  hr { margin: var(--space-12) 0; border: 0; border-top: var(--border-width-1) solid var(--color-border-subtle, var(--color-border-strong)); }
+  :is(ul, ol) { padding-left: var(--space-20); }
+  li + li { margin-top: var(--space-4); }   /* long steps stay apart now that a loose list is one list */
+
+  /* Inline code only: code inside a block (markdown's or a Pulse code panel) keeps the block's look (Chad, 2026-11-19). */
+  :not(pre) > code {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+    padding: 1px var(--space-4);
+    border-radius: var(--radius-sm);
+    background: var(--color-surface-sunken);
+  }
+
+  /* Fenced code is Pulse's small code panel (markdown.js), so it has no rules here. */
+  .pulse-code { margin: 0 0 var(--space-8); }
+
+  blockquote {
+    padding-left: var(--space-12);
+    border-left: 3px solid var(--color-border-default);
+    color: var(--color-text-secondary);
+  }
+
+  a { color: var(--color-text-accent); text-underline-offset: 2px; }
+  a:hover { color: var(--color-text-accent-hover); }
+}

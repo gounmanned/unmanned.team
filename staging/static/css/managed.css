@@ -1,0 +1,308 @@
+/* The accounts panel on Pulse. Buttons, inputs, field, eyebrow, badges and icons are Pulse's;
+   this file is layout and the pieces Pulse doesn't have yet (marked GAP), in Pulse tokens only. */
+
+#managed-screen {
+  --rollup-height: 100%;
+  --pad: var(--space-32);
+
+  /* ── Head: Pulse's drawer head; VEX's brand line leads it. ── */
+
+  .managed-brand {
+    display: flex; align-items: center; gap: var(--brand-lockup-gap, var(--space-8)); flex-shrink: 0;
+    /* On the title's line, as Pulse places its icon slot. */
+    align-self: flex-start; height: var(--pulse-drawer-title-lh, 32px);
+    padding-right: var(--space-16); border-right: var(--border-width-1) solid var(--color-border-default);
+    color: var(--color-text-primary);
+    /* The same lockup tokens as Pulse's app header: Pulse picks the dot (VEX) or the mark (a client) by data-brand. */
+    .pulse-brand-mark { display: var(--brand-mark-display, inline-block); }
+    .managed-brand__name { font-size: var(--brand-name-size); font-weight: var(--brand-name-weight); line-height: var(--brand-name-line-height); letter-spacing: var(--brand-name-tracking); }
+  }
+  /* Totals: the numbers at the title's size, labels stay small (Chad, 2026-11-23). GAP: Pulse's stat line has one size. */
+  /* The same bar as the app header in an account (Chad, 2026-11-23): 52px tall, the mark at the page's inset, so nothing jumps
+     between the two screens. */
+  .managed-head { min-height: 52px; padding-block: 0; padding-inline: var(--pad); align-items: center; }
+  .managed-head .managed-brand { align-self: center; height: auto; }
+  .managed-head .pulse-stat-line strong { font-size: var(--pulse-drawer-title-size); }
+
+  /* ── Layout ─────────────────────────────────────────────────────────────── */
+
+  .managed-body {
+    display: flex;
+    flex: 1; min-height: 0; overflow: hidden;
+    background: var(--color-surface-raised);
+  }
+
+  .managed-main {
+    flex: 1; min-width: 0;
+    display: flex; flex-direction: column;
+  }
+
+  .managed-detail {
+    width: 340px; flex-shrink: 0;
+    display: flex; flex-direction: column;
+    border-left: var(--border-width-1) solid var(--color-border-default);
+    background: var(--color-surface-subtle);
+    overflow: hidden;
+
+    &[hidden] { display: none; }
+  }
+
+  @media (max-width: 900px) {
+    .managed-body { flex-direction: column; overflow-y: auto; }
+    .managed-detail { width: auto; border-left: none; border-top: var(--border-width-1) solid var(--color-border-default); }
+  }
+
+  /* ── Search: a Pulse input group in a band under the head ─────────────────── */
+
+  /* A Pulse ghost search that fills its band (Chad, 2026-11-19: quiet, full width and height, no padding). */
+  .managed-search {
+    flex-shrink: 0;
+    border-bottom: var(--border-width-1) solid var(--color-border-default);
+    .pulse-input-group { min-height: 48px; padding-inline: var(--pad) var(--space-12); }
+    &[hidden] { display: none; }
+  }
+
+  /* ── Lanes (lane heads come from tenant.css) ────────────────────────────── */
+
+  .managed-lanes {
+    flex: 1; min-height: 0; overflow-y: auto;
+    padding: var(--space-24) var(--pad) var(--space-32);
+
+    .lane-head:first-child { margin-top: 0; }
+  }
+
+  /* The "Create account" line above the lanes is a Pulse list (see managed.js). */
+  .acct-list { margin: 0 0 var(--space-20); }
+  .acct-create { cursor: pointer; }
+  .acct-create .pulse-list-row__title { font-weight: 400; color: var(--color-text-secondary); }
+  .acct-create .pulse-list-row__title b { font-weight: 600; color: var(--color-text-primary); }
+  .acct-create.is-taken { cursor: default; }
+  .acct-create.is-taken :is(.pulse-avatar, .pulse-list-row__title) { color: var(--color-text-danger); }
+
+  /* ── Account lanes: Pulse headless tables (compact). One column layout for both lanes, so they line up. ── */
+
+  /* Groups sit well apart so they read as two sections (Chad, 2026-11-23: was 24 and 32). */
+  .acct-table + .lane-head { margin-top: var(--space-48); }
+  /* Wide windows: each column sized to its longest content and packed from the left, so every gap is the same; the spare
+     width goes to the actions column, whose buttons sit at the row's right edge (as GitHub's and Linear's lists)
+     (Chad, 2026-11-20). Narrower windows use shares of the width (below). */
+  .acct-table { table-layout: fixed; }
+  .acct-col-name { width: 240px; }
+  .acct-col-status { width: 220px; }
+  .acct-col-assets { width: 96px; }
+  .acct-col-cov { width: 168px; }
+  .acct-col-sla { width: 120px; }
+  .acct-col-actions { width: auto; }
+  /* Half the standard gap on each side of every cell; managed.js sizes the columns to their content plus the gap. */
+  @media (min-width: 701px) { .acct-table td { padding-inline: calc(var(--acct-gap, 32px) / 2); } }
+  .acct-none-cell { color: var(--color-text-tertiary); }
+  .acct { cursor: pointer; user-select: none; }
+  .acct:focus-visible { outline: 0; box-shadow: var(--shadow-focus-ring); }
+
+  .acct-name-cell { display: flex; align-items: center; gap: var(--space-12); min-width: 0; }
+  .acct-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 500; color: var(--color-text-primary); }
+  .acct-status, .acct-recs { white-space: nowrap; font-size: var(--type-body-xs-size); color: var(--color-text-secondary); }
+  .acct-status { overflow: hidden; text-overflow: ellipsis; }
+  .acct-status b { font-weight: 600; }
+  .acct-verdict.is-high { color: var(--color-text-danger); }
+  .acct-verdict.is-medium { color: var(--color-text-warning); }
+  /* Phones drop the status column, so the verdict moves under the name there (Chad, 2026-11-19). */
+  .acct-name-stack { display: flex; flex-direction: column; min-width: 0; }
+  .acct-sub { display: none; font-size: var(--type-body-xs-size); line-height: var(--type-body-xs-line-height); }
+
+  .acct-due {
+    white-space: nowrap; font-size: var(--type-body-xs-size); font-weight: 600; font-variant-numeric: tabular-nums; color: var(--color-text-primary);
+    &.soon { color: var(--color-text-warning); }
+    &.overdue { color: var(--color-text-danger); }
+    &.none { font-weight: 500; color: var(--color-text-tertiary); }
+  }
+
+  /* Assets and Dot coverage: two right-aligned cells, so numbers and dots line up. */
+  .acct-assets, .acct-cov { white-space: nowrap; font-size: var(--type-body-xs-size); font-variant-numeric: tabular-nums; color: var(--color-text-secondary); }
+  .acct-assets b { font-weight: 600; color: var(--color-text-primary); }
+  /* One line, as Jira and GitHub show progress in a table (Chad, 2026-11-19): a short bar, then the label, on the row's text line. */
+  .acct-cov-line { display: inline-flex; align-items: center; gap: var(--space-8); }
+  .acct-cov .pulse-progress { width: 40px; }
+  .acct-cov-label { min-width: 12ch; text-align: left; }   /* fits "100% covered", so bars and labels line up down the list */
+  .acct-cov .pulse-progress__fill { display: block; }
+  .acct-cov[data-level="none"] { color: var(--color-text-tertiary); }
+  .acct-cov[data-level="full"] { color: var(--color-text-success); }
+
+  .acct-actions { display: inline-flex; align-items: center; gap: var(--space-4); }
+  .acct-enter { pointer-events: none; }
+  .acct-enter .pulse-icon { transition: transform 0.12s ease; }
+  .acct:hover .acct-enter .pulse-icon { transform: translateX(2px); }
+
+  /* Group labels: one size for both groups, as parts of one list (Chad, 2026-11-19). */
+  .managed-lanes .lane-title h3 {
+    display: flex; align-items: baseline; gap: var(--space-8); margin: 0;
+    font-size: var(--type-label-md-size); line-height: var(--type-label-md-line-height); font-weight: 600; color: var(--color-text-primary);
+  }
+  /* Nothing urgent right now (Chad, 2026-11-19): one quiet line in place of the group, so the list moves up. */
+  .acct-none {
+    display: flex; align-items: center; gap: var(--space-8); margin: 0;
+    font-size: var(--type-body-sm-size); line-height: var(--type-body-sm-line-height); color: var(--color-text-secondary);
+    .pulse-icon { color: var(--color-indicator-success); }
+  }
+  .acct-none + .lane-head { margin-top: var(--space-48); }
+
+  .is-overdue { color: var(--color-text-danger); }
+
+  /* Pulse avatar; a favicon (when the domain has one) covers the letters. */
+  .tenant-mark { position: relative; }
+  .tenant-mark > img { position: absolute; inset: 0; padding: 20%; box-sizing: border-box; background: var(--color-surface-raised); object-fit: contain; }
+
+  /* ── Empty state (no accounts yet) ──────────────────────────────────────── */
+
+  .acct-ghost { list-style: none; pointer-events: none; }
+
+  .managed-empty {
+    max-width: 600px;
+    margin: 0 auto; padding: var(--space-48) var(--pad) var(--space-40);
+    text-align: center;
+
+    h3 {
+      margin: 0;
+      font-size: var(--type-heading-card-size); line-height: var(--type-heading-card-line-height); font-weight: 600;
+      color: var(--color-text-primary);
+    }
+
+    > p:not([class]) {
+      max-width: 420px; margin: var(--space-8) auto 0;
+      font-size: var(--type-body-sm-size); line-height: var(--type-body-sm-line-height); color: var(--color-text-secondary);
+    }
+  }
+
+  .managed-start {
+    max-width: 440px; margin: var(--space-32) auto 0;
+    text-align: left;
+  }
+
+  .managed-start-row {
+    display: flex; gap: var(--space-8);
+    .pulse-input { flex: 1; min-width: 0; }
+  }
+
+  /* ── Account panel (admins) ─────────────────────────────────────────────── */
+
+  .tenant-panel {
+    flex: 1; min-height: 0;
+    display: flex; flex-direction: column;
+    animation: managed-fade 0.15s ease both;
+  }
+
+  .tenant-panel-head {
+    display: flex; align-items: center; gap: var(--space-12);
+    padding: var(--space-20) var(--space-12) var(--space-16) var(--space-24);
+    border-bottom: var(--border-width-1) solid var(--color-border-default);
+
+  }
+
+  .tenant-panel-title {
+    flex: 1; min-width: 0;
+    display: flex; flex-direction: column; gap: var(--space-4);
+
+    .pulse-eyebrow { margin: 0; }
+
+    h3 {
+      margin: 0;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      font-size: var(--type-label-md-size); line-height: var(--type-label-md-line-height); font-weight: 600;
+      color: var(--color-text-primary);
+    }
+  }
+
+  .admin-list { min-height: 0; overflow-y: auto; padding: var(--space-8) var(--space-12); }
+  .admin.is-me .pulse-avatar { background: var(--color-surface-contrast); color: var(--color-text-on-contrast); }
+  .admin-invite { width: auto; margin: var(--space-4) var(--space-24) var(--space-24); }
+
+  /* ── Loading: inline placeholders inside text (GAP: Pulse's skeleton is block-only; its rows are used for the list) ── */
+
+  .shimmer {
+    background: linear-gradient(90deg,
+      var(--color-surface-sunken) 25%,
+      var(--color-surface-subtle) 50%,
+      var(--color-surface-sunken) 75%);
+    background-size: 300% 100%;
+    animation: managed-shimmer 1.6s ease-in-out infinite;
+  }
+
+  .shimmer {
+    display: inline-block; vertical-align: middle;
+    height: 8px; border-radius: var(--radius-sm);
+
+    h1 > & { height: 14px; }
+    .stat b > & { margin-right: var(--space-4); }
+  }
+
+  /* Held back briefly so quick loads go straight to content without a flash. */
+  .acct-skeleton {
+    animation: managed-fade 0.3s ease 0.18s both;
+    .lane-head { margin-top: 0; }
+  }
+
+  /* ── Narrow windows and tablets: the same shares without the actions column; the row itself enters. ── */
+
+  @media (max-width: 1100px) {
+    .acct-col-name { width: 24%; }
+    .acct-col-status { width: 26%; }
+    .acct-col-assets { width: 12%; }
+    .acct-col-cov { width: 22%; }
+    .acct-col-sla { width: 16%; }
+    .acct-col-actions { width: auto; }   /* the spare width; its buttons sit at the right edge */
+    .acct-enter { display: none; }
+  }
+
+  /* Medium widths with a mouse (Chad, 2026-11-19, as Proton Mail's list): the actions take no column; on hover they slide
+     over the right end of that row, fading in from the left, so the name keeps its room and Enter stays. Touch keeps the
+     admins column (no hover there; tapping the row enters). */
+  @media (min-width: 701px) and (max-width: 1100px) and (hover: hover) {
+    .acct-table tr.acct { position: relative; }
+    .acct-table tr.acct > td:last-child { padding: 0; border: 0; }
+    .acct-actions {
+      position: absolute; top: 0; bottom: 0; right: 0;
+      padding: 0 var(--space-12) 0 var(--space-40);
+      pointer-events: none;
+    }
+    /* The fill and its fade are a layer behind the buttons: a mask on the group itself would clip the tooltips. */
+    .acct-actions::before {
+      content: ""; position: absolute; inset: 0; z-index: -1;
+      background: linear-gradient(var(--color-interactive-hover), var(--color-interactive-hover)), var(--color-surface-raised);
+      -webkit-mask-image: linear-gradient(to right, transparent, #000 var(--space-32));
+              mask-image: linear-gradient(to right, transparent, #000 var(--space-32));
+    }
+    .acct-actions { isolation: isolate; opacity: 0; transition: opacity .12s ease; }
+    .acct:is(:hover, :focus-within) .acct-actions { opacity: 1; }
+    .acct:is(:hover, :focus-within) .acct-actions { pointer-events: auto; }
+    .acct-enter { display: inline-flex; }
+  }
+
+  /* ── Phones ─────────────────────────────────────────────────────────────── */
+
+  @media (max-width: 700px) {
+    --pad: var(--space-16);
+    :is(.acct-table, .acct-none) + .lane-head { margin-top: var(--space-32); }   /* phones: a step less */
+    /* Phones: account, coverage and actions only (status, assets and SLA columns drop). */
+    .acct-table :is(col.acct-col-status, col.acct-col-assets, col.acct-col-sla) { width: 0; }
+    .acct-col-name { width: auto; }
+    .acct-col-cov { width: 112px; }
+    /* Phones: "83%" and its bar; the word goes so the account name keeps its room. */
+    .acct-cov-word { display: none; }
+    .acct-cov-label { min-width: 4ch; }
+    /* Collapsed in place, not display:none: in a fixed-layout table, removed cells shift the rest into the empty columns. */
+    .acct-table td:is(:nth-child(2), :nth-child(3), :nth-child(5)) { padding: 0; border-left: 0; border-right: 0; overflow: hidden; visibility: hidden; }
+    .acct-col-actions { width: 48px; }
+    .acct-enter { display: none; }   /* tapping the row enters; Manage admins stays */
+    .acct-sub { display: block; }
+    .managed-start-row { flex-direction: column; }
+  }
+
+  /* ── Motion ─────────────────────────────────────────────────────────────── */
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+}
+
+@keyframes managed-fade { from { opacity: 0; } }
+@keyframes managed-shimmer { from { background-position: 100% 0; } to { background-position: 0 0; } }

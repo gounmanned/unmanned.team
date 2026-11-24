@@ -28,6 +28,11 @@
   code{overflow-wrap:anywhere;font:14px/1 var(--font-mono);background:var(--color-surface-subtle);border:1px solid var(--color-border-subtle);border-radius:4px;padding:1px 5px;}
   pre{margin:12px 0;padding:16px;overflow-x:auto;background:var(--color-surface-subtle);border:1px solid var(--color-border-subtle);border-radius:8px;}
   pre code{background:none;border:0;padding:0;font-size:14px;line-height:22px;}
+  pre.paste{position:relative;padding-right:80px;}
+  .copy{position:absolute;top:8px;right:8px;padding:4px 10px;font:500 13px/18px var(--font-sans);color:var(--color-text-primary);
+    background:var(--color-surface-page);border:1px solid var(--color-border-default);border-radius:4px;cursor:pointer;}
+  .copy:hover{background:var(--color-surface-band);}
+  .copy:focus-visible{outline:2px solid var(--color-text-primary);outline-offset:2px;}
   table{width:100%;margin:12px 0 0;border-collapse:collapse;font-size:15px;}
   th,td{overflow-wrap:anywhere;text-align:left;vertical-align:top;padding:8px 12px 8px 0;border-bottom:1px solid var(--color-border-default);}
   th{font-weight:600;}
@@ -51,7 +56,7 @@
     <li>Assign access to: <strong>User, group, or service principal</strong> → <strong>+ Select members</strong> → select the app registration → <strong>Select</strong>.</li>
     <li>Click <strong>Review + assign</strong> twice.</li>
     <li>Fill in:
-<pre><code>{
+<pre class="paste"><code>{
   "tenant_id": "",
   "client_id": "",
   "client_secret": ""
@@ -68,5 +73,6 @@
   </ol>
 </main>
 <footer class="foot"><p>© 2026 Unmanned, Inc.</p></footer>
+<script src="copy.js" defer></script>
 </body>
 </html>

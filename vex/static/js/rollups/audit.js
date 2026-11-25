@@ -52,7 +52,7 @@ class AuditRollup {
         const start = this.tailFrom;
         const end = this.tailFrom = new Date();
 
-        const logs = await this.api.audit.get(start.toISOString(), end.toISOString()) ?? [];
+        const logs = await this.api.audit.search('', start.toISOString(), end.toISOString()) ?? [];
         if (timer !== this.tailTimer || !logs.length) return;
 
         const rows = logs.slice(0, AuditRollup.TAIL_LIMIT);

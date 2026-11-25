@@ -349,7 +349,7 @@ class Ekg {
         const start = this.from;
         const end = this.from = new Date();
 
-        const logs = await this.api.audit.get(start.toISOString(), end.toISOString()) ?? [];
+        const logs = await this.api.audit.search('', start.toISOString(), end.toISOString()) ?? [];
         if (run !== this.run) return;
 
         const times = logs.map(log => Date.parse(log.timestamp));

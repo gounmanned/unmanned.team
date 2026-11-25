@@ -4,7 +4,7 @@
   > :first-child { margin-top: 0; }
   > :last-child  { margin-bottom: 0; }
 
-  :is(p, ul, ol, pre, blockquote) { margin: 0 0 10px; }
+  :is(p, ul, ol, pre, blockquote, table) { margin: 0 0 10px; }
   :is(h1, h2, h3, h4) { margin: 14px 0 6px; font-size: 1em; font-weight: 700; }
   :is(ul, ol) { padding-left: 20px; }
   hr { margin: 12px 0; border: 0; border-top: 1px solid var(--line); }
@@ -29,6 +29,26 @@
     padding-left: 10px;
     border-left: 3px solid var(--line);
     color: var(--text-faint);
+  }
+
+  table {
+    display: block;
+    overflow-x: auto;
+    border-collapse: collapse;
+    font-size: 0.95em;
+  }
+
+  :is(th, td) {
+    padding: 5px 10px;
+    border: 1px solid var(--line);
+    text-align: left;
+    vertical-align: top;
+  }
+
+  th {
+    font-weight: 600;
+    white-space: nowrap;
+    background: color-mix(in srgb, currentColor 5%, transparent);
   }
 
   a { color: var(--accent, var(--brand)); }

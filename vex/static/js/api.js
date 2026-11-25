@@ -122,12 +122,12 @@ class AuditApi extends Gateway {
         super();
     }
 
-    async get(start, end) {
-        return this.call("GET", `audit?start=${start}&end=${end}`);
+    async search(query = "", start = new Date(Date.now() - 30 * 864e5).toISOString(), end = new Date().toISOString()) {
+        return this.call("GET", `audit?q=${encodeURIComponent(query)}&start=${start}&end=${end}`);
     }
 
-    async search(query) {
-        return this.call("GET", `audit?q=${query}`);
+    async report() {
+        return this.call("GET", "audit/session");
     }
 }
 

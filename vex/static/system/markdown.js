@@ -11,6 +11,8 @@ const Markdown = {
             .replace(/\0(\d+)\0/g, (_, i) => `<code>${codes[i]}</code>`);
     },
 
+    cells: (row) => row.trim().replace(/^\||\|$/g, "").split("|").map((c) => Markdown.inline(c.trim())),
+
     parse(src) {
         const lines = Markdown.escape(src).split("\n");
         const out = [];
@@ -32,13 +34,15 @@ const Markdown = {
             group.items.push(text);
         };
 
-        // A blank line between list items ("loose" list) keeps the list going, so numbered steps don't all read 1.
         const list = { ul: /^\s*[-*+]\s+/, ol: /^\s*\d+[.)]\s+/ };
         const continues = (i) => {
             if (!list[group?.tag]) return false;
             while (i < lines.length && !lines[i].trim()) i++;
             return i < lines.length && list[group.tag].test(lines[i]);
         };
+
+        const isRow = (line) => line?.trim().startsWith("|");
+        const isDivider = (line) => /^\s*\|?\s*:?-{3,}/.test(line ?? "");
 
         for (let i = 0; i < lines.length; i++) {
             const line = lines[i];
@@ -48,6 +52,13 @@ const Markdown = {
                 const code = [];
                 while (++i < lines.length && !lines[i].startsWith("```")) code.push(lines[i]);
                 out.push(`<pre><code>${code.join("\n")}</code></pre>`);
+            } else if (isRow(line) && isDivider(lines[i + 1])) {   // a table: header row, then |---|---|
+                flush();
+                const head = Markdown.cells(line).map((c) => `<th>${c}</th>`).join("");
+                const body = [];
+                i++;
+                while (isRow(lines[i + 1])) body.push(`<tr>${Markdown.cells(lines[++i]).map((c) => `<td>${c}</td>`).join("")}</tr>`);
+                out.push(`<table><thead><tr>${head}</tr></thead><tbody>${body.join("")}</tbody></table>`);
             } else if (/^\s*([-*_])(\s*\1){2,}\s*$/.test(line)) {   // --- or *** or ___: a divider
                 flush();
                 out.push("<hr>");

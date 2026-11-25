@@ -31,7 +31,7 @@ const SOURCE_NAMES = {
 
 class CoverageRollup {
     static RUN_STATUS = {
-        // Phosphor icons from Pulse. GAP: no "pending" icon (info for now).
+        // Phosphor icons from Pulse. GAP: Pulse has no "pending" icon, so pending uses info.
         T0: { tone: 'ok', label: 'Success', icon: 'check-circle' },
         PENDING: { tone: 'pending', label: 'Pending', icon: 'info' },
         FAILED: { tone: 'bad', label: 'Failed', icon: 'warning-octagon' },
@@ -375,7 +375,7 @@ class CoverageRollup {
     _iconBtn(act, icon, title, cls = '') {
         const pulse = { close: 'x', arrow_back: 'arrow-left', key: 'key', delete: 'trash' }[icon] ?? icon;
         const glyph = `<i class="pulse-icon pulse-icon--${pulse}" aria-hidden="true"></i>`;
-        // Tooltips only where the icon isn't a convention (Chad, 2026-11-19): the close X gets none.
+        // Tooltips only where the icon isn't a convention: the close X gets none.
         const tip = act === 'close' ? '' : `<span class="pulse-tooltip pulse-tooltip--bottom pulse-tooltip--end" aria-hidden="true">${title}</span>`;
         return `<button type="button" class="${tip ? 'pulse-tooltip-host ' : ''}pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm cov-icon-btn ${cls}" data-act="${act}" aria-label="${title}">${glyph}${tip}</button>`;
     }
@@ -488,7 +488,7 @@ class CoverageRollup {
 
     _assetView(person) {
         const device = this._device();
-        // Delete sits in a More menu, away from the close X, and confirms first (same as the signal panel; Chad, 2026-11-19).
+        // Delete sits in a More menu, away from the close X, and confirms first.
         const actions = `
             ${this._iconBtn('key', 'key', 'Copy Dot key for this device')}
             <div class="pulse-menu-anchor pulse-menu-anchor--end">
@@ -591,7 +591,7 @@ class CoverageRollup {
 
     async _rerun(key) {
         const { id, name } = this.runs.find(r => r.key === key);
-        await SiteSpinner.withLoading(() => this.api.inventory.run(this.open.device, { id, name }));
+        await Pulse.loading(() => this.api.inventory.run(this.open.device, { id, name }));
         this._toast(`${name} queued`);
         await this.refresh();
     }
@@ -602,7 +602,7 @@ class CoverageRollup {
 
     async _invite() {
         const person = this.items.get(this.open.key);
-        await SiteSpinner.withLoading(() => this.api.inventory.invite(this._device().asset));
+        await Pulse.loading(() => this.api.inventory.invite(this._device().asset));
         this._toast(`Install invite sent to ${person.name}`);
     }
 
@@ -610,7 +610,7 @@ class CoverageRollup {
         const person = this.items.get(this.open.key);
         const before = new Set(person.devices.map(d => d.key));
 
-        await SiteSpinner.withLoading(() => this.api.inventory.create({ asset: this._device().asset.asset, source: 'vex' }));
+        await Pulse.loading(() => this.api.inventory.create({ asset: this._device().asset.asset, source: 'vex' }));
         await this._load();
         this._render();
 
@@ -622,15 +622,15 @@ class CoverageRollup {
     async _deleteDevice() {
         const person = this.items.get(this.open.key);
         const device = this._device();
-        // it deleted the device in one click (master too); now it confirms first (Pulse destructive dialog).
-        const ok = await Workspace.confirmDestructive({
+        // A destructive action confirms first.
+        const ok = await Pulse.confirm({
             title: 'Delete this device?',
             body: 'Its Dot stops reporting and the device leaves Coverage. You can’t undo it.',
             resource: `${person.name} · ${device.asset?.id ?? device.key}`,
             action: 'Delete device',
         });
         if (!ok) return;
-        await SiteSpinner.withLoading(() => this.api.inventory.delete(device.key));
+        await Pulse.loading(() => this.api.inventory.delete(device.key));
 
         person.devices = person.devices.filter(d => d !== device);
         if (person.devices.length) {
@@ -643,7 +643,7 @@ class CoverageRollup {
     }
 
     async _submitFile(file) {
-        await SiteSpinner.withLoading(async () => {
+        await Pulse.loading(async () => {
             const id = await this._hashId(file);
             const dot = file.name.lastIndexOf('.');
             const name = dot > 0 ? file.name.slice(0, dot) : file.name;
@@ -760,12 +760,12 @@ class CoverageRollup {
         };
 
         this.drawer.addEventListener('click', (e) => {
-            // Disconnect confirms with Pulse's destructive dialog (was a second click in place).
+            // Disconnect confirms first.
             const disconnect = e.target.closest('[data-disconnect]')?.dataset.disconnect;
             if (disconnect) {
                 const [vendor, id] = disconnect.split('/');
                 const name = this._sourceName({ vendor, id }) || 'this source';
-                return Workspace.confirmDestructive({
+                return Pulse.confirm({
                     title: 'Disconnect this source?',
                     body: 'VEX stops reading it. Signals already collected stay. You can connect it again later.',
                     resource: name,

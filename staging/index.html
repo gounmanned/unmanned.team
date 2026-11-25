@@ -33,7 +33,6 @@
 </head>
 <body>
 
-  <site-spinner></site-spinner>
   <site-overlay></site-overlay>
 
   <site-header>
@@ -42,7 +41,7 @@
       <i class="pulse-icon pulse-icon--caret-down" aria-hidden="true"></i>
     </button>
 
-    <!-- Opens Coverage, so it's a button (Chad, 2026-11-19): a small ghost-neutral button with a status dot, count and label. -->
+    <!-- Opens Coverage, so it's a button: a small ghost-neutral button with a status dot, count and label. -->
     <button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--sm setup-chip" id="open-coverage-rollup" type="button" title="Assets your SOC monitors">
       <span class="setup-seg" data-state="empty">
         <span class="setup-chip-dot"></span>
@@ -91,8 +90,8 @@
       </header>
       <ol class="pulse-list pulse-list--compact pulse-list--plain queue" id="queue-list"></ol>
 
-      <!-- Pulse section disclosures (caret after the title, content full width). Recommendations open by default and
-           remembered per browser (Chad, 2026-11-18: a long list kept Resolved out of reach). -->
+      <!-- Pulse section disclosures (caret after the title, content full width). Recommendations open by default; open or closed is
+           remembered per browser. -->
       <details class="pulse-disclosure pulse-disclosure--section fold" id="recs-fold" data-fold-key="vex-fold-recs" open>
         <summary class="pulse-disclosure__summary lane-head lane-head-quiet">
           <div class="lane-title">
@@ -119,7 +118,7 @@
 
     <footer class="links">
       <a id="open-compliance-sidebar"></a>   <!-- master: the Compliance sidebar's trigger (empty there too) -->
-      <!-- David's three footer links (2026-11-22), as Pulse buttons: each opens a side panel here. His wording. -->
+      <!-- Footer links as Pulse buttons: each opens a side panel here. -->
       <button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--sm" id="open-settings-sidebar" type="button"><i class="pulse-icon pulse-icon--sliders-horizontal" aria-hidden="true"></i>Tune Autopilot</button>
       <button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--sm" id="open-backup-sidebar" type="button"><i class="pulse-icon pulse-icon--database" aria-hidden="true"></i>Disaster Recovery</button>
       <button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--sm" id="open-signal-sidebar" type="button"><i class="pulse-icon pulse-icon--plus" aria-hidden="true"></i>Add Signal</button>
@@ -159,24 +158,6 @@
     </div>
   </site-rollup>
 
-  <!-- Every destructive action confirms here first (Pulse destructive dialog, Cancel focused). Filled by Workspace.confirmDestructive(). -->
-  <dialog class="pulse-dialog" id="confirm-destructive" aria-labelledby="confirm-destructive-title" aria-describedby="confirm-destructive-body">
-    <div class="pulse-dialog__head">
-      <div class="pulse-dialog__copy">
-        <h2 class="pulse-dialog__title" id="confirm-destructive-title"></h2>
-        <p class="pulse-dialog__body" id="confirm-destructive-body"></p>
-      </div>
-      <button class="pulse-btn pulse-btn--ghost-neutral pulse-btn--icon pulse-btn--sm pulse-dialog__close" type="button" aria-label="Close" data-pulse-close>
-        <i class="pulse-icon pulse-icon--x" aria-hidden="true"></i>
-      </button>
-    </div>
-    <div class="pulse-dialog__resource" data-resource></div>
-    <div class="pulse-dialog__actions">
-      <button class="pulse-btn pulse-btn--secondary" type="button" data-pulse-close autofocus>Cancel</button>
-      <button class="pulse-btn pulse-btn--destructive" type="button" data-confirm data-pulse-close></button>
-    </div>
-  </dialog>
-
   <!-- Rollups -->
 
   <site-rollup id="coverage-screen">
@@ -201,7 +182,7 @@
     </div>
 
     <div class="cov-body" id="cov-body"></div>
-    <aside class="pulse-drawer pulse-drawer--inset pulse-drawer--push pulse-drawer--xl cov-drawer" id="cov-drawer" hidden></aside><!-- Pulse inset drawer (Chad, 2026-11-19) -->
+    <aside class="pulse-drawer pulse-drawer--inset pulse-drawer--push pulse-drawer--xl cov-drawer" id="cov-drawer" hidden></aside><!-- Pulse inset drawer -->
   </site-rollup>
 
   <site-rollup id="audit-screen">
@@ -252,7 +233,7 @@
     </header>
 
     <div class="thread">
-        <!-- Pulse messages on a timeline. The analyst's turn is the last message, so the line joins it too (Chad, 2026-11-23). -->
+        <!-- Pulse messages on a timeline. The analyst's turn is the last message, so the line joins it too. -->
         <ol class="pulse-timeline updates" id="updates">
             <li class="pulse-message next-turn" id="next-turn">
                 <span class="pulse-avatar pulse-avatar--circle pulse-avatar--outline"><img class="avatar is-analyst" id="next-turn-avatar" alt=""></span>
@@ -314,7 +295,7 @@
     </div>
   </site-sidebar>
 
-  <!-- David's settings panel (2026-11-22), on Pulse: the drawer head and Pulse toggle rows. His wording. -->
+  <!-- Settings panel on Pulse: the drawer head and Pulse toggle rows. -->
   <site-sidebar id="settings-sidebar" size="standard">
     <header class="pulse-drawer__head panel-head settings-banner">
       <span class="pulse-drawer__icon"><i class="pulse-icon pulse-icon--sliders-horizontal" aria-hidden="true"></i></span>

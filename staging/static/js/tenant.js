@@ -93,7 +93,7 @@ class TenantScreen {
     }
 
     async open(signal) {
-        await SiteSpinner.withLoading(async () => {
+        await Pulse.loading(async () => {
             Workspace.sidebars.signal.reset();
             Workspace.sidebars.signal.inject(signal, await this.api.signals.get(signal.id));
             document.getElementById('signal-sidebar').show();
@@ -162,7 +162,7 @@ class TenantScreen {
     }
 
     skeleton() {
-        // Pulse skeleton rows (batch 2026-11-19); VEX keeps its fade-out down the list.
+        // Pulse skeleton rows; VEX keeps its fade-out down the list.
         const row = (name, sub, opacity) => `
             <li class="pulse-skeleton-row q-ghost" style="opacity:${opacity}" aria-hidden="true">
                 <span class="pulse-skeleton pulse-skeleton--mark"></span><span class="pulse-skeleton" style="max-width:${name}px"></span>

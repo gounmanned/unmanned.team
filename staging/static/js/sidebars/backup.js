@@ -28,7 +28,7 @@ class BackupSidebar {
     }
 
     async browse() {
-        const loader = SiteSpinner.cover(this.wrap);
+        const loader = Pulse.cover(this.wrap);
         await this.reload();
         loader.remove();
     }
@@ -69,9 +69,8 @@ class BackupSidebar {
     }
 
     async download(item, name) {
-        const spinner = document.createElement('site-spinner');
-        spinner.setAttribute('inline', '');
-        item.append(spinner);
+        item.insertAdjacentHTML('beforeend', '<span class="pulse-spinner pulse-spinner--sm" role="status" aria-label="Loading"></span>');
+        const spinner = item.lastElementChild;
 
         try {
             const redirect = await this.api.file.call('GET', `file/${this.api.file.root.replace(/\/$/, '')}?name=${encodeURIComponent(name)}`);

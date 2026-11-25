@@ -97,7 +97,7 @@ class Workspace {
             await rollup.reload();
         };
 
-        return rollup.quiet ? run() : SiteSpinner.withLoading(run);
+        return rollup.quiet ? run() : Pulse.loading(run);
     }
 
     listen() {
@@ -107,7 +107,7 @@ class Workspace {
 
         Object.keys(this.sidebars).forEach(name => {
             document.getElementById(`open-${name}-sidebar`).addEventListener("click", () => {
-                SiteSpinner.withLoading(async () => {
+                Pulse.loading(async () => {
                     document.getElementById(`${name}-sidebar`).show();
                     const sidebar = this.sidebars[name];
                     await sidebar.reset();
@@ -126,25 +126,6 @@ class Workspace {
         document.querySelector('site-header').setAccount(state.account(), `https://www.google.com/s2/favicons?domain=${state.account()}&sz=64`);
 
         await this.tenant.refresh();
-    }
-
-    // Pulse's rule (batch 2026-11-19): a destructive action never acts in one click; it opens the destructive
-    // dialog. Resolves true when the person confirms, false on Cancel, Esc or the X.
-    static confirmDestructive({ title, body, resource = '', action }) {
-        const dialog = document.getElementById('confirm-destructive');
-        dialog.querySelector('.pulse-dialog__title').textContent = title;
-        dialog.querySelector('.pulse-dialog__body').textContent = body;
-        const res = dialog.querySelector('[data-resource]');
-        res.textContent = resource;
-        res.hidden = !resource;
-        const confirm = dialog.querySelector('[data-confirm]');
-        confirm.textContent = action;
-        return new Promise(resolve => {
-            let ok = false;
-            confirm.onclick = () => { ok = true; };
-            dialog.addEventListener('close', () => { confirm.onclick = null; resolve(ok); }, { once: true });
-            dialog.showModal();
-        });
     }
 
     // How VEX names itself on screen: one place to change it. The data says "vex"; on screen the analyst is "VEX".

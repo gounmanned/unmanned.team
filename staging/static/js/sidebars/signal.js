@@ -167,7 +167,7 @@ class SignalSidebar {
     async note() {
         const value = document.getElementById("response").value.trim();
         if (!value) return;
-        await SiteSpinner.withLoading(async () => {
+        await Pulse.loading(async () => {
             this.add(await this.api.signals.update(this.signal.id, value));
         });
     }
@@ -178,7 +178,7 @@ class SignalSidebar {
 
         const due = document.getElementById("signal-due").value;
 
-        await SiteSpinner.withLoading(async () => {
+        await Pulse.loading(async () => {
             await this.api.signals.create({
                 status: this.signal.status,
                 asset: asset.value.trim(),
@@ -195,7 +195,7 @@ class SignalSidebar {
         await this.note();
         if (status.startsWith("R")) return this.askVex(status);
 
-        await SiteSpinner.withLoading(async () => {
+        await Pulse.loading(async () => {
             const signal = await this.api.signals.patch(this.signal.id, { status });
             this.state.signals[signal.account][signal.id] = signal;
             this.signal = signal;
@@ -214,7 +214,7 @@ class SignalSidebar {
         thinking.innerHTML = `
             <span class="pulse-avatar pulse-avatar--circle pulse-avatar--outline"><img class="avatar" src="${Workspace.avatar("vex")}" alt=""></span>
             <div class="pulse-message__head"><span class="pulse-message__sender">${Workspace.esc(Workspace.sender("vex"))}</span><span class="pulse-badge pulse-badge--accent pulse-badge--nodot">AI analyst</span></div>
-            <div class="pulse-message__body thinking">${SiteSpinner.inline} Thinking…</div>`;
+            <div class="pulse-message__body thinking"><span class="pulse-spinner pulse-spinner--sm" role="status" aria-label="Loading"></span> Thinking…</div>`;
         document.getElementById("next-turn").before(thinking);
         thinking.scrollIntoView({ block: "nearest" });
 
@@ -238,7 +238,7 @@ class SignalSidebar {
 
     async delete() {
         const { id, account } = this.signal;
-        await SiteSpinner.withLoading(async () => {
+        await Pulse.loading(async () => {
             await this.api.signals.delete(id);
             delete this.state.signals[account][id];
             document.dispatchEvent(new CustomEvent("page:reset"));
@@ -258,7 +258,7 @@ class SignalSidebar {
 
         // Delete is in the More menu and confirms with Pulse's destructive dialog first.
         document.getElementById("signal-delete").addEventListener("click", async () => {
-            const ok = await Workspace.confirmDestructive({
+            const ok = await Pulse.confirm({
                 title: "Delete this signal?",
                 body: "This removes the signal and its thread. You can’t undo it.",
                 resource: this.signal.name ?? "",

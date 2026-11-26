@@ -165,9 +165,9 @@ class ComplianceApi extends Gateway {
         super();
     }
 
-    async get(framework) {return this.call("GET", `compliance/${framework}`); }
-    async put(framework, practice_id, owner, evidence) {return this.call("POST", `compliance/${framework}/${practice_id}`, {owner, evidence }); }
-    async remove(framework, practice_id) { return this.call("DELETE", `compliance/${framework}/${practice_id}`); }
+    async get(framework) { return this.call("GET", `compliance/${framework}`); }
+    async put(framework, id, owner, evidence) { return this.call("POST", `compliance/${framework}/${encodeURIComponent(id)}`, { source: owner, value: evidence }); }
+    async remove(framework, id) { return this.call("DELETE", `compliance/${framework}/${encodeURIComponent(id)}`); }
 }
 
 class Auth {

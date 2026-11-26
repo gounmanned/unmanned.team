@@ -67,6 +67,7 @@ class Workspace {
                     backup: new BackupSidebar(state),
                     compliance: new ComplianceSidebar(state),
                     settings: new SettingsSidebar(state),
+                    assessment: new AssessmentSidebar(state),
                 }
 
                 this.tenant = new TenantScreen(state);

@@ -1,0 +1,120 @@
+#assessment-sidebar {
+
+  /* ── Header ─────────────────────────────────────────────────────── */
+
+  --tint: var(--accent, var(--brand));
+
+  .assessment-banner {
+    flex-shrink: 0;
+    padding: 22px 22px 20px;
+    border-bottom: 1px solid color-mix(in srgb, var(--tint) 22%, var(--line));
+    background:
+      radial-gradient(90% 160% at 100% 0%, color-mix(in srgb, var(--tint) 16%, transparent), transparent 70%),
+      linear-gradient(180deg,
+        color-mix(in srgb, var(--tint) 10%, var(--surface)),
+        color-mix(in srgb, var(--tint) 5%, var(--surface)));
+
+    p { margin: 0; }
+  }
+
+  .assessment-eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--tint);
+  }
+
+  .assessment-title {
+    margin: 8px 0 0;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--text-body);
+  }
+
+  .assessment-desc {
+    margin-top: 6px;
+    text-wrap: pretty;
+    font-size: 13px;
+    line-height: 1.55;
+    color: color-mix(in srgb, var(--text-body) 65%, transparent);
+
+    b { font-weight: 600; color: var(--text-body); }
+  }
+
+  /* ── Assessment body ────────────────────────────────────────────── */
+
+  .container {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .assessment-body {
+    box-sizing: border-box;
+    height: 100%;
+    padding: 14px 18px 18px;
+    overflow-y: auto;
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--text-body);
+
+    h3 {
+      margin-top: 20px;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+      font-size: 14px;
+    }
+
+    > h3:first-child { margin-top: 0; padding-top: 0; border-top: 0; }
+  }
+
+  /* ── No assessment yet ──────────────────────────────────────────── */
+
+  .assessment-empty {
+    position: absolute;
+    inset: 0;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 24px;
+    text-align: center;
+
+    p { margin: 0; }
+  }
+
+  .assessment-empty-icon {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    margin-bottom: 6px;
+    border-radius: 50%;
+    font-size: 22px;
+    color: var(--text-faint);
+    background: var(--surface-alt);
+  }
+
+  .assessment-empty-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-body);
+  }
+
+  .assessment-empty-desc {
+    max-width: 260px;
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--text-faint);
+  }
+
+  #assessment-wrap.empty {
+    > .assessment-body { display: none; }
+    > .assessment-empty { display: flex; }
+  }
+}

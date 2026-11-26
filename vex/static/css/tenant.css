@@ -1,5 +1,3 @@
-/* ── layout: slim pulse on top, stacked lanes below ─────────────── */
-
 :root {
   --header-h: calc(52px + 20px);
   --footer-h: 42px;
@@ -516,7 +514,8 @@
   filter: drop-shadow(0 0 2.5px color-mix(in srgb, var(--brand) 50%, transparent));
 }
 
-#ekg-svg .ekg-scan { stroke: var(--brand); stroke-opacity: 0.3; stroke-width: 1; }
+#ekg-svg .ekg-scan { display: none; }
+#ekg-svg :is(.ekg-head, .ekg-halo) { r: 4px; }
 #ekg-svg .ekg-head { fill: var(--brand); stroke: var(--surface); stroke-width: 1.5; }
 
 #ekg-svg .ekg-halo {
@@ -638,6 +637,7 @@
 }
 
 .links a .material-symbols-outlined { font-size: 17px; color: var(--brand); }
+
 /* ── loading ────────────────────────────────────────────────────── */
 
 .shimmer,

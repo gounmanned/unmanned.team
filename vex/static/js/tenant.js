@@ -15,8 +15,7 @@ class TenantScreen {
         this.pending = new Set(Object.keys(TenantScreen.PENDING));
         this.revealed = false;
         this.coverage = { assets: 0, dots: 0 };
-        this.ekg = new Ekg(this.api, () => this.reload());   // the sweep's minute is the screen's refresh clock
-
+        this.ekg = new Ekg(this.api, () => this.reload());
         this.screen = document.getElementById('tenant-screen');
         this.period = document.getElementById('period');
 
@@ -405,21 +404,18 @@ class Ekg {
         const amp = base - PAD.t;
         const max = Math.max(3, ...slots);
         const pt = (x, y) => `${x.toFixed(1)},${y.toFixed(1)}`;
-        const idle = t => base - 2.5 * Math.sin(t * 2.1) - 1.2 * Math.sin(t * 4.3);
 
-        let d = `M0,${idle(0).toFixed(1)}`;
+        let d = `M0,${base}`;
         for (let i = 0; i < drawn; i++) {
             const x = i * w, c = slots[i];
-            if (!c) { d += ` L${pt(x + w, idle(i + 1))}`; continue; }
+            if (!c) continue;
             const h = amp * Math.max(0.3, c / max);
-            const y = idle(i);
-            d += ` L${pt(x + w * .3, y)} L${pt(x + w * .45, y - h)}`
-                + ` L${pt(x + w * .6, y + Math.min(h * .4, 5))} L${pt(x + w * .75, y)}`
-                + ` L${pt(x + w, idle(i + 1))}`;
+            d += ` L${pt(x + w * .3, base)} L${pt(x + w * .45, base - h)}`
+                + ` L${pt(x + w * .6, base + Math.min(h * .4, 5))} L${pt(x + w * .75, base)}`;
         }
 
         const hx = head * w;
-        const hy = idle(head);
+        const hy = base;
         this.trace.setAttribute('d', `${d} L${pt(hx, hy)}`);
         this.ahead.setAttribute('x1', hx);
         this.scan.setAttribute('x1', hx);

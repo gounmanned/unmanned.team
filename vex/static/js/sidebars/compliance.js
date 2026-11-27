@@ -16,6 +16,10 @@ class ComplianceSidebar {
         SI: 'System and Information Integrity',
     };
 
+    static met(row) {
+        return Boolean(row.owner && row.evidence);
+    }
+
     constructor(state) {
         this.state = state;
         this.api = state.api;
@@ -100,10 +104,11 @@ class ComplianceSidebar {
         const item = document.createElement('li');
         item.className = 'objective';
         item.innerHTML = `
-            <label class="objective-main">
-                <input type="checkbox" class="objective-status" aria-label="Objective met">
+            <div class="objective-main">
+                <span class="material-symbols-outlined objective-status"></span>
+                <span class="objective-id">${Workspace.esc(row.objective_id)}</span>
                 <span class="objective-text">${Workspace.esc(row.assessment_objective)}</span>
-            </label>
+            </div>
             <div class="objective-fields">
                 <label class="field">
                     <span class="material-symbols-outlined">person</span>
@@ -114,28 +119,51 @@ class ComplianceSidebar {
                     <input type="url" name="evidence" placeholder="Link to policy doc" pattern="https?://.+" spellcheck="false" autocomplete="off">
                     <a class="material-symbols-outlined evidence-open" target="_blank" rel="noopener" title="Open evidence">open_in_new</a>
                 </label>
+                <button type="button" class="material-symbols-outlined objective-clear" title="Clear owner and evidence" aria-label="Clear owner and evidence">close</button>
             </div>`;
 
         const status = item.querySelector('.objective-status');
-        status.checked = row.status;
-        item.classList.toggle('met', row.status);
-        status.addEventListener('change', () => {
-            row.status = status.checked;
-            item.classList.toggle('met', row.status);
-            this.tally();
-            row.status ? this.save(row) : this.remove(row);
-        });
+        const wipe = item.querySelector('.objective-clear');
+        const inputs = [...item.querySelectorAll('input[name]')];
+        const ready = () => inputs.every(input => input.value.trim() && input.checkValidity());
 
-        item.querySelectorAll('input[name]').forEach(input => {
-            input.value = row[input.name] ?? '';
+        const paint = () => {
+            const met = ComplianceSidebar.met(row);
+            item.classList.toggle('met', met);
+            status.textContent = met ? 'check_circle' : 'pending';
+            status.title = met ? 'Complete' : 'Add an owner and evidence link';
+            wipe.hidden = !met;
+            this.link(item, row);
+        };
+
+        const save = () => {
+            inputs.forEach(input => row[input.name] = input.value.trim());
+            this.save(row);
+            paint();
+            this.tally();
+        };
+
+        const clear = () => {
+            row.owner = row.evidence = '';
+            this.remove(row);
+            paint();
+            this.tally();
+        };
+
+        inputs.forEach(input => {
+            input.value = row[input.name];
             input.addEventListener('change', () => {
-                if (!input.checkValidity()) return;
-                row[input.name] = input.value.trim();
-                this.link(item, row);
+                if (ready()) save();
+                else if (ComplianceSidebar.met(row) && !input.value.trim()) clear();
             });
         });
 
-        this.link(item, row);
+        wipe.addEventListener('click', () => {
+            inputs.forEach(input => input.value = '');
+            clear();
+        });
+
+        paint();
         return item;
     }
 
@@ -183,7 +211,7 @@ class ComplianceSidebar {
     }
 
     tally() {
-        const met = rows => rows.filter(row => row.status).length;
+        const met = rows => rows.filter(ComplianceSidebar.met).length;
 
         this.counters.forEach(({ host, rows, tally }) => {
             const done = met(rows);
@@ -217,10 +245,10 @@ class ComplianceSidebar {
     }
 
     save(row) {
-        return this.api.compliance.put('cmmc', row.practice_id, row.owner, row.evidence);
+        return this.api.compliance.put('cmmc', row.objective_id, row.owner, row.evidence);
     }
 
     remove(row) {
-        return this.api.compliance.remove('cmmc', row.practice_id);
+        return this.api.compliance.remove('cmmc', row.objective_id);
     }
 }

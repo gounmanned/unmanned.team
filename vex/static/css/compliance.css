@@ -244,7 +244,7 @@
 
   .objective {
     display: grid;
-    grid-template-columns: 16px minmax(0, 1fr);
+    grid-template-columns: 20px minmax(0, 1fr);
     gap: 0 12px;
     padding: 9px 10px;
     border-radius: 8px;
@@ -253,40 +253,34 @@
     &:hover { background: var(--surface-alt); }
   }
 
-  .objective-main {
-    display: contents;
-    cursor: pointer;
-  }
+  .objective-main { display: contents; }
 
   .objective-status {
-    appearance: none;
-    display: grid;
-    place-items: center;
-    width: 16px;
-    height: 16px;
-    margin: 1px 0 0;
-    border: 1.5px solid color-mix(in srgb, var(--text-faint) 60%, transparent);
-    border-radius: 50%;
-    cursor: pointer;
-    transition: background 0.15s, border-color 0.15s;
-
-    &::before {
-      content: '';
-      width: 3.5px;
-      height: 7px;
-      border: solid #fff;
-      border-width: 0 1.75px 1.75px 0;
-      transform: translateY(-1px) rotate(45deg) scale(0);
-      transition: transform 0.18s cubic-bezier(0.3, 1.6, 0.5, 1);
-    }
-
-    &:hover { border-color: var(--met); }
-    &:checked { border-color: var(--met); background: var(--met); }
-    &:checked::before { transform: translateY(-1px) rotate(45deg) scale(1); }
-    &:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+    justify-self: center;
+    align-self: center;
+    font-size: 20px;
+    color: color-mix(in srgb, var(--text-faint) 60%, transparent);
+    transition: color 0.15s;
   }
 
+  .objective.met .objective-status { color: var(--met); }
+
+  .objective-id {
+    grid-column: 2;
+    align-self: center;
+    font-size: 11px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.02em;
+    color: var(--text-faint);
+    transition: color 0.15s;
+  }
+
+  .objective.met .objective-id { color: var(--met); }
+
   .objective-text {
+    grid-column: 2;
+    margin-top: 2px;
     font-size: 13px;
     line-height: 1.5;
     color: var(--text-body);
@@ -346,6 +340,42 @@
 
       &::placeholder { color: var(--text-faint); }
     }
+  }
+
+  .objective-clear {
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: 0;
+    border-radius: 6px;
+    background: none;
+    font-size: 16px;
+    color: var(--text-faint);
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.15s, color 0.15s, background 0.15s;
+
+    &[hidden] { display: none; }
+
+    &:hover {
+      color: var(--risk-high, #dc2626);
+      background: color-mix(in srgb, var(--risk-high, #dc2626) 10%, transparent);
+    }
+
+    &:focus-visible {
+      opacity: 1;
+      outline: 2px solid var(--brand);
+      outline-offset: 1px;
+    }
+  }
+
+  .objective:hover .objective-clear { opacity: 1; }
+
+  @media (hover: none) {
+    .objective-clear { opacity: 1; }
   }
 
   .objective:hover .field {

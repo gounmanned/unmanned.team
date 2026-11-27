@@ -172,10 +172,10 @@ class ManagedRollup {
         this._settle(before);
     }
 
-    // (Chad, 2026-11-20): above phone width each data column is as wide as its longest content on screen, plus one
+    // Above phone width each data column is as wide as its longest content on screen, plus one
     // standard gap, the same in both groups; the spare width goes to the name column. Phones keep the CSS.
     static WIDE = matchMedia('(min-width: 701px)');
-    // px between columns' contents: 32 up to 1100px wide, growing to 56 at 1600px and wider (Chad, 2026-11-20).
+    // px between columns' contents: 32 up to 1100px wide, growing to 56 at 1600px and wider.
     static gap() { return Math.round(32 + 24 * Math.min(1, Math.max(0, (innerWidth - 1100) / 500))); }
 
     _fit() {
@@ -196,8 +196,7 @@ class ManagedRollup {
         const gap = ManagedRollup.gap();
         this.list.style.setProperty('--acct-gap', `${gap}px`);
         const widths = content.map((measure, i) => Math.ceil(Math.max(...rows.map(r => measure(r.cells[i])))) + gap);
-        // The name takes the spare width and the data sits at the right, by the actions (Chad, 2026-11-23; Polaris and Carbon
-        // tables): names get room to breathe and the data columns line up at the same place in every window.
+        // The name takes the spare width and the data sits at the right, by the actions: names get room to breathe and the data columns line up at the same place in every window.
         const actions = Math.ceil(Math.max(...rows.map(r => r.querySelector('.acct-actions')?.scrollWidth ?? 0))) + gap / 2;
         cols.forEach(g => {
             g[0].style.width = 'auto';
@@ -251,10 +250,10 @@ class ManagedRollup {
             </div>`;
     }
 
-    // One list in two groups with equal labels, as Gmail's priority inbox (Chad, 2026-11-19): the page is "Accounts", the
+    // One list in two groups with equal labels: the page is "Accounts", the
     // groups are its parts. The rows carry the counts, so the labels have no description line.
     _needsLane(needs) {
-        // The heading stays at 0 (Chad, 2026-11-23), as Waiting on you does in an account; one quiet line under it.
+        // The heading stays at 0, as Waiting on you does in an account; one quiet line under it.
         const head = `
             <header class="lane-head" data-flip="needs-head">
                 <div class="lane-title"><h3>Needs triage <span class="lane-count">${fmt(needs.length)}</span></h3></div>
@@ -274,7 +273,7 @@ class ManagedRollup {
             ${this._table(calm.map(([domain, s]) => this._calmRow(domain, s)).join(''), 'acct-calm', 'Accounts with no active threats')}`;
     }
 
-    // Pulse headless data table (Chad, 2026-11-19): aligned columns, no visible head, units in every cell. Both lanes use the
+    // Pulse headless data table: aligned columns, no visible head, units in every cell. Both lanes use the
     // same columns (account, status, assets and coverage, next SLA, actions), so they line up with each other.
     _table(rows, cls, label) {
         return `
@@ -285,7 +284,7 @@ class ManagedRollup {
             </table>`;
     }
 
-    // Status: the count first so rows line up, then the worst verdict as colored text, one only (Chad, 2026-11-19).
+    // Status: the count first so rows line up, then the worst verdict as colored text, one only.
     // Likely benign gets none; the percent stays in the signal panel.
     _needsRow(domain, s) {
         const esc = Workspace.esc;
@@ -323,7 +322,7 @@ class ManagedRollup {
     }
 
     // Two right-aligned cells. Coverage is an amount, so a small Pulse progress bar under the percent (gray, green when every
-    // asset has a Dot), not a status dot (Chad, 2026-11-19).
+    // asset has a Dot), not a status dot.
     _chip({ assets, dots }, domain = '') {
         if (this.counting) return `<td class="pulse-table__num">${pending(56)}</td><td class="pulse-table__num">${pending(72)}</td>`;
 
@@ -342,8 +341,8 @@ class ManagedRollup {
                 </span></td>`;
     }
 
-    // An empty cell shows a faint en dash, so rows read complete and columns stay aligned (Carbon, Polaris); screen
-    // readers hear "None" (Chad, 2026-11-20).
+    // An empty cell shows a faint en dash, so rows read complete and columns stay aligned; screen
+    // readers hear "None".
     static none = `<span class="acct-none-cell" aria-hidden="true">–</span><span class="pulse-visually-hidden">None</span>`;
 
     _countdown(next) {
@@ -488,7 +487,7 @@ class ManagedRollup {
     }
 
     async _create(account) {
-        const created = await SiteSpinner.withLoading(() => this.api.managed.assign(account, this.me));
+        const created = await Pulse.loading(() => this.api.managed.assign(account, this.me));
         if (!created) {
             this.rejected = account;
             this._renderList();
@@ -503,14 +502,14 @@ class ManagedRollup {
 
     async _assign(email) {
         const domain = this.managing;
-        await SiteSpinner.withLoading(() => this.api.managed.assign(domain, email));
+        await Pulse.loading(() => this.api.managed.assign(domain, email));
         this.members.get(domain).push(email);
         this.render();
     }
 
     async _unassign(email) {
         const domain = this.managing;
-        await SiteSpinner.withLoading(() => this.api.managed.unassign(domain, email));
+        await Pulse.loading(() => this.api.managed.unassign(domain, email));
 
         if (email === this.me) {
             this.members.delete(domain);
@@ -524,7 +523,7 @@ class ManagedRollup {
     _enter(domain) {
         this.state.delegate = domain;
         // start the slide down first, then load the account a few frames later; loading first blocked the page
-        // long enough that the slide was skipped and the change looked instant (Chad, 2026-11-19).
+        // long enough that the slide was skipped and the change looked instant.
         document.querySelector('site-overlay').click();
         requestAnimationFrame(() => requestAnimationFrame(() => document.dispatchEvent(new CustomEvent('page:reset'))));
     }
@@ -600,7 +599,7 @@ class ManagedRollup {
             const remove = e.target.closest('[data-remove]');
             if (remove) {
                 const email = remove.dataset.remove;
-                return Workspace.confirmDestructive({
+                return Pulse.confirm({
                     title: 'Remove this admin?',
                     body: `${email} loses access to this account. You can invite them again later.`,
                     resource: this.managing,

@@ -1,14 +1,6 @@
-// The VEX shell, moved to Pulse: a copy of cdn/js/components.js (David's) inside staging/, so other pages that load the CDN
-// shell are not affected. If it should replace the CDN file instead, it can move there.
-// Same elements and the same methods VEX calls (show, hide, setAccount, SiteSpinner.withLoading/cover/inline,
-// site-overlay.click()), so nothing else in VEX had to change for it.
-//
-// What changed:
-// - Sidebars are Pulse XL drawers, rollups are Pulse screen drawers, the modal is a Pulse dialog (native <dialog>s, modal).
-// - The header is Pulse's app header; the spinner is Pulse's spinner and cover.
-// - Pulse's dimmed backdrop replaces <site-overlay>'s drawing; <site-overlay> stays as VEX's "close everything" switch.
-// - Esc and a click on the dimmed page close a panel (as VEX's overlay click did: everything closes).
-// - No hard-coded colors: the pink glow is gone (Pulse elevation instead); every color is a Pulse token.
+// The VEX shell on Pulse: the app header and the panels VEX opens (side panels, screens, the modal).
+// Each panel is a Pulse dialog or drawer in a shadow root; Pulse's pulse.js gives them focus, Esc, backdrop and the loading
+// cover. This file keeps what is VEX's own: the account switcher, and closing everything after an action (<site-overlay>).
 
 const PULSE_CSS = ['pulse-tokens.css', 'pulse-icons.css', 'pulse-components.css'].map(f => 'https://cdn.unmanned.team/pulse/v1/' + f)
   .map(href => `<link rel="stylesheet" href="${href}">`).join('');
@@ -39,13 +31,6 @@ class ShellDialog extends HTMLElement {
       if (btn && this.contains(btn) && this._dialog.open) this._dialog.close();
     });
 
-    // A non-modal panel doesn't get the browser's Esc, so catch it here (unless a menu or another dialog inside took it).
-    document.addEventListener('keydown', (e) => {
-      if (e.key !== 'Escape' || e.defaultPrevented || this.modal || !this._dialog.open) return;
-      if (document.querySelector('dialog:modal') || this.shadowRoot.querySelector('dialog:modal')) return;
-      this._dialog.close();
-    });
-
     // Closed by the person (Esc, backdrop, X), not by hide(): close everything, as VEX's overlay click did.
     // ('close' fires after close() returns, so hide() leaves the flag for this handler to clear.)
     this._dialog.addEventListener('close', () => {
@@ -54,8 +39,7 @@ class ShellDialog extends HTMLElement {
     });
   }
 
-  // modal="false" (the signal panel, Chad 2026-11-23, as production and Linear, Jira, Gmail): no dimming, the page stays usable
-  // beside it (another signal swaps the panel), Esc still closes it. Settings, Recovery and confirms stay modal.
+  // modal="false": no dimming, the page stays usable beside the panel (another signal swaps it) and Esc still closes it.
   get modal() { return this.getAttribute('modal') !== 'false'; }
 
   show() {
@@ -68,7 +52,6 @@ class ShellDialog extends HTMLElement {
       }
     }
     this.dispatchEvent(new CustomEvent('window-click', { bubbles: true, composed: true }));
-    SiteSpinner.raise();
   }
 
   hide() {
@@ -90,7 +73,7 @@ class SiteHeader extends HTMLElement {
     this.shadowRoot.innerHTML = PULSE_CSS + `
       <style>
         :host { display: block; position: fixed; inset: 0 0 auto 0; z-index: 10; }
-        .pulse-app-header { position: static; width: 100%; padding-inline: var(--space-32); }   /* the page's inset: the mark lines up with the content (2026-11-23) */
+        .pulse-app-header { position: static; width: 100%; padding-inline: var(--space-32); }   /* the page's inset: the mark lines up with the content */
         .divider { flex: none; width: var(--border-width-1); height: 20px; background: var(--color-border-default); }
         .account-group {
           display: flex; align-items: center; gap: var(--space-4);
@@ -153,70 +136,7 @@ class SiteHeader extends HTMLElement {
   }
 }
 
-// Pulse's spinner (batch 2026-11-19), same API as VEX's: the page-wide one is a manual popover cover (top layer, above
-// panels); [cover] covers its parent; [inline] is a small ring in text. No shadow root: Pulse's classes style it.
-class SiteSpinner extends HTMLElement {
-    static inline = '<site-spinner inline></site-spinner>';
-    static #pending = 0;
-
-    connectedCallback() {
-        if (this.hasAttribute('inline')) {
-            this.className = 'pulse-spinner pulse-spinner--sm';
-            this.setAttribute('role', 'status');
-            this.setAttribute('aria-label', 'Loading');
-            return;
-        }
-        this.className = 'pulse-spinner-cover';
-        if (!this.hasAttribute('cover')) this.setAttribute('popover', 'manual');
-        this.innerHTML = `<span class="pulse-spinner ${this.hasAttribute('cover') ? '' : 'pulse-spinner--lg'}" role="status" aria-label="Loading"></span>`;
-    }
-
-    show() {
-        clearTimeout(this.timer);
-        this.setAttribute('active', '');
-        this.#top();
-    }
-
-    hide() { this.#off(); }   // GAP: VEX's ring ended on a check; Pulse's spinner has no "done" state.
-
-    #top() {
-        if (!this.popover) return;
-        if (this.matches(':popover-open')) this.hidePopover();
-        this.showPopover();
-    }
-
-    #off() {
-        this.removeAttribute('active');
-        if (this.popover && this.matches(':popover-open')) this.hidePopover();
-    }
-
-    // A panel just opened above the page-wide spinner: put the spinner back on top while it's active.
-    static raise() {
-        const spinner = document.querySelector('site-spinner:not([inline], [cover])');
-        if (spinner?.hasAttribute('active')) spinner.#top();
-    }
-
-    static async withLoading(operation, delay = 200) {
-        const spinner = document.querySelector('site-spinner:not([inline], [cover])');
-        SiteSpinner.#pending++;
-        spinner.show();
-        try {
-            const [result] = await Promise.all([operation(), new Promise(r => setTimeout(r, delay))]);
-            return result;
-        } finally {
-            if (--SiteSpinner.#pending === 0) spinner.hide();
-        }
-    }
-
-    static cover(el) {
-        const spinner = document.createElement('site-spinner');
-        spinner.setAttribute('cover', '');
-        return el.appendChild(spinner);
-    }
-}
-
-// Pulse's dialog backdrop dims the page now; this element only keeps VEX's "close everything" switch
-// (VEX calls document.querySelector('site-overlay').click() after an action).
+// VEX's "close everything" switch: VEX calls document.querySelector('site-overlay').click() after an action.
 class SiteOverlay extends HTMLElement {
   show() {}
   hide() {}
@@ -231,8 +151,7 @@ class SiteModal extends ShellDialog {
   }
 }
 
-// Sidebars: Pulse's XL drawer (half the window, 640 to 800px).
-// Side panels are Pulse's XL drawer; size="standard" gives Pulse's standard width (a short list, like settings).
+// Side panels: Pulse's XL drawer (half the window, 640 to 800px); size="standard" gives Pulse's standard width.
 class SiteSidebar extends ShellDialog {
   template() {
     return `
@@ -245,11 +164,9 @@ class SiteSidebar extends ShellDialog {
   }
 }
 
-// Rollups: Pulse's screen drawer (rises from the bottom, full width, stops just short of the top, square).
-// (Chad, 2026-11-19): the accounts screen is a page, full height. On first load it's simply there
-// (no slide); opened from the app it rises like Pulse's screen drawer, and choosing an account slides it down out of the way,
-// as in production. Pulse turns the motion off for reduced motion. While the host has [locked] (nothing to go back to), Esc
-// doesn't close it.
+// Screens: Pulse's screen drawer (rises from the bottom, full width, stops just short of the top).
+// show({ page }) makes it full height (the accounts screen); show({ instant }) skips the opening slide (first load).
+// While the host has [locked] (nothing to go back to), Esc doesn't close it.
 class SiteRollup extends ShellDialog {
   template() {
     return `<style>:host { display: contents; }
@@ -278,7 +195,6 @@ class SiteRollup extends ShellDialog {
 }
 
 customElements.define('site-header', SiteHeader);
-customElements.define('site-spinner', SiteSpinner);
 customElements.define('site-overlay', SiteOverlay);
 customElements.define('site-modal', SiteModal);
 customElements.define('site-sidebar', SiteSidebar);

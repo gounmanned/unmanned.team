@@ -33,7 +33,7 @@ class AuditRollup {
 
     startTail() {
         this.stopTail();
-        this.empty(`${SiteSpinner.inline} Loading the last minute`);
+        this.empty(`<span class="pulse-spinner pulse-spinner--sm" role="status" aria-label="Loading"></span> Loading the last minute`);
 
         this.tailFrom = new Date(Date.now() - AuditRollup.TAIL_LOOKBACK);
         this.tailTimer = setInterval(() => this.pollTail(), AuditRollup.TAIL_INTERVAL);
@@ -72,7 +72,7 @@ class AuditRollup {
         this.results.innerHTML = '';
 
         let logs = [];
-        await SiteSpinner.withLoading(async () => {
+        await Pulse.loading(async () => {
             logs = await this.api.audit.search(query) ?? [];
         });
 
@@ -89,7 +89,7 @@ class AuditRollup {
 
     // ── render ─────────────────────────────────────────────────────
 
-    // Pulse log row with two columns (session, group) before the message; the row opens to the full text (Chad, 2026-11-19).
+    // Pulse log row with two columns (session, group) before the message; the row opens to the full text.
     line(log, mark = Workspace.esc, flash = false) {
         const time = AuditRollup.CLOCK.format(new Date(log.timestamp));
         return `<details class="pulse-log__row${flash ? ' is-new' : ''}"><summary>`
